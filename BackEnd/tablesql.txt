@@ -1,0 +1,12 @@
+CREATE TABLE `Users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `token` varchar(100) DEFAULT '',
+  `role` varchar(50) DEFAULT NULL,
+  `defaultTimeZone` varchar(5) DEFAULT '0',
+  `json` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
+

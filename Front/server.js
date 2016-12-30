@@ -23,7 +23,6 @@ app.post('/auth/login', function(req, res) {
     }
 });
 
-
 app.get('/offer/netword', function (req, res) {
     var result = {
         rows: [
