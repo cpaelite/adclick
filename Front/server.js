@@ -4,61 +4,71 @@ var bodyParser = require('body-parser');
 var app = express();
 app.use(bodyParser.json());
 
+app.use("/js", express.static(__dirname + '/src/js'));
+app.use("/assets", express.static(__dirname + '/src/assets'));
+app.use("/tpl", express.static(__dirname + '/src/tpl'));
+app.use("/bower_components", express.static(__dirname + '/bower_components'));
+
+app.get('/', function (req, res) {
+    res.sendFile('index.html', { root: __dirname + '/src' });
+});
+
+function createJWT(username) {
+    var payload = 'eyJ1aWQiOiIxMjM0NTY3ODkwIiwibmlja25hbWUiOiJKb2huIFB1YiIsInJvbGUiOiJwdWJsaXNoZXIifQ';
+    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + payload + '.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
+}
+
 app.use(function (req, res, next) {
     console.log('*** Request Method : ' + req.method + ', Request Url : ' + req.originalUrl);
     return next();
 });
 
-app.get('/', function (req, res) {
-    res.send('Hello');
-});
-
 app.post('/auth/login', function(req, res) {
-    var username = req.body.username;
+    var username = req.body.email;
     var password = req.body.password;
     if (username && password == '123') {
-        res.send({token: 'jalfjsjflsajflasjl'});
+        res.send({token: createJWT(username)});
     } else {
         res.status(401).send({ message: 'Invalid email and/or password!' });
     }
 });
 
-app.get('/offer/netword', function (req, res) {
+app.get('/offer/network', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'offer1', offer_url: 'http://adclick/offer/netword'},
-            {id: 2, name: 'offer2', offer_url: 'http://adclick/offer/netword'},
-            {id: 3, name: 'offer3', offer_url: 'http://adclick/offer/netword'},
-            {id: 4, name: 'offer4', offer_url: 'http://adclick/offer/netword'},
-            {id: 5, name: 'offer5', offer_url: 'http://adclick/offer/netword'}
+            {id: 1, name: 'offer1', url: 'http://adclick/offer/network'},
+            {id: 2, name: 'offer2', url: 'http://adclick/offer/network'},
+            {id: 3, name: 'offer3', url: 'http://adclick/offer/network'},
+            {id: 4, name: 'offer4', url: 'http://adclick/offer/network'},
+            {id: 5, name: 'offer5', url: 'http://adclick/offer/network'}
         ],
         count: 10
     };
     res.send(result);
 });
 
-app.post('/offer/netword', function (req, res) {
+app.post('/offer/network', function (req, res) {
     var item = req.body;
     item.id = 123;
     res.send({item: item});
 });
 
-app.post('/offer/netword/:networdId', function(req, res) {
+app.post('/offer/network/:networkId', function(req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/offer/netword/:networdId', function(req, res) {
-    res.send({item: {id: req.params.networdIds}});
+app.delete('/offer/network/:networkId', function(req, res) {
+    res.send({item: {id: req.params.networkIds}});
 });
 
 app.get('/offer/list', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'offer1', user_id: '1', netword_id: '1,2,3,4'},
-            {id: 2, name: 'offer2', user_id: '1', netword_id: '1,3,4'},
-            {id: 3, name: 'offer3', user_id: '1', netword_id: '1,2,3'},
-            {id: 4, name: 'offer4', user_id: '1', netword_id: '1,4,5'},
-            {id: 5, name: 'offer5', user_id: '1', netword_id: '1,2,3,4'}
+            {id: 1, name: 'offer1', user_id: '1', network_id: '1,2,3,4'},
+            {id: 2, name: 'offer2', user_id: '1', network_id: '1,3,4'},
+            {id: 3, name: 'offer3', user_id: '1', network_id: '1,2,3'},
+            {id: 4, name: 'offer4', user_id: '1', network_id: '1,4,5'},
+            {id: 5, name: 'offer5', user_id: '1', network_id: '1,2,3,4'}
         ],
         count: 10
     };
@@ -68,11 +78,11 @@ app.get('/offer/list', function (req, res) {
 app.get('/offer', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'offer1', url: 'http://adclick/offer'},
-            {id: 2, name: 'offer2', url: 'http://adclick/offer'},
-            {id: 3, name: 'offer3', url: 'http://adclick/offer'},
-            {id: 4, name: 'offer4', url: 'http://adclick/offer'},
-            {id: 5, name: 'offer5', url: 'http://adclick/offer'}
+            {id: 1, name: 'offer1', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
+            {id: 2, name: 'offer2', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
+            {id: 3, name: 'offer3', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
+            {id: 4, name: 'offer4', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
+            {id: 5, name: 'offer5', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0}
         ],
         count: 10
     };
@@ -157,11 +167,11 @@ app.delete('/traffic/source/campaign/:campaignId', function(req, res) {
 app.get('/track/campaign', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'campaign1', ts_campaign_id: 1, active: 1},
-            {id: 2, name: 'campaign2', ts_campaign_id: 1, active: 1},
-            {id: 3, name: 'campaign3', ts_campaign_id: 1, active: 1},
-            {id: 4, name: 'campaign4', ts_campaign_id: 1, active: 1},
-            {id: 5, name: 'campaign5', ts_campaign_id: 1, active: 1}
+            {id: 1, name: 'campaign1', trafficSource: 'Adwords', country: 'American', status: 0},
+            {id: 2, name: 'campaign2', trafficSource: 'Adwords', country: 'American', status: 0},
+            {id: 3, name: 'campaign3', trafficSource: 'Adwords', country: 'American', status: 0},
+            {id: 4, name: 'campaign4', trafficSource: 'Adwords', country: 'American', status: 0},
+            {id: 5, name: 'campaign5', trafficSource: 'Adwords', country: 'American', status: 0}
         ],
         count: 10
     };
@@ -210,31 +220,31 @@ app.delete('/flow/:flowId', function(req, res) {
     res.send({item: {id: req.params.flowId}});
 });
 
-app.get('/landing/page', function (req, res) {
+app.get('/lander', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'page1', url: 'http://landing/page'},
-            {id: 2, name: 'page2', url: 'http://landing/page'},
-            {id: 3, name: 'page3', url: 'http://landing/page'},
-            {id: 4, name: 'page4', url: 'http://landing/page'},
-            {id: 5, name: 'page5', url: 'http://landing/page'}
+            {id: 1, name: 'lander1', url: 'http://landing/page'},
+            {id: 2, name: 'lander2', url: 'http://landing/page'},
+            {id: 3, name: 'lander3', url: 'http://landing/page'},
+            {id: 4, name: 'lander4', url: 'http://landing/page'},
+            {id: 5, name: 'lander5', url: 'http://landing/page'}
         ],
         count: 10
     };
     res.send(result);
 });
 
-app.post('/landing/page', function (req, res) {
+app.post('/lander', function (req, res) {
     var item = req.body;
     item.id = 123;
     res.send({item: item});
 });
 
-app.post('/landing/page/:landId', function(req, res) {
+app.post('/lander/:landId', function(req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/landing/page/:landId', function(req, res) {
+app.delete('/lander/:landId', function(req, res) {
     res.send({item: {id: req.params.landId}});
 });
 

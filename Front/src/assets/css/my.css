@@ -1,0 +1,490 @@
+.cs-app {
+    height: auto;
+    min-height: 100%;
+    position: relative;
+    width: 100%;
+    background-color: #fff;
+}
+header.navbar {
+    position: fixed;
+    top: 0;
+    z-index: 61;
+    width: 100%;
+    background: #0ea6b2 none repeat scroll 0 0;
+    color: #cffbff;
+}
+header .md-toolbar-tools {
+    height: auto;
+}
+.navbar-right {
+    height: 60px;
+}
+.navbar-right > li > a {
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+.material-icons {
+    vertical-align: middle;
+}
+.cs-left-aside {
+    -moz-user-select: none;
+    background-color: #e8e8e8;
+    border: medium none;
+    bottom: 0;
+    overflow: visible;
+    position: fixed !important;
+    top: 58px;
+    width: 180px;
+    box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.cs-main-content {
+    margin-top: 60px;
+    margin-left: 170px;
+    min-width: 960px;
+}
+@media (max-width: 960px) {
+    .cs-main-content {
+        margin-left: 0;
+    }
+}
+.navi {
+    margin-top: 8px;
+}
+.navi ul.nav li.active a {
+    font-weight: 700;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.nav-icon {
+    margin-top: 5px;
+}
+.cs-page-subheader::before, .cs-page-subheader::after {
+    content: "";
+    display: table;
+}
+.cs-page-subheader::after {
+    clear: both;
+}
+.cs-page-subheader {
+    background: #f7f7f7 none repeat scroll 0 0;
+    padding-left: 10px;
+    position: relative;
+}
+.cs-no-notification {
+    padding: 15px 10px;
+    text-align: center;
+}
+.cs-page-crumb {
+    float: left;
+    font-size: 14px;
+    height: 50px;
+    padding: 0;
+}
+.cs-page-crumb span {
+    color: #666;
+    padding: 0 20px;
+    line-height: 50px;
+}
+.cs-page-crumb span:last-child {
+    color: #12bdce;
+    font-weight: bold;
+}
+.cs-page-content {
+    background: #fff none repeat scroll 0 0;
+    padding: 20px 30px 15px;
+    position: relative;
+    min-height: 300px !important;
+}
+.cs-report-summary {
+    margin: 10px;
+    margin-left: 20%;
+    margin-right: 6%;
+    padding: 10px 0px;
+    padding-left: 63px;
+    min-width: 75%;
+    max-height: 100%;
+}
+.cs-report-summary > div {
+    display: inline-block;
+    padding-left: 60px;
+    white-space: nowrap;
+    height: 52px;
+    width: 55px;
+}
+.cs-report-clientpv {
+    background: transparent url("../img/view.png") no-repeat scroll 0 0;
+}
+.cs-report-ssppv {
+    background: transparent url("../img/view.png") no-repeat scroll 0 0;
+}
+.cs-report-show {
+    background: transparent url("../img/view.png") no-repeat scroll 0 0;
+}
+.cs-report-play {
+    background: transparent url("../img/view.png") no-repeat scroll 0 0;
+}
+.cs-report-click {
+    background: transparent url("../img/click.png") no-repeat scroll 0 0;
+}
+.cs-report-revenue {
+    background: transparent url("../img/revenue.png") no-repeat scroll 0 0;
+}
+.cs-report-install {
+    background: transparent url("../img/install.png") no-repeat scroll 0 0;
+}
+.cs-report-data {
+    margin: 4px 0 2px;
+    color: #555;
+}
+.cs-report-label {
+    color: #c5c5c5;
+}
+.cs-report-chart {
+    margin: auto;
+}
+.cs-action-bar {
+    margin-bottom: 8px;
+}
+.cs-action-bar .md-button:hover {
+    background-color: transparent;
+}
+.cs-action-group {
+    background-color: ghostwhite;
+    padding-left: 7px;
+}
+.cs-compact {
+    margin: 0;
+    padding: 0 15px;
+    min-width: 35px;
+}
+.cs-compact.md-button {
+    border-radius: 0;
+}
+.cs-button-s {
+    font-size: 12px;
+}
+.cs-filter-input {
+    border: medium none;
+    color: rgba(0, 0, 0, 0.87);
+    margin: 6px 0px;
+    padding: 2px 5px;
+    width: 200px;
+    height: 26px;
+}
+.cs-filter-close {
+    margin-left: -35px !important;
+    height: 18px !important;
+}
+.cs-add-button {
+    -moz-user-select: none;
+    background: #12bdce none repeat scroll 0 0 !important;
+    border-color: #12bdce;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: unset !important;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+}
+.cs-input-label {
+    line-height: 20px;
+    margin-top: 8px;
+}
+.cs-input-row {
+    margin-bottom: 8px;
+}
+.cs-classic-form md-input-container {
+    margin: 0;
+}
+md-datepicker {
+}
+.md-datepicker-button {
+    display: none;
+}
+.md-datepicker-input-container {
+    margin-left: 0;
+    padding: 2px 2px 1px;
+}
+.md-datepicker-input {
+    min-width: auto;
+    line-height: 26px;
+    height: 30px;
+    padding: 2px 2px 1px;
+    border-bottom: 1px;
+}
+.cs-time-select {
+    margin: 0 0 0 20px;
+}
+.cs-edit-dialog {
+    width: 80%;
+    max-width: 80%;
+    max-height: 90%;
+    border-radius: 0;
+}
+.cs-edit-panel {
+    width: 80%;
+    height: 100%;
+    background-color: white;
+
+    box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2),
+        0 13px 19px 2px rgba(0, 0, 0, 0.14),
+        0 5px 24px 4px rgba(0, 0, 0, 0.12);
+}
+.cs-cell-action {
+    position: relative;
+    width: 60px;
+}
+.cs-fab-action {
+    position: absolute;
+    right: 23px;
+    top: 0;
+}
+.cs-progress {
+    height: 3px;
+    margin-top: -3px;
+}
+.cs-radio-group {
+    background: #f8f8f8 none repeat scroll 0 0;
+    /*min-width: 490px;*/
+    /*width: auto;*/
+    overflow: hidden;
+    padding: 10px;
+    max-width: 404px;
+    display: table;
+    /*margin-left: 15px;*/
+}
+.cs-radio-group > label {
+    display: inline-block;
+    border: 0;
+    margin: 10px;
+    background: #ebebeb none repeat scroll 0 0;
+    color: #666 !important;
+    height: 30px;
+    width: 76px;
+}
+.cs-radio-group > label.active {
+    /*background-color: #12bdce;*/
+    background-color: #6254b2;
+}
+.form-group md-checkbox {
+    margin: 0;
+}
+.cs-status-active {
+    color: green !important;
+}
+.cs-creative-preview {
+    padding: 7px !important;
+}
+.cs-creative-preview img {
+    max-height: 40px;
+}
+.cs-image-preview {
+    border-radius: 0;
+    border: 1px solid gray;
+    background: #fff none no-repeat scroll 8px 8px;
+    width: 100%;
+    height: 300px;
+}
+.cs-input-medium {
+    width: 90px;
+}
+.cs-image-size input {
+    width: 60px;
+    display: inline;
+}
+.cs-image-size span {
+    margin-right: 10px;
+}
+.cs-file-uploader label {
+    color: #999;
+}
+.cs-file-uploader input {
+    visibility: hidden;
+    position: absolute;
+}
+.tooltip.cs-tooltip {
+    margin-top: -4px;
+}
+.tooltip.cs-tooltip .tooltip-inner {
+    background-color: #f6ffff;
+    border: 1px solid #c7f2f6;
+    border-radius: 0;
+    padding: 8px 10px;
+    /*box-shadow: 0 6px 12px rgba(0,0,0,.175);*/
+}
+.tooltip.cs-tooltip .tooltip-inner p {
+    color: #999;
+    line-height: 18px;
+    margin: 0;
+}
+.tooltip.cs-tooltip .tooltip-arrow {
+    /* Hide arrow */
+    display: none;
+}
+.cs-progress-xxs {
+  height: 2px;
+}
+.cs-plus-icon {
+    display: inline-block;
+    background-color: #89cfdb;
+    color: #fff;
+    height: 14px;
+    line-height: 14px;
+    margin-right: 2px;
+    cursor: pointer;
+    text-align: center;
+    width: 14px;
+    font-size: 17px;
+    font-weight: bold;
+    font-style: normal;
+}
+.cs-ad-progress > div {
+    min-width: 50px;
+    vertical-align: middle;
+    text-align: center !important;
+}
+.cs-ad-date {
+    font-size: 14px;
+}
+.cs-top-border-panel {
+    background-color: #f8f8f8;
+    border-top: 3px solid #dfdfdf;
+    /*margin-top: 20px; use this when can shoose dateType*/
+    margin-top: 5px;
+    padding-bottom: 30px;
+    display: inline-block;
+}
+.cs-subform-group {
+    margin: 20px 20px 0;
+}
+.cs-subform-group::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.cs-subform-label {
+    float: left;
+    line-height: 30px;
+    text-align: right;
+    vertical-align: top;
+    width: 83px;
+}
+
+.cs-subform-short-label {
+    float: left;
+    line-height: 30px;
+    text-align: right;
+    vertical-align: top;
+    width: 70px;
+    margin: 0;
+}
+
+
+.cs-subform-control {
+    float: left;
+    line-height: 30px;
+    padding-left: 10px;
+}
+.cs-subform-filter-input {
+    line-height: 24px;
+    width: 150px;
+    margin-left: 15px;
+}
+.cs-subform-select {
+    margin: 0px 15px;
+    line-height: 30px;
+    height: 30px;
+    width: 110px;
+}
+.xxxcs-subform-control::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.cs-button-datepicker {
+    background: #ebebeb none repeat scroll 0 0;
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    border: medium none;
+    border-radius: 0;
+}
+
+.cs-subform-search {
+    float: left;
+    line-height: 30px;
+    padding-left: 20px;
+}
+
+.cs-button-search {
+    background: transparent;
+}
+
+.cs-button-datepicker i.glyphicon {
+    margin-left: 15px;
+}
+.cs-hour-selector {
+    float: left;
+    margin-left: 10px;
+    display: inline-block;
+    background: #ebebeb none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 0;
+    color: #666;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 45px 0 18px;
+    position: relative;
+    width: auto;
+}
+.cs-hour-selector::after {
+    content: "";
+}
+.cs-loose-row {
+    font-size: 14px;
+    margin: 20px 0 0;
+    line-height: 20px;
+}
+.cs-xmp {
+    margin: 0px;
+    color: blue;
+}
+a.cs-inline-edit {
+    color: #12bfcd;
+    cursor: pointer;
+    margin-left: 30px;
+    text-decoration: none;
+}
+.cs-embed-form {
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    display: inline-block;
+    padding: 20px;
+}
+
+/* for md-table */
+table.md-table.md-row-select td.md-cell:nth-child(n+3):nth-last-child(n+2),
+table.md-table.md-row-select th.md-column:nth-child(n+3):nth-last-child(n+2) {
+    padding: 0 26px 0 0;
+}
+table.md-table:not(.md-row-select) td.md-cell:nth-child(n+2):nth-last-child(n+2),
+table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+2) {
+    padding: 0 15px 0 0;
+}
+table.md-table th.md-column {
+    background-color: rgb(247, 247, 247);
+    height: 40px;
+}
+.md-table-pagination .label {
+    font-size: 12px;
+    font-weight: normal;
+    color: rgba(0, 0, 0, 0.54);
+    padding: 0;
+    text-shadow: unset;
+}
+

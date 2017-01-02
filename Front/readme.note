@@ -1,0 +1,11 @@
+# go to the app root
+$ cd Front
+$ npm install -g grunt-cli
+$ npm install
+$ bower install
+
+# to build the 'dist' folder
+$ grunt build:dist
+
+# view frontend development code
+$ node server.js
