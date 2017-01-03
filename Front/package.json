@@ -1,7 +1,7 @@
 {
-  "name": "SSP",
+  "name": "AdClickTool",
   "version": "0.0.1",
-  "description": "SSP",
+  "description": "AdClickTool",
   "scripts": {
     "start": "node node_modules/http-server/bin/http-server -o"
   },
