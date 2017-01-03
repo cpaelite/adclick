@@ -39,5 +39,8 @@
     "angular-chart.js": "~1.0.0",
     "animate.css": "^3.5.2"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "resolutions": {
+    "angular": "^1.2"
+  }
 }
