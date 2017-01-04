@@ -74,6 +74,24 @@
                 controller: 'LanderCtrl',
                 data: {}
             })
+            .state('app.flow', {
+                url: '/flow',
+                templateUrl: 'tpl/flow.html',
+                controller: 'FlowCtrl',
+                data: {}
+            })
+            .state('app.trafficSource', {
+                url: '/traffic/source',
+                templateUrl: 'tpl/trafficSource.html',
+                controller: 'TrafficSourceCtrl',
+                data: {}
+            })
+            .state('app.rule', {
+                url: '/rule',
+                templateUrl: 'tpl/rule.html',
+                controller: 'RuleCtrl',
+                data: {}
+            })
             .state('access', {
                 url: '/access',
                 template: '<div ui-view class="fade-in-right-big smooth"></div>'

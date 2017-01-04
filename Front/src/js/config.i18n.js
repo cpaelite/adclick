@@ -24,7 +24,10 @@
         1: 'InActive'
     },
     offer: 'Offer',
-    lander: 'Lander'
+    lander: 'Lander',
+    flow:'Flow',
+    trafficSource:'TrafficSource',
+    rule:'Rule'
   };
   var i18n_zh = {
     ok: '确定',
