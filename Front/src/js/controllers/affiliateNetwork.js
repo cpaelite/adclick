@@ -1,13 +1,13 @@
 (function() {
 
   angular.module('app')
-    .controller('OfferNetworkCtrl', [
-        '$scope', '$mdDialog', '$timeout', 'OfferNetwork',
-        OfferNetworkCtrl
+    .controller('AffiliateNetworkCtrl', [
+        '$scope', '$mdDialog', '$timeout', 'AffiliateNetwork',
+        AffiliateNetworkCtrl
     ]);
 
-function OfferNetworkCtrl($scope, $mdDialog, $timeout, OfferNetwork) {
-    $scope.app.subtitle = 'OfferNetwork';
+function AffiliateNetworkCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
+    $scope.app.subtitle = 'AffiliateNetwork';
 
     $scope.query = {
         limit: '10',
@@ -23,7 +23,7 @@ function OfferNetworkCtrl($scope, $mdDialog, $timeout, OfferNetwork) {
         $scope.items = items;
     }
     $scope.getList = function () {
-        $scope.promise = OfferNetwork.get($scope.query, success).$promise;
+        $scope.promise = AffiliateNetwork.get($scope.query, success).$promise;
     };
 
     $scope.$watch('query.order', function (newValue, oldValue) {
@@ -65,20 +65,20 @@ function OfferNetworkCtrl($scope, $mdDialog, $timeout, OfferNetwork) {
     $scope.editItem = function (ev, item) {
         $mdDialog.show({
             clickOutsideToClose: false,
-            controller: ['$scope', '$mdDialog', 'OfferNetwork', editItemCtrl],
+            controller: ['$scope', '$mdDialog', 'AffiliateNetwork', editItemCtrl],
             controllerAs: 'ctrl',
             focusOnOpen: false,
             locals: { item: item, currentUser: $scope.currentUser },
             bindToController: true,
             targetEvent: ev,
-            templateUrl: 'tpl/offerNetwork-edit-dialog.html',
+            templateUrl: 'tpl/affiliateNetwork-edit-dialog.html',
         }).then($scope.getList);
     };
 
     $scope.deleteItem = function (ev, item) {
         $mdDialog.show({
             clickOutsideToClose: true,
-            controller: ['$mdDialog', 'OfferNetwork', deleteCtrl],
+            controller: ['$mdDialog', 'AffiliateNetwork', deleteCtrl],
             controllerAs: 'ctrl',
             focusOnOpen: false,
             targetEvent: ev,
@@ -89,7 +89,7 @@ function OfferNetworkCtrl($scope, $mdDialog, $timeout, OfferNetwork) {
     };
 }
 
-function editItemCtrl($scope, $mdDialog, OfferNetwork) {
+function editItemCtrl($scope, $mdDialog, AffiliateNetwork) {
     $scope.currentUser = angular.copy(this.currentUser);
     if (this.item) {
         $scope.item = angular.copy(this.item);
@@ -107,19 +107,19 @@ function editItemCtrl($scope, $mdDialog, OfferNetwork) {
         $scope.editForm.$setSubmitted();
 
         if ($scope.editForm.$valid) {
-            OfferNetwork.save($scope.item, success);
+            AffiliateNetwork.save($scope.item, success);
         }
     };
 }
 
-function deleteCtrl($mdDialog, OfferNetwork) {
+function deleteCtrl($mdDialog, AffiliateNetwork) {
     this.title = "delete";
     this.content = 'warnDelete';
 
     this.cancel = $mdDialog.cancel;
 
     function deleteItem(item) {
-        var deferred = OfferNetwork.remove({id: item.id});
+        var deferred = AffiliateNetwork.remove({id: item.id});
         return deferred.$promise;
     }
 

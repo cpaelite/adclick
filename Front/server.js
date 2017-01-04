@@ -33,31 +33,31 @@ app.post('/auth/login', function(req, res) {
     }
 });
 
-app.get('/offer/network', function (req, res) {
+app.get('/affiliate/network', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'offer1', url: 'http://adclick/offer/network'},
-            {id: 2, name: 'offer2', url: 'http://adclick/offer/network'},
-            {id: 3, name: 'offer3', url: 'http://adclick/offer/network'},
-            {id: 4, name: 'offer4', url: 'http://adclick/offer/network'},
-            {id: 5, name: 'offer5', url: 'http://adclick/offer/network'}
+            {id: 1, name: 'affiliate1', url: 'http://adclick/affiliate/network'},
+            {id: 2, name: 'affiliate2', url: 'http://adclick/affiliate/network'},
+            {id: 3, name: 'affiliate3', url: 'http://adclick/affiliate/network'},
+            {id: 4, name: 'affiliate4', url: 'http://adclick/affiliate/network'},
+            {id: 5, name: 'affiliate5', url: 'http://adclick/affiliate/network'}
         ],
         count: 10
     };
     res.send(result);
 });
 
-app.post('/offer/network', function (req, res) {
+app.post('/affiliate/network', function (req, res) {
     var item = req.body;
     item.id = 123;
     res.send({item: item});
 });
 
-app.post('/offer/network/:networkId', function(req, res) {
+app.post('/affiliate/network/:networkId', function(req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/offer/network/:networkId', function(req, res) {
+app.delete('/affiliate/network/:networkId', function(req, res) {
     res.send({item: {id: req.params.networkIds}});
 });
 

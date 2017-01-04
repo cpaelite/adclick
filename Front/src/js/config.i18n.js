@@ -14,9 +14,9 @@
     signin: 'Login',
     goBackHomePage: 'Home Page',
     signup: 'Sign up',
-    offerNetwork: 'OfferNetwork',
-    offerNetworkName: 'Name',
-    offerNetworkPostBackUrl: 'Url',
+    affiliateNetwork: 'AffiliateNetwork',
+    affiliateNetworkName: 'Name',
+    affiliateNetworkPostBackUrl: 'Url',
     trackCampaign: 'TrackCampaign',
     trackCampaignName: 'Name',
     trackCampaignStatus: {

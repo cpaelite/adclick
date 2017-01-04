@@ -1,7 +1,7 @@
 angular.module('app')
 
-.factory('OfferNetwork', ['$resource', function ($resource) {
-    return $resource('/offer/network/:id', {id: '@id'});
+.factory('AffiliateNetwork', ['$resource', function ($resource) {
+    return $resource('/affiliate/network/:id', {id: '@id'});
 }])
 .factory('TrackCampaign', ['$resource', function ($resource) {
     return $resource('/track/campaign/:id', {id: '@id'});
