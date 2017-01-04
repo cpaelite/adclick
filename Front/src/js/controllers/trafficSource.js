@@ -96,7 +96,8 @@ function editItemCtrl($scope, $mdDialog, TrafficSource) {
         this.title = "edit";
     } else {
         $scope.item = {
-            payout: '0'
+            costModel: 'Do not track costs',
+            status: '0'
         };
         this.title = "add";
     }
