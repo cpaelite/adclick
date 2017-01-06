@@ -46,6 +46,10 @@ router.post('/login', function(req, res, next) {
   });
 });
 
+router.post('/register', function(req, res) {
+
+})
+
 
 router.get('/api/offer/list', function(req, res) {
   res.send('success')
