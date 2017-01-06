@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-app.all('/api/*', util.checkToken(app));
+app.all('/api/*', util.checkToken());
 
 app.use('/', routes);
 
