@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+var cluster =require('express-cluster');
+var path =require('path');
+
+try{
+  require('fs').mkdirSync(path.join(__dirname,'../logs'));
+}catch(e){
+  if (e.code != 'EEXIST') {
+   console.error("Could not set up log directory, error was: ", e);
+   process.exit(1);
+  }
+}
+
+
+var log4js =require('log4js');
+log4js.configure(path.join(__dirname,'../config/log4js.json'));
+
+var log = log4js.getLogger('startup');
+
+cluster(function(){
+  var app= require('../app');
+
+  app.set('port',process.env.PORT || 3000);
+
+  var server = app.listen(app.get('port'),function(){
+    log.info('adclick server listening on port',server.address().port," with pid ",process.pid);
+  });
+});
