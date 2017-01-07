@@ -8,6 +8,9 @@ var Joi = require('joi');
  * @apiName networktpl add
  * @apiGroup networktpl
  *
+ * @apiParam {String} name
+ * @apiParam {String} postbackParams
+ * @apiParam {String} desc
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -90,6 +93,7 @@ router.get('/affilate/tpl/list', function(req, res, next) {
       });
   });
 });
+
 
 
 module.exports = router;

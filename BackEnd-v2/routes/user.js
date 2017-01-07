@@ -21,7 +21,7 @@ var md5 = require('md5');
  * status: 1,
  *   message: 'success',
  *   data: {
- *    token: util.setToken(rows[0].id)
+ *    token: 'xxxxxx'
  *     }
  *   }
  *
