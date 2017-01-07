@@ -1,1 +1,1 @@
-define({  "name": "backendv2",  "version": "1.0.0",  "description": "adclick backend ",  "sampleUrl": false,  "apidoc": "0.2.0",  "generator": {    "name": "apidoc",    "time": "2017-01-07T14:43:05.016Z",    "url": "http://apidocjs.com",    "version": "0.16.1"  }});
+define({  "name": "backendv2",  "version": "1.0.0",  "description": "adclick backend ",  "sampleUrl": false,  "apidoc": "0.2.0",  "generator": {    "name": "apidoc",    "time": "2017-01-07T15:40:14.934Z",    "url": "http://apidocjs.com",    "version": "0.16.1"  }});

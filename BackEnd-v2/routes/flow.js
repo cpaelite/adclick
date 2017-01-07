@@ -113,4 +113,131 @@ function execTrans(sqlparamsEntities, callback) {
 }
 
 
+/**
+ * @api {post} /api/flow/edit  编辑flow
+ * @apiName 编辑flow
+ * @apiGroup flow
+ *
+ * @apiParam {Number} id
+ * @apiParam {String} [name]
+ * @apiParam {String} [country]
+ * @apiParam {Number} [type]
+ * @apiParam {Number} [redirectMode]
+ * @apiParam {Number} [status]
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success'
+ *   }
+ *
+ */
+router.post('/api/flow/edit', function(req, res, next) {
+  var schema = Joi.object().keys({
+    id: Joi.number().required(),
+    userId: Joi.number().required(),
+    name: Joi.string().optional(),
+    country: Joi.string().optional(),
+    type: Joi.number().optional(),
+    redirectMode: Joi.number().optional(),
+    status: Joi.number().optional()
+  });
+
+  req.body.userId = req.userId
+  Joi.validate(req.body, schema, function(err, value) {
+    if (err) {
+      return next(err);
+    }
+    pool.getConnection(function(err, connection) {
+      if (err) {
+        err.status = 303
+        return next(err);
+      }
+      var sql = "update Flow set `id`= " + value.id;
+      if (value.status == 0) {
+        sql += ",`status`=" + value.status
+      }
+      if (value.name) {
+        sql += ",`name`='" + value.name + "'"
+      }
+      if (value.country) {
+        sql += ",`country`='" + value.country + "'"
+      }
+
+      if (value.type != undefined) {
+        sql += ",`type`=" + value.type
+      }
+      if (value.redirectMode != undefined) {
+        sql += ",`redirectMode`=" + value.redirectMode
+      }
+
+      sql += " where `userId`=" + value.userId + " and `id`=" +
+        value.id
+      connection.query(sql,
+        function(err, result) {
+          connection.release();
+          if (err) {
+            return next(err);
+          }
+          res.json({
+            status: 1,
+            message: 'success'
+          });
+        });
+    });
+  });
+});
+
+
+/**
+ * @api {get} /api/flow/list  flow list
+ * @apiName flow list
+ * @apiGroup flow
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{"lists":[]}
+ *     }
+ *
+ */
+router.get('/api/flow/list', function(req, res, next) {
+  var schema = Joi.object().keys({
+    userId: Joi.number().required()
+  });
+  req.query.userId = req.userId
+  Joi.validate(req.query, schema, function(err, value) {
+    if (err) {
+      return next(err);
+    }
+    pool.getConnection(function(err, connection) {
+      if (err) {
+        err.status = 303
+        return next(err);
+      }
+
+      connection.query(
+        "select `id`,`name` from Flow where `status`= ? and `userId`= ? ", [
+          1, value.userId
+        ],
+        function(err, result) {
+          connection.release();
+          if (err) {
+            return next(err);
+          }
+          res.json({
+            status: 1,
+            message: 'success',
+            data: {
+              lists: result
+            }
+          });
+        });
+    });
+  });
+});
+
 module.exports = router;
