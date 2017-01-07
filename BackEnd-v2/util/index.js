@@ -2,7 +2,7 @@ var jwt = require('jwt-simple');
 var log4js = require('log4js');
 var log = log4js.getLogger('util');
 var uuidV4 = require('uuid/v4');
-var app = require('../app')
+var setting = require('../config/setting');
 
 exports.checkToken = function() {
   return function(req, res, next) {
@@ -11,7 +11,7 @@ exports.checkToken = function() {
       req.headers['x-access-token'];
     if (token) {
       try {
-        var decode = jwt.decode(token, app.get('jwtTokenSrcret'));
+        var decode = jwt.decode(token, setting['jwtTokenSrcret']);
         req.userId = decode.userid
           //TODO  验证userId
         next();
@@ -28,7 +28,7 @@ exports.checkToken = function() {
 exports.setToken = function(userid) {
   return jwt.encode({
     userid: userid
-  }, app.get('jwtTokenSrcret'))
+  }, setting['jwtTokenSrcret'])
 }
 
 

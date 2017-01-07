@@ -15,9 +15,9 @@ var bodyParser = require('body-parser');
 var app = express();
 var util = require('./util/index');
 
-app.set('jwtTokenSrcret', '&s4ha7$dj8');
 //router
 var routes = require('./routes/user');
+var networktpl = require('./routes/networktpl');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -37,7 +37,7 @@ app.use(bodyParser.json())
 
 app.all('/api/*', util.checkToken());
 
-app.use('/', routes);
+app.use('/', routes, networktpl);
 
 
 
@@ -58,8 +58,8 @@ app.use(function(err, req, res, next) {
 
   }
   res.json({
-    message: err.message,
-    error: err
+    status: 0,
+    message: err.message
   });
 });
 

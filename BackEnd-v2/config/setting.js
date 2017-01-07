@@ -4,5 +4,6 @@ module.exports = {
     user: 'root',
     password: 'R%LKsIJF412',
     database: 'AdClickTool'
-  }
+  },
+  "jwtTokenSrcret": "&s4ha7$dj8"
 }
