@@ -118,7 +118,26 @@ router.get('/api/affilate/list', function(req, res, next) {
   });
 });
 
-
+/**
+ * @api {post} /api/affilate/edit  编辑affilate
+ * @apiName 编辑affilate
+ * @apiGroup network
+ *
+ * @apiParam {Number}  id 
+ * @apiParam {String} [name]
+ * @apiParam {String} [postbackUrl]
+ * @apiParam {Number} [appendClickId]
+ * @apiParam {Number} [duplicatedPostback]
+ * @apiParam {String} [ipWhiteList]
+ * @apiParam {Number} [status]
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success'
+ *   }
+ *
+ */
 router.post('/api/affilate/edit', function(req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),

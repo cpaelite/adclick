@@ -19,6 +19,7 @@ var util = require('./util/index');
 var routes = require('./routes/user');
 var networktpl = require('./routes/networktpl');
 var network = require('./routes/network');
+var offer = require('./routes/offer');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -36,7 +37,7 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-app.all('/api/*', util.checkToken(), network);
+app.all('/api/*', util.checkToken(), network, offer);
 
 app.use('/', routes, networktpl);
 
