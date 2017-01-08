@@ -488,3 +488,173 @@ table.md-table th.md-column {
     text-shadow: unset;
 }
 
+/*start URL tokens style*/
+.url-tokens-row .url-tokens{
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    flex-wrap:wrap;
+    margin-top: 10px;
+}
+
+.url-tokens-row .url-token{
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0px 8px 8px 0;
+    line-height: 12px;
+    background-color: #8d8d8d;
+    color: #fff;
+    padding: 5px;
+}
+.url-tokens-row .url-token:hover{
+    background: #363636;
+}
+
+.url-tokens-row .url-token.selected{
+    background-color: #c2c2c2;
+    cursor: default;
+}
+/*end URL tokens style*/
+
+/*start tags items style*/
+.tag-items .md-chips .md-chip{
+    cursor: pointer;
+    padding: 2px 6px;
+    background: ##a6aebe;
+    border-radius: 4px;
+}
+
+.tag-items .md-chips{
+    padding: 6px 12px;
+    /*height: 34px;*/
+    line-height: 34px;
+}
+
+.tag-items .md-chips .md-chip{
+    margin: 0;
+
+}
+
+.tag-items .md-chips .md-chip{
+    font-size: 13px;
+    height: 22px;
+    line-height: 16px;
+    margin: 0 8px 8px 0;
+}
+
+.tag-items .md-chips .md-chip-input-container{
+    margin: 0;
+    line-height: 34px;
+}
+
+.tag-items .md-chips .md-chip-input-container:not(:first-child){
+    margin: -4px 0 0 0;
+}
+
+.tag-items .md-chips .md-chip .md-chip-remove{
+    width: 20px;
+    height: 20px;
+    margin-top: -2px;
+}
+
+.tag-items .md-chips .md-chip .md-chip-remove md-icon{
+    width: 10px;
+    height: 10px;
+}
+
+.tag-items .md-chips .md-chip .md-chip-remove-container{
+    line-height: 20px;
+}
+
+.tag-items .md-chips .md-chip-input-container input{
+    min-width: 4px;
+    width: auto;
+}
+/*end tags items style*/
+
+/*start Advanced style*/
+.collapsible-tab .collapsible-header .line{
+    position: absolute;
+    height: 1px;
+    background-color: #cfdadd;
+    width: 100%;
+    margin-top: 13px;
+    right: 0;
+}
+
+.collapsible-tab .collapsible-header .label-con{
+    position: relative;
+    z-index: 1;
+}
+
+.collapsible-tab .collapsible-header .label-con label{
+    background: #fff;
+    padding: 0 15px 0 5px;
+    line-height: 27px;
+    font-weight: bold;
+    margin-left: -5px;
+}
+
+.collapsible-header{
+    position: relative;
+}
+
+.collapsible-header .material-icons{
+    color: #253c75;
+    width: 35px;
+    height: 22px;
+    background: #fff;
+}
+
+.collapsible-header .material-icons.arrow-down{
+    float: right;
+    padding-left: 15px;
+}
+
+.collapsible-tab.visible .collapsible-header .material-icons.arrow-down{
+    ransform:rotate(180deg);
+    -ms-transform:rotate(180deg);     /* IE 9 */
+    -moz-transform:rotate(180deg);    /* Firefox */
+    -webkit-transform:rotate(180deg); /* Safari 和 Chrome */
+    -o-transform:rotate(180deg);  /* Opera */
+    padding-left: 0px;
+}
+
+ul{
+    list-style: none;
+}
+.flow-actions ul{
+    text-align: right;
+}
+.flow-actions li{
+    display: inline-block;
+    margin-left: 20px;
+}
+.flow-actions li:hover{
+    text-decoration: underline;
+}
+/*end Advanced style*/
+
+/*start trafficSource style*/
+.collapse-wrapper .note{
+    padding: 20px 15%;
+    display: block;
+}
+
+.collapse-wrapper table{
+    width: 100%;
+}
+
+table .traficc-source-input{
+    padding: 15px;
+}
+
+table .traficc-source-input input{
+    width: 100%;
+    border: 1px solid #cfdadd;
+    padding: 5px;
+}
+table .traficc-source-input input[type="checkbox"]{
+    width: 15px;
+    height: 15px;
+}
+/*end trafficSource style*/

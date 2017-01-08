@@ -114,6 +114,16 @@ function editItemCtrl($scope, $mdDialog, TrackCampaign) {
             TrackCampaign.save($scope.item, success);
         }
     };
+
+    var self = this;
+    self.readonly = false;
+    self.tags = [];
+    self.newVeg = function(chip) {
+      return {
+        name: chip,
+        type: 'unknown'
+      };
+    };
 }
 
 function deleteCtrl($mdDialog, TrackCampaign) {
