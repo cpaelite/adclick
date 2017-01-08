@@ -39,3 +39,11 @@ func main() {
 func Status(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "It works!"+common.GetUerIdText(r))
 }
+
+func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
+
+}
