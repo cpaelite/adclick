@@ -1,0 +1,183 @@
+package config
+
+import (
+	"flag"
+	"os"
+	//"path/filepath"
+	"fmt"
+	"sync"
+
+	"github.com/robfig/config"
+
+	"HaiwaiAdx/log"
+)
+
+var instance *config.Config
+var configLock sync.RWMutex
+
+var rootPath = flag.String("rootPath", "/Users/robin/Program/gopath/src/HaiwaiAdx", "root path")
+
+var configfile = "development"
+
+var configPath string
+
+func init() {
+	flag.StringVar(&configPath, "config", "..\\config\\development.ini", "specify the configuration file")
+}
+
+func LoadConfig(isFirstTime bool) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			if isFirstTime {
+				panic(e)
+			}
+			log.Errorf("load config fail: %v\n", e)
+		}
+	}()
+
+	if configPath != "" {
+		// 优先使用参数中指定的config文件
+		configfile = configPath
+	} /* else {
+		if !filepath.IsAbs(*rootPath) {
+			absPath, err := filepath.Abs(*rootPath)
+			if err != nil {
+				panic("Convert root path to abs path failed")
+			}
+			*rootPath = absPath
+		}
+
+		configLock.Lock()
+		defer configLock.Unlock()
+
+		//环境变量加载不同配置
+		mode := os.Getenv("adbund_mode")
+		if mode != "" {
+			configfile = mode
+		}
+
+		wd, _ := os.Getwd()
+
+		if file := wd + "/config/" + configfile + ".ini"; isExist(file) {
+			configfile = file
+		}
+
+		if file := *rootPath + "/config/" + configfile + ".ini"; isExist(file) {
+			configfile = file
+		}
+
+		if file := os.Getenv("adbund_file"); file != "" && isExist(file) {
+			configfile = file
+		}
+	}*/
+
+	if !isExist(configfile) {
+		log.Errorf("Config file not found %s\n", configfile)
+		return
+	}
+
+	fmt.Println("Config file:", configfile)
+	instance, err = config.ReadDefault(configfile)
+	if err != nil {
+		log.Errorf("Config file ReadDefault error:%s\n", err.Error())
+		return
+	}
+	log.Info("load config file: %s\n", configfile)
+	return
+}
+
+func isExist(filePath string) bool {
+	_, err := os.Stat(filePath)
+
+	if os.IsNotExist(err) {
+		return false
+	}
+
+	return true
+}
+
+//String get config string value
+func String(section, key string) string {
+	if instance == nil {
+		LoadConfig(false)
+	}
+	configLock.RLock()
+	defer configLock.RUnlock()
+
+	v, err := instance.String(section, key)
+
+	if err != nil {
+		log.Errorf("Read config string value error:%v\n", err)
+	}
+
+	return v
+}
+
+//Bool  get config bool value
+func Bool(section, key string) bool {
+	if instance == nil {
+		LoadConfig(false)
+	}
+	configLock.RLock()
+	defer configLock.RUnlock()
+
+	v, err := instance.Bool(section, key)
+	if err != nil {
+		log.Errorf("Read config bool value error:%v", err)
+	}
+
+	return v
+}
+
+//Int get config int value
+func Int(section, key string) int {
+	if instance == nil {
+		LoadConfig(false)
+	}
+	configLock.RLock()
+	defer configLock.RUnlock()
+
+	v, err := instance.Int(section, key)
+	if err != nil {
+		log.Errorf("Read config int value error:%v\n", err)
+	}
+	return v
+}
+
+//Float  get config float value
+func Float(section, key string) float64 {
+	if instance == nil {
+		LoadConfig(false)
+	}
+	configLock.RLock()
+	defer configLock.RUnlock()
+
+	v, err := instance.Float(section, key)
+	if err != nil {
+		log.Errorf("Read config float value error:%v\n", err)
+	}
+
+	return v
+}
+
+// 默认为development
+func Mode() string {
+	mode := os.Getenv("adbund_mode")
+	if mode == "" {
+		mode = "development"
+	}
+
+	return mode
+}
+
+func GetNoticeIp() string {
+	return String("DEFAULT", "noticeip")
+}
+
+func GetBindPort() string {
+	return String("DEFAULT", "bind")
+}
+
+func GetNoticePort() string {
+	return String("DEFAULT", "noticeport")
+}
