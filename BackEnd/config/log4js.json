@@ -1,9 +1,0 @@
-{
-  "appenders": [
-    { "type": "console" },
-    { "type": "dateFile", "filename": "/adeaz/sites/webs/ssp.adbund.com/logs/adbundSSP-log", "pattern": "-yyyy-MM-dd.log", "alwaysIncludePattern": true }
-  ],
-  "levels": {
-    "[all]": "INFO"
-  }
-}

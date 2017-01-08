@@ -15,9 +15,12 @@ var bodyParser = require('body-parser');
 var app = express();
 var util = require('./util/index');
 
-app.set('jwtTokenSrcret', '&s4ha7$dj8');
 //router
 var routes = require('./routes/user');
+var networktpl = require('./routes/networktpl');
+var network = require('./routes/network');
+var offer = require('./routes/offer');
+var flow = require('./routes/flow');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -35,9 +38,9 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-app.all('/api/*', util.checkToken(app));
+app.all('/api/*', util.checkToken(), network, offer, flow);
 
-app.use('/', routes);
+app.use('/', routes, networktpl);
 
 
 
@@ -58,8 +61,8 @@ app.use(function(err, req, res, next) {
 
   }
   res.json({
-    message: err.message,
-    error: err
+    status: 0,
+    message: err.message
   });
 });
 
