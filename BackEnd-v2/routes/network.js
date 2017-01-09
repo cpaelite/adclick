@@ -43,7 +43,7 @@ router.post('/api/affilate', function(req, res, next) {
       var sql = "insert into AffiliateNetwork set `userId`= " +
         value.userId + ",`name`='" + value.name +
         "',`postbackUrl`='" +
-        value.postbackUrl + "',`status`=1";
+        value.postbackUrl + "',`deleted`=0";
       if (value.appendClickId != undefined) {
         sql += ",`appendClickId`='" + value.appendClickId + "'"
       }
@@ -73,6 +73,9 @@ router.post('/api/affilate', function(req, res, next) {
  * @apiName network list
  * @apiGroup network
  *
+ * @apiParam {Number} page
+ * @apiParam {Number} limit
+ * @apiParam {String} order
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -85,7 +88,10 @@ router.post('/api/affilate', function(req, res, next) {
  */
 router.get('/api/affilate', function(req, res, next) {
   var schema = Joi.object().keys({
-    userId: Joi.number().required()
+    userId: Joi.number().required(),
+    page: Joi.number().min(1).required(),
+    limit: Joi.number().required(),
+    order: Joi.string().required()
   });
   req.query.userId = req.userId
   Joi.validate(req.query, schema, function(err, value) {
@@ -97,9 +103,22 @@ router.get('/api/affilate', function(req, res, next) {
         err.status = 303
         return next(err);
       }
-      connection.query(
-        "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `status`= ? and `userId`= ?", [
-          1, value.userId
+      var page = parseInt(value.page);
+      var limit = parseInt(value.limit);
+      var offset = (page - 1) * limit;
+      var order = 'asc';
+      var sort = value.order;
+      var sign = sort.charAt(0);
+      if (sign == '-') {
+        order = 'desc'
+        sort = sort.substring(1);
+      }
+
+      var sql =
+        "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `deleted`= ? and `userId`= ? order by " +
+        sort + " " + order + " " + "limit " + offset + "," + limit
+      connection.query(sql, [
+          0, value.userId
         ],
         function(err, result) {
           connection.release();
@@ -123,13 +142,13 @@ router.get('/api/affilate', function(req, res, next) {
  * @apiName 编辑affilate
  * @apiGroup network
  *
- * @apiParam {Number}  id 
+ * @apiParam {Number}  id
  * @apiParam {String} [name]
  * @apiParam {String} [postbackUrl]
  * @apiParam {Number} [appendClickId]
  * @apiParam {Number} [duplicatedPostback]
  * @apiParam {String} [ipWhiteList]
- * @apiParam {Number} [status]
+ * @apiParam {Number} [deleted]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -147,10 +166,11 @@ router.post('/api/affilate/:id', function(req, res, next) {
     appendClickId: Joi.number().optional(),
     duplicatedPostback: Joi.number().optional(),
     ipWhiteList: Joi.string().optional(),
-    status: Joi.number().optional()
+    deleted: Joi.number().optional()
   });
 
   req.body.userId = req.userId
+  req.body.id = req.params.id
   Joi.validate(req.body, schema, function(err, value) {
     if (err) {
       return next(err);
@@ -161,8 +181,8 @@ router.post('/api/affilate/:id', function(req, res, next) {
         return next(err);
       }
       var sql = "update AffiliateNetwork set `id`= " + value.id;
-      if (value.status == 0) {
-        sql += ",`status`=" + value.status
+      if (value.deleted == 1) {
+        sql += ",`deleted`=" + value.deleted
       }
       if (value.name) {
         sql += ",`name`='" + value.name + "'"

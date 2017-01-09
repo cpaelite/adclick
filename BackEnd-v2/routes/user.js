@@ -21,7 +21,7 @@ var md5 = require('md5');
  * status: 1,
  *   message: 'success',
  *   data: {
- *    token: 'xxxxxx'
+ *    token: 'xxxxxx',firstname:"xxx"
  *     }
  *   }
  *
@@ -41,7 +41,7 @@ router.post('/login', function(req, res, next) {
         return next(err);
       }
       connection.query(
-        "select id,email,password from User where `email` = ?", [
+        "select  `id`,`email`,`password`,`firstname` from User where `email` = ? and `deleted` =0", [
           value.email
         ],
         function(
@@ -56,7 +56,8 @@ router.post('/login', function(req, res, next) {
                 status: 1,
                 message: 'success',
                 data: {
-                  token: util.setToken(rows[0].id)
+                  token: util.setToken(rows[0].id),
+                  firstname: rows[0].firstname
                 }
               })
             } else {
@@ -113,7 +114,7 @@ router.post('/register', function(req, res, next) {
       }
       var idtext = util.getRandomString(8)
       connection.query(
-        "insert into User(`firstname`,`lastname`,`email`,`password`,`idtext`) values (?,?,?,?,?)", [
+        "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`) values (?,?,?,?,?,0)", [
           value.firstname, value.lastname, value.email,
           md5(value.password), idtext
         ],

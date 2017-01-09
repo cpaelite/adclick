@@ -42,8 +42,10 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/', function (req, res) {
-    res.sendFile('index.html', {root: __dirname + '/../Front/dist'});
+app.get('/', function(req, res) {
+  res.sendFile('index.html', {
+    root: __dirname + '/../Front/dist'
+  });
 });
 
 app.all('/api/*', util.checkToken(), network, offer, flow);

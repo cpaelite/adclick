@@ -4,7 +4,7 @@ var Joi = require('joi');
 
 
 /**
- * @api {post} /affilate/tpl/add  networktpl add
+ * @api {post} /affilate/tpl  networktpl add
  * @apiName networktpl add
  * @apiGroup networktpl
  *
@@ -20,7 +20,7 @@ var Joi = require('joi');
  *     }
  *
  */
-router.post('/affilate/tpl/add', function(req, res, next) {
+router.post('/affilate/tpl', function(req, res, next) {
   var schema = Joi.object().keys({
     name: Joi.string().required(),
     postbackParams: Joi.string().required(),
@@ -37,8 +37,8 @@ router.post('/affilate/tpl/add', function(req, res, next) {
         return next(err);
       }
       connection.query(
-        "insert into TemplateAffiliateNetwork (`name`,`postbackParams`,`desc`,`status`) values(?,?,?,?)", [
-          value.name, value.postbackParams, value.desc, 1
+        "insert into TemplateAffiliateNetwork (`name`,`postbackParams`,`desc`,`deleted`) values(?,?,?,?)", [
+          value.name, value.postbackParams, value.desc, 0
         ],
         function(err) {
           if (err) {
@@ -54,7 +54,7 @@ router.post('/affilate/tpl/add', function(req, res, next) {
 });
 
 /**
- * @api {get} /affilate/tpl/list  networktpl list
+ * @api {get} /affilate/tpl  networktpl list
  * @apiName networktpl list
  * @apiGroup networktpl
  *
@@ -68,15 +68,15 @@ router.post('/affilate/tpl/add', function(req, res, next) {
  *     }
  *
  */
-router.get('/affilate/tpl/list', function(req, res, next) {
+router.get('/affilate/tpl', function(req, res, next) {
   pool.getConnection(function(err, connection) {
     if (err) {
       err.status = 303
       return next(err);
     }
     connection.query(
-      "select `id`,`name`,`postbackParams`,`desc` from TemplateAffiliateNetwork where `status`=?", [
-        1
+      "select `id`,`name`,`postbackParams`,`desc` from TemplateAffiliateNetwork where `deleted`=?", [
+        0
       ],
       function(err, results) {
         connection.release();

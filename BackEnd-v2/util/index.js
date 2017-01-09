@@ -9,11 +9,11 @@ exports.checkToken = function() {
     /*var token = (req.body && req.body.access_token) || (req.query && req.query
         .access_token) ||
       req.headers['x-access-token'];*/
-      var token = req.headers['authorization'].split(' ')[1];
+    var token = req.headers['authorization'];
     if (token) {
+      token = token.split(' ')[1];
       try {
         var decode = jwt.decode(token, setting['jwtTokenSrcret']);
-          console.log(decode);
         req.userId = decode.userid
           //TODO  验证userId
         next();
