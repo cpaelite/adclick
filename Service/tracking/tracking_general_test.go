@@ -8,6 +8,8 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+
+	"AdClickTool/Service/gracequit"
 )
 
 func TestTracking(t *testing.T) {
@@ -27,10 +29,14 @@ func TestTracking(t *testing.T) {
 	}
 
 	// 启动保存
-	go Saving(db)
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		Saving(db, c)
+	})
 
 	// 启动汇总
-	go Gathering()
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		Gathering(c)
+	})
 
 	// 调用一些API
 	apis1 := []func(key AdStatisKey, count int){
@@ -57,6 +63,11 @@ func TestTracking(t *testing.T) {
 	}
 	end := time.Now()
 	t.Logf("flush %v rows take:%v", count, end.Sub(begin))
-	flushEvent <- struct{}{}
-	time.Sleep(5 * time.Second)
+
+	gracequit.StopAll()
+
+	if savedCount != count {
+		t.Errorf("savedCount:%v expected:%v", savedCount, count)
+	}
+	t.Logf("savedCount:%v", savedCount)
 }

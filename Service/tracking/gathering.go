@@ -51,7 +51,7 @@ func flush() {
 }
 
 // Gathering 统计信息汇总
-func Gathering() {
+func Gathering(stop chan struct{}) {
 	ticker := time.NewTicker(60 * time.Second)
 	for {
 		select {
@@ -65,7 +65,22 @@ func Gathering() {
 
 		case <-flushEvent:
 			flush()
-			// TODO: case stop: 收到停止信号，要把所有的数据收集好，然后停止
+
+		case <-stop:
+			// 把已经有的收完
+			for {
+				select {
+				case a := <-gatherChan:
+					d := getData(a.keyMd5, a.keyFields)
+					a.action(&d.adStatisValues)
+				default:
+					// 没有多余的数据了
+					goto allreceived
+				}
+			}
+		allreceived:
+			flush()
+			return
 		}
 	}
 }

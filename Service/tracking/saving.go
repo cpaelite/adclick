@@ -9,7 +9,7 @@ import (
 
 // Saving 一直执行保存操作
 // db参数暂时传过来
-func Saving(db *sql.DB) {
+func Saving(db *sql.DB, stop chan struct{}) {
 	for {
 		select {
 		case m := <-toSave:
@@ -18,10 +18,27 @@ func Saving(db *sql.DB) {
 			if err != nil {
 				panic(err)
 			}
-			// TODO: case exit, do exit
+		case <-stop:
+			// 收所有的数据，防止的未写入数据库的
+			for {
+				select {
+				case m := <-toSave:
+					fmt.Println("Saving...", len(m))
+					err := doSave(db, m)
+					if err != nil {
+						panic(err)
+					}
+				default:
+					goto allreceived
+				}
+			}
+		allreceived:
+			return
 		}
 	}
 }
+
+var savedCount int
 
 func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 	// TODO: 按表名重新归整数据
@@ -73,6 +90,8 @@ func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 			fields.Cost,
 			fields.Payout,
 		)
+
+		savedCount++
 
 		if err != nil {
 			return err
