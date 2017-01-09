@@ -276,6 +276,6 @@ app.delete('/rule/:ruleId', function(req, res) {
     res.send({item: {id: req.params.ruleId}});
 });
 
-app.listen(3000, function () {
-    console.log('server started success port : 3000');
+app.listen(5000, function () {
+    console.log('server started success port : 5000');
 });

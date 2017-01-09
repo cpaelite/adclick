@@ -5,7 +5,7 @@ var async = require('async');
 
 
 /**
- * @api {post} /api/flow/add  新增flow
+ * @api {post} /api/flow  新增flow
  * @apiName 新增flow
  * @apiGroup flow
  * @apiDescription  改api比较特别 ,新建默认flow和path
@@ -19,9 +19,10 @@ var async = require('async');
  *
  */
 
-router.post('/api/flow/add', function(req, res, next) {
+router.post('/api/flow', function(req, res, next) {
   var schema = Joi.object().keys({
-    userId: Joi.number().required()
+    userId: Joi.number().required(),
+      name: Joi.string().required()
   });
   req.body.userId = req.userId
   Joi.validate(req.body, schema, function(err, value) {
@@ -114,7 +115,7 @@ function execTrans(sqlparamsEntities, callback) {
 
 
 /**
- * @api {post} /api/flow/edit  编辑flow
+ * @api {post} /api/flow  编辑flow
  * @apiName 编辑flow
  * @apiGroup flow
  *
@@ -132,7 +133,7 @@ function execTrans(sqlparamsEntities, callback) {
  *   }
  *
  */
-router.post('/api/flow/edit', function(req, res, next) {
+router.post('/api/flow', function(req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     userId: Joi.number().required(),
@@ -190,7 +191,7 @@ router.post('/api/flow/edit', function(req, res, next) {
 
 
 /**
- * @api {get} /api/flow/list  flow list
+ * @api {get} /api/flow  flow list
  * @apiName flow list
  * @apiGroup flow
  *
@@ -204,7 +205,7 @@ router.post('/api/flow/edit', function(req, res, next) {
  *     }
  *
  */
-router.get('/api/flow/list', function(req, res, next) {
+router.get('/api/flow', function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });

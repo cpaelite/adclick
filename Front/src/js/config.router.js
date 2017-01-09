@@ -42,7 +42,7 @@
     }
 
     function config($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/app/offer/network');
+        $urlRouterProvider.otherwise('/app/track/campaign');
 
         $stateProvider
             .state('app', {
@@ -51,7 +51,7 @@
                 templateUrl: "tpl/app.html"
             })
             .state('app.affiliatenetwork', {
-                url: '/affiliate/network',
+                url: '/api/affilate',
                 templateUrl: 'tpl/affiliateNetwork.html',
                 controller: 'AffiliateNetworkCtrl',
                 data: {}
@@ -63,7 +63,7 @@
                 data: {}
             })
             .state('app.offer', {
-                url: '/offer',
+                url: '/api/offer',
                 templateUrl: 'tpl/offer.html',
                 controller: 'OfferCtrl',
                 data: {}

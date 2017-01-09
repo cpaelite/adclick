@@ -25,6 +25,10 @@ var flow = require('./routes/flow');
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
+// page
+app.use("/assets", express.static(__dirname + '/../Front/dist/assets'));
+app.use("/tpl", express.static(__dirname + '/../Front/dist/tpl'));
+
 //log4js
 app.use(log4js.connectLogger(log4js.getLogger("http"), {
   level: 'auto'
@@ -37,6 +41,10 @@ app.use(bodyParser.urlencoded({
 
 // parse application/json
 app.use(bodyParser.json())
+
+app.get('/', function (req, res) {
+    res.sendFile('index.html', {root: __dirname + '/../Front/dist'});
+});
 
 app.all('/api/*', util.checkToken(), network, offer, flow);
 

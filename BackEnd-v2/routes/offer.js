@@ -4,7 +4,7 @@ var Joi = require('joi');
 
 
 /**
- * @api {post} /api/offer/add  新增offer
+ * @api {post} /api/offer  新增offer
  * @apiName 新增offer
  * @apiGroup offer
  *
@@ -23,7 +23,7 @@ var Joi = require('joi');
  *   }
  *
  */
-router.post('/api/offer/add', function(req, res, next) {
+router.post('/api/offer', function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     name: Joi.string().required(),
@@ -71,7 +71,7 @@ router.post('/api/offer/add', function(req, res, next) {
 });
 
 /**
- * @api {get} /api/offer/list  offer list
+ * @api {get} /api/offer  offer list
  * @apiName offer list
  * @apiGroup offer
  *
@@ -85,7 +85,7 @@ router.post('/api/offer/add', function(req, res, next) {
  *     }
  *
  */
-router.get('/api/offer/list', function(req, res, next) {
+router.get('/api/offer', function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
@@ -122,7 +122,7 @@ router.get('/api/offer/list', function(req, res, next) {
 });
 
 /**
- * @api {post} /api/offer/edit  编辑offer
+ * @api {post} /api/offer/:offerId  编辑offer
  * @apiName 编辑offer
  * @apiGroup offer
  *
@@ -143,7 +143,7 @@ router.get('/api/offer/list', function(req, res, next) {
  *   }
  *
  */
-router.post('/api/offer/edit', function(req, res, next) {
+router.post('/api/offer/:offerId', function(req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     userId: Joi.number().required(),

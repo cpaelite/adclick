@@ -4,7 +4,7 @@ var Joi = require('joi');
 
 
 /**
- * @api {post} /api/affilate/add  新增affilate
+ * @api {post} /api/affilate  新增affilate
  * @apiName 新增affilate
  * @apiGroup network
  *
@@ -21,7 +21,7 @@ var Joi = require('joi');
  *   }
  *
  */
-router.post('/api/affilate/add', function(req, res, next) {
+router.post('/api/affilate', function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     name: Joi.string().required(),
@@ -69,7 +69,7 @@ router.post('/api/affilate/add', function(req, res, next) {
 });
 
 /**
- * @api {get} /api/affilate/list  network list
+ * @api {get} /api/affilate  network list
  * @apiName network list
  * @apiGroup network
  *
@@ -83,7 +83,7 @@ router.post('/api/affilate/add', function(req, res, next) {
  *     }
  *
  */
-router.get('/api/affilate/list', function(req, res, next) {
+router.get('/api/affilate', function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
@@ -119,7 +119,7 @@ router.get('/api/affilate/list', function(req, res, next) {
 });
 
 /**
- * @api {post} /api/affilate/edit  编辑affilate
+ * @api {post} /api/affilate/:id  编辑affilate
  * @apiName 编辑affilate
  * @apiGroup network
  *
@@ -138,7 +138,7 @@ router.get('/api/affilate/list', function(req, res, next) {
  *   }
  *
  */
-router.post('/api/affilate/edit', function(req, res, next) {
+router.post('/api/affilate/:id', function(req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     userId: Joi.number().required(),

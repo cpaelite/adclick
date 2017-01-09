@@ -95,9 +95,6 @@ function editItemCtrl($scope, $mdDialog, Flow) {
         $scope.item = angular.copy(this.item);
         this.title = "edit";
     } else {
-        $scope.item = {
-            payout: '0'
-        };
         this.title = "add";
     }
     this.cancel = $mdDialog.cancel;
