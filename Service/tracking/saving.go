@@ -48,6 +48,7 @@ func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 		log.Infof("[tracking][doSave] save %d records take: %v", len(m), time.Now().Sub(start))
 	}()
 
+	// 提交Prepare可以避免重复解析SQL语句
 	stmt, err := db.Prepare(insertSQL)
 	if err != nil {
 		log.Errorf("[tracking][doSave] Prepare[%s] failed:%v", insertSQL, err)
