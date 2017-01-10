@@ -6,8 +6,8 @@ import (
 	"os"
 	"runtime"
 
-	_ "HaiwaiAdx/log/glog"
-	"HaiwaiAdx/log/logs"
+	_ "AdClickTool/Service/log/glog"
+	"AdClickTool/Service/log/logs"
 )
 
 // RFC5424 log message levels.

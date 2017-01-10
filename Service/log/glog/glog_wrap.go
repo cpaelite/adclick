@@ -17,7 +17,7 @@ import (
 	"errors"
 	"fmt"
 
-	"HaiwaiAdx/log/logs"
+	"AdClickTool/Service/log/logs"
 )
 
 type GlogLogWriter struct {
