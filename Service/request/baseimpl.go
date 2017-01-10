@@ -18,15 +18,16 @@ type reqbase struct {
 	ip string
 	ua string
 
-	userId       int64
-	userIdText   string
-	campaignHash string
-	campaignId   int64
-	flowId       int64
-	ruleId       int64
-	pathId       int64
-	landerId     int64
-	offerId      int64
+	trafficSourceId int64
+	userId          int64
+	userIdText      string
+	campaignHash    string
+	campaignId      int64
+	flowId          int64
+	ruleId          int64
+	pathId          int64
+	landerId        int64
+	offerId         int64
 
 	deviceType     string
 	domain         string
@@ -104,6 +105,12 @@ func (r *reqbase) String() string {
 	return fmt.Sprintf("[Request][%s][%s][%d][%d]", r.Type(), r.Id(), r.UserId(), r.CampaignId())
 }
 
+func (r *reqbase) TrafficSourceId() int64 {
+	return r.trafficSourceId
+}
+func (r *reqbase) SetTrafficSourceId(id int64) {
+	r.trafficSourceId = id
+}
 func (r *reqbase) UserId() int64 {
 	return r.userId
 }

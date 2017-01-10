@@ -18,6 +18,8 @@ type Request interface {
 
 	ParseUrlTokens(url string) string
 
+	TrafficSourceId() int64
+	SetTrafficSourceId(id int64)
 	UserId() int64
 	SetUserId(id int64)
 	UserIdText() string
