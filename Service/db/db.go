@@ -1,11 +1,12 @@
 package db
 
 import (
-	"HaiwaiAdx/config"
-	"HaiwaiAdx/log"
 	"database/sql"
 	"fmt"
 	"sync"
+
+	"AdClickTool/Service/config"
+	"AdClickTool/Service/log"
 
 	_ "github.com/go-sql-driver/mysql"
 )

@@ -9,7 +9,10 @@ import (
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/config"
+	"AdClickTool/Service/db"
+	"AdClickTool/Service/gracequit"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
 
 	"github.com/facebookgo/grace/gracehttp"
@@ -33,6 +36,16 @@ func main() {
 	}
 	log.Init(logAdapter, logConfig, logAsync)
 
+	// 启动保存协程
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		tracking.Saving(db.GetDB("DB"), c)
+	})
+
+	// 启动汇总协程
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		tracking.Gathering(c)
+	})
+
 	if err := units.PrepareAllUsers(); err != nil {
 		panic(err.Error())
 	}
@@ -44,6 +57,10 @@ func main() {
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening request at", config.GetBindPort())
 	log.Error(gracehttp.Serve(reqServer))
+	log.Infof("http server stopped. stopping other goroutines...")
+	// 只需要在HTTP服务器退出的时候，等待协程退出
+	gracequit.StopAll()
+	log.Infof("other goroutines stopped successfully")
 }
 
 func Status1(w http.ResponseWriter, r *http.Request) {

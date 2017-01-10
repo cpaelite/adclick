@@ -1,10 +1,11 @@
 package db
 
 import (
-	"HaiwaiAdx/config"
-	"HaiwaiAdx/log"
 	"fmt"
 	"sync"
+
+	"AdClickTool/Service/config"
+	"AdClickTool/Service/log"
 
 	"gopkg.in/redis.v5"
 )
