@@ -505,6 +505,9 @@ table.md-table th.md-column {
     color: #fff;
     padding: 5px;
 }
+.url-tokens-row .url-token.urlBg{
+    background: #c2c2c2;
+}
 .url-tokens-row .url-token:hover{
     background: #363636;
 }
@@ -596,6 +599,7 @@ table.md-table th.md-column {
 
 .collapsible-header{
     position: relative;
+    margin-bottom: 20px;
 }
 
 .collapsible-header .material-icons{
@@ -610,7 +614,8 @@ table.md-table th.md-column {
     padding-left: 15px;
 }
 
-.collapsible-tab.visible .collapsible-header .material-icons.arrow-down{
+.collapsible-tab .collapsible-header.active .material-icons.arrow-down,
+.collapsible-tab .collapsible-header.active1 .material-icons.arrow-down{
     ransform:rotate(180deg);
     -ms-transform:rotate(180deg);     /* IE 9 */
     -moz-transform:rotate(180deg);    /* Firefox */
@@ -658,3 +663,50 @@ table .traficc-source-input input[type="checkbox"]{
     height: 15px;
 }
 /*end trafficSource style*/
+
+/*Start Campaign Style*/
+.ztree li span{
+    font-size: 14px;
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.ztree li ul.line{
+    height: auto;
+}
+.ztree li a{
+    margin: 0 0 10px 10px;
+}
+.ztree li span.button.ico_open,.ztree li span.button.ico_docu,.ztree li span.button.ico_close{
+    display: none;
+}
+
+.campaign-radio md-radio-button{
+    float: left;
+    margin-right: 15px;
+}
+.campaign-radio md-radio-button .md-container,md-radio-button .md-off{
+    width: 13px;
+    height: 13px;
+}
+.campaign-radio md-radio-button .md-on{
+    width: 13px;
+    height: 12px;
+}
+.campaign-radio md-radio-group md-radio-button:not(:first-child){
+    margin:0 15px 0 0;
+}
+.campaign-radio .radio-inline + .radio-inline, 
+.campaign-radio .checkbox-inline + .checkbox-inline,
+.campaign-radio .radio-inline, .checkbox-inline{
+    margin: 0 15px 0 0;
+}
+
+.dollar-icon{
+    position: absolute;
+    display: block;
+    line-height: 34px;
+    padding-left: 10px;
+}
+.dollar-input{
+    padding-left: 20px;
+}
+/*End Campaign Style*/
