@@ -55,7 +55,8 @@ router.post('/api/flow', function (req, res, next) {
             connection.query(
                 "insert into Flow (`name`,`redirectMode`,`userId`,`type`,`country`,`deleted`) values (?,?,?,?,?,?)", [
                     value.flow.name, value.flow.redirectMode, value.userId,
-                    1, value.flow.country ? value.flow.country : "", 0],
+                    1, value.flow.country ? value.flow.country : "", 0
+                ],
                 function (err, flowResult) {
                     connection.release();
                     if (err) {
@@ -98,38 +99,43 @@ router.post('/api/flow', function (req, res, next) {
                         }
                     }
                     async.parallel(parallelSevice, function (err, results) {
-                        var ruleId;
+
                         var parallelSevice = [];
+                        var resultsBak = [];
+
+                        //change results [[rule:{},path:{},path:{}]] ===> [[{rule:{},path:[{}]}]]
 
                         for (var i = 0; i < results.length; i++) {
+                            var json = {};
+                            json.path = [];
                             for (var j = 0; j < results[i].length; j++) {
                                 //rule2flow
                                 if (results[i][j]["rule"]) {
-                                    ruleId = results[i][j]["rule"]
-                                    parallelSevice.push({
-                                        "sql": "insert into Rule2Flow (`ruleId`,`flowId`,`status`,`deleted`) values (?,?,?,?)",
-                                        "params": [results[i][j]["rule"].id,
-                                            flowId, 1, 0
-                                        ],
-                                        "table": "rule2flow"
-                                    })
-                                }
-
-
-                                 //path2rule
-                                if (results[i][j]["path"]) {
-                                    parallelSevice.push({
-                                        "sql": "insert into Path2Rule (`pathId`,`ruleId`,`weight`,`status`,`deleted`) values (?,?,?,?,?)",
-                                        "params": [
-                                            results[i][j]["path"].id,
-                                            1, results[i][j]["path"].weight,
-                                            results[i][j]["path"].status, 0
-                                        ],
-                                        "table": "path2rule"
-                                    })
+                                    if (results[i][j]["rule"]) {
+                                        json.rule = results[i][j]["rule"]
+                                    }
+                                    // parallelSevice.push({
+                                    //   "sql": "insert into Rule2Flow (`ruleId`,`flowId`,`status`,`deleted`) values (?,?,?,?)",
+                                    //   "params": [results[i][j]["rule"].id,
+                                    //     flowId, 1, 0
+                                    //   ],
+                                    //   "table": "rule2flow"
+                                    // })
+                                } else if (results[i][j]["path"]) {  //path2rule
+                                    json.path.push(results[i][j]["path"]);
+                                    // parallelSevice.push({
+                                    //   "sql": "insert into Path2Rule (`pathId`,`ruleId`,`weight`,`status`,`deleted`) values (?,?,?,?,?)",
+                                    //   "params": [
+                                    //     results[i][j]["path"].id,
+                                    //     1, results[i][j]["path"].weight,
+                                    //     results[i][j]["path"].status, 0
+                                    //   ],
+                                    //   "table": "path2rule"
+                                    // })
                                 }
 
                             }
+                            resultsBak.push(json)
                         }
 
 
@@ -178,10 +184,12 @@ function execTrans(sqlparamsEntities, callback) {
                             }
 
 
-                            if (sql_param.table == "path" && sql_param.weight != undefined) {
+                            if (sql_param.table == "path" && sql_param.weight !=
+                                undefined) {
                                 result.path.weight = sql_param.weight
                             }
-                            if (sql_param.table == "path" && sql_param.status != undefined) {
+                            if (sql_param.table == "path" && sql_param.status !=
+                                undefined) {
                                 result.path.status = sql_param.status
                             }
 
@@ -225,7 +233,7 @@ function execParallelSevice(sqlparamsEntities, callback) {
             return callback(err);
         }
         var sqlarr = []
-        sqlparamsEntities.forEach(function(entity){
+        sqlparamsEntities.forEach(function (entity) {
             sqlarr.push(function (callback) {
                 connection.query(entity.sql, entity.params,
                     callback)
