@@ -9,13 +9,11 @@ import (
 
 	"github.com/robfig/config"
 
-	"HaiwaiAdx/log"
+	"AdClickTool/Service/log"
 )
 
 var instance *config.Config
 var configLock sync.RWMutex
-
-var rootPath = flag.String("rootPath", "/Users/robin/Program/gopath/src/HaiwaiAdx", "root path")
 
 var configfile = "development"
 

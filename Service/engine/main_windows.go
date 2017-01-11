@@ -3,16 +3,17 @@
 package main
 
 import (
-	"AdClickTool/Service/db"
-	"AdClickTool/Service/gracequit"
-	"AdClickTool/Service/tracking"
 	"flag"
 	"fmt"
 	"net/http"
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/config"
+	"AdClickTool/Service/db"
+	"AdClickTool/Service/gracequit"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/units"
 )
 
 func main() {
@@ -43,7 +44,14 @@ func main() {
 		tracking.Gathering(c)
 	})
 
-	http.HandleFunc("/", Status)
+	if err := units.PrepareAllUsers(); err != nil {
+		panic(err.Error())
+	}
+
+	http.HandleFunc("/status", Status1)
+	http.HandleFunc("/status/", Status2)
+	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), OnLPOfferRequest)
+	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), OnLandingPageClick)
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening request at", config.GetBindPort())
 	log.Error(reqServer.ListenAndServe())
@@ -52,14 +60,18 @@ func main() {
 	gracequit.StopAll()
 }
 
-func Status(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "It works!"+common.GetUerIdText(r))
+func Status1(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "It works1!"+common.SchemeHostPath(r)+" *"+r.RequestURI+" *"+common.GetCampaignHash(r))
+}
+
+func Status2(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "http://www.baidu.com", http.StatusFound)
 }
 
 func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
-
+	units.OnLPOfferRequest(w, r)
 }
 
 func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
-
+	units.OnLandingPageClick(w, r)
 }
