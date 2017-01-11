@@ -70,7 +70,9 @@ func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 			fields.City,
 			fields.Region,
 			fields.ISP,
+			fields.MobileCarrier,
 			fields.Domain,
+			fields.DeviceType,
 			fields.Brand,
 			fields.OS,
 			fields.OSVersion,
@@ -116,7 +118,9 @@ Country,
 City,
 Region,
 ISP,
+MobileCarrier,
 Domain,
+DeviceType,
 Brand,
 OS,
 OSVersion,
@@ -134,7 +138,7 @@ KeysMD5)
 VALUES (
     ?,?,?,?,?,?,?,?,?,?,
     ?,?,?,?,?,?,?,?,?,?,
-    ?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?
 )
 
 ON DUPLICATE KEY UPDATE

@@ -20,7 +20,9 @@ func randStatisKey() AdStatisKey {
 	k.City = randSelectString(cities)
 	k.Region = randSelectString(regions)
 	k.ISP = randSelectString(isps)
+	k.MobileCarrier = randSelectString(mobileCarriers)
 	k.Domain = randSelectString(domains)
+	k.DeviceType = randSelectString(deviceTypes)
 	k.Brand = randSelectString(brands)
 	k.OS = randSelectString(oses)
 	k.OSVersion = randSelectString(osversions)
@@ -1223,4 +1225,12 @@ var connectionTypes = []string{
 	"Xdsl",
 	"Mobile",
 	"Satellite",
+}
+
+var mobileCarriers = []string{
+	"Other", "3", "Bell", "China Mobile", "Eastlink", "ICE Wireless", "Maxis", "Mobily", "Rogers", "SaskTel", "Telus", "Vidéotron", "Wind Mobile", "12",
+}
+
+var deviceTypes = []string{
+	"Desktop", "Mobile phone", "Unknown", "Tablet",
 }
