@@ -98,7 +98,7 @@ func AddCost(key AdStatisKey, count float64) {
 // AddPayout 增加payout统计信息
 func AddPayout(key AdStatisKey, count float64) {
 	f := func(d *adStatisValues) {
-		d.Payout += count
+		d.Revenue += count
 	}
 	addTrackEvent(key, f)
 }
