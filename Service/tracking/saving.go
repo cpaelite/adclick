@@ -85,6 +85,7 @@ func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 			fields.Conversions,
 			fields.Cost,
 			fields.Revenue,
+			fields.Impressions,
 			keyMD5,
 
 			fields.Visits,
@@ -92,6 +93,7 @@ func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 			fields.Conversions,
 			fields.Cost,
 			fields.Revenue,
+			fields.Impressions,
 		)
 
 		savedCount++
@@ -133,12 +135,13 @@ Clicks,
 Conversions,
 Cost,
 Revenue,
+Impressions,
 KeysMD5)
 
 VALUES (
     ?,?,?,?,?,?,?,?,?,?,
     ?,?,?,?,?,?,?,?,?,?,
-    ?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?,?
 )
 
 ON DUPLICATE KEY UPDATE
@@ -146,4 +149,6 @@ Visits = Visits+?,
 Clicks = Clicks+?, 
 Conversions = Conversions+?, 
 Cost = Cost+?, 
-Revenue = Revenue+?`
+Revenue = Revenue+?,
+Impressions = Impressions+?
+`

@@ -68,6 +68,7 @@ func TestTracking(t *testing.T) {
 		AddVisit,
 		AddClick,
 		AddConversion,
+		AddImpression,
 	}
 
 	apis2 := []func(key AdStatisKey, count float64){
