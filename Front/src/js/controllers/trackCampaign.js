@@ -110,26 +110,27 @@
                         }
                     }
                 };
-
-                var zNodes = [  
-                    { id:1, pId:0, name:"Parents-1", open:true},
-                    { id:11, pId:1, name:"Parents-11", open:true},
-                    { id:111, pId:11, name:"Children-111"},
-                    { id:112, pId:11, name:"Children-112"},
-                    { id:113, pId:11, name:"Children-113"},
-                    { id:114, pId:11, name:"Children-114"},
-                    { id:12, pId:1, name:"Parents-12"},
-                    { id:121, pId:12, name:"Children-121"},
-                    { id:122, pId:12, name:"Children-122"},
-                    { id:123, pId:12, name:"Children-123"},
-                    { id:124, pId:12, name:"Children-124"},
-                    { id:2, pId:0, name:"Parents-2"},
-                    { id:21, pId:2, name:"Parents-21", open:true},
-                    { id:211, pId:21, name:"Children-211"},
-                    { id:212, pId:21, name:"Children-212"},
-                    { id:213, pId:21, name:"Children-213"},
-                    { id:214, pId:21, name:"Children-214"},
-                ];  
+ 
+                var zNodes = [
+                    { name:"Path", open:true,
+                        children: [
+                            { name:"PathContent - 100(100%)",open:true,
+                                children: [
+                                    { name:"Lander",open:true,
+                                        children:[
+                                            {name:"LanderCon - 100(100%)"}
+                                        ]   
+                                    },
+                                    { name:"Offers",open:true,
+                                        children:[
+                                            {name:"OffersCon - 100(100%)"}
+                                        ]   
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ];
 
                 $.fn.zTree.init(element, setting, zNodes); 
             }
@@ -212,12 +213,8 @@
             "{trafficSource.id}",
             "{lander.id}"
         ];
-        $scope.isUrlBg = false;
         $scope.urlTokenClick = function(url){
-            console.log(url);
-
             $scope.urlToken = $scope.urlToken + url;
-
         };
 
     }

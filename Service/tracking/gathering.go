@@ -7,7 +7,7 @@ type adStatisValues struct {
 	Clicks      int
 	Conversions int
 	Cost        float64
-	Payout      float64
+	Revenue     float64
 }
 
 // adStaticTableFields AdStatic表所有的字段

@@ -110,6 +110,11 @@ function editItemCtrl($scope, $mdDialog, OfferNetwork) {
             OfferNetwork.save($scope.item, success);
         }
     };
+
+    $scope.textareaShow = false;
+    $scope.isChecked = function(){
+        $scope.textareaShow = !$scope.textareaShow;
+    };
 }
 
 function deleteCtrl($mdDialog, OfferNetwork) {
