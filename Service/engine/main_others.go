@@ -43,7 +43,7 @@ func main() {
 
 	// 启动Conversion保存
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
-		SavingConversions(db, c)
+		tracking.SavingConversions(db.GetDB("DB"), c)
 	})
 
 	// 启动汇总协程
