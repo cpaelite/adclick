@@ -21,12 +21,16 @@ CREATE TABLE AdClickTool.`TrackingCampaign` (
   `url` varchar(512) NOT NULL COMMENT '根据campaign内容生成的tracking url',
   `impPixelUrl` varchar(512) NOT NULL DEFAULT '',
   `trafficSourceId` int(11) NOT NULL,
+  `trafficSourceName` varchar(256) NOT NULL DEFAULT '',
   `country` varchar(3) NOT NULL DEFAULT '' COMMENT 'ISO-ALPHA-3',
   `costModel` int(11) NOT NULL COMMENT '0:Do-not-track-costs;1:cpc;2:cpa;3:cpm;4:auto?',
-  `costValue` decimal(10,5) NOT NULL DEFAULT 0,
-  `dstType` int(11) NOT NULL DEFAULT 0 COMMENT '跳转类型,0:URL;1:Flow;2:Rule;3:Path;4:Lander;5:Offer',
-  `dstFlowId` int(11) NOT NULL,
-  `dstUrl` varchar(512) NOT NULL DEFAULT '',
+  `cpcValue` decimal(10,5) NOT NULL DEFAULT 0,
+  `cpaValue` decimal(10,5) NOT NULL DEFAULT 0,
+  `cpmValue` decimal(10,5) NOT NULL DEFAULT 0,
+  `redirectMode` int(11) NOT NULL COMMENT '0:302;1:Meta refresh;2:Double meta refresh',
+  `targetType` int(11) NOT NULL DEFAULT 0 COMMENT '跳转类型,0:URL;1:Flow;2:Rule;3:Path;4:Lander;5:Offer',
+  `targetFlowId` int(11) NOT NULL,
+  `targetUrl` varchar(512) NOT NULL DEFAULT '',
   `status` int(11) NOT NULL COMMENT '0:停止;1:运行',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
@@ -79,7 +83,7 @@ CREATE TABLE AdClickTool.`Path` (
 CREATE TABLE AdClickTool.`Path2Rule` (
   `pathId` int(11) NOT NULL COMMENT '必须非0',
   `ruleId` int(11) NOT NULL COMMENT '必须非0',
-  `weight` int(11) NOT NULL COMMENT '>0',
+  `weight` int(11) NOT NULL COMMENT '0~100',
   `status` int(11) NOT NULL COMMENT '0:停止;1:运行;用来标记Path在特定Rule中是否有效',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`ruleId`,`pathId`,`deleted`)
@@ -100,7 +104,7 @@ CREATE TABLE AdClickTool.`Lander` (
 CREATE TABLE AdClickTool.`Lander2Path` (
   `landerId` int(11) NOT NULL COMMENT '必须非0',
   `pathId` int(11) NOT NULL COMMENT '必须非0',
-  `weight` int(11) NOT NULL COMMENT '>0',
+  `weight` int(11) NOT NULL COMMENT '0~100',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`landerId`,`pathId`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -123,7 +127,7 @@ CREATE TABLE AdClickTool.`Offer` (
 CREATE TABLE AdClickTool.`Offer2Path` (
   `offerId` int(11) NOT NULL COMMENT '必须非0',
   `pathId` int(11) NOT NULL COMMENT '必须非0',
-  `weight` int(11) NOT NULL COMMENT '>0',
+  `weight` int(11) NOT NULL COMMENT '0~100',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`offerId`,`pathId`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -1,21 +1,17 @@
 package lander
 
-func GetAllLanders() []LanderConfig {
+func DBGetAllLanders() []LanderConfig {
 	return nil
 }
 
-func GetAvailableLanders() []LanderConfig {
+func DBGetAvailableLanders() []LanderConfig {
 	return nil
 }
 
-func GetUserLanders(userId int64) []LanderConfig {
+func DBGetUserLanders(userId int64) []LanderConfig {
 	return nil
 }
 
-func GetPathLanders(pathId int64) []LanderConfig {
-	return nil
-}
-
-func GetLander(landerId int64) (c LanderConfig) {
+func DBGetLander(landerId int64) (c LanderConfig) {
 	return
 }

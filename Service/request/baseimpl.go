@@ -18,19 +18,26 @@ type reqbase struct {
 	ip string
 	ua string
 
-	trafficSourceId int64
-	userId          int64
-	userIdText      string
-	campaignHash    string
-	campaignId      int64
-	flowId          int64
-	ruleId          int64
-	pathId          int64
-	landerId        int64
-	offerId         int64
+	externalId string
+	cost       string
+	vars       []string
+
+	clickId           string
+	trafficSourceId   int64
+	trafficSourceName string
+	userId            int64
+	userIdText        string
+	campaignHash      string
+	campaignId        int64
+	flowId            int64
+	ruleId            int64
+	pathId            int64
+	landerId          int64
+	offerId           int64
 
 	deviceType     string
-	domain         string
+	trackingDomain string
+	referrerDomain string
 	language       string
 	model          string
 	brand          string
@@ -53,10 +60,13 @@ type reqbase struct {
 
 func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 	req = &reqbase{
-		id: id,
-		t:  t,
-		ip: ip.GetIP(r),
-		ua: r.UserAgent(),
+		id:       id,
+		t:        t,
+		ip:       ip.GetIP(r),
+		ua:       r.UserAgent(),
+		vars:     make([]string, VarsMaxNum),
+		cookie:   make(map[string]string),
+		urlParam: make(map[string]string),
 	}
 	//TODO carrier/connectiontype/brand/model/deviceType未采集到
 
@@ -84,7 +94,8 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 		req.model = "UNKNOWN"
 	}
 
-	req.domain = r.Referer()
+	req.trackingDomain = r.Host
+	req.referrerDomain = r.Referer()
 	tag, _, err := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	if err != nil || len(tag) == 0 {
 		req.language = "UNKNOWN"
@@ -105,11 +116,48 @@ func (r *reqbase) String() string {
 	return fmt.Sprintf("[Request][%s][%s][%d][%d]", r.Type(), r.Id(), r.UserId(), r.CampaignId())
 }
 
+func (r *reqbase) ExternalId() string {
+	return r.externalId
+}
+func (r *reqbase) SetExternalId(id string) {
+	r.externalId = id
+}
+func (r *reqbase) Cost() string {
+	return r.cost
+}
+func (r *reqbase) SetCost(cost string) {
+	r.cost = cost
+}
+func (r *reqbase) Vars(n uint) string {
+	if n > VarsMaxNum {
+		return ""
+	}
+	return r.vars[n-1]
+}
+func (r *reqbase) SetVars(n uint, v string) {
+	if n > VarsMaxNum {
+		return
+	}
+	r.vars[n-1] = v
+}
+
+func (r *reqbase) ClickId() string {
+	return r.clickId
+}
+func (r *reqbase) SetClickId(id string) {
+	r.clickId = id
+}
 func (r *reqbase) TrafficSourceId() int64 {
 	return r.trafficSourceId
 }
 func (r *reqbase) SetTrafficSourceId(id int64) {
 	r.trafficSourceId = id
+}
+func (r *reqbase) TrafficSourceName() string {
+	return r.trafficSourceName
+}
+func (r *reqbase) SetTrafficSourceName(name string) {
+	r.trafficSourceName = name
 }
 func (r *reqbase) UserId() int64 {
 	return r.userId
@@ -196,8 +244,11 @@ func (r *reqbase) Carrier() string {
 func (r *reqbase) ISP() string {
 	return r.isp
 }
-func (r *reqbase) Domain() string {
-	return r.domain
+func (r *reqbase) TrackingDomain() string {
+	return r.trackingDomain
+}
+func (r *reqbase) ReferrerDomain() string {
+	return r.referrerDomain
 }
 func (r *reqbase) Brand() string {
 	return r.brand
@@ -250,6 +301,6 @@ func (r *reqbase) UrlParamString() (encode string) {
 }
 
 func (r *reqbase) ParseUrlTokens(url string) string {
-	//TODO
+	//TODO 替换UrlToken
 	return url
 }

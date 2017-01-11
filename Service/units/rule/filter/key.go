@@ -133,7 +133,7 @@ func init() {
 			return strings.ToUpper(req.Carrier())
 		},
 		"referrer": func(req request.Request) interface{} {
-			return strings.ToUpper(req.Domain())
+			return strings.ToUpper(req.ReferrerDomain())
 		},
 		"useragent": func(req request.Request) interface{} {
 			return strings.ToUpper(req.UserAgent())

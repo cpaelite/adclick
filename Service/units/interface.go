@@ -7,31 +7,14 @@ import (
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
-	"AdClickTool/Service/units/campaign"
 	"AdClickTool/Service/units/user"
 )
 
-func PrepareAllUsers() (err error) {
-	initUser()
-	//TODO 现在是按照逻辑层级逐层初始化，导致读表次数较多；后面可以优化为整体拿数据，在内存中进行统一初始化
-	for _, c := range user.GetAvailableUsers() {
-		log.Debug("Prepare", c.String())
-
-		u := user.NewUser(c)
-		if u != nil {
-			setUser(u.Id, u)
-		}
+func Init() (err error) {
+	err = user.InitAllUsers()
+	if err != nil {
+		return
 	}
-	for _, c := range campaign.GetAvailableCampaigns() {
-		log.Debug("Prepare", c.String())
-
-		if u := getUser(c.UserId); u != nil {
-			if err = u.AddCampaign(c); err != nil {
-				return
-			}
-		}
-	}
-
 	started = true
 	return nil
 }
@@ -56,8 +39,8 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := getUserByIdText(userIdText)
-	if user == nil {
+	u := user.GetUserByIdText(userIdText)
+	if u == nil {
 		log.Errorf("[Units][OnLPOfferRequest]Invalid userIdText for %s:%s\n", requestId, common.SchemeHostPath(r))
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -65,12 +48,12 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 	campaignHash := common.GetCampaignHash(r)
 	if campaignHash == "" {
 		log.Errorf("[Units][OnLPOfferRequest]Invalid campaignHash for %s:%s\n", requestId, common.SchemeHostPath(r))
-		if user.RootDomainRedirect == "" {
+		if u.RootDomainRedirect == "" {
 			w.Header().Set("Content-Type", "text/plain")
 			fmt.Fprint(w, page404)
 			w.WriteHeader(http.StatusNotFound)
 		} else {
-			http.Redirect(w, r, user.RootDomainRedirect, http.StatusMovedPermanently)
+			http.Redirect(w, r, u.RootDomainRedirect, http.StatusMovedPermanently)
 		}
 		return
 	}
@@ -83,7 +66,7 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	req.SetCampaignHash(campaignHash)
 
-	if err := user.OnLPOfferRequest(w, req); err != nil {
+	if err := u.OnLPOfferRequest(w, req); err != nil {
 		log.Errorf("[Units][OnLPOfferRequest]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return

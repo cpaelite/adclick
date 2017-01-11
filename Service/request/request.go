@@ -11,6 +11,10 @@ const (
 	ReqOfferPB = "offerpostback"
 )
 
+const (
+	VarsMaxNum = 10
+)
+
 type Request interface {
 	Id() string
 	Type() string
@@ -18,8 +22,19 @@ type Request interface {
 
 	ParseUrlTokens(url string) string
 
+	ExternalId() string
+	SetExternalId(id string)
+	Cost() string
+	SetCost(cost string)
+	Vars(n uint) string       // n:1~VarsMaxNum
+	SetVars(n uint, v string) // n:1~VarsMaxNum
+
+	ClickId() string
+	SetClickId(id string)
 	TrafficSourceId() int64
 	SetTrafficSourceId(id int64)
+	TrafficSourceName() string
+	SetTrafficSourceName(name string)
 	UserId() int64
 	SetUserId(id int64)
 	UserIdText() string
@@ -49,7 +64,8 @@ type Request interface {
 	Region() string
 	Carrier() string
 	ISP() string
-	Domain() string
+	TrackingDomain() string
+	ReferrerDomain() string
 	Brand() string
 	OS() string
 	OSVersion() string
