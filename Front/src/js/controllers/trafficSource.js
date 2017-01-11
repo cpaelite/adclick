@@ -100,6 +100,7 @@ function editItemCtrl($scope, $mdDialog, TrafficSource) {
             status: '0'
         };
         this.title = "add";
+        $scope.urlToken = '';
     }
     this.cancel = $mdDialog.cancel;
 
@@ -114,6 +115,25 @@ function editItemCtrl($scope, $mdDialog, TrafficSource) {
             TrafficSource.save($scope.item, success);
         }
     };
+
+    $scope.urlItem = [
+        "{campaign.id}",
+        "{brand}",
+        "{device}",
+        "{trafficSource.name}",
+        "{trafficSource.id}",
+        "{lander.id}"
+    ];
+    $scope.urlTokenClick = function(url){
+        $scope.urlToken = $scope.urlToken + url;
+    };
+
+    $scope.visible = false;
+    $scope.toggleShow = function(){
+        $scope.isActive = !$scope.isActive;
+        $scope.visible = !$scope.visible;
+    };
+
 }
 
 function deleteCtrl($mdDialog, TrafficSource) {

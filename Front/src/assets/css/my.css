@@ -487,6 +487,26 @@ table.md-table th.md-column {
     padding: 0;
     text-shadow: unset;
 }
+/*Start Nav Style*/
+.cs-left-aside{
+    width: 100%;
+    max-width: 100%;
+    position: static !important;
+}
+.navi{
+    margin-top: 60px;
+}
+.navi ul.nav li{
+    float: left;
+}
+md-content.cs-main-content{
+    margin: 0;
+}
+.navi ul.nav li a{
+    padding: 10px 20px;
+}
+/*End Nav Style*/
+
 
 /*start URL tokens style*/
 .url-tokens-row .url-tokens{
@@ -600,6 +620,7 @@ table.md-table th.md-column {
 .collapsible-header{
     position: relative;
     margin-bottom: 20px;
+    cursor: pointer;
 }
 
 .collapsible-header .material-icons{
@@ -641,7 +662,7 @@ ul{
 
 /*start trafficSource style*/
 .collapse-wrapper .note{
-    padding: 20px 15%;
+    padding: 0px 15% 20px;
     display: block;
 }
 
@@ -661,6 +682,17 @@ table .traficc-source-input input{
 table .traficc-source-input input[type="checkbox"]{
     width: 15px;
     height: 15px;
+}
+
+.traffic-source-templates{
+    background: #253c75;
+    font-size: 12px;
+    color: #fff;
+    text-transform:lowercase;
+    margin: 6px 0;
+}
+.md-button:not([disabled]):hover{
+    background: #253c75;
 }
 /*end trafficSource style*/
 
@@ -710,3 +742,17 @@ table .traficc-source-input input[type="checkbox"]{
     padding-left: 20px;
 }
 /*End Campaign Style*/
+
+/*Start netWork Style*/
+.network-textarea .note{
+    margin: 15px 0;
+    display: block;
+}
+.network-textarea textarea{
+    width: 100%;
+    min-height: 100px;
+    resize: none;
+    padding: 10px;
+}
+/*End netWork Style*/
+
