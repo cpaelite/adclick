@@ -84,8 +84,7 @@ func InitRule(ruleId int64) error {
 	if r == nil {
 		return fmt.Errorf("[InitRule]Failed because newRule failed with rule(%d)", ruleId)
 	}
-	setRule(r)
-	return nil
+	return setRule(r)
 }
 
 func newRule(c RuleConfig) (r *Rule) {

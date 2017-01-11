@@ -61,8 +61,7 @@ func InitLander(landerId int64) error {
 	if l == nil {
 		return fmt.Errorf("[InitLander]Failed because newLander failed with lander(%d)", landerId)
 	}
-	setLander(l)
-	return nil
+	return setLander(l)
 }
 
 func GetLander(landerId int64) (l *Lander) {

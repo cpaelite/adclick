@@ -7,18 +7,19 @@ import (
 	"net/url"
 	"sync"
 
+	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/units/flow"
 )
 
 const (
 	//0:URL;1:Flow;2:Rule;3:Path;4:Lander;5:Offer
-	DstTypeUrl    = 0
-	DstTypeFlow   = 1
-	DstTypeRule   = 2
-	DstTypePath   = 3
-	DstTypeLander = 4
-	DstTypeOffer  = 5
+	TargetTypeUrl    = 0
+	TargetTypeFlow   = 1
+	TargetTypeRule   = 2
+	TargetTypePath   = 3
+	TargetTypeLander = 4
+	TargetTypeOffer  = 5
 )
 
 type CampaignConfig struct {
@@ -30,10 +31,12 @@ type CampaignConfig struct {
 	TrafficSourceId   int64
 	TrafficSourceName string
 	CostModel         string
-	CostValue         float64
-	DstType           int64
-	DstFlowId         int64
-	DstUrl            string
+	CPCValue          float64
+	CPAValue          float64
+	CPMValue          float64
+	TargetType        int64
+	TargetFlowId      int64
+	TargetUrl         string
 	Status            int64
 
 	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
@@ -91,8 +94,19 @@ func delCampaign(campaignId int64) {
 }
 
 func newCampaign(c CampaignConfig) (ca *Campaign) {
-	if c.DstFlowId > 0 {
-		if err := flow.InitFlow(c.DstFlowId); err != nil {
+	if c.TargetUrl == "" && c.TargetFlowId <= 0 {
+		log.Errorf("[newCampaign]Both TargetUrl&TargetFlowId are invalid for campaign%d\n", c.Id)
+		return nil
+	}
+	if c.TargetFlowId > 0 {
+		if err := flow.InitFlow(c.TargetFlowId); err != nil {
+			log.Errorf("[newCampaign]InitFlow failed with flow%d for campaign%d\n", c.TargetFlowId, c.Id)
+			return nil
+		}
+	} else {
+		_, err := url.ParseRequestURI(c.TargetUrl)
+		if err != nil {
+			log.Errorf("[newCampaign]TargetUrl is not a valid url(%s) for campaign%d\n", c.TargetUrl, c.Id)
 			return nil
 		}
 	}
@@ -106,10 +120,7 @@ func InitUserCampaigns(userId int64) error {
 	cs := DBGetUserCampaigns(userId)
 	var ca *Campaign
 	for _, c := range cs {
-		ca = getCampaign(c.Id)
-		if ca == nil {
-			ca = newCampaign(c)
-		}
+		ca = newCampaign(c)
 		if ca == nil {
 			return fmt.Errorf("[InitUserCampaigns]Failed for user(%d) with config(%+v)", userId, c)
 		}
@@ -175,15 +186,15 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 		return errors.New("[Campaign][OnLPOfferRequest]Nil ca")
 	}
 
-	if ca.DstType == DstTypeUrl {
-		if ca.DstUrl != "" {
-			http.Redirect(w, gr, req.ParseUrlTokens(ca.DstUrl), http.StatusFound)
+	if ca.TargetType == TargetTypeUrl {
+		if ca.TargetUrl != "" {
+			http.Redirect(w, gr, req.ParseUrlTokens(ca.TargetUrl), http.StatusFound)
 			return nil
 		}
 	} else {
-		f := flow.GetFlow(ca.DstFlowId)
+		f := flow.GetFlow(ca.TargetFlowId)
 		if f != nil {
-			req.SetFlowId(ca.DstFlowId)
+			req.SetFlowId(ca.TargetFlowId)
 			return f.OnLPOfferRequest(w, req)
 		}
 	}

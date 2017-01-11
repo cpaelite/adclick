@@ -71,8 +71,7 @@ func InitFlow(fId int64) error {
 	if f == nil {
 		return fmt.Errorf("[InitFlow]Failed because newFlow failed with flow(%d)", fId)
 	}
-	setFlow(f)
-	return nil
+	return setFlow(f)
 }
 
 func newFlow(c FlowConfig) (f *Flow) {

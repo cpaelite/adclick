@@ -82,8 +82,7 @@ func InitPath(pathId int64) error {
 	if p == nil {
 		return fmt.Errorf("[InitPath]Failed because newPath failed with path(%d)", pathId)
 	}
-	setPath(p)
-	return nil
+	return setPath(p)
 }
 
 func GetPath(pathId int64) (p *Path) {

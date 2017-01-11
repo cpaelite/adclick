@@ -35,10 +35,11 @@ func InitAllUsers() error {
 	initUser()
 
 	for _, u := range DBGetAvailableUsers() {
-		if getUser(u.Id) != nil {
-			continue
+		nu := newUser(u)
+		if nu == nil {
+			return fmt.Errorf("[InitAllUsers]newUser failed for user%d", u.Id)
 		}
-		setUser(u.Id, newUser(u))
+		setUser(u.Id, nu)
 	}
 
 	return nil

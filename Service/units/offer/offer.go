@@ -64,8 +64,7 @@ func InitOffer(offerId int64) error {
 	if o == nil {
 		return fmt.Errorf("[InitOffer]Failed because newOffer failed with offer(%d)", offerId)
 	}
-	setOffer(o)
-	return nil
+	return setOffer(o)
 }
 
 func GetOffer(offerId int64) (o *Offer) {

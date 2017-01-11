@@ -46,7 +46,7 @@ func main() {
 		tracking.Gathering(c)
 	})
 
-	if err := units.PrepareAllUsers(); err != nil {
+	if err := units.Init(); err != nil {
 		panic(err.Error())
 	}
 
