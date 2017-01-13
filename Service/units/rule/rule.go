@@ -23,6 +23,8 @@ type RuleConfig struct {
 	UserId int64
 	Json   string
 	Status int64
+
+	Type int
 }
 
 func (c RuleConfig) String() string {

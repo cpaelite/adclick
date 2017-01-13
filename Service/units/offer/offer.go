@@ -12,14 +12,13 @@ import (
 )
 
 type OfferConfig struct {
-	Id                  int64
-	UserId              int64
-	Url                 string
-	AffilicateNetworkId int64
-	PostbackUrl         string
-	PayoutMode          int64
-	PayoutValue         float64
-	Weight              uint64
+	Id                 int64
+	UserId             int64
+	Url                string
+	AffiliateNetworkId int64
+	PostbackUrl        string
+	PayoutMode         int64
+	PayoutValue        float64
 }
 
 func (c OfferConfig) String() string {

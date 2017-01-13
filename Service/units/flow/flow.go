@@ -14,11 +14,10 @@ type FlowConfig struct {
 	Id           int64
 	UserId       int64
 	RedirectMode int64
-	Status       int64
 }
 
 func (c FlowConfig) String() string {
-	return fmt.Sprintf("Flow %d:%d Status %d", c.Id, c.UserId, c.Status)
+	return fmt.Sprintf("Flow %d:%d", c.Id, c.UserId)
 }
 
 const (

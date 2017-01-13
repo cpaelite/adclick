@@ -25,7 +25,6 @@ type PathConfig struct {
 	UserId       int64
 	RedirectMode int64
 	DirectLink   int64
-	Weight       uint64
 	Status       int64
 }
 
