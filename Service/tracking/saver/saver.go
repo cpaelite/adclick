@@ -2,25 +2,23 @@
 // 采用Reflect实现
 package saver
 
-import "database/sql"
+import (
+	"HaiwaiAdx/log"
+	"database/sql"
+)
 
 // Saver 执行具体保存任务
 // 异步执行
 type Saver struct {
-	db *sql.DB
-
 	tasks chan map[interface{}]interface{} // 要保存的数据
-	table string
 	sql   string
 }
 
 // NewSaver 创建一个新的保存器。
-// Running协程不会自动启动，要靠外在启动
-func NewSaver(db *sql.DB, bufferSize int, table, sql string) *Saver {
+// Running协程不会自动启动，要靠外面启动
+func NewSaver(bufferSize int, sql string) *Saver {
 	return &Saver{
-		db:    db,
 		tasks: make(chan map[interface{}]interface{}, bufferSize),
-		table: table,
 		sql:   sql,
 	}
 }
@@ -31,7 +29,7 @@ func (s *Saver) Save(data map[interface{}]interface{}) error {
 	return nil
 }
 
-func (s *Saver) doSave(data map[interface{}]interface{}) error {
+func (s *Saver) doSave(db *sql.DB, data map[interface{}]interface{}) error {
 	// TODO: 使用reflect进行数据库的存储
 
 	// 也就是想办法拼出来这样的语句
@@ -46,7 +44,7 @@ func (s *Saver) doSave(data map[interface{}]interface{}) error {
 	}
 
 	// 提交Prepare可以避免重复解析SQL语句
-	stmt, err := s.db.Prepare(s.sql)
+	stmt, err := db.Prepare(s.sql)
 	if err != nil {
 		return err
 	}
@@ -54,12 +52,12 @@ func (s *Saver) doSave(data map[interface{}]interface{}) error {
 
 	for k, v := range data {
 		var args Args
-		args = args.AddFlat(k)
-		args = args.AddFlat(v)
-		args = args.AddFlat(v)
+		args = args.AddFlatValues(k)
+		args = args.AddFlatValues(v)
+		args = args.AddFlatValues(v)
 		_, err := stmt.Exec(args...)
 		if err != nil {
-			panic(err)
+			log.Errorf("Exec sql:%s with args:%+v failed:%v", s.sql, args, err)
 		}
 	}
 
@@ -67,17 +65,17 @@ func (s *Saver) doSave(data map[interface{}]interface{}) error {
 }
 
 // Running 存储协程
-func (s *Saver) Running(stop chan struct{}) {
+func (s *Saver) Running(db *sql.DB, stop chan struct{}) {
 	for {
 		select {
 		case m := <-s.tasks:
-			s.doSave(m)
+			s.doSave(db, m)
 		case <-stop:
 			// 收所有的数据，防止的未写入数据库的
 			for {
 				select {
 				case m := <-s.tasks:
-					s.doSave(m)
+					s.doSave(db, m)
 				default:
 					goto allreceived
 				}

@@ -56,10 +56,11 @@ func (gq *GraceQuit) StopAll() {
 	gq.goroutines = gq.goroutines[0:0]
 }
 
-var g GraceQuit
+// G 默认的
+var G GraceQuit
 
 // StartGoroutine 开启一个新的Goroutine，运行f
-var StartGoroutine = g.StartGoroutine
+var StartGoroutine = G.StartGoroutine
 
 // StopAll 按反向顺序停止goroutines
-var StopAll = g.StopAll
+var StopAll = G.StopAll

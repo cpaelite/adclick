@@ -8,7 +8,7 @@ import (
 )
 
 // 这里是从redigo项目摘取出来的
-// 用于采用
+// 用于把结构体的字段，变成一个interface{}数组
 
 // Args 参数列表
 type Args []interface{}
@@ -182,4 +182,73 @@ func compileStructSpec(t reflect.Type, depth map[string]int, index []int, ss *st
 			}
 		}
 	}
+}
+
+////
+// AddFlat returns the result of appending the flattened value of v to args.
+//
+// Maps are flattened by appending the alternating map values to args.
+//
+// Slices are flattened by appending the slice elements to args.
+//
+// Structs are flattened by appending the alternating values of
+// exported fields to args. If v is a nil struct pointer, then nothing is
+// appended. The 'redis' field tag overrides struct field names. See ScanStruct
+// for more information on the use of the 'redis' field tag.
+//
+// Other types are appended to args as is.
+func (args Args) AddFlatValues(v interface{}) Args {
+	rv := reflect.ValueOf(v)
+	switch rv.Kind() {
+	case reflect.Struct:
+		args = flattenStructValues(args, rv)
+	case reflect.Slice:
+		for i := 0; i < rv.Len(); i++ {
+			args = append(args, rv.Index(i).Interface())
+		}
+	case reflect.Map:
+		for _, k := range rv.MapKeys() {
+			args = append(args, rv.MapIndex(k).Interface())
+		}
+	case reflect.Ptr:
+		if rv.Type().Elem().Kind() == reflect.Struct {
+			if !rv.IsNil() {
+				args = flattenStructValues(args, rv.Elem())
+			}
+		} else {
+			args = append(args, v)
+		}
+	default:
+		args = append(args, v)
+	}
+	return args
+}
+
+func flattenStructValues(args Args, v reflect.Value) Args {
+	ss := structSpecForType(v.Type())
+	for _, fs := range ss.l {
+		fv := v.FieldByIndex(fs.index)
+		if fs.omitEmpty {
+			var empty = false
+			switch fv.Kind() {
+			case reflect.Array, reflect.Map, reflect.Slice, reflect.String:
+				empty = fv.Len() == 0
+			case reflect.Bool:
+				empty = !fv.Bool()
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				empty = fv.Int() == 0
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+				empty = fv.Uint() == 0
+			case reflect.Float32, reflect.Float64:
+				empty = fv.Float() == 0
+			case reflect.Interface, reflect.Ptr:
+				empty = fv.IsNil()
+			}
+			if empty {
+				continue
+			}
+		}
+		args = append(args, fv.Interface())
+	}
+	return args
 }
