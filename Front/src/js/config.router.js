@@ -50,16 +50,16 @@
                 url: '/app',
                 templateUrl: "tpl/app.html"
             })
-            .state('app.affiliatenetwork', {
-                url: '/api/affilate',
-                templateUrl: 'tpl/affiliateNetwork.html',
-                controller: 'AffiliateNetworkCtrl',
-                data: {}
-            })
             .state('app.trackcampaign', {
                 url: '/track/campaign',
                 templateUrl: 'tpl/trackCampaign.html',
                 controller: 'TrackCampaignCtrl',
+                data: {}
+            })
+            .state('app.affiliatenetwork', {
+                url: '/api/affilate',
+                templateUrl: 'tpl/affiliateNetwork.html',
+                controller: 'AffiliateNetworkCtrl',
                 data: {}
             })
             .state('app.offer', {

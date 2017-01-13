@@ -3,6 +3,7 @@ package request
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/util/ip"
@@ -37,7 +38,8 @@ type reqbase struct {
 
 	deviceType     string
 	trackingDomain string
-	referrerDomain string
+	trackingPath   string
+	referrer       string
 	language       string
 	model          string
 	brand          string
@@ -60,28 +62,32 @@ type reqbase struct {
 
 func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 	req = &reqbase{
-		id:       id,
-		t:        t,
-		ip:       ip.GetIP(r),
-		ua:       r.UserAgent(),
-		vars:     make([]string, VarsMaxNum),
-		cookie:   make(map[string]string),
-		urlParam: make(map[string]string),
+		id:             id,
+		t:              t,
+		ip:             ip.GetIP(r),
+		ua:             r.UserAgent(),
+		trackingPath:   r.URL.Path,
+		trackingDomain: strings.Split(r.Host, ":")[0],
+		vars:           make([]string, VarsMaxNum),
+		cookie:         make(map[string]string),
+		urlParam:       make(map[string]string),
 	}
-	//TODO carrier/connectiontype/brand/model/deviceType未采集到
+	//TODO connectiontype/brand/model/deviceType未采集到
+	// chuck说connectiontype实际上用得少，可以先不做
 
 	// parse location from ip
 	location := ip2location.Get_all(req.ip)
 	req.country = location.Country_short
 	req.region = location.Region
 	req.city = location.City
-	//req.carrier = location.Carrier()
+	req.carrier = location.Mobilebrand
 	req.isp = location.Isp
+	req.connectionType = location.Netspeed
 	//req.connectionType = location.ConnectionType()
 
 	// parse mobile info from ua
 	ua := useragent.New(r.UserAgent())
-	log.Info(ua)
+	log.Info(ua.UA())
 	req.os = ua.OS()
 	req.osVersion = ua.OSInfo().Version
 	req.browser, req.browserVersion = ua.Browser()
@@ -94,8 +100,7 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 		req.model = "UNKNOWN"
 	}
 
-	req.trackingDomain = r.Host
-	req.referrerDomain = r.Referer()
+	req.referrer = r.Referer()
 	tag, _, err := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	if err != nil || len(tag) == 0 {
 		req.language = "UNKNOWN"
@@ -114,6 +119,9 @@ func (r *reqbase) Type() string {
 }
 func (r *reqbase) String() string {
 	return fmt.Sprintf("[Request][%s][%s][%d][%d]", r.Type(), r.Id(), r.UserId(), r.CampaignId())
+}
+func (r *reqbase) TrackingPath() string {
+	return r.trackingPath
 }
 
 func (r *reqbase) ExternalId() string {
@@ -247,8 +255,8 @@ func (r *reqbase) ISP() string {
 func (r *reqbase) TrackingDomain() string {
 	return r.trackingDomain
 }
-func (r *reqbase) ReferrerDomain() string {
-	return r.referrerDomain
+func (r *reqbase) Referrer() string {
+	return r.referrer
 }
 func (r *reqbase) Brand() string {
 	return r.brand

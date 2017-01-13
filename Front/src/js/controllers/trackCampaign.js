@@ -6,27 +6,39 @@
         TrackCampaignCtrl
     ]);
 
-    angular.module('app').directive('tree', TrackCampaignDirective);
-
     function TrackCampaignCtrl($scope, $mdDialog, $timeout, TrackCampaign) {
         $scope.app.subtitle = 'TrackCampaign';
 
         $scope.query = {
             limit: '10',
-            order: 'id',
-            page: 1
+            offset: 0,
+            sort: 'id',
+            direction: 'des',
+            groupBy: 'campaign'
         };
 
-        $scope.filterOptions = {
+        $scope.datetype = 1;
+
+        /*$scope.filterOptions = {
             debounce: 500
-        };
+        };*/
 
-        function success(items) {
-            $scope.items = items;
+        function success(result) {
+            if (result.status == 1) {
+                $scope.items.rows = result.data.rows;
+                $scope.items.totals = result.data.totals;
+            }
         }
         $scope.getList = function () {
             $scope.promise = TrackCampaign.get($scope.query, success).$promise;
         };
+
+        $scope.$watch('datetype', function (newValue, oldValue) {
+            if (newValue != oldValue && newValue != 0) {
+                getDateRange(newValue);
+                $scope.getList();
+            }
+        });
 
         $scope.$watch('query.order', function (newValue, oldValue) {
             if (newValue !== oldValue) {
@@ -89,52 +101,71 @@
                 templateUrl: 'tpl/delete-confirm-dialog.html',
             }).then($scope.getList);
         };
-    }
 
-    function TrackCampaignDirective() {
-        return {
-            require: '?ngModel',
-            restrict: 'A',
-            link: function($scope, element, attrs, ngModel) {
-                var setting = {
-                    data: {
-                        simpleData: {  
-                            enable: true  
-                        } 
-                    },
-                    callback: {
-                        onClick: function(event, treeId, treeNode, clickFlag) {
-                            $scope.$apply(function() {
-                                ngModel.$setViewValue(treeNode);
-                            });
-                        }
-                    }
-                };
- 
-                var zNodes = [
-                    { name:"Path", open:true,
-                        children: [
-                            { name:"PathContent - 100(100%)",open:true,
-                                children: [
-                                    { name:"Lander",open:true,
-                                        children:[
-                                            {name:"LanderCon - 100(100%)"}
-                                        ]   
-                                    },
-                                    { name:"Offers",open:true,
-                                        children:[
-                                            {name:"OffersCon - 100(100%)"}
-                                        ]   
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ];
+        $scope.data = [
+            {name:'Campaign'},
+            {name:'Campaign ID'},
+            {name:'Campaign URL'},
+            {name:'Campaign country'},
+            {name:'Impressions'},
+            {name:'Visits'},
+            {name:'Clicks'},
+            {name:'Conversions'},
+            {name:'Revenue'},
+            {name:'Cost'},
+            {name:'Profit'},
+            {name:'CPV'},
+            {name:'ICTR'}
+        ];
+        $scope.viewColumnIsShow = false;
+        $scope.viewColumnClick = function(){
+            $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+        };
 
-                $.fn.zTree.init(element, setting, zNodes); 
+        $scope.viewCloumnClose = function(){
+            $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+        };
+
+        function getDateRange(value) {
+            var fromDate;
+            var toDate;
+            switch (value) {
+                case '1':
+                    fromDate = moment(new Date).subtract(1, 'days').format('YYYY-MM-DD');
+                    toDate = moment(new Date).format('YYYY-MM-DD');
+                    break;
+                case '2':
+                    fromDate = moment(new Date).subtract(6, 'days').format('YYYY-MM-DD');
+                    toDate = moment(new Date).format('YYYY-MM-DD');
+                    break;
+                case '3':
+                    fromDate = moment(new Date).subtract(13, 'days').format('YYYY-MM-DD');
+                    toDate = moment(new Date).format('YYYY-MM-DD');
+                    break;
+                case '4':
+                    fromDate = moment(new Date).day(1).format('YYYY-MM-DD');
+                    toDate = moment(new Date).format('YYYY-MM-DD');
+                    break;
+                case '5':
+                    fromDate = moment(new Date).day(-6).format('YYYY-MM-DD');
+                    toDate = moment(new Date).day(0).format('YYYY-MM-DD');
+                    break;
+                case '6':
+                    fromDate = moment(new Date).startOf('month').format('YYYY-MM-DD');
+                    toDate = moment(new Date).format('YYYY-MM-DD');
+                    break;
+                case '7':
+                    fromDate = moment(new Date).subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+                    toDate = moment(new Date).subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+                    break;
+            }
+            $scope.datetype = value;
+            $scope.query = {
+                from: fromDate,
+                to: toDate
             }
         }
+
     }
 
     function editItemCtrl($scope, $mdDialog, TrackCampaign) {
@@ -216,7 +247,8 @@
         $scope.urlTokenClick = function(url){
             $scope.urlToken = $scope.urlToken + url;
         };
-
+        $scope.isDisabled = false;
+        $scope.onChan
     }
 
     function deleteCtrl($mdDialog, TrackCampaign) {

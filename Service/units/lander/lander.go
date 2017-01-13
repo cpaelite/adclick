@@ -16,7 +16,6 @@ type LanderConfig struct {
 	UserId         int64
 	Url            string
 	NumberOfOffers int64
-	Weight         uint64
 }
 
 func (c LanderConfig) String() string {
@@ -104,5 +103,18 @@ func (l *Lander) OnLPOfferRequest(w http.ResponseWriter, req request.Request) er
 		return fmt.Errorf("[Lander][OnLPOfferRequest]Nil l for request(%s)", req.Id())
 	}
 	http.Redirect(w, gr, req.ParseUrlTokens(l.Url), http.StatusFound)
+	return nil
+}
+
+// Lander不需要处理该请求
+//func (l *Lander) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+//	return nil
+//}
+
+func (l *Lander) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (l *Lander) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
 	return nil
 }

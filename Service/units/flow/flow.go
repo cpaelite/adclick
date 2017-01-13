@@ -14,11 +14,10 @@ type FlowConfig struct {
 	Id           int64
 	UserId       int64
 	RedirectMode int64
-	Status       int64
 }
 
 func (c FlowConfig) String() string {
-	return fmt.Sprintf("Flow %d:%d Status %d", c.Id, c.UserId, c.Status)
+	return fmt.Sprintf("Flow %d:%d", c.Id, c.UserId)
 }
 
 const (
@@ -128,6 +127,7 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 			panic(fmt.Sprintf("[Flow][OnLPOfferRequest]Nil r for rule(%d)", fr.RuleId))
 		}
 		if r.Accept(req) {
+			req.SetRuleId(r.Id)
 			return r.OnLPOfferRequest(w, req)
 		}
 	}
@@ -135,5 +135,45 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	if f.defaultRule.RuleId <= 0 {
 		return fmt.Errorf("[Flow][OnLPOfferRequest]DefaultRule.ID is 0 for request(%s) in flow(%d)", req.Id(), f.Id)
 	}
+	req.SetRuleId(f.defaultRule.RuleId)
 	return rule.GetRule(f.defaultRule.RuleId).OnLPOfferRequest(w, req)
+}
+
+func (f *Flow) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if f == nil {
+		return errors.New("[Flow][OnLandingPageClick]Nil f")
+	}
+
+	// 不需要进行find，因为有可能中途被移除
+	/*
+		found := false
+		for _, fr := range f.rules {
+			if fr.RuleId == req.RuleId() {
+				found = true
+				break
+			}
+		}
+
+		if !found && f.defaultRule.RuleId == req.RuleId() {
+			found = true
+		}
+
+		if !found {
+			return fmt.Errorf("[Flow][OnLandingPageClick]Target Rule(%d) not found for request(%s) in flow(%d)", req.RuleId(), req.Id(), f.Id)
+		}
+	*/
+
+	r := rule.GetRule(req.RuleId())
+	if r == nil {
+		return fmt.Errorf("[Flow][OnLandingPageClick]Target Rule(%d) not found for request(%s) in flow(%d)", req.RuleId(), req.Id(), f.Id)
+	}
+	return r.OnLandingPageClick(w, req)
+}
+
+func (f *Flow) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (f *Flow) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
 }
