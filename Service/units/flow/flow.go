@@ -141,26 +141,33 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 
 func (f *Flow) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
 	if f == nil {
-		return errors.New("[Flow][OnLPOfferRequest]Nil f")
+		return errors.New("[Flow][OnLandingPageClick]Nil f")
 	}
 
-	found := false
-	for _, fr := range f.rules {
-		if fr.RuleId == req.RuleId() {
-			found = true
-			break
+	// 不需要进行find，因为有可能中途被移除
+	/*
+		found := false
+		for _, fr := range f.rules {
+			if fr.RuleId == req.RuleId() {
+				found = true
+				break
+			}
 		}
-	}
 
-	if !found && f.defaultRule.RuleId == req.RuleId() {
-		found = true
-	}
+		if !found && f.defaultRule.RuleId == req.RuleId() {
+			found = true
+		}
 
-	if !found {
+		if !found {
+			return fmt.Errorf("[Flow][OnLandingPageClick]Target Rule(%d) not found for request(%s) in flow(%d)", req.RuleId(), req.Id(), f.Id)
+		}
+	*/
+
+	r := rule.GetRule(req.RuleId())
+	if r == nil {
 		return fmt.Errorf("[Flow][OnLandingPageClick]Target Rule(%d) not found for request(%s) in flow(%d)", req.RuleId(), req.Id(), f.Id)
 	}
-
-	return rule.GetRule(req.RuleId()).OnLandingPageClick(w, req)
+	return r.OnLandingPageClick(w, req)
 }
 
 func (f *Flow) OnImpression(w http.ResponseWriter, req request.Request) error {

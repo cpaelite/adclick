@@ -32,6 +32,8 @@ type User struct {
 }
 
 func InitAllUsers() error {
+	//TODO 所有Units，无效的和deleted的都需要load到内存中来，以免丢数据；
+	//TODO 然后该判断Status和deleted的地方都需要加上判断
 	initUser()
 
 	for _, u := range DBGetAvailableUsers() {

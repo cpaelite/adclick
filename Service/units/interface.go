@@ -89,8 +89,13 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.LanderId() == 0 {
-		log.Errorf("[Units][OnLandingPageClick]LanderId is 0 for %s:%s\n", req.Id(), common.SchemeHostURI(r))
+	if req.CampaignId() <= 0 ||
+		req.FlowId() <= 0 ||
+		req.RuleId() <= 0 ||
+		req.PathId() <= 0 ||
+		req.LanderId() <= 0 {
+		log.Errorf("[Units][OnLandingPageClick]CampaignId|FlowId|RuleId|PathId|LanderId is 0 for %s:%s\n",
+			req.Id(), common.SchemeHostURI(r))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

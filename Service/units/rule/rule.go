@@ -169,11 +169,19 @@ func (r *Rule) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 	if r == nil {
 		return fmt.Errorf("[Rule][OnLandingPageClick]Nil r for request(%s)", req.Id())
 	}
-	for _, p := range r.paths {
-		if p.PathId == req.PathId() {
 
-			return path.GetPath(req.PathId()).OnLandingPageClick(w, req)
+	// 不需要find，因为可能中途已被移除
+	/*
+		for _, p := range r.paths {
+			if p.PathId == req.PathId() {
+				return path.GetPath(req.PathId()).OnLandingPageClick(w, req)
+			}
 		}
+	*/
+
+	p := path.GetPath(req.PathId())
+	if p != nil {
+		return p.OnLandingPageClick(w, req)
 	}
 
 	return fmt.Errorf("[Rule][OnLandingPageClick]Target Path(%d) not found for request(%s) in rule(%d)", req.PathId(), req.Id(), r.Id)

@@ -201,10 +201,11 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 		}
 	} else {
 		f := flow.GetFlow(ca.TargetFlowId)
-		if f != nil {
-			req.SetFlowId(ca.TargetFlowId)
-			return f.OnLPOfferRequest(w, req)
+		if f == nil {
+			return fmt.Errorf("[Campaign][OnLPOfferRequest]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
 		}
+		req.SetFlowId(ca.TargetFlowId)
+		return f.OnLPOfferRequest(w, req)
 	}
 
 	return fmt.Errorf("[Campaign][OnLPOfferRequest]Invalid dstination for request(%s) in campaign(%d)", req.Id(), ca.Id)
@@ -217,10 +218,11 @@ func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Reques
 
 	if ca.TargetType == TargetTypeFlow {
 		f := flow.GetFlow(ca.TargetFlowId)
-		if f != nil {
-			req.SetFlowId(ca.TargetFlowId)
-			return f.OnLandingPageClick(w, req)
+		if f == nil {
+			return fmt.Errorf("[Campaign][OnLandingPageClick]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
 		}
+		req.SetFlowId(ca.TargetFlowId)
+		return f.OnLandingPageClick(w, req)
 	}
 
 	return fmt.Errorf("[Campaign][OnLandingPageClick]Invalid dstination(%d) for request(%s) in campaign(%d)", ca.TargetType, req.Id(), ca.Id)

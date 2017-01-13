@@ -174,18 +174,21 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
 	}
 
-	found := false
-	for _, l := range p.landers {
-		if l.LanderId == req.LanderId() {
-			found = true
-			break
+	// 不需要find，因为可能中途已被移除
+	/*
+		found := false
+		for _, l := range p.landers {
+			if l.LanderId == req.LanderId() {
+				found = true
+				break
+			}
 		}
-	}
 
-	if !found {
-		return fmt.Errorf("[Path][OnLandingPageClick]Target Lander(%d) not found for request(%s) in path(%d)",
-			req.LanderId(), req.Id(), p.Id)
-	}
+		if !found {
+			return fmt.Errorf("[Path][OnLandingPageClick]Target Lander(%d) not found for request(%s) in path(%d)",
+				req.LanderId(), req.Id(), p.Id)
+		}
+	*/
 
 	pp := strings.Split(req.TrackingPath(), "/")
 	switch len(pp) {
