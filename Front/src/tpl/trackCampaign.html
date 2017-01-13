@@ -12,7 +12,36 @@
         </md-button>
         <div class="cs-action-group" flex layout="row">
             <div class="cs-subform-control">
-                <input type="text" class="cs-filter-input" ng-model="query.q" placeholder="Name">
+                <md-select class="cs-subform-select" ng-model="datetype">
+                    <md-option value="1">Yesterday</md-option>
+                    <md-option value="2">Last 7 days</md-option>
+                    <md-option value="3">Last 14 days</md-option>
+                    <md-option value="4">This Week</md-option>
+                    <md-option value="5">Last Week</md-option>
+                    <md-option value="6">This Month</md-option>
+                    <md-option value="7">Last Month</md-option>
+                    <md-option value="0">Custom</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-group" ng-show="datetype==0">
+                <label class="cs-subform-label">{{'startDate' | translate}}：</label>
+                <div class="cs-subform-control">
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="params.from" ng-max="params.to" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions" ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                        {{params.from | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </div>
+                <label class="cs-subform-label">{{'endDate' | translate}}：</label>
+                <div class="cs-subform-control">
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="params.to" ng-min="params.from" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions" ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                        {{params.to | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </div>
+                <div class="cs-subform-search">
+                    <a><md-icon class="material-icons md-24" ng-click="search()">search</md-icon></a>
+                </div>
+            </div>
+            <div class="cs-subform-control">
+                <input type="text" class="cs-filter-input" ng-model="query.q" placeholder="Search...">
             </div>
             <div class="cs-subform-search">
                 <a>
@@ -62,6 +91,17 @@
                         </md-fab-actions>
                     </md-fab-speed-dial>
                 </td>
+            </tr>
+            </tbody>
+            <tbody md-body ng-if="items.totals != ''">
+            <tr md-row>
+                <td md-cell>Total</td>
+                <td md-cell>{{items.totals.clicks}}</td>
+                <td md-cell>{{items.totals.totalShow}}</td>
+                <td md-cell>{{items.totals.totalPlay}}</td>
+                <td md-cell>{{items.totals.totalClick}}</td>
+                <td md-cell>{{items.totals.ecpm | currency}}</td>
+                <td md-cell>{{items.totals.totalRevenue | currency}}</td>
             </tr>
             </tbody>
         </table>

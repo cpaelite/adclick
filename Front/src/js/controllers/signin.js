@@ -15,7 +15,7 @@
         .then(function() {
             console.log("signin success");
             $scope.$emit('event:auth-loginSuccess');
-            $state.go('app.offernetwork');
+            $state.go('app.trackcampaign');
         })
         .catch(function(response) {
             console.log("error");
