@@ -71,7 +71,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" ng-model="item.affiliateNetwork" required>
+                    <md-select class="cs-subform-select" ng-model="item.AffiliateNetworkId" required>
                         <md-option value="1">EffectMobi</md-option>
                         <md-option value="2">hasoffer</md-option>
                     </md-select>
@@ -87,10 +87,10 @@
                 <label class="col-sm-3 control-label">Payout：</label>
                 <div class="col-sm-5">
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.payout" value="0"> Auto
+                        <input type="radio" ng-model="item.payoutMode" value="0"> Auto
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.payout" value="1"> Manual
+                        <input type="radio" ng-model="item.payoutMode" value="1"> Manual
                     </label>
                 </div>
             </div>
