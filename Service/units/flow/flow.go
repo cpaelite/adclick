@@ -139,3 +139,35 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	req.SetRuleId(f.defaultRule.RuleId)
 	return rule.GetRule(f.defaultRule.RuleId).OnLPOfferRequest(w, req)
 }
+
+func (f *Flow) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if f == nil {
+		return errors.New("[Flow][OnLPOfferRequest]Nil f")
+	}
+
+	found := false
+	for _, fr := range f.rules {
+		if fr.RuleId == req.RuleId() {
+			found = true
+			break
+		}
+	}
+
+	if !found && f.defaultRule.RuleId == req.RuleId() {
+		found = true
+	}
+
+	if !found {
+		return fmt.Errorf("[Flow][OnLandingPageClick]Target Rule(%d) not found for request(%s) in flow(%d)", req.RuleId(), req.Id(), f.Id)
+	}
+
+	return rule.GetRule(req.RuleId()).OnLandingPageClick(w, req)
+}
+
+func (f *Flow) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (f *Flow) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
+}

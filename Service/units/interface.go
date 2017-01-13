@@ -71,9 +71,56 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	SetCookie(w, request.ReqLPOffer, req)
 }
 
 func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
+	if !started {
+		//TODO add error log
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	req, err := ParseCookie(request.ReqLPClick, r)
+	if err != nil || req == nil {
+		//TODO add error log
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if req.LanderId() == 0 {
+		log.Errorf("[Units][OnLandingPageClick]LanderId is 0 for %s:%s\n", req.Id(), common.SchemeHostURI(r))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	log.Infof("[Units][OnLandingPageClick]Received request %s:%s\n", req.Id(), common.SchemeHostURI(r))
+
+	userIdText := common.GetUerIdText(r)
+	if userIdText == "" {
+		log.Errorf("[Units][OnLandingPageClick]Null userIdText for %s:%s\n", req.Id(), common.SchemeHostURI(r))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	u := user.GetUserByIdText(userIdText)
+	if u == nil {
+		log.Errorf("[Units][OnLandingPageClick]Invalid userIdText for %s:%s\n", req.Id(), common.SchemeHostURI(r))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if err := u.OnLandingPageClick(w, req); err != nil {
+		log.Errorf("[Units][OnLandingPageClick]user.OnLandingPageClick failed for %s;%s\n", req.String(), err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	SetCookie(w, request.ReqLPClick, req)
+}
+
+func OnImpression(w http.ResponseWriter, r *http.Request) {
 	if !started {
 		w.WriteHeader(http.StatusBadRequest)
 		return

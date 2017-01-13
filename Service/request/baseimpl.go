@@ -72,15 +72,17 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 		cookie:         make(map[string]string),
 		urlParam:       make(map[string]string),
 	}
-	//TODO carrier/connectiontype/brand/model/deviceType未采集到
+	//TODO connectiontype/brand/model/deviceType未采集到
+	// chuck说connectiontype实际上用得少，可以先不做
 
 	// parse location from ip
 	location := ip2location.Get_all(req.ip)
 	req.country = location.Country_short
 	req.region = location.Region
 	req.city = location.City
-	//req.carrier = location.Carrier()
+	req.carrier = location.Mobilebrand
 	req.isp = location.Isp
+	req.connectionType = location.Netspeed
 	//req.connectionType = location.ConnectionType()
 
 	// parse mobile info from ua

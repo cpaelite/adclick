@@ -17,7 +17,6 @@ import (
 	"AdClickTool/Service/units"
 
 	"AdClickTool/Service/request"
-	"AdClickTool/Service/units/campaign"
 )
 
 func main() {
@@ -45,7 +44,7 @@ func main() {
 
 	// 启动Conversion保存
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
-		tracking.SavingConversions(db, c)
+		tracking.SavingConversions(db.GetDB("DB"), c)
 	})
 
 	// 启动汇总协程
@@ -89,7 +88,7 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 	}
 	req, _ := request.CreateRequest(common.GenRandId(), request.ReqLPOffer, r)
 	req.SetCampaignId(time.Now().Unix())
-	campaign.SetCookie(w, campaign.TrackingStepLandingPage, req)
+	units.SetCookie(w, request.ReqLPOffer, req)
 	fmt.Fprint(w, "It works1!"+common.SchemeHostURI(r)+
 		" *"+r.RequestURI+
 		" *"+common.GetCampaignHash(r)+

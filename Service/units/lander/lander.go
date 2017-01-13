@@ -106,3 +106,16 @@ func (l *Lander) OnLPOfferRequest(w http.ResponseWriter, req request.Request) er
 	http.Redirect(w, gr, req.ParseUrlTokens(l.Url), http.StatusFound)
 	return nil
 }
+
+// Lander不需要处理该请求
+//func (l *Lander) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+//	return nil
+//}
+
+func (l *Lander) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (l *Lander) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
+}

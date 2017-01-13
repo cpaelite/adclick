@@ -162,3 +162,25 @@ func (r *Rule) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	}
 	return fmt.Errorf("[Rule][OnLPOfferRequest]Request(%s) does not match any path(%d:%d) in rule(%d)", req.Id(), cx, x, r.Id)
 }
+
+func (r *Rule) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if r == nil {
+		return fmt.Errorf("[Rule][OnLandingPageClick]Nil r for request(%s)", req.Id())
+	}
+	for _, p := range r.paths {
+		if p.PathId == req.PathId() {
+
+			return path.GetPath(req.PathId()).OnLandingPageClick(w, req)
+		}
+	}
+
+	return fmt.Errorf("[Rule][OnLandingPageClick]Target Path(%d) not found for request(%s) in rule(%d)", req.PathId(), req.Id(), r.Id)
+}
+
+func (r *Rule) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (r *Rule) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
+}

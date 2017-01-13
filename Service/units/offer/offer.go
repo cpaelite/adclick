@@ -109,3 +109,19 @@ func (o *Offer) OnLPOfferRequest(w http.ResponseWriter, req request.Request) err
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
 	return nil
 }
+
+func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if o == nil {
+		return fmt.Errorf("[Offer][OnLandingPageClick]Nil o for request(%s)", req.Id())
+	}
+	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	return nil
+}
+
+func (o *Offer) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (o *Offer) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
