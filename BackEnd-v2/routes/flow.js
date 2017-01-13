@@ -18,6 +18,59 @@ var async = require('async');
  *
  */
 
+var data={
+    "flow":{
+        id:1,
+        hash:"",
+        type:0, //0:匿名;1:普通
+        name:"",
+        country:"",
+        redirectMode:0,//0:302;1:Meta refresh;2:Double meta refresh
+        rules:[{
+            id:1,
+            name:"",
+            hash:"",
+            type:0, //0:匿名;1:普通
+            json:{},// TODO
+            status:1, //0:停止;1:运行
+            paths:[{
+                id:1,
+                name:"",
+                hash:"",
+                redirectMode:0, //0:302;1:Meta refresh;2:Double meta refresh
+                directLink:0, //0:No;1:Yes
+                status:0,//0:停止;1:运行
+                weight:100, // TODO
+                landers:[{
+                    id:1,
+                    name:"",
+                    hash:"",
+                    url:"",
+                    country:"",
+                    numberOfOffers:2,
+                    weight:100,
+                    tags:[]
+                }],
+                offers:[{
+                    id:1,
+                    name:"",
+                    hash:"",
+                    url:"",
+                    country:"",
+                    AffiliateNetwork:{
+                        id:1,
+                        name:""
+                    },
+                    postbackUrl:"",
+                    payoutMode:0,//0:Auto;1:Manual
+                    payoutValue:0.8,
+                    tags:[]
+                }]
+            }]
+        }]
+    }
+}
+
 
 router.post('/api/flow', function (req, res, next) {
     var schema = Joi.object().keys({

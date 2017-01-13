@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var campaignContrl=require('./campaign');
+var campaignContrl = require('./campaign');
 
 /**
  * @api {post} /api/report  报表

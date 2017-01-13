@@ -16,12 +16,13 @@ var app = express();
 var util = require('./util/index');
 
 //router
-var routes = require('./routes/user');
+var routes = require('./routes/oauth');
 var networktpl = require('./routes/networktpl');
 var network = require('./routes/network');
 var offer = require('./routes/offer');
 var flow = require('./routes/flow');
 var report = require('./routes/report');
+var user =require('./routes/user');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -49,7 +50,7 @@ app.get('/', function (req, res) {
     });
 });
 
-app.all('/api/*', util.checkToken(), network, offer, flow, report);
+app.all('/api/*', util.checkToken(),user, network, offer, flow, report);
 
 app.use('/', routes, networktpl);
 
