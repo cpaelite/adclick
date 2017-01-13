@@ -62,7 +62,7 @@ app.post('/auth/signup', function (req, res) {
             firstname: "123",
             lastname: "123"
         }
-    };
+    }
     res.send(result);
 });
 
@@ -239,7 +239,7 @@ app.get('/preferences', function (req, res) {
                 }
             }
         }
-    };
+    }
     res.send(result);
 });
 

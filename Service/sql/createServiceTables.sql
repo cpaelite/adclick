@@ -6,6 +6,7 @@ CREATE TABLE AdClickTool.`User` (
   `firstname` varchar(256) NOT NULL,
   `lastname` varchar(256) NOT NULL,
   `rootdomainredirect` varchar(512) NOT NULL DEFAULT '' COMMENT '当访问用户的rootdomain时的跳转页面，如果为空则显示默认的404页面',
+  `json` text NOT NULL COMMENT '按照既定规则生成的User信息',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idText` (`idtext`),
@@ -193,5 +194,28 @@ CREATE TABLE AdClickTool.`TemplateAffiliateNetwork` (
 
 CREATE TABLE AdClickTool.`UrlTokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  
+  `token` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`Country` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `alpha2Code` varchar(2) NOT NULL,
+  `alpha3Code` varchar(3) NOT NULL,
+  `numCode` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `alpha2Code` (`alpha2Code`),
+  UNIQUE KEY `alpha3Code` (`alpha3Code`),
+  UNIQUE KEY `numCode` (`numCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`TimeZones` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `detail` varchar(256) NOT NULL,
+  `region` varchar(256) NOT NULL,
+  `utcShift` varchar(6) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

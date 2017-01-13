@@ -6,10 +6,12 @@ var setting = require('../config/setting');
 
 exports.checkToken = function() {
   return function(req, res, next) {
-    var token = (req.body && req.body.access_token) || (req.query && req.query
+    /*var token = (req.body && req.body.access_token) || (req.query && req.query
         .access_token) ||
-      req.headers['x-access-token'];
+      req.headers['x-access-token'];*/
+    var token = req.headers['authorization'];
     if (token) {
+      token = token.split(' ')[1];
       try {
         var decode = jwt.decode(token, setting['jwtTokenSrcret']);
         req.userId = decode.userid

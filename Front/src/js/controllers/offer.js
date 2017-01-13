@@ -96,7 +96,7 @@ function editItemCtrl($scope, $mdDialog, Offer) {
         this.title = "edit";
     } else {
         $scope.item = {
-            payout: '0'
+            payoutMode: '0'
         };
         this.title = "add";
     }

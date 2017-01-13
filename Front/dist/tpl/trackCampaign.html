@@ -49,6 +49,30 @@
                 </a>
             </div>
         </div>
+        <div class="selectAll">
+            <md-select class="cs-subform-select" ng-model="item.TrackCampaign" required>
+                <md-option value="1">Active</md-option>
+                <md-option value="2">Archived</md-option>
+                <md-option value="3">With traffic</md-option>
+                <md-option value="4" selected>All</md-option>
+            </md-select>
+        </div>
+        <div class="view_column" ng-click="viewColumnClick()">
+            <i class="material-icons view-column-icon">view_column</i>
+            <i class="material-icons arrow-down-icon">keyboard_arrow_down</i>
+        </div>
+        <div class="view_column_con" ng-show="viewColumnIsShow">
+            <ul class="view_column_list">
+                <li ng-repeat="item in data"><input type="checkbox">{{item.name}}</li>
+            </ul>
+            <i class="material-icons btn-icon">done</i>
+            <md-button class="md-raised md-primary cs-compact cs-add-button">{{'apply changes' | translate}}
+            </md-button>
+            <i class="material-icons btn-icon">close</i>
+            <md-button class="md-raised md-primary cs-compact cs-add-button close-btn" ng-click="viewCloumnClose()">{{'close' | translate}}
+            </md-button>
+        </div>
+           
     </div>
 
     <md-table-container>

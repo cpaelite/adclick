@@ -65,7 +65,8 @@ type Request interface {
 	Carrier() string
 	ISP() string
 	TrackingDomain() string
-	ReferrerDomain() string
+	TrackingPath() string
+	Referrer() string
 	Brand() string
 	OS() string
 	OSVersion() string
