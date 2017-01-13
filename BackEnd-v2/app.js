@@ -4,8 +4,7 @@ global.pool = mysql.createPool({
     host: setting.mysql.host,
     user: setting.mysql.user,
     password: setting.mysql.password,
-    database: setting.mysql.database,
-    debug:true
+    database: setting.mysql.database
 });
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -24,7 +23,6 @@ var offer = require('./routes/offer');
 var flow = require('./routes/flow');
 var report = require('./routes/report');
 var user =require('./routes/user');
-var campaign=require('./routes/campaign');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -52,7 +50,7 @@ app.get('/', function (req, res) {
     });
 });
 
-app.all('/api/*', util.checkToken(),user, network, offer, flow, report,campaign);
+app.all('/api/*', util.checkToken(),user, network, offer, flow, report);
 
 app.use('/', routes, networktpl);
 
@@ -75,8 +73,7 @@ app.use(function (err, req, res, next) {
     }
     res.json({
         status: 0,
-        message: err.message,
-        data:{}
+        message: err.message
     });
 });
 

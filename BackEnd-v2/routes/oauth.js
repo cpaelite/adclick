@@ -192,8 +192,8 @@ router.post('/account/check', function (req, res, next) {
 
 
 /**
- * @api {get} /countries  获取所有国家
- * @apiName  get all countries
+ * @api {get} /countries  获取所以城市
+ * @apiName  countries
  * @apiGroup Oauth
  *
  * @apiSuccessExample {json} Success-Response:
@@ -228,20 +228,6 @@ router.get('/countries', function (req, res, next) {
 });
 
 
-/**
- * @api {get} /timezones  获取所有timezones
- * @apiName  get all timezones
- * @apiGroup Oauth
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{"timezones":[]}
- *     }
- *
- */
 router.get('/timezones',function(req,res,next){
     pool.getConnection(function (err, connection) {
         if (err) {
@@ -257,7 +243,7 @@ router.get('/timezones',function(req,res,next){
                 status: 1,
                 message: 'success',
                 data: {
-                    timezones: result
+                    countries: result
                 }
             });
         });
