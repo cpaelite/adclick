@@ -6,6 +6,7 @@ import (
 )
 
 // AdReferrerStatis表的支持工作
+// 使用方式：tracking.Ref.AddClick(k, 1)
 
 // ReferrerStatisKey AdReferrerStatis表里面的Unique Key部分
 type ReferrerStatisKey struct {

@@ -49,6 +49,15 @@ func main() {
 		tracking.Gathering(c)
 	})
 
+	// 启动AdIPStatis表的汇总协程
+	tracking.InitIPGatherSaver(&gracequit.G, db.GetDB("DB"))
+
+	// 启动AdReferrerStatis表的汇总协程
+	tracking.InitRefGatherSaver(&gracequit.G, db.GetDB("DB"))
+
+	// 启动AdReferrerDomainStatis表的汇总协程
+	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
+
 	if err := units.Init(); err != nil {
 		panic(err.Error())
 	}

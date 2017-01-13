@@ -6,6 +6,7 @@ import (
 )
 
 // AdIPStatis表的支持工作
+// 使用方式：tracking.IP.AddClick(k, 1)
 
 // IPStatisKey AdIPStatis表里面的Unique Key部分
 type IPStatisKey struct {
