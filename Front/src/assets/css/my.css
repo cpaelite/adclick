@@ -741,6 +741,68 @@ table .traficc-source-input input[type="checkbox"]{
 .dollar-input{
     padding-left: 20px;
 }
+.selectAll .cs-subform-select{
+    height: 38px;
+}
+.view_column
+{
+    width: 55px;
+    height: 38px;
+    background: #12bdce;
+    cursor: pointer;
+}
+.view_column .material-icons{
+    color: #fff;
+}
+.view_column .view-column-icon{
+    margin: 8px 0 0 4px;
+}
+.view_column .arrow-down-icon{
+    margin:7px 0 0 -5px;
+}
+.view_column_con{
+    position: absolute;
+    background: #12bdce;
+    top: 66px;
+    right: 5px; 
+    z-index: 25;
+    padding: 15px;
+    border-radius: 4px;
+    color: #fff;
+}
+.view_column_con ul{
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: scroll;
+    margin-bottom: 25px;
+}
+.view_column_con ul li{
+    line-height: 22px;
+    border-bottom: 1px solid #0097a7;
+    min-width: 300px;
+}
+.view_column_con .material-icons.btn-icon{
+    position: absolute;
+    z-index: 30;
+    margin: 7px 5px;
+}
+.view_column_con ul li:hover{
+    background: #00838f;
+}
+.cs-main-content{
+    height: 100%;
+}
+.view_column_con ul li input[type="checkbox"]{
+    margin-right: 10px;
+}
+.view_column_con button{
+    background: #00838f !important;
+    padding-left: 35px;
+}
+.view_column_con button.close-btn{
+    background: #8992aa !important;
+}
+
 /*End Campaign Style*/
 
 /*Start netWork Style*/
