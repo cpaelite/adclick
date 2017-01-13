@@ -16,7 +16,6 @@ type LanderConfig struct {
 	UserId         int64
 	Url            string
 	NumberOfOffers int64
-	Weight         uint64
 }
 
 func (c LanderConfig) String() string {
