@@ -4,7 +4,8 @@ global.pool = mysql.createPool({
     host: setting.mysql.host,
     user: setting.mysql.user,
     password: setting.mysql.password,
-    database: setting.mysql.database
+    database: setting.mysql.database,
+    debug: true
 });
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -22,7 +23,8 @@ var network = require('./routes/network');
 var offer = require('./routes/offer');
 var flow = require('./routes/flow');
 var report = require('./routes/report');
-var user =require('./routes/user');
+var user = require('./routes/user');
+var campaign = require('./routes/campaign');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -44,26 +46,27 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
     res.sendFile('index.html', {
         root: __dirname + '/../Front/dist'
     });
 });
 
-app.all('/api/*', util.checkToken(),user, network, offer, flow, report);
+app.all('/api/*', util.checkToken(), user, network, offer, flow, report,
+    campaign);
 
 app.use('/', routes, networktpl);
 
 
 /// catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
 /// error handlers
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     logger.error("Something went wrong:", err);
     res.status(err.status || 500);
 
@@ -73,7 +76,8 @@ app.use(function (err, req, res, next) {
     }
     res.json({
         status: 0,
-        message: err.message
+        message: err.message,
+        data: {}
     });
 });
 

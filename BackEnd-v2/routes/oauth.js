@@ -26,16 +26,16 @@ var md5 = require('md5');
  *   }
  *
  */
-router.post('/auth', function (req, res, next) {
+router.post('/auth', function(req, res, next) {
     var schema = Joi.object().keys({
         email: Joi.string().trim().email().required(),
         password: Joi.string().required()
     });
-    Joi.validate(req.body, schema, function (err, value) {
+    Joi.validate(req.body, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection(function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
@@ -44,7 +44,7 @@ router.post('/auth', function (req, res, next) {
                 "select  `id`,`email`,`password`,`firstname` from User where `email` = ? and `deleted` =0", [
                     value.email
                 ],
-                function (err, rows) {
+                function(err, rows) {
                     connection.release();
                     if (err) {
                         return next(err);
@@ -96,7 +96,7 @@ router.post('/auth', function (req, res, next) {
  *     }
  *
  */
-router.post('/auth/signup', function (req, res, next) {
+router.post('/auth/signup', function(req, res, next) {
     var schema = Joi.object().keys({
         email: Joi.string().trim().email().required(),
         password: Joi.string().required(),
@@ -104,36 +104,38 @@ router.post('/auth/signup', function (req, res, next) {
         lastname: Joi.string().required(),
         json: Joi.object().optional()
     });
-    Joi.validate(req.body, schema, function (err, value) {
+    Joi.validate(req.body, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection(function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
             }
             var idtext = util.getRandomString(8)
-            var sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`) values (?,?,?,?,?,0)";
+            var sql =
+                "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`) values (?,?,?,?,?,0)";
             var params = [
                 value.firstname, value.lastname, value.email,
                 md5(value.password), idtext
             ]
             if (value.json) {
-                sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`,`json`) values (?,?,?,?,?,0,?)"
+                sql =
+                    "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`,`json`) values (?,?,?,?,?,0,?)"
                 params.push(JSON.stringify(value.json))
             }
-            connection.query(sql, params, function (err) {
-                    connection.release();
-                    if (err) {
-                        log.error("[register]error:", err);
-                        return next(err);
-                    }
-                    res.json({
-                        "status": 1,
-                        "message": "success"
-                    });
+            connection.query(sql, params, function(err) {
+                connection.release();
+                if (err) {
+                    log.error("[register]error:", err);
+                    return next(err);
+                }
+                res.json({
+                    "status": 1,
+                    "message": "success"
                 });
+            });
         });
     });
 });
@@ -153,22 +155,22 @@ router.post('/auth/signup', function (req, res, next) {
  *     }
  *
  */
-router.post('/account/check', function (req, res, next) {
+router.post('/account/check', function(req, res, next) {
     var schema = Joi.object().keys({
         email: Joi.string().trim().email().required()
     });
-    Joi.validate(req.body, schema, function (err, value) {
+    Joi.validate(req.body, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection(function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
             }
             connection.query("select id from User where `email`=?", [
                 value.email
-            ], function (err, result) {
+            ], function(err, result) {
                 connection.release();
                 if (err) {
                     return next(err);
@@ -192,8 +194,8 @@ router.post('/account/check', function (req, res, next) {
 
 
 /**
- * @api {get} /countries  获取所以城市
- * @apiName  countries
+ * @api {get} /countries  获取所有国家
+ * @apiName  get all countries
  * @apiGroup Oauth
  *
  * @apiSuccessExample {json} Success-Response:
@@ -205,48 +207,66 @@ router.post('/account/check', function (req, res, next) {
  *     }
  *
  */
-router.get('/countries', function (req, res, next) {
-    pool.getConnection(function (err, connection) {
+router.get('/countries', function(req, res, next) {
+    pool.getConnection(function(err, connection) {
         if (err) {
             err.status = 303
             return next(err);
         }
-        connection.query("select `id`,`name`,`alpha2Code`,`alpha3Code`,`numCode` from `Country`",function (err, result) {
-            connection.release();
-            if (err) {
-                return next(err);
-            }
-            res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    countries: result
+        connection.query(
+            "select `id`,`name`,`alpha2Code`,`alpha3Code`,`numCode` from `Country`",
+            function(err, result) {
+                connection.release();
+                if (err) {
+                    return next(err);
                 }
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: {
+                        countries: result
+                    }
+                });
             });
-        });
     });
 });
 
 
-router.get('/timezones',function(req,res,next){
-    pool.getConnection(function (err, connection) {
+/**
+ * @api {get} /timezones  获取所有timezones
+ * @apiName  get all timezones
+ * @apiGroup Oauth
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{"timezones":[]}
+ *     }
+ *
+ */
+router.get('/timezones', function(req, res, next) {
+    pool.getConnection(function(err, connection) {
         if (err) {
             err.status = 303
             return next(err);
         }
-        connection.query("select `id`,`name`,`detail`,`region`,`utcShift` from `TimeZones`",function (err, result) {
-            connection.release();
-            if (err) {
-                return next(err);
-            }
-            res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    countries: result
+        connection.query(
+            "select `id`,`name`,`detail`,`region`,`utcShift` from `TimeZones`",
+            function(err, result) {
+                connection.release();
+                if (err) {
+                    return next(err);
                 }
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: {
+                        timezones: result
+                    }
+                });
             });
-        });
     });
 });
 
