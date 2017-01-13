@@ -23,6 +23,14 @@ const (
 	TargetTypeOffer  = 5
 )
 
+// TrafficSourceParams {"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)}
+type TrafficSourceParams struct {
+	Parameter   string
+	Placeholder string
+	Name        string
+	Track       int
+}
+
 type CampaignConfig struct {
 	Id                int64
 	UserId            int64
@@ -43,9 +51,9 @@ type CampaignConfig struct {
 	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
 	// 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
 	// 从TrafficSource表中读取
-	ExternalId []string
-	Cost       []string
-	Vars       [][]string
+	ExternalId TrafficSourceParams
+	Cost       TrafficSourceParams
+	Vars       []TrafficSourceParams
 }
 
 func (c CampaignConfig) String() string {

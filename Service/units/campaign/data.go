@@ -4,7 +4,7 @@ import (
 	"AdClickTool/Service/db"
 	"AdClickTool/Service/log"
 	"database/sql"
-	"strings"
+	"encoding/json"
 )
 
 // dbgetter 默认的拿数据库的东西
@@ -17,32 +17,37 @@ func DBGetAllCampaigns() []CampaignConfig {
 	return nil
 }
 
-func splitTwice(s, by1, by2 string) [][]string {
-	once := strings.Split(s, by1)
-	twice := make([][]string, len(once))
-	for idx, step1 := range once {
-		twice[idx] = strings.Split(step1, by2)
-	}
-	return twice
-}
-
 func dbGetCampaignTrafficConfig(trafficSourceId int64) (
-	ExternalId []string,
-	Cost []string,
-	Vars [][]string,
+	ExternalId TrafficSourceParams,
+	Cost TrafficSourceParams,
+	Vars []TrafficSourceParams,
 	err error,
 ) {
 	d := dbgetter()
 	sql := "SELECT externalId, cost, params FROM TrafficSource WHERE id=?"
 	row := d.QueryRow(sql, trafficSourceId)
 	var e, c, v string
-	if err := row.Scan(&e, &c, &v); err != nil {
-		return nil, nil, nil, err
+	err = row.Scan(&e, &c, &v)
+	if err != nil {
+		log.Errorf("Scan from sql:%v failed:%v", sql, err)
+		return
 	}
 
-	ExternalId = strings.Split(e, ",")
-	Cost = strings.Split(c, ",")
-	Vars = splitTwice(v, ",", ":")
+	err = json.Unmarshal([]byte(e), &ExternalId)
+	if err != nil {
+		log.Errorf("Unmarshal:%s to ExternalId failed:%v", e, err)
+	}
+
+	err = json.Unmarshal([]byte(c), &Cost)
+	if err != nil {
+		log.Errorf("Unmarshal:%s to Cost failed:%v", c, err)
+	}
+
+	err = json.Unmarshal([]byte(v), &Vars)
+	if err != nil {
+		log.Errorf("Unmarshal:%s to TrafficSourceParams failed:%v", v, err)
+	}
+
 	return
 }
 
