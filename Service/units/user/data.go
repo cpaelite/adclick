@@ -20,7 +20,7 @@ func DBGetAllUsers() []UserConfig {
 // 获取未被删除、未停止服务的User
 func DBGetAvailableUsers() []UserConfig {
 	d := dbgetter()
-	sql := "SELECT id, idText, status, rootDomainRedirect FROM User WHERE deleted=0"
+	sql := "SELECT id, idText, rootDomainRedirect FROM User WHERE deleted=0"
 	rows, err := d.Query(sql)
 	if err != nil {
 		log.Errorf("[flow][DBGetAvailableUsers]Query: %s failed:%v", sql, err)
@@ -30,7 +30,7 @@ func DBGetAvailableUsers() []UserConfig {
 	var c UserConfig
 	var arr []UserConfig
 	for rows.Next() {
-		if err := rows.Scan(&c.Id, &c.IdText, &c.Status, &c.RootDomainRedirect); err != nil {
+		if err := rows.Scan(&c.Id, &c.IdText, &c.RootDomainRedirect); err != nil {
 			log.Errorf("[user][DBGetAvailableUsers] scan failed:%v", err)
 			return nil
 		}
@@ -41,10 +41,10 @@ func DBGetAvailableUsers() []UserConfig {
 
 func DBGetUserInfo(userId int64) (c UserConfig) {
 	d := dbgetter()
-	sql := "SELECT id, idText, status, rootDomainRedirect FROM User WHERE userId=?"
+	sql := "SELECT id, idText, rootDomainRedirect FROM User WHERE userId=?"
 	row := d.QueryRow(sql, userId)
 
-	if err := row.Scan(&c.Id, &c.IdText, &c.Status, &c.RootDomainRedirect); err != nil {
+	if err := row.Scan(&c.Id, &c.IdText, &c.RootDomainRedirect); err != nil {
 		log.Errorf("[user][DBGetUserInfo] scan failed:%v", err)
 		return
 	}
