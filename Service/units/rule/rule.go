@@ -158,6 +158,7 @@ func (r *Rule) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		}
 		cx += int(p.Weight)
 		if x < cx {
+			req.SetPathId(p.PathId)
 			return path.GetPath(p.PathId).OnLPOfferRequest(w, req)
 		}
 	}

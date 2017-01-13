@@ -127,6 +127,7 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 			panic(fmt.Sprintf("[Flow][OnLPOfferRequest]Nil r for rule(%d)", fr.RuleId))
 		}
 		if r.Accept(req) {
+			req.SetRuleId(r.Id)
 			return r.OnLPOfferRequest(w, req)
 		}
 	}
@@ -134,5 +135,6 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	if f.defaultRule.RuleId <= 0 {
 		return fmt.Errorf("[Flow][OnLPOfferRequest]DefaultRule.ID is 0 for request(%s) in flow(%d)", req.Id(), f.Id)
 	}
+	req.SetRuleId(f.defaultRule.RuleId)
 	return rule.GetRule(f.defaultRule.RuleId).OnLPOfferRequest(w, req)
 }

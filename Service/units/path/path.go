@@ -143,6 +143,7 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 			}
 			lx += int(l.Weight)
 			if x < lx {
+				req.SetLanderId(l.LanderId)
 				return lander.GetLander(l.LanderId).OnLPOfferRequest(w, req)
 			}
 		}
@@ -156,6 +157,7 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		}
 		oy += int(o.Weight)
 		if y < oy {
+			req.SetOfferId(o.OfferId)
 			return offer.GetOffer(o.OfferId).OnLPOfferRequest(w, req)
 		}
 	}
