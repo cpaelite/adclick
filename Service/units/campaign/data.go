@@ -1,17 +1,21 @@
 package campaign
 
-func GetAllCampaigns() []CampaignConfig {
+func DBGetAllCampaigns() []CampaignConfig {
 	return nil
 }
 
-func GetAvailableCampaigns() []CampaignConfig {
+func DBGetAvailableCampaigns() []CampaignConfig {
 	return nil
 }
 
-func GetUserCampaigns(userId int64) []CampaignConfig {
+func DBGetUserCampaigns(userId int64) []CampaignConfig {
 	return nil
 }
 
-func GetCampaign(campaignId int64) (c CampaignConfig) {
+func DBGetCampaign(campaignId int64) (c CampaignConfig) {
+	return
+}
+
+func DBGetCampaignByHash(campaignHash string) (c CampaignConfig) {
 	return
 }

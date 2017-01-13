@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
 
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/units/rule"
@@ -20,27 +21,93 @@ func (c FlowConfig) String() string {
 	return fmt.Sprintf("Flow %d:%d Status %d", c.Id, c.UserId, c.Status)
 }
 
-type Flow struct {
-	FlowConfig
-	defaultRule *rule.Rule
-	rules       []*rule.Rule
+const (
+	FlowRuleStatusPaused  = 0
+	FlowRuleStatusRunning = 1
+)
+
+type FlowRule struct {
+	RuleId int64
+	Status int64
 }
 
-func NewFlow(c FlowConfig) (f *Flow) {
-	f = &Flow{
-		FlowConfig: c,
-		rules:      make([]*rule.Rule, 0),
+type Flow struct {
+	FlowConfig
+	defaultRule FlowRule
+	rules       []FlowRule
+}
+
+var cmu sync.RWMutex // protects the following
+var flows = make(map[int64]*Flow)
+
+func setFlow(f *Flow) error {
+	if f == nil {
+		return errors.New("setFlow error:f is nil")
 	}
-	d, r := rule.GetFlowRules(f.Id)
-	f.defaultRule = rule.NewRule(d) // default始终有效
-	f.rules = make([]*rule.Rule, 0, len(r))
+	if f.Id <= 0 {
+		return fmt.Errorf("setFlow error:f.Id(%d) is not positive", f.Id)
+	}
+	cmu.Lock()
+	defer cmu.Unlock()
+	flows[f.Id] = f
+	return nil
+}
+func getFlow(fId int64) *Flow {
+	cmu.RLock()
+	defer cmu.RUnlock()
+	return flows[fId]
+}
+func delFlow(fId int64) {
+	cmu.Lock()
+	defer cmu.Unlock()
+	delete(flows, fId)
+}
+
+func InitFlow(fId int64) error {
+	f := getFlow(fId)
+	if f == nil {
+		f = newFlow(DBGetFlow(fId))
+	}
+	if f == nil {
+		return fmt.Errorf("[InitFlow]Failed because newFlow failed with flow(%d)", fId)
+	}
+	return setFlow(f)
+}
+
+func newFlow(c FlowConfig) (f *Flow) {
+	d, r := DBGetFlowRuleIds(c.Id)
+	if d.RuleId <= 0 {
+		return nil
+	}
+	err := rule.InitRule(d.RuleId) // default始终有效
+	if err != nil {
+		return nil
+	}
 	for _, rc := range r {
-		nr := rule.NewRule(rc)
-		if nr == nil {
+		if rc.Status != FlowRuleStatusRunning {
 			continue
 		}
-		if nr.Status == rule.StatusRunning {
-			f.rules = append(f.rules, nr)
+		err = rule.InitRule(rc.RuleId)
+		if err != nil {
+			return nil
+		}
+	}
+	f = &Flow{
+		FlowConfig:  c,
+		defaultRule: d,
+		rules:       r,
+	}
+	return
+}
+
+func GetFlow(flowId int64) (f *Flow) {
+	f = getFlow(flowId)
+	if f == nil {
+		f = newFlow(DBGetFlow(flowId))
+	}
+	if f != nil {
+		if err := setFlow(f); err != nil {
+			return nil
 		}
 	}
 	return
@@ -51,20 +118,22 @@ func (f *Flow) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		return errors.New("[Flow][OnLPOfferRequest]Nil f")
 	}
 
-	for _, r := range f.rules {
-		if r == nil {
+	var r *rule.Rule
+	for _, fr := range f.rules {
+		if fr.Status != FlowRuleStatusRunning {
 			continue
 		}
-		if r.Status != rule.StatusRunning {
-			continue
+		r = rule.GetRule(fr.RuleId)
+		if r == nil {
+			panic(fmt.Sprintf("[Flow][OnLPOfferRequest]Nil r for rule(%d)", fr.RuleId))
 		}
 		if r.Accept(req) {
 			return r.OnLPOfferRequest(w, req)
 		}
 	}
 
-	if f.defaultRule == nil {
-		return fmt.Errorf("[Flow][OnLPOfferRequest]DefaultRule is nil for request(%s) in flow(%d)", req.Id(), f.Id)
+	if f.defaultRule.RuleId <= 0 {
+		return fmt.Errorf("[Flow][OnLPOfferRequest]DefaultRule.ID is 0 for request(%s) in flow(%d)", req.Id(), f.Id)
 	}
-	return f.defaultRule.OnLPOfferRequest(w, req)
+	return rule.GetRule(f.defaultRule.RuleId).OnLPOfferRequest(w, req)
 }

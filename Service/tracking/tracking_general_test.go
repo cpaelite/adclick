@@ -12,7 +12,9 @@ import (
 	"AdClickTool/Service/gracequit"
 )
 
-func TestTracking(t *testing.T) {
+var db *sql.DB
+
+func init() {
 	// 初始化数据库
 	user := "root"
 	pass := ""
@@ -21,13 +23,36 @@ func TestTracking(t *testing.T) {
 	dbname := "tracking"
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, dbname)
-	t.Logf("connecting db...")
-	db, err := sql.Open("mysql", dataSourceName)
+	var err error
+	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
-		t.Errorf("mysql(%s) connect error:%s\n", dbname, err.Error())
-		return
+		panic(err)
 	}
 
+}
+
+func TestConversions(t *testing.T) {
+	// 启动Conversion保存
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		SavingConversions(db, c)
+	})
+	start := time.Now()
+
+	//
+	count := 100000
+	for i := 0; i < count; i++ {
+		SaveConversion(randConversion())
+	}
+
+	step1 := time.Now()
+	gracequit.StopAll()
+	step2 := time.Now()
+
+	t.Logf("call SaveConversion %v times take:%v", count, step1.Sub(start))
+	t.Logf("wait all sql write done take:%v", step2.Sub(step1))
+}
+
+func TestTracking(t *testing.T) {
 	// 启动保存
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
 		Saving(db, c)
@@ -43,6 +68,7 @@ func TestTracking(t *testing.T) {
 		AddVisit,
 		AddClick,
 		AddConversion,
+		AddImpression,
 	}
 
 	apis2 := []func(key AdStatisKey, count float64){

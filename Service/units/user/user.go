@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -30,24 +29,27 @@ func (c UserConfig) String() string {
 
 type User struct {
 	UserConfig
-
-	cmu             sync.RWMutex                 // protects the following
-	campaigns       map[int64]*campaign.Campaign // campaignId:instance
-	campaignHash2Id map[string]int64             // campaignHash:campaignId
 }
 
-func NewUser(c UserConfig) (u *User) {
-	_, err := url.ParseRequestURI(c.RootDomainRedirect)
-	if err != nil {
-		log.Errorf("[NewUser]Invalid url for user(%+v), err(%s)\n", c, err.Error())
-		return nil
+func InitAllUsers() error {
+	initUser()
+
+	for _, u := range DBGetAvailableUsers() {
+		nu := newUser(u)
+		if nu == nil {
+			return fmt.Errorf("[InitAllUsers]newUser failed for user%d", u.Id)
+		}
+		setUser(u.Id, nu)
 	}
-	u = &User{
-		UserConfig:      c,
-		campaigns:       make(map[int64]*campaign.Campaign),
-		campaignHash2Id: make(map[string]int64),
-	}
-	return
+
+	return nil
+}
+
+func GetUser(uId int64) (u *User) {
+	return getUser(uId)
+}
+func GetUserByIdText(uIdText string) (u *User) {
+	return getUserByIdText(uIdText)
 }
 
 func (u User) String() string {
@@ -68,9 +70,12 @@ func (u *User) Update(c UserConfig) error {
 
 func (u *User) OnLPOfferRequest(w http.ResponseWriter, req request.Request) error {
 	campaignHash := req.CampaignHash()
-	ca := u.getCampaignByHash(campaignHash)
+	ca := campaign.GetCampaignByHash(campaignHash)
 	if ca == nil {
 		return fmt.Errorf("[Units][OnLPOfferRequest]Invalid campaign hash(%s) for %d\n", campaignHash, req.Id())
+	}
+	if ca.UserId != u.Id {
+		return fmt.Errorf("[Units][OnLPOfferRequest]Campaign with hash(%s) does not belong to user %d for %d\n", campaignHash, u.Id, req.Id())
 	}
 	return ca.OnLPOfferRequest(w, req)
 }
@@ -80,75 +85,6 @@ func (u *User) OnLandingPageClick(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (u *User) OnOfferPostback(w http.ResponseWriter, r *http.Request) error {
-	return nil
-}
-
-func (u *User) setCampaign(ca *campaign.Campaign) error {
-	if ca == nil {
-		return errors.New("setCampaign error:ca is nil")
-	}
-	if ca.Id <= 0 {
-		return fmt.Errorf("setCampaign error:ca.Id(%d) is not positive", ca.Id)
-	}
-	u.cmu.Lock()
-	defer u.cmu.Unlock()
-	u.campaigns[ca.Id] = ca
-	u.campaignHash2Id[ca.Hash] = ca.Id
-	return nil
-}
-func (u *User) getCampaign(campaignId int64) *campaign.Campaign {
-	u.cmu.RLock()
-	defer u.cmu.RUnlock()
-	return u.campaigns[campaignId]
-}
-func (u *User) getCampaignByHash(campaignHash string) *campaign.Campaign {
-	u.cmu.RLock()
-	defer u.cmu.RUnlock()
-	if campaignId, ok := u.campaignHash2Id[campaignHash]; ok {
-		return u.campaigns[campaignId]
-	}
-	return nil
-}
-func (u *User) delCampaign(campaignId int64) {
-	u.cmu.Lock()
-	defer u.cmu.Unlock()
-	if c, ok := u.campaigns[campaignId]; ok && c != nil {
-		delete(u.campaigns, campaignId)
-		delete(u.campaignHash2Id, c.Hash)
-	}
-}
-
-func (u *User) AddCampaign(c campaign.CampaignConfig) error {
-	if c.Id <= 0 {
-		return errors.New("AddCampaign error:campaign.Id is not postive")
-	}
-	if c.UserId != u.Id {
-		return fmt.Errorf("AddCampaign error:campaign.Id(%d) not equal to User.Id(%d)", c.UserId, u.Id)
-	}
-	ca := campaign.NewCampaign(c)
-	if ca == nil {
-		return fmt.Errorf("AddCampaign error:NewCampaign failed for %+v", c)
-	}
-
-	return u.setCampaign(ca)
-}
-func (u *User) UpdateCampaign(c campaign.CampaignConfig) error {
-	//TODO 做更细致的更新动作
-	if c.Id <= 0 {
-		return errors.New("UpdateCampaign error:campaign.Id is not postive")
-	}
-	if c.UserId != u.Id {
-		return fmt.Errorf("UpdateCampaign error:campaign.Id(%d) not equal to User.Id(%d)", c.UserId, u.Id)
-	}
-	ca := campaign.NewCampaign(c)
-	if ca == nil {
-		return fmt.Errorf("UpdateCampaign error:NewCampaign failed for %+v", c)
-	}
-
-	return u.setCampaign(ca)
-}
-func (u *User) DelCampaign(campaignId int64) error {
-	u.delCampaign(campaignId)
 	return nil
 }
 
@@ -200,4 +136,85 @@ func (u *User) UpdateOffer(c offer.OfferConfig) error {
 }
 func (u *User) DelOffer(offerId int64) error {
 	return nil
+}
+
+/**
+ * User管理
+**/
+var mu sync.RWMutex                // protects the following
+var users map[int64]*User          // userId:User
+var userIdText2Id map[string]int64 // userIdText:userId
+
+func getUser(userId int64) *User {
+	if userId == 0 {
+		return nil
+	}
+	mu.RLock()
+	defer mu.RUnlock()
+	if u, ok := users[userId]; ok {
+		return u
+	}
+	return nil
+}
+func getUserByIdText(idText string) *User {
+	if idText == "" {
+		return nil
+	}
+	mu.RLock()
+	defer mu.RUnlock()
+	if id, ok := userIdText2Id[idText]; ok {
+		if u, ok := users[id]; ok {
+			return u
+		}
+	}
+	return nil
+}
+func setUser(userId int64, u *User) {
+	if u == nil {
+		log.Error("SetUser u is nil for", userId)
+		return
+	}
+	if userId == 0 {
+		log.Error("SetUser userId is 0 for", u.String())
+		return
+	}
+
+	mu.Lock()
+	defer mu.Unlock()
+	users[userId] = u
+	userIdText2Id[u.IdText] = userId
+}
+func delUser(userId int64) {
+	if userId == 0 {
+		return
+	}
+
+	mu.Lock()
+	defer mu.Unlock()
+	if u := users[userId]; u != nil {
+		delete(users, userId)
+		delete(userIdText2Id, u.IdText)
+	}
+}
+func initUser() {
+	mu.Lock()
+	defer mu.Unlock()
+	users = make(map[int64]*User)
+	userIdText2Id = make(map[string]int64)
+}
+func newUser(c UserConfig) (u *User) {
+	_, err := url.ParseRequestURI(c.RootDomainRedirect)
+	if err != nil {
+		log.Errorf("[NewUser]Invalid url for user(%+v), err(%s)\n", c, err.Error())
+		return nil
+	}
+	err = campaign.InitUserCampaigns(c.Id)
+	if err != nil {
+		log.Errorf("[NewUser]InitUserCampaigns failed for user(%+v), err(%s)\n", c, err.Error())
+		return nil
+	}
+	u = &User{
+		UserConfig: c,
+	}
+	return
 }

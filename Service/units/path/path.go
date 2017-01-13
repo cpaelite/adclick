@@ -1,9 +1,11 @@
 package path
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
+	"sync"
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
@@ -29,37 +31,100 @@ func (c PathConfig) String() string {
 	return fmt.Sprintf("Path %d:%d Status %d", c.Id, c.UserId, c.Status)
 }
 
+type PathLander struct {
+	LanderId int64
+	Weight   uint64
+}
+type PathOffer struct {
+	OfferId int64
+	Weight  uint64
+}
+
 type Path struct {
 	PathConfig
-	landers []*lander.Lander
+	landers []PathLander
 	lwSum   uint64 // lander总权重
-	offers  []*offer.Offer
+	offers  []PathOffer
 	owSum   uint64 // offer总权重
 }
 
-func NewPath(c PathConfig) (p *Path) {
+var cmu sync.RWMutex // protects the following
+var paths = make(map[int64]*Path)
+
+func setPath(p *Path) error {
+	if p == nil {
+		return errors.New("setPath error:p is nil")
+	}
+	if p.Id <= 0 {
+		return fmt.Errorf("setPath error:p.Id(%d) is not positive", p.Id)
+	}
+	cmu.Lock()
+	defer cmu.Unlock()
+	paths[p.Id] = p
+	return nil
+}
+func getPath(pId int64) *Path {
+	cmu.RLock()
+	defer cmu.RUnlock()
+	return paths[pId]
+}
+func delPath(pId int64) {
+	cmu.Lock()
+	defer cmu.Unlock()
+	delete(paths, pId)
+}
+
+func InitPath(pathId int64) error {
+	p := getPath(pathId)
+	if p == nil {
+		p = newPath(DBGetPath(pathId))
+	}
+	if p == nil {
+		return fmt.Errorf("[InitPath]Failed because newPath failed with path(%d)", pathId)
+	}
+	return setPath(p)
+}
+
+func GetPath(pathId int64) (p *Path) {
+	p = getPath(pathId)
+	if p == nil {
+		p = newPath(DBGetPath(pathId))
+	}
+	if p != nil {
+		if err := setPath(p); err != nil {
+			return nil
+		}
+	}
+	return
+}
+
+func newPath(c PathConfig) (p *Path) {
+	var err error
+	var lwSum, owSum uint64
+	landers := DBGetPathLanders(c.Id)
+	for _, c := range landers {
+		err = lander.InitLander(c.LanderId)
+		if err != nil {
+			log.Errorf("[NewPath]NewLander failed with %+v\n", c)
+			return nil
+		}
+		lwSum += c.Weight
+	}
+	offers := DBGetPathOffers(c.Id)
+	for _, c := range offers {
+		err = offer.InitOffer(c.OfferId)
+		if err != nil {
+			log.Errorf("[NewPath]NewOffer failed with %+v\n", c)
+			return nil
+		}
+		owSum += c.Weight
+	}
 	p = &Path{
 		PathConfig: c,
-		landers:    make([]*lander.Lander, 0),
-		offers:     make([]*offer.Offer, 0),
-	}
-	for _, c := range lander.GetPathLanders(p.Id) {
-		nl := lander.NewLander(c)
-		if nl == nil {
-			log.Errorf("[NewPath]NewLander failed with %+v\n", c)
-			continue
-		}
-		p.landers = append(p.landers, nl)
-		p.lwSum += nl.Weight
-	}
-	for _, c := range offer.GetPathOffers(p.Id) {
-		ol := offer.NewOffer(c)
-		if ol == nil {
-			log.Errorf("[NewPath]NewOffer failed with %+v\n", c)
-			continue
-		}
-		p.offers = append(p.offers, ol)
-		p.owSum += ol.Weight
+		landers:    landers,
+		offers:     offers,
+		lwSum:      lwSum,
+		owSum:      owSum,
 	}
 
 	return
@@ -72,25 +137,27 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 
 	x := rand.Intn(int(p.lwSum))
 	lx := 0
-	for _, l := range p.landers {
-		if l == nil {
-			continue
-		}
-		lx += int(l.Weight)
-		if x < lx {
-			return l.OnLPOfferRequest(w, req)
+	if p.DirectLink == 0 {
+		for _, l := range p.landers {
+			if l.LanderId <= 0 {
+				continue
+			}
+			lx += int(l.Weight)
+			if x < lx {
+				return lander.GetLander(l.LanderId).OnLPOfferRequest(w, req)
+			}
 		}
 	}
 
 	y := rand.Intn(int(p.owSum))
 	oy := 0
 	for _, o := range p.offers {
-		if o == nil {
+		if o.OfferId <= 0 {
 			continue
 		}
 		oy += int(o.Weight)
 		if y < oy {
-			return o.OnLPOfferRequest(w, req)
+			return offer.GetOffer(o.OfferId).OnLPOfferRequest(w, req)
 		}
 	}
 

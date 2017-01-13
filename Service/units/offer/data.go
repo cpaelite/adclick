@@ -1,21 +1,17 @@
 package offer
 
-func GetAllOffers() []OfferConfig {
+func DBGetAllOffers() []OfferConfig {
 	return nil
 }
 
-func GetAvailableOffers() []OfferConfig {
+func DBGetAvailableOffers() []OfferConfig {
 	return nil
 }
 
-func GetUserOffers(userId int64) []OfferConfig {
+func DBGetUserOffers(userId int64) []OfferConfig {
 	return nil
 }
 
-func GetPathOffers(pathId int64) []OfferConfig {
-	return nil
-}
-
-func GetOffer(offerId int64) (c OfferConfig) {
+func DBGetOffer(offerId int64) (c OfferConfig) {
 	return
 }

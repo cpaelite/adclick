@@ -1,21 +1,21 @@
 package path
 
-func GetAllPaths() []PathConfig {
+func DBGetAvailablePaths() []PathConfig {
 	return nil
 }
 
-func GetAvailablePaths() []PathConfig {
+func DBGetUserPaths(userId int64) []PathConfig {
 	return nil
 }
 
-func GetUserPaths(userId int64) []PathConfig {
-	return nil
+func DBGetPath(pathId int64) (c PathConfig) {
+	return
 }
 
-func GetRulePaths(ruleId int64) []PathConfig {
-	return nil
+func DBGetPathLanders(pathId int64) (landers []PathLander) {
+	return
 }
 
-func GetPath(pathId int64) (c PathConfig) {
+func DBGetPathOffers(pathId int64) (offers []PathOffer) {
 	return
 }

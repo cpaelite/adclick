@@ -1,9 +1,11 @@
 package offer
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+	"sync"
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
@@ -28,7 +30,57 @@ type Offer struct {
 	OfferConfig
 }
 
-func NewOffer(c OfferConfig) (o *Offer) {
+var cmu sync.RWMutex // protects the following
+var offers = make(map[int64]*Offer)
+
+func setOffer(o *Offer) error {
+	if o == nil {
+		return errors.New("setPath error:o is nil")
+	}
+	if o.Id <= 0 {
+		return fmt.Errorf("setPath error:o.Id(%d) is not positive", o.Id)
+	}
+	cmu.Lock()
+	defer cmu.Unlock()
+	offers[o.Id] = o
+	return nil
+}
+func getOffer(oId int64) *Offer {
+	cmu.RLock()
+	defer cmu.RUnlock()
+	return offers[oId]
+}
+func delOffer(oId int64) {
+	cmu.Lock()
+	defer cmu.Unlock()
+	delete(offers, oId)
+}
+
+func InitOffer(offerId int64) error {
+	o := getOffer(offerId)
+	if o == nil {
+		o = newOffer(DBGetOffer(offerId))
+	}
+	if o == nil {
+		return fmt.Errorf("[InitOffer]Failed because newOffer failed with offer(%d)", offerId)
+	}
+	return setOffer(o)
+}
+
+func GetOffer(offerId int64) (o *Offer) {
+	o = getOffer(offerId)
+	if o == nil {
+		o = newOffer(DBGetOffer(offerId))
+	}
+	if o != nil {
+		if err := setOffer(o); err != nil {
+			return nil
+		}
+	}
+	return
+}
+
+func newOffer(c OfferConfig) (o *Offer) {
 	if c.Id <= 0 {
 		return nil
 	}

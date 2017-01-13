@@ -1,17 +1,21 @@
 package flow
 
-func GetAllFlows() []FlowConfig {
+func DBGetAllFlows() []FlowConfig {
 	return nil
 }
 
-func GetAvailableFlows() []FlowConfig {
+func DBGetAvailableFlows() []FlowConfig {
 	return nil
 }
 
-func GetUserFlows(userId int64) []FlowConfig {
+func DBGetUserFlows(userId int64) []FlowConfig {
 	return nil
 }
 
-func GetFlow(flowId int64) (c FlowConfig) {
+func DBGetFlow(flowId int64) (c FlowConfig) {
+	return
+}
+
+func DBGetFlowRuleIds(flowId int64) (defaultRuleId FlowRule, ruleIds []FlowRule) {
 	return
 }

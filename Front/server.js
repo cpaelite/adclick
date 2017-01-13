@@ -10,7 +10,7 @@ app.use("/tpl", express.static(__dirname + '/src/tpl'));
 app.use("/bower_components", express.static(__dirname + '/bower_components'));
 
 app.get('/', function (req, res) {
-    res.sendFile('index.html', { root: __dirname + '/src' });
+    res.sendFile('index.html', {root: __dirname + '/src'});
 });
 
 function createJWT(username) {
@@ -23,41 +23,41 @@ app.use(function (req, res, next) {
     return next();
 });
 
-app.post('/auth/login', function(req, res) {
+app.post('/auth/login', function (req, res) {
     var username = req.body.email;
     var password = req.body.password;
     if (username && password == '123') {
         res.send({token: createJWT(username)});
     } else {
-        res.status(401).send({ message: 'Invalid email and/or password!' });
+        res.status(401).send({message: 'Invalid email and/or password!'});
     }
 });
 
-app.get('/offer/network', function (req, res) {
+app.get('/affiliate/network', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'offer1', url: 'http://adclick/offer/network'},
-            {id: 2, name: 'offer2', url: 'http://adclick/offer/network'},
-            {id: 3, name: 'offer3', url: 'http://adclick/offer/network'},
-            {id: 4, name: 'offer4', url: 'http://adclick/offer/network'},
-            {id: 5, name: 'offer5', url: 'http://adclick/offer/network'}
+            {id: 1, name: 'affiliate1', url: 'http://adclick/affiliate/network'},
+            {id: 2, name: 'affiliate2', url: 'http://adclick/affiliate/network'},
+            {id: 3, name: 'affiliate3', url: 'http://adclick/affiliate/network'},
+            {id: 4, name: 'affiliate4', url: 'http://adclick/affiliate/network'},
+            {id: 5, name: 'affiliate5', url: 'http://adclick/affiliate/network'}
         ],
         count: 10
     };
     res.send(result);
 });
 
-app.post('/offer/network', function (req, res) {
+app.post('/affiliate/network', function (req, res) {
     var item = req.body;
     item.id = 123;
     res.send({item: item});
 });
 
-app.post('/offer/network/:networkId', function(req, res) {
+app.post('/affiliate/network/:networkId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/offer/network/:networkId', function(req, res) {
+app.delete('/affiliate/network/:networkId', function (req, res) {
     res.send({item: {id: req.params.networkIds}});
 });
 
@@ -78,11 +78,51 @@ app.get('/offer/list', function (req, res) {
 app.get('/offer', function (req, res) {
     var result = {
         rows: [
-            {id: 1, name: 'offer1', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
-            {id: 2, name: 'offer2', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
-            {id: 3, name: 'offer3', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
-            {id: 4, name: 'offer4', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0},
-            {id: 5, name: 'offer5', url: 'http://adclick/offer', country: 'American', affiliateNetwork: 'EffectMobi', postbaclUrl: 'http://adclick/offer', payout: 0}
+            {
+                id: 1,
+                name: 'offer1',
+                url: 'http://adclick/offer',
+                country: 'American',
+                affiliateNetwork: 'EffectMobi',
+                postbaclUrl: 'http://adclick/offer',
+                payout: 0
+            },
+            {
+                id: 2,
+                name: 'offer2',
+                url: 'http://adclick/offer',
+                country: 'American',
+                affiliateNetwork: 'EffectMobi',
+                postbaclUrl: 'http://adclick/offer',
+                payout: 0
+            },
+            {
+                id: 3,
+                name: 'offer3',
+                url: 'http://adclick/offer',
+                country: 'American',
+                affiliateNetwork: 'EffectMobi',
+                postbaclUrl: 'http://adclick/offer',
+                payout: 0
+            },
+            {
+                id: 4,
+                name: 'offer4',
+                url: 'http://adclick/offer',
+                country: 'American',
+                affiliateNetwork: 'EffectMobi',
+                postbaclUrl: 'http://adclick/offer',
+                payout: 0
+            },
+            {
+                id: 5,
+                name: 'offer5',
+                url: 'http://adclick/offer',
+                country: 'American',
+                affiliateNetwork: 'EffectMobi',
+                postbaclUrl: 'http://adclick/offer',
+                payout: 0
+            }
         ],
         count: 10
     };
@@ -95,11 +135,11 @@ app.post('/offer', function (req, res) {
     res.send({item: item});
 });
 
-app.post('/offer/:offerId', function(req, res) {
+app.post('/offer/:offerId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/offer/:offerId', function(req, res) {
+app.delete('/offer/:offerId', function (req, res) {
     res.send({item: {id: req.params.offerId}});
 });
 
@@ -123,11 +163,11 @@ app.post('/traffic/source', function (req, res) {
     res.send({item: item});
 });
 
-app.post('/traffic/source/:tsId', function(req, res) {
+app.post('/traffic/source/:tsId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/traffic/source/:tsId', function(req, res) {
+app.delete('/traffic/source/:tsId', function (req, res) {
     res.send({item: {id: req.params.tsId}});
 });
 
@@ -156,11 +196,11 @@ app.post('/traffic/source/campaign', function (req, res) {
     res.send({item: item});
 });
 
-app.post('/traffic/source/campaign/:campaignId', function(req, res) {
+app.post('/traffic/source/campaign/:campaignId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/traffic/source/campaign/:campaignId', function(req, res) {
+app.delete('/traffic/source/campaign/:campaignId', function (req, res) {
     res.send({item: {id: req.params.campaignId}});
 });
 
@@ -181,14 +221,44 @@ app.get('/track/campaign', function (req, res) {
 app.post('/track/campaign', function (req, res) {
     var item = req.body;
     item.id = 123;
+    item.name = "";
+    item.url = "";
+    item.impPixelUrl = "";
+    item.trafficSource = {id: 1, name: ""};
+    item.country = "";
+    item.costModel = "";
+    item.cpc = 0.00;
+    item.cpa = 0.00;
+    item.cpm = 0.00;
+    item.redirectMode = 1; // 1.CPC
+    item.tags = [];
+    item.targetType = 0; //跳转类型 0:URL;1:Flow;2:Rule;3:Path;4:Lander;5:Offer
+    item.targetFlowId = 1; //targetType 为 1
+    item.targetUrl = "";  //targetType 为 0
+    item.flow = {
+        rules: [
+            {
+                id: 1,
+                name: "",
+                country: "",
+                redirectMode: "",
+                paths: [
+                        {
+                            landers: [{}],
+                            offers: [{}]
+                        }
+                    ]
+            }
+        ]
+    }
     res.send({item: item});
 });
 
-app.post('/track/campaign/:campaignId', function(req, res) {
+app.post('/track/campaign/:campaignId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/track/campaign/:campaignId', function(req, res) {
+app.delete('/track/campaign/:campaignId', function (req, res) {
     res.send({item: {id: req.params.campaignId}});
 });
 
@@ -212,11 +282,11 @@ app.post('/flow', function (req, res) {
     res.send({item: item});
 });
 
-app.post('/flow/:flowId', function(req, res) {
+app.post('/flow/:flowId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/flow/:flowId', function(req, res) {
+app.delete('/flow/:flowId', function (req, res) {
     res.send({item: {id: req.params.flowId}});
 });
 
@@ -240,11 +310,11 @@ app.post('/lander', function (req, res) {
     res.send({item: item});
 });
 
-app.post('/lander/:landId', function(req, res) {
+app.post('/lander/:landId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/lander/:landId', function(req, res) {
+app.delete('/lander/:landId', function (req, res) {
     res.send({item: {id: req.params.landId}});
 });
 
@@ -268,14 +338,14 @@ app.post('/rule', function (req, res) {
     res.send({item: item});
 });
 
-app.post('/rule/:ruleId', function(req, res) {
+app.post('/rule/:ruleId', function (req, res) {
     res.send({item: req.body});
 });
 
-app.delete('/rule/:ruleId', function(req, res) {
+app.delete('/rule/:ruleId', function (req, res) {
     res.send({item: {id: req.params.ruleId}});
 });
 
-app.listen(3000, function () {
-    console.log('server started success port : 3000');
+app.listen(5000, function () {
+    console.log('server started success port : 5000');
 });

@@ -20,6 +20,44 @@
                     <input type="text" class="form-control" ng-model="item.url" required>
                 </div>
             </div>
+            <div class="url-tokens-row form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-5">
+                    <i>Available URL tokens:</i>
+                    <div class="url-tokens">
+                        <div class="url-token " data-token-value="{campaign.id}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{campaign.id}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{trafficsource.id}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{trafficsource.id}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{trafficsource.name}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{trafficsource.name}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{lander.id}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{lander.id}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{device}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{device}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{brand}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{brand}</span>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-5">
@@ -33,7 +71,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" ng-model="item.affiliateNetwork" required>
+                    <md-select class="cs-subform-select" ng-model="item.AffiliateNetworkId" required>
                         <md-option value="1">EffectMobi</md-option>
                         <md-option value="2">hasoffer</md-option>
                     </md-select>
@@ -49,10 +87,10 @@
                 <label class="col-sm-3 control-label">Payout：</label>
                 <div class="col-sm-5">
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.payout" value="0"> Auto
+                        <input type="radio" ng-model="item.payoutMode" value="0"> Auto
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.payout" value="1"> Manual
+                        <input type="radio" ng-model="item.payoutMode" value="1"> Manual
                     </label>
                 </div>
             </div>

@@ -21,7 +21,9 @@ type AdStatisKey struct {
 	City            string
 	Region          string
 	ISP             string
+	MobileCarrier   string
 	Domain          string
+	DeviceType      string
 	Brand           string
 	OS              string
 	OSVersion       string
@@ -34,7 +36,7 @@ type AdStatisKey struct {
 func statisKeyMD5(k *AdStatisKey) string {
 	h := md5.New()
 	// io.WriteString(h, txt)
-	fmt.Fprintf(h, "%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v",
+	fmt.Fprintf(h, "%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v",
 		k.UserID,
 		k.CampaignID,
 		k.FlowID,
@@ -47,7 +49,9 @@ func statisKeyMD5(k *AdStatisKey) string {
 		k.City,
 		k.Region,
 		k.ISP,
+		k.MobileCarrier,
 		k.Domain,
+		k.DeviceType,
 		k.Brand,
 		k.OS,
 		k.OSVersion,
@@ -83,6 +87,14 @@ func AddConversion(key AdStatisKey, count int) {
 	addTrackEvent(key, f)
 }
 
+// AddImpression 增加impression统计信息
+func AddImpression(key AdStatisKey, count int) {
+	f := func(d *adStatisValues) {
+		d.Impressions += count
+	}
+	addTrackEvent(key, f)
+}
+
 // AddCost 增加cost统计信息
 func AddCost(key AdStatisKey, count float64) {
 	f := func(d *adStatisValues) {
@@ -94,7 +106,7 @@ func AddCost(key AdStatisKey, count float64) {
 // AddPayout 增加payout统计信息
 func AddPayout(key AdStatisKey, count float64) {
 	f := func(d *adStatisValues) {
-		d.Payout += count
+		d.Revenue += count
 	}
 	addTrackEvent(key, f)
 }

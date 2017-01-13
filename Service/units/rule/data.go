@@ -1,21 +1,19 @@
 package rule
 
-func GetAllRules() []RuleConfig {
+// 都是获取deleted=0的记录
+
+func DBGetAvailableRules() []RuleConfig {
 	return nil
 }
 
-func GetAvailableRules() []RuleConfig {
+func DBGetUserRules(userId int64) []RuleConfig {
 	return nil
 }
 
-func GetUserRules(userId int64) []RuleConfig {
-	return nil
-}
-
-func GetFlowRules(flowId int64) (defaultRule RuleConfig, rules []RuleConfig) {
+func DBGetRule(ruleId int64) (c RuleConfig) {
 	return
 }
 
-func GetRule(ruleId int64) (c RuleConfig) {
+func DBGetRulePaths(ruleId int64) (paths []RulePath) {
 	return
 }
