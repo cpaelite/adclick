@@ -89,6 +89,31 @@
                 templateUrl: 'tpl/delete-confirm-dialog.html',
             }).then($scope.getList);
         };
+
+        $scope.data = [
+            {name:'Campaign'},
+            {name:'Campaign ID'},
+            {name:'Campaign URL'},
+            {name:'Campaign country'},
+            {name:'Impressions'},
+            {name:'Visits'},
+            {name:'Clicks'},
+            {name:'Conversions'},
+            {name:'Revenue'},
+            {name:'Cost'},
+            {name:'Profit'},
+            {name:'CPV'},
+            {name:'ICTR'}
+        ];
+        $scope.viewColumnIsShow = false;
+        $scope.viewColumnClick = function(){
+            $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+        };
+
+        $scope.viewCloumnClose = function(){
+            $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+        };
+
     }
 
     function TrackCampaignDirective() {
@@ -216,7 +241,8 @@
         $scope.urlTokenClick = function(url){
             $scope.urlToken = $scope.urlToken + url;
         };
-
+        $scope.isDisabled = false;
+        $scope.onChan
     }
 
     function deleteCtrl($mdDialog, TrackCampaign) {

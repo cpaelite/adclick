@@ -1,0 +1,22 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content class="md-dialog-content">
+
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            dailog
+        </form>
+
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+        </md-button>
+        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+
+</md-dialog>

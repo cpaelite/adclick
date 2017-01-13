@@ -20,6 +20,44 @@
                     <input type="text" class="form-control" ng-model="item.url" required>
                 </div>
             </div>
+            <div class="url-tokens-row form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-5">
+                    <i>Available URL tokens:</i>
+                    <div class="url-tokens">
+                        <div class="url-token " data-token-value="{campaign.id}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{campaign.id}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{trafficsource.id}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{trafficsource.id}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{trafficsource.name}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{trafficsource.name}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{lander.id}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{lander.id}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{device}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{device}</span>
+                        </div>
+                        
+                        <div class="url-token " data-token-value="{brand}">
+                            <span class="url-token-icon">+</span>
+                            <span class="url-token-caption">{brand}</span>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
@@ -77,6 +115,141 @@
                     </label>
                 </div>
             </div>
+            <div class="form-group tag-items">
+                <label class="col-sm-3 control-label">Tags：</label>
+                <div class="col-sm-5 selectize-input form-group">
+                    <md-chips
+                        ng-model="ctrl.tags"
+                        readonly="ctrl.readonly"
+                        md-removable="ctrl.removable"
+                        placeholder="Enter a tag"
+                        delete-button-label="Remove Tag"
+                        delete-hint="Press delete to remove tag"
+                        secondary-placeholder="+Tag"
+                        md-max-chips="10">
+                    </md-chips>
+                </div>
+            </div>
+
+            <div class="form-group collapsible-tab visible">
+                <div class="collapsible-header">
+                    <div class="line"></div>
+                    <div class="label-con">
+                        <i class="material-icons">settings</i>
+                        <label>Advanced</label>
+                        <i class="material-icons arrow-down">keyboard_arrow_down</i>
+                    </div>
+                </div>
+                <div class="collapse-wrapper">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Postback URL：</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" ng-model="item.url" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Pixel redirect URL：</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" ng-model="item.url" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Destination：</label>
+                <div class="col-sm-5">
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="item.status" value="0"> Flow
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="item.status" value="1"> URL
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group flow-select">
+                <label class="col-sm-3 control-label">Flow：</label>
+                <div class="col-sm-5">
+                    <md-select class="cs-subform-select" ng-model="item.country" required>
+                        <md-option value="1">SelectFlow</md-option>
+                        <md-option value="2">Canada</md-option>
+                        <md-option value="3">China</md-option>
+                    </md-select>
+                </div>
+            </div>
+
+            <div class="form-group flow-actions">
+                <ul>
+                    <li class="new-flow">
+                        <i class="material-icons">add</i>
+                        Create new flow
+                    </li>
+                    <li class="edit-flow">
+                        <i class="material-icons">edit</i>
+                        Edit flow
+                    </li>
+                </ul>
+            </div>
+
+            <div class="url-token-con">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Url：</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" ng-model="item.url" required>
+                    </div>
+                </div>
+                <div class="url-tokens-row form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-5">
+                        <i>Available URL tokens:</i>
+                        <div class="url-tokens">
+                            <div class="url-token " data-token-value="{campaign.id}">
+                                <span class="url-token-icon">+</span>
+                                <span class="url-token-caption">{campaign.id}</span>
+                            </div>
+                            
+                            <div class="url-token " data-token-value="{trafficsource.id}">
+                                <span class="url-token-icon">+</span>
+                                <span class="url-token-caption">{trafficsource.id}</span>
+                            </div>
+                            
+                            <div class="url-token " data-token-value="{trafficsource.name}">
+                                <span class="url-token-icon">+</span>
+                                <span class="url-token-caption">{trafficsource.name}</span>
+                            </div>
+                            
+                            <div class="url-token " data-token-value="{lander.id}">
+                                <span class="url-token-icon">+</span>
+                                <span class="url-token-caption">{lander.id}</span>
+                            </div>
+                            
+                            <div class="url-token " data-token-value="{device}">
+                                <span class="url-token-icon">+</span>
+                                <span class="url-token-caption">{device}</span>
+                            </div>
+                            
+                            <div class="url-token " data-token-value="{brand}">
+                                <span class="url-token-icon">+</span>
+                                <span class="url-token-caption">{brand}</span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group collapsible-tab visible">
+                <div class="collapsible-header">
+                    <div class="line"></div>
+                    <div class="label-con">
+                        <i class="material-icons">transform</i>
+                        <label>Flow preview</label>
+                        <i class="material-icons arrow-down">keyboard_arrow_down</i>
+                    </div>
+                </div>
+            </div>
+
         </form>
 
     </md-dialog-content>

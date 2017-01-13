@@ -134,6 +134,35 @@ function editItemCtrl($scope, $mdDialog, TrafficSource) {
         $scope.visible = !$scope.visible;
     };
 
+    $scope.selectTrafficSourceTemplate = function (ev, item) {
+        $mdDialog.show({
+            clickOutsideToClose: false,
+            controller: ['$scope', '$mdDialog', selectTrafficSourceTemplateCtrl],
+            controllerAs: 'ctrl',
+            focusOnOpen: false,
+            locals: { item: item, currentUser: $scope.currentUser },
+            bindToController: true,
+            targetEvent: ev,
+            templateUrl: 'tpl/trafficSource-template-dialog.html',
+        });
+    };  
+
+}
+
+function selectTrafficSourceTemplateCtrl($scope, $mdDialog){
+    this.cancel = $mdDialog.cancel;
+
+    function success(item) {
+        $mdDialog.hide(item);
+    }
+
+    this.save = function () {
+        $scope.editForm.$setSubmitted();
+
+        if ($scope.editForm.$valid) {
+            selectTrafficSourceTemplate.save($scope.item, success);
+        }
+    };
 }
 
 function deleteCtrl($mdDialog, TrafficSource) {

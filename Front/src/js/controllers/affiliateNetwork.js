@@ -1,13 +1,13 @@
 (function() {
 
   angular.module('app')
-    .controller('FlowCtrl', [
-        '$scope', '$mdDialog', '$timeout', 'Flow',
-        FlowCtrl
+    .controller('AffiliateNetworkCtrl', [
+        '$scope', '$mdDialog', '$timeout', 'AffiliateNetwork',
+        AffiliateNetworkCtrl
     ]);
 
-function FlowCtrl($scope, $mdDialog, $timeout, Flow) {
-    $scope.app.subtitle = 'Flow';
+function AffiliateNetworkCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
+    $scope.app.subtitle = 'AffiliateNetwork';
 
     $scope.query = {
         limit: '10',
@@ -23,7 +23,7 @@ function FlowCtrl($scope, $mdDialog, $timeout, Flow) {
         $scope.items = items;
     }
     $scope.getList = function () {
-        $scope.promise = Flow.get($scope.query, success).$promise;
+        $scope.promise = AffiliateNetwork.get($scope.query, success).$promise;
     };
 
     $scope.$watch('query.order', function (newValue, oldValue) {
@@ -65,20 +65,20 @@ function FlowCtrl($scope, $mdDialog, $timeout, Flow) {
     $scope.editItem = function (ev, item) {
         $mdDialog.show({
             clickOutsideToClose: false,
-            controller: ['$scope', '$mdDialog', 'Flow', editItemCtrl],
+            controller: ['$scope', '$mdDialog', 'AffiliateNetwork', editItemCtrl],
             controllerAs: 'ctrl',
             focusOnOpen: false,
             locals: { item: item, currentUser: $scope.currentUser },
             bindToController: true,
             targetEvent: ev,
-            templateUrl: 'tpl/flow-edit-dialog.html',
+            templateUrl: 'tpl/affiliateNetwork-edit-dialog.html',
         }).then($scope.getList);
     };
 
     $scope.deleteItem = function (ev, item) {
         $mdDialog.show({
             clickOutsideToClose: true,
-            controller: ['$mdDialog', 'Flow', deleteCtrl],
+            controller: ['$mdDialog', 'AffiliateNetwork', deleteCtrl],
             controllerAs: 'ctrl',
             focusOnOpen: false,
             targetEvent: ev,
@@ -89,7 +89,7 @@ function FlowCtrl($scope, $mdDialog, $timeout, Flow) {
     };
 }
 
-function editItemCtrl($scope, $mdDialog, Flow) {
+function editItemCtrl($scope, $mdDialog, AffiliateNetwork) {
     $scope.currentUser = angular.copy(this.currentUser);
     if (this.item) {
         $scope.item = angular.copy(this.item);
@@ -107,19 +107,24 @@ function editItemCtrl($scope, $mdDialog, Flow) {
         $scope.editForm.$setSubmitted();
 
         if ($scope.editForm.$valid) {
-            Flow.save($scope.item, success);
+            AffiliateNetwork.save($scope.item, success);
         }
+    };
+
+    $scope.textareaShow = false;
+    $scope.isChecked = function(){
+        $scope.textareaShow = !$scope.textareaShow;
     };
 }
 
-function deleteCtrl($mdDialog, Flow) {
+function deleteCtrl($mdDialog, AffiliateNetwork) {
     this.title = "delete";
     this.content = 'warnDelete';
 
     this.cancel = $mdDialog.cancel;
 
     function deleteItem(item) {
-        var deferred = Flow.remove({id: item.id});
+        var deferred = AffiliateNetwork.remove({id: item.id});
         return deferred.$promise;
     }
 

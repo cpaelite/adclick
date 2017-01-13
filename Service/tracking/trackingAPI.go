@@ -87,6 +87,14 @@ func AddConversion(key AdStatisKey, count int) {
 	addTrackEvent(key, f)
 }
 
+// AddImpression 增加impression统计信息
+func AddImpression(key AdStatisKey, count int) {
+	f := func(d *adStatisValues) {
+		d.Impressions += count
+	}
+	addTrackEvent(key, f)
+}
+
 // AddCost 增加cost统计信息
 func AddCost(key AdStatisKey, count float64) {
 	f := func(d *adStatisValues) {

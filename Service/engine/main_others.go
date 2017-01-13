@@ -41,10 +41,24 @@ func main() {
 		tracking.Saving(db.GetDB("DB"), c)
 	})
 
+	// 启动Conversion保存
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		tracking.SavingConversions(db.GetDB("DB"), c)
+	})
+
 	// 启动汇总协程
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
 		tracking.Gathering(c)
 	})
+
+	// 启动AdIPStatis表的汇总协程
+	tracking.InitIPGatherSaver(&gracequit.G, db.GetDB("DB"))
+
+	// 启动AdReferrerStatis表的汇总协程
+	tracking.InitRefGatherSaver(&gracequit.G, db.GetDB("DB"))
+
+	// 启动AdReferrerDomainStatis表的汇总协程
+	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
 
 	if err := units.Init(); err != nil {
 		panic(err.Error())
