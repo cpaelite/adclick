@@ -2,7 +2,7 @@ package path
 
 import (
 	"AdClickTool/Service/db"
-	"HaiwaiAdx/log"
+	"AdClickTool/Service/log"
 	"database/sql"
 )
 

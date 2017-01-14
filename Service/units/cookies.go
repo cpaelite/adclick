@@ -24,7 +24,7 @@ import (
 func cookie(step string, req request.Request) (c *http.Cookie) {
 	c = &http.Cookie{}
 	defer func() {
-		log.Infof("cookie:%+v\n", *c)
+		log.Infof("new cookie:%+v\n", *c)
 	}()
 	req.AddCookie("reqid", req.Id())
 	req.AddCookie("cid", fmt.Sprintf("%d", req.CampaignId()))
