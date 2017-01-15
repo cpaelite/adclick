@@ -6,7 +6,7 @@
         FlowCtrl
     ]);
 
-function FlowCtrl($scope, $mdDialog, $timeout, Flow) {
+function FlowCtrl($scope, $state, $mdDialog, $timeout, Flow) {
     $scope.app.subtitle = 'Flow';
 
     $scope.query = {
@@ -87,6 +87,37 @@ function FlowCtrl($scope, $mdDialog, $timeout, Flow) {
             templateUrl: 'tpl/delete-confirm-dialog.html',
         }).then($scope.getList);
     };
+
+    $scope.data = [
+        {name:'Flow'},
+        {name:'Flow ID'},
+        {name:'Impressions'},
+        {name:'Visits'},
+        {name:'Clicks'},
+        {name:'Conversions'},
+        {name:'Revenue'},
+        {name:'Cost'},
+        {name:'Profit'},
+        {name:'CPV'},
+        {name:'ICTR'},
+        {name:'CTR'},
+        {name:'CR'},
+        {name:'CV'},
+        {name:'ROI'},
+        {name:'EPV'},
+        {name:'EPC'},
+        {name:'AP'},
+        {name:'Errors'}
+    ];
+    $scope.viewColumnIsShow = false;
+    $scope.viewColumnClick = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
+
+    $scope.viewCloumnClose = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
+    
 }
 
 function editItemCtrl($scope, $mdDialog, Flow) {
