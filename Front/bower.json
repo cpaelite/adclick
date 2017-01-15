@@ -38,7 +38,7 @@
     "angular-toastr": "^1.7.0",
     "angular-chart.js": "~1.0.0",
     "animate.css": "^3.5.2",
-    "zTree":"~3.5.27"
+    "zTree": "~3.5.27"
   },
   "devDependencies": {},
   "resolutions": {

@@ -1,4 +1,4 @@
-(function(){
+(function () {
   'use strict';
 
   var i18n_en = {
@@ -14,24 +14,16 @@
     signin: 'Login',
     goBackHomePage: 'Home Page',
     signup: 'Sign up',
-    affiliateNetwork: 'AffiliateNetwork',
-    affiliateNetworkName: 'Name',
-    affiliateNetworkPostBackUrl: 'Url',
-    trackCampaign: 'TrackCampaign',
-    trackCampaignName: 'Name',
-    trackCampaignStatus: {
-        0: 'Active',
-        1: 'InActive'
-    },
+    campaign: 'Campaign',
     offer: 'Offer',
     lander: 'Lander',
-    flow:'Flow',
-    trafficSource:'TrafficSource',
+    flow: 'Flow',
+    trafficSource: 'TrafficSource',
     trafficSourceStatus: {
-        0: 'Active',
-        1: 'InActive'
+      0: 'Active',
+      1: 'InActive'
     },
-    rule:'Rule'
+    rule: 'Rule'
   };
   var i18n_zh = {
     ok: '确定',
@@ -48,7 +40,7 @@
   };
 
   angular.module('app')
-    .config(['$translateProvider', function($translateProvider) {
+    .config(['$translateProvider', function ($translateProvider) {
       $translateProvider
         .translations('en', i18n_en)
         .translations('zh', i18n_zh);
@@ -58,6 +50,6 @@
 
       // Enable escaping of HTML
       $translateProvider.useSanitizeValueStrategy('escape');
-  }]);
+    }]);
 
 })();
