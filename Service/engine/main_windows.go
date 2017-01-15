@@ -69,6 +69,7 @@ func main() {
 	http.HandleFunc("/status/", Status2)
 	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), OnLPOfferRequest)
 	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), OnLandingPageClick)
+	http.HandleFunc(config.String("DEFAULT", "impressionurl"), units.OnImpression)
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening request at", config.GetBindPort())
 	log.Error(reqServer.ListenAndServe())
