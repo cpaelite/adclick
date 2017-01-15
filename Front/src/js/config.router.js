@@ -56,6 +56,12 @@
                 controller: 'TrackCampaignCtrl',
                 data: {}
             })
+            .state('app.dashboard', {
+                url: '/dashboard',
+                templateUrl: 'tpl/dashBoard.html',
+                controller: 'DashCtrl',
+                data: {}
+            })
             .state('app.affiliatenetwork', {
                 url: '/api/affilate',
                 templateUrl: 'tpl/affiliateNetwork.html',

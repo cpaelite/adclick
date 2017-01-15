@@ -9,6 +9,9 @@ angular.module('app')
 .factory('Signup', ['$resource', function ($resource) {
     return $resource('/register');
 }])
+.factory('DashBoard', ['$resource', function ($resource) {
+    return $resource('/dashboard/:id', {id: '@id'});
+}])
 .factory('TrackCampaign', ['$resource', function ($resource) {
     return $resource('/track/campaign/:id', {id: '@id'});
 }])

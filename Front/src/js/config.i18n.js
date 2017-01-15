@@ -17,6 +17,7 @@
     affiliateNetwork: 'AffiliateNetwork',
     affiliateNetworkName: 'Name',
     affiliateNetworkPostBackUrl: 'Url',
+    dashBoard: 'DashBoard',
     trackCampaign: 'TrackCampaign',
     trackCampaignName: 'Name',
     trackCampaignStatus: {
