@@ -80,36 +80,6 @@
         controller: 'ReportCtrl',
         data: {}
       })
-      .state('app.trackcampaign', {
-        url: '/track/campaign',
-        templateUrl: 'tpl/trackCampaign.html',
-        controller: 'TrackCampaignCtrl',
-        data: {}
-      })
-      .state('app.affiliatenetwork', {
-        url: '/api/affilate',
-        templateUrl: 'tpl/affiliateNetwork.html',
-        controller: 'AffiliateNetworkCtrl',
-        data: {}
-      })
-      .state('app.offer', {
-        url: '/api/offer',
-        templateUrl: 'tpl/offer.html',
-        controller: 'OfferCtrl',
-        data: {}
-      })
-      .state('app.lander', {
-        url: '/lander',
-        templateUrl: 'tpl/lander.html',
-        controller: 'LanderCtrl',
-        data: {}
-      })
-      .state('app.flow', {
-        url: '/flow',
-        templateUrl: 'tpl/flow.html',
-        controller: 'FlowCtrl',
-        data: {}
-      })
       .state('app.trafficSource', {
         url: '/traffic/source',
         templateUrl: 'tpl/trafficSource.html',
