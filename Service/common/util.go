@@ -26,8 +26,38 @@ func GetCampaignHash(r *http.Request) string {
 func HostPath(r *http.Request) string {
 	return r.Host + r.RequestURI
 }
+func SchemeHost(r *http.Request) string {
+	scheme := r.URL.Scheme
+	if scheme == "" {
+		if r.TLS == nil {
+			scheme = "http"
+		} else {
+			scheme = "https"
+		}
+	}
+	return scheme + "://" + r.Host
+}
 func SchemeHostPath(r *http.Request) string {
-	return r.URL.Scheme + "://" + r.Host + r.RequestURI
+	scheme := r.URL.Scheme
+	if scheme == "" {
+		if r.TLS == nil {
+			scheme = "http"
+		} else {
+			scheme = "https"
+		}
+	}
+	return scheme + "://" + r.Host + r.URL.Path
+}
+func SchemeHostURI(r *http.Request) string {
+	scheme := r.URL.Scheme
+	if scheme == "" {
+		if r.TLS == nil {
+			scheme = "http"
+		} else {
+			scheme = "https"
+		}
+	}
+	return scheme + "://" + r.Host + r.RequestURI
 }
 
 func GenRandId() string {

@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"time"
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/config"
@@ -14,6 +15,8 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
+
+	"AdClickTool/Service/request"
 )
 
 func main() {
@@ -41,7 +44,7 @@ func main() {
 
 	// 启动Conversion保存
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
-		tracking.SavingConversions(db, c)
+		tracking.SavingConversions(db.GetDB("DB"), c)
 	})
 
 	// 启动汇总协程
@@ -75,11 +78,32 @@ func main() {
 }
 
 func Status1(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "It works1!"+common.SchemeHostPath(r)+" *"+r.RequestURI+" *"+common.GetCampaignHash(r))
+	log.Info("Status1:", common.SchemeHostURI(r))
+	c, err := r.Cookie("tstep")
+	if err != nil {
+		log.Error(err.Error())
+	}
+	if c != nil {
+		log.Infof("Cookies tstep:%+v\n", *c)
+	}
+	req, _ := request.CreateRequest(common.GenRandId(), request.ReqLPOffer, r)
+	req.SetCampaignId(time.Now().Unix())
+	units.SetCookie(w, request.ReqLPOffer, req)
+	fmt.Fprint(w, "It works1!"+common.SchemeHostURI(r)+
+		" *"+r.RequestURI+
+		" *"+common.GetCampaignHash(r)+
+		" *"+fmt.Sprintf("%v", r.URL.IsAbs()))
 }
 
 func Status2(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "http://www.baidu.com", http.StatusFound)
+	log.Info("Status2:", common.SchemeHostURI(r))
+	c, err := r.Cookie("tstep")
+	if err != nil {
+		log.Error(err.Error())
+	}
+	if c != nil {
+		log.Infof("Cookies tstep:%+v\n", *c)
+	}
 }
 
 func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {

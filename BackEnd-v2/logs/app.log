@@ -1,0 +1,1841 @@
+[2017-01-04 16:45:20.052] [INFO] startup - adclick server listening on port 3000  with pid  23974
+[2017-01-04 16:45:20.066] [INFO] startup - adclick server listening on port 3000  with pid  23975
+[2017-01-04 16:45:20.081] [INFO] startup - adclick server listening on port 3000  with pid  23976
+[2017-01-04 16:45:20.109] [INFO] startup - adclick server listening on port 3000  with pid  23973
+[2017-01-04 16:45:24.458] [INFO] startup - adclick server listening on port 3000  with pid  23982
+[2017-01-04 16:45:24.496] [INFO] startup - adclick server listening on port 3000  with pid  23984
+[2017-01-04 16:45:24.501] [INFO] startup - adclick server listening on port 3000  with pid  23983
+[2017-01-04 16:45:24.513] [INFO] startup - adclick server listening on port 3000  with pid  23985
+[2017-01-04 16:46:04.096] [INFO] startup - adclick server listening on port 3000  with pid  24004
+[2017-01-04 16:46:04.099] [INFO] startup - adclick server listening on port 3000  with pid  24003
+[2017-01-04 16:46:04.105] [INFO] startup - adclick server listening on port 3000  with pid  24005
+[2017-01-04 16:46:04.113] [INFO] startup - adclick server listening on port 3000  with pid  24006
+[2017-01-04 16:46:17.781] [INFO] startup - adclick server listening on port 3000  with pid  24014
+[2017-01-04 16:46:17.782] [INFO] startup - adclick server listening on port 3000  with pid  24015
+[2017-01-04 16:46:17.785] [INFO] startup - adclick server listening on port 3000  with pid  24016
+[2017-01-04 16:46:17.786] [INFO] startup - adclick server listening on port 3000  with pid  24017
+[2017-01-04 16:46:37.614] [ERROR] app - Something went wrong: { status: 404 }
+[2017-01-04 16:46:37.625] [ERROR] http - ::1 - - "GET / HTTP/1.1" 404 46 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 17:30:14.885] [INFO] startup - adclick server listening on port 3000  with pid  24678
+[2017-01-04 17:30:14.885] [INFO] startup - adclick server listening on port 3000  with pid  24676
+[2017-01-04 17:30:14.900] [INFO] startup - adclick server listening on port 3000  with pid  24677
+[2017-01-04 17:30:14.919] [INFO] startup - adclick server listening on port 3000  with pid  24675
+[2017-01-04 17:31:13.098] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"email" is required',
+       path: 'email',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: 
+   { id: '5a505dd0df32b0dfb99b65b24f4078c9',
+     imp: [ [Object], [Object] ],
+     site: 
+      { id: '89648',
+        name: 'keepin',
+        domain: 'keepin.tv',
+        publisher: [Object] },
+     device: 
+      { ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36',
+        ip: '52.66.158.121' },
+     at: 2,
+     cur: [ 'USD' ] } }
+[2017-01-04 17:31:13.108] [ERROR] http - ::1 - - "POST /login HTTP/1.1" 500 742 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 17:31:49.540] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"email" is required',
+       path: 'email',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: {} }
+[2017-01-04 17:31:49.544] [ERROR] http - ::1 - - "POST /login HTTP/1.1" 500 239 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 17:34:11.011] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"email" must be a valid email',
+       path: 'email',
+       type: 'string.email',
+       context: [Object] } ],
+  _object: { email: '111' } }
+[2017-01-04 17:34:11.031] [ERROR] http - ::1 - - "POST /login HTTP/1.1" 500 286 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 17:34:26.469] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"pwd" is required',
+       path: 'pwd',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: { email: '772063721@qq.com' } }
+[2017-01-04 17:34:26.475] [ERROR] http - ::1 - - "POST /login HTTP/1.1" 500 255 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 17:34:46.744] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 2 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 17:34:54.417] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 2 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 18:06:16.172] [INFO] startup - adclick server listening on port 3000  with pid  25367
+[2017-01-04 18:06:16.194] [INFO] startup - adclick server listening on port 3000  with pid  25365
+[2017-01-04 18:06:16.221] [INFO] startup - adclick server listening on port 3000  with pid  25366
+[2017-01-04 18:06:16.230] [INFO] startup - adclick server listening on port 3000  with pid  25368
+[2017-01-04 18:06:22.015] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-04 18:06:22.025] [ERROR] http - ::1 - - "POST /login HTTP/1.1" 500 259 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 18:12:32.135] [INFO] startup - adclick server listening on port 3000  with pid  25475
+[2017-01-04 18:12:32.148] [INFO] startup - adclick server listening on port 3000  with pid  25474
+[2017-01-04 18:12:32.162] [INFO] startup - adclick server listening on port 3000  with pid  25472
+[2017-01-04 18:12:32.211] [INFO] startup - adclick server listening on port 3000  with pid  25473
+[2017-01-04 18:12:34.933] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-04 18:12:34.943] [ERROR] http - ::1 - - "POST /login HTTP/1.1" 500 259 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 18:16:19.974] [INFO] startup - adclick server listening on port 3000  with pid  25547
+[2017-01-04 18:16:19.993] [INFO] startup - adclick server listening on port 3000  with pid  25549
+[2017-01-04 18:16:20.012] [INFO] startup - adclick server listening on port 3000  with pid  25550
+[2017-01-04 18:16:20.015] [INFO] startup - adclick server listening on port 3000  with pid  25548
+[2017-01-04 18:16:26.014] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 2 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 18:17:25.090] [INFO] startup - adclick server listening on port 3000  with pid  25580
+[2017-01-04 18:17:25.090] [INFO] startup - adclick server listening on port 3000  with pid  25578
+[2017-01-04 18:17:25.091] [INFO] startup - adclick server listening on port 3000  with pid  25579
+[2017-01-04 18:17:25.113] [INFO] startup - adclick server listening on port 3000  with pid  25581
+[2017-01-04 18:17:30.022] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 2 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-04 18:19:56.735] [INFO] startup - adclick server listening on port 3000  with pid  25707
+[2017-01-04 18:19:56.762] [INFO] startup - adclick server listening on port 3000  with pid  25710
+[2017-01-04 18:19:56.777] [INFO] startup - adclick server listening on port 3000  with pid  25708
+[2017-01-04 18:19:56.792] [INFO] startup - adclick server listening on port 3000  with pid  25709
+[2017-01-04 18:19:59.827] [INFO] startup - adclick server listening on port 3000  with pid  25713
+[2017-01-04 18:20:04.786] [INFO] startup - adclick server listening on port 3000  with pid  25716
+[2017-01-04 18:20:55.741] [INFO] startup - adclick server listening on port 3000  with pid  25738
+[2017-01-04 18:20:55.742] [INFO] startup - adclick server listening on port 3000  with pid  25739
+[2017-01-04 18:20:55.765] [INFO] startup - adclick server listening on port 3000  with pid  25736
+[2017-01-04 18:20:55.791] [INFO] startup - adclick server listening on port 3000  with pid  25737
+[2017-01-04 18:20:58.411] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 2 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-06 19:21:13.577] [INFO] startup - adclick server listening on port 3000  with pid  51837
+[2017-01-06 19:21:13.577] [INFO] startup - adclick server listening on port 3000  with pid  51838
+[2017-01-06 19:21:13.590] [INFO] startup - adclick server listening on port 3000  with pid  51836
+[2017-01-06 19:21:13.616] [INFO] startup - adclick server listening on port 3000  with pid  51839
+[2017-01-06 19:21:20.099] [INFO] startup - adclick server listening on port 3000  with pid  51845
+[2017-01-06 19:21:20.099] [INFO] startup - adclick server listening on port 3000  with pid  51848
+[2017-01-06 19:21:20.102] [INFO] startup - adclick server listening on port 3000  with pid  51847
+[2017-01-06 19:21:20.112] [INFO] startup - adclick server listening on port 3000  with pid  51846
+[2017-01-07 11:13:05.852] [INFO] startup - adclick server listening on port 5000  with pid  55340
+[2017-01-07 11:13:06.134] [INFO] startup - adclick server listening on port 5000  with pid  55342
+[2017-01-07 11:13:06.137] [INFO] startup - adclick server listening on port 5000  with pid  55341
+[2017-01-07 11:13:06.141] [INFO] startup - adclick server listening on port 5000  with pid  55343
+[2017-01-07 11:20:34.423] [INFO] startup - adclick server listening on port 5000  with pid  56275
+[2017-01-07 11:20:34.444] [INFO] startup - adclick server listening on port 5000  with pid  56278
+[2017-01-07 11:20:34.444] [INFO] startup - adclick server listening on port 5000  with pid  56277
+[2017-01-07 11:20:34.449] [INFO] startup - adclick server listening on port 5000  with pid  56276
+[2017-01-07 11:20:43.402] [INFO] startup - adclick server listening on port 5000  with pid  56286
+[2017-01-07 11:20:43.416] [INFO] startup - adclick server listening on port 5000  with pid  56287
+[2017-01-07 11:20:43.429] [INFO] startup - adclick server listening on port 5000  with pid  56285
+[2017-01-07 11:20:43.443] [INFO] startup - adclick server listening on port 5000  with pid  56288
+[2017-01-07 11:21:22.830] [ERROR] app - Something went wrong: ReferenceError: next is not defined
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/networktpl.js:15:14
+    at Object._validateWithOptions (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/joi/lib/any.js:610:20)
+    at Object.root.validate (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/joi/lib/index.js:121:23)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/networktpl.js:13:7
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at Route.dispatch (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:277:22
+    at Function.process_params (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:330:12)
+[2017-01-07 11:21:22.846] [ERROR] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 500 44 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:21:40.727] [INFO] startup - adclick server listening on port 5000  with pid  56321
+[2017-01-07 11:21:40.741] [INFO] startup - adclick server listening on port 5000  with pid  56320
+[2017-01-07 11:21:40.751] [INFO] startup - adclick server listening on port 5000  with pid  56319
+[2017-01-07 11:21:40.758] [INFO] startup - adclick server listening on port 5000  with pid  56318
+[2017-01-07 11:21:42.474] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"name" is required',
+       path: 'name',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: { email: '772063721@qq.com', pwd: '1111' } }
+[2017-01-07 11:21:42.488] [ERROR] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 500 273 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:22:58.382] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 11:22:58.385] [ERROR] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 500 297 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:23:48.087] [INFO] startup - adclick server listening on port 5000  with pid  56378
+[2017-01-07 11:23:48.088] [INFO] startup - adclick server listening on port 5000  with pid  56377
+[2017-01-07 11:23:48.105] [INFO] startup - adclick server listening on port 5000  with pid  56376
+[2017-01-07 11:23:48.108] [INFO] startup - adclick server listening on port 5000  with pid  56379
+[2017-01-07 11:23:50.745] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 11:23:50.754] [ERROR] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 500 297 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:24:54.250] [INFO] startup - adclick server listening on port 5000  with pid  56407
+[2017-01-07 11:24:54.251] [INFO] startup - adclick server listening on port 5000  with pid  56408
+[2017-01-07 11:24:54.286] [INFO] startup - adclick server listening on port 5000  with pid  56406
+[2017-01-07 11:24:54.304] [INFO] startup - adclick server listening on port 5000  with pid  56409
+[2017-01-07 11:25:03.185] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 11:25:03.195] [ERROR] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 500 297 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:35:02.966] [INFO] startup - adclick server listening on port 5000  with pid  56580
+[2017-01-07 11:35:02.992] [INFO] startup - adclick server listening on port 5000  with pid  56579
+[2017-01-07 11:35:03.003] [INFO] startup - adclick server listening on port 5000  with pid  56581
+[2017-01-07 11:35:03.011] [INFO] startup - adclick server listening on port 5000  with pid  56582
+[2017-01-07 11:35:06.200] [INFO] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:35:17.884] [INFO] http - ::1 - - "POST /affilate/tpl/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:35:58.265] [INFO] startup - adclick server listening on port 5000  with pid  56610
+[2017-01-07 11:35:58.898] [INFO] startup - adclick server listening on port 5000  with pid  56611
+[2017-01-07 11:36:47.775] [INFO] startup - adclick server listening on port 5000  with pid  56633
+[2017-01-07 11:36:47.776] [INFO] startup - adclick server listening on port 5000  with pid  56634
+[2017-01-07 11:36:47.795] [INFO] startup - adclick server listening on port 5000  with pid  56631
+[2017-01-07 11:36:47.805] [INFO] startup - adclick server listening on port 5000  with pid  56632
+[2017-01-07 11:36:51.203] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 11:36:51.215] [ERROR] http - ::1 - - "GET /affilate/tpl/list HTTP/1.1" 500 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:37:15.254] [INFO] startup - adclick server listening on port 5000  with pid  56649
+[2017-01-07 11:37:15.260] [INFO] startup - adclick server listening on port 5000  with pid  56651
+[2017-01-07 11:37:15.271] [INFO] startup - adclick server listening on port 5000  with pid  56648
+[2017-01-07 11:37:15.271] [INFO] startup - adclick server listening on port 5000  with pid  56650
+[2017-01-07 11:37:17.457] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 11:37:17.468] [ERROR] http - ::1 - - "GET /affilate/tpl/list HTTP/1.1" 500 303 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 11:38:06.021] [INFO] startup - adclick server listening on port 5000  with pid  56671
+[2017-01-07 11:38:06.024] [INFO] startup - adclick server listening on port 5000  with pid  56670
+[2017-01-07 11:38:06.034] [INFO] startup - adclick server listening on port 5000  with pid  56672
+[2017-01-07 11:38:06.077] [INFO] startup - adclick server listening on port 5000  with pid  56673
+[2017-01-07 11:38:07.947] [INFO] http - ::1 - - "GET /affilate/tpl/list HTTP/1.1" 200 177 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:34:58.168] [INFO] startup - adclick server listening on port 5000  with pid  57505
+[2017-01-07 12:34:58.169] [INFO] startup - adclick server listening on port 5000  with pid  57506
+[2017-01-07 12:34:58.172] [INFO] startup - adclick server listening on port 5000  with pid  57504
+[2017-01-07 12:34:58.181] [INFO] startup - adclick server listening on port 5000  with pid  57507
+[2017-01-07 12:35:08.571] [ERROR] app - Something went wrong: Error: need access_token
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/util/index.js:23:12
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+[2017-01-07 12:35:08.583] [ERROR] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 500 42 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:37:04.535] [INFO] startup - adclick server listening on port 5000  with pid  57548
+[2017-01-07 12:37:04.548] [INFO] startup - adclick server listening on port 5000  with pid  57551
+[2017-01-07 12:37:04.570] [INFO] startup - adclick server listening on port 5000  with pid  57549
+[2017-01-07 12:37:04.593] [INFO] startup - adclick server listening on port 5000  with pid  57550
+[2017-01-07 12:38:22.071] [INFO] startup - adclick server listening on port 5000  with pid  57588
+[2017-01-07 12:39:56.266] [INFO] startup - adclick server listening on port 5000  with pid  57614
+[2017-01-07 12:42:20.705] [INFO] startup - adclick server listening on port 5000  with pid  57668
+[2017-01-07 12:42:20.721] [INFO] startup - adclick server listening on port 5000  with pid  57670
+[2017-01-07 12:42:20.750] [INFO] startup - adclick server listening on port 5000  with pid  57669
+[2017-01-07 12:42:20.754] [INFO] startup - adclick server listening on port 5000  with pid  57671
+[2017-01-07 12:42:23.723] [INFO] http - ::1 - - "POST /register HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:44:35.993] [INFO] startup - adclick server listening on port 5000  with pid  57712
+[2017-01-07 12:44:36.012] [INFO] startup - adclick server listening on port 5000  with pid  57713
+[2017-01-07 12:44:36.012] [INFO] startup - adclick server listening on port 5000  with pid  57714
+[2017-01-07 12:44:36.033] [INFO] startup - adclick server listening on port 5000  with pid  57715
+[2017-01-07 12:44:40.279] [ERROR] user - [register]error: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:44:40.591] [INFO] startup - adclick server listening on port 5000  with pid  57720
+[2017-01-07 12:45:01.192] [INFO] startup - adclick server listening on port 5000  with pid  57732
+[2017-01-07 12:45:01.206] [INFO] startup - adclick server listening on port 5000  with pid  57734
+[2017-01-07 12:45:01.209] [INFO] startup - adclick server listening on port 5000  with pid  57735
+[2017-01-07 12:45:01.224] [INFO] startup - adclick server listening on port 5000  with pid  57733
+[2017-01-07 12:45:03.162] [ERROR] user - [register]error: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:45:03.165] [ERROR] app - Something went wrong: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:45:03.174] [ERROR] http - ::1 - - "POST /register HTTP/1.1" 500 137 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:45:19.994] [ERROR] user - [register]error: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:45:19.994] [ERROR] app - Something went wrong: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:45:19.998] [ERROR] http - ::1 - - "POST /register HTTP/1.1" 500 137 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:46:06.460] [INFO] startup - adclick server listening on port 5000  with pid  57760
+[2017-01-07 12:46:06.471] [INFO] startup - adclick server listening on port 5000  with pid  57758
+[2017-01-07 12:46:06.496] [INFO] startup - adclick server listening on port 5000  with pid  57761
+[2017-01-07 12:46:06.496] [INFO] startup - adclick server listening on port 5000  with pid  57759
+[2017-01-07 12:46:08.888] [ERROR] user - [register]error: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:46:08.889] [ERROR] app - Something went wrong: { code: 'ER_DUP_ENTRY', errno: 1062, sqlState: '23000', index: 0 }
+[2017-01-07 12:46:08.898] [ERROR] http - ::1 - - "POST /register HTTP/1.1" 500 152 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:46:34.613] [INFO] http - ::1 - - "POST /register HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:57:41.575] [INFO] startup - adclick server listening on port 5000  with pid  57931
+[2017-01-07 12:57:41.575] [INFO] startup - adclick server listening on port 5000  with pid  57934
+[2017-01-07 12:57:41.595] [INFO] startup - adclick server listening on port 5000  with pid  57932
+[2017-01-07 12:57:41.616] [INFO] startup - adclick server listening on port 5000  with pid  57933
+[2017-01-07 12:57:57.277] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"firstname" is not allowed',
+       path: 'firstname',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"lastname" is not allowed',
+       path: 'lastname',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"password" is not allowed',
+       path: 'password',
+       type: 'object.allowUnknown',
+       context: [Object] } ],
+  _object: 
+   { email: '772063721@qq.com',
+     firstname: 'aedan',
+     lastname: 'lee',
+     password: '111111' } }
+[2017-01-07 12:57:57.291] [ERROR] http - ::1 - - "POST /account/check HTTP/1.1" 500 671 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:58:10.106] [INFO] startup - adclick server listening on port 5000  with pid  57946
+[2017-01-07 12:58:10.126] [INFO] startup - adclick server listening on port 5000  with pid  57948
+[2017-01-07 12:58:10.127] [INFO] startup - adclick server listening on port 5000  with pid  57949
+[2017-01-07 12:58:10.140] [INFO] startup - adclick server listening on port 5000  with pid  57947
+[2017-01-07 12:58:21.200] [INFO] http - ::1 - - "POST /account/check HTTP/1.1" 200 52 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:59:29.620] [INFO] startup - adclick server listening on port 5000  with pid  57980
+[2017-01-07 12:59:29.658] [INFO] startup - adclick server listening on port 5000  with pid  57981
+[2017-01-07 12:59:29.661] [INFO] startup - adclick server listening on port 5000  with pid  57982
+[2017-01-07 12:59:29.663] [INFO] startup - adclick server listening on port 5000  with pid  57979
+[2017-01-07 12:59:32.027] [INFO] http - ::1 - - "POST /account/check HTTP/1.1" 200 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 12:59:38.592] [INFO] http - ::1 - - "POST /account/check HTTP/1.1" 200 56 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:05:41.641] [INFO] startup - adclick server listening on port 5000  with pid  58081
+[2017-01-07 13:05:41.685] [INFO] startup - adclick server listening on port 5000  with pid  58083
+[2017-01-07 13:05:41.688] [INFO] startup - adclick server listening on port 5000  with pid  58082
+[2017-01-07 13:05:41.694] [INFO] startup - adclick server listening on port 5000  with pid  58080
+[2017-01-07 13:05:45.962] [INFO] http - ::1 - - "POST /account/check HTTP/1.1" 200 56 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:05:54.558] [INFO] http - ::1 - - "POST /account/check HTTP/1.1" 200 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:07:17.150] [INFO] startup - adclick server listening on port 5000  with pid  58119
+[2017-01-07 13:07:17.793] [INFO] startup - adclick server listening on port 5000  with pid  58120
+[2017-01-07 13:10:24.996] [INFO] startup - adclick server listening on port 5000  with pid  58177
+[2017-01-07 13:10:24.996] [INFO] startup - adclick server listening on port 5000  with pid  58176
+[2017-01-07 13:10:25.011] [INFO] startup - adclick server listening on port 5000  with pid  58178
+[2017-01-07 13:10:25.030] [INFO] startup - adclick server listening on port 5000  with pid  58179
+[2017-01-07 13:10:32.694] [INFO] startup - adclick server listening on port 5000  with pid  58183
+[2017-01-07 13:13:35.641] [INFO] startup - adclick server listening on port 5000  with pid  58332
+[2017-01-07 13:13:35.775] [INFO] startup - adclick server listening on port 5000  with pid  58333
+[2017-01-07 13:13:35.821] [INFO] startup - adclick server listening on port 5000  with pid  58334
+[2017-01-07 13:13:35.833] [INFO] startup - adclick server listening on port 5000  with pid  58335
+[2017-01-07 13:13:45.270] [INFO] startup - adclick server listening on port 5000  with pid  58341
+[2017-01-07 13:13:45.271] [INFO] startup - adclick server listening on port 5000  with pid  58343
+[2017-01-07 13:13:45.292] [INFO] startup - adclick server listening on port 5000  with pid  58344
+[2017-01-07 13:13:45.305] [INFO] startup - adclick server listening on port 5000  with pid  58342
+[2017-01-07 13:13:57.302] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 149 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:16:29.666] [INFO] startup - adclick server listening on port 5000  with pid  59013
+[2017-01-07 13:16:29.666] [INFO] startup - adclick server listening on port 5000  with pid  59016
+[2017-01-07 13:16:29.676] [INFO] startup - adclick server listening on port 5000  with pid  59015
+[2017-01-07 13:16:29.675] [INFO] startup - adclick server listening on port 5000  with pid  59014
+[2017-01-07 13:16:42.713] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 42 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:16:49.607] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 43 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:32:29.358] [ERROR] app - Something went wrong: { status: 404 }
+[2017-01-07 13:32:29.381] [ERROR] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 404 34 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:34:29.000] [INFO] startup - adclick server listening on port 5000  with pid  59678
+[2017-01-07 13:34:29.004] [INFO] startup - adclick server listening on port 5000  with pid  59680
+[2017-01-07 13:34:29.011] [INFO] startup - adclick server listening on port 5000  with pid  59679
+[2017-01-07 13:34:29.064] [INFO] startup - adclick server listening on port 5000  with pid  59677
+[2017-01-07 13:34:36.370] [INFO] startup - adclick server listening on port 5000  with pid  59688
+[2017-01-07 13:34:36.384] [INFO] startup - adclick server listening on port 5000  with pid  59687
+[2017-01-07 13:34:36.392] [INFO] startup - adclick server listening on port 5000  with pid  59690
+[2017-01-07 13:34:36.394] [INFO] startup - adclick server listening on port 5000  with pid  59689
+[2017-01-07 13:34:39.587] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 13:34:39.597] [ERROR] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 500 220 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:39:09.964] [INFO] startup - adclick server listening on port 5000  with pid  59769
+[2017-01-07 13:39:09.967] [INFO] startup - adclick server listening on port 5000  with pid  59768
+[2017-01-07 13:39:09.996] [INFO] startup - adclick server listening on port 5000  with pid  59767
+[2017-01-07 13:39:09.998] [INFO] startup - adclick server listening on port 5000  with pid  59770
+[2017-01-07 13:39:12.829] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 13:39:12.838] [ERROR] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 500 220 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:39:38.758] [INFO] startup - adclick server listening on port 5000  with pid  59786
+[2017-01-07 13:39:38.760] [INFO] startup - adclick server listening on port 5000  with pid  59784
+[2017-01-07 13:39:38.785] [INFO] startup - adclick server listening on port 5000  with pid  59785
+[2017-01-07 13:39:38.787] [INFO] startup - adclick server listening on port 5000  with pid  59787
+[2017-01-07 13:39:41.928] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 13:39:41.937] [ERROR] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 500 195 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:42:46.489] [INFO] startup - adclick server listening on port 5000  with pid  59843
+[2017-01-07 13:42:46.506] [INFO] startup - adclick server listening on port 5000  with pid  59845
+[2017-01-07 13:42:46.525] [INFO] startup - adclick server listening on port 5000  with pid  59846
+[2017-01-07 13:42:46.537] [INFO] startup - adclick server listening on port 5000  with pid  59844
+[2017-01-07 13:42:50.875] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:44:12.210] [INFO] startup - adclick server listening on port 5000  with pid  59877
+[2017-01-07 13:44:12.213] [INFO] startup - adclick server listening on port 5000  with pid  59875
+[2017-01-07 13:44:12.260] [INFO] startup - adclick server listening on port 5000  with pid  59874
+[2017-01-07 13:44:12.264] [INFO] startup - adclick server listening on port 5000  with pid  59876
+[2017-01-07 13:44:41.086] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:44:47.345] [INFO] startup - adclick server listening on port 5000  with pid  59896
+[2017-01-07 13:44:47.345] [INFO] startup - adclick server listening on port 5000  with pid  59895
+[2017-01-07 13:44:47.345] [INFO] startup - adclick server listening on port 5000  with pid  59894
+[2017-01-07 13:44:47.384] [INFO] startup - adclick server listening on port 5000  with pid  59897
+[2017-01-07 13:44:51.753] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 13:46:01.588] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:03:41.073] [INFO] startup - adclick server listening on port 5000  with pid  60190
+[2017-01-07 14:03:41.073] [INFO] startup - adclick server listening on port 5000  with pid  60192
+[2017-01-07 14:03:41.110] [INFO] startup - adclick server listening on port 5000  with pid  60191
+[2017-01-07 14:03:41.116] [INFO] startup - adclick server listening on port 5000  with pid  60193
+[2017-01-07 14:04:10.791] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:05:01.913] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:05:04.167] [INFO] http - ::1 - - "POST /api/affilate/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:16:17.917] [INFO] startup - adclick server listening on port 5000  with pid  60417
+[2017-01-07 14:16:17.917] [INFO] startup - adclick server listening on port 5000  with pid  60418
+[2017-01-07 14:16:17.937] [INFO] startup - adclick server listening on port 5000  with pid  60419
+[2017-01-07 14:16:17.941] [INFO] startup - adclick server listening on port 5000  with pid  60416
+[2017-01-07 14:16:32.065] [INFO] http - ::1 - - "GET /api/affilate/list HTTP/1.1" 200 169 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:16:49.584] [INFO] http - ::1 - - "GET /api/affilate/list HTTP/1.1" 200 110 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:41:31.527] [INFO] startup - adclick server listening on port 5000  with pid  60774
+[2017-01-07 14:41:31.538] [INFO] startup - adclick server listening on port 5000  with pid  60776
+[2017-01-07 14:41:31.541] [INFO] startup - adclick server listening on port 5000  with pid  60773
+[2017-01-07 14:41:31.584] [INFO] startup - adclick server listening on port 5000  with pid  60775
+[2017-01-07 14:42:04.651] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"id" is required',
+       path: 'id',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: { userId: 6 } }
+[2017-01-07 14:42:04.674] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 72 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:43:28.377] [INFO] startup - adclick server listening on port 5000  with pid  60822
+[2017-01-07 14:43:28.378] [INFO] startup - adclick server listening on port 5000  with pid  60824
+[2017-01-07 14:43:28.378] [INFO] startup - adclick server listening on port 5000  with pid  60821
+[2017-01-07 14:43:28.403] [INFO] startup - adclick server listening on port 5000  with pid  60823
+[2017-01-07 14:44:30.118] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 14:44:30.128] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 188 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:45:07.245] [INFO] startup - adclick server listening on port 5000  with pid  60858
+[2017-01-07 14:45:07.246] [INFO] startup - adclick server listening on port 5000  with pid  60856
+[2017-01-07 14:45:07.258] [INFO] startup - adclick server listening on port 5000  with pid  60855
+[2017-01-07 14:45:07.306] [INFO] startup - adclick server listening on port 5000  with pid  60857
+[2017-01-07 14:45:11.251] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 14:45:11.261] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 188 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:45:40.209] [INFO] startup - adclick server listening on port 5000  with pid  60878
+[2017-01-07 14:45:40.217] [INFO] startup - adclick server listening on port 5000  with pid  60877
+[2017-01-07 14:45:40.232] [INFO] startup - adclick server listening on port 5000  with pid  60875
+[2017-01-07 14:45:40.238] [INFO] startup - adclick server listening on port 5000  with pid  60876
+[2017-01-07 14:45:45.040] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 14:45:45.051] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 188 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:46:31.014] [INFO] startup - adclick server listening on port 5000  with pid  60903
+[2017-01-07 14:46:31.045] [INFO] startup - adclick server listening on port 5000  with pid  60902
+[2017-01-07 14:46:31.048] [INFO] startup - adclick server listening on port 5000  with pid  60905
+[2017-01-07 14:46:31.052] [INFO] startup - adclick server listening on port 5000  with pid  60904
+[2017-01-07 14:46:35.864] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 14:46:35.879] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 187 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:47:13.024] [INFO] startup - adclick server listening on port 5000  with pid  60924
+[2017-01-07 14:47:13.025] [INFO] startup - adclick server listening on port 5000  with pid  60925
+[2017-01-07 14:47:13.060] [INFO] startup - adclick server listening on port 5000  with pid  60922
+[2017-01-07 14:47:13.062] [INFO] startup - adclick server listening on port 5000  with pid  60923
+[2017-01-07 14:47:15.429] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:48:58.966] [INFO] startup - adclick server listening on port 5000  with pid  60963
+[2017-01-07 14:48:58.971] [INFO] startup - adclick server listening on port 5000  with pid  60964
+[2017-01-07 14:48:58.984] [INFO] startup - adclick server listening on port 5000  with pid  60965
+[2017-01-07 14:48:58.997] [INFO] startup - adclick server listening on port 5000  with pid  60966
+[2017-01-07 14:49:05.767] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:49:21.159] [INFO] startup - adclick server listening on port 5000  with pid  60981
+[2017-01-07 14:49:21.186] [INFO] startup - adclick server listening on port 5000  with pid  60982
+[2017-01-07 14:49:21.194] [INFO] startup - adclick server listening on port 5000  with pid  60984
+[2017-01-07 14:49:21.198] [INFO] startup - adclick server listening on port 5000  with pid  60983
+[2017-01-07 14:49:24.768] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:50:18.198] [INFO] startup - adclick server listening on port 5000  with pid  61009
+[2017-01-07 14:50:18.199] [INFO] startup - adclick server listening on port 5000  with pid  61008
+[2017-01-07 14:50:18.222] [INFO] startup - adclick server listening on port 5000  with pid  61007
+[2017-01-07 14:50:18.239] [INFO] startup - adclick server listening on port 5000  with pid  61010
+[2017-01-07 14:50:21.324] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-07 14:50:21.334] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 87 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:52:37.675] [INFO] startup - adclick server listening on port 5000  with pid  61067
+[2017-01-07 14:52:37.710] [INFO] startup - adclick server listening on port 5000  with pid  61068
+[2017-01-07 14:52:37.711] [INFO] startup - adclick server listening on port 5000  with pid  61066
+[2017-01-07 14:52:37.712] [INFO] startup - adclick server listening on port 5000  with pid  61065
+[2017-01-07 14:52:43.227] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-07 14:52:43.235] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 87 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:56:12.028] [INFO] startup - adclick server listening on port 5000  with pid  61131
+[2017-01-07 14:56:12.029] [INFO] startup - adclick server listening on port 5000  with pid  61133
+[2017-01-07 14:56:12.065] [INFO] startup - adclick server listening on port 5000  with pid  61132
+[2017-01-07 14:56:12.067] [INFO] startup - adclick server listening on port 5000  with pid  61130
+[2017-01-07 14:56:16.313] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 14:56:16.323] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 217 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:56:58.417] [INFO] startup - adclick server listening on port 5000  with pid  61153
+[2017-01-07 14:56:58.417] [INFO] startup - adclick server listening on port 5000  with pid  61156
+[2017-01-07 14:56:58.419] [INFO] startup - adclick server listening on port 5000  with pid  61154
+[2017-01-07 14:56:58.450] [INFO] startup - adclick server listening on port 5000  with pid  61155
+[2017-01-07 14:57:16.302] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 14:57:37.220] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:00:52.454] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"postbackUrl" is not allowed to be empty',
+       path: 'postbackUrl',
+       type: 'any.empty',
+       context: [Object] } ],
+  _object: 
+   { id: 1,
+     appendClickId: 0,
+     name: '88uguewgew',
+     postbackUrl: '',
+     userId: 6 } }
+[2017-01-07 15:00:52.472] [ERROR] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 500 105 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:01:05.176] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:01:29.025] [INFO] http - ::1 - - "POST /api/affilate/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:30:17.223] [INFO] startup - adclick server listening on port 5000  with pid  62564
+[2017-01-07 15:30:17.228] [INFO] startup - adclick server listening on port 5000  with pid  62565
+[2017-01-07 15:30:17.243] [INFO] startup - adclick server listening on port 5000  with pid  62566
+[2017-01-07 15:30:17.256] [INFO] startup - adclick server listening on port 5000  with pid  62567
+[2017-01-07 15:30:25.825] [INFO] startup - adclick server listening on port 5000  with pid  62574
+[2017-01-07 15:30:25.829] [INFO] startup - adclick server listening on port 5000  with pid  62576
+[2017-01-07 15:30:25.848] [INFO] startup - adclick server listening on port 5000  with pid  62575
+[2017-01-07 15:30:25.859] [INFO] startup - adclick server listening on port 5000  with pid  62573
+[2017-01-07 15:32:27.906] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-07 15:32:27.914] [ERROR] http - ::1 - - "POST /api/offer/add HTTP/1.1" 500 84 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:33:17.660] [INFO] http - ::1 - - "POST /api/offer/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:33:34.867] [INFO] http - ::1 - - "POST /api/offer/add HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 15:39:17.584] [INFO] startup - adclick server listening on port 5000  with pid  62783
+[2017-01-07 15:39:17.724] [INFO] startup - adclick server listening on port 5000  with pid  62784
+[2017-01-07 15:39:17.743] [INFO] startup - adclick server listening on port 5000  with pid  62785
+[2017-01-07 15:39:17.745] [INFO] startup - adclick server listening on port 5000  with pid  62786
+[2017-01-07 15:39:20.904] [INFO] startup - adclick server listening on port 5000  with pid  62792
+[2017-01-07 15:39:20.904] [INFO] startup - adclick server listening on port 5000  with pid  62794
+[2017-01-07 15:39:20.915] [INFO] startup - adclick server listening on port 5000  with pid  62795
+[2017-01-07 15:39:20.915] [INFO] startup - adclick server listening on port 5000  with pid  62793
+[2017-01-07 15:39:30.692] [INFO] http - ::1 - - "GET /api/offer/list HTTP/1.1" 200 298 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:13:41.980] [INFO] startup - adclick server listening on port 5000  with pid  63276
+[2017-01-07 16:13:41.981] [INFO] startup - adclick server listening on port 5000  with pid  63277
+[2017-01-07 16:13:42.000] [INFO] startup - adclick server listening on port 5000  with pid  63279
+[2017-01-07 16:13:42.042] [INFO] startup - adclick server listening on port 5000  with pid  63278
+[2017-01-07 16:13:46.568] [INFO] http - ::1 - - "GET /api/offer/list HTTP/1.1" 200 575 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:14:36.914] [INFO] startup - adclick server listening on port 5000  with pid  63304
+[2017-01-07 16:14:36.916] [INFO] startup - adclick server listening on port 5000  with pid  63303
+[2017-01-07 16:14:36.916] [INFO] startup - adclick server listening on port 5000  with pid  63305
+[2017-01-07 16:14:36.944] [INFO] startup - adclick server listening on port 5000  with pid  63302
+[2017-01-07 16:14:55.127] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-07 16:14:55.139] [ERROR] http - ::1 - - "GET /api/offer/list HTTP/1.1" 500 224 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:16:38.788] [INFO] startup - adclick server listening on port 5000  with pid  63354
+[2017-01-07 16:16:38.788] [INFO] startup - adclick server listening on port 5000  with pid  63353
+[2017-01-07 16:16:38.788] [INFO] startup - adclick server listening on port 5000  with pid  63351
+[2017-01-07 16:16:38.836] [INFO] startup - adclick server listening on port 5000  with pid  63352
+[2017-01-07 16:16:42.364] [INFO] http - ::1 - - "GET /api/offer/list HTTP/1.1" 200 314 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:17:32.426] [INFO] startup - adclick server listening on port 5000  with pid  63377
+[2017-01-07 16:17:32.427] [INFO] startup - adclick server listening on port 5000  with pid  63380
+[2017-01-07 16:17:32.447] [INFO] startup - adclick server listening on port 5000  with pid  63378
+[2017-01-07 16:17:32.477] [INFO] startup - adclick server listening on port 5000  with pid  63379
+[2017-01-07 16:17:35.394] [INFO] http - ::1 - - "GET /api/offer/list HTTP/1.1" 200 314 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:27:08.115] [INFO] startup - adclick server listening on port 5000  with pid  63520
+[2017-01-07 16:27:08.115] [INFO] startup - adclick server listening on port 5000  with pid  63521
+[2017-01-07 16:27:08.127] [INFO] startup - adclick server listening on port 5000  with pid  63519
+[2017-01-07 16:27:08.140] [INFO] startup - adclick server listening on port 5000  with pid  63518
+[2017-01-07 16:28:56.824] [INFO] http - ::1 - - "POST /api/offer/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:29:20.667] [INFO] http - ::1 - - "GET /api/offer/list HTTP/1.1" 200 321 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 16:30:50.365] [INFO] startup - adclick server listening on port 5000  with pid  63591
+[2017-01-07 16:30:50.366] [INFO] startup - adclick server listening on port 5000  with pid  63589
+[2017-01-07 16:30:50.377] [INFO] startup - adclick server listening on port 5000  with pid  63590
+[2017-01-07 16:30:50.398] [INFO] startup - adclick server listening on port 5000  with pid  63592
+[2017-01-07 16:30:53.509] [INFO] http - ::1 - - "GET /api/offer/list HTTP/1.1" 200 181 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 21:57:56.155] [INFO] startup - adclick server listening on port 5000  with pid  66096
+[2017-01-07 21:57:56.166] [INFO] startup - adclick server listening on port 5000  with pid  66094
+[2017-01-07 21:57:56.168] [INFO] startup - adclick server listening on port 5000  with pid  66095
+[2017-01-07 21:57:56.186] [INFO] startup - adclick server listening on port 5000  with pid  66097
+[2017-01-07 21:58:04.155] [INFO] startup - adclick server listening on port 5000  with pid  66103
+[2017-01-07 21:58:04.158] [INFO] startup - adclick server listening on port 5000  with pid  66106
+[2017-01-07 21:58:04.172] [INFO] startup - adclick server listening on port 5000  with pid  66105
+[2017-01-07 21:58:04.203] [INFO] startup - adclick server listening on port 5000  with pid  66104
+[2017-01-07 21:59:19.965] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"name" is not allowed',
+       path: 'name',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"url" is not allowed',
+       path: 'url',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"country" is not allowed',
+       path: 'country',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"postbackUrl" is not allowed',
+       path: 'postbackUrl',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"payoutMode" is not allowed',
+       path: 'payoutMode',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"AffiliateNetworkId" is not allowed',
+       path: 'AffiliateNetworkId',
+       type: 'object.allowUnknown',
+       context: [Object] } ],
+  _object: 
+   { name: 'offer001',
+     url: 'htdksds',
+     country: 'us',
+     postbackUrl: 'dsjdsj',
+     payoutMode: 0,
+     AffiliateNetworkId: 892,
+     userId: 6 } }
+[2017-01-07 21:59:19.977] [ERROR] http - ::1 - - "POST /api/flow/add HTTP/1.1" 500 202 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:01:14.431] [INFO] startup - adclick server listening on port 5000  with pid  66176
+[2017-01-07 22:01:14.431] [INFO] startup - adclick server listening on port 5000  with pid  66175
+[2017-01-07 22:01:14.433] [INFO] startup - adclick server listening on port 5000  with pid  66174
+[2017-01-07 22:01:14.441] [INFO] startup - adclick server listening on port 5000  with pid  66173
+[2017-01-07 22:01:16.139] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"name" is not allowed',
+       path: 'name',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"url" is not allowed',
+       path: 'url',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"country" is not allowed',
+       path: 'country',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"postbackUrl" is not allowed',
+       path: 'postbackUrl',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"payoutMode" is not allowed',
+       path: 'payoutMode',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"AffiliateNetworkId" is not allowed',
+       path: 'AffiliateNetworkId',
+       type: 'object.allowUnknown',
+       context: [Object] } ],
+  _object: 
+   { name: 'offer001',
+     url: 'htdksds',
+     country: 'us',
+     postbackUrl: 'dsjdsj',
+     payoutMode: 0,
+     AffiliateNetworkId: 892,
+     userId: 6 } }
+[2017-01-07 22:01:16.162] [ERROR] http - ::1 - - "POST /api/flow/add HTTP/1.1" 500 202 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:08:43.967] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 127 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:11:41.305] [INFO] startup - adclick server listening on port 5000  with pid  66340
+[2017-01-07 22:11:41.308] [INFO] startup - adclick server listening on port 5000  with pid  66338
+[2017-01-07 22:11:41.316] [INFO] startup - adclick server listening on port 5000  with pid  66337
+[2017-01-07 22:11:41.319] [INFO] startup - adclick server listening on port 5000  with pid  66339
+[2017-01-07 22:12:12.941] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 127 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:12:47.809] [INFO] startup - adclick server listening on port 5000  with pid  66361
+[2017-01-07 22:12:47.810] [INFO] startup - adclick server listening on port 5000  with pid  66362
+[2017-01-07 22:12:47.833] [INFO] startup - adclick server listening on port 5000  with pid  66363
+[2017-01-07 22:12:47.842] [INFO] startup - adclick server listening on port 5000  with pid  66364
+[2017-01-07 22:12:54.500] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 127 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:13:29.917] [INFO] startup - adclick server listening on port 5000  with pid  66386
+[2017-01-07 22:13:29.918] [INFO] startup - adclick server listening on port 5000  with pid  66385
+[2017-01-07 22:13:29.919] [INFO] startup - adclick server listening on port 5000  with pid  66383
+[2017-01-07 22:13:29.926] [INFO] startup - adclick server listening on port 5000  with pid  66384
+[2017-01-07 22:14:03.237] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 127 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:26:55.547] [INFO] startup - adclick server listening on port 5000  with pid  66598
+[2017-01-07 22:26:55.550] [INFO] startup - adclick server listening on port 5000  with pid  66596
+[2017-01-07 22:26:55.559] [INFO] startup - adclick server listening on port 5000  with pid  66597
+[2017-01-07 22:26:55.585] [INFO] startup - adclick server listening on port 5000  with pid  66599
+[2017-01-07 22:27:01.381] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 127 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:30:31.731] [INFO] startup - adclick server listening on port 5000  with pid  66660
+[2017-01-07 22:30:31.732] [INFO] startup - adclick server listening on port 5000  with pid  66659
+[2017-01-07 22:30:31.734] [INFO] startup - adclick server listening on port 5000  with pid  66661
+[2017-01-07 22:30:31.757] [INFO] startup - adclick server listening on port 5000  with pid  66662
+[2017-01-07 22:30:37.041] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 127 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 22:33:11.897] [INFO] startup - adclick server listening on port 5000  with pid  66709
+[2017-01-07 22:33:11.898] [INFO] startup - adclick server listening on port 5000  with pid  66711
+[2017-01-07 22:33:11.922] [INFO] startup - adclick server listening on port 5000  with pid  66710
+[2017-01-07 22:33:11.926] [INFO] startup - adclick server listening on port 5000  with pid  66712
+[2017-01-07 22:33:20.307] [INFO] http - ::1 - - "POST /api/flow/add HTTP/1.1" 200 37 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 23:13:45.387] [INFO] startup - adclick server listening on port 5000  with pid  67865
+[2017-01-07 23:13:45.402] [INFO] startup - adclick server listening on port 5000  with pid  67862
+[2017-01-07 23:13:45.410] [INFO] startup - adclick server listening on port 5000  with pid  67863
+[2017-01-07 23:13:45.412] [INFO] startup - adclick server listening on port 5000  with pid  67864
+[2017-01-07 23:13:49.384] [INFO] http - ::1 - - "POST /api/flow/edit HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 23:24:19.485] [INFO] startup - adclick server listening on port 5000  with pid  68037
+[2017-01-07 23:24:19.485] [INFO] startup - adclick server listening on port 5000  with pid  68038
+[2017-01-07 23:24:19.487] [INFO] startup - adclick server listening on port 5000  with pid  68039
+[2017-01-07 23:24:19.532] [INFO] startup - adclick server listening on port 5000  with pid  68040
+[2017-01-07 23:24:26.913] [ERROR] app - Something went wrong: { status: 404 }
+[2017-01-07 23:24:26.924] [ERROR] http - ::1 - - "POST /api/flow/list HTTP/1.1" 404 34 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 23:24:41.357] [ERROR] app - Something went wrong: { body: ' ', status: 400, statusCode: 400 }
+[2017-01-07 23:24:41.359] [ERROR] http - ::1 - - "POST /api/flow/list HTTP/1.1" 400 43 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-07 23:24:58.550] [INFO] http - ::1 - - "GET /api/flow/list HTTP/1.1" 200 207 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 13:46:41.156] [INFO] startup - adclick server listening on port 5000  with pid  76452
+[2017-01-09 13:46:41.384] [INFO] startup - adclick server listening on port 5000  with pid  76453
+[2017-01-09 13:46:41.473] [INFO] startup - adclick server listening on port 5000  with pid  76454
+[2017-01-09 13:46:41.531] [INFO] startup - adclick server listening on port 5000  with pid  76455
+[2017-01-09 13:50:38.768] [INFO] startup - adclick server listening on port 5000  with pid  76549
+[2017-01-09 13:50:38.780] [INFO] startup - adclick server listening on port 5000  with pid  76551
+[2017-01-09 13:50:38.780] [INFO] startup - adclick server listening on port 5000  with pid  76550
+[2017-01-09 13:50:38.792] [INFO] startup - adclick server listening on port 5000  with pid  76552
+[2017-01-09 13:51:04.433] [ERROR] app - Something went wrong: TypeError: Cannot read property 'split' of undefined
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/util/index.js:12:47
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+[2017-01-09 13:51:04.452] [ERROR] http - ::1 - - "POST /api/offer HTTP/1.1" 500 66 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 13:59:49.228] [INFO] startup - adclick server listening on port 5000  with pid  76829
+[2017-01-09 13:59:49.230] [INFO] startup - adclick server listening on port 5000  with pid  76831
+[2017-01-09 13:59:49.239] [INFO] startup - adclick server listening on port 5000  with pid  76830
+[2017-01-09 13:59:49.246] [INFO] startup - adclick server listening on port 5000  with pid  76832
+[2017-01-09 14:00:58.276] [INFO] startup - adclick server listening on port 5000  with pid  76861
+[2017-01-09 14:00:58.280] [INFO] startup - adclick server listening on port 5000  with pid  76860
+[2017-01-09 14:00:58.286] [INFO] startup - adclick server listening on port 5000  with pid  76859
+[2017-01-09 14:00:58.320] [INFO] startup - adclick server listening on port 5000  with pid  76862
+[2017-01-09 14:01:05.019] [ERROR] app - Something went wrong: TypeError: Cannot read property 'split' of undefined
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/util/index.js:12:47
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+[2017-01-09 14:01:05.038] [ERROR] http - ::1 - - "POST /api/offer HTTP/1.1" 500 66 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:01:19.222] [INFO] startup - adclick server listening on port 5000  with pid  76875
+[2017-01-09 14:01:19.224] [INFO] startup - adclick server listening on port 5000  with pid  76873
+[2017-01-09 14:01:19.280] [INFO] startup - adclick server listening on port 5000  with pid  76874
+[2017-01-09 14:01:19.284] [INFO] startup - adclick server listening on port 5000  with pid  76876
+[2017-01-09 14:04:15.029] [INFO] startup - adclick server listening on port 5000  with pid  76932
+[2017-01-09 14:04:15.029] [INFO] startup - adclick server listening on port 5000  with pid  76931
+[2017-01-09 14:04:15.043] [INFO] startup - adclick server listening on port 5000  with pid  76930
+[2017-01-09 14:04:15.052] [INFO] startup - adclick server listening on port 5000  with pid  76933
+[2017-01-09 14:04:25.079] [ERROR] app - Something went wrong: Error: need access_token
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/util/index.js:26:12
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+[2017-01-09 14:04:25.100] [ERROR] http - ::1 - - "POST /api/offer HTTP/1.1" 500 42 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:09:19.714] [INFO] startup - adclick server listening on port 5000  with pid  77026
+[2017-01-09 14:09:19.729] [INFO] startup - adclick server listening on port 5000  with pid  77027
+[2017-01-09 14:09:19.736] [INFO] startup - adclick server listening on port 5000  with pid  77028
+[2017-01-09 14:09:19.750] [INFO] startup - adclick server listening on port 5000  with pid  77029
+[2017-01-09 14:18:58.275] [INFO] startup - adclick server listening on port 5000  with pid  77171
+[2017-01-09 14:18:58.278] [INFO] startup - adclick server listening on port 5000  with pid  77168
+[2017-01-09 14:18:58.303] [INFO] startup - adclick server listening on port 5000  with pid  77169
+[2017-01-09 14:18:58.344] [INFO] startup - adclick server listening on port 5000  with pid  77170
+[2017-01-09 14:19:14.789] [INFO] http - ::1 - - "POST /register HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:19:21.032] [INFO] http - ::1 - - "POST /login HTTP/1.1" 200 169 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:20:43.113] [INFO] startup - adclick server listening on port 5000  with pid  77210
+[2017-01-09 14:20:43.118] [INFO] startup - adclick server listening on port 5000  with pid  77209
+[2017-01-09 14:20:43.130] [INFO] startup - adclick server listening on port 5000  with pid  77212
+[2017-01-09 14:20:43.130] [INFO] startup - adclick server listening on port 5000  with pid  77211
+[2017-01-09 14:20:47.429] [INFO] http - ::1 - - "POST /api/offer HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:29:00.137] [INFO] startup - adclick server listening on port 5000  with pid  77345
+[2017-01-09 14:29:00.138] [INFO] startup - adclick server listening on port 5000  with pid  77344
+[2017-01-09 14:29:00.181] [INFO] startup - adclick server listening on port 5000  with pid  77347
+[2017-01-09 14:29:00.192] [INFO] startup - adclick server listening on port 5000  with pid  77346
+[2017-01-09 14:29:40.723] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"id" is required',
+       path: 'id',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: 
+   { name: 'offer001',
+     url: 'htdksds',
+     country: 'us',
+     postbackUrl: 'dsjdsj',
+     payoutMode: 0,
+     AffiliateNetworkId: 5,
+     deleted: 1,
+     userId: 8 } }
+[2017-01-09 14:29:40.734] [ERROR] http - ::1 - - "POST /api/offer/1 HTTP/1.1" 500 72 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:30:27.389] [INFO] startup - adclick server listening on port 5000  with pid  77387
+[2017-01-09 14:30:27.391] [INFO] startup - adclick server listening on port 5000  with pid  77386
+[2017-01-09 14:30:27.391] [INFO] startup - adclick server listening on port 5000  with pid  77384
+[2017-01-09 14:30:27.442] [INFO] startup - adclick server listening on port 5000  with pid  77385
+[2017-01-09 14:30:30.612] [INFO] http - ::1 - - "POST /api/offer/1 HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:39:38.881] [INFO] http - ::1 - - "POST /api/offer HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:39:47.163] [INFO] http - ::1 - - "POST /api/offer HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:39:52.421] [INFO] http - ::1 - - "POST /api/offer HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:40:21.024] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 14:40:21.026] [ERROR] http - ::1 - - "GET /api/offer?page=1&limit=2&order=id HTTP/1.1" 500 82 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:41:18.274] [INFO] startup - adclick server listening on port 5000  with pid  77610
+[2017-01-09 14:41:18.298] [INFO] startup - adclick server listening on port 5000  with pid  77611
+[2017-01-09 14:41:18.340] [INFO] startup - adclick server listening on port 5000  with pid  77613
+[2017-01-09 14:41:18.348] [INFO] startup - adclick server listening on port 5000  with pid  77612
+[2017-01-09 14:41:22.752] [INFO] startup - adclick server listening on port 5000  with pid  77620
+[2017-01-09 14:41:22.753] [INFO] startup - adclick server listening on port 5000  with pid  77619
+[2017-01-09 14:41:22.755] [INFO] startup - adclick server listening on port 5000  with pid  77621
+[2017-01-09 14:41:22.765] [INFO] startup - adclick server listening on port 5000  with pid  77622
+[2017-01-09 14:41:28.017] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 14:41:28.025] [ERROR] http - ::1 - - "GET /api/offer?page=1&limit=2&order=id HTTP/1.1" 500 82 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:42:09.147] [INFO] startup - adclick server listening on port 5000  with pid  77643
+[2017-01-09 14:42:09.147] [INFO] startup - adclick server listening on port 5000  with pid  77645
+[2017-01-09 14:42:09.213] [INFO] startup - adclick server listening on port 5000  with pid  77644
+[2017-01-09 14:42:09.221] [INFO] startup - adclick server listening on port 5000  with pid  77646
+[2017-01-09 14:42:11.846] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=2&order=id HTTP/1.1" 200 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:42:38.846] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=2&order=-id HTTP/1.1" 200 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:45:11.878] [INFO] startup - adclick server listening on port 5000  with pid  77698
+[2017-01-09 14:45:11.879] [INFO] startup - adclick server listening on port 5000  with pid  77696
+[2017-01-09 14:45:11.912] [INFO] startup - adclick server listening on port 5000  with pid  77697
+[2017-01-09 14:45:11.915] [INFO] startup - adclick server listening on port 5000  with pid  77699
+[2017-01-09 14:45:20.468] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=2&order=-id HTTP/1.1" 200 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:45:26.221] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=2&order=id HTTP/1.1" 200 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:47:13.423] [INFO] startup - adclick server listening on port 5000  with pid  77738
+[2017-01-09 14:47:13.428] [INFO] startup - adclick server listening on port 5000  with pid  77737
+[2017-01-09 14:47:13.451] [INFO] startup - adclick server listening on port 5000  with pid  77739
+[2017-01-09 14:47:13.453] [INFO] startup - adclick server listening on port 5000  with pid  77740
+[2017-01-09 14:47:16.396] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=2&order=-id HTTP/1.1" 200 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:47:26.098] [INFO] startup - adclick server listening on port 5000  with pid  77748
+[2017-01-09 14:47:26.101] [INFO] startup - adclick server listening on port 5000  with pid  77747
+[2017-01-09 14:47:26.108] [INFO] startup - adclick server listening on port 5000  with pid  77749
+[2017-01-09 14:47:26.113] [INFO] startup - adclick server listening on port 5000  with pid  77750
+[2017-01-09 14:49:42.618] [INFO] startup - adclick server listening on port 5000  with pid  77789
+[2017-01-09 14:49:42.638] [INFO] startup - adclick server listening on port 5000  with pid  77791
+[2017-01-09 14:49:42.651] [INFO] startup - adclick server listening on port 5000  with pid  77790
+[2017-01-09 14:49:42.658] [INFO] startup - adclick server listening on port 5000  with pid  77792
+[2017-01-09 14:49:46.613] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=2&order=-id HTTP/1.1" 200 301 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:49:57.804] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:50:12.966] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:50:24.802] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:50:57.194] [INFO] startup - adclick server listening on port 5000  with pid  77817
+[2017-01-09 14:50:57.239] [INFO] startup - adclick server listening on port 5000  with pid  77816
+[2017-01-09 14:50:57.252] [INFO] startup - adclick server listening on port 5000  with pid  77815
+[2017-01-09 14:50:57.260] [INFO] startup - adclick server listening on port 5000  with pid  77818
+[2017-01-09 14:51:03.354] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:52:58.706] [INFO] startup - adclick server listening on port 5000  with pid  77855
+[2017-01-09 14:52:58.735] [INFO] startup - adclick server listening on port 5000  with pid  77856
+[2017-01-09 14:52:58.739] [INFO] startup - adclick server listening on port 5000  with pid  77857
+[2017-01-09 14:52:58.756] [INFO] startup - adclick server listening on port 5000  with pid  77858
+[2017-01-09 14:53:03.091] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:54:16.734] [INFO] startup - adclick server listening on port 5000  with pid  77955
+[2017-01-09 14:54:16.762] [INFO] startup - adclick server listening on port 5000  with pid  77956
+[2017-01-09 14:54:16.880] [INFO] startup - adclick server listening on port 5000  with pid  77957
+[2017-01-09 14:54:16.956] [INFO] startup - adclick server listening on port 5000  with pid  77958
+[2017-01-09 14:54:20.807] [INFO] startup - adclick server listening on port 5000  with pid  77962
+[2017-01-09 14:54:20.837] [INFO] startup - adclick server listening on port 5000  with pid  77963
+[2017-01-09 14:54:20.851] [INFO] startup - adclick server listening on port 5000  with pid  77964
+[2017-01-09 14:54:20.856] [INFO] startup - adclick server listening on port 5000  with pid  77965
+[2017-01-09 14:54:23.417] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:59:01.778] [INFO] startup - adclick server listening on port 5000  with pid  78036
+[2017-01-09 14:59:01.789] [INFO] startup - adclick server listening on port 5000  with pid  78038
+[2017-01-09 14:59:01.794] [INFO] startup - adclick server listening on port 5000  with pid  78035
+[2017-01-09 14:59:01.813] [INFO] startup - adclick server listening on port 5000  with pid  78037
+[2017-01-09 14:59:03.323] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-09 14:59:03.331] [ERROR] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 500 206 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:59:24.939] [INFO] startup - adclick server listening on port 5000  with pid  78050
+[2017-01-09 14:59:24.939] [INFO] startup - adclick server listening on port 5000  with pid  78051
+[2017-01-09 14:59:24.955] [INFO] startup - adclick server listening on port 5000  with pid  78052
+[2017-01-09 14:59:24.961] [INFO] startup - adclick server listening on port 5000  with pid  78053
+[2017-01-09 14:59:29.045] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 14:59:54.475] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 14:59:54.479] [ERROR] http - ::1 - - "GET /api/offer?page=1&limit=4&order=id HTTP/1.1" 500 81 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:00:39.178] [INFO] startup - adclick server listening on port 5000  with pid  78081
+[2017-01-09 15:00:39.194] [INFO] startup - adclick server listening on port 5000  with pid  78082
+[2017-01-09 15:00:39.261] [INFO] startup - adclick server listening on port 5000  with pid  78080
+[2017-01-09 15:00:39.289] [INFO] startup - adclick server listening on port 5000  with pid  78083
+[2017-01-09 15:00:40.863] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:00:47.711] [INFO] http - ::1 - - "GET /api/offer?page=1&limit=4&order=-id HTTP/1.1" 200 426 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:03:39.071] [INFO] startup - adclick server listening on port 5000  with pid  78132
+[2017-01-09 15:03:39.072] [INFO] startup - adclick server listening on port 5000  with pid  78130
+[2017-01-09 15:03:39.089] [INFO] startup - adclick server listening on port 5000  with pid  78129
+[2017-01-09 15:03:39.096] [INFO] startup - adclick server listening on port 5000  with pid  78131
+[2017-01-09 15:04:31.580] [ERROR] app - Something went wrong: Error: need access_token
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/util/index.js:26:12
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:125:14)
+[2017-01-09 15:04:31.590] [ERROR] http - ::1 - - "POST /api/affilate HTTP/1.1" 500 42 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:04:50.011] [INFO] http - ::1 - - "POST /api/affilate HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:04:52.719] [INFO] http - ::1 - - "POST /api/affilate HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:04:53.689] [INFO] http - ::1 - - "POST /api/affilate HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:04:54.707] [INFO] http - ::1 - - "POST /api/affilate HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:04:55.750] [INFO] http - ::1 - - "POST /api/affilate HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:04:56.661] [INFO] http - ::1 - - "POST /api/affilate HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:06:25.254] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"page" is not allowed',
+       path: 'page',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"limit" is not allowed',
+       path: 'limit',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"order" is not allowed',
+       path: 'order',
+       type: 'object.allowUnknown',
+       context: [Object] } ],
+  _object: { page: '1', limit: '4', order: '-id', userId: 8 } }
+[2017-01-09 15:06:25.255] [ERROR] http - ::1 - - "GET /api/affilate?page=1&limit=4&order=-id HTTP/1.1" 500 100 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:07:04.705] [INFO] startup - adclick server listening on port 5000  with pid  78196
+[2017-01-09 15:07:04.723] [INFO] startup - adclick server listening on port 5000  with pid  78197
+[2017-01-09 15:07:04.724] [INFO] startup - adclick server listening on port 5000  with pid  78198
+[2017-01-09 15:07:04.733] [INFO] startup - adclick server listening on port 5000  with pid  78199
+[2017-01-09 15:07:07.101] [INFO] http - ::1 - - "GET /api/affilate?page=1&limit=4&order=-id HTTP/1.1" 200 287 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:07:19.167] [INFO] http - ::1 - - "GET /api/affilate?page=1&limit=6&order=-id HTTP/1.1" 200 405 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:07:37.850] [INFO] http - ::1 - - "GET /api/affilate?page=1&limit=6&order=id HTTP/1.1" 200 405 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:08:15.973] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"id" is required',
+       path: 'id',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: 
+   { name: 'rfdfdd',
+     postbackUrl: 'http://dreerferff',
+     appendClickId: '1',
+     duplicatedPostback: 1,
+     ipWhiteList: '127.0.0.6',
+     deleted: 1,
+     userId: 8 } }
+[2017-01-09 15:08:15.975] [ERROR] http - ::1 - - "POST /api/affilate/6 HTTP/1.1" 500 72 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:08:46.270] [INFO] startup - adclick server listening on port 5000  with pid  78227
+[2017-01-09 15:08:46.271] [INFO] startup - adclick server listening on port 5000  with pid  78228
+[2017-01-09 15:08:46.283] [INFO] startup - adclick server listening on port 5000  with pid  78230
+[2017-01-09 15:08:46.284] [INFO] startup - adclick server listening on port 5000  with pid  78229
+[2017-01-09 15:08:48.861] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 15:08:48.869] [ERROR] http - ::1 - - "POST /api/affilate/6 HTTP/1.1" 500 84 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 15:09:13.874] [INFO] startup - adclick server listening on port 5000  with pid  78247
+[2017-01-09 15:09:13.874] [INFO] startup - adclick server listening on port 5000  with pid  78245
+[2017-01-09 15:09:13.874] [INFO] startup - adclick server listening on port 5000  with pid  78244
+[2017-01-09 15:09:13.875] [INFO] startup - adclick server listening on port 5000  with pid  78246
+[2017-01-09 15:09:16.484] [INFO] http - ::1 - - "POST /api/affilate/6 HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 20:22:00.068] [INFO] startup - adclick server listening on port 5000  with pid  83059
+[2017-01-09 20:22:00.347] [INFO] startup - adclick server listening on port 5000  with pid  83060
+[2017-01-09 20:22:00.363] [INFO] startup - adclick server listening on port 5000  with pid  83061
+[2017-01-09 20:22:00.391] [INFO] startup - adclick server listening on port 5000  with pid  83062
+[2017-01-09 20:22:04.314] [INFO] startup - adclick server listening on port 5000  with pid  83072
+[2017-01-09 20:22:04.316] [INFO] startup - adclick server listening on port 5000  with pid  83071
+[2017-01-09 20:22:04.317] [INFO] startup - adclick server listening on port 5000  with pid  83069
+[2017-01-09 20:22:04.330] [INFO] startup - adclick server listening on port 5000  with pid  83070
+[2017-01-09 20:26:53.123] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"json" is not allowed to be empty',
+       path: 'rule.0.json',
+       type: 'any.empty',
+       context: [Object] } ],
+  _object: 
+   { flow: { name: 'flow01', country: 'CN', redirectMode: 0 },
+     rule: [ [Object] ],
+     userId: 8 } }
+[2017-01-09 20:26:53.141] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 161 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 20:27:47.605] [INFO] startup - adclick server listening on port 5000  with pid  83167
+[2017-01-09 20:27:47.630] [INFO] startup - adclick server listening on port 5000  with pid  83168
+[2017-01-09 20:27:47.676] [INFO] startup - adclick server listening on port 5000  with pid  83170
+[2017-01-09 20:27:47.695] [INFO] startup - adclick server listening on port 5000  with pid  83169
+[2017-01-09 20:27:49.582] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"json" is not allowed to be empty',
+       path: 'rule.0.json',
+       type: 'any.empty',
+       context: [Object] } ],
+  _object: 
+   { flow: { name: 'flow01', country: 'CN', redirectMode: 0 },
+     rule: [ [Object] ],
+     userId: 8 } }
+[2017-01-09 20:27:49.601] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 161 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 20:29:02.549] [INFO] startup - adclick server listening on port 5000  with pid  83196
+[2017-01-09 20:29:02.549] [INFO] startup - adclick server listening on port 5000  with pid  83197
+[2017-01-09 20:29:02.553] [INFO] startup - adclick server listening on port 5000  with pid  83198
+[2017-01-09 20:29:02.635] [INFO] startup - adclick server listening on port 5000  with pid  83195
+[2017-01-09 20:29:06.114] [INFO] startup - adclick server listening on port 5000  with pid  83204
+[2017-01-09 20:29:44.256] [INFO] startup - adclick server listening on port 5000  with pid  83219
+[2017-01-09 20:29:44.257] [INFO] startup - adclick server listening on port 5000  with pid  83217
+[2017-01-09 20:29:44.286] [INFO] startup - adclick server listening on port 5000  with pid  83216
+[2017-01-09 20:29:44.295] [INFO] startup - adclick server listening on port 5000  with pid  83218
+[2017-01-09 20:29:48.656] [INFO] startup - adclick server listening on port 5000  with pid  83224
+[2017-01-09 20:30:09.434] [INFO] startup - adclick server listening on port 5000  with pid  83237
+[2017-01-09 20:30:09.454] [INFO] startup - adclick server listening on port 5000  with pid  83238
+[2017-01-09 20:30:09.459] [INFO] startup - adclick server listening on port 5000  with pid  83235
+[2017-01-09 20:30:09.463] [INFO] startup - adclick server listening on port 5000  with pid  83236
+[2017-01-09 20:30:13.072] [INFO] startup - adclick server listening on port 5000  with pid  83241
+[2017-01-09 20:32:12.860] [INFO] startup - adclick server listening on port 5000  with pid  83277
+[2017-01-09 20:32:12.861] [INFO] startup - adclick server listening on port 5000  with pid  83274
+[2017-01-09 20:32:12.869] [INFO] startup - adclick server listening on port 5000  with pid  83275
+[2017-01-09 20:32:12.909] [INFO] startup - adclick server listening on port 5000  with pid  83276
+[2017-01-09 20:32:15.587] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"weight" is required',
+       path: 'rule.0.path.0.weight',
+       type: 'any.required',
+       context: [Object] } ],
+  _object: 
+   { flow: { name: 'flow01', country: 'CN', redirectMode: 0 },
+     rule: [ [Object] ],
+     userId: 8 } }
+[2017-01-09 20:32:15.658] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 220 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 20:32:35.477] [INFO] startup - adclick server listening on port 5000  with pid  83285
+[2017-01-09 20:32:37.015] [INFO] startup - adclick server listening on port 5000  with pid  83288
+[2017-01-09 20:35:59.890] [INFO] startup - adclick server listening on port 5000  with pid  83347
+[2017-01-09 20:35:59.902] [INFO] startup - adclick server listening on port 5000  with pid  83346
+[2017-01-09 20:35:59.906] [INFO] startup - adclick server listening on port 5000  with pid  83345
+[2017-01-09 20:35:59.913] [INFO] startup - adclick server listening on port 5000  with pid  83348
+[2017-01-09 20:36:03.431] [INFO] startup - adclick server listening on port 5000  with pid  83352
+[2017-01-09 20:41:59.120] [INFO] startup - adclick server listening on port 5000  with pid  83439
+[2017-01-09 20:41:59.120] [INFO] startup - adclick server listening on port 5000  with pid  83441
+[2017-01-09 20:41:59.153] [INFO] startup - adclick server listening on port 5000  with pid  83442
+[2017-01-09 20:41:59.171] [INFO] startup - adclick server listening on port 5000  with pid  83440
+[2017-01-09 20:42:55.020] [INFO] startup - adclick server listening on port 5000  with pid  83460
+[2017-01-09 20:44:04.613] [INFO] startup - adclick server listening on port 5000  with pid  83486
+[2017-01-09 20:44:04.625] [INFO] startup - adclick server listening on port 5000  with pid  83485
+[2017-01-09 20:44:04.638] [INFO] startup - adclick server listening on port 5000  with pid  83488
+[2017-01-09 20:44:04.640] [INFO] startup - adclick server listening on port 5000  with pid  83487
+[2017-01-09 20:44:11.170] [INFO] startup - adclick server listening on port 5000  with pid  83495
+[2017-01-09 20:46:17.382] [INFO] startup - adclick server listening on port 5000  with pid  83527
+[2017-01-09 20:46:17.397] [INFO] startup - adclick server listening on port 5000  with pid  83528
+[2017-01-09 20:46:17.434] [INFO] startup - adclick server listening on port 5000  with pid  83530
+[2017-01-09 20:46:17.452] [INFO] startup - adclick server listening on port 5000  with pid  83529
+[2017-01-09 20:46:22.042] [INFO] startup - adclick server listening on port 5000  with pid  83535
+[2017-01-09 20:47:31.906] [INFO] startup - adclick server listening on port 5000  with pid  83555
+[2017-01-09 20:47:31.907] [INFO] startup - adclick server listening on port 5000  with pid  83557
+[2017-01-09 20:47:31.918] [INFO] startup - adclick server listening on port 5000  with pid  83556
+[2017-01-09 20:47:31.928] [INFO] startup - adclick server listening on port 5000  with pid  83554
+[2017-01-09 20:47:36.232] [INFO] startup - adclick server listening on port 5000  with pid  83563
+[2017-01-09 20:48:27.608] [INFO] startup - adclick server listening on port 5000  with pid  83580
+[2017-01-09 20:48:27.609] [INFO] startup - adclick server listening on port 5000  with pid  83581
+[2017-01-09 20:48:27.617] [INFO] startup - adclick server listening on port 5000  with pid  83579
+[2017-01-09 20:48:27.620] [INFO] startup - adclick server listening on port 5000  with pid  83582
+[2017-01-09 20:48:30.796] [INFO] startup - adclick server listening on port 5000  with pid  83585
+[2017-01-09 20:49:33.458] [INFO] startup - adclick server listening on port 5000  with pid  83608
+[2017-01-09 20:49:33.468] [INFO] startup - adclick server listening on port 5000  with pid  83605
+[2017-01-09 20:49:33.475] [INFO] startup - adclick server listening on port 5000  with pid  83606
+[2017-01-09 20:49:33.482] [INFO] startup - adclick server listening on port 5000  with pid  83607
+[2017-01-09 20:49:36.298] [INFO] startup - adclick server listening on port 5000  with pid  83614
+[2017-01-09 20:56:24.012] [INFO] startup - adclick server listening on port 5000  with pid  83754
+[2017-01-09 20:56:24.016] [INFO] startup - adclick server listening on port 5000  with pid  83753
+[2017-01-09 20:56:24.028] [INFO] startup - adclick server listening on port 5000  with pid  83756
+[2017-01-09 20:56:24.028] [INFO] startup - adclick server listening on port 5000  with pid  83755
+[2017-01-09 20:56:28.215] [INFO] startup - adclick server listening on port 5000  with pid  83761
+[2017-01-09 20:57:05.194] [INFO] startup - adclick server listening on port 5000  with pid  83775
+[2017-01-09 20:57:05.198] [INFO] startup - adclick server listening on port 5000  with pid  83777
+[2017-01-09 20:57:05.210] [INFO] startup - adclick server listening on port 5000  with pid  83774
+[2017-01-09 20:57:05.219] [INFO] startup - adclick server listening on port 5000  with pid  83776
+[2017-01-09 20:57:09.197] [INFO] startup - adclick server listening on port 5000  with pid  83782
+[2017-01-09 21:11:21.717] [INFO] startup - adclick server listening on port 5000  with pid  84003
+[2017-01-09 21:11:21.924] [INFO] startup - adclick server listening on port 5000  with pid  84001
+[2017-01-09 21:11:21.824] [INFO] startup - adclick server listening on port 5000  with pid  84000
+[2017-01-09 21:11:21.982] [INFO] startup - adclick server listening on port 5000  with pid  84002
+[2017-01-09 21:11:24.026] [INFO] startup - adclick server listening on port 5000  with pid  84010
+[2017-01-09 21:12:47.301] [INFO] startup - adclick server listening on port 5000  with pid  84033
+[2017-01-09 21:12:47.302] [INFO] startup - adclick server listening on port 5000  with pid  84034
+[2017-01-09 21:12:47.355] [INFO] startup - adclick server listening on port 5000  with pid  84036
+[2017-01-09 21:12:47.374] [INFO] startup - adclick server listening on port 5000  with pid  84035
+[2017-01-09 21:12:52.123] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 21:12:52.133] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 80 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:14:40.037] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 21:14:40.039] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 80 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:15:58.328] [INFO] startup - adclick server listening on port 5000  with pid  91678
+[2017-01-09 21:15:58.479] [INFO] startup - adclick server listening on port 5000  with pid  91676
+[2017-01-09 21:15:58.595] [INFO] startup - adclick server listening on port 5000  with pid  91674
+[2017-01-09 21:15:58.626] [INFO] startup - adclick server listening on port 5000  with pid  91681
+[2017-01-09 21:16:28.127] [INFO] startup - adclick server listening on port 5000  with pid  94381
+[2017-01-09 21:16:28.312] [INFO] startup - adclick server listening on port 5000  with pid  94378
+[2017-01-09 21:16:28.313] [INFO] startup - adclick server listening on port 5000  with pid  94388
+[2017-01-09 21:16:28.439] [INFO] startup - adclick server listening on port 5000  with pid  94391
+[2017-01-09 21:16:32.062] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 21:16:32.087] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 80 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:19:39.539] [INFO] startup - adclick server listening on port 5000  with pid  3330
+[2017-01-09 21:19:39.539] [INFO] startup - adclick server listening on port 5000  with pid  3332
+[2017-01-09 21:19:39.542] [INFO] startup - adclick server listening on port 5000  with pid  3331
+[2017-01-09 21:19:39.556] [INFO] startup - adclick server listening on port 5000  with pid  3329
+[2017-01-09 21:19:43.290] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 21:19:43.303] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 80 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:24:01.119] [INFO] startup - adclick server listening on port 5000  with pid  3402
+[2017-01-09 21:24:01.130] [INFO] startup - adclick server listening on port 5000  with pid  3399
+[2017-01-09 21:24:01.155] [INFO] startup - adclick server listening on port 5000  with pid  3401
+[2017-01-09 21:24:01.160] [INFO] startup - adclick server listening on port 5000  with pid  3400
+[2017-01-09 21:24:06.601] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-09 21:24:06.611] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 80 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:28:10.950] [INFO] startup - adclick server listening on port 5000  with pid  3471
+[2017-01-09 21:28:10.965] [INFO] startup - adclick server listening on port 5000  with pid  3472
+[2017-01-09 21:28:10.966] [INFO] startup - adclick server listening on port 5000  with pid  3470
+[2017-01-09 21:28:11.016] [INFO] startup - adclick server listening on port 5000  with pid  3473
+[2017-01-09 21:28:17.084] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-09 21:28:17.091] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 74 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:29:59.162] [INFO] startup - adclick server listening on port 5000  with pid  3513
+[2017-01-09 21:29:59.210] [INFO] startup - adclick server listening on port 5000  with pid  3515
+[2017-01-09 21:29:59.221] [INFO] startup - adclick server listening on port 5000  with pid  3514
+[2017-01-09 21:29:59.255] [INFO] startup - adclick server listening on port 5000  with pid  3516
+[2017-01-09 21:30:05.178] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-09 21:30:05.187] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 74 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:31:55.158] [INFO] startup - adclick server listening on port 5000  with pid  3554
+[2017-01-09 21:31:55.179] [INFO] startup - adclick server listening on port 5000  with pid  3553
+[2017-01-09 21:31:55.189] [INFO] startup - adclick server listening on port 5000  with pid  3552
+[2017-01-09 21:31:55.199] [INFO] startup - adclick server listening on port 5000  with pid  3551
+[2017-01-09 21:31:59.442] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-09 21:31:59.455] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 74 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:32:44.410] [INFO] startup - adclick server listening on port 5000  with pid  3573
+[2017-01-09 21:32:44.439] [INFO] startup - adclick server listening on port 5000  with pid  3575
+[2017-01-09 21:32:44.454] [INFO] startup - adclick server listening on port 5000  with pid  3576
+[2017-01-09 21:32:44.512] [INFO] startup - adclick server listening on port 5000  with pid  3574
+[2017-01-09 21:32:48.611] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-09 21:32:48.618] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 74 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:37:52.969] [INFO] startup - adclick server listening on port 5000  with pid  3658
+[2017-01-09 21:37:53.012] [INFO] startup - adclick server listening on port 5000  with pid  3657
+[2017-01-09 21:37:53.025] [INFO] startup - adclick server listening on port 5000  with pid  3660
+[2017-01-09 21:37:53.074] [INFO] startup - adclick server listening on port 5000  with pid  3659
+[2017-01-09 21:38:06.737] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-09 21:38:06.747] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 74 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:40:11.288] [INFO] startup - adclick server listening on port 5000  with pid  3706
+[2017-01-09 21:40:11.288] [INFO] startup - adclick server listening on port 5000  with pid  3709
+[2017-01-09 21:40:11.321] [INFO] startup - adclick server listening on port 5000  with pid  3707
+[2017-01-09 21:40:11.364] [INFO] startup - adclick server listening on port 5000  with pid  3708
+[2017-01-09 21:40:16.445] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-09 21:40:16.455] [ERROR] http - ::1 - - "POST /api/flow HTTP/1.1" 500 74 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-09 21:41:24.116] [INFO] startup - adclick server listening on port 5000  with pid  3735
+[2017-01-09 21:41:24.116] [INFO] startup - adclick server listening on port 5000  with pid  3738
+[2017-01-09 21:41:24.274] [INFO] startup - adclick server listening on port 5000  with pid  3736
+[2017-01-09 21:41:24.276] [INFO] startup - adclick server listening on port 5000  with pid  3737
+[2017-01-09 21:41:31.002] [INFO] http - ::1 - - "POST /api/flow HTTP/1.1" 200 32 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-11 17:38:18.511] [INFO] startup - adclick server listening on port 5000  with pid  33614
+[2017-01-11 17:38:18.530] [INFO] startup - adclick server listening on port 5000  with pid  33615
+[2017-01-11 17:38:18.552] [INFO] startup - adclick server listening on port 5000  with pid  33617
+[2017-01-11 17:38:18.555] [INFO] startup - adclick server listening on port 5000  with pid  33616
+[2017-01-13 11:23:08.018] [INFO] startup - adclick server listening on port 5000  with pid  44325
+[2017-01-13 11:23:08.029] [INFO] startup - adclick server listening on port 5000  with pid  44328
+[2017-01-13 11:23:08.033] [INFO] startup - adclick server listening on port 5000  with pid  44326
+[2017-01-13 11:23:08.055] [INFO] startup - adclick server listening on port 5000  with pid  44327
+[2017-01-13 11:23:32.928] [INFO] http - ::1 - - "GET /countries HTTP/1.1" 200 18516 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 13:05:25.131] [INFO] startup - adclick server listening on port 5000  with pid  46063
+[2017-01-13 13:05:25.151] [INFO] startup - adclick server listening on port 5000  with pid  46062
+[2017-01-13 13:05:25.182] [INFO] startup - adclick server listening on port 5000  with pid  46065
+[2017-01-13 13:05:25.219] [INFO] startup - adclick server listening on port 5000  with pid  46064
+[2017-01-13 13:05:38.934] [INFO] http - ::1 - - "GET /timezones HTTP/1.1" 200 13623 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 13:14:16.119] [INFO] startup - adclick server listening on port 5000  with pid  56065
+[2017-01-13 13:14:16.135] [INFO] startup - adclick server listening on port 5000  with pid  56064
+[2017-01-13 13:14:16.146] [INFO] startup - adclick server listening on port 5000  with pid  56067
+[2017-01-13 13:14:16.175] [INFO] startup - adclick server listening on port 5000  with pid  56066
+[2017-01-13 13:14:22.105] [INFO] http - ::1 - - "GET /timezones HTTP/1.1" 200 13623 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 19:05:32.485] [INFO] startup - adclick server listening on port 5000  with pid  61891
+[2017-01-13 19:05:32.550] [INFO] startup - adclick server listening on port 5000  with pid  61889
+[2017-01-13 19:05:32.565] [INFO] startup - adclick server listening on port 5000  with pid  61890
+[2017-01-13 19:05:32.584] [INFO] startup - adclick server listening on port 5000  with pid  61892
+[2017-01-13 19:05:43.343] [INFO] http - ::1 - - "GET /countries HTTP/1.1" 200 20649 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 19:23:25.730] [INFO] startup - adclick server listening on port 5000  with pid  62174
+[2017-01-13 19:23:25.747] [INFO] startup - adclick server listening on port 5000  with pid  62175
+[2017-01-13 19:23:25.757] [INFO] startup - adclick server listening on port 5000  with pid  62176
+[2017-01-13 19:23:25.757] [INFO] startup - adclick server listening on port 5000  with pid  62177
+[2017-01-13 19:52:10.017] [ERROR] app - Something went wrong: { status: 404 }
+[2017-01-13 19:52:10.030] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 404 44 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 19:53:41.162] [INFO] startup - adclick server listening on port 5000  with pid  62610
+[2017-01-13 19:53:41.166] [INFO] startup - adclick server listening on port 5000  with pid  62609
+[2017-01-13 19:53:41.246] [INFO] startup - adclick server listening on port 5000  with pid  62611
+[2017-01-13 19:53:41.256] [INFO] startup - adclick server listening on port 5000  with pid  62612
+[2017-01-13 19:53:42.030] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"rules" must be an object',
+       path: 'flow.rules',
+       type: 'object.base',
+       context: [Object] } ],
+  _object: 
+   { name: 'testcapm',
+     url: 'hddssds',
+     redirectMode: 0,
+     impPixelUrl: 'idddsdsds',
+     country: 
+      { id: 1,
+        name: 'Andorra',
+        alpha2Code: 'AD',
+        alpha3Code: 'AND',
+        numCode: 20 },
+     costModel: 0,
+     cpc: 0.8,
+     targetType: 0,
+     status: 1,
+     trafficSource: { id: 2, name: 'trafficsource' },
+     tags: [ 'tagstest', 'hhh' ],
+     flow: 
+      { type: 1,
+        name: 'flowtest',
+        country: [Object],
+        redirectMode: 0,
+        rules: [Object] },
+     userId: 8 } }
+[2017-01-13 19:53:42.046] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 125 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 19:55:36.707] [INFO] startup - adclick server listening on port 5000  with pid  62649
+[2017-01-13 19:55:36.707] [INFO] startup - adclick server listening on port 5000  with pid  62651
+[2017-01-13 19:55:36.743] [INFO] startup - adclick server listening on port 5000  with pid  62650
+[2017-01-13 19:55:36.745] [INFO] startup - adclick server listening on port 5000  with pid  62648
+[2017-01-13 19:55:45.930] [INFO] startup - adclick server listening on port 5000  with pid  62661
+[2017-01-13 19:55:45.936] [INFO] startup - adclick server listening on port 5000  with pid  62659
+[2017-01-13 19:55:45.950] [INFO] startup - adclick server listening on port 5000  with pid  62660
+[2017-01-13 19:55:45.954] [INFO] startup - adclick server listening on port 5000  with pid  62658
+[2017-01-13 19:55:51.811] [INFO] startup - adclick server listening on port 5000  with pid  62670
+[2017-01-13 19:55:51.816] [INFO] startup - adclick server listening on port 5000  with pid  62671
+[2017-01-13 19:55:51.821] [INFO] startup - adclick server listening on port 5000  with pid  62669
+[2017-01-13 19:55:51.829] [INFO] startup - adclick server listening on port 5000  with pid  62672
+[2017-01-13 19:55:54.135] [ERROR] app - Something went wrong: { isJoi: true,
+  name: 'ValidationError',
+  details: 
+   [ { message: '"type" is not allowed',
+       path: 'flow.type',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"name" is not allowed',
+       path: 'flow.name',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"country" is not allowed',
+       path: 'flow.country',
+       type: 'object.allowUnknown',
+       context: [Object] },
+     { message: '"redirectMode" is not allowed',
+       path: 'flow.redirectMode',
+       type: 'object.allowUnknown',
+       context: [Object] } ],
+  _object: 
+   { name: 'testcapm',
+     url: 'hddssds',
+     redirectMode: 0,
+     impPixelUrl: 'idddsdsds',
+     country: 
+      { id: 1,
+        name: 'Andorra',
+        alpha2Code: 'AD',
+        alpha3Code: 'AND',
+        numCode: 20 },
+     costModel: 0,
+     cpc: 0.8,
+     targetType: 0,
+     status: 1,
+     trafficSource: { id: 2, name: 'trafficsource' },
+     tags: [ 'tagstest', 'hhh' ],
+     flow: 
+      { type: 1,
+        name: 'flowtest',
+        country: [Object],
+        redirectMode: 0,
+        rules: [Object] },
+     userId: 8 } }
+[2017-01-13 19:55:54.145] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 175 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:02:26.607] [INFO] startup - adclick server listening on port 5000  with pid  62778
+[2017-01-13 20:02:26.620] [INFO] startup - adclick server listening on port 5000  with pid  62779
+[2017-01-13 20:02:26.659] [INFO] startup - adclick server listening on port 5000  with pid  62777
+[2017-01-13 20:02:26.698] [INFO] startup - adclick server listening on port 5000  with pid  62780
+[2017-01-13 20:02:34.112] [ERROR] app - Something went wrong: Error: unknown key(s) country, hash, name, redirectMode, type
+    at Object.exports.assert (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/hoek/lib/index.js:736:11)
+    at Object.applyFunctionToChildren (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/joi/lib/object.js:550:14)
+    at Object.optionalKeys (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/joi/lib/object.js:490:21)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:173:12
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at Route.dispatch (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:277:22
+    at Function.process_params (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:330:12)
+[2017-01-13 20:02:34.128] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 89 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:05:51.933] [INFO] startup - adclick server listening on port 5000  with pid  62850
+[2017-01-13 20:05:51.946] [INFO] startup - adclick server listening on port 5000  with pid  62853
+[2017-01-13 20:05:51.982] [INFO] startup - adclick server listening on port 5000  with pid  62851
+[2017-01-13 20:05:51.993] [INFO] startup - adclick server listening on port 5000  with pid  62852
+[2017-01-13 20:05:56.795] [ERROR] app - Something went wrong: { code: 'ENOTFOUND',
+  errno: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'dev.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
+  host: 'dev.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
+  port: 3306,
+  fatal: true,
+  status: 303 }
+[2017-01-13 20:05:56.804] [WARN] http - ::1 - - "POST /api/campaign HTTP/1.1" 303 151 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:06:22.061] [ERROR] app - Something went wrong: { code: 'ENOTFOUND',
+  errno: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'dev.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
+  host: 'dev.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
+  port: 3306,
+  fatal: true,
+  status: 303 }
+[2017-01-13 20:06:22.064] [WARN] http - ::1 - - "POST /api/campaign HTTP/1.1" 303 151 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:08:20.068] [INFO] startup - adclick server listening on port 5000  with pid  62902
+[2017-01-13 20:08:20.089] [INFO] startup - adclick server listening on port 5000  with pid  62903
+[2017-01-13 20:08:20.108] [INFO] startup - adclick server listening on port 5000  with pid  62900
+[2017-01-13 20:08:20.116] [INFO] startup - adclick server listening on port 5000  with pid  62901
+[2017-01-13 20:08:26.187] [INFO] startup - adclick server listening on port 5000  with pid  62908
+[2017-01-13 20:10:39.958] [INFO] startup - adclick server listening on port 5000  with pid  62953
+[2017-01-13 20:10:39.959] [INFO] startup - adclick server listening on port 5000  with pid  62952
+[2017-01-13 20:10:39.977] [INFO] startup - adclick server listening on port 5000  with pid  62951
+[2017-01-13 20:10:40.007] [INFO] startup - adclick server listening on port 5000  with pid  62950
+[2017-01-13 20:10:46.896] [INFO] startup - adclick server listening on port 5000  with pid  62957
+[2017-01-13 20:13:05.624] [INFO] startup - adclick server listening on port 5000  with pid  63005
+[2017-01-13 20:13:05.625] [INFO] startup - adclick server listening on port 5000  with pid  63006
+[2017-01-13 20:13:05.627] [INFO] startup - adclick server listening on port 5000  with pid  63004
+[2017-01-13 20:13:05.633] [INFO] startup - adclick server listening on port 5000  with pid  63007
+[2017-01-13 20:13:13.857] [INFO] startup - adclick server listening on port 5000  with pid  63012
+[2017-01-13 20:13:58.365] [INFO] startup - adclick server listening on port 5000  with pid  63031
+[2017-01-13 20:13:58.459] [INFO] startup - adclick server listening on port 5000  with pid  63033
+[2017-01-13 20:13:58.506] [INFO] startup - adclick server listening on port 5000  with pid  63032
+[2017-01-13 20:13:58.561] [INFO] startup - adclick server listening on port 5000  with pid  63030
+[2017-01-13 20:14:02.338] [INFO] startup - adclick server listening on port 5000  with pid  63036
+[2017-01-13 20:14:33.155] [INFO] startup - adclick server listening on port 5000  with pid  63058
+[2017-01-13 20:14:33.164] [INFO] startup - adclick server listening on port 5000  with pid  63057
+[2017-01-13 20:14:33.164] [INFO] startup - adclick server listening on port 5000  with pid  63056
+[2017-01-13 20:14:33.173] [INFO] startup - adclick server listening on port 5000  with pid  63055
+[2017-01-13 20:14:37.978] [INFO] startup - adclick server listening on port 5000  with pid  63063
+[2017-01-13 20:17:33.079] [INFO] startup - adclick server listening on port 5000  with pid  63115
+[2017-01-13 20:17:33.089] [INFO] startup - adclick server listening on port 5000  with pid  63116
+[2017-01-13 20:17:33.091] [INFO] startup - adclick server listening on port 5000  with pid  63118
+[2017-01-13 20:17:33.098] [INFO] startup - adclick server listening on port 5000  with pid  63117
+[2017-01-13 20:17:44.935] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:17:44.944] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 203 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:20:43.304] [INFO] startup - adclick server listening on port 5000  with pid  63182
+[2017-01-13 20:20:43.305] [INFO] startup - adclick server listening on port 5000  with pid  63180
+[2017-01-13 20:20:43.333] [INFO] startup - adclick server listening on port 5000  with pid  63179
+[2017-01-13 20:20:43.361] [INFO] startup - adclick server listening on port 5000  with pid  63181
+[2017-01-13 20:20:50.289] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:20:50.299] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 203 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:23:23.286] [INFO] startup - adclick server listening on port 5000  with pid  63234
+[2017-01-13 20:23:23.309] [INFO] startup - adclick server listening on port 5000  with pid  63236
+[2017-01-13 20:23:23.314] [INFO] startup - adclick server listening on port 5000  with pid  63237
+[2017-01-13 20:23:23.316] [INFO] startup - adclick server listening on port 5000  with pid  63235
+[2017-01-13 20:23:27.992] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:23:28.004] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 261 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:27:15.970] [INFO] startup - adclick server listening on port 5000  with pid  63302
+[2017-01-13 20:27:15.972] [INFO] startup - adclick server listening on port 5000  with pid  63303
+[2017-01-13 20:27:15.980] [INFO] startup - adclick server listening on port 5000  with pid  63304
+[2017-01-13 20:27:15.981] [INFO] startup - adclick server listening on port 5000  with pid  63305
+[2017-01-13 20:27:20.896] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:27:20.906] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 262 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:30:04.607] [INFO] startup - adclick server listening on port 5000  with pid  63360
+[2017-01-13 20:30:04.645] [INFO] startup - adclick server listening on port 5000  with pid  63361
+[2017-01-13 20:30:04.664] [INFO] startup - adclick server listening on port 5000  with pid  63362
+[2017-01-13 20:30:04.671] [INFO] startup - adclick server listening on port 5000  with pid  63363
+[2017-01-13 20:30:08.235] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:30:08.246] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 203 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:30:27.604] [INFO] startup - adclick server listening on port 5000  with pid  63381
+[2017-01-13 20:30:27.627] [INFO] startup - adclick server listening on port 5000  with pid  63378
+[2017-01-13 20:30:27.629] [INFO] startup - adclick server listening on port 5000  with pid  63379
+[2017-01-13 20:30:27.658] [INFO] startup - adclick server listening on port 5000  with pid  63380
+[2017-01-13 20:30:33.426] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:30:33.433] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 203 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:31:05.809] [INFO] startup - adclick server listening on port 5000  with pid  63407
+[2017-01-13 20:31:05.811] [INFO] startup - adclick server listening on port 5000  with pid  63405
+[2017-01-13 20:31:05.867] [INFO] startup - adclick server listening on port 5000  with pid  63404
+[2017-01-13 20:31:05.875] [INFO] startup - adclick server listening on port 5000  with pid  63406
+[2017-01-13 20:31:13.322] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:31:13.330] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 203 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:32:43.165] [INFO] startup - adclick server listening on port 5000  with pid  63441
+[2017-01-13 20:32:43.175] [INFO] startup - adclick server listening on port 5000  with pid  63440
+[2017-01-13 20:32:43.177] [INFO] startup - adclick server listening on port 5000  with pid  63442
+[2017-01-13 20:32:43.177] [INFO] startup - adclick server listening on port 5000  with pid  63443
+[2017-01-13 20:32:51.505] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:32:51.512] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 203 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:33:17.576] [INFO] startup - adclick server listening on port 5000  with pid  63460
+[2017-01-13 20:33:17.588] [INFO] startup - adclick server listening on port 5000  with pid  63461
+[2017-01-13 20:33:17.594] [INFO] startup - adclick server listening on port 5000  with pid  63462
+[2017-01-13 20:33:17.605] [INFO] startup - adclick server listening on port 5000  with pid  63463
+[2017-01-13 20:33:22.978] [ERROR] app - Something went wrong: { code: 'ER_ILLEGAL_VALUE_FOR_TYPE',
+  errno: 1367,
+  sqlState: '22007',
+  index: 0 }
+[2017-01-13 20:33:22.987] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 114 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:34:44.854] [INFO] startup - adclick server listening on port 5000  with pid  63498
+[2017-01-13 20:34:44.859] [INFO] startup - adclick server listening on port 5000  with pid  63500
+[2017-01-13 20:34:44.870] [INFO] startup - adclick server listening on port 5000  with pid  63499
+[2017-01-13 20:34:44.874] [INFO] startup - adclick server listening on port 5000  with pid  63501
+[2017-01-13 20:34:51.108] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:34:51.116] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 274 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:39:23.336] [INFO] startup - adclick server listening on port 5000  with pid  63584
+[2017-01-13 20:39:23.339] [INFO] startup - adclick server listening on port 5000  with pid  63586
+[2017-01-13 20:39:23.356] [INFO] startup - adclick server listening on port 5000  with pid  63585
+[2017-01-13 20:39:23.379] [INFO] startup - adclick server listening on port 5000  with pid  63587
+[2017-01-13 20:39:28.621] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:39:28.631] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 207 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:43:15.929] [INFO] startup - adclick server listening on port 5000  with pid  63656
+[2017-01-13 20:43:15.929] [INFO] startup - adclick server listening on port 5000  with pid  63658
+[2017-01-13 20:43:15.940] [INFO] startup - adclick server listening on port 5000  with pid  63655
+[2017-01-13 20:43:15.964] [INFO] startup - adclick server listening on port 5000  with pid  63657
+[2017-01-13 20:43:19.190] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:43:19.198] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 207 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:44:12.729] [INFO] startup - adclick server listening on port 5000  with pid  63685
+[2017-01-13 20:44:12.744] [INFO] startup - adclick server listening on port 5000  with pid  63687
+[2017-01-13 20:44:12.753] [INFO] startup - adclick server listening on port 5000  with pid  63686
+[2017-01-13 20:44:12.760] [INFO] startup - adclick server listening on port 5000  with pid  63688
+[2017-01-13 20:44:19.920] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:44:19.931] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 205 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:52:25.680] [INFO] startup - adclick server listening on port 5000  with pid  63826
+[2017-01-13 20:52:25.680] [INFO] startup - adclick server listening on port 5000  with pid  63827
+[2017-01-13 20:52:25.722] [INFO] startup - adclick server listening on port 5000  with pid  63825
+[2017-01-13 20:52:25.996] [INFO] startup - adclick server listening on port 5000  with pid  63828
+[2017-01-13 20:52:34.335] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:52:34.343] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 205 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:54:35.183] [INFO] startup - adclick server listening on port 5000  with pid  63876
+[2017-01-13 20:54:35.184] [INFO] startup - adclick server listening on port 5000  with pid  63875
+[2017-01-13 20:54:35.212] [INFO] startup - adclick server listening on port 5000  with pid  63877
+[2017-01-13 20:54:35.214] [INFO] startup - adclick server listening on port 5000  with pid  63878
+[2017-01-13 20:54:48.774] [INFO] startup - adclick server listening on port 5000  with pid  63886
+[2017-01-13 20:54:48.781] [INFO] startup - adclick server listening on port 5000  with pid  63887
+[2017-01-13 20:54:48.785] [INFO] startup - adclick server listening on port 5000  with pid  63888
+[2017-01-13 20:54:48.790] [INFO] startup - adclick server listening on port 5000  with pid  63889
+[2017-01-13 20:54:53.309] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:54:53.318] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 205 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:57:05.297] [INFO] startup - adclick server listening on port 5000  with pid  63933
+[2017-01-13 20:57:05.316] [INFO] startup - adclick server listening on port 5000  with pid  63932
+[2017-01-13 20:57:05.326] [INFO] startup - adclick server listening on port 5000  with pid  63931
+[2017-01-13 20:57:05.377] [INFO] startup - adclick server listening on port 5000  with pid  63934
+[2017-01-13 20:57:09.907] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-13 20:57:09.915] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 205 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 20:58:49.301] [INFO] startup - adclick server listening on port 5000  with pid  63971
+[2017-01-13 20:58:49.301] [INFO] startup - adclick server listening on port 5000  with pid  63972
+[2017-01-13 20:58:49.319] [INFO] startup - adclick server listening on port 5000  with pid  63969
+[2017-01-13 20:58:49.323] [INFO] startup - adclick server listening on port 5000  with pid  63970
+[2017-01-13 20:58:58.400] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-13 20:58:58.408] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 96 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 22:54:30.933] [INFO] startup - adclick server listening on port 5000  with pid  64134
+[2017-01-13 22:54:30.942] [INFO] startup - adclick server listening on port 5000  with pid  64135
+[2017-01-13 22:54:30.953] [INFO] startup - adclick server listening on port 5000  with pid  64136
+[2017-01-13 22:54:30.962] [INFO] startup - adclick server listening on port 5000  with pid  64137
+[2017-01-13 22:54:35.931] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-13 22:54:35.942] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 89 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 22:57:53.094] [INFO] startup - adclick server listening on port 5000  with pid  64215
+[2017-01-13 22:57:53.144] [INFO] startup - adclick server listening on port 5000  with pid  64212
+[2017-01-13 22:57:53.145] [INFO] startup - adclick server listening on port 5000  with pid  64214
+[2017-01-13 22:57:53.153] [INFO] startup - adclick server listening on port 5000  with pid  64213
+[2017-01-13 22:57:58.373] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-13 22:57:58.380] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 96 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 23:00:01.923] [INFO] startup - adclick server listening on port 5000  with pid  64263
+[2017-01-13 23:00:01.934] [INFO] startup - adclick server listening on port 5000  with pid  64266
+[2017-01-13 23:00:01.938] [INFO] startup - adclick server listening on port 5000  with pid  64265
+[2017-01-13 23:00:01.941] [INFO] startup - adclick server listening on port 5000  with pid  64264
+[2017-01-13 23:00:05.982] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-13 23:00:05.989] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 91 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 23:02:14.699] [INFO] startup - adclick server listening on port 5000  with pid  64311
+[2017-01-13 23:02:14.701] [INFO] startup - adclick server listening on port 5000  with pid  64310
+[2017-01-13 23:02:14.710] [INFO] startup - adclick server listening on port 5000  with pid  64312
+[2017-01-13 23:02:14.718] [INFO] startup - adclick server listening on port 5000  with pid  64313
+[2017-01-13 23:02:19.136] [ERROR] app - Something went wrong: Error: Flow ID Lost
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:279:37
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:3694:9
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:356:16
+    at iterateeCallback (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:865:24)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:840:16
+    at Query.<anonymous> (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:3691:13)
+    at apply (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:21:25)
+    at Query._callback (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:56:12)
+    at Query.Sequence.end (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query._handleFinalResultPacket (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/mysql/lib/protocol/sequences/Query.js:144:8)
+[2017-01-13 23:02:19.145] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 47 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 23:05:26.786] [INFO] startup - adclick server listening on port 5000  with pid  64370
+[2017-01-13 23:05:26.786] [INFO] startup - adclick server listening on port 5000  with pid  64369
+[2017-01-13 23:05:26.811] [INFO] startup - adclick server listening on port 5000  with pid  64371
+[2017-01-13 23:05:26.812] [INFO] startup - adclick server listening on port 5000  with pid  64372
+[2017-01-13 23:05:32.376] [ERROR] app - Something went wrong: Error: Flow ID Lost
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:280:37
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:3694:9
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:356:16
+    at iterateeCallback (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:865:24)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:840:16
+    at Query.<anonymous> (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:3691:13)
+    at apply (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:21:25)
+    at Query._callback (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/async/dist/async.js:56:12)
+    at Query.Sequence.end (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/mysql/lib/protocol/sequences/Sequence.js:86:24)
+    at Query._handleFinalResultPacket (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/mysql/lib/protocol/sequences/Query.js:144:8)
+[2017-01-13 23:05:32.385] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 47 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-13 23:10:37.291] [INFO] startup - adclick server listening on port 5000  with pid  64453
+[2017-01-13 23:10:37.294] [INFO] startup - adclick server listening on port 5000  with pid  64451
+[2017-01-13 23:10:37.302] [INFO] startup - adclick server listening on port 5000  with pid  64452
+[2017-01-13 23:10:37.310] [INFO] startup - adclick server listening on port 5000  with pid  64454
+[2017-01-13 23:11:19.891] [INFO] startup - adclick server listening on port 5000  with pid  64468
+[2017-01-13 23:13:33.690] [INFO] startup - adclick server listening on port 5000  with pid  64523
+[2017-01-13 23:13:33.715] [INFO] startup - adclick server listening on port 5000  with pid  64522
+[2017-01-13 23:13:33.716] [INFO] startup - adclick server listening on port 5000  with pid  64525
+[2017-01-13 23:13:33.761] [INFO] startup - adclick server listening on port 5000  with pid  64524
+[2017-01-13 23:13:44.075] [INFO] startup - adclick server listening on port 5000  with pid  64530
+[2017-01-13 23:16:01.072] [INFO] startup - adclick server listening on port 5000  with pid  64580
+[2017-01-13 23:16:01.086] [INFO] startup - adclick server listening on port 5000  with pid  64581
+[2017-01-13 23:16:01.090] [INFO] startup - adclick server listening on port 5000  with pid  64579
+[2017-01-13 23:16:01.109] [INFO] startup - adclick server listening on port 5000  with pid  64578
+[2017-01-13 23:16:07.119] [INFO] startup - adclick server listening on port 5000  with pid  64584
+[2017-01-13 23:22:13.747] [INFO] startup - adclick server listening on port 5000  with pid  64684
+[2017-01-13 23:22:13.767] [INFO] startup - adclick server listening on port 5000  with pid  64683
+[2017-01-13 23:22:13.781] [INFO] startup - adclick server listening on port 5000  with pid  64686
+[2017-01-13 23:22:13.782] [INFO] startup - adclick server listening on port 5000  with pid  64685
+[2017-01-13 23:22:17.121] [INFO] startup - adclick server listening on port 5000  with pid  64690
+[2017-01-13 23:29:36.393] [INFO] startup - adclick server listening on port 5000  with pid  64800
+[2017-01-13 23:29:36.393] [INFO] startup - adclick server listening on port 5000  with pid  64801
+[2017-01-13 23:29:36.406] [INFO] startup - adclick server listening on port 5000  with pid  64802
+[2017-01-13 23:29:36.415] [INFO] startup - adclick server listening on port 5000  with pid  64803
+[2017-01-13 23:29:41.629] [INFO] startup - adclick server listening on port 5000  with pid  64807
+[2017-01-13 23:31:06.463] [INFO] startup - adclick server listening on port 5000  with pid  64850
+[2017-01-13 23:31:06.464] [INFO] startup - adclick server listening on port 5000  with pid  64847
+[2017-01-13 23:31:06.490] [INFO] startup - adclick server listening on port 5000  with pid  64849
+[2017-01-13 23:31:06.522] [INFO] startup - adclick server listening on port 5000  with pid  64848
+[2017-01-13 23:31:10.743] [INFO] startup - adclick server listening on port 5000  with pid  64853
+[2017-01-13 23:32:06.747] [INFO] startup - adclick server listening on port 5000  with pid  64878
+[2017-01-13 23:32:06.778] [INFO] startup - adclick server listening on port 5000  with pid  64880
+[2017-01-13 23:32:06.786] [INFO] startup - adclick server listening on port 5000  with pid  64879
+[2017-01-13 23:32:06.791] [INFO] startup - adclick server listening on port 5000  with pid  64881
+[2017-01-13 23:32:12.097] [INFO] startup - adclick server listening on port 5000  with pid  64884
+[2017-01-13 23:32:49.038] [INFO] startup - adclick server listening on port 5000  with pid  64908
+[2017-01-13 23:32:49.039] [INFO] startup - adclick server listening on port 5000  with pid  64907
+[2017-01-13 23:32:49.057] [INFO] startup - adclick server listening on port 5000  with pid  64906
+[2017-01-13 23:32:49.075] [INFO] startup - adclick server listening on port 5000  with pid  64909
+[2017-01-13 23:32:52.591] [INFO] startup - adclick server listening on port 5000  with pid  64912
+[2017-01-13 23:33:52.692] [INFO] startup - adclick server listening on port 5000  with pid  64942
+[2017-01-13 23:33:52.714] [INFO] startup - adclick server listening on port 5000  with pid  64941
+[2017-01-13 23:33:52.715] [INFO] startup - adclick server listening on port 5000  with pid  64939
+[2017-01-13 23:33:52.727] [INFO] startup - adclick server listening on port 5000  with pid  64940
+[2017-01-13 23:33:57.970] [INFO] startup - adclick server listening on port 5000  with pid  64948
+[2017-01-13 23:34:30.184] [INFO] startup - adclick server listening on port 5000  with pid  64963
+[2017-01-13 23:34:30.185] [INFO] startup - adclick server listening on port 5000  with pid  64964
+[2017-01-13 23:34:30.185] [INFO] startup - adclick server listening on port 5000  with pid  64965
+[2017-01-13 23:34:30.315] [INFO] startup - adclick server listening on port 5000  with pid  64966
+[2017-01-13 23:38:03.026] [INFO] startup - adclick server listening on port 5000  with pid  65058
+[2017-01-13 23:51:34.751] [INFO] startup - adclick server listening on port 5000  with pid  65293
+[2017-01-13 23:51:34.773] [INFO] startup - adclick server listening on port 5000  with pid  65294
+[2017-01-13 23:51:34.778] [INFO] startup - adclick server listening on port 5000  with pid  65292
+[2017-01-13 23:51:34.787] [INFO] startup - adclick server listening on port 5000  with pid  65295
+[2017-01-13 23:51:38.572] [INFO] startup - adclick server listening on port 5000  with pid  65298
+[2017-01-13 23:53:50.633] [INFO] startup - adclick server listening on port 5000  with pid  65342
+[2017-01-13 23:53:50.634] [INFO] startup - adclick server listening on port 5000  with pid  65341
+[2017-01-13 23:53:50.662] [INFO] startup - adclick server listening on port 5000  with pid  65340
+[2017-01-13 23:53:50.708] [INFO] startup - adclick server listening on port 5000  with pid  65339
+[2017-01-13 23:53:53.879] [INFO] startup - adclick server listening on port 5000  with pid  65347
+[2017-01-13 23:54:57.129] [INFO] startup - adclick server listening on port 5000  with pid  65375
+[2017-01-13 23:54:57.140] [INFO] startup - adclick server listening on port 5000  with pid  65376
+[2017-01-13 23:54:57.144] [INFO] startup - adclick server listening on port 5000  with pid  65377
+[2017-01-13 23:54:57.156] [INFO] startup - adclick server listening on port 5000  with pid  65374
+[2017-01-13 23:55:00.580] [INFO] startup - adclick server listening on port 5000  with pid  65380
+[2017-01-13 23:56:06.861] [INFO] startup - adclick server listening on port 5000  with pid  65408
+[2017-01-13 23:56:06.873] [INFO] startup - adclick server listening on port 5000  with pid  65409
+[2017-01-13 23:56:06.876] [INFO] startup - adclick server listening on port 5000  with pid  65411
+[2017-01-13 23:56:06.882] [INFO] startup - adclick server listening on port 5000  with pid  65410
+[2017-01-13 23:56:10.330] [INFO] startup - adclick server listening on port 5000  with pid  65414
+[2017-01-13 23:58:04.995] [INFO] startup - adclick server listening on port 5000  with pid  65457
+[2017-01-13 23:58:05.015] [INFO] startup - adclick server listening on port 5000  with pid  65459
+[2017-01-13 23:58:05.011] [INFO] startup - adclick server listening on port 5000  with pid  65458
+[2017-01-13 23:58:05.033] [INFO] startup - adclick server listening on port 5000  with pid  65456
+[2017-01-13 23:58:10.648] [INFO] startup - adclick server listening on port 5000  with pid  65462
+[2017-01-14 00:06:49.789] [INFO] startup - adclick server listening on port 5000  with pid  65613
+[2017-01-14 00:06:49.822] [INFO] startup - adclick server listening on port 5000  with pid  65614
+[2017-01-14 00:06:49.833] [INFO] startup - adclick server listening on port 5000  with pid  65616
+[2017-01-14 00:06:49.852] [INFO] startup - adclick server listening on port 5000  with pid  65615
+[2017-01-14 00:06:54.582] [INFO] startup - adclick server listening on port 5000  with pid  65619
+[2017-01-14 00:08:04.636] [INFO] startup - adclick server listening on port 5000  with pid  65646
+[2017-01-14 00:08:04.647] [INFO] startup - adclick server listening on port 5000  with pid  65644
+[2017-01-14 00:08:04.654] [INFO] startup - adclick server listening on port 5000  with pid  65645
+[2017-01-14 00:08:04.675] [INFO] startup - adclick server listening on port 5000  with pid  65647
+[2017-01-14 00:08:10.553] [INFO] startup - adclick server listening on port 5000  with pid  65652
+[2017-01-14 00:10:55.215] [INFO] startup - adclick server listening on port 5000  with pid  65707
+[2017-01-14 00:10:55.245] [INFO] startup - adclick server listening on port 5000  with pid  65708
+[2017-01-14 00:10:55.246] [INFO] startup - adclick server listening on port 5000  with pid  65705
+[2017-01-14 00:10:55.248] [INFO] startup - adclick server listening on port 5000  with pid  65706
+[2017-01-14 00:10:59.943] [INFO] startup - adclick server listening on port 5000  with pid  65713
+[2017-01-14 00:11:29.228] [INFO] startup - adclick server listening on port 5000  with pid  65726
+[2017-01-14 00:11:29.243] [INFO] startup - adclick server listening on port 5000  with pid  65727
+[2017-01-14 00:11:29.256] [INFO] startup - adclick server listening on port 5000  with pid  65728
+[2017-01-14 00:11:29.274] [INFO] startup - adclick server listening on port 5000  with pid  65729
+[2017-01-14 00:11:32.540] [INFO] startup - adclick server listening on port 5000  with pid  65735
+[2017-01-14 00:13:12.669] [INFO] startup - adclick server listening on port 5000  with pid  65777
+[2017-01-14 00:13:12.682] [INFO] startup - adclick server listening on port 5000  with pid  65780
+[2017-01-14 00:13:12.691] [INFO] startup - adclick server listening on port 5000  with pid  65779
+[2017-01-14 00:13:12.691] [INFO] startup - adclick server listening on port 5000  with pid  65778
+[2017-01-14 00:13:16.202] [INFO] startup - adclick server listening on port 5000  with pid  65783
+[2017-01-14 00:14:34.173] [INFO] startup - adclick server listening on port 5000  with pid  65813
+[2017-01-14 00:14:34.214] [INFO] startup - adclick server listening on port 5000  with pid  65816
+[2017-01-14 00:14:34.215] [INFO] startup - adclick server listening on port 5000  with pid  65815
+[2017-01-14 00:14:34.223] [INFO] startup - adclick server listening on port 5000  with pid  65814
+[2017-01-14 00:14:38.077] [INFO] startup - adclick server listening on port 5000  with pid  65820
+[2017-01-14 00:16:54.569] [INFO] startup - adclick server listening on port 5000  with pid  65867
+[2017-01-14 00:16:54.572] [INFO] startup - adclick server listening on port 5000  with pid  65868
+[2017-01-14 00:16:54.634] [INFO] startup - adclick server listening on port 5000  with pid  65869
+[2017-01-14 00:16:54.640] [INFO] startup - adclick server listening on port 5000  with pid  65870
+[2017-01-14 00:16:57.894] [INFO] startup - adclick server listening on port 5000  with pid  65873
+[2017-01-14 00:19:00.899] [INFO] startup - adclick server listening on port 5000  with pid  65909
+[2017-01-14 00:19:00.908] [INFO] startup - adclick server listening on port 5000  with pid  65911
+[2017-01-14 00:19:00.909] [INFO] startup - adclick server listening on port 5000  with pid  65912
+[2017-01-14 00:19:00.951] [INFO] startup - adclick server listening on port 5000  with pid  65910
+[2017-01-14 00:19:05.957] [INFO] startup - adclick server listening on port 5000  with pid  65917
+[2017-01-14 00:20:33.534] [INFO] startup - adclick server listening on port 5000  with pid  65952
+[2017-01-14 00:20:33.545] [INFO] startup - adclick server listening on port 5000  with pid  65950
+[2017-01-14 00:20:33.557] [INFO] startup - adclick server listening on port 5000  with pid  65951
+[2017-01-14 00:20:33.576] [INFO] startup - adclick server listening on port 5000  with pid  65949
+[2017-01-14 00:20:37.616] [INFO] startup - adclick server listening on port 5000  with pid  65955
+[2017-01-14 00:24:14.840] [INFO] startup - adclick server listening on port 5000  with pid  66030
+[2017-01-14 00:24:14.841] [INFO] startup - adclick server listening on port 5000  with pid  66027
+[2017-01-14 00:24:14.850] [INFO] startup - adclick server listening on port 5000  with pid  66028
+[2017-01-14 00:24:14.850] [INFO] startup - adclick server listening on port 5000  with pid  66029
+[2017-01-14 00:24:19.799] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-14 00:24:19.808] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 82 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 00:27:02.178] [INFO] startup - adclick server listening on port 5000  with pid  66098
+[2017-01-14 00:27:02.193] [INFO] startup - adclick server listening on port 5000  with pid  66096
+[2017-01-14 00:27:02.199] [INFO] startup - adclick server listening on port 5000  with pid  66099
+[2017-01-14 00:27:02.201] [INFO] startup - adclick server listening on port 5000  with pid  66097
+[2017-01-14 00:27:08.169] [ERROR] app - Something went wrong: { code: 'ER_WRONG_VALUE_COUNT_ON_ROW',
+  errno: 1136,
+  sqlState: '21S01',
+  index: 0 }
+[2017-01-14 00:27:08.179] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 111 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 00:28:03.834] [INFO] startup - adclick server listening on port 5000  with pid  66122
+[2017-01-14 00:28:03.834] [INFO] startup - adclick server listening on port 5000  with pid  66123
+[2017-01-14 00:28:03.846] [INFO] startup - adclick server listening on port 5000  with pid  66125
+[2017-01-14 00:28:03.895] [INFO] startup - adclick server listening on port 5000  with pid  66124
+[2017-01-14 00:28:08.043] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-14 00:28:08.051] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 199 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 00:29:12.019] [INFO] startup - adclick server listening on port 5000  with pid  66154
+[2017-01-14 00:29:12.020] [INFO] startup - adclick server listening on port 5000  with pid  66156
+[2017-01-14 00:29:12.029] [INFO] startup - adclick server listening on port 5000  with pid  66155
+[2017-01-14 00:29:12.030] [INFO] startup - adclick server listening on port 5000  with pid  66157
+[2017-01-14 00:29:15.953] [INFO] startup - adclick server listening on port 5000  with pid  66160
+[2017-01-14 00:31:09.655] [INFO] startup - adclick server listening on port 5000  with pid  66203
+[2017-01-14 00:31:09.656] [INFO] startup - adclick server listening on port 5000  with pid  66205
+[2017-01-14 00:31:09.704] [INFO] startup - adclick server listening on port 5000  with pid  66204
+[2017-01-14 00:31:09.705] [INFO] startup - adclick server listening on port 5000  with pid  66206
+[2017-01-14 00:31:15.053] [INFO] startup - adclick server listening on port 5000  with pid  66209
+[2017-01-14 00:31:59.494] [INFO] startup - adclick server listening on port 5000  with pid  66230
+[2017-01-14 00:31:59.498] [INFO] startup - adclick server listening on port 5000  with pid  66231
+[2017-01-14 00:31:59.524] [INFO] startup - adclick server listening on port 5000  with pid  66229
+[2017-01-14 00:31:59.534] [INFO] startup - adclick server listening on port 5000  with pid  66228
+[2017-01-14 00:32:03.293] [INFO] http - ::1 - - "POST /api/campaign HTTP/1.1" 200 450 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 00:33:31.169] [INFO] startup - adclick server listening on port 5000  with pid  66265
+[2017-01-14 00:33:31.170] [INFO] startup - adclick server listening on port 5000  with pid  66264
+[2017-01-14 00:33:31.180] [INFO] startup - adclick server listening on port 5000  with pid  66267
+[2017-01-14 00:33:31.186] [INFO] startup - adclick server listening on port 5000  with pid  66266
+[2017-01-14 00:33:42.467] [INFO] http - ::1 - - "POST /api/campaign HTTP/1.1" 200 1124 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 00:47:06.958] [INFO] startup - adclick server listening on port 5000  with pid  66507
+[2017-01-14 00:47:06.980] [INFO] startup - adclick server listening on port 5000  with pid  66509
+[2017-01-14 00:47:06.995] [INFO] startup - adclick server listening on port 5000  with pid  66508
+[2017-01-14 00:47:07.004] [INFO] startup - adclick server listening on port 5000  with pid  66510
+[2017-01-14 00:47:19.900] [INFO] startup - adclick server listening on port 5000  with pid  66517
+[2017-01-14 00:48:32.997] [INFO] startup - adclick server listening on port 5000  with pid  66544
+[2017-01-14 00:48:33.009] [INFO] startup - adclick server listening on port 5000  with pid  66542
+[2017-01-14 00:48:33.012] [INFO] startup - adclick server listening on port 5000  with pid  66545
+[2017-01-14 00:48:33.016] [INFO] startup - adclick server listening on port 5000  with pid  66543
+[2017-01-14 00:48:36.802] [INFO] startup - adclick server listening on port 5000  with pid  66550
+[2017-01-14 00:49:56.053] [INFO] startup - adclick server listening on port 5000  with pid  66588
+[2017-01-14 00:49:56.054] [INFO] startup - adclick server listening on port 5000  with pid  66590
+[2017-01-14 00:49:56.061] [INFO] startup - adclick server listening on port 5000  with pid  66591
+[2017-01-14 00:49:56.062] [INFO] startup - adclick server listening on port 5000  with pid  66589
+[2017-01-14 00:50:01.752] [INFO] startup - adclick server listening on port 5000  with pid  66594
+[2017-01-14 00:50:30.721] [INFO] startup - adclick server listening on port 5000  with pid  66607
+[2017-01-14 00:50:30.721] [INFO] startup - adclick server listening on port 5000  with pid  66610
+[2017-01-14 00:50:30.743] [INFO] startup - adclick server listening on port 5000  with pid  66608
+[2017-01-14 00:50:30.749] [INFO] startup - adclick server listening on port 5000  with pid  66609
+[2017-01-14 00:51:39.276] [INFO] startup - adclick server listening on port 5000  with pid  66634
+[2017-01-14 00:55:37.756] [INFO] startup - adclick server listening on port 5000  with pid  66705
+[2017-01-14 00:55:37.756] [INFO] startup - adclick server listening on port 5000  with pid  66704
+[2017-01-14 00:55:37.766] [INFO] startup - adclick server listening on port 5000  with pid  66706
+[2017-01-14 00:55:37.792] [INFO] startup - adclick server listening on port 5000  with pid  66707
+[2017-01-14 00:55:42.450] [INFO] startup - adclick server listening on port 5000  with pid  66710
+[2017-01-14 00:59:15.780] [INFO] startup - adclick server listening on port 5000  with pid  66768
+[2017-01-14 00:59:15.781] [INFO] startup - adclick server listening on port 5000  with pid  66769
+[2017-01-14 00:59:15.796] [INFO] startup - adclick server listening on port 5000  with pid  66771
+[2017-01-14 00:59:15.831] [INFO] startup - adclick server listening on port 5000  with pid  66770
+[2017-01-14 00:59:21.175] [INFO] startup - adclick server listening on port 5000  with pid  66776
+[2017-01-14 01:00:55.195] [INFO] startup - adclick server listening on port 5000  with pid  66809
+[2017-01-14 01:00:55.201] [INFO] startup - adclick server listening on port 5000  with pid  66810
+[2017-01-14 01:00:55.240] [INFO] startup - adclick server listening on port 5000  with pid  66808
+[2017-01-14 01:00:55.240] [INFO] startup - adclick server listening on port 5000  with pid  66807
+[2017-01-14 01:00:59.213] [INFO] startup - adclick server listening on port 5000  with pid  66815
+[2017-01-14 01:02:19.235] [INFO] startup - adclick server listening on port 5000  with pid  66845
+[2017-01-14 01:02:19.236] [INFO] startup - adclick server listening on port 5000  with pid  66846
+[2017-01-14 01:02:19.250] [INFO] startup - adclick server listening on port 5000  with pid  66844
+[2017-01-14 01:02:19.251] [INFO] startup - adclick server listening on port 5000  with pid  66847
+[2017-01-14 01:02:24.563] [INFO] startup - adclick server listening on port 5000  with pid  66850
+[2017-01-14 01:03:33.614] [INFO] startup - adclick server listening on port 5000  with pid  66877
+[2017-01-14 01:03:33.617] [INFO] startup - adclick server listening on port 5000  with pid  66875
+[2017-01-14 01:03:33.620] [INFO] startup - adclick server listening on port 5000  with pid  66874
+[2017-01-14 01:03:33.635] [INFO] startup - adclick server listening on port 5000  with pid  66876
+[2017-01-14 01:03:40.523] [INFO] startup - adclick server listening on port 5000  with pid  66882
+[2017-01-14 01:05:26.714] [INFO] startup - adclick server listening on port 5000  with pid  66923
+[2017-01-14 01:05:26.715] [INFO] startup - adclick server listening on port 5000  with pid  66926
+[2017-01-14 01:05:26.719] [INFO] startup - adclick server listening on port 5000  with pid  66925
+[2017-01-14 01:05:26.743] [INFO] startup - adclick server listening on port 5000  with pid  66924
+[2017-01-14 01:05:32.121] [ERROR] app - Something went wrong: { code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+[2017-01-14 01:05:32.130] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 201 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 01:09:33.926] [INFO] startup - adclick server listening on port 5000  with pid  66999
+[2017-01-14 01:09:33.966] [INFO] startup - adclick server listening on port 5000  with pid  67000
+[2017-01-14 01:09:33.983] [INFO] startup - adclick server listening on port 5000  with pid  67001
+[2017-01-14 01:09:33.987] [INFO] startup - adclick server listening on port 5000  with pid  67002
+[2017-01-14 01:09:40.858] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-14 01:09:40.866] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 102 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 01:10:38.863] [INFO] startup - adclick server listening on port 5000  with pid  67029
+[2017-01-14 01:10:38.876] [INFO] startup - adclick server listening on port 5000  with pid  67030
+[2017-01-14 01:10:38.877] [INFO] startup - adclick server listening on port 5000  with pid  67031
+[2017-01-14 01:10:38.880] [INFO] startup - adclick server listening on port 5000  with pid  67032
+[2017-01-14 01:10:45.186] [ERROR] app - Something went wrong: { code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0 }
+[2017-01-14 01:10:45.194] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 102 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 01:14:08.698] [INFO] startup - adclick server listening on port 5000  with pid  67097
+[2017-01-14 01:14:08.698] [INFO] startup - adclick server listening on port 5000  with pid  67098
+[2017-01-14 01:14:08.711] [INFO] startup - adclick server listening on port 5000  with pid  67099
+[2017-01-14 01:14:08.720] [INFO] startup - adclick server listening on port 5000  with pid  67100
+[2017-01-14 01:14:16.592] [ERROR] app - Something went wrong: { code: 'ER_BAD_NULL_ERROR',
+  errno: 1048,
+  sqlState: '23000',
+  index: 0 }
+[2017-01-14 01:14:16.601] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 84 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 01:15:47.163] [INFO] http - ::1 - - "POST /api/campaign HTTP/1.1" 200 1172 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-14 01:21:33.465] [INFO] startup - adclick server listening on port 5000  with pid  67249
+[2017-01-14 01:21:33.466] [INFO] startup - adclick server listening on port 5000  with pid  67248
+[2017-01-14 01:21:33.481] [INFO] startup - adclick server listening on port 5000  with pid  67250
+[2017-01-14 01:21:33.489] [INFO] startup - adclick server listening on port 5000  with pid  67247
+[2017-01-14 01:24:36.736] [INFO] startup - adclick server listening on port 5000  with pid  67297
+[2017-01-14 01:24:36.740] [INFO] startup - adclick server listening on port 5000  with pid  67298
+[2017-01-14 01:24:36.766] [INFO] startup - adclick server listening on port 5000  with pid  67296
+[2017-01-14 01:24:36.784] [INFO] startup - adclick server listening on port 5000  with pid  67299
+[2017-01-14 01:24:44.792] [INFO] http - ::1 - - "POST /api/campaign HTTP/1.1" 200 1181 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"

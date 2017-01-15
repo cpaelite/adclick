@@ -3,12 +3,15 @@ package request
 import (
 	"fmt"
 	"net/http"
+
+	"AdClickTool/Service/common"
 )
 
 const (
-	ReqLPOffer = "lpofferreq"
-	ReqLPClick = "landingpageclick"
-	ReqOfferPB = "offerpostback"
+	ReqLPOffer    = "lpofferreq"
+	ReqLPClick    = "landingpageclick"
+	ReqImpression = "impression"
+	ReqOfferPB    = "offerpostback"
 )
 
 const (
@@ -65,7 +68,8 @@ type Request interface {
 	Carrier() string
 	ISP() string
 	TrackingDomain() string
-	ReferrerDomain() string
+	TrackingPath() string
+	Referrer() string
 	Brand() string
 	OS() string
 	OSVersion() string
@@ -84,6 +88,9 @@ type Request interface {
 }
 
 func CreateRequest(id, t string, r *http.Request) (req Request, err error) {
+	if id == "" || t == "" {
+		return nil, fmt.Errorf("[CreateRequest]Either id or t is empty for request for %s", common.SchemeHostURI(r))
+	}
 	switch t {
 	case ReqLPOffer:
 		req = CreateLPOfferRequest(id, r)
@@ -104,5 +111,6 @@ func CreateRequest(id, t string, r *http.Request) (req Request, err error) {
 		}
 		return req, nil
 	}
+	//TODO add error
 	return nil, nil
 }

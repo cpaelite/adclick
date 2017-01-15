@@ -6,6 +6,7 @@ CREATE TABLE AdClickTool.`User` (
   `firstname` varchar(256) NOT NULL,
   `lastname` varchar(256) NOT NULL,
   `rootdomainredirect` varchar(512) NOT NULL DEFAULT '' COMMENT '当访问用户的rootdomain时的跳转页面，如果为空则显示默认的404页面',
+  `json` text NOT NULL COMMENT '按照既定规则生成的User信息',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idText` (`idtext`),
@@ -150,9 +151,9 @@ CREATE TABLE AdClickTool.`TrafficSource` (
   `postbackUrl` varchar(512) NOT NULL,
   `pixelRedirectUrl` varchar(512) NOT NULL,
   `impTracking` int(11) NOT NULL COMMENT '0:No;1:Yes',
-  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:Parameter,Placeholder,Name',
-  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:Parameter,Placeholder,Name',
-  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:{Key:Value}',
+  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:[{"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)},...]',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -162,9 +163,9 @@ CREATE TABLE AdClickTool.`TemplateTrafficSource` (
   `name` varchar(256) NOT NULL,
   `postbackUrl` varchar(512) NOT NULL DEFAULT '',
   `pixelRedirectUrl` varchar(512) NOT NULL DEFAULT '',
-  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:Parameter,Placeholder,Name',
-  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:Parameter,Placeholder,Name',
-  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:{Parameter,Placeholder,Name,Track(0,1)}',
+  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:[{"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)},...]',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -193,5 +194,28 @@ CREATE TABLE AdClickTool.`TemplateAffiliateNetwork` (
 
 CREATE TABLE AdClickTool.`UrlTokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  
+  `token` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`Country` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `alpha2Code` varchar(2) NOT NULL,
+  `alpha3Code` varchar(3) NOT NULL,
+  `numCode` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `alpha2Code` (`alpha2Code`),
+  UNIQUE KEY `alpha3Code` (`alpha3Code`),
+  UNIQUE KEY `numCode` (`numCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`TimeZones` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `detail` varchar(256) NOT NULL,
+  `region` varchar(256) NOT NULL,
+  `utcShift` varchar(6) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

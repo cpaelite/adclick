@@ -22,6 +22,14 @@ const (
 	TargetTypeOffer  = 5
 )
 
+// TrafficSourceParams {"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)}
+type TrafficSourceParams struct {
+	Parameter   string
+	Placeholder string
+	Name        string
+	Track       int
+}
+
 type CampaignConfig struct {
 	Id                int64
 	UserId            int64
@@ -42,9 +50,9 @@ type CampaignConfig struct {
 	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
 	// 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
 	// 从TrafficSource表中读取
-	ExternalId []string
-	Cost       []string
-	Vars       [][]string
+	ExternalId TrafficSourceParams
+	Cost       TrafficSourceParams
+	Vars       []TrafficSourceParams
 }
 
 func (c CampaignConfig) String() string {
@@ -181,7 +189,7 @@ var gr = &http.Request{
 	},
 }
 
-func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request) error {
+func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request) (err error) {
 	if ca == nil {
 		return errors.New("[Campaign][OnLPOfferRequest]Nil ca")
 	}
@@ -193,11 +201,37 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 		}
 	} else {
 		f := flow.GetFlow(ca.TargetFlowId)
-		if f != nil {
-			req.SetFlowId(ca.TargetFlowId)
-			return f.OnLPOfferRequest(w, req)
+		if f == nil {
+			return fmt.Errorf("[Campaign][OnLPOfferRequest]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
 		}
+		req.SetFlowId(ca.TargetFlowId)
+		return f.OnLPOfferRequest(w, req)
 	}
 
 	return fmt.Errorf("[Campaign][OnLPOfferRequest]Invalid dstination for request(%s) in campaign(%d)", req.Id(), ca.Id)
+}
+
+func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if ca == nil {
+		return errors.New("[Campaign][OnLandingPageClick]Nil ca")
+	}
+
+	if ca.TargetType == TargetTypeFlow {
+		f := flow.GetFlow(ca.TargetFlowId)
+		if f == nil {
+			return fmt.Errorf("[Campaign][OnLandingPageClick]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
+		}
+		req.SetFlowId(ca.TargetFlowId)
+		return f.OnLandingPageClick(w, req)
+	}
+
+	return fmt.Errorf("[Campaign][OnLandingPageClick]Invalid dstination(%d) for request(%s) in campaign(%d)", ca.TargetType, req.Id(), ca.Id)
+}
+
+func (ca *Campaign) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (ca *Campaign) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
 }
