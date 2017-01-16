@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app" ng-controller="MainCtrl">
-  <head>
+<head>
     <title ng-bind="app.name + ' - ' + app.subtitle">AdBund SSP</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
     <!--
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
@@ -16,16 +16,16 @@
     <style type="text/css">
         /* Hide when Angular is not yet loaded and initialized */
         [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-          display: none !important;
+            display: none !important;
         }
     </style>
 
-  </head>
+</head>
 
-  <body layout="row" ng-class="{ie: isIE, smart: !screenGtSmall}" ng-cloak>
-    <div ui-view class="cs-app"></div>
+<body layout="row" ng-class="{ie: isIE, smart: !screenGtSmall}" ng-cloak>
+<div ui-view class="cs-app"></div>
 
-    <script src="assets/js/app.min.js"></script>
+<script src="assets/js/app.min.js"></script>
 
-  </body>
+</body>
 </html>

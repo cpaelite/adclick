@@ -12,6 +12,30 @@
         </md-button>
         <div class="cs-action-group" flex layout="row">
             <div class="cs-subform-control">
+                <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search...">
+            </div>
+            <div class="cs-subform-control">
+                <md-select class="cs-subform-select" ng-model="reportGroupby1" required>
+                    <md-option value="country">country</md-option>
+                    <md-option value="os">os</md-option>
+                    <md-option value="offer">offer</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-control">
+                <md-select class="cs-subform-select" ng-model="reportGroupby2">
+                    <md-option value="country">country</md-option>
+                    <md-option value="os">os</md-option>
+                    <md-option value="offer">offer</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-control">
+                <md-select class="cs-subform-select" ng-model="reportGroupby3">
+                    <md-option value="country">country</md-option>
+                    <md-option value="os">os</md-option>
+                    <md-option value="offer">offer</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="datetype">
                     <md-option value="1">Yesterday</md-option>
                     <md-option value="2">Last 7 days</md-option>
@@ -26,22 +50,20 @@
             <div class="cs-subform-group" ng-show="datetype==0">
                 <label class="cs-subform-label">{{'startDate' | translate}}：</label>
                 <div class="cs-subform-control">
-                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="params.from" ng-max="params.to" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions" ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-                        {{params.from | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="query.from"
+                            ng-max="query.to" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                        {{query.from | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
                     </button>
                 </div>
                 <label class="cs-subform-label">{{'endDate' | translate}}：</label>
                 <div class="cs-subform-control">
-                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="params.to" ng-min="params.from" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions" ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-                        {{params.to | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="query.to"
+                            ng-min="query.from" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                        {{query.to | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
                     </button>
                 </div>
-                <div class="cs-subform-search">
-                    <a><md-icon class="material-icons md-24" ng-click="search()">search</md-icon></a>
-                </div>
-            </div>
-            <div class="cs-subform-control">
-                <input type="text" class="cs-filter-input" ng-model="query.q" placeholder="Search...">
             </div>
             <div class="cs-subform-search">
                 <a>
@@ -50,11 +72,10 @@
             </div>
         </div>
         <div class="selectAll">
-            <md-select class="cs-subform-select" ng-model="item.TrackCampaign" required>
+            <md-select class="cs-subform-select" ng-model="query.status" required>
+                <md-option value="0">Archived</md-option>
                 <md-option value="1">Active</md-option>
-                <md-option value="2">Archived</md-option>
-                <md-option value="3">With traffic</md-option>
-                <md-option value="4" selected>All</md-option>
+                <md-option value="2">All</md-option>
             </md-select>
         </div>
         <div class="view_column" ng-click="viewColumnClick()">
@@ -63,37 +84,32 @@
         </div>
         <div class="view_column_con" ng-show="viewColumnIsShow">
             <ul class="view_column_list">
-                <li ng-repeat="item in data"><input type="checkbox">{{item.name}}</li>
+                <li ng-repeat="item in columns"><input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible">{{item.name}}
+                </li>
             </ul>
             <i class="material-icons btn-icon">done</i>
-            <md-button class="md-raised md-primary cs-compact cs-add-button">{{'apply changes' | translate}}
+            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applyChange()">{{'apply changes' | translate}}
             </md-button>
             <i class="material-icons btn-icon">close</i>
             <md-button class="md-raised md-primary cs-compact cs-add-button close-btn" ng-click="viewCloumnClose()">{{'close' | translate}}
             </md-button>
         </div>
-           
+
     </div>
 
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
-            <thead md-head md-order="query.order">
+            <thead md-head md-order="reportSort">
             <tr md-row>
-                <th md-column md-order-by="id">{{'ID' | translate}}</th>
-                <th md-column md-order-by="name">{{'Name' | translate}}</th>
-                <th md-column md-order-by="trafficSource">{{'TrafficSource' | translate}}</th>
-                <th md-column md-order-by="country">{{'Country' | translate}}</th>
-                <th md-column md-order-by="status">{{'Status' | translate}}</th>
+                <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
+                    ng-show="preferences.reportViewColumns[item.key].visible">{{item.name}}
+                </th>
                 <th md-column class="cs-cell-action">{{'operation' | translate}}</th>
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row ng-repeat="item in items.rows" ng-init="fab[$index] = {isOpen: false, tooltipVisible:false}">
-                <td md-cell>{{item.id}}</td>
-                <td md-cell>{{item.name}}</td>
-                <td md-cell>{{item.trafficSource}}</td>
-                <td md-cell>{{item.country}}</td>
-                <td md-cell>{{'trackCampaignStatus.' + item.status | translate}}</td>
+            <tr md-row ng-repeat="item in report.rows" ng-init="fab[$index] = {isOpen: false, tooltipVisible:false}">
+                <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible">{{item[column.key]}}</td>
                 <td md-cell class="cs-cell-action">
                     <md-fab-speed-dial md-direction="left" md-open="fab[$index].isOpen"
                                        class="md-scale md-mini cs-fab-action"
@@ -117,21 +133,17 @@
                 </td>
             </tr>
             </tbody>
-            <tbody md-body ng-if="items.totals != ''">
+            <tbody md-body ng-if="report.totalRows != 0">
             <tr md-row>
-                <td md-cell>Total</td>
-                <td md-cell>{{items.totals.clicks}}</td>
-                <td md-cell>{{items.totals.totalShow}}</td>
-                <td md-cell>{{items.totals.totalPlay}}</td>
-                <td md-cell>{{items.totals.totalClick}}</td>
-                <td md-cell>{{items.totals.ecpm | currency}}</td>
-                <td md-cell>{{items.totals.totalRevenue | currency}}</td>
+                <td md-cell ng-show="preferences.reportViewColumns[columns[0].key].visible">Total</td>
+                <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">{{report.totals[column.key]}}</td>
+                <td md-cell></td>
             </tr>
             </tbody>
         </table>
     </md-table-container>
 
-    <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page"
-                         md-total="{{items.count}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.offset"
+                         md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
 
 </div>
