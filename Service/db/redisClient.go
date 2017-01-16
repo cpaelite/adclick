@@ -44,7 +44,7 @@ func NewRedisClient(host string, port int) *redis.Client {
 
 	_, err := client.Ping().Result()
 	if err != nil {
-		log.Infof("[redisClient][NewRedisClient] %s fail: %v", addr, err)
+		log.Errorf("[redisClient][NewRedisClient] %s fail: %v", addr, err)
 		return nil
 	}
 

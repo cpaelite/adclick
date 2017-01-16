@@ -15,6 +15,7 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
+	"AdClickTool/Service/units/user"
 
 	"AdClickTool/Service/request"
 )
@@ -61,9 +62,30 @@ func main() {
 	// 启动AdReferrerDomainStatis表的汇总协程
 	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
 
+	// redis 要能够连接
+	redisClient := db.GetRedisClient()
+	if redisClient == nil {
+		log.Errorf("Connect redis server failed.")
+		return
+	}
+	log.Debugf("Connect redis success: redisClient:%p", redisClient)
+
+	collector := new(user.CollectorCampChangedUsers)
+	collector.Start()
+
 	if err := units.Init(); err != nil {
 		panic(err.Error())
 	}
+
+	collector.Stop()
+	log.Infof("collected users:%+v", collector.Users)
+	log.Debugf("redisClient:%p", db.GetRedisClient())
+	for _, uid := range collector.Users {
+		user.ReloadUser(uid)
+	}
+
+	reloader := new(user.Reloader)
+	go reloader.Running()
 
 	http.HandleFunc("/status", Status1)
 	http.HandleFunc("/status/", Status2)
