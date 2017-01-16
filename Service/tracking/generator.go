@@ -65,12 +65,12 @@ func randConversion() *Conversion {
 // randStatisKey 用来产生随机数据
 func randStatisKey() AdStatisKey {
 	k := AdStatisKey{}
-	k.UserID = rand.Int()%10 + 1
-	k.CampaignID = rand.Int()%300 + 1
-	k.FlowID = rand.Int()%300 + 1
-	k.LanderID = rand.Int()%300 + 1
-	k.OfferID = rand.Int()%300 + 1
-	k.TrafficSourceID = rand.Int()%300 + 1
+	k.UserID = rand.Int63()%10 + 1
+	k.CampaignID = rand.Int63()%300 + 1
+	k.FlowID = rand.Int63()%300 + 1
+	k.LanderID = rand.Int63()%300 + 1
+	k.OfferID = rand.Int63()%300 + 1
+	k.TrafficSourceID = rand.Int63()%300 + 1
 
 	k.Language = randSelectString(languages)
 	k.Model = randSelectString(models)

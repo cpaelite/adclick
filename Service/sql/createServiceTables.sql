@@ -151,9 +151,9 @@ CREATE TABLE AdClickTool.`TrafficSource` (
   `postbackUrl` varchar(512) NOT NULL,
   `pixelRedirectUrl` varchar(512) NOT NULL,
   `impTracking` int(11) NOT NULL COMMENT '0:No;1:Yes',
-  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:Parameter,Placeholder,Name',
-  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:Parameter,Placeholder,Name',
-  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:{Key:Value}',
+  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:[{"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)},...]',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -163,9 +163,9 @@ CREATE TABLE AdClickTool.`TemplateTrafficSource` (
   `name` varchar(256) NOT NULL,
   `postbackUrl` varchar(512) NOT NULL DEFAULT '',
   `pixelRedirectUrl` varchar(512) NOT NULL DEFAULT '',
-  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:Parameter,Placeholder,Name',
-  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:Parameter,Placeholder,Name',
-  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:{Parameter,Placeholder,Name,Track(0,1)}',
+  `externalId` varchar(124) NOT NULL COMMENT '按照既定规则生成的ExternalId params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `cost` varchar(124) NOT NULL COMMENT '按照既定规则生成的Cost params信息:{"Parameter":"X","Placeholder":"X","Name":"X"}',
+  `params` text NOT NULL COMMENT '按照既定规则生成的params信息:[{"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)},...]',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

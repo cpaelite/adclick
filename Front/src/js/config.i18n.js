@@ -15,6 +15,15 @@
     goBackHomePage: 'Home Page',
     signup: 'Sign up',
     campaign: 'Campaign',
+    affiliateNetwork: 'AffiliateNetwork',
+    affiliateNetworkName: 'Name',
+    affiliateNetworkPostBackUrl: 'Url',
+    dashBoard: 'DashBoard',
+    trackCampaignName: 'Name',
+    trackCampaignStatus: {
+        0: 'Active',
+        1: 'InActive'
+    },
     offer: 'Offer',
     lander: 'Lander',
     flow: 'Flow',

@@ -87,6 +87,50 @@ function TrafficSourceCtrl($scope, $mdDialog, $timeout, TrafficSource) {
             templateUrl: 'tpl/delete-confirm-dialog.html',
         }).then($scope.getList);
     };
+
+    $scope.data = [
+        {name:'Traffic source'},
+        {name:'Traffic source ID'},
+        {name:'Impressions'},
+        {name:'Visits'},
+        {name:'Clicks'},
+        {name:'Conversions'},
+        {name:'Revenue'},
+        {name:'Cost'},
+        {name:'Profit'},
+        {name:'CPV'},
+        {name:'ICTR'},
+        {name:'CTR'},
+        {name:'CR'},
+        {name:'CV'},
+        {name:'ROI'},
+        {name:'EPV'},
+        {name:'EPC'},
+        {name:'AP'},
+        {name:'Errors'},
+        {name:'Postback URL'},
+        {name:'Click ID'},
+        {name:'Cost argument'},
+        {name:'Variable1'},
+        {name:'Variable2'},
+        {name:'Variable3'},
+        {name:'Variable4'},
+        {name:'Variable5'},
+        {name:'Variable6'},
+        {name:'Variable7'},
+        {name:'Variable8'},
+        {name:'Variable9'},
+        {name:'Variable10'}
+
+    ];
+    $scope.viewColumnIsShow = false;
+    $scope.viewColumnClick = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
+
+    $scope.viewCloumnClose = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
 }
 
 function editItemCtrl($scope, $mdDialog, TrafficSource) {

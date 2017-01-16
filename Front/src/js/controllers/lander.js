@@ -87,6 +87,39 @@ function LanderCtrl($scope, $mdDialog, $timeout, Lander) {
             templateUrl: 'tpl/delete-confirm-dialog.html',
         }).then($scope.getList);
     };
+
+    $scope.data = [
+        {name:'Lander'},
+        {name:'Lander ID'},
+        {name:'Lander URL'},
+        {name:'Lander country'},
+        {name:'Number of offers'},
+        {name:'Impressions'},
+        {name:'Visits'},
+        {name:'Clicks'},
+        {name:'Conversions'},
+        {name:'Revenue'},
+        {name:'Cost'},
+        {name:'Profit'},
+        {name:'CPV'},
+        {name:'ICTR'},
+        {name:'CTR'},
+        {name:'CR'},
+        {name:'CV'},
+        {name:'ROI'},
+        {name:'EPV'},
+        {name:'EPC'},
+        {name:'AP'},
+        {name:'Errors'}
+    ];
+    $scope.viewColumnIsShow = false;
+    $scope.viewColumnClick = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
+
+    $scope.viewCloumnClose = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
 }
 
 function editItemCtrl($scope, $mdDialog, Lander) {

@@ -50,6 +50,12 @@
         url: '/app',
         templateUrl: "tpl/app.html"
       })
+      .state('app.dashboard', {
+        url: '/dashboard',
+        templateUrl: 'tpl/dashBoard.html',
+        controller: 'DashCtrl',
+        data: {}
+      })
       .state('app.report', {
         abstract: true,
         url: '/report',
@@ -107,5 +113,4 @@
         controller: 'SignupCtrl'
       });
   }
-
 })();

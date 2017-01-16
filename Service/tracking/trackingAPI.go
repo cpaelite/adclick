@@ -9,12 +9,12 @@ import (
 // AdStatisKey AdStatic表里面用来当作unique key的所有的字段
 // Timestamp不用给，里面会赋值
 type AdStatisKey struct {
-	UserID          int
-	CampaignID      int
-	FlowID          int
-	LanderID        int
-	OfferID         int
-	TrafficSourceID int
+	UserID          int64
+	CampaignID      int64
+	FlowID          int64
+	LanderID        int64
+	OfferID         int64
+	TrafficSourceID int64
 	Language        string
 	Model           string
 	Country         string
@@ -30,7 +30,7 @@ type AdStatisKey struct {
 	Browser         string
 	BrowserVersion  string
 	ConnectionType  string
-	Timestamp       int
+	Timestamp       int64
 }
 
 func statisKeyMD5(k *AdStatisKey) string {
@@ -113,7 +113,7 @@ func AddPayout(key AdStatisKey, count float64) {
 
 func addTrackEvent(key AdStatisKey, action func(d *adStatisValues)) {
 	currentMillisecond := time.Now().UnixNano() / int64(time.Millisecond)
-	key.Timestamp = int(currentMillisecond - (currentMillisecond % 3600000))
+	key.Timestamp = currentMillisecond - (currentMillisecond % 3600000)
 
 	gatherChan <- events{
 		keyMd5:    statisKeyMD5(&key),

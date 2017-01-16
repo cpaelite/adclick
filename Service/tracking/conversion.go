@@ -1,7 +1,7 @@
 package tracking
 
 import (
-	"HaiwaiAdx/log"
+	"AdClickTool/Service/log"
 	"database/sql"
 )
 

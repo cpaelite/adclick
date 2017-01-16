@@ -82,9 +82,6 @@
 
     $scope.search = function () {
       $scope.query.offset = 1;
-      if ($scope.reportGroupby1) {
-        $scope.query.groupBy = $scope.reportGroupby1;
-      }
       $scope.getList();
     };
 

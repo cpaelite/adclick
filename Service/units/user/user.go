@@ -32,6 +32,8 @@ type User struct {
 }
 
 func InitAllUsers() error {
+	//TODO 所有Units，无效的和deleted的都需要load到内存中来，以免丢数据；
+	//TODO 然后该判断Status和deleted的地方都需要加上判断
 	initUser()
 
 	for _, u := range DBGetAvailableUsers() {
@@ -72,20 +74,32 @@ func (u *User) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	campaignHash := req.CampaignHash()
 	ca := campaign.GetCampaignByHash(campaignHash)
 	if ca == nil {
-		return fmt.Errorf("[Units][OnLPOfferRequest]Invalid campaign hash(%s) for %d\n", campaignHash, req.Id())
+		return fmt.Errorf("[Units][OnLPOfferRequest]Invalid campaign hash(%s) for %s\n", campaignHash, req.Id())
 	}
 	if ca.UserId != u.Id {
-		return fmt.Errorf("[Units][OnLPOfferRequest]Campaign with hash(%s) does not belong to user %d for %d\n", campaignHash, u.Id, req.Id())
+		return fmt.Errorf("[Units][OnLPOfferRequest]Campaign with hash(%s) does not belong to user %d for %s\n", campaignHash, u.Id, req.Id())
 	}
 	req.SetCampaignId(ca.Id)
 	return ca.OnLPOfferRequest(w, req)
 }
 
-func (u *User) OnLandingPageClick(w http.ResponseWriter, r *http.Request) error {
+func (u *User) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	campaignId := req.CampaignId()
+	ca := campaign.GetCampaign(campaignId)
+	if ca == nil {
+		return fmt.Errorf("[Units][OnLandingPageClick]Invalid campaign id(%d) for %s\n", campaignId, req.Id())
+	}
+	if ca.UserId != u.Id {
+		return fmt.Errorf("[Units][OnLandingPageClick]Campaign with id(%d) does not belong to user %d for %s\n", campaignId, u.Id, req.Id())
+	}
+	return ca.OnLandingPageClick(w, req)
+}
+
+func (u *User) OnImpression(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 
-func (u *User) OnOfferPostback(w http.ResponseWriter, r *http.Request) error {
+func (u *User) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 

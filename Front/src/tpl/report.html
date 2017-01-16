@@ -109,7 +109,7 @@
             </thead>
             <tbody md-body>
             <tr md-row ng-repeat="item in report.rows" ng-init="fab[$index] = {isOpen: false, tooltipVisible:false}">
-                <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible">{{item[column.key]}}</td>
+                <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible" ng-click="lineClick(reportGroupby1, columns[1].key, item[columns[1].key], 1)">{{item[column.key]}}</td>
                 <td md-cell class="cs-cell-action">
                     <md-fab-speed-dial md-direction="left" md-open="fab[$index].isOpen"
                                        class="md-scale md-mini cs-fab-action"

@@ -87,6 +87,40 @@ function OfferCtrl($scope, $mdDialog, $timeout, Offer) {
             templateUrl: 'tpl/delete-confirm-dialog.html',
         }).then($scope.getList);
     };
+
+    $scope.data = [
+        {name:'Offer'},
+        {name:'Offer ID'},
+        {name:'Offer URL'},
+        {name:'Offer country'},
+        {name:'Payout'},
+        {name:'Impressions'},
+        {name:'Visits'},
+        {name:'Clicks'},
+        {name:'Conversions'},
+        {name:'Revenue'},
+        {name:'Cost'},
+        {name:'Profit'},
+        {name:'CPV'},
+        {name:'ICTR'},
+        {name:'CTR'},
+        {name:'CR'},
+        {name:'CV'},
+        {name:'ROI'},
+        {name:'EPV'},
+        {name:'EPC'},
+        {name:'AP'},
+        {name:'Errors'},
+        {name:'Affiliate netWork'}
+    ];
+    $scope.viewColumnIsShow = false;
+    $scope.viewColumnClick = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
+
+    $scope.viewCloumnClose = function(){
+        $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+    };
 }
 
 function editItemCtrl($scope, $mdDialog, Offer) {

@@ -1,7 +1,6 @@
 package campaign
 
 import (
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"net/http"
@@ -23,6 +22,14 @@ const (
 	TargetTypeOffer  = 5
 )
 
+// TrafficSourceParams {"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)}
+type TrafficSourceParams struct {
+	Parameter   string
+	Placeholder string
+	Name        string
+	Track       int
+}
+
 type CampaignConfig struct {
 	Id                int64
 	UserId            int64
@@ -43,9 +50,19 @@ type CampaignConfig struct {
 	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
 	// 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
 	// 从TrafficSource表中读取
-	ExternalId []string
-	Cost       []string
-	Vars       [][]string
+	ExternalId TrafficSourceParams
+	Cost       TrafficSourceParams
+	Vars       []TrafficSourceParams
+}
+
+// ParseVars 根据Vars解析出10个参数，分别是，v1-v10
+func (c *CampaignConfig) ParseVars(getter func(k string) string) []string {
+	vars := []string{}
+	for _, param := range c.Vars {
+		v := getter(param.Parameter)
+		vars = append(vars, v)
+	}
+	return vars
 }
 
 func (c CampaignConfig) String() string {
@@ -175,52 +192,6 @@ func DelCampaign(campaignId int64) error {
 	return nil
 }
 
-const (
-	TrackingStepLandingPage = "lp"
-	TrackingStepImpression  = "imp"
-	TrackingStepOffer       = "offer"
-	TrackingStepPostback    = "pb"
-)
-
-func cookie(step string, req request.Request) (c *http.Cookie) {
-	c = &http.Cookie{}
-	defer func() {
-		log.Infof("cookie:%+v\n", *c)
-	}()
-	req.AddCookie("reqid", req.Id())
-	switch step {
-	case TrackingStepLandingPage:
-		req.AddCookie("step", TrackingStepLandingPage)
-		req.AddCookie("fid", fmt.Sprintf("%d", req.FlowId()))
-		req.AddCookie("rid", fmt.Sprintf("%d", req.RuleId()))
-		req.AddCookie("pid", fmt.Sprintf("%d", req.PathId()))
-		req.AddCookie("lid", fmt.Sprintf("%d", req.LanderId()))
-	case TrackingStepImpression:
-		req.AddCookie("step", TrackingStepImpression)
-	case TrackingStepOffer:
-		req.AddCookie("step", TrackingStepOffer)
-		req.AddCookie("fid", fmt.Sprintf("%d", req.FlowId()))
-		req.AddCookie("rid", fmt.Sprintf("%d", req.RuleId()))
-		req.AddCookie("pid", fmt.Sprintf("%d", req.PathId()))
-		req.AddCookie("oid", fmt.Sprintf("%d", req.OfferId()))
-	case TrackingStepPostback:
-	default:
-		return
-	}
-	c.Domain = req.TrackingDomain()
-	c.Path = req.TrackingPath()
-	c.Name = "tstep"
-	c.HttpOnly = true // 客户端无法访问该Cookie
-	// 关闭浏览器，就无法继续跳转到后续页面，所以Cookie失效即可
-	//c.Expires = time.Now().Add(time.Hour * 1)
-	c.Value = base64.URLEncoding.EncodeToString([]byte(req.CookieString()))
-	return
-}
-
-func SetCookie(w http.ResponseWriter, step string, req request.Request) {
-	http.SetCookie(w, cookie(step, req))
-}
-
 var gr = &http.Request{
 	Method: "GET",
 	URL: &url.URL{
@@ -240,20 +211,37 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 		}
 	} else {
 		f := flow.GetFlow(ca.TargetFlowId)
-		if f != nil {
-			req.SetFlowId(ca.TargetFlowId)
-			defer func() {
-				if err == nil {
-					if req.LanderId() > 0 {
-						SetCookie(w, TrackingStepLandingPage, req)
-					} else {
-						SetCookie(w, TrackingStepOffer, req)
-					}
-				}
-			}()
-			return f.OnLPOfferRequest(w, req)
+		if f == nil {
+			return fmt.Errorf("[Campaign][OnLPOfferRequest]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
 		}
+		req.SetFlowId(ca.TargetFlowId)
+		return f.OnLPOfferRequest(w, req)
 	}
 
 	return fmt.Errorf("[Campaign][OnLPOfferRequest]Invalid dstination for request(%s) in campaign(%d)", req.Id(), ca.Id)
+}
+
+func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if ca == nil {
+		return errors.New("[Campaign][OnLandingPageClick]Nil ca")
+	}
+
+	if ca.TargetType == TargetTypeFlow {
+		f := flow.GetFlow(ca.TargetFlowId)
+		if f == nil {
+			return fmt.Errorf("[Campaign][OnLandingPageClick]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
+		}
+		req.SetFlowId(ca.TargetFlowId)
+		return f.OnLandingPageClick(w, req)
+	}
+
+	return fmt.Errorf("[Campaign][OnLandingPageClick]Invalid dstination(%d) for request(%s) in campaign(%d)", ca.TargetType, req.Id(), ca.Id)
+}
+
+func (ca *Campaign) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (ca *Campaign) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
 }

@@ -1,8 +1,8 @@
 <header class="navbar">
     <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" hide-gt-sm ng-click="toggleLeftNav()" aria-label="Toggle Left Nav">
+        <!-- <md-button class="md-icon-button" hide-gt-sm ng-click="toggleLeftNav()" aria-label="Toggle Left Nav">
             <md-icon>menu</md-icon>
-        </md-button>
+        </md-button> -->
         <h1>{{app.name}}</h1>
 
         <div flex></div>
@@ -26,10 +26,18 @@
     </div>
 </header>
 
-<md-sidenav md-is-locked-open="screenGtSmall" md-component-id="left"
+<!-- <md-sidenav md-is-locked-open="screenGtSmall" md-component-id="left"
+            class="md-sidenav-left md-whiteframe-z2 cs-left-aside"> -->
+<md-sidenav md-is-locked-open="screenGtSmall"
             class="md-sidenav-left md-whiteframe-z2 cs-left-aside">
     <nav ui-nav class="navi clearfix">
         <ul class="nav">
+            <li ui-sref-active="active">
+                <a ui-sref="app.dashboard" md-ink-ripple>
+                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
+                    <span>{{'dashBoard' | translate}}</span>
+                </a>
+            </li>
             <li ui-sref-active="active">
                 <a ui-sref="app.report.campaign" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>

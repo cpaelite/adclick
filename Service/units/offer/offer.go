@@ -12,14 +12,13 @@ import (
 )
 
 type OfferConfig struct {
-	Id                  int64
-	UserId              int64
-	Url                 string
-	AffilicateNetworkId int64
-	PostbackUrl         string
-	PayoutMode          int64
-	PayoutValue         float64
-	Weight              uint64
+	Id                 int64
+	UserId             int64
+	Url                string
+	AffiliateNetworkId int64
+	PostbackUrl        string
+	PayoutMode         int64
+	PayoutValue        float64
 }
 
 func (c OfferConfig) String() string {
@@ -107,5 +106,21 @@ func (o *Offer) OnLPOfferRequest(w http.ResponseWriter, req request.Request) err
 		return fmt.Errorf("[Offer][OnLPOfferRequest]Nil o for request(%s)", req.Id())
 	}
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	return nil
+}
+
+func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if o == nil {
+		return fmt.Errorf("[Offer][OnLandingPageClick]Nil o for request(%s)", req.Id())
+	}
+	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	return nil
+}
+
+func (o *Offer) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (o *Offer) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
 	return nil
 }

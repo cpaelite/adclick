@@ -17,7 +17,6 @@ import (
 	"AdClickTool/Service/units"
 
 	"AdClickTool/Service/request"
-	"AdClickTool/Service/units/campaign"
 )
 
 func main() {
@@ -45,7 +44,7 @@ func main() {
 
 	// 启动Conversion保存
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
-		tracking.SavingConversions(db, c)
+		tracking.SavingConversions(db.GetDB("DB"), c)
 	})
 
 	// 启动汇总协程
@@ -70,6 +69,7 @@ func main() {
 	http.HandleFunc("/status/", Status2)
 	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), OnLPOfferRequest)
 	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), OnLandingPageClick)
+	http.HandleFunc(config.String("DEFAULT", "impressionurl"), units.OnImpression)
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening request at", config.GetBindPort())
 	log.Error(reqServer.ListenAndServe())
@@ -89,7 +89,7 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 	}
 	req, _ := request.CreateRequest(common.GenRandId(), request.ReqLPOffer, r)
 	req.SetCampaignId(time.Now().Unix())
-	campaign.SetCookie(w, campaign.TrackingStepLandingPage, req)
+	units.SetCookie(w, request.ReqLPOffer, req)
 	fmt.Fprint(w, "It works1!"+common.SchemeHostURI(r)+
 		" *"+r.RequestURI+
 		" *"+common.GetCampaignHash(r)+

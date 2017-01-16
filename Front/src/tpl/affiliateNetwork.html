@@ -51,11 +51,7 @@
             <tr md-row>
                 <th md-column md-order-by="id">{{'ID' | translate}}</th>
                 <th md-column md-order-by="name">{{'Name' | translate}}</th>
-                <th md-column md-order-by="url">{{'Token' | translate}}</th>
-                <th md-column md-order-by="country">{{'Status' | translate}}</th>
-                <th md-column md-order-by="affiliateNetwork">{{'Budget' | translate}}</th>
-                <!--                 <th md-column md-order-by="postbaclUrl">{{'Postback URL' | translate}}</th>
-                                <th md-column md-order-by="payout">{{'Payout' | translate}}</th> -->
+                <th md-column md-order-by="url">{{'Url' | translate}}</th>
                 <th md-column class="cs-cell-action">{{'operation' | translate}}</th>
             </tr>
             </thead>
@@ -63,11 +59,7 @@
             <tr md-row ng-repeat="item in items.rows" ng-init="fab[$index] = {isOpen: false, tooltipVisible:false}">
                 <td md-cell>{{item.id}}</td>
                 <td md-cell>{{item.name}}</td>
-                <td md-cell>{{item.token}}</td>
-                <td md-cell>{{'trafficSourceStatus.' + item.status | translate}}</td>
-                <td md-cell>{{item.budget}}</td>
-                <!--                 <td md-cell>{{item.postbackUrl}}</td>
-                                <td md-cell>{{item.payout}}</td> -->
+                <td md-cell>{{item.url}}</td>
                 <td md-cell class="cs-cell-action">
                     <md-fab-speed-dial md-direction="left" md-open="fab[$index].isOpen"
                                        class="md-scale md-mini cs-fab-action"

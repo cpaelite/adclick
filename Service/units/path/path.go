@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strconv"
+	"strings"
 	"sync"
 
 	"AdClickTool/Service/log"
@@ -23,7 +25,6 @@ type PathConfig struct {
 	UserId       int64
 	RedirectMode int64
 	DirectLink   int64
-	Weight       uint64
 	Status       int64
 }
 
@@ -166,4 +167,63 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	return fmt.Errorf(
 		"[Path][OnLPOfferRequest]Request(%s) does not match any lander(%d:%d) or offer(%d:%d) in path(%d)",
 		req.Id(), lx, x, oy, y, p.Id)
+}
+
+func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
+	if p == nil {
+		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
+	}
+
+	// 不需要find，因为可能中途已被移除
+	/*
+		found := false
+		for _, l := range p.landers {
+			if l.LanderId == req.LanderId() {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return fmt.Errorf("[Path][OnLandingPageClick]Target Lander(%d) not found for request(%s) in path(%d)",
+				req.LanderId(), req.Id(), p.Id)
+		}
+	*/
+
+	pp := strings.Split(req.TrackingPath(), "/")
+	switch len(pp) {
+	case 0: // path为/click，按照权重选择一个Offer
+		y := rand.Intn(int(p.owSum))
+		oy := 0
+		for _, o := range p.offers {
+			if o.OfferId <= 0 {
+				continue
+			}
+			oy += int(o.Weight)
+			if y < oy {
+				req.SetOfferId(o.OfferId)
+				return offer.GetOffer(o.OfferId).OnLandingPageClick(w, req)
+			}
+		}
+	case 1: // path为/click/N，按照指定顺序(1~)选择一个Offer
+		i, err := strconv.ParseInt(pp[1], 10, 64)
+		if err != nil || i == 0 || i > int64(len(p.offers)) {
+			return fmt.Errorf("[Path][OnLandingPageClick]Target offer path(%s)(i:%d) parse failed err(%v) for request(%s) in path(%d)(offers:%d)",
+				req.TrackingPath(), i, req.Id(), p.Id, len(p.offers))
+		}
+		//TODO 是否需要加上lander的NumberOfOffers的检查？
+		req.SetOfferId(p.offers[i-1].OfferId)
+		return offer.GetOffer(p.offers[i-1].OfferId).OnLandingPageClick(w, req)
+	}
+
+	return fmt.Errorf("[Path][OnLandingPageClick]Target offer path(%s) not found for request(%s) in path(%d)",
+		req.TrackingPath(), req.Id(), p.Id)
+}
+
+func (p *Path) OnImpression(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (p *Path) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+	return nil
 }
