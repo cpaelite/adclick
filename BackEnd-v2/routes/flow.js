@@ -5,6 +5,14 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 
+/**
+ * @api {post} /api/flow/ 新增flow
+ * @apiName 新增flow
+ * @apiGroup flow
+ * @apiParam {String} name
+ * @apiParam {Object} country
+ * @apiParam {Number} redirectMode
+ */
 router.post('/api/flow', function (req, res, next) {
     var schema = Joi.object().keys({
         rules: Joi.array().required().length(1),
@@ -28,6 +36,15 @@ router.post('/api/flow', function (req, res, next) {
     });
 });
 
+/**
+ * @api {post} /api/flow/:id 编辑flow
+ * @apiName  编辑flow
+ * @apiGroup flow
+ * @apiParam {String} name
+ * @apiParam {Object} country
+ * @apiParam {Number} redirectMode
+ * @apiParam {Number} [deleted]
+ */
 router.post('/api/flow/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         rules: Joi.array().required().length(1),
@@ -37,8 +54,9 @@ router.post('/api/flow/:id', function (req, res, next) {
         name: Joi.string(),
         country: Joi.object(),
         redirectMode: Joi.number(),
-        userId: Joi.number().required()
-    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode');
+        userId: Joi.number().required(),
+        deleted: Joi.number()
+    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode', 'deleted');
     req.body.userId = req.userId;
     req.body.id = req.params.id;
     start(req.body, schema).then(function (data) {
