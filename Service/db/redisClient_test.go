@@ -1,9 +1,10 @@
 package db
 
 import (
-	"HaiwaiAdx/log"
-	"gopkg.in/redis.v5"
+	"AdClickTool/Service/log"
 	"testing"
+
+	"gopkg.in/redis.v5"
 )
 
 func TestRedis(t *testing.T) {

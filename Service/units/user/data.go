@@ -41,7 +41,7 @@ func DBGetAvailableUsers() []UserConfig {
 
 func DBGetUserInfo(userId int64) (c UserConfig) {
 	d := dbgetter()
-	sql := "SELECT id, idText, rootDomainRedirect FROM User WHERE userId=?"
+	sql := "SELECT id, idText, rootDomainRedirect FROM User WHERE id=?"
 	row := d.QueryRow(sql, userId)
 
 	if err := row.Scan(&c.Id, &c.IdText, &c.RootDomainRedirect); err != nil {

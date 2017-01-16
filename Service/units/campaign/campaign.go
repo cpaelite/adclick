@@ -55,6 +55,16 @@ type CampaignConfig struct {
 	Vars       []TrafficSourceParams
 }
 
+// ParseVars 根据Vars解析出10个参数，分别是，v1-v10
+func (c *CampaignConfig) ParseVars(getter func(k string) string) []string {
+	vars := []string{}
+	for _, param := range c.Vars {
+		v := getter(param.Parameter)
+		vars = append(vars, v)
+	}
+	return vars
+}
+
 func (c CampaignConfig) String() string {
 	return fmt.Sprintf("Campaign %d:%d Status %d", c.Id, c.UserId, c.Status)
 }

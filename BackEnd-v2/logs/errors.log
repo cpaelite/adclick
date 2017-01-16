@@ -787,3 +787,151 @@
   sqlState: '23000',
   index: 0 }
 [2017-01-14 01:14:16.601] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 84 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:38:02.692] [ERROR] app - Something went wrong: TypeError: Joi.number.optional is not a function
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:274:24
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at Route.dispatch (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:277:22
+    at Function.process_params (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:330:12)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:271:10)
+    at Function.handle (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:176:3)
+    at router (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:46:12)
+[2017-01-16 15:38:02.740] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 72 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:38:33.484] [ERROR] app - Something went wrong: TypeError: Joi.number.optional is not a function
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:274:24
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:131:13)
+    at Route.dispatch (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:277:22
+    at Function.process_params (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:330:12)
+    at next (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:271:10)
+    at Function.handle (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:176:3)
+    at router (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/node_modules/express/lib/router/index.js:46:12)
+[2017-01-16 15:38:33.524] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 72 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:38:58.940] [ERROR] app - Something went wrong: TypeError: (intermediate value)(intermediate value)(intermediate value) is not a function
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:335:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 15:38:58.964] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 113 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:42:28.971] [ERROR] app - Something went wrong: TypeError: (intermediate value)(intermediate value)(intermediate value) is not a function
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:335:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 15:42:29.005] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 113 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:43:37.009] [ERROR] app - Something went wrong: TypeError: (intermediate value)(intermediate value)(intermediate value) is not a function
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:336:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 15:43:37.043] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 113 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:46:34.596] [ERROR] app - Something went wrong: TypeError: (intermediate value)(intermediate value)(intermediate value) is not a function
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:336:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 15:46:34.627] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 113 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:50:37.601] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:850:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:412:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 15:50:37.639] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 15:54:05.415] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:850:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:412:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 15:54:05.444] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:08:13.802] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:852:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:414:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:08:13.827] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:12:03.355] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:852:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:414:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:12:03.383] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:12:48.205] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:854:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:414:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:12:48.232] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:13:53.948] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:854:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:413:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:13:54.010] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:15:33.371] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:855:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:414:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:15:33.410] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:16:56.632] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:858:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:415:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:16:56.658] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:17:55.560] [ERROR] app - Something went wrong: TypeError: Cannot read property 'alpha3Code' of undefined
+    at insertLander (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:874:55)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:415:70
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:17:55.603] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 81 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:19:40.638] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertOffer (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:947:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:445:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:19:40.682] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:25:07.738] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertOffer (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:948:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:446:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:25:07.771] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
+[2017-01-16 16:28:20.140] [ERROR] app - Something went wrong: ReferenceError: value is not defined
+    at insertOffer (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:950:15)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:446:69
+    at Generator.next (<anonymous>)
+    at step (/Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:183)
+    at /Users/Aedan/work/node.js/AdClickTool/BackEnd-v2/routes/campaign.js:1:361
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+[2017-01-16 16:28:20.167] [ERROR] http - ::1 - - "POST /api/campaign HTTP/1.1" 500 55 "" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36"
