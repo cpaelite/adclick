@@ -20,7 +20,7 @@ func init() {
 	pass := ""
 	host := "localhost"
 	port := 3306
-	dbname := "tracking"
+	dbname := "AdClickTool"
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, dbname)
 	var err error
