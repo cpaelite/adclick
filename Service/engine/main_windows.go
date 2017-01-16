@@ -86,7 +86,7 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 	if c != nil {
 		log.Infof("Cookies tstep:%+v\n", *c)
 	}
-	req, _ := request.CreateRequest(common.GenRandId(), request.ReqLPOffer, r)
+	req, _ := request.CreateRequest("", common.GenRandId(), request.ReqLPOffer, r)
 	req.SetCampaignId(time.Now().Unix())
 	units.SetCookie(w, request.ReqLPOffer, req)
 	fmt.Fprint(w, "It works1!"+common.SchemeHostURI(r)+

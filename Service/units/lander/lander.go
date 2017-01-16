@@ -115,6 +115,15 @@ func (l *Lander) OnImpression(w http.ResponseWriter, req request.Request) error 
 	return nil
 }
 
-func (l *Lander) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+func (l *Lander) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
+	// lander不做特别处理应该也可以，但是接口先留下来
+	return nil
+}
+
+func (l *Lander) OnConversionPixel(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (l *Lander) OnConversionScript(w http.ResponseWriter, req request.Request) error {
 	return nil
 }

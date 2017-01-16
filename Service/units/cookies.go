@@ -38,7 +38,7 @@ func cookie(step string, req request.Request) (c *http.Cookie) {
 		req.AddCookie("step", request.ReqLPOffer)
 	case request.ReqLPClick:
 		req.AddCookie("step", request.ReqLPClick)
-	case request.ReqOfferPB:
+	case request.ReqS2SPostback:
 		//TODO 应该不需要写入cookie
 	default:
 		return
@@ -65,7 +65,7 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 			step, common.SchemeHostURI(r))
 	case request.ReqLPClick:
 	case request.ReqImpression:
-	case request.ReqOfferPB:
+	case request.ReqS2SPostback:
 	default:
 		return nil, fmt.Errorf("[ParseCookie]Unsupported step(%s) with url(%s)\n",
 			step, common.SchemeHostURI(r))
@@ -87,7 +87,7 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 			c.Value, err, step, common.SchemeHostURI(r))
 	}
 
-	req, err = request.CreateRequest(cInfo.Get("reqid"), step, r)
+	req, err = request.CreateRequest("", cInfo.Get("reqid"), step, r)
 	if req == nil || err != nil {
 		return nil, fmt.Errorf("[ParseCookie]CreateRequest error(%v) in step(%s) with url(%s)\n",
 			c.Value, err, step, common.SchemeHostURI(r))
@@ -114,7 +114,7 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 			return nil, fmt.Errorf("[ParseCookie]Request step(%s) does not match last step(%s) for request(%s)\n",
 				step, es, req.Id())
 		}
-	case request.ReqOfferPB:
+	case request.ReqS2SPostback:
 		switch es {
 		case request.ReqLPClick:
 		case request.ReqImpression:

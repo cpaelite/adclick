@@ -3,7 +3,9 @@ package request
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
+	"time"
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/util/ip"
@@ -40,6 +42,7 @@ type reqbase struct {
 	trackingDomain string
 	trackingPath   string
 	referrer       string
+	referrerdomain string
 	language       string
 	model          string
 	brand          string
@@ -101,6 +104,9 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 	}
 
 	req.referrer = r.Referer()
+	if rurl, err := url.Parse(req.referrer); err == nil && rurl != nil {
+		req.referrerdomain = rurl.Host
+	}
 	tag, _, err := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	if err != nil || len(tag) == 0 {
 		req.language = "UNKNOWN"
@@ -258,6 +264,9 @@ func (r *reqbase) TrackingDomain() string {
 func (r *reqbase) Referrer() string {
 	return r.referrer
 }
+func (r *reqbase) ReferrerDomain() string {
+	return r.referrerdomain
+}
 func (r *reqbase) Brand() string {
 	return r.brand
 }
@@ -311,4 +320,19 @@ func (r *reqbase) UrlParamString() (encode string) {
 func (r *reqbase) ParseUrlTokens(url string) string {
 	//TODO 替换UrlToken
 	return url
+}
+
+func (r *reqbase) CacheSave(expire time.Time) (token string) {
+	//TODO 加入expire支持
+	token, err := setReqCache(r)
+	if err != nil {
+		log.Errorf("[reqbase][CacheSave]setReqCache failed for expire(%s) with err(%s) for request(%s)\n",
+			expire.String(), err.Error(), r.String())
+		return ""
+	}
+	return
+}
+func (r *reqbase) CacheClear() bool {
+	delReqCache(r.clickId)
+	return true
 }

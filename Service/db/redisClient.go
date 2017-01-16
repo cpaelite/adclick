@@ -10,30 +10,38 @@ import (
 	"gopkg.in/redis.v5"
 )
 
-var redisMux sync.Mutex
-var redisClient *redis.Client
+var redisMux sync.RWMutex
+var redisClients map[string]*redis.Client
 
-func GetRedisClient() *redis.Client {
-	redisMux.Lock()
-	defer redisMux.Unlock()
-
-	if redisClient == nil {
-		host := config.String("REDIS", "host")
-		port := config.Int("REDIS", "port")
-		if host == "" {
-			host = "localhost"
-		}
-
-		if port == int(0) {
-			port = int(6379)
-		}
-		redisClient = NewRedisClient(host, port)
+func GetRedisClient(title string) *redis.Client {
+	redisMux.RLock()
+	if client, ok := redisClients[title]; ok {
+		redisMux.RUnlock()
+		return client
 	}
-	return redisClient
+	redisMux.RUnlock()
+
+	host := config.String(title, "host")
+	port := config.Int(title, "port")
+	if host == "" {
+		host = "localhost"
+	}
+	if port == int(0) {
+		port = int(6379)
+	}
+	client := newRedisClient(host, port)
+	if client == nil {
+		log.Errorf("[GetRedisClient]New redis client %s failed:client is nil\n", title)
+		return nil
+	}
+
+	redisMux.Lock()
+	redisClients[title] = client
+	redisMux.Unlock()
+	return client
 }
 
-func NewRedisClient(host string, port int) *redis.Client {
-
+func newRedisClient(host string, port int) *redis.Client {
 	addr := host + ":" + fmt.Sprintf("%d", port)
 	client := redis.NewClient(&redis.Options{
 		Addr:     addr,

@@ -232,6 +232,32 @@ func (ca *Campaign) OnImpression(w http.ResponseWriter, req request.Request) err
 	return nil
 }
 
-func (ca *Campaign) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+func (ca *Campaign) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
+	if ca == nil {
+		return errors.New("[Campaign][OnS2SPostback]Nil ca")
+	}
+
+	f := flow.GetFlow(req.FlowId())
+	if f == nil {
+		return fmt.Errorf("[Campaign][OnS2SPostback]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
+	}
+	err := f.OnS2SPostback(w, req)
+	if err != nil {
+		return err
+	}
+
+	return ca.PostbackToTrafficSource(req)
+}
+
+func (ca *Campaign) OnConversionPixel(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (ca *Campaign) OnConversionScript(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
+	//TODO 封装trafficsource需要的参数
 	return nil
 }
