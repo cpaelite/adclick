@@ -19,8 +19,8 @@ var campaignContrl = require('./campaign');
  * @apiParam {Number} limit
  * @apiParam {String} filter1
  * @apiParam {String} filter1Value
- * @apiParam {String} {filter2}
- * @apiParam {String} {filter2Value}
+ * @apiParam {String} [filter2]
+ * @apiParam {String} [filter2Value]
  * @apiParam {Array}  columns     列
  *
  *
