@@ -84,14 +84,14 @@ func main() {
 		panic(err.Error())
 	}
 	collector.Stop()
+	reloader := new(user.Reloader)
+	go reloader.Running()
+
 	log.Infof("collected users:%+v", collector.Users)
 	log.Debugf("redisClient:%p", db.GetRedisClient())
 	for _, uid := range collector.Users {
 		user.ReloadUser(uid)
 	}
-
-	reloader := new(user.Reloader)
-	go reloader.Running()
 
 	http.HandleFunc("/status", Status1)
 	http.HandleFunc("/status/", Status2)
