@@ -4,6 +4,7 @@
     position: relative;
     width: 100%;
     background-color: #fff;
+    overflow-x:hidden;
 }
 header.navbar {
     position: fixed;
@@ -40,7 +41,7 @@ header .md-toolbar-tools {
 .cs-main-content {
     margin-top: 60px;
     margin-left: 170px;
-    min-width: 960px;
+    /*min-width: 960px;*/
 }
 @media (max-width: 960px) {
     .cs-main-content {
@@ -493,6 +494,9 @@ table.md-table th.md-column {
     max-width: 100%;
     position: static !important;
 }
+md-sidenav.md-closed{
+    display: inline;
+}
 .navi{
     margin-top: 60px;
 }
@@ -789,9 +793,6 @@ table .traficc-source-input input[type="checkbox"]{
 .view_column_con ul li:hover{
     background: #00838f;
 }
-.cs-main-content{
-    height: 100%;
-}
 .view_column_con ul li input[type="checkbox"]{
     margin-right: 10px;
 }
@@ -817,4 +818,89 @@ table .traficc-source-input input[type="checkbox"]{
     padding: 10px;
 }
 /*End netWork Style*/
+
+/*Start dashBoard Style*/
+.dash-board .data-list{
+    border-bottom: 1px solid #c9c9c9;
+}
+.dash-board .data-list .data-list-con{
+    margin-bottom: 15px;
+    padding-left: 0;
+}
+.dash-board .data-list .data-list-con:last-child{
+    padding-right: 0;
+}
+.dash-board .data-list .data-list-con h3{
+    height: 33px;
+    line-height: 33px;
+    font-size: 14px;
+    background: #12bdce;
+    padding: 0px 10px;
+    margin: 0;
+    color: #fff;
+}
+.data-num{
+    font-size: 24px;
+    font-weight: 700;
+    color: #363636;
+    text-align: center;
+    height: 60px;
+    line-height: 60px;
+    background: #f8f8f8;
+}
+.data-tables-chart-container .table > thead > tr > th,
+.data-tables-chart-container .table > tbody > tr > td{
+    border: none;
+}
+.data-tables-chart-container .table > tbody > tr:nth-child(2n+2){
+    background: #f5f5f5;
+}
+.data-tables-chart-container .table-hover > tbody > tr:hover{
+    background-color: #12bdce;
+    color: #fff;
+}
+.data-tables-chart-container table thead{
+    background: #00838f;
+    color: #fff;
+}
+.data-tables-chart-container table tbody td:first-child{
+    background: #cacaca;
+    color: #fff;
+    text-align: center;
+}
+.table-toggles{
+    margin:15px 0; 
+} 
+.table-toggles ul{
+    padding: 0;
+    margin: 0;
+}
+.table-toggles li{
+    cursor: pointer;
+    font-size:12px;
+    color:  #fff;
+    background: #006064;
+    padding: 0 15px;
+    border-radius: 4px;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+}
+.table-toggles li.selected,
+.table-toggles li.selected:hover{
+    background: #12bdce;
+}
+.table-toggles li:hover{
+    background: rgba(0, 96, 100, 0.78);
+}
+.toggles-button-left{
+    float: left;
+}
+.toggles-button-right{
+    float: right;
+}
+.chart-widget{
+    padding-top: 60px;
+}
+/*End dashBoard Style*/
 
