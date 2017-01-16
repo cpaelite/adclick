@@ -17,8 +17,8 @@ var uuidV4 = require('uuid/v4');
  * @apiParam {String} name
  * @apiParam {String} url
  * @apiParam {Number} numberOfOffers
- * @apiParam {String} {country}
- * @apiParam {Array} {tags}
+ * @apiParam {String} [country]
+ * @apiParam {Array} [tags]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -108,9 +108,9 @@ router.post('/api/lander', function (req, res, next) {
  * @apiParam {String} name
  * @apiParam {String} url
  * @apiParam {Number} numberOfOffers
- * @apiParam {String} {country}
- * @apiParam {Array} {tags}
- * @apiParam {Number} {deleted}
+ * @apiParam {String} [country]
+ * @apiParam {Array} [tags]
+ * @apiParam {Number} [deleted]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
