@@ -62,6 +62,7 @@ func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
 			fields.CampaignID,
 			fields.FlowID,
 			fields.LanderID,
+			fields.AffiliateNetworkID,
 			fields.OfferID,
 			fields.TrafficSourceID,
 			fields.Language,
@@ -123,6 +124,7 @@ CampaignID,
 FlowID,
 LanderID,
 OfferID,
+AffiliateNetworkID,
 TrafficSourceID,
 Language,
 Model,
@@ -162,7 +164,7 @@ VALUES (
     ?,?,?,?,?,?,?,?,?,?,
     ?,?,?,?,?,?,?,?,?,?,
     ?,?,?,?,?,?,?,?,?,?,
-	?,?,?,?,?,?,?,?,?
+	?,?,?,?,?,?,?,?,?,?
 )
 
 ON DUPLICATE KEY UPDATE
