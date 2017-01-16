@@ -70,7 +70,7 @@ func main() {
 	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
 
 	// redis 要能够连接
-	redisClient := db.GetRedisClient()
+	redisClient := db.GetRedisClient("MSGQUEUE")
 	if redisClient == nil {
 		log.Errorf("Connect redis server failed.")
 		return
@@ -88,7 +88,7 @@ func main() {
 	go reloader.Running()
 
 	log.Infof("collected users:%+v", collector.Users)
-	log.Debugf("redisClient:%p", db.GetRedisClient())
+	log.Debugf("redisClient:%p", db.GetRedisClient("MSGQUEUE"))
 	for _, uid := range collector.Users {
 		user.ReloadUser(uid)
 	}
