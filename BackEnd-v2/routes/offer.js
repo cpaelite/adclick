@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
+var setting=require('../config/setting');
 
 
 /**
@@ -26,6 +27,7 @@ var Joi = require('joi');
 router.post('/api/offer', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
+        idText:Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
         country: Joi.string().required(),
@@ -34,7 +36,8 @@ router.post('/api/offer', function (req, res, next) {
         AffiliateNetworkId: Joi.number().required(),
         payoutValue: Joi.number().optional()
     });
-    req.body.userId = req.userId
+    req.body.userId = req.userId;
+    req.body.idText=req.idText;
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -44,11 +47,12 @@ router.post('/api/offer', function (req, res, next) {
                 err.status = 303
                 return next(err);
             }
+            var postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter
             var sql = "insert into Offer set `userId`= " +
                 value.userId + ",`name`='" + value.name +
                 "',`url`='" + value.url + "',`country`='" + value.country +
                 "',`postbackUrl`='" +
-                value.postbackUrl +
+                postbackUrl +
                 "',`payoutMode`=" +
                 value.payoutMode + ",`AffiliateNetworkId`=" +
                 value.AffiliateNetworkId + ",`deleted`=0";

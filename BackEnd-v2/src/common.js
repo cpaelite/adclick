@@ -1,5 +1,11 @@
 var Joi = require('joi');
 var uuidV4 = require('uuid/v4');
+var redis = require("redis");
+var setting=require("../config/setting");
+
+function getRedisClient(){
+   return redis.createClient(setting.redis);
+}
 
 
 
@@ -61,7 +67,27 @@ function validate(data,schema){
 
 // Campaign
 function insertCampaign(value, connection) {
-
+    var hash=uuidV4();
+    //url
+    let urlValue=setting.newbidder.httpPix+value.idText+"."+ setting.newbidder.mainDomain+"/"+hash;
+    let impPixelUrl= setting.newbidder.httpPix+value.idText+"."+ setting.newbidder.mainDomain+setting.newbidder.impRouter+"/"+hash
+    let urlValueParams="";
+    let impPixelUrlParams="";
+    if(value.trafficSource && value.trafficSource.params){
+        var params=JSON.parse(value.trafficSource.params);
+         for(let index=0;index<params.length;index++){
+            if(params[index].Track){
+                urlValueParams += params[index].Parameter +"=" + params[index].Placeholder
+            }
+            impPixelUrlParams += params[index].Parameter +"=" + params[index].Placeholder
+         }
+    }
+    if(urlValueParams){
+        urlValue += "?"+urlValueParams
+    }
+    if(impPixelUrlParams){
+        impPixelUrl += "?"+impPixelUrlParams
+    }
     //required
     var col = "`userId`";
     var val = value.userId;
@@ -76,10 +102,10 @@ function insertCampaign(value, connection) {
     val += ",'" + value.name + "'";
 
     col += ",`hash`";
-    val += ",'" + uuidV4() + "'";
+    val += ",'" + hash + "'";
 
     col += ",`url`";
-    val += ",'" + value.url + "'";
+    val += ",'" +urlValue+ "'";
 
     col += ",`trafficSourceId`";
     val += "," + value.trafficSource.id;
@@ -93,11 +119,10 @@ function insertCampaign(value, connection) {
     col += ",`status`";
     val += "," + value.status;
 
-    //optional
-    if (value.impPixelUrl != undefined) {
-        col += ",`impPixelUrl`";
-        val += ",'" + value.impPixelUrl + "'";
-    }
+    col += ",`impPixelUrl`";
+    val += ",'" + impPixelUrl + "'";
+    
+        //optional
     if (value.cpc != undefined) {
         col += ",`cpcValue`";
         val += "," + value.cpc;
@@ -647,3 +672,4 @@ exports.rollback=rollback;
 exports.commit=commit;
 exports.beginTransaction=beginTransaction;
 exports.getConnection=getConnection;
+exports.getRedisClient=getRedisClient;
