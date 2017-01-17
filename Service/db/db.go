@@ -14,15 +14,17 @@ import (
 const defaultMaxOpenConns = 100
 const defaultMaxIdleConns = 100
 
-var mux sync.Mutex
+var mux sync.RWMutex
 var dbSingletonMap = make(map[string]*sql.DB)
 
 func GetDB(title string) (db *sql.DB) {
-	mux.Lock()
-	defer mux.Unlock()
+	mux.RLock()
 	if db, ok := dbSingletonMap[title]; ok {
+		mux.RUnlock()
 		return db
 	}
+	mux.RUnlock()
+
 	dbname := config.String(title, "dbname")
 	host := config.String(title, "host")
 	port := config.Int(title, "port")
@@ -32,13 +34,18 @@ func GetDB(title string) (db *sql.DB) {
 	maxidle := config.Int(title, "max_idle_conns")
 
 	db = connect(dbname, host, port, user, pass, maxopen, maxidle)
-	if db != nil {
-		if err := db.Ping(); err != nil {
-			log.Errorf("NewDB %s failed:%s\n", title, err.Error())
-			return nil
-		}
+	if db == nil {
+		log.Errorf("[GetDB]NewDB %s failed:db connect failure\n", title)
+		return nil
 	}
+	if err := db.Ping(); err != nil {
+		log.Errorf("[GetDB]NewDB %s failed:db ping failure %s\n", title, err.Error())
+		return nil
+	}
+
+	mux.Lock()
 	dbSingletonMap[title] = db
+	mux.Unlock()
 	return
 }
 

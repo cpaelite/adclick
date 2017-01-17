@@ -14,6 +14,7 @@ type AdStatisKey struct {
 	FlowID          int64
 	LanderID        int64
 	OfferID         int64
+	AffiliateNetworkID int64
 	TrafficSourceID int64
 	Language        string
 	Model           string
@@ -31,17 +32,28 @@ type AdStatisKey struct {
 	BrowserVersion  string
 	ConnectionType  string
 	Timestamp       int64
+	V1              string
+	V2              string
+	V3              string
+	V4              string
+	V5              string
+	V6              string
+	V7              string
+	V8              string
+	V9              string
+	V10             string
 }
 
 func statisKeyMD5(k *AdStatisKey) string {
 	h := md5.New()
 	// io.WriteString(h, txt)
-	fmt.Fprintf(h, "%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v",
+	fmt.Fprintf(h, "%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v",
 		k.UserID,
 		k.CampaignID,
 		k.FlowID,
 		k.LanderID,
 		k.OfferID,
+		k.AffiliateNetworkID,
 		k.TrafficSourceID,
 		k.Language,
 		k.Model,
@@ -59,6 +71,16 @@ func statisKeyMD5(k *AdStatisKey) string {
 		k.BrowserVersion,
 		k.ConnectionType,
 		k.Timestamp,
+		k.V1,
+		k.V2,
+		k.V3,
+		k.V4,
+		k.V5,
+		k.V6,
+		k.V7,
+		k.V8,
+		k.V9,
+		k.V10,
 	)
 	return fmt.Sprintf("%X", h.Sum(nil))
 }

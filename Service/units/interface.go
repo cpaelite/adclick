@@ -60,7 +60,7 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req, err := request.CreateRequest(requestId, request.ReqLPOffer, r)
+	req, err := request.CreateRequest("", requestId, request.ReqLPOffer, r)
 	if req == nil || err != nil {
 		log.Errorf("[Units][OnLPOfferRequest]CreateRequest failed for %s;%s;%v\n", requestId, common.SchemeHostURI(r), err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -219,11 +219,58 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 	SetCookie(w, request.ReqImpression, req)
 }
 
-func OnOfferPostback(w http.ResponseWriter, r *http.Request) {
+func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	if !started {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	userIdText := common.GetUerIdText(r)
+	if userIdText == "" {
+		log.Errorf("[Units][OnS2SPostback]Null userIdText for %s\n", common.SchemeHostURI(r))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	u := user.GetUserByIdText(userIdText)
+	if u == nil {
+		log.Errorf("[Units][OnS2SPostback]Invalid userIdText for %s\n", common.SchemeHostURI(r))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	clickId := r.URL.Query().Get(common.UrlTokenClickId)
+	payout := r.URL.Query().Get(common.UrlTokenPayout)
+	txId := r.URL.Query().Get(common.UrlTokenTransactionId)
+	log.Infof("[Units][OnS2SPostback]Received postback with %s(%s;%s;%s)\n", common.SchemeHostURI(r), clickId, payout, txId)
+
+	req, err := request.CreateRequest(clickId, "", request.ReqS2SPostback, r)
+	if req == nil || err != nil {
+		log.Errorf("[Units][OnS2SPostback]CreateRequest failed for %s;%v\n", common.SchemeHostURI(r), err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if err := u.OnS2SPostback(w, req); err != nil {
+		log.Errorf("[Units][OnS2SPostback]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
+
+func OnConversionPixel(w http.ResponseWriter, r *http.Request) {
+	if !started {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+}
+
+func OnConversionScript(w http.ResponseWriter, r *http.Request) {
+	if !started {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 }
 
 /**

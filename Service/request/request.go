@@ -3,15 +3,18 @@ package request
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"AdClickTool/Service/common"
 )
 
 const (
-	ReqLPOffer    = "lpofferreq"
-	ReqLPClick    = "landingpageclick"
-	ReqImpression = "impression"
-	ReqOfferPB    = "offerpostback"
+	ReqLPOffer          = "lpofferreq"
+	ReqLPClick          = "landingpageclick"
+	ReqImpression       = "impression"
+	ReqS2SPostback      = "s2spostback"
+	ReqConversionPixel  = "conversionpixel"
+	ReqConversionScript = "conversionscript"
 )
 
 const (
@@ -70,6 +73,7 @@ type Request interface {
 	TrackingDomain() string
 	TrackingPath() string
 	Referrer() string
+	ReferrerDomain() string
 	Brand() string
 	OS() string
 	OSVersion() string
@@ -85,31 +89,38 @@ type Request interface {
 	AddUrlParam(key, value string)
 	DelUrlParam(key string)
 	UrlParamString() string // 不包括"?"和"/"部分
+
+	CacheSave(expire time.Time) (token string)
+	CacheClear() bool
 }
 
-func CreateRequest(id, t string, r *http.Request) (req Request, err error) {
-	if id == "" || t == "" {
-		return nil, fmt.Errorf("[CreateRequest]Either id or t is empty for request for %s", common.SchemeHostURI(r))
+func CreateRequest(token, reqId, reqType string, r *http.Request) (req Request, err error) {
+	if (token == "" && reqId == "") || reqType == "" {
+		return nil, fmt.Errorf("[CreateRequest]Either (token&&reqId) or reqType is empty for request for %s", common.SchemeHostURI(r))
 	}
-	switch t {
+	switch reqType {
 	case ReqLPOffer:
-		req = CreateLPOfferRequest(id, r)
+		req = CreateLPOfferRequest(reqId, r)
 		if req == nil {
-			return nil, fmt.Errorf("CreateRequest failed for %s;%s;%s%s", t, id, r.Host, r.RequestURI)
+			return nil, fmt.Errorf("CreateRequest failed for %s;%s;%s%s", reqType, reqId, r.Host, r.RequestURI)
 		}
 		return req, nil
 	case ReqLPClick:
-		req = CreateLPClickRequest(id, r)
+		req = CreateLPClickRequest(reqId, r)
 		if req == nil {
-			return nil, fmt.Errorf("CreateRequest failed for %s;%s;%s%s", t, id, r.Host, r.RequestURI)
+			return nil, fmt.Errorf("CreateRequest failed for %s;%s;%s%s", reqType, reqId, r.Host, r.RequestURI)
 		}
 		return req, nil
-	case ReqOfferPB:
-		req = CreateOfferPBRequest(id, r)
+	case ReqS2SPostback:
+		req = CreateS2SPostbackRequest(token, r)
 		if req == nil {
-			return nil, fmt.Errorf("CreateRequest failed for %s;%s;%s%s", t, id, r.Host, r.RequestURI)
+			return nil, fmt.Errorf("CreateRequest failed for %s;%s;%s%s", reqType, reqId, r.Host, r.RequestURI)
 		}
 		return req, nil
+	case ReqConversionPixel:
+		//TODO
+	case ReqConversionScript:
+		//TODO
 	}
 	//TODO add error
 	return nil, nil

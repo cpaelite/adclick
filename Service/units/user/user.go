@@ -99,7 +99,23 @@ func (u *User) OnImpression(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 
-func (u *User) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+func (u *User) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
+	campaignId := req.CampaignId()
+	ca := campaign.GetCampaign(campaignId)
+	if ca == nil {
+		return fmt.Errorf("[Units][OnS2SPostback]Invalid campaign id(%d) for %s\n", campaignId, req.Id())
+	}
+	if ca.UserId != u.Id {
+		return fmt.Errorf("[Units][OnS2SPostback]Campaign with id(%d) does not belong to user %d for %s\n", campaignId, u.Id, req.Id())
+	}
+	return ca.OnS2SPostback(w, req)
+}
+
+func (u *User) OnConversionPixel(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (u *User) OnConversionScript(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 

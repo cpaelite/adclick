@@ -15,6 +15,7 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
+	"AdClickTool/Service/units/user"
 
 	"AdClickTool/Service/request"
 )
@@ -61,8 +62,30 @@ func main() {
 	// 启动AdReferrerDomainStatis表的汇总协程
 	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
 
+	// redis 要能够连接
+	redisClient := db.GetRedisClient("MSGQUEUE")
+	if redisClient == nil {
+		log.Errorf("Connect redis server failed.")
+		return
+	}
+	log.Debugf("Connect redis success: redisClient:%p", redisClient)
+
+	collector := new(user.CollectorCampChangedUsers)
+	collector.Start()
+
 	if err := units.Init(); err != nil {
 		panic(err.Error())
+	}
+
+	collector.Stop()
+
+	reloader := new(user.Reloader)
+	go reloader.Running()
+
+	log.Infof("collected users:%+v", collector.Users)
+	log.Debugf("redisClient:%p", db.GetRedisClient("MSGQUEUE"))
+	for _, uid := range collector.Users {
+		user.ReloadUser(uid)
 	}
 
 	http.HandleFunc("/status", Status1)
@@ -87,7 +110,7 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 	if c != nil {
 		log.Infof("Cookies tstep:%+v\n", *c)
 	}
-	req, _ := request.CreateRequest(common.GenRandId(), request.ReqLPOffer, r)
+	req, _ := request.CreateRequest("", common.GenRandId(), request.ReqLPOffer, r)
 	req.SetCampaignId(time.Now().Unix())
 	units.SetCookie(w, request.ReqLPOffer, req)
 	fmt.Fprint(w, "It works1!"+common.SchemeHostURI(r)+

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require("babel-core/register");
+
 var cluster = require('express-cluster');
 var path = require('path');
 

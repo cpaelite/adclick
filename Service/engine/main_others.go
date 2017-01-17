@@ -14,12 +14,18 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
+	"AdClickTool/Service/units/user"
 
 	"github.com/facebookgo/grace/gracehttp"
 )
 
 func main() {
+	help := flag.Bool("help", false, "show help")
 	flag.Parse()
+	if *help {
+		flag.PrintDefaults()
+		return
+	}
 
 	if err := config.LoadConfig(true); err != nil {
 		panic(err.Error())
@@ -35,6 +41,9 @@ func main() {
 		logConfig = `{"level":7}`
 	}
 	log.Init(logAdapter, logConfig, logAsync)
+	defer func() {
+		log.Flush()
+	}()
 
 	// 启动保存协程
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
@@ -60,8 +69,28 @@ func main() {
 	// 启动AdReferrerDomainStatis表的汇总协程
 	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
 
+	// redis 要能够连接
+	redisClient := db.GetRedisClient("MSGQUEUE")
+	if redisClient == nil {
+		log.Errorf("Connect redis server failed.")
+		return
+	}
+	log.Debugf("Connect redis success: redisClient:%p", redisClient)
+
+	collector := new(user.CollectorCampChangedUsers)
+	collector.Start()
+
 	if err := units.Init(); err != nil {
 		panic(err.Error())
+	}
+	collector.Stop()
+	reloader := new(user.Reloader)
+	go reloader.Running()
+
+	log.Infof("collected users:%+v", collector.Users)
+	log.Debugf("redisClient:%p", db.GetRedisClient("MSGQUEUE"))
+	for _, uid := range collector.Users {
+		user.ReloadUser(uid)
 	}
 
 	http.HandleFunc("/status", Status1)
