@@ -74,6 +74,23 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.OfferId() > 0 {
+		// Clicks增加
+		timestamp := tracking.Timestamp()
+		tracking.AddClick(MakeAdStatisKey(req, timestamp), 1)
+		tracking.IP.AddClick(MakeIPKey(req, timestamp), 1)
+		tracking.Domain.AddClick(MakeDomainKey(req, timestamp), 1)
+		tracking.Ref.AddClick(MakeReferrerKey(req, timestamp), 1)
+
+	} else {
+		// Visits增加
+		timestamp := tracking.Timestamp()
+		tracking.AddVisit(MakeAdStatisKey(req, timestamp), 1)
+		tracking.IP.AddVisit(MakeIPKey(req, timestamp), 1)
+		tracking.Domain.AddVisit(MakeDomainKey(req, timestamp), 1)
+		tracking.Ref.AddVisit(MakeReferrerKey(req, timestamp), 1)
+	}
+
 	SetCookie(w, request.ReqLPOffer, req)
 }
 
@@ -123,6 +140,13 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	// 统计信息的添加
+	timestamp := tracking.Timestamp()
+	tracking.AddClick(MakeAdStatisKey(req, timestamp), 1)
+	tracking.IP.AddClick(MakeIPKey(req, timestamp), 1)
+	tracking.Domain.AddClick(MakeDomainKey(req, timestamp), 1)
+	tracking.Ref.AddClick(MakeReferrerKey(req, timestamp), 1)
 
 	SetCookie(w, request.ReqLPClick, req)
 }
@@ -184,37 +208,12 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 统计分析代码
-	var key tracking.AdStatisKey
-	key.UserID = u.UserConfig.Id
-	key.CampaignID = ca.Id
-	key.FlowID = ca.TargetFlowId
-	key.LanderID = 0
-	key.OfferID = 0
-	key.TrafficSourceID = ca.TrafficSourceId
-	key.Language = req.Language()
-	key.Model = req.Model()
-	key.Country = req.Country()
-	key.City = req.City()
-	key.Region = req.Region()
-	key.ISP = req.ISP()
-	key.MobileCarrier = req.Carrier()
-	key.Domain = req.TrackingDomain()
-	key.DeviceType = req.DeviceType()
-	key.Brand = req.Brand()
-	key.OS = req.OS()
-	key.OSVersion = req.OSVersion()
-	key.Browser = req.Browser()
-	key.BrowserVersion = req.BrowserVersion()
-	key.ConnectionType = req.ConnectionType()
-
-	tracking.AddImpression(key, 1)
-
-	// TODO: 以后AdStatis表里面增加v1-v10的group by的时候
-	// 就在这里解析这些参数
-	// params := ca.ParseVars(r.FormValue)
-	// 解析v1-v10
-	// r.ParseForm()
+	// 统计信息的添加
+	timestamp := tracking.Timestamp()
+	tracking.AddImpression(MakeAdStatisKey(req, timestamp), 1)
+	tracking.IP.AddImpression(MakeIPKey(req, timestamp), 1)
+	tracking.Domain.AddImpression(MakeDomainKey(req, timestamp), 1)
+	tracking.Ref.AddImpression(MakeReferrerKey(req, timestamp), 1)
 
 	SetCookie(w, request.ReqImpression, req)
 }

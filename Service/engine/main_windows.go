@@ -98,7 +98,9 @@ func main() {
 	log.Error(reqServer.ListenAndServe())
 
 	// 只需要在HTTP服务器退出的时候，等待协程退出
+	log.Infof("stopping background goroutines...")
 	gracequit.StopAll()
+	log.Infof("background goroutines stopped")
 }
 
 func Status1(w http.ResponseWriter, r *http.Request) {

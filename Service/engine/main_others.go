@@ -103,8 +103,10 @@ func main() {
 	log.Error(gracehttp.Serve(reqServer))
 	log.Infof("http server stopped. stopping other goroutines...")
 	// 只需要在HTTP服务器退出的时候，等待协程退出
+
+	log.Infof("stopping background goroutines...")
 	gracequit.StopAll()
-	log.Infof("other goroutines stopped successfully")
+	log.Infof("background goroutines stopped")
 }
 
 func Status1(w http.ResponseWriter, r *http.Request) {

@@ -31,7 +31,7 @@ func (c *CollectorCampChangedUsers) Stop() {
 	c.pubsub.Close()
 }
 
-// Run 启动收集协程
+// Start 启动收集协程
 func (c *CollectorCampChangedUsers) Start() {
 	go func() {
 		redis := db.GetRedisClient("MSGQUEUE")
@@ -67,6 +67,7 @@ type Reloader struct {
 // Running 在后台持续更新用户数据
 // 应该在加载所有的用户信息之后，启动这个
 // 防止加载过程中有更新
+// 此协程不进行存盘操作，所以不需要gracestop
 func (r Reloader) Running() {
 	redis := db.GetRedisClient("MSGQUEUE")
 	log.Infof("reloader: running with redis:%v...", redis)

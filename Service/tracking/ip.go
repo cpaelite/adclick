@@ -10,9 +10,9 @@ import (
 
 // IPStatisKey AdIPStatis表里面的Unique Key部分
 type IPStatisKey struct {
-	UserID     int
-	Timestamp  int
-	CampaignID int
+	UserID     int64
+	Timestamp  int64
+	CampaignID int64
 	IP         string
 }
 

@@ -9,39 +9,39 @@ import (
 // AdStatisKey AdStatic表里面用来当作unique key的所有的字段
 // Timestamp不用给，里面会赋值
 type AdStatisKey struct {
-	UserID          int64
-	CampaignID      int64
-	FlowID          int64
-	LanderID        int64
-	OfferID         int64
+	UserID             int64
+	CampaignID         int64
+	FlowID             int64
+	LanderID           int64
+	OfferID            int64
 	AffiliateNetworkID int64
-	TrafficSourceID int64
-	Language        string
-	Model           string
-	Country         string
-	City            string
-	Region          string
-	ISP             string
-	MobileCarrier   string
-	Domain          string
-	DeviceType      string
-	Brand           string
-	OS              string
-	OSVersion       string
-	Browser         string
-	BrowserVersion  string
-	ConnectionType  string
-	Timestamp       int64
-	V1              string
-	V2              string
-	V3              string
-	V4              string
-	V5              string
-	V6              string
-	V7              string
-	V8              string
-	V9              string
-	V10             string
+	TrafficSourceID    int64
+	Language           string
+	Model              string
+	Country            string
+	City               string
+	Region             string
+	ISP                string
+	MobileCarrier      string
+	Domain             string
+	DeviceType         string
+	Brand              string
+	OS                 string
+	OSVersion          string
+	Browser            string
+	BrowserVersion     string
+	ConnectionType     string
+	Timestamp          int64
+	V1                 string
+	V2                 string
+	V3                 string
+	V4                 string
+	V5                 string
+	V6                 string
+	V7                 string
+	V8                 string
+	V9                 string
+	V10                string
 }
 
 func statisKeyMD5(k *AdStatisKey) string {
@@ -142,4 +142,10 @@ func addTrackEvent(key AdStatisKey, action func(d *adStatisValues)) {
 		keyFields: key,
 		action:    action,
 	}
+}
+
+// Timestamp 精确到毫秒的、以小时为单位的时间截
+func Timestamp() int64 {
+	currentMillisecond := time.Now().UnixNano() / int64(time.Millisecond)
+	return currentMillisecond - (currentMillisecond % 3600000)
 }

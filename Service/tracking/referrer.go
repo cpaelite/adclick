@@ -10,9 +10,9 @@ import (
 
 // ReferrerStatisKey AdReferrerStatis表里面的Unique Key部分
 type ReferrerStatisKey struct {
-	UserID     int
-	Timestamp  int
-	CampaignID int
+	UserID     int64
+	Timestamp  int64
+	CampaignID int64
 	Referrer   string
 }
 
