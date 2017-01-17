@@ -61,7 +61,6 @@ function validate(data, schema) {
 
 // Campaign
 function insertCampaign(value, connection) {
-    console.log(JSON.stringify(value));
     var hash = uuidV4();
     //url
     let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
@@ -83,6 +82,8 @@ function insertCampaign(value, connection) {
     if (impPixelUrlParams) {
         impPixelUrl += "?" + impPixelUrlParams;
     }
+    value.url = urlValue;
+    value.impPixelUrl = impPixelUrl;
     //required
     var col = "`userId`";
     var val = value.userId;
@@ -234,7 +235,7 @@ function insertFlow(userId, flow, connection) {
     val += "," + flow.redirectMode;
 
     //optional
-    if (value.flow.country) {
+    if (flow.country) {
         var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code : "";
         col += ",`country`";
         val += ",'" + countryCode + "'";
@@ -262,12 +263,10 @@ function updateFlow(userId, flow, connection) {
     if (flow.redirectMode != undefined) {
         sqlFlow += ",`redirectMode`=" + flow.redirectMode;
     }
-    if (flow.name) {
-        sqlFlow += ",`name`='" + flow.name + "'";
+    if (flow.deleted != undefined) {
+        sqlFlow += ",`deleted`=" + flow.deleted;
     }
-    if (value.flow.name) {
-        sqlFlow += ",`name`='" + flow.name + "'";
-    }
+
     sqlFlow += " where `id`=" + flow.id + " and `userId`=" + userId;
 
     return new Promise(function (resolve, reject) {
