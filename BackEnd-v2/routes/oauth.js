@@ -41,7 +41,7 @@ router.post('/auth', function(req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`email`,`password`,`firstname` from User where `email` = ? and `deleted` =0", [
+                "select  `id`,`idText`,`email`,`password`,`firstname` from User where `email` = ? and `deleted` =0 ", [
                     value.email
                 ],
                 function(err, rows) {
@@ -55,7 +55,7 @@ router.post('/auth', function(req, res, next) {
                                 status: 1,
                                 message: 'success',
                                 data: {
-                                    token: util.setToken(rows[0].id),
+                                    token: util.setToken(rows[0].id,rows[0].idText),
                                     firstname: rows[0].firstname
                                 }
                             })
@@ -113,7 +113,7 @@ router.post('/auth/signup', function(req, res, next) {
                 err.status = 303
                 return next(err);
             }
-            var idtext = util.getRandomString(8)
+            var idtext = util.getRandomString(6)
             var sql =
                 "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`) values (?,?,?,?,?,0)";
             var params = [

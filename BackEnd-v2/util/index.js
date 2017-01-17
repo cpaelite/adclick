@@ -14,7 +14,9 @@ exports.checkToken = function() {
       token = token.split(' ')[1];
       try {
         var decode = jwt.decode(token, setting['jwtTokenSrcret']);
+        console.log(JSON.stringify(decode));
         req.userId = decode.userid
+        req.idText=decode.idText
           //TODO  验证userId
         next();
       } catch (e) {
@@ -27,9 +29,10 @@ exports.checkToken = function() {
   }
 }
 
-exports.setToken = function(userid) {
+exports.setToken = function(userid,idText) {
   return jwt.encode({
-    userid: userid
+    userid: userid,
+    idText:idText
   }, setting['jwtTokenSrcret'])
 }
 
