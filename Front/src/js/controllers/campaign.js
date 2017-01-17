@@ -96,10 +96,10 @@
     $scope.editItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', 'TrackCampaign', editItemCtrl],
+        controller: ['$scope', '$mdDialog', 'Campaign', editItemCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {},
+        locals: {item: item},
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trackCampaign-edit-dialog.html',
@@ -109,7 +109,7 @@
     $scope.deleteItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'TrackCampaign', deleteCtrl],
+        controller: ['$mdDialog', 'Campaign', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
@@ -222,7 +222,7 @@
 
   }
 
-  function editItemCtrl($scope, $mdDialog, TrackCampaign) {
+  function editItemCtrl($scope, $mdDialog, Campaign) {
     if (this.item) {
       this.title = "edit";
     } else {
@@ -299,7 +299,7 @@
       }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
-        TrackCampaign.save($scope.item, success);
+        Campaign.save($scope.item, success);
       }
     };
 
@@ -357,14 +357,14 @@
     $scope.isDisabled = false;
   }
 
-  function deleteCtrl($mdDialog, TrackCampaign) {
+  function deleteCtrl($mdDialog, Campaign) {
     this.title = "delete";
     this.content = 'warnDelete';
 
     this.cancel = $mdDialog.cancel;
 
     function deleteItem(item) {
-      var deferred = TrackCampaign.remove({id: item.id});
+      var deferred = Campaign.remove({id: item.id});
       return deferred.$promise;
     }
 

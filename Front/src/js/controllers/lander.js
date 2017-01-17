@@ -146,6 +146,17 @@ function editItemCtrl($scope, $mdDialog, Lander) {
             Lander.save($scope.item, success);
         }
     };
+
+    var self = this;
+    self.readonly = false;
+    $scope.item.tags = [];
+    self.newVeg = function (chip) {
+        return {
+            name: chip,
+            type: 'unknown'
+        };
+    };
+
 }
 
 function deleteCtrl($mdDialog, Lander) {

@@ -15,24 +15,21 @@
                 <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search...">
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="reportGroupby1" required>
-                    <md-option value="country">country</md-option>
-                    <md-option value="os">os</md-option>
-                    <md-option value="offer">offer</md-option>
+                <md-select class="cs-subform-select" ng-model="reportGroupby1">
+                    <md-option value="">Choose grouping</md-option>
+                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="reportGroupby2">
-                    <md-option value="country">country</md-option>
-                    <md-option value="os">os</md-option>
-                    <md-option value="offer">offer</md-option>
+                    <md-option value="">Choose grouping</md-option>
+                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="reportGroupby3">
-                    <md-option value="country">country</md-option>
-                    <md-option value="os">os</md-option>
-                    <md-option value="offer">offer</md-option>
+                    <md-option value="">Choose grouping</md-option>
+                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">

@@ -68,9 +68,9 @@ angular.module('app').value('columnDefinition', {
       name: 'Payout'
     }],
   common: [{
-      key: 'visits',
-      name: 'Visits'
-    },
+    key: 'visits',
+    name: 'Visits'
+  },
     {
       key: 'clicks',
       name: 'Clicks'
@@ -100,3 +100,34 @@ angular.module('app').value('columnDefinition', {
       name: 'ICTR'
     }]
 });
+angular.module('app').value('reportFilter', [
+  {code: "AffiliateNetwork", name: "Affiliate networks"},
+  {code: "Brand", name: "Brands"},
+  {code: "BrowserVersion", name: "Browser versions"},
+  {code: "Browser", name: "Browsers"},
+  {code: "City", name: "City"},
+  {code: "ConnectionType", name: "Connection type"},
+  {code: "Conversions", name: "Conversions"},
+  {code: "Country", name: "Country"},
+  {code: "Day", name: "Day"},
+  {code: "DayOfWeek", name: "Day of week"},
+  {code: "DeviceType", name: "Device types"},
+  {code: "HourOfDay", name: "Hour of day"},
+  {code: "IP", name: "IP"},
+  {code: "ISP", name: "ISP / Carrier"},
+  {code: "Lander", name: "Landers"},
+  {code: "Language", name: "Language"},
+  {code: "MobileCarrier", name: "Mobile carrier"},
+  {code: "Model", name: "Models"},
+  {code: "Monty", name: "Month"},
+  {code: "OS", name: "OS"},
+  {code: "OSVersion", name: "OS versions"},
+  {code: "Offer", name: "Offers"},
+  {code: "Referrer", name: "Referrer"},
+  {code: "ReferrerDomain", name: "Referrer domain"},
+  {code: "Region", name: "State / Region"}
+]);
+
+angular.module('app').value('urlTokens', [
+
+]);

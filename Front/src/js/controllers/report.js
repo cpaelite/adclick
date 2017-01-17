@@ -2,14 +2,15 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'Report', 'Preferences',
+      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'reportFilter', 'Report', 'Preferences',
       ReportCtrl
     ]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, Report, Preferences) {
+  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, reportFilter, Report, Preferences) {
     var perfType = $scope.$state.current.name.split('.').pop();
     $scope.app.subtitle = perfType;
 
+    // 初始化
     $scope.query = {
       limit: $scope.preferences.reportViewLimit,
       offset: 1,
@@ -22,6 +23,10 @@
     $scope.datetype = 1;
     $scope.reportSort = "-visits";
     $scope.reportViewColumns = angular.copy($scope.preferences.reportViewColumns);
+    $scope.repFilter = reportFilter;
+    $scope.reportGroupby1 = "";
+    $scope.reportGroupby2 = "";
+    $scope.reportGroupby3 = "";
 
     function success(result) {
       if (result.status == 1) {
@@ -213,10 +218,10 @@
         trafficSource: {},
         costModel: 0,
         targetType: 1,
-        status: '1'
+        status: '1',
+        targetUrl: ''
       };
       this.title = "add";
-      $scope.urlToken = '';
     }
     this.titleType = angular.copy(this.perfType);
 
@@ -285,7 +290,10 @@
       "{lander.id}"
     ];
     $scope.urlTokenClick = function (url) {
-      $scope.urlToken = $scope.urlToken + url;
+      var targetUrl = $scope.item.targetUrl;
+      if (targetUrl.indexOf(url) == -1) {
+        $scope.item.targetUrl = targetUrl + url;
+      }
     };
     $scope.isDisabled = false;
     $scope.trafficSources = [
@@ -347,6 +355,7 @@
       this.title = "edit";
     } else {
       $scope.item = {
+        url: ''
       };
       this.title = "add";
     }
@@ -373,6 +382,7 @@
       this.title = "edit";
     } else {
       $scope.item = {
+        url: ''
       };
       this.title = "add";
     }
@@ -390,6 +400,30 @@
         Lander.save($scope.item, success);
       }
     };
+
+    var self = this;
+    self.readonly = false;
+    $scope.item.tags = [];
+    self.newVeg = function (chip) {
+      return {
+        name: chip,
+        type: 'unknown'
+      };
+    };
+    $scope.urlItem = [
+      "{campaign.id}",
+      "{brand}",
+      "{device}",
+      "{trafficSource.name}",
+      "{trafficSource.id}",
+      "{lander.id}"
+    ];
+    $scope.urlTokenClick = function (url) {
+      var itemUrl = $scope.item.url;
+      if (itemUrl.indexOf(url) == -1) {
+        $scope.item.url = itemUrl + url;
+      }
+    };
   }
 
   function editOfferCtrl($scope, $mdDialog, Offer) {
@@ -398,6 +432,8 @@
       this.title = "edit";
     } else {
       $scope.item = {
+        payoutMode: 0,
+        url: ''
       };
       this.title = "add";
     }
@@ -413,6 +449,29 @@
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Offer.save($scope.item, success);
+      }
+    };
+    var self = this;
+    self.readonly = false;
+    $scope.item.tags = [];
+    self.newVeg = function (chip) {
+      return {
+        name: chip,
+        type: 'unknown'
+      };
+    };
+    $scope.urlItem = [
+      "{campaign.id}",
+      "{brand}",
+      "{device}",
+      "{trafficSource.name}",
+      "{trafficSource.id}",
+      "{lander.id}"
+    ];
+    $scope.urlTokenClick = function (url) {
+      var itemUrl = $scope.item.url;
+      if (itemUrl.indexOf(url) == -1) {
+        $scope.item.url = itemUrl + url;
       }
     };
   }
