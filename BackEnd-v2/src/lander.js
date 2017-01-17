@@ -7,6 +7,7 @@ var router = express.Router();
 var Joi = require('joi');
 var async = require('async');
 var uuidV4 = require('uuid/v4');
+var common =require('./common');
 
 
 /**
@@ -37,72 +38,32 @@ router.post('/api/lander', function (req, res, next) {
     });
 
     req.body.userId = req.userId
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
+    const start = async ()=>{
+        try{
+            let value=await common.validate(req.body,schema);
+            let connection=await common.getConnection();
+            let landerResult=await common.insertLander(value.userId,value,connection);
+            if(value.tags && value.tags.length){
+                for(let index=0;index<value.tags.length;index++){
+                    await common.insertTags(value.userId,landerResult.insertId,value.tags[index],2,connection);
+                }
+            }
+            delete value.userId;
+            value.id=landerResult.insertId;
+            connection.release();
+            res.json({
+                status: 1,
+                message: 'success',
+                data: value
+                });                  
+        }catch(e){
+            next(e);
         }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var hash = uuidV4();
-            var ParallelArray = []
-            var sqlCampaign = "insert into Lander set `userId`= " +
-                value.userId + ",`name`='" + value.name +
-                "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers +
-                "',`hash`='" +
-                hash + "',`deleted`=0";
-
-            if (value.country) {
-                 var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
-                sqlCampaign += ",`country`='" + countryCode + "'"
-            }
-            connection.query(sqlCampaign, function (err, results) {
-                if (err) {
-                    return next(err);
-                }
-                
-                value.id = results.insertId;
-                value.hash = hash;
-                if (value.tags && value.tags.length > 0) {
-                    
-                    for (let i = 0; i < value.tags.length; i++) {
-                        
-                        ParallelArray.push(function (callback) {
-                            console.log(value.tags)
-                            var sqlTags = "insert into `Tags` (`userId`,`name`,`type`,`targetId`) values (?,?,?,?)"
-                            connection.query(sqlTags, [value.userId, value.tags[i], 2, value.id], callback);
-                        });
-                    }
-                    async.parallel(ParallelArray, function (err) {
-                        if (err) {
-                            return next(err);
-                        }
-                        connection.release();
-                        delete value.userId;
-                        res.json({
-                            status: 1,
-                            message: 'success',
-                            data: value
-                        });
-                    });
-                } else {
-                    delete value.userId;
-                    connection.release();
-                    res.json({
-                        status: 1,
-                        message: 'success',
-                        data: value
-                    });
-
-                }
-
-            });
-
-        });
-    });
-})
+       
+    }
+    start();
+   
+});
 
 
 /**
@@ -139,86 +100,70 @@ router.post('/api/lander/:id', function (req, res, next) {
 
     req.body.userId = req.userId
     req.body.id = req.params.id;
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
+   const start = async ()=>{
+       try{
+           let value=await common.validate(req.body,schema);
+           let connection=await common.getConnection();
+           await common.updateLander(value.userId,value,connection);
+           await common.updateTags(value.userId,value.id,2,connection);
+           if(value.tags && value.tags.length){
+                for(let index=0;index<value.tags.length;index++){
+                    await common.insertTags(value.userId,value.id,value.tags[index],2,connection);
+                }
+            }
+            delete value.userId;
+            connection.release();
+            res.json({
+                status: 1,
+                message: 'success',
+                data: value
+            }); 
+
+
+       }catch(e){
+          next(e);
+       }
+   }
+   start();
+});
+
+
+/**
+ * @api {get} /api/lander/:id  lander detail
+ * @apiName lander
+ * @apiGroup lander
+ *
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',data:{}  }
+ *
+ */
+router.get('/api/lander/:id',function(req,res,next){
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.id=req.params.id;
+    req.query.userId=req.userId;
+    const start = async ()=>{
+        try{
+           let value = await common.validate(req.query,schema);
+           let connection= await common.getConnection();
+           let result=await common.getLanderDetail(value.id,value.userId,connection);
+           res.json({
+               status:1,
+               message:'success',
+               data:result
+           })
+        }catch(e){
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var ParallelArray = []
-            var sqlCampaign = "update Lander set `name`='" + value.name +
-                "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers + "'";
+    }
+   start();
 
-            if (value.country) {
-                var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
-                sqlCampaign += ",`country`='" + countryCode + "'"
-            }
-
-            if (value.deleted != undefined) {
-                sqlCampaign += ",`deleted`='" + value.deleted + "'"
-            }
-            sqlCampaign += " where `userId`= " + value.userId + " and `id`=" + value.id
-
-            connection.query(sqlCampaign, function (err) {
-                if (err) {
-                    return next(err);
-                }
-               
-
-                if (value.tags && value.tags.length > 0) {
-                    for (let i = 0; i < value.tags.length; i++) {
-                        var sqlTags = "update `Tags` set  `name`='" + value.tags[i] + "'" + " where `userId`=" + value.userId +
-                            " and `targetId`=" + value.id + " and  `type`=2"
-                        ParallelArray.push(function (callback) {
-                            connection.query(sqlTags, callback);
-                        });
-                    }
-                    async.parallel(ParallelArray, function (err) {
-                        if (err) {
-                            return next(err);
-                        }
-                        connection.release();
-                         delete value.userId;
-                        res.json({
-                            status: 1,
-                            message: 'success',
-                            data: value
-                        });
-                    });
-                } else if (value.tags && value.tags.length == 0) {
-                    var sqlTags = "update `Tags` set  `deleted`= 1" + " where `userId`=" + value.userId +
-                        " and `targetId`=" + value.id + " and  `type`=2"
-                    connection.query(sqlTags, function (err) {
-                        if (err) {
-                            return next(err);
-                        }
-                        connection.release();
-                         delete value.userId;
-                        res.json({
-                            status: 1,
-                            message: 'success',
-                            data: value
-                        });
-                    });
-
-                } else {
-                    connection.release();
-                     delete value.userId;
-                    res.json({
-                        status: 1,
-                        message: 'success',
-                        data: value
-                    });
-                }
-
-            });
-
-        });
-    });
-
-});
+})
 
 module.exports = router;

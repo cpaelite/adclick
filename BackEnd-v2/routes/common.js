@@ -65,23 +65,7 @@ function insertCampaign(value, connection) {
     //url
     let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
     let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash;
-    let urlValueParams = "";
-    let impPixelUrlParams = "";
-    if (value.trafficSource && value.trafficSource.params) {
-        var params = JSON.parse(value.trafficSource.params);
-        for (let index = 0; index < params.length; index++) {
-            if (params[index].Track) {
-                urlValueParams += params[index].Parameter + "=" + params[index].Placeholder;
-            }
-            impPixelUrlParams += params[index].Parameter + "=" + params[index].Placeholder;
-        }
-    }
-    if (urlValueParams) {
-        urlValue += "?" + urlValueParams;
-    }
-    if (impPixelUrlParams) {
-        impPixelUrl += "?" + impPixelUrlParams;
-    }
+
     value.url = urlValue;
     value.impPixelUrl = impPixelUrl;
     //required
@@ -445,6 +429,29 @@ function updateLander(userId, lander, connection) {
     });
 }
 
+function getLanderDetail(id, userId, connection) {
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`numberOfOffers` from `Lander` where `userId`=? and `deleted`=? and `id`=?";
+    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlLander, [userId, 0, id], function (err, lander) {
+            if (err) {
+                reject(err);
+            }
+            connection.query(sqltag, [userId, id, 2, 0], function (err, tagsResult) {
+                if (err) {
+                    reject(err);
+                }
+                let tags = [];
+                for (let index = 0; index < tagsResult.length; index++) {
+                    tags.push(tagsResult[index].name);
+                }
+                lander[0].tags = tags;
+                resolve(lander[0]);
+            });
+        });
+    });
+}
+
 //Lander2Path
 function insertLander2Path(landerid, pathid, pathweight, connection) {
     var sqllander2path = "insert into Lander2Path (`landerId`,`pathId`,`weight`) values (?,?,?)";
@@ -655,3 +662,4 @@ exports.commit = commit;
 exports.beginTransaction = beginTransaction;
 exports.getConnection = getConnection;
 exports.getRedisClient = getRedisClient;
+exports.getLanderDetail = getLanderDetail;
