@@ -8,6 +8,7 @@ var Joi = require('joi');
 var async = require('async');
 var uuidV4 = require('uuid/v4');
 
+
 /**
  * @api {post} /api/lander  新增lander
  * @apiName lander
@@ -35,38 +36,42 @@ router.post('/api/lander', function (req, res, next) {
         tags: Joi.array().optional()
     });
 
-    req.body.userId = req.userId;
+    req.body.userId = req.userId
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
             return next(err);
         }
         pool.getConnection(function (err, connection) {
             if (err) {
-                err.status = 303;
+                err.status = 303
                 return next(err);
             }
             var hash = uuidV4();
-            var ParallelArray = [];
-            var sqlCampaign = "insert into Lander set `userId`= " + value.userId + ",`name`='" + value.name + "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers + "',`hash`='" + hash + "',`deleted`=0";
+            var ParallelArray = []
+            var sqlCampaign = "insert into Lander set `userId`= " +
+                value.userId + ",`name`='" + value.name +
+                "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers +
+                "',`hash`='" +
+                hash + "',`deleted`=0";
 
             if (value.country) {
-                var countryCode = value.country.alpha3Code ? value.country.alpha3Code : "";
-                sqlCampaign += ",`country`='" + countryCode + "'";
+                 var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+                sqlCampaign += ",`country`='" + countryCode + "'"
             }
             connection.query(sqlCampaign, function (err, results) {
                 if (err) {
                     return next(err);
                 }
-
+                
                 value.id = results.insertId;
                 value.hash = hash;
                 if (value.tags && value.tags.length > 0) {
-
+                    
                     for (let i = 0; i < value.tags.length; i++) {
-
+                        
                         ParallelArray.push(function (callback) {
-                            console.log(value.tags);
-                            var sqlTags = "insert into `Tags` (`userId`,`name`,`type`,`targetId`) values (?,?,?,?)";
+                            console.log(value.tags)
+                            var sqlTags = "insert into `Tags` (`userId`,`name`,`type`,`targetId`) values (?,?,?,?)"
                             connection.query(sqlTags, [value.userId, value.tags[i], 2, value.id], callback);
                         });
                     }
@@ -90,11 +95,15 @@ router.post('/api/lander', function (req, res, next) {
                         message: 'success',
                         data: value
                     });
+
                 }
+
             });
+
         });
     });
-});
+})
+
 
 /**
  * @api {post} /api/lander/:id  编辑lander
@@ -128,7 +137,7 @@ router.post('/api/lander/:id', function (req, res, next) {
         hash: Joi.string().optional()
     });
 
-    req.body.userId = req.userId;
+    req.body.userId = req.userId
     req.body.id = req.params.id;
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
@@ -136,30 +145,33 @@ router.post('/api/lander/:id', function (req, res, next) {
         }
         pool.getConnection(function (err, connection) {
             if (err) {
-                err.status = 303;
+                err.status = 303
                 return next(err);
             }
-            var ParallelArray = [];
-            var sqlCampaign = "update Lander set `name`='" + value.name + "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers + "'";
+            var ParallelArray = []
+            var sqlCampaign = "update Lander set `name`='" + value.name +
+                "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers + "'";
 
             if (value.country) {
-                var countryCode = value.country.alpha3Code ? value.country.alpha3Code : "";
-                sqlCampaign += ",`country`='" + countryCode + "'";
+                var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+                sqlCampaign += ",`country`='" + countryCode + "'"
             }
 
             if (value.deleted != undefined) {
-                sqlCampaign += ",`deleted`='" + value.deleted + "'";
+                sqlCampaign += ",`deleted`='" + value.deleted + "'"
             }
-            sqlCampaign += " where `userId`= " + value.userId + " and `id`=" + value.id;
+            sqlCampaign += " where `userId`= " + value.userId + " and `id`=" + value.id
 
             connection.query(sqlCampaign, function (err) {
                 if (err) {
                     return next(err);
                 }
+               
 
                 if (value.tags && value.tags.length > 0) {
                     for (let i = 0; i < value.tags.length; i++) {
-                        var sqlTags = "update `Tags` set  `name`='" + value.tags[i] + "'" + " where `userId`=" + value.userId + " and `targetId`=" + value.id + " and  `type`=2";
+                        var sqlTags = "update `Tags` set  `name`='" + value.tags[i] + "'" + " where `userId`=" + value.userId +
+                            " and `targetId`=" + value.id + " and  `type`=2"
                         ParallelArray.push(function (callback) {
                             connection.query(sqlTags, callback);
                         });
@@ -169,7 +181,7 @@ router.post('/api/lander/:id', function (req, res, next) {
                             return next(err);
                         }
                         connection.release();
-                        delete value.userId;
+                         delete value.userId;
                         res.json({
                             status: 1,
                             message: 'success',
@@ -177,31 +189,36 @@ router.post('/api/lander/:id', function (req, res, next) {
                         });
                     });
                 } else if (value.tags && value.tags.length == 0) {
-                    var sqlTags = "update `Tags` set  `deleted`= 1" + " where `userId`=" + value.userId + " and `targetId`=" + value.id + " and  `type`=2";
+                    var sqlTags = "update `Tags` set  `deleted`= 1" + " where `userId`=" + value.userId +
+                        " and `targetId`=" + value.id + " and  `type`=2"
                     connection.query(sqlTags, function (err) {
                         if (err) {
                             return next(err);
                         }
                         connection.release();
-                        delete value.userId;
+                         delete value.userId;
                         res.json({
                             status: 1,
                             message: 'success',
                             data: value
                         });
                     });
+
                 } else {
                     connection.release();
-                    delete value.userId;
+                     delete value.userId;
                     res.json({
                         status: 1,
                         message: 'success',
                         data: value
                     });
                 }
+
             });
+
         });
     });
+
 });
 
 module.exports = router;
