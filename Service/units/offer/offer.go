@@ -105,6 +105,7 @@ func (o *Offer) OnLPOfferRequest(w http.ResponseWriter, req request.Request) err
 	if o == nil {
 		return fmt.Errorf("[Offer][OnLPOfferRequest]Nil o for request(%s)", req.Id())
 	}
+	//TODO 替换clickid
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
 	return nil
 }
@@ -113,6 +114,7 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 	if o == nil {
 		return fmt.Errorf("[Offer][OnLandingPageClick]Nil o for request(%s)", req.Id())
 	}
+	//TODO 替换clickid
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
 	return nil
 }
@@ -121,6 +123,18 @@ func (o *Offer) OnImpression(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 
-func (o *Offer) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+func (o *Offer) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
+	if o == nil {
+		return fmt.Errorf("[Offer][OnS2SPostback]Nil o for request(%s)", req.Id())
+	}
+	//TODO tracking记录
+	return nil
+}
+
+func (o *Offer) OnConversionPixel(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (o *Offer) OnConversionScript(w http.ResponseWriter, req request.Request) error {
 	return nil
 }

@@ -174,6 +174,23 @@ func (f *Flow) OnImpression(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 
-func (f *Flow) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+func (f *Flow) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
+	if f == nil {
+		return errors.New("[Flow][OnS2SPostback]Nil f")
+	}
+
+	// 不需要进行find，因为有可能中途被移除
+	r := rule.GetRule(req.RuleId())
+	if r == nil {
+		return fmt.Errorf("[Flow][OnS2SPostback]Target Rule(%d) not found for request(%s) in flow(%d)", req.RuleId(), req.Id(), f.Id)
+	}
+	return r.OnS2SPostback(w, req)
+}
+
+func (f *Flow) OnConversionPixel(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (f *Flow) OnConversionScript(w http.ResponseWriter, req request.Request) error {
 	return nil
 }

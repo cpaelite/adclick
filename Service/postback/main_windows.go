@@ -10,6 +10,7 @@ import (
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/config"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/units"
 )
 
 func main() {
@@ -31,6 +32,9 @@ func main() {
 	log.Init(logAdapter, logConfig, logAsync)
 
 	http.HandleFunc("/", Status)
+	http.HandleFunc(config.String("DEFAULT", "s2spostback"), OnS2SPostback)
+	http.HandleFunc(config.String("DEFAULT", "conversionpixelurl"), OnConversionPixel)
+	http.HandleFunc(config.String("DEFAULT", "conversionscripturl"), OnConversionScript)
 
 	log.Error(StartServe())
 }
@@ -45,6 +49,41 @@ func Status(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "It works!"+common.GetUerIdText(r))
 }
 
-func OnOfferPostback(w http.ResponseWriter, r *http.Request) {
+func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
+	//TODO 去除重复的clickId和transactionId的conversions
+	if r.Method != http.MethodGet {
+		http.NotFound(w, r)
+		return
+	}
+	units.OnS2SPostback(w, r)
+}
 
+const base64GifPixel = "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="
+
+func OnConversionPixel(w http.ResponseWriter, r *http.Request) {
+	//TODO 去除重复的clickId和transactionId的conversions
+	if r.Method != http.MethodGet {
+		http.NotFound(w, r)
+		return
+	}
+	units.OnConversionPixel(w, r)
+
+	w.WriteHeader(http.StatusNoContent)
+
+	/* 备忘
+	w.Header().Set("Content-Type", "image/gif")
+	output, _ := base64.StdEncoding.DecodeString(base64GifPixel)
+	w.Write(output)
+	*/
+}
+
+func OnConversionScript(w http.ResponseWriter, r *http.Request) {
+	//TODO 去除重复的clickId和transactionId的conversions
+	if r.Method != http.MethodGet {
+		http.NotFound(w, r)
+		return
+	}
+	units.OnConversionScript(w, r)
+
+	w.WriteHeader(http.StatusNoContent)
 }

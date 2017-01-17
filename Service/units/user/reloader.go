@@ -34,7 +34,7 @@ func (c *CollectorCampChangedUsers) Stop() {
 // Run 启动收集协程
 func (c *CollectorCampChangedUsers) Start() {
 	go func() {
-		redis := db.GetRedisClient()
+		redis := db.GetRedisClient("MSGQUEUE")
 		var err error
 		c.pubsub, err = redis.PSubscribe(subscribe)
 		if err != nil {
@@ -68,7 +68,7 @@ type Reloader struct {
 // 应该在加载所有的用户信息之后，启动这个
 // 防止加载过程中有更新
 func (r Reloader) Running() {
-	redis := db.GetRedisClient()
+	redis := db.GetRedisClient("MSGQUEUE")
 	log.Infof("reloader: running with redis:%v...", redis)
 
 	// redis.S

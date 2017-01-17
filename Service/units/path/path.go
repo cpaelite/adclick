@@ -224,6 +224,32 @@ func (p *Path) OnImpression(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
 
-func (p *Path) OnOfferPostback(w http.ResponseWriter, req request.Request) error {
+func (p *Path) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
+	if p == nil {
+		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
+	}
+
+	// 不需要find，因为可能中途已被移除
+	l := lander.GetLander(req.LanderId())
+	if l != nil {
+		// 不一定肯定存在Lander
+		l.OnS2SPostback(w, req)
+	}
+
+	o := offer.GetOffer(req.OfferId())
+	if o != nil {
+		// 但是Offer是一定存在的
+		return o.OnS2SPostback(w, req)
+	}
+
+	return fmt.Errorf("[Path][OnS2SPostback]Target offer id(%d) not found for request(%s) in path(%d)",
+		req.OfferId(), req.Id(), p.Id)
+}
+
+func (p *Path) OnConversionPixel(w http.ResponseWriter, req request.Request) error {
+	return nil
+}
+
+func (p *Path) OnConversionScript(w http.ResponseWriter, req request.Request) error {
 	return nil
 }
