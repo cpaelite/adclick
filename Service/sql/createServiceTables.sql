@@ -13,6 +13,15 @@ CREATE TABLE AdClickTool.`User` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
+CREATE TABLE AdClickTool.`UserDomain` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `domain` varchar(512) NOT NULL DEFAULT '' COMMENT '用于生成campaignurl和clickurl时用到的域名',
+  `main` int(11) NOT NULL DEFAULT 0 COMMENT '0:非主域名;1:主域名',
+  `customize` int(11) NOT NULL DEFAULT 0 COMMENT '0:系统默认的域名;1:用户添加的域名',
+  `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 CREATE TABLE AdClickTool.`TrackingCampaign` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
