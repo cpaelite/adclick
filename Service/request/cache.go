@@ -49,40 +49,38 @@ func set(token, caStr string) error {
 
 func gentToken(req *reqbase) (token string) {
 	//TODO 修改成特定的规则
+	if req.Id() != "" {
+		return req.Id()
+	}
 	return common.GenRandId()
 }
-func setReqCache(req *reqbase) (token string, err error) {
+func setReqCache(req *reqbase) (err error) {
 	if req == nil {
-		return "", errors.New("req is nil for setReqCache")
+		return errors.New("req is nil for setReqCache")
+	}
+	if req.Id() == "" {
+		return errors.New("req.Id() is empty for setReqCache")
 	}
 
-	token = gentToken(req)
 	strategy := 1
 	switch strategy {
 	case 1: //方案1：使用中心Cache服务器。
 		{
 			svr := db.GetRedisClient(cacheSvrTitle)
 			if svr == nil {
-				return "", fmt.Errorf("[setReqCache]%s redis client does not exist", cacheSvrTitle)
+				return fmt.Errorf("[setReqCache]%s redis client does not exist", cacheSvrTitle)
 			}
-			err = svr.Append(token, req2cacheStr(req)).Err()
+			err = svr.Append(req.Id(), req2cacheStr(req)).Err()
 		}
 	case 2: //方案2：使用程序内部的Cache。外部通过userIdText做分流。
 		{
-			err = set(token, req2cacheStr(req))
+			err = set(req.Id(), req2cacheStr(req))
 		}
-	case 3: //方案3：有效内容包装在token中。内容太多token太长。开发简便。
-		{
-			token = req2cacheStr(req)
-		}
-	}
-	if err != nil {
-		token = ""
 	}
 	return
 }
 
-func getReqCache(token string) (req *reqbase, err error) {
+func getReqCache(reqId string) (req *reqbase, err error) {
 	strategy := 1
 	switch strategy {
 	case 1: //方案1：使用中心Cache服务器。
@@ -91,15 +89,11 @@ func getReqCache(token string) (req *reqbase, err error) {
 			if svr == nil {
 				return nil, fmt.Errorf("[getReqCache]%s redis client does not exist", cacheSvrTitle)
 			}
-			req = cacheStr2Req(svr.Get(token).String())
+			req = cacheStr2Req(svr.Get(reqId).String())
 		}
 	case 2: //方案2：使用程序内部的Cache。外部通过userIdText做分流。
 		{
-			req = cacheStr2Req(get(token))
-		}
-	case 3: //方案3：有效内容包装在token中。内容太多token太长。开发简便。
-		{
-			req = cacheStr2Req(token)
+			req = cacheStr2Req(get(reqId))
 		}
 	}
 	return
@@ -144,7 +138,6 @@ func req2cacheStr(req *reqbase) (caStr string) {
 	ku.Add("cost", req.cost)
 	ku.Add("vars", strings.Join(req.vars, ";"))
 
-	ku.Add("clickId", req.clickId)
 	ku.Add("tsId", fmt.Sprintf("%d", req.trafficSourceId))
 	ku.Add("tsName", req.trafficSourceName)
 	ku.Add("uId", fmt.Sprintf("%d", req.userId))
@@ -204,7 +197,6 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		cost:       bd.Get("cost"),
 		vars:       strings.Split(bd.Get("vars"), ";"),
 
-		clickId:           bd.Get("clickId"),
 		trafficSourceName: bd.Get("tsname"),
 		userIdText:        bd.Get("uIdText"),
 

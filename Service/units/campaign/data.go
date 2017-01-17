@@ -1,10 +1,12 @@
 package campaign
 
 import (
-	"AdClickTool/Service/db"
-	"AdClickTool/Service/log"
 	"database/sql"
 	"encoding/json"
+
+	"AdClickTool/Service/common"
+	"AdClickTool/Service/db"
+	"AdClickTool/Service/log"
 )
 
 // dbgetter 默认的拿数据库的东西
@@ -18,9 +20,9 @@ func DBGetAllCampaigns() []CampaignConfig {
 }
 
 func dbGetCampaignTrafficConfig(trafficSourceId int64) (
-	ExternalId TrafficSourceParams,
-	Cost TrafficSourceParams,
-	Vars []TrafficSourceParams,
+	ExternalId common.TrafficSourceParams,
+	Cost common.TrafficSourceParams,
+	Vars []common.TrafficSourceParams,
 	err error,
 ) {
 	d := dbgetter()

@@ -95,8 +95,8 @@ func main() {
 
 	http.HandleFunc("/status", Status1)
 	http.HandleFunc("/status/", Status2)
-	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), OnLPOfferRequest)
-	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), OnLandingPageClick)
+	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), units.OnLPOfferRequest)
+	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), units.OnLandingPageClick)
 	http.HandleFunc(config.String("DEFAULT", "impressionurl"), units.OnImpression)
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening request at", config.GetBindPort())
@@ -115,12 +115,4 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 
 func Status2(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "http://www.baidu.com", http.StatusFound)
-}
-
-func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
-	units.OnLPOfferRequest(w, r)
-}
-
-func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
-	units.OnLandingPageClick(w, r)
 }
