@@ -90,8 +90,8 @@ func main() {
 
 	http.HandleFunc("/status", Status1)
 	http.HandleFunc("/status/", Status2)
-	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), OnLPOfferRequest)
-	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), OnLandingPageClick)
+	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), units.OnLPOfferRequest)
+	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), units.OnLandingPageClick)
 	http.HandleFunc(config.String("DEFAULT", "impressionurl"), units.OnImpression)
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening request at", config.GetBindPort())
@@ -112,7 +112,7 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 	if c != nil {
 		log.Infof("Cookies tstep:%+v\n", *c)
 	}
-	req, _ := request.CreateRequest("", common.GenRandId(), request.ReqLPOffer, r)
+	req, _ := request.CreateRequest(common.GenRandId(), request.ReqLPOffer, r)
 	req.SetCampaignId(time.Now().Unix())
 	units.SetCookie(w, request.ReqLPOffer, req)
 	fmt.Fprint(w, "It works1!"+common.SchemeHostURI(r)+
@@ -130,12 +130,4 @@ func Status2(w http.ResponseWriter, r *http.Request) {
 	if c != nil {
 		log.Infof("Cookies tstep:%+v\n", *c)
 	}
-}
-
-func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
-	units.OnLPOfferRequest(w, r)
-}
-
-func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
-	units.OnLandingPageClick(w, r)
 }

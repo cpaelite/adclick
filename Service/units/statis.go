@@ -12,10 +12,10 @@ type RequestInfo interface {
 	String() string
 	TrackingPath() string
 	ExternalId() string
-	SetExternalId(id string)
+	// SetExternalId(id string)
 	Cost() string
 	Vars(n uint) string
-	ClickId() string
+	// ClickId() string
 	TrafficSourceId() int64
 	TrafficSourceName() string
 	UserId() int64
@@ -56,13 +56,13 @@ func MakeConversion(req RequestInfo) tracking.Conversion {
 	// TODO: 这里需要拿到之前的时间
 	conv.VisitTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
 	conv.ExternalID = req.ExternalId()
-	conv.ClickID = req.ClickId()
+	// conv.ClickID = req.ClickId()
 	// conv.TransactionID =
 	// conv.Revenue = req.Payout()
-	conv.Cost = req.Cost()
+	// conv.Cost = req.Cost()
 	// conv.CampaignName = req.CampaignName()
 	conv.CampaignID = req.CampaignId()
-	conv.FlowID = req.FlowId()
+	// conv.FlowID = req.FlowId()
 	// conv.LanderName =
 	conv.LanderID = req.LanderId()
 	// conv.OfferName =
@@ -86,7 +86,7 @@ func MakeConversion(req RequestInfo) tracking.Conversion {
 	conv.VisitorReferrer = req.Referrer()
 
 	// 解析v1-v10
-	v := []*string{&key.V1, &key.V2, &key.V3, &key.V4, &key.V5, &key.V6, &key.V7, &key.V8, &key.V9, &key.V10}
+	v := []*string{&conv.V1, &conv.V2, &conv.V3, &conv.V4, &conv.V5, &conv.V6, &conv.V7, &conv.V8, &conv.V9, &conv.V10}
 	for i := 0; i < len(v); i++ {
 		*v[i] = req.Vars(uint(i))
 	}

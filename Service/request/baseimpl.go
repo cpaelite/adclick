@@ -7,7 +7,9 @@ import (
 	"strings"
 	"time"
 
+	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/util/ip"
 	"AdClickTool/Service/util/ip2location"
 	"AdClickTool/Service/util/useragent"
@@ -25,7 +27,6 @@ type reqbase struct {
 	cost       string
 	vars       []string
 
-	clickId           string
 	trafficSourceId   int64
 	trafficSourceName string
 	userId            int64
@@ -75,6 +76,20 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 		cookie:         make(map[string]string),
 		urlParam:       make(map[string]string),
 	}
+
+	// parse traffic source externalId/cost/vars
+	switch t {
+	case ReqLPOffer:
+		fallthrough
+	case ReqImpression:
+		// 从url参数中获取，由外部调用ParseTSParams处理
+	case ReqLPClick:
+		// 从user cookie中获取，由外部调用ParseTSParams处理
+	case ReqS2SPostback:
+		// 从Cache中获取，实际上不会运行到这里，由S2SPostbackRequest生成时处理掉了
+		panic("newReqBase actually does not run for ReqS2SPostback")
+	}
+
 	//TODO connectiontype/brand/model/deviceType未采集到
 	// chuck说connectiontype实际上用得少，可以先不做
 
@@ -86,7 +101,6 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 	req.carrier = location.Mobilebrand
 	req.isp = location.Isp
 	req.connectionType = location.Netspeed
-	//req.connectionType = location.ConnectionType()
 
 	// parse mobile info from ua
 	ua := useragent.New(r.UserAgent())
@@ -133,34 +147,51 @@ func (r *reqbase) TrackingPath() string {
 func (r *reqbase) ExternalId() string {
 	return r.externalId
 }
-func (r *reqbase) SetExternalId(id string) {
-	r.externalId = id
-}
+
+//func (r *reqbase) SetExternalId(id string) {
+//	r.externalId = id
+//}
+
 func (r *reqbase) Cost() string {
 	return r.cost
 }
-func (r *reqbase) SetCost(cost string) {
-	r.cost = cost
-}
+
+//func (r *reqbase) SetCost(cost string) {
+//	r.cost = cost
+//}
+
 func (r *reqbase) Vars(n uint) string {
 	if n > VarsMaxNum {
 		return ""
 	}
 	return r.vars[n-1]
 }
-func (r *reqbase) SetVars(n uint, v string) {
-	if n > VarsMaxNum {
+
+//func (r *reqbase) SetVars(n uint, v string) {
+//	if n > VarsMaxNum {
+//		return
+//	}
+//	r.vars[n-1] = v
+//}
+
+func (r *reqbase) ParseTSParams(
+	externalId common.TrafficSourceParams,
+	cost common.TrafficSourceParams,
+	params []common.TrafficSourceParams,
+	values QueryHolder) {
+	if r == nil {
 		return
 	}
-	r.vars[n-1] = v
+	r.externalId = values.Get(externalId.Parameter)
+	r.cost = values.Get(cost.Parameter)
+	for i, p := range params {
+		if i >= VarsMaxNum {
+			break
+		}
+		r.vars[i] = values.Get(p.Parameter)
+	}
 }
 
-func (r *reqbase) ClickId() string {
-	return r.clickId
-}
-func (r *reqbase) SetClickId(id string) {
-	r.clickId = id
-}
 func (r *reqbase) TrafficSourceId() int64 {
 	return r.trafficSourceId
 }
@@ -322,17 +353,84 @@ func (r *reqbase) ParseUrlTokens(url string) string {
 	return url
 }
 
-func (r *reqbase) CacheSave(expire time.Time) (token string) {
+func (r *reqbase) CacheSave(expire time.Time) bool {
 	//TODO 加入expire支持
-	token, err := setReqCache(r)
-	if err != nil {
+	if err := setReqCache(r); err != nil {
 		log.Errorf("[reqbase][CacheSave]setReqCache failed for expire(%s) with err(%s) for request(%s)\n",
 			expire.String(), err.Error(), r.String())
-		return ""
+		return false
+	}
+	return true
+}
+func (r *reqbase) CacheClear() bool {
+	delReqCache(r.id)
+	return true
+}
+
+func (r *reqbase) AdStatisKey(timestamp int64) (key tracking.AdStatisKey) {
+	if r == nil {
+		return
+	}
+	key.UserID = r.UserId()
+	key.CampaignID = r.CampaignId()
+	key.FlowID = r.FlowId()
+	key.LanderID = r.LanderId()
+	key.OfferID = r.OfferId()
+	key.TrafficSourceID = r.TrafficSourceId()
+	key.Language = r.Language()
+	key.Model = r.Model()
+	key.Country = r.Country()
+	key.City = r.City()
+	key.Region = r.Region()
+	key.ISP = r.ISP()
+	key.MobileCarrier = r.Carrier()
+	key.Domain = r.TrackingDomain()
+	key.DeviceType = r.DeviceType()
+	key.Brand = r.Brand()
+	key.OS = r.OS()
+	key.OSVersion = r.OSVersion()
+	key.Browser = r.Browser()
+	key.BrowserVersion = r.BrowserVersion()
+	key.ConnectionType = r.ConnectionType()
+	key.Timestamp = timestamp
+
+	// 解析v1-v10
+	v := []*string{&key.V1, &key.V2, &key.V3, &key.V4, &key.V5, &key.V6, &key.V7, &key.V8, &key.V9, &key.V10}
+	for i := 0; i < len(v); i++ {
+		*v[i] = r.Vars(uint(i))
 	}
 	return
 }
-func (r *reqbase) CacheClear() bool {
-	delReqCache(r.clickId)
-	return true
+func (r *reqbase) IPKey(timestamp int64) tracking.IPStatisKey {
+	var ipKey tracking.IPStatisKey
+	if r == nil {
+		return ipKey
+	}
+	ipKey.UserID = r.UserId()
+	ipKey.Timestamp = timestamp
+	ipKey.CampaignID = r.CampaignId()
+	ipKey.IP = r.RemoteIp()
+	return ipKey
+}
+func (r *reqbase) ReferrerKey(timestamp int64) tracking.ReferrerStatisKey {
+	var referrerKey tracking.ReferrerStatisKey
+	if r == nil {
+		return referrerKey
+	}
+	referrerKey.UserID = r.UserId()
+	referrerKey.Timestamp = timestamp
+	referrerKey.CampaignID = r.CampaignId()
+	referrerKey.Referrer = r.Referrer()
+	return referrerKey
+}
+func (r *reqbase) DomainKey(timestamp int64) tracking.ReferrerDomainStatisKey {
+	var domain tracking.ReferrerDomainStatisKey
+	if r == nil {
+		return domain
+	}
+	domain.UserID = r.UserId()
+	domain.Timestamp = timestamp
+	domain.CampaignID = r.CampaignId()
+	domain.ReferrerDomain = r.ReferrerDomain()
+	return domain
 }

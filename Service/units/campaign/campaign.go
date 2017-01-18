@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"sync"
 
+	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/units/flow"
@@ -21,14 +22,6 @@ const (
 	TargetTypeLander = 4
 	TargetTypeOffer  = 5
 )
-
-// TrafficSourceParams {"Parameter":"X","Placeholder":"X","Name":"X","Track":N(0,1)}
-type TrafficSourceParams struct {
-	Parameter   string
-	Placeholder string
-	Name        string
-	Track       int
-}
 
 type CampaignConfig struct {
 	Id                int64
@@ -50,9 +43,9 @@ type CampaignConfig struct {
 	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
 	// 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
 	// 从TrafficSource表中读取
-	ExternalId TrafficSourceParams
-	Cost       TrafficSourceParams
-	Vars       []TrafficSourceParams
+	ExternalId common.TrafficSourceParams
+	Cost       common.TrafficSourceParams
+	Vars       []common.TrafficSourceParams
 }
 
 // ParseVars 根据Vars解析出10个参数，分别是，v1-v10
@@ -226,16 +219,12 @@ func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Reques
 		return errors.New("[Campaign][OnLandingPageClick]Nil ca")
 	}
 
-	if ca.TargetType == TargetTypeFlow {
-		f := flow.GetFlow(ca.TargetFlowId)
-		if f == nil {
-			return fmt.Errorf("[Campaign][OnLandingPageClick]Nil f(%d) for request(%s) in campaign(%d)", ca.TargetFlowId, req.Id(), ca.Id)
-		}
-		req.SetFlowId(ca.TargetFlowId)
-		return f.OnLandingPageClick(w, req)
+	// 不要用Campaign现在的设置，因为有可能中途被改变
+	f := flow.GetFlow(req.FlowId())
+	if f == nil {
+		return fmt.Errorf("[Campaign][OnLandingPageClick]Nil f(%d) for request(%s) in campaign(%d)", req.FlowId(), req.Id(), ca.Id)
 	}
-
-	return fmt.Errorf("[Campaign][OnLandingPageClick]Invalid dstination(%d) for request(%s) in campaign(%d)", ca.TargetType, req.Id(), ca.Id)
+	return f.OnLandingPageClick(w, req)
 }
 
 func (ca *Campaign) OnImpression(w http.ResponseWriter, req request.Request) error {

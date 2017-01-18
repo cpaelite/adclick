@@ -3,6 +3,7 @@ package units
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
@@ -60,13 +61,50 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req, err := request.CreateRequest("", requestId, request.ReqLPOffer, r)
-	if req == nil || err != nil {
-		log.Errorf("[Units][OnLPOfferRequest]CreateRequest failed for %s;%s;%v\n", requestId, common.SchemeHostURI(r), err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	var req request.Request
+	var err error
+	if r.URL.Query().Encode() == "" { // 没有任何tracking token传递过来，就只能尝试从cookie中获取
+		req, err = ParseCookie(request.ReqLPOffer, r)
 	}
+
+	if req == nil || err != nil { // 从cookie解析并load request失败的话，再从url的方式获取
+		req, err = request.CreateRequest(requestId, request.ReqLPOffer, r)
+		if req == nil || err != nil {
+			log.Errorf("[Units][OnLPOfferRequest]CreateRequest failed for %s;%s;%v\n", requestId, common.SchemeHostURI(r), err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
 	req.SetCampaignHash(campaignHash)
+	var ca *campaign.Campaign
+	if req.CampaignId() > 0 { // 如果是从cache中获取campaignId的话，需要对比下campaignHash和campaignId是否匹配
+		ca = campaign.GetCampaignByHash(campaignHash)
+		if ca == nil {
+			log.Errorf("[Units][OnImpression]Invalid campaignHash for %s:%s:%s\n", requestId, common.SchemeHostURI(r), campaignHash)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if ca.Id != req.CampaignId() {
+			log.Errorf("[Units][OnImpression]CampaignHash(%s) does not match existing campaignId(%d) for %s:%s:%s\n",
+				campaignHash, req.CampaignId(), requestId, common.SchemeHostURI(r), campaignHash)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	if r.URL.Query().Encode() != "" { // 如果UrlToken非空的话，需要通过campaign拿到traffic source，然后拿到其参数配置格式
+		if ca == nil {
+			ca = campaign.GetCampaignByHash(campaignHash)
+			if ca == nil {
+				log.Errorf("[Units][OnImpression]Invalid campaignHash for %s:%s:%s\n", requestId, common.SchemeHostURI(r), campaignHash)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+		}
+		// 解析参数，传递到request中
+		req.ParseTSParams(ca.ExternalId, ca.Cost, ca.Vars, r.URL.Query())
+	}
 
 	if err := u.OnLPOfferRequest(w, req); err != nil {
 		log.Errorf("[Units][OnLPOfferRequest]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
@@ -77,21 +115,25 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 	if req.OfferId() > 0 {
 		// Clicks增加
 		timestamp := tracking.Timestamp()
-		tracking.AddClick(MakeAdStatisKey(req, timestamp), 1)
-		tracking.IP.AddClick(MakeIPKey(req, timestamp), 1)
-		tracking.Domain.AddClick(MakeDomainKey(req, timestamp), 1)
-		tracking.Ref.AddClick(MakeReferrerKey(req, timestamp), 1)
+		tracking.AddClick(req.AdStatisKey(timestamp), 1)
+		tracking.IP.AddClick(req.IPKey(timestamp), 1)
+		tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
+		tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
 
 	} else {
 		// Visits增加
 		timestamp := tracking.Timestamp()
-		tracking.AddVisit(MakeAdStatisKey(req, timestamp), 1)
-		tracking.IP.AddVisit(MakeIPKey(req, timestamp), 1)
-		tracking.Domain.AddVisit(MakeDomainKey(req, timestamp), 1)
-		tracking.Ref.AddVisit(MakeReferrerKey(req, timestamp), 1)
+		tracking.AddVisit(req.AdStatisKey(timestamp), 1)
+		tracking.IP.AddVisit(req.IPKey(timestamp), 1)
+		tracking.Domain.AddVisit(req.DomainKey(timestamp), 1)
+		tracking.Ref.AddVisit(req.ReferrerKey(timestamp), 1)
 	}
 
 	SetCookie(w, request.ReqLPOffer, req)
+
+	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+		log.Errorf("[Units][OnLPOfferRequest]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
 }
 
 func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
@@ -143,12 +185,16 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 
 	// 统计信息的添加
 	timestamp := tracking.Timestamp()
-	tracking.AddClick(MakeAdStatisKey(req, timestamp), 1)
-	tracking.IP.AddClick(MakeIPKey(req, timestamp), 1)
-	tracking.Domain.AddClick(MakeDomainKey(req, timestamp), 1)
-	tracking.Ref.AddClick(MakeReferrerKey(req, timestamp), 1)
+	tracking.AddClick(req.AdStatisKey(timestamp), 1)
+	tracking.IP.AddClick(req.IPKey(timestamp), 1)
+	tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
+	tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
 
 	SetCookie(w, request.ReqLPClick, req)
+
+	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+		log.Errorf("[Units][OnLandingPageClick]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
 }
 
 func OnImpression(w http.ResponseWriter, r *http.Request) {
@@ -186,9 +232,9 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := request.CreateImpressionRequest(requestId, r)
-	if req == nil {
-		log.Errorf("[Units][OnImpression]CreateRequest failed for %s;%s\n", requestId, common.SchemeHostURI(r))
+	req, err := request.CreateRequest(requestId, request.ReqImpression, r)
+	if req == nil || err != nil {
+		log.Errorf("[Units][OnImpression]CreateRequest failed for %s;%s with err(%v)\n", requestId, common.SchemeHostURI(r), err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -200,22 +246,28 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
-	// 能过campaign拿到traffic source，然后拿到其参数配置格式
+	// 通过campaign拿到traffic source，然后拿到其参数配置格式
 	ca := campaign.GetCampaignByHash(campaignHash)
 	if ca == nil {
 		log.Errorf("[Units][OnImpression]Invalid campaignHash for %s:%s:%s\n", requestId, common.SchemeHostURI(r), campaignHash)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	// 解析参数，传递到request中
+	req.ParseTSParams(ca.ExternalId, ca.Cost, ca.Vars, r.URL.Query())
 
 	// 统计信息的添加
 	timestamp := tracking.Timestamp()
-	tracking.AddImpression(MakeAdStatisKey(req, timestamp), 1)
-	tracking.IP.AddImpression(MakeIPKey(req, timestamp), 1)
-	tracking.Domain.AddImpression(MakeDomainKey(req, timestamp), 1)
-	tracking.Ref.AddImpression(MakeReferrerKey(req, timestamp), 1)
+	tracking.AddImpression(req.AdStatisKey(timestamp), 1)
+	tracking.IP.AddImpression(req.IPKey(timestamp), 1)
+	tracking.Domain.AddImpression(req.DomainKey(timestamp), 1)
+	tracking.Ref.AddImpression(req.ReferrerKey(timestamp), 1)
 
 	SetCookie(w, request.ReqImpression, req)
+
+	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+		log.Errorf("[Units][OnImpression]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
 }
 
 func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
@@ -242,7 +294,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	txId := r.URL.Query().Get(common.UrlTokenTransactionId)
 	log.Infof("[Units][OnS2SPostback]Received postback with %s(%s;%s;%s)\n", common.SchemeHostURI(r), clickId, payout, txId)
 
-	req, err := request.CreateRequest(clickId, "", request.ReqS2SPostback, r)
+	req, err := request.CreateRequest(clickId, request.ReqS2SPostback, r)
 	if req == nil || err != nil {
 		log.Errorf("[Units][OnS2SPostback]CreateRequest failed for %s;%v\n", common.SchemeHostURI(r), err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -258,6 +310,9 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	// 统计conversion
 	conv := MakeConversion(req)
 	tracking.SaveConversion(&conv)
+	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+		log.Errorf("[Units][OnS2SPostback]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
 }
 
 func OnConversionPixel(w http.ResponseWriter, r *http.Request) {
