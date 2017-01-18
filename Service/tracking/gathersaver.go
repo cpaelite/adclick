@@ -15,8 +15,8 @@ type StatisValue struct {
 	Visits      int
 	Clicks      int
 	Conversions int
-	Cost        float64
-	Revenue     float64
+	Cost        int64
+	Revenue     int64
 	Impressions int
 }
 
@@ -87,7 +87,7 @@ func (gs gatherSaver) AddConversion(key interface{}, count int) {
 func (gs gatherSaver) AddCost(key interface{}, count float64) {
 	action := func(i interface{}) {
 		v := i.(*StatisValue)
-		v.Cost += count
+		v.Cost += int64(count * MILLION)
 	}
 	gs.addEvent(key, action)
 }
@@ -96,7 +96,7 @@ func (gs gatherSaver) AddCost(key interface{}, count float64) {
 func (gs gatherSaver) AddRevenue(key interface{}, count float64) {
 	action := func(i interface{}) {
 		v := i.(*StatisValue)
-		v.Revenue += count
+		v.Revenue += int64(count * MILLION)
 	}
 	gs.addEvent(key, action)
 }

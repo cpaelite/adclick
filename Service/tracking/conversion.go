@@ -13,8 +13,8 @@ type Conversion struct {
 	ExternalID           string
 	ClickID              string
 	TransactionID        string
-	Revenue              float64
-	Cost                 float64
+	Revenue              int64
+	Cost                 int64
 	CampaignName         string
 	CampaignID           int64
 	LanderName           string

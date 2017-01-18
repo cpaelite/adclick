@@ -120,7 +120,7 @@ func AddImpression(key AdStatisKey, count int) {
 // AddCost 增加cost统计信息
 func AddCost(key AdStatisKey, count float64) {
 	f := func(d *adStatisValues) {
-		d.Cost += count
+		d.Cost += int64(count * MILLION)
 	}
 	addTrackEvent(key, f)
 }
@@ -128,7 +128,7 @@ func AddCost(key AdStatisKey, count float64) {
 // AddPayout 增加payout统计信息
 func AddPayout(key AdStatisKey, count float64) {
 	f := func(d *adStatisValues) {
-		d.Revenue += count
+		d.Revenue += int64(count * MILLION)
 	}
 	addTrackEvent(key, f)
 }

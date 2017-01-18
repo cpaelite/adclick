@@ -6,8 +6,8 @@ type adStatisValues struct {
 	Visits      int
 	Clicks      int
 	Conversions int
-	Cost        float64
-	Revenue     float64
+	Cost        int64
+	Revenue     int64
 	Impressions int
 }
 
