@@ -17,6 +17,16 @@ header.navbar {
 header .md-toolbar-tools {
     height: auto;
 }
+header .setting{
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+}
+header .setting:hover{
+    background: rgba(0, 0, 0, 0.05);
+}
 .navbar-right {
     height: 60px;
 }

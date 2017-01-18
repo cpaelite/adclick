@@ -32,7 +32,8 @@
       0: 'Active',
       1: 'InActive'
     },
-    rule: 'Rule'
+    rule: 'Rule',
+    profile:'Profile'
   };
   var i18n_zh = {
     ok: '确定',
