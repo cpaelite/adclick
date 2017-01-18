@@ -254,6 +254,10 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	// 统计conversion
+	conv := MakeConversion(req)
+	tracking.SaveConversion(&conv)
 }
 
 func OnConversionPixel(w http.ResponseWriter, r *http.Request) {

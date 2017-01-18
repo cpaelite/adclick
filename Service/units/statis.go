@@ -1,6 +1,9 @@
 package units
 
-import "AdClickTool/Service/tracking"
+import (
+	"AdClickTool/Service/tracking"
+	"time"
+)
 
 // RequestInfo 里面有请求的所有信息
 type RequestInfo interface {
@@ -43,6 +46,51 @@ type RequestInfo interface {
 	Browser() string
 	BrowserVersion() string
 	ConnectionType() string
+}
+
+// MakeConversion 根据RequestInfo build出来一个Conversion
+func MakeConversion(req RequestInfo) tracking.Conversion {
+	var conv tracking.Conversion
+	conv.UserID = req.UserId()
+	conv.PostbackTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
+	// TODO: 这里需要拿到之前的时间
+	conv.VisitTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
+	conv.ExternalID = req.ExternalId()
+	conv.ClickID = req.ClickId()
+	// conv.TransactionID =
+	// conv.Revenue = req.Payout()
+	conv.Cost = req.Cost()
+	// conv.CampaignName = req.CampaignName()
+	conv.CampaignID = req.CampaignId()
+	conv.FlowID = req.FlowId()
+	// conv.LanderName =
+	conv.LanderID = req.LanderId()
+	// conv.OfferName =
+	conv.OfferID = req.OfferId()
+	conv.Country = req.Country()
+	// conv.CountryCode = req.Country
+	// conv.TrafficSourceName
+	conv.TrafficSourceID = req.TrafficSourceId()
+	// conv.AffiliateNetworkName =
+	// conv.AffiliateNetworkID
+	// conv.Device = req.Device
+	conv.OS = req.OS()
+	conv.OSVersion = req.OSVersion()
+	conv.Brand = req.Brand()
+	conv.Model = req.Model()
+	conv.Browser = req.Browser()
+	conv.BrowserVersion = req.BrowserVersion()
+	conv.ISP = req.ISP()
+	conv.MobileCarrier = req.Carrier()
+	conv.VisitorIP = req.RemoteIp()
+	conv.VisitorReferrer = req.Referrer()
+
+	// 解析v1-v10
+	v := []*string{&key.V1, &key.V2, &key.V3, &key.V4, &key.V5, &key.V6, &key.V7, &key.V8, &key.V9, &key.V10}
+	for i := 0; i < len(v); i++ {
+		*v[i] = req.Vars(uint(i))
+	}
+	return conv
 }
 
 // MakeAdStatisKey 根据RequestInfo build出来一个AdStatisKey
