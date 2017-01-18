@@ -31,7 +31,7 @@ type CampaignConfig struct {
 	ImpPixelUrl       string
 	TrafficSourceId   int64
 	TrafficSourceName string
-	CostModel         string
+	CostModel         int
 	CPCValue          float64
 	CPAValue          float64
 	CPMValue          float64

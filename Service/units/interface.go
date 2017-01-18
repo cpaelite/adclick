@@ -263,6 +263,10 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 	tracking.Domain.AddImpression(req.DomainKey(timestamp), 1)
 	tracking.Ref.AddImpression(req.ReferrerKey(timestamp), 1)
 
+	if ca.CostModel == 3 {
+		user.TrackingCost(req, ca.CPMValue/1000.0)
+	}
+
 	SetCookie(w, request.ReqImpression, req)
 
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {

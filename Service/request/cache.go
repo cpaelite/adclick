@@ -135,7 +135,7 @@ func req2cacheStr(req *reqbase) (caStr string) {
 	ku.Add("ua", req.ua)
 
 	ku.Add("externalId", req.externalId)
-	ku.Add("cost", req.cost)
+	ku.Add("cost", fmt.Sprintf("%v", req.cost))
 	ku.Add("vars", strings.Join(req.vars, ";"))
 
 	ku.Add("tsId", fmt.Sprintf("%d", req.trafficSourceId))
@@ -187,6 +187,8 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		return
 	}
 
+	cost, _ := strconv.ParseFloat(bd.Get("cost"), 64)
+
 	req = &reqbase{
 		id: bd.Get("id"),
 		t:  bd.Get("t"),
@@ -194,7 +196,7 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		ua: bd.Get("ua"),
 
 		externalId: bd.Get("externalId"),
-		cost:       bd.Get("cost"),
+		cost:       cost,
 		vars:       strings.Split(bd.Get("vars"), ";"),
 
 		trafficSourceName: bd.Get("tsname"),

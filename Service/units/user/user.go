@@ -8,6 +8,7 @@ import (
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
+	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units/campaign"
 	"AdClickTool/Service/units/flow"
 	"AdClickTool/Service/units/lander"
@@ -80,7 +81,42 @@ func (u *User) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		return fmt.Errorf("[Units][OnLPOfferRequest]Campaign with hash(%s) does not belong to user %d for %s\n", campaignHash, u.Id, req.Id())
 	}
 	req.SetCampaignId(ca.Id)
-	return ca.OnLPOfferRequest(w, req)
+	err := ca.OnLPOfferRequest(w, req)
+	if err != nil {
+		return err
+	}
+
+	// 统计Cost信息
+	// CPC: Campaign的次数*每次的成本
+	// CPA: postback的次数*每次的成本
+	// CPM: Impression的次数*每次
+	// Auto: Campaign里面的Cost参数
+	// '0:Do-not-track-costs;1:cpc;2:cpa;3:cpm;4:auto?'
+	switch ca.CostModel {
+	case 0:
+		// Do nothing
+	case 1:
+		cost := ca.CPCValue
+		TrackingCost(req, cost)
+	case 2:
+		// 在PostBack里面处理
+	case 3:
+		// 在Impression里面已经处理
+	case 4:
+		cost := req.Cost()
+		TrackingCost(req, cost)
+	}
+
+	return nil
+}
+
+// TrackingCost 添加Cost统计信息
+func TrackingCost(req request.Request, cost float64) {
+	timestamp := tracking.Timestamp()
+	tracking.AddCost(req.AdStatisKey(timestamp), cost)
+	tracking.IP.AddCost(req.IPKey(timestamp), cost)
+	tracking.Domain.AddCost(req.DomainKey(timestamp), cost)
+	tracking.Ref.AddCost(req.ReferrerKey(timestamp), cost)
 }
 
 func (u *User) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
@@ -108,7 +144,17 @@ func (u *User) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
 	if ca.UserId != u.Id {
 		return fmt.Errorf("[Units][OnS2SPostback]Campaign with id(%d) does not belong to user %d for %s\n", campaignId, u.Id, req.Id())
 	}
-	return ca.OnS2SPostback(w, req)
+	var err = ca.OnS2SPostback(w, req)
+	if err != nil {
+		return err
+	}
+
+	if ca.CostModel == 2 {
+		cost := ca.CPAValue
+		TrackingCost(req, cost)
+	}
+
+	return nil
 }
 
 func (u *User) OnConversionPixel(w http.ResponseWriter, req request.Request) error {

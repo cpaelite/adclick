@@ -14,6 +14,8 @@ import (
 	"AdClickTool/Service/util/ip2location"
 	"AdClickTool/Service/util/useragent"
 
+	"strconv"
+
 	"golang.org/x/text/language"
 )
 
@@ -24,7 +26,7 @@ type reqbase struct {
 	ua string
 
 	externalId string
-	cost       string
+	cost       float64 // 从traffic source里面的Cost字段传过来的cost
 	vars       []string
 
 	trafficSourceId   int64
@@ -152,7 +154,7 @@ func (r *reqbase) ExternalId() string {
 //	r.externalId = id
 //}
 
-func (r *reqbase) Cost() string {
+func (r *reqbase) Cost() float64 {
 	return r.cost
 }
 
@@ -183,7 +185,16 @@ func (r *reqbase) ParseTSParams(
 		return
 	}
 	r.externalId = values.Get(externalId.Parameter)
-	r.cost = values.Get(cost.Parameter)
+
+	if len(cost.Parameter) != 0 {
+		costStr := values.Get(cost.Parameter)
+		var err error
+		r.cost, err = strconv.ParseFloat(costStr, 64)
+		if err != nil {
+			log.Errorf("Parse Cost from:%v failed:%v", costStr, err)
+		}
+	}
+
 	for i, p := range params {
 		if i >= VarsMaxNum {
 			break

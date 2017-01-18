@@ -36,7 +36,7 @@ type Request interface {
 
 	ExternalId() string
 	//SetExternalId(id string)
-	Cost() string
+	Cost() float64
 	//SetCost(cost string)
 	Vars(n uint) string // n:1~VarsMaxNum
 	//SetVars(n uint, v string) // n:1~VarsMaxNum
