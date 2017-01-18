@@ -108,7 +108,7 @@ app.get('/api/tags', function (req, res) {
  * @apiName 获取用户配置
  *
  */
-app.get('/preferences', function (req, res) {
+app.get('/api/preferences', function (req, res) {
   var result = {
     "status": 1,
     "message": "",
@@ -441,12 +441,12 @@ app.get('/countries', function (req, res) {
  * @apiParam {String} sort:visits
  * @apiParam {String} direction:desc
  * @apiParam {String} groupBy:campaign
- * @apiParam {Number} offset:0
+ * @apiParam {Number} offset:1
  * @apiParam {Number} limit:500
  * @apiParam {Number} status:1      //0:停止；1:运行; 2:All
  *
  */
-app.get('/report', function (req, res) {
+app.post('/report', function (req, res) {
   var result = {
     "status": 1,
     "messages": "",
@@ -472,8 +472,6 @@ app.get('/report', function (req, res) {
         "roi": 0.0,
         "visits": 3572
       },
-      "limit": 500,
-      "offset": 0,
       rows: [
         {
           "campaignName": "Campaign1",

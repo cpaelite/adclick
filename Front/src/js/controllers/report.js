@@ -11,6 +11,17 @@
     $scope.app.subtitle = perfType;
 
     // 初始化
+    $scope.datetype = 1;
+    $scope.fromDate = moment().format('YYYY-MM-DD');
+    $scope.fromTime = '00:00';
+    $scope.toDate = moment().add('days', 1).format('YYYY-MM-DD');
+    $scope.toTime = '00:00';
+    $scope.reportSort = "-visits";
+    $scope.reportViewColumns = angular.copy($scope.preferences.reportViewColumns);
+    $scope.repFilter = reportFilter;
+    $scope.reportGroupby1 = "";
+    $scope.reportGroupby2 = "";
+    $scope.reportGroupby3 = "";
     $scope.query = {
       limit: $scope.preferences.reportViewLimit,
       offset: 1,
@@ -18,15 +29,10 @@
       direction: $scope.preferences.reportViewSort.direction,
       zt: $scope.preferences.reportTimeZone,
       status: $scope.preferences.entityType,
-      groupBy: perfType
+      groupBy: perfType,
+      from: $scope.fromDate + ' ' + $scope.fromTime,
+      to: $scope.toDate + ' ' + $scope.toTime
     };
-    $scope.datetype = 1;
-    $scope.reportSort = "-visits";
-    $scope.reportViewColumns = angular.copy($scope.preferences.reportViewColumns);
-    $scope.repFilter = reportFilter;
-    $scope.reportGroupby1 = "";
-    $scope.reportGroupby2 = "";
-    $scope.reportGroupby3 = "";
 
     function success(result) {
       if (result.status == 1) {
@@ -35,7 +41,7 @@
     }
 
     $scope.getList = function () {
-      $scope.promise = Report.get($scope.query, success).$promise;
+      $scope.promise = Report.save($scope.query, success).$promise;
     };
     $scope.getList();
 
@@ -43,15 +49,7 @@
       if (newValue == oldValue) {
         return;
       }
-
-      if (newValue != 0) {
-        getDateRange(newValue);
-        $scope.getList();
-      }
-      if (newValue == 0) {
-          $scope.query.from = moment(new Date).format('YYYY-MM-DD');
-          $scope.query.to = moment(new Date).add(1, 'days').format('YYYY-MM-DD');
-      }
+      getDateRange(newValue);
     });
 
     $scope.$watch('query.status', function (newValue, oldValue) {
@@ -87,13 +85,15 @@
 
     $scope.search = function () {
       $scope.query.offset = 1;
+      $scope.query.from = $scope.fromDate + ' ' + $scope.fromTime;
+      $scope.query.to = $scope.toDate + ' ' + $scope.toTime;
       $scope.getList();
     };
 
     $scope.lineClick = function (groupbyValue, filter, filterValue, filterIndex) {
       $scope.query.groupBy = groupbyValue;
-      $scope.query['fileter'+filterIndex] = filter;
-      $scope.query['fileter'+filterIndex+'Value'] = filterValue;
+      $scope.query['fileter' + filterIndex] = filter;
+      $scope.query['fileter' + filterIndex + 'Value'] = filterValue;
       $scope.getList();
     };
 
@@ -170,39 +170,45 @@
       var fromDate;
       var toDate;
       switch (value) {
+        case '0':
+          fromDate = moment().format('YYYY-MM-DD');
+          toDate = moment().add('days', 1).format('YYYY-MM-DD');
         case '1':
-          fromDate = moment(new Date).subtract(1, 'days').format('YYYY-MM-DD');
-          toDate = moment(new Date).format('YYYY-MM-DD');
+          fromDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
+          toDate = moment().format('YYYY-MM-DD');
           break;
         case '2':
-          fromDate = moment(new Date).subtract(6, 'days').format('YYYY-MM-DD');
-          toDate = moment(new Date).format('YYYY-MM-DD');
+          fromDate = moment().subtract(6, 'days').format('YYYY-MM-DD');
+          toDate = moment().format('YYYY-MM-DD');
           break;
         case '3':
-          fromDate = moment(new Date).subtract(13, 'days').format('YYYY-MM-DD');
-          toDate = moment(new Date).format('YYYY-MM-DD');
+          fromDate = moment().subtract(13, 'days').format('YYYY-MM-DD');
+          toDate = moment().format('YYYY-MM-DD');
           break;
         case '4':
-          fromDate = moment(new Date).day(1).format('YYYY-MM-DD');
-          toDate = moment(new Date).format('YYYY-MM-DD');
+          fromDate = moment().day(1).format('YYYY-MM-DD');
+          toDate = moment().format('YYYY-MM-DD');
           break;
         case '5':
-          fromDate = moment(new Date).day(-6).format('YYYY-MM-DD');
-          toDate = moment(new Date).day(0).format('YYYY-MM-DD');
+          fromDate = moment().day(-6).format('YYYY-MM-DD');
+          toDate = moment().day(0).format('YYYY-MM-DD');
           break;
         case '6':
-          fromDate = moment(new Date).startOf('month').format('YYYY-MM-DD');
-          toDate = moment(new Date).format('YYYY-MM-DD');
+          fromDate = moment().startOf('month').format('YYYY-MM-DD');
+          toDate = moment().format('YYYY-MM-DD');
           break;
         case '7':
-          fromDate = moment(new Date).subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-          toDate = moment(new Date).subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+          fromDate = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+          toDate = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
           break;
       }
       $scope.datetype = value;
-      $scope.query.from = fromDate;
-      $scope.query.to = toDate;
+      $scope.fromDate = fromDate;
+      $scope.toDate = toDate;
+      $scope.query.from = $scope.fromDate + ' ' + $scope.fromTime;
+      $scope.query.to = $scope.toDate + ' ' + $scope.toTime;
     }
+
     // 获取不同页面的不同显示列
     var cols = columnDefinition[perfType].concat(columnDefinition['common']);
     $scope.columns = cols;
@@ -232,7 +238,7 @@
     }
 
     this.save = function () {
-      if($scope.item.costModel != 0 && $scope.item.costModel != 4) {
+      if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
       $scope.editForm.$setSubmitted();
@@ -490,7 +496,7 @@
         deferred = Flow.remove({id: item.id});
       } else if (type == 'lander') {
         deferred = Lander.remove({id: item.id});
-      } else if (type == 'offer')  {
+      } else if (type == 'offer') {
         deferred = Offer.remove({id: item.id});
       }
       return deferred.$promise;

@@ -32,7 +32,9 @@
       0: 'Active',
       1: 'InActive'
     },
-    rule: 'Rule'
+    rule: 'Rule',
+    fromDate: 'From',
+    toDate: 'To'
   };
   var i18n_zh = {
     ok: '确定',
