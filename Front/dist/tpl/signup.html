@@ -11,27 +11,36 @@
                     <input type="email" name="email" placeholder="Email" class="form-control" ng-model="user.email"
                            ng-blur="checkEmail()" required>
                     <span style="color:red" ng-show="form.email.$dirty && form.email.$invalid">
-                    <span ng-show="form.email.$error.check">邮箱已存在</span>
+                        <span ng-show="form.email.$error.email">Format Error</span>
+                    <span ng-show="form.email.$error.check">Email is exist</span>
                     </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Password</label>
                 <div class="col-sm-9">
-                    <input type="password" placeholder="Password" class="form-control" ng-model="user.password"
-                           required>
+                    <input type="password" name="password" placeholder="Password" class="form-control" ng-model="user.password" required>
+                    <span style="color:red" ng-show="form.password.$dirty && form.password.$invalid">
+                    <span ng-show="form.password.$error.required">Password is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">FirstName</label>
                 <div class="col-sm-9">
-                    <input type="text" placeholder="FirstName" class="form-control" ng-model="user.firstname" required>
+                    <input type="text" name="firstname" placeholder="FirstName" class="form-control" ng-model="user.firstname" required>
+                    <span style="color:red" ng-show="form.firstname.$dirty && form.firstname.$invalid">
+                    <span ng-show="form.firstname.$error.required">FirstName is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">LastName</label>
                 <div class="col-sm-9">
-                    <input type="text" placeholder="LastName" class="form-control" ng-model="user.lastname" required>
+                    <input type="text" name="lastname" placeholder="LastName" class="form-control" ng-model="user.lastname" required>
+                    <span style="color:red" ng-show="form.lastname.$dirty && form.lastname.$invalid">
+                    <span ng-show="form.lastname.$error.required">LastName is required.</span>
+                    </span>
                 </div>
             </div>
 

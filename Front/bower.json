@@ -39,7 +39,6 @@
     "angular-chart.js": "~1.1.1",
     "animate.css": "^3.5.2",
     "highcharts": "~5.0.6",
-    "fsm-sticky-header":"~1.0.3"
   },
   "devDependencies": {},
   "resolutions": {
