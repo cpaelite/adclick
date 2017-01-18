@@ -99,12 +99,14 @@
     };
 
     // home{
-
+    $scope.toReport = function(){
+        $scope.$state.go('app.report.campaign');
+    };
     // setting
     $scope.toSetting = function(){
-        $scope.nav = false;
-        $scope.settingNav = true;
-        $scope.$state.go('app.setting');
+        // $scope.nav = false;
+        // $scope.settingNav = true;
+        $scope.$state.go('setApp.profile');
     };
 
     if ($auth.isAuthenticated()) {

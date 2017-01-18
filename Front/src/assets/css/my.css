@@ -17,14 +17,16 @@ header.navbar {
 header .md-toolbar-tools {
     height: auto;
 }
-header .setting{
+header .setting,
+header .home{
     width: 60px;
     height: 60px;
     line-height: 60px;
     text-align: center;
     cursor: pointer;
 }
-header .setting:hover{
+header .setting:hover,
+header .home:hover{
     background: rgba(0, 0, 0, 0.05);
 }
 .navbar-right {
@@ -392,8 +394,6 @@ md-datepicker {
     width: 70px;
     margin: 0;
 }
-
-
 .cs-subform-control {
     float: left;
     line-height: 30px;
@@ -725,15 +725,11 @@ table .traficc-source-input input[type="checkbox"]{
     float: left;
     margin-top: 15px;
 }
-.left-con .md-select-value,
-.right-select .md-select-value{
-/*    padding: 5px 5px 6px 10px;
-    border: 1px solid rgba(0,0,0,0.12);
-    border-radius: 4px;
-    background: ghostwhite;*/
-}
 .report .right-select{
     float: right;
+} 
+.right-select .cs-subform-group{
+    float: left;
 }
 .right-select .cs-add-button{
     float: left;
@@ -966,3 +962,50 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
 }
 /*End dashBoard Style*/
 
+/*Start setting Style*/
+h1.setting-title{
+    padding: 30px 0;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+    color: #363636;
+    border-top:1px solid rgba(201, 201, 201, 0.74);
+    margin: 0;
+}
+.basic-form .cs-subform-select{
+    width: 100%;
+    margin: 0;
+}
+.basic-form .campaign-radio{
+    height: 38px;
+    line-height: 38px;
+}
+.basic-form .campaign-radio input[type="radio"]{
+    margin-top: 13px;
+}
+.profile-content{
+    padding: 80px 50px;
+    background: rgba(18, 189, 206, 0.14);
+}
+.password-change .profile-form-footer{
+    margin-right: 0;
+}
+.profile-form-footer{
+    width: 220px;
+    float: right;
+    margin-right: 15px;
+}
+.close-btn{
+    background: rgba(128, 128, 128, 0.71) !important;
+}
+.save-btn,.close-btn{
+    width: 100px;
+    background: #12bdce;
+    padding: 5px 10px;
+    font-size: 16px;
+    color: #fff;
+    float: left;
+    margin-left: 10px;
+    cursor: pointer;
+}
+/*End setting Style*/
