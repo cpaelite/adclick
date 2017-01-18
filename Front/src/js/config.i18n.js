@@ -33,6 +33,8 @@
       1: 'InActive'
     },
     rule: 'Rule',
+    fromDate: 'From',
+    toDate: 'To',
     profile:'Profile'
   };
   var i18n_zh = {

@@ -10,7 +10,7 @@ angular.module('app')
     return $resource('/api/campaigns/:id', {id: '@id'});
   }])
   .factory('Preferences', ['$resource', function ($resource) {
-    return $resource('/preferences');
+    return $resource('/api/preferences');
   }])
   .factory('DashBoard', ['$resource', function ($resource) {
     return $resource('/dashboard/:id', {id: '@id'});
@@ -28,9 +28,9 @@ angular.module('app')
     return $resource('/api/rules/:id', {id: '@id'});
   }])
   .factory('TrafficSource', ['$resource', function ($resource) {
-    return $resource('/traffic/source/:id', {id: '@id'});
+    return $resource('/api/traffic/source/:id', {id: '@id'});
   }])
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
-    return $resource('/affilate/:id', {id: '@id'});
+    return $resource('/api/affilate/:id', {id: '@id'});
   }])
 ;

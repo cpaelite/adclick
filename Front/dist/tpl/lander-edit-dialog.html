@@ -11,13 +11,19 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.name" required>
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
+                    <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Url：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.url" required>
+                    <input type="text" name="url" class="form-control" ng-model="item.url" required>
+                    <span style="color:red" ng-show="editForm.url.$dirty && editForm.url.$invalid">
+                    <span ng-show="editForm.url.$error.required">Url is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="url-tokens-row form-group">
@@ -25,53 +31,45 @@
                 <div class="col-sm-5">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
-                        <div class="url-token " data-token-value="{campaign.id}">
+                        <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
                             <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{campaign.id}</span>
+                            <span class="url-token-caption">{{url}}</span>
                         </div>
-
-                        <div class="url-token " data-token-value="{trafficsource.id}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{trafficsource.id}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{trafficsource.name}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{trafficsource.name}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{lander.id}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{lander.id}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{device}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{device}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{brand}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{brand}</span>
-                        </div>
-
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Number of offers：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.numberOfOffers" required>
+                    <input type="text" name="numberOfOffers" class="form-control" ng-model="item.numberOfOffers" required>
+                    <span style="color:red" ng-show="editForm.numberOfOffers.$dirty && editForm.numberOfOffers.$invalid">
+                    <span ng-show="editForm.numberOfOffers.$error.required">NumberOfOffers is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" ng-model="item.country" required>
+                    <md-select class="cs-subform-select" ng-model="item.country">
                         <md-option value="1">American</md-option>
                         <md-option value="2">Canada</md-option>
                         <md-option value="3">China</md-option>
                     </md-select>
+                </div>
+            </div>
+            <div class="form-group tag-items">
+                <label class="col-sm-3 control-label">Tags：</label>
+                <div class="col-sm-5 selectize-input form-group">
+                    <md-chips
+                            ng-model="item.tags"
+                            readonly="ctrl.readonly"
+                            md-removable="ctrl.removable"
+                            placeholder="Enter a tag"
+                            delete-button-label="Remove Tag"
+                            delete-hint="Press delete to remove tag"
+                            secondary-placeholder="+Tag"
+                            md-max-chips="10">
+                    </md-chips>
                 </div>
             </div>
         </form>

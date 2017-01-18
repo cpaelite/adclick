@@ -145,7 +145,7 @@ router.get('/api/trafficsources', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name`,`cost` from TrafficSource where `userId` = ? and `deleted` =0", [
+                "select  `id`,`name`,`cost`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
                     value.userId
                 ],
                 function (err, result) {
@@ -166,6 +166,7 @@ router.get('/api/trafficsources', function (req, res, next) {
     });
 });
 
+ 
 
 
 /**

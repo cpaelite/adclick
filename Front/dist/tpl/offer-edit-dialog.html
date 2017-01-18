@@ -25,36 +25,10 @@
                 <div class="col-sm-5">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
-                        <div class="url-token " data-token-value="{campaign.id}">
+                        <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
                             <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{campaign.id}</span>
+                            <span class="url-token-caption">{{url}}</span>
                         </div>
-
-                        <div class="url-token " data-token-value="{trafficsource.id}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{trafficsource.id}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{trafficsource.name}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{trafficsource.name}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{lander.id}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{lander.id}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{device}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{device}</span>
-                        </div>
-
-                        <div class="url-token " data-token-value="{brand}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{brand}</span>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -92,6 +66,28 @@
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.payoutMode" value="1"> Manual
                     </label>
+                </div>
+            </div>
+            <div class="form-group" ng-show="item.payoutMode == 1">
+                <label class="col-sm-3 control-label" ng-modle="radioTitle"></label>
+                <div class="col-sm-5">
+                    <span class="dollar-icon">$</span>
+                    <input type="text" class="form-control dollar-input" ng-model="item.payoutValue" ng-value="$">
+                </div>
+            </div>
+            <div class="form-group tag-items">
+                <label class="col-sm-3 control-label">Tags：</label>
+                <div class="col-sm-5 selectize-input form-group">
+                    <md-chips
+                            ng-model="item.tags"
+                            readonly="ctrl.readonly"
+                            md-removable="ctrl.removable"
+                            placeholder="Enter a tag"
+                            delete-button-label="Remove Tag"
+                            delete-hint="Press delete to remove tag"
+                            secondary-placeholder="+Tag"
+                            md-max-chips="10">
+                    </md-chips>
                 </div>
             </div>
         </form>

@@ -275,6 +275,7 @@ router.post('/api/campaign', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().optional(),
         userId: Joi.number().required(),
+        idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
         trafficSource: Joi.object().required(),
@@ -300,6 +301,7 @@ router.post('/api/campaign', function (req, res, next) {
         hash: Joi.string().optional()
     });
     req.body.userId = req.userId;
+    req.body.idText = req.idText;
 
     start(req.body, schema).then(function (data) {
         res.json({
@@ -347,6 +349,7 @@ router.post('/api/campaign/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
+        idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
         trafficSource: Joi.object().required(),
@@ -373,6 +376,7 @@ router.post('/api/campaign/:id', function (req, res, next) {
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
+    req.body.idText = req.idText;
 
     start(req.body, schema).then(function (data) {
         res.json({
@@ -548,6 +552,7 @@ const start = (() => {
                 throw err;
             }
             delete value.userId;
+            delete value.idText;
             Result = value;
         } catch (e) {
             ResultError = e;
