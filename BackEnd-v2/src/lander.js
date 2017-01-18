@@ -5,8 +5,6 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var async = require('async');
-var uuidV4 = require('uuid/v4');
 var common =require('./common');
 
 
@@ -153,11 +151,12 @@ router.get('/api/lander/:id',function(req,res,next){
            let value = await common.validate(req.query,schema);
            let connection= await common.getConnection();
            let result=await common.getLanderDetail(value.id,value.userId,connection);
+           connection.release();
            res.json({
                status:1,
                message:'success',
                data:result
-           })
+           });
         }catch(e){
             return next(err);
         }

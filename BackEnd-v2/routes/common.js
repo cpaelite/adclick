@@ -200,6 +200,30 @@ function updateCampaign(value, connection) {
     });
 }
 
+function getCampaign(id, userId, connection) {
+    let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`,`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?";
+    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, [userId, id, 0], function (err, camResult) {
+            if (err) {
+                reject(err);
+            }
+            connection.query(sqltag, [userId, id, 1, 0], function (err, tagsResult) {
+                connection.release();
+                if (err) {
+                    reject(err);
+                }
+                let tags = [];
+                for (let index = 0; index < tagsResult.length; index++) {
+                    tags.push(tagsResult[index].name);
+                }
+                camResult[0].tags = tags;
+                resolve(camResult[0]);
+            });
+        });
+    });
+}
+
 //Flow
 function insertFlow(userId, flow, connection) {
     //required
@@ -663,3 +687,4 @@ exports.beginTransaction = beginTransaction;
 exports.getConnection = getConnection;
 exports.getRedisClient = getRedisClient;
 exports.getLanderDetail = getLanderDetail;
+exports.getCampaign = getCampaign;

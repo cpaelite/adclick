@@ -7,8 +7,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var async = require('async');
-var uuidV4 = require('uuid/v4');
 var common = require('./common');
 
 /**
@@ -133,86 +131,6 @@ router.post('/api/lander/:id', function (req, res, next) {
         };
     })();
     start();
-
-    // Joi.validate(req.body, schema, function (err, value) {
-    //     if (err) {
-    //         return next(err);
-    //     }
-    //     pool.getConnection(function (err, connection) {
-    //         if (err) {
-    //             err.status = 303
-    //             return next(err);
-    //         }
-    //         var ParallelArray = []
-    //         var sqlCampaign = "update Lander set `name`='" + value.name +
-    //             "',`url`='" + value.url + "',`numberOfOffers`='" + value.numberOfOffers + "'";
-
-    //         if (value.country) {
-    //             var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
-    //             sqlCampaign += ",`country`='" + countryCode + "'"
-    //         }
-
-    //         if (value.deleted != undefined) {
-    //             sqlCampaign += ",`deleted`='" + value.deleted + "'"
-    //         }
-    //         sqlCampaign += " where `userId`= " + value.userId + " and `id`=" + value.id
-
-    //         connection.query(sqlCampaign, function (err) {
-    //             if (err) {
-    //                 return next(err);
-    //             }
-
-
-    //             if (value.tags && value.tags.length > 0) {
-    //                 for (let i = 0; i < value.tags.length; i++) {
-    //                     var sqlTags = "update `Tags` set  `name`='" + value.tags[i] + "'" + " where `userId`=" + value.userId +
-    //                         " and `targetId`=" + value.id + " and  `type`=2"
-    //                     ParallelArray.push(function (callback) {
-    //                         connection.query(sqlTags, callback);
-    //                     });
-    //                 }
-    //                 async.parallel(ParallelArray, function (err) {
-    //                     if (err) {
-    //                         return next(err);
-    //                     }
-    //                     connection.release();
-    //                      delete value.userId;
-    //                     res.json({
-    //                         status: 1,
-    //                         message: 'success',
-    //                         data: value
-    //                     });
-    //                 });
-    //             } else if (value.tags && value.tags.length == 0) {
-    //                 var sqlTags = "update `Tags` set  `deleted`= 1" + " where `userId`=" + value.userId +
-    //                     " and `targetId`=" + value.id + " and  `type`=2"
-    //                 connection.query(sqlTags, function (err) {
-    //                     if (err) {
-    //                         return next(err);
-    //                     }
-    //                     connection.release();
-    //                      delete value.userId;
-    //                     res.json({
-    //                         status: 1,
-    //                         message: 'success',
-    //                         data: value
-    //                     });
-    //                 });
-
-    //             } else {
-    //                 connection.release();
-    //                  delete value.userId;
-    //                 res.json({
-    //                     status: 1,
-    //                     message: 'success',
-    //                     data: value
-    //                 });
-    //             }
-
-    //         });
-
-    //     });
-    // });
 });
 
 /**
@@ -241,6 +159,7 @@ router.get('/api/lander/:id', function (req, res, next) {
                 let value = yield common.validate(req.query, schema);
                 let connection = yield common.getConnection();
                 let result = yield common.getLanderDetail(value.id, value.userId, connection);
+                connection.release();
                 res.json({
                     status: 1,
                     message: 'success',

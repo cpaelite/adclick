@@ -1,7 +1,9 @@
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var campaignContrl = require('./campaign');
+var common = require('./common');
 
 /**
  * @api {post} /api/report  报表
@@ -26,7 +28,6 @@ var campaignContrl = require('./campaign');
  *
  */
 
-
 //from   to tz  sort  direction columns=[]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 
 router.get('/api/report', function (req, res, next) {
@@ -34,7 +35,7 @@ router.get('/api/report', function (req, res, next) {
         userId: Joi.number().required(),
         from: Joi.string().required(),
         to: Joi.string().required(),
-        tz: Joi.string().required(),//+08:00
+        tz: Joi.string().required(), //+08:00
         direction: Joi.string().required(),
         groupBy: Joi.string().required(),
         offset: Joi.number().required(),
@@ -44,26 +45,46 @@ router.get('/api/report', function (req, res, next) {
         filter2: Joi.string().optional(),
         filter2Value: Joi.string().optional(),
         columns: Joi.array().required().length(1)
-    })
-    req.query.userId = req.userId
-    Joi.validate(req.query, schema,
-        function (err, value) {
+    });
+    req.query.userId = req.userId;
+    return campaignReport(res, next);
+});
+
+function campaignReport(res, next) {
+    const start = (() => {
+        var _ref = _asyncToGenerator(function* () {
+            try {
+                let sql = "select  t.`id`,t.`name` ,t.`hash` ,t.`url` ,t.`impPixelUrl` ,t.`country` ," + "t.`trafficSourceName` ,t.`costModel`,t.`cpcValue` as `CPC`,t.`cpaValue` as `CPA`,t.`cpmValue` as `CPM`," + "t.`redirectMode` as `Redirect`," + "ifnull(sum(a.`Impressions`),0) as `Impressions`," + "ifnull(sum(a.`Visits`),0) as `Visits`," + "ifnull(sum(a.`Clicks`),0) as `Clicks`," + "ifnull(sum(a.`Conversions`),0) as `Conversions`," + "CONCAT('$',Round(ifnull(sum(a.`Revenue`),0),2)) as `Revenue`," + "CONCAT('$',Round(ifnull(sum(a.`Cost`),0),2) ) as `Cost`," + "CONCAT('$',Round(ifnull(sum(a.`Revenue`)-sum(a.`Cost`),0),2) ) as `Profit` ," + "CONCAT('$',Round(ifnull(sum(a.`Cost`)/sum(a.`Impressions`),0),4) ) as `CPV`," + "CONCAT(Round(ifnull(sum(a.`Visits`)/sum(a.`Impressions`),0)*100,2),'%') as `ICTR`," + "CONCAT(Round(ifnull(sum(a.`Clicks`)/sum(a.`Visits`),0)*100,2),'%') as `CTR`," + "CONCAT(Round(ifnull(sum(a.`Conversions`)/sum(a.`Clicks`),0)*100,2),'%') as `CR`," + "CONCAT(Round(ifnull(sum(a.`Conversions`)/sum(a.`Visits`),0)*100,2),'%') as `CV`," + "CONCAT(Round(ifnull(sum(a.`Revenue`)/sum(a.`Cost`),0)*100,2),'%') as `ROI`," + "CONCAT('$',Round(ifnull(sum(a.`Revenue`)/sum(a.`Visits`),0)*100,4)) as `EPV`," + "CONCAT('$',Round(ifnull(sum(a.`Revenue`)/sum(a.`Clicks`),0)*100,2)) as `EPC`," + "CONCAT('$',Round(ifnull(sum(a.`Revenue`)/sum(a.`Conversions`),0)*100,2)) as `AP` " + "from `TrackingCampaign` t " + "left join  `AdStatis` a on a.`CampaignID`= t.`id` group by t.`id`";
+
+                let connection = yield common.getConnection();
+                let result = yield query(sql, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: result
+                });
+            } catch (e) {
+                next(e);
+            }
+        });
+
+        return function start() {
+            return _ref.apply(this, arguments);
+        };
+    })();
+    start();
+}
+
+function query(sql, connection) {
+    return new Promise(function (resolve, reject) {
+        connection.query(sql, function (err, result) {
             if (err) {
-                return next(err);
+                reject(err);
             }
-            //campaign
-            if (value.groupBy == 'campaign') {
-                campaignContrl.campaignList(value, function (err, result) {
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json(result);
-                })
-            }
-
-
-        })
-})
-
+            resolve(result);
+        });
+    });
+}
 
 module.exports = router;

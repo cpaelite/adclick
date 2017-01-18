@@ -551,6 +551,7 @@ const start = (() => {
                 yield common.rollback(connection);
                 throw err;
             }
+            connection.release();
             delete value.userId;
             delete value.idText;
             Result = value;
@@ -570,5 +571,42 @@ const start = (() => {
         return _ref.apply(this, arguments);
     };
 })();
+
+/**
+* @api {get} /api/campaign/:id   campaign detail
+ * @apiName  campaign detail
+ * @apiGroup campaign
+ */
+router.get('/api/campaign/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
+
+    const start = (() => {
+        var _ref2 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.getCampaign(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: result
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref2.apply(this, arguments);
+        };
+    })();
+    start();
+});
 
 module.exports = router;
