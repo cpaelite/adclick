@@ -11,17 +11,15 @@ var setting=require('../config/setting');
  *
  * @apiParam {String} name
  * @apiParam {String} url
- * @apiParam {String} postbackUrl
  * @apiParam {Number} payoutMode
- * @apiParam {Number} AffiliateNetworkId
+ * @apiParam {Object} affiliateNetwork {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {String} country
+ * @apiParam {Object} country  "country": {"id": 1,"name": "Andorra","alpha2Code": "AD", "alpha3Code": "AND", "numCode": 20 }
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
  *    status: 1,
  *    message: 'success' *   }
-
  *
  */
 router.post('/api/offer', function (req, res, next) {
@@ -30,10 +28,12 @@ router.post('/api/offer', function (req, res, next) {
         idText:Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.string().required(),
-        postbackUrl: Joi.string().required(),
+        country: Joi.object().required(),
         payoutMode: Joi.number().required(),
-        AffiliateNetworkId: Joi.number().required(),
+        affiliateNetwork: Joi.object().required().keys({
+            id:Joi.number().required(),
+            name:Joi.string().required()
+        }),
         payoutValue: Joi.number().optional()
     });
     req.body.userId = req.userId;
@@ -47,15 +47,21 @@ router.post('/api/offer', function (req, res, next) {
                 err.status = 303
                 return next(err);
             }
+            var countryCode="";
+            if (value.country) {
+                countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+            }
             var postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter
+            //set postbackurl
+            value.postbackUrl=postbackUrl;
             var sql = "insert into Offer set `userId`= " +
                 value.userId + ",`name`='" + value.name +
-                "',`url`='" + value.url + "',`country`='" + value.country +
+                "',`url`='" + value.url + "',`country`='" + countryCode +
                 "',`postbackUrl`='" +
                 postbackUrl +
                 "',`payoutMode`=" +
                 value.payoutMode + ",`AffiliateNetworkId`=" +
-                value.AffiliateNetworkId + ",`deleted`=0";
+                value.affiliateNetwork.id + ",`AffiliateNetworkName`='"+ value.affiliateNetwork.name +"'";
 
             if (value.payoutValue != undefined) {
                 sql += ",`payoutValue`=" + value.payoutValue
@@ -65,9 +71,12 @@ router.post('/api/offer', function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
+                delete value.userId;
+                delete value.idText;
                 res.json({
                     status: 1,
-                    message: 'success'
+                    message: 'success',
+                    data:value
                 });
             });
         });
@@ -155,9 +164,9 @@ router.get('/api/offer', function (req, res, next) {
  * @apiParam {String} [url]
  * @apiParam {String} [postbackUrl]
  * @apiParam {Number} [payoutMode]
- * @apiParam {Number} [AffiliateNetworkId]
+ * @apiParam {Number} [affiliateNetwork] {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {String} [country]
+ * @apiParam {Object} [country]  "country": {"id": 1,"name": "Andorra","alpha2Code": "AD", "alpha3Code": "AND", "numCode": 20 }
  * @apiParam {Number} [deleted]
  *
  * @apiSuccessExample {json} Success-Response:
@@ -173,10 +182,13 @@ router.post('/api/offer/:offerId', function (req, res, next) {
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         url: Joi.string().optional(),
-        country: Joi.string().optional(),
+        country: Joi.object().optional(),
         postbackUrl: Joi.string().optional(),
         payoutMode: Joi.number().optional(),
-        AffiliateNetworkId: Joi.number().optional(),
+        affiliateNetwork: Joi.object().optional().keys({
+            id:Joi.number().required(),
+            name:Joi.string().required()
+        }),
         payoutValue: Joi.number().optional(),
         deleted: Joi.number().optional()
     });
@@ -203,7 +215,8 @@ router.post('/api/offer/:offerId', function (req, res, next) {
                 sql += ",`url`='" + value.url + "'"
             }
             if (value.country) {
-                sql += ",`country`='" + value.country + "'"
+                var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+                sql += ",`country`='" + countryCode + "'"
             }
             if (value.postbackUrl) {
                 sql += ",`postbackUrl`='" + value.postbackUrl + "'"
@@ -211,8 +224,9 @@ router.post('/api/offer/:offerId', function (req, res, next) {
             if (value.payoutMode != undefined) {
                 sql += ",`payoutMode`=" + value.payoutMode
             }
-            if (value.AffiliateNetworkId != undefined) {
-                sql += ",`AffiliateNetworkId`=" + value.AffiliateNetworkId
+            if (value.affiliateNetwork) {
+                sql += ",`AffiliateNetworkId`=" + value.affiliateNetwork.id
+                sql += ",`AffiliateNetworkName`='" + value.affiliateNetwork.name +"'";
             }
             if (value.payoutValue != undefined) {
                 sql += ",`payoutValue`=" + value.payoutValue
