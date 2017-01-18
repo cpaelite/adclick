@@ -27,7 +27,6 @@ func Serve(servers ...*http.Server) error {
 		}(i, s)
 	}
 
-	allErrors = make([]error, len(servers))
 	errString := ""
 	for range servers {
 		idxErr := <-errs
