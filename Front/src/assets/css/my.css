@@ -27,6 +27,13 @@ header .setting{
 header .setting:hover{
     background: rgba(0, 0, 0, 0.05);
 }
+.star-icon{
+    color:red;
+    position: relative;
+    top: 4px;
+    display: inline-block;
+    width: 8px;
+}
 .navbar-right {
     height: 60px;
 }

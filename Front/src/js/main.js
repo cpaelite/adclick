@@ -51,13 +51,6 @@
       $scope.lang.isopen = !$scope.lang.isopen;
     };
 
-    // 用户配置信息
-    Preferences.get(null, function (res) {
-      if (res.status == 1) {
-        $rootScope.preferences = res.data;
-      }
-    });
-
     $rootScope.currentUser = null;
     $scope.showLogin = false;
     $scope.$on("event:auth-loginRequired", function () {
@@ -79,6 +72,13 @@
           return false;
         });
         $rootScope.currentUser = payload;
+
+        // 用户配置信息
+        Preferences.get(null, function (res) {
+          if (res.status == 1) {
+            $rootScope.preferences = res.data;
+          }
+        });
 
       }
     });

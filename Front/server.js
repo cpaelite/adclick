@@ -446,7 +446,7 @@ app.get('/countries', function (req, res) {
  * @apiParam {Number} status:1      //0:停止；1:运行; 2:All
  *
  */
-app.post('/report', function (req, res) {
+app.post('/api/report', function (req, res) {
   var result = {
     "status": 1,
     "messages": "",

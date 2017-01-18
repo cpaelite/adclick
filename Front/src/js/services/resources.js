@@ -4,7 +4,7 @@ angular.module('app')
     return $resource('/account/check');
   }])
   .factory('Report', ['$resource', function ($resource) {
-    return $resource('/report');
+    return $resource('/api/report');
   }])
   .factory('Campaign', ['$resource', function ($resource) {
     return $resource('/api/campaigns/:id', {id: '@id'});

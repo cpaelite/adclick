@@ -26,7 +26,7 @@ var md5 = require('md5');
  *   }
  *
  */
-router.post('/auth', function(req, res, next) {
+router.post('/auth/login', function(req, res, next) {
     var schema = Joi.object().keys({
         email: Joi.string().trim().email().required(),
         password: Joi.string().required()
@@ -51,14 +51,15 @@ router.post('/auth', function(req, res, next) {
                     }
                     if (rows.length > 0) {
                         if (rows[0].password == md5(value.password)) {
-                            res.json({
+                            /*res.json({
                                 status: 1,
                                 message: 'success',
                                 data: {
                                     token: util.setToken(rows[0].id,rows[0].idText),
                                     firstname: rows[0].firstname
                                 }
-                            })
+                            })*/
+                            res.json({token: util.setToken(rows[0].id, rows[0].idText)});
                         } else {
                             res.json({
                                 status: 1002,
