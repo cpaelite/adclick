@@ -127,7 +127,6 @@ func (o *Offer) OnS2SPostback(w http.ResponseWriter, req request.Request) error 
 	if o == nil {
 		return fmt.Errorf("[Offer][OnS2SPostback]Nil o for request(%s)", req.Id())
 	}
-	//TODO tracking记录
 	return nil
 }
 

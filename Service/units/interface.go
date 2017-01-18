@@ -3,6 +3,7 @@ package units
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"AdClickTool/Service/common"
@@ -10,6 +11,7 @@ import (
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units/campaign"
+	"AdClickTool/Service/units/offer"
 	"AdClickTool/Service/units/user"
 )
 
@@ -294,9 +296,9 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	clickId := r.URL.Query().Get(common.UrlTokenClickId)
-	payout := r.URL.Query().Get(common.UrlTokenPayout)
+	payoutStr := r.URL.Query().Get(common.UrlTokenPayout)
 	txId := r.URL.Query().Get(common.UrlTokenTransactionId)
-	log.Infof("[Units][OnS2SPostback]Received postback with %s(%s;%s;%s)\n", common.SchemeHostURI(r), clickId, payout, txId)
+	log.Infof("[Units][OnS2SPostback]Received postback with %s(%s;%s;%s)\n", common.SchemeHostURI(r), clickId, payoutStr, txId)
 
 	req, err := request.CreateRequest(clickId, request.ReqS2SPostback, r)
 	if req == nil || err != nil {
@@ -305,10 +307,32 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	payout, err := strconv.ParseFloat(payoutStr, 64)
+	if err != nil {
+		log.Errorf("[Units][OnS2SPostback]ParseFloat with payoutStr:%v failed for %s;%v\n", payoutStr, common.SchemeHostURI(r), err)
+	}
+
 	if err := u.OnS2SPostback(w, req); err != nil {
 		log.Errorf("[Units][OnS2SPostback]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	// 统计payout
+	o := offer.GetOffer(req.OfferId())
+	if o == nil {
+		log.Errorf("[Units][OnS2SPostback] offer.GetOffer(%v) failed: no offer found", req.OfferId())
+	} else {
+		switch o.PayoutMode {
+		case 0:
+			if payout != 0 {
+				user.TrackingRevenue(req, payout)
+			}
+		case 1:
+			if o.PayoutValue != 0 {
+				user.TrackingRevenue(req, o.PayoutValue)
+			}
+		}
 	}
 
 	// 统计conversion
