@@ -127,6 +127,7 @@ CREATE TABLE AdClickTool.`Offer` (
   `url` varchar(512) NOT NULL,
   `country` varchar(3) NOT NULL DEFAULT '' COMMENT 'ISO-ALPHA-3',
   `AffiliateNetworkId` int(11) NOT NULL COMMENT '标记属于哪家AffiliateNetwork',
+  `AffiliateNetworkName` varchar(256) NOT NULL,
   `postbackUrl` varchar(512) NOT NULL,
   `payoutMode` int(11) NOT NULL COMMENT '0:Auto;1:Manual',
   `payoutValue` decimal(10,5) NOT NULL DEFAULT 0,
