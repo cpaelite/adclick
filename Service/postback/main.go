@@ -1,5 +1,3 @@
-//+build !windows
-
 package main
 
 import (
@@ -10,9 +8,8 @@ import (
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/config"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/servehttp"
 	"AdClickTool/Service/units"
-
-	"github.com/facebookgo/grace/gracehttp"
 )
 
 func main() {
@@ -44,7 +41,7 @@ func main() {
 func StartServe() error {
 	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
 	log.Info("Start listening postback at", config.GetBindPort())
-	return gracehttp.Serve(reqServer)
+	return servehttp.Serve(reqServer) // reqServer.ListenAndServe()
 }
 
 func Status(w http.ResponseWriter, r *http.Request) {
