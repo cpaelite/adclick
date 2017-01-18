@@ -98,6 +98,15 @@
       }
     };
 
+    // home{
+
+    // setting
+    $scope.toSetting = function(){
+        $scope.nav = false;
+        $scope.settingNav = true;
+        $scope.$state.go('app.setting');
+    };
+
     if ($auth.isAuthenticated()) {
       $scope.$broadcast("event:auth-loginSuccess");
     }

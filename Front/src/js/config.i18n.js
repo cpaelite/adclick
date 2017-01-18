@@ -34,7 +34,8 @@
     },
     rule: 'Rule',
     fromDate: 'From',
-    toDate: 'To'
+    toDate: 'To',
+    profile:'Profile'
   };
   var i18n_zh = {
     ok: '确定',

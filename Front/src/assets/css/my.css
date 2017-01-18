@@ -17,6 +17,16 @@ header.navbar {
 header .md-toolbar-tools {
     height: auto;
 }
+header .setting{
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+}
+header .setting:hover{
+    background: rgba(0, 0, 0, 0.05);
+}
 .navbar-right {
     height: 60px;
 }
@@ -91,9 +101,9 @@ header .md-toolbar-tools {
 }
 .cs-page-content {
     background: #fff none repeat scroll 0 0;
-    padding: 20px 30px 15px;
+    padding: 0px 30px 15px;
     position: relative;
-    min-height: 300px !important;
+    min-height: 600px !important;
 }
 .cs-report-summary {
     margin: 10px;
@@ -395,9 +405,9 @@ md-datepicker {
     margin-left: 15px;
 }
 .cs-subform-select {
-    margin: 0px 15px;
-    line-height: 30px;
-    height: 30px;
+    margin: 15px 15px 0 0;
+    line-height: 38px;
+    height: 38px;
     width: 110px;
 }
 .xxxcs-subform-control::after {
@@ -649,6 +659,16 @@ md-content.cs-main-content{
     padding-left: 0px;
 }
 
+.material-icons.table-arrow-down.active,
+.material-icons.table-arrow-down.down{
+    ransform:rotate(90deg);
+    -ms-transform:rotate(90deg);     /* IE 9 */
+    -moz-transform:rotate(90deg);    /* Firefox */
+    -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+    -o-transform:rotate(90deg);  /* Opera */
+    padding-left: 0px;
+}
+
 ul{
     list-style: none;
 }
@@ -701,20 +721,33 @@ table .traficc-source-input input[type="checkbox"]{
 /*end trafficSource style*/
 
 /*Start Campaign Style*/
-.ztree li span{
-    font-size: 14px;
-    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+.report .left-con{
+    float: left;
+    margin-top: 15px;
 }
-.ztree li ul.line{
-    height: auto;
+.left-con .md-select-value,
+.right-select .md-select-value{
+/*    padding: 5px 5px 6px 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 4px;
+    background: ghostwhite;*/
 }
-.ztree li a{
-    margin: 0 0 10px 10px;
+.report .right-select{
+    float: right;
 }
-.ztree li span.button.ico_open,.ztree li span.button.ico_docu,.ztree li span.button.ico_close{
-    display: none;
+.right-select .cs-add-button{
+    float: left;
+    margin: 15px 15px 0 0;
 }
-
+.right-select .search-con{
+    background: ghostwhite; 
+    padding: 0 15px;
+    margin-top: 15px;
+}
+.right-select .selectAll,
+.right-select .view_column{
+    float: left;
+}
 .campaign-radio md-radio-button{
     float: left;
     margin-right: 15px;
@@ -745,8 +778,12 @@ table .traficc-source-input input[type="checkbox"]{
 .dollar-input{
     padding-left: 20px;
 }
-.selectAll .cs-subform-select{
+.left-con .cs-subform-control{
+    padding-left: 0;
+}
+.left-con .cs-subform-select{
     height: 38px;
+    margin: 0px 15px 0px 0;
 }
 .view_column
 {
@@ -754,6 +791,10 @@ table .traficc-source-input input[type="checkbox"]{
     height: 38px;
     background: #12bdce;
     cursor: pointer;
+    margin-top: 15px;
+} 
+md-table-container{
+    margin-top: 15px;
 }
 .view_column .material-icons{
     color: #fff;
@@ -775,20 +816,30 @@ table .traficc-source-input input[type="checkbox"]{
     color: #fff;
 }
 .view_column_con ul{
-    padding: 10px;
+    padding: 0px;
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-bottom: 25px;
 }
 .view_column_con ul li{
-    line-height: 22px;
+    line-height: 15px;
     border-bottom: 1px solid #0097a7;
     min-width: 300px;
+    padding:10px;
 }
 .view_column_con .material-icons.btn-icon{
     position: absolute;
     z-index: 30;
-    margin: 7px 5px;
+    margin: 17px 0;
+    width: 183px;
+    text-align: left;
+    padding-left: 10px !important;
+    height: 34px;
+    line-height: 34px;
+}
+.view_column_con .material-icons.btn-icon.close-icon{
+    left: 210px;
+    width: 104px;
 }
 .view_column_con ul li:hover{
     background: #00838f;
@@ -803,7 +854,18 @@ table .traficc-source-input input[type="checkbox"]{
 .view_column_con button.close-btn{
     background: #8992aa !important;
 }
-
+.table-arrow-down{
+    width: 100%;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    cursor: pointer;
+    /*background: rgba(18, 189, 206, 0.14);*/
+}
+table.md-table tr.md-row.first-tree td.md-cell:first-child{
+    padding-left: 0 !important;
+    width: 74px;
+}
 /*End Campaign Style*/
 
 /*Start netWork Style*/

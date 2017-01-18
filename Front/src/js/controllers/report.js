@@ -83,6 +83,10 @@
       Preferences.save();
     };
 
+    $scope.checkboxIsChecked = function(num){
+      $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
+    };
+
     $scope.search = function () {
       $scope.query.offset = 1;
       $scope.query.from = $scope.fromDate + ' ' + $scope.fromTime;
@@ -213,6 +217,29 @@
     var cols = columnDefinition[perfType].concat(columnDefinition['common']);
     $scope.columns = cols;
 
+    // tree isShow
+    $scope.trData = [
+      {id:0,name:'campaign',id:1,impressions:2,visits:3,click:4,conversions:5,revenue:6,cost:7,profit:8,cpv:9,ictr:10,operation:11},
+      {id:1,name:'flow',id:1,impressions:2,visits:3,click:4,conversions:5,revenue:6,cost:7,profit:8,cpv:9,ictr:10,operation:11}
+    ];
+    $scope.selectedIndex = 0;
+    $scope.select = function(i){
+      
+      
+    };
+    $scope.isActive = [];
+    $scope.isDown = [];
+    $scope.treeFirstChildIsShow = [];
+    $scope.treeSecondChildIsShow = [];
+    $scope.firstTreeClick = function($index){
+      $scope.isActive[$index] = !$scope.isActive[$index];
+      $scope.treeFirstChildIsShow[$index] = !$scope.treeFirstChildIsShow[$index];
+      $scope.treeSecondChildIsShow[$index] = false;
+    };
+    $scope.secondTreeClick = function($index){
+      $scope.isDown[$index] = !$scope.isDown[$index];
+      $scope.treeSecondChildIsShow[$index] = !$scope.treeSecondChildIsShow[$index];
+    };
   }
 
   function editCampaignCtrl($scope, $mdDialog, Campaign) {
