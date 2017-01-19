@@ -4,21 +4,8 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
-
-// * @apiParam {String} from 开始时间
-// * @apiParam {String} to   截止时间
-// * @apiParam {String} tz   timezone
-// * @apiParam {String} sort  排序字段
-// * @apiParam {String} direction  desc
-// * @apiParam {String} groupBy   表名
-// * @apiParam {Number} offset
-// * @apiParam {Number} limit
-// * @apiParam {String} filter1
-// * @apiParam {String} filter1Value
-// * @apiParam {String} {filter2}
-// * @apiParam {String} {filter2Value}
-// * @apiParam {Array}  columns     列
-
+var Pub = require('./redis_sub_pub');
+var setting = require('../config/setting');
 
 //Request Example:
 //  {
@@ -247,7 +234,7 @@ var common = require('./common');
  * @apiGroup campaign
  *
  * @apiParam {String} name
- * @apiParam {String} url
+ * @apiParam {String} [url]
  * @apiParam {String} [impPixelUrl]
  * @apiParam {Object} trafficSource {id:1,name:""}
  * @apiParam {Object} country  {"id": 1,"name": "Andorra", "alpha2Code": "AD","alpha3Code": "AND","numCode": 20}
@@ -277,7 +264,7 @@ router.post('/api/campaign', function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string().optional(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
@@ -321,7 +308,7 @@ router.post('/api/campaign', function (req, res, next) {
  *
  * @apiParam {Number} id
  * @apiParam {String} name
- * @apiParam {String} url
+ * @apiParam {String} [url]
  * @apiParam {String} [impPixelUrl]
  * @apiParam {Object} trafficSource {id:1,name:""}
  * @apiParam {Object} country  {"id": 1,"name": "Andorra", "alpha2Code": "AD","alpha3Code": "AND","numCode": 20}
@@ -351,7 +338,7 @@ router.post('/api/campaign/:id', function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string().optional(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
@@ -515,7 +502,9 @@ const start = (() => {
                                             let offerResult;
 
                                             if (!value.flow.rules[i].paths[j].offers[z].id) {
-                                                offerResult = yield common.insertOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
+                                                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+                                                value.flow.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
+                                                offerResult = yield common.insertOffer(value.userId, value.idText, value.flow.rules[i].paths[j].offers[z], connection);
                                                 yield common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
                                             } else {
 
@@ -552,6 +541,8 @@ const start = (() => {
                 throw err;
             }
             connection.release();
+            //redis pub
+            new Pub(true).publish(setting.redis.channel, value.userId);
             delete value.userId;
             delete value.idText;
             Result = value;

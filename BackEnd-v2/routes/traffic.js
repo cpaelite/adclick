@@ -10,58 +10,47 @@ var Joi = require('joi');
 var common = require('./common');
 
 /**
- * @api {post} /api/offer  新增offer
- * @apiName 新增offer
- * @apiGroup offer
+ * @api {post} /api/traffic  新增traffic
+ * @apiName traffic
+ * @apiGroup traffic
  *
  * @apiParam {String} name
- * @apiParam {String} url
- * @apiParam {Number} payoutMode
- * @apiParam {Object} affiliateNetwork {"id":1,name:""}
- * @apiParam {Number} [payoutValue]
- * @apiParam {Object} country  "country": {"id": 1,"name": "Andorra","alpha2Code": "AD", "alpha3Code": "AND", "numCode": 20 }
- * @apiParam {Array}  [tags]  
+ * @apiParam {String} [postbackUrl]
+ * @apiParam {String} [pixelRedirectUrl]
+ * @apiParam {Number} [impTracking]
+ * @apiParam {String} [externalId]
+ * @apiParam {String} [cost]
+ * @apiParam {String} [params]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
  *    status: 1,
- *    message: 'success' *   }
+ *    message: 'success',
+ *    data:{}
+ *  *   }
  *
  */
-router.post('/api/offer', function (req, res, next) {
+router.post('/api/traffic', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
-        country: Joi.object().required(),
-        payoutMode: Joi.number().required(),
-        affiliateNetwork: Joi.object().required().keys({
-            id: Joi.number().required(),
-            name: Joi.string().required()
-        }),
-        payoutValue: Joi.number().optional(),
-        tags: Joi.array().optional()
+        postbackUrl: Joi.string().optional(),
+        pixelRedirectUrl: Joi.string().optional(),
+        impTracking: Joi.number().optional(),
+        externalId: Joi.string().optional(),
+        cost: Joi.string().optional(),
+        params: Joi.string().optional()
     });
 
     req.body.userId = req.userId;
-    req.body.idText = req.idText;
     const start = (() => {
         var _ref = _asyncToGenerator(function* () {
             try {
                 let value = yield common.validate(req.body, schema);
                 let connection = yield common.getConnection();
-                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
-                value.postbackUrl = postbackUrl;
-                let landerResult = yield common.insertOffer(value.userId, value.idText, value, connection);
-                if (value.tags && value.tags.length) {
-                    for (let index = 0; index < value.tags.length; index++) {
-                        yield common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
-                    }
-                }
+                let trafficResult = yield common.insertTrafficSource(value.userId, value, connection);
                 delete value.userId;
-                delete value.idText;
-                value.id = landerResult.insertId;
+                value.id = trafficResult.insertId;
                 connection.release();
                 res.json({
                     status: 1,
@@ -81,64 +70,52 @@ router.post('/api/offer', function (req, res, next) {
 });
 
 /**
- * @api {post} /api/offer/:offerId  编辑offer
- * @apiName 编辑offer
- * @apiGroup offer
+ * @api {post} /api/traffic/:id  编辑traffic
+ * @apiName traffic
+ * @apiGroup traffic
  *
- * @apiParam {Number} id
+ *
  * @apiParam {String} [name]
- * @apiParam {String} [url]
  * @apiParam {String} [postbackUrl]
- * @apiParam {Number} [payoutMode]
- * @apiParam {Number} [affiliateNetwork] {"id":1,name:""}
- * @apiParam {Number} [payoutValue]
- * @apiParam {Object} [country]  "country": {"id": 1,"name": "Andorra","alpha2Code": "AD", "alpha3Code": "AND", "numCode": 20 }
+ * @apiParam {String} [pixelRedirectUrl]
+ * @apiParam {Number} [impTracking]
+ * @apiParam {String} [externalId]
+ * @apiParam {String} [cost]
+ * @apiParam {String} [params]
  * @apiParam {Number} [deleted]
- * @apiParam {Array} [tags]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
  *    status: 1,
- *    message: 'success'
- *   }
+ *    message: 'success',
+ *    data:{}
+ *  *   }
  *
  */
-router.post('/api/offer/:id', function (req, res, next) {
+router.post('/api/traffic/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        hash: Joi.string().optional(),
         userId: Joi.number().required(),
-        idText: Joi.string().required(),
-        name: Joi.string().required(),
-        url: Joi.string().required(),
-        country: Joi.object().required(),
-        payoutMode: Joi.number().required(),
-        affiliateNetwork: Joi.object().required().keys({
-            id: Joi.number().required(),
-            name: Joi.string().required()
-        }),
-        payoutValue: Joi.number().optional(),
-        tags: Joi.array().optional(),
+        name: Joi.string().optional(),
+        postbackUrl: Joi.string().optional(),
+        pixelRedirectUrl: Joi.string().optional(),
+        impTracking: Joi.number().optional(),
+        externalId: Joi.string().optional(),
+        cost: Joi.string().optional(),
+        params: Joi.string().optional(),
         deleted: Joi.number().optional()
     });
 
     req.body.userId = req.userId;
-    req.body.idText = req.idText;
     req.body.id = req.params.id;
     const start = (() => {
         var _ref2 = _asyncToGenerator(function* () {
             try {
                 let value = yield common.validate(req.body, schema);
                 let connection = yield common.getConnection();
-                yield common.updateOffer(value.userId, value, connection);
-                yield common.updateTags(value.userId, value.id, 3, connection);
-                if (value.tags && value.tags.length) {
-                    for (let index = 0; index < value.tags.length; index++) {
-                        yield common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
-                    }
-                }
+                yield common.updatetraffic(value.userId, value, connection);
+
                 delete value.userId;
-                delete value.idText;
                 connection.release();
                 res.json({
                     status: 1,
@@ -158,9 +135,9 @@ router.post('/api/offer/:id', function (req, res, next) {
 });
 
 /**
- * @api {get} /api/offer/:id  offer detail
- * @apiName offer
- * @apiGroup offer
+ * @api {get} /api/traffic/:id  traffic detail
+ * @apiName traffic
+ * @apiGroup traffic
  *
  *
  *
@@ -170,7 +147,7 @@ router.post('/api/offer/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offer/:id', function (req, res, next) {
+router.get('/api/traffic/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -182,7 +159,7 @@ router.get('/api/offer/:id', function (req, res, next) {
             try {
                 let value = yield common.validate(req.query, schema);
                 let connection = yield common.getConnection();
-                let result = yield common.getOfferDetail(value.id, value.userId, connection);
+                let result = yield common.gettrafficDetail(value.id, value.userId, connection);
                 connection.release();
                 res.json({
                     status: 1,
