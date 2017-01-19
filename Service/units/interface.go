@@ -309,15 +309,12 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 后面统计信息要使用
+	req.SetTransactionID(txId)
+
 	payout, err := strconv.ParseFloat(payoutStr, 64)
 	if err != nil {
 		log.Errorf("[Units][OnS2SPostback]ParseFloat with payoutStr:%v failed for %s;%v\n", payoutStr, common.SchemeHostURI(r), err)
-	}
-
-	if err := u.OnS2SPostback(w, req); err != nil {
-		log.Errorf("[Units][OnS2SPostback]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-		return
 	}
 
 	// 统计payout
@@ -335,6 +332,16 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		}
 		return 0.0
 	}()
+
+	// 后面会用到payout，所以这里要提前设置好
+	req.SetPayout(finalPayout)
+
+	if err := u.OnS2SPostback(w, req); err != nil {
+		log.Errorf("[Units][OnS2SPostback]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	user.TrackingRevenue(req, finalPayout)
 
 	// 统计conversion
@@ -345,9 +352,9 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	conv.VisitTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
 	conv.ExternalID = req.ExternalId()
 	conv.ClickID = clickId
-	// conv.TransactionID =
+	conv.TransactionID = txId
 	conv.Revenue = finalPayout
-	// conv.Cost = req.Cost()
+	conv.Cost = req.Cost()
 	// conv.CampaignName = req.CampaignName()
 	conv.CampaignID = req.CampaignId()
 	// conv.LanderName =
@@ -356,12 +363,12 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	// conv.OfferName =
 	conv.OfferID = req.OfferId()
 	conv.Country = req.CountryCode()
-	// conv.CountryCode = req.Country
-	// conv.TrafficSourceName
+	conv.CountryCode = req.CountryCode()
+	//conv.TrafficSourceName =
 	conv.TrafficSourceID = req.TrafficSourceId()
 	// conv.AffiliateNetworkName =
 	// conv.AffiliateNetworkID
-	// conv.Device = req.Device
+	// conv.Device = req.Device	// 目前还没有
 	conv.OS = req.OS()
 	conv.OSVersion = req.OSVersion()
 	conv.Brand = req.Brand()

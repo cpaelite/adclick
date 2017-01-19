@@ -115,6 +115,7 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 		return fmt.Errorf("[Offer][OnLandingPageClick]Nil o for request(%s)", req.Id())
 	}
 	//TODO 替换clickid
+	// 加载AffiliateNetwork配置，如果Append click ID to offer URLs勾选，添加click ID(requestid)
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
 	return nil
 }

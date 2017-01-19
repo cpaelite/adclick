@@ -131,6 +131,9 @@ func newPath(c PathConfig) (p *Path) {
 	return
 }
 
+
+
+
 func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) error {
 	if p == nil {
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())

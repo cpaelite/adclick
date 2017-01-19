@@ -28,6 +28,8 @@ type reqbase struct {
 	externalId string
 	cost       float64 // 从traffic source里面的Cost字段传过来的cost
 	vars       []string
+	payout float64
+	txid string
 
 	trafficSourceId   int64
 	trafficSourceName string
@@ -65,6 +67,43 @@ type reqbase struct {
 	cookie map[string]string
 
 	urlParam map[string]string
+
+	tsExternalId *common.TrafficSourceParams	// Traffic Source的一些配置
+	tsCost       *common.TrafficSourceParams
+	tsVars       []common.TrafficSourceParams
+	cpaValue float64
+}
+
+func (r *reqbase) SetTSExternalID(e *common.TrafficSourceParams) {
+	r.tsExternalId = e
+}
+
+func (r *reqbase) SetTSCost(c *common.TrafficSourceParams) {
+	r.tsCost = c
+}
+
+func (r *reqbase) SetTSVars(vars []common.TrafficSourceParams) {
+	r.tsVars = vars
+}
+
+func (r *reqbase) SetCPAValue(v float64) {
+	r.cpaValue = v
+}
+
+func (r *reqbase) TSExternalID() *common.TrafficSourceParams {
+	return r.tsExternalId
+}
+
+func (r *reqbase) TSCost() *common.TrafficSourceParams {
+	return r.tsCost
+}
+
+func (r *reqbase) TSVars() []common.TrafficSourceParams {
+	return r.tsVars
+}
+
+func (r *reqbase) CPAValue() float64 {
+	return r.cpaValue
 }
 
 func newReqBase(id, t string, r *http.Request) (req *reqbase) {
@@ -365,7 +404,49 @@ func (r *reqbase) UrlParamString() (encode string) {
 }
 
 func (r *reqbase) ParseUrlTokens(url string) string {
-	//TODO 替换UrlToken
+	url = strings.Replace(url, "{externalid}", r.ExternalId(), -1)
+	url = strings.Replace(url, "{payout}", fmt.Sprintf("%v", r.Payout()), -1)
+	url = strings.Replace(url, "{campaign.id}", fmt.Sprintf("%v", r.CampaignId()), -1)
+	url = strings.Replace(url, "{trafficsource.id}", fmt.Sprintf("%v", r.TrafficSourceId()), -1)
+	url = strings.Replace(url, "{lander.id}", fmt.Sprintf("%v", r.LanderId()), -1)
+	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", r.OfferId()), -1)
+	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", r.OfferId()), -1)
+	// url = strings.Replace(url, "{device}", r.Device(), -1)	// 目前Device还没有地方可以拿到
+	url = strings.Replace(url, "{brand}", r.Brand(), -1)
+	url = strings.Replace(url, "{model}", r.Model(), -1)
+	url = strings.Replace(url, "{browser}", r.Browser(), -1)
+	url = strings.Replace(url, "{browserversion}", r.BrowserVersion(), -1)
+	url = strings.Replace(url, "{os}", r.OS(), -1)
+	url = strings.Replace(url, "{osversion}", r.OSVersion(), -1)
+	url = strings.Replace(url, "{countrycode}", r.CountryCode(), -1)
+	url = strings.Replace(url, "{countryname}", r.CountryName(), -1)
+	url = strings.Replace(url, "{region}", r.Region(), -1)
+	url = strings.Replace(url, "{city}", r.City(), -1)
+	url = strings.Replace(url, "{isp}", r.ISP(), -1)
+	url = strings.Replace(url, "{connection.type}", r.ConnectionType(), -1)
+	url = strings.Replace(url, "{carrier}", r.Carrier(), -1)
+	url = strings.Replace(url, "{ip}", r.RemoteIp(), -1)
+	url = strings.Replace(url, "{referrerdomain}", r.ReferrerDomain(), -1)
+	url = strings.Replace(url, "{language}", r.Language(), -1)
+	url = strings.Replace(url, "{transaction.id}", r.TransactionID(), -1)
+	url = strings.Replace(url, "{click.id}", r.Id(), -1) // ClickId是我们自己的Visits的id
+
+	for i := 0; i < len(r.TSVars()); i++ {
+		vn := r.Vars(uint(i))
+		if len(vn) != 0 {
+			url = strings.Replace(url, fmt.Sprintf("{var%d}", i), vn, -1)
+		}
+	}
+
+	for i := 0; i < len(r.TSVars()); i++ {
+		vn := r.Vars(uint(i))
+		if len(vn) != 0 {
+			from := fmt.Sprintf("{var:%s}", r.TSVars()[i].Name)
+			url = strings.Replace(url, from, vn, -1)
+		}
+	}
+
+	url = strings.Replace(url, "{campaign.cpa}", fmt.Sprintf("%v", r.CPAValue()), -1)
 	return url
 }
 
@@ -449,4 +530,20 @@ func (r *reqbase) DomainKey(timestamp int64) tracking.ReferrerDomainStatisKey {
 	domain.CampaignID = r.CampaignId()
 	domain.ReferrerDomain = r.ReferrerDomain()
 	return domain
+}
+
+func (r *reqbase) SetPayout(p float64) {
+	r.payout = p
+}
+
+func (r *reqbase) Payout() float64 {
+	return r.payout
+}
+
+func (r *reqbase) SetTransactionID(txid string) {
+	r.txid = txid
+}
+
+func (r *reqbase) TransactionID() string {
+	return r.txid
 }

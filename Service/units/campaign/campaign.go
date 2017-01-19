@@ -12,7 +12,6 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/units/flow"
-	"strings"
 )
 
 const (
@@ -214,6 +213,12 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 		return errors.New("[Campaign][OnLPOfferRequest]Nil ca")
 	}
 
+	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	req.SetTSCost(&ca.TrafficSource.Cost)
+	req.SetTSVars(ca.TrafficSource.Vars)
+	req.SetCPAValue(ca.CPAValue)
+
+
 	if ca.TargetType == TargetTypeUrl {
 		if ca.TargetUrl != "" {
 			http.Redirect(w, gr, req.ParseUrlTokens(ca.TargetUrl), http.StatusFound)
@@ -236,6 +241,11 @@ func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Reques
 		return errors.New("[Campaign][OnLandingPageClick]Nil ca")
 	}
 
+	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	req.SetTSCost(&ca.TrafficSource.Cost)
+	req.SetTSVars(ca.TrafficSource.Vars)
+	req.SetCPAValue(ca.CPAValue)
+
 	// 不要用Campaign现在的设置，因为有可能中途被改变
 	f := flow.GetFlow(req.FlowId())
 	if f == nil {
@@ -252,6 +262,11 @@ func (ca *Campaign) OnS2SPostback(w http.ResponseWriter, req request.Request) er
 	if ca == nil {
 		return errors.New("[Campaign][OnS2SPostback]Nil ca")
 	}
+
+	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	req.SetTSCost(&ca.TrafficSource.Cost)
+	req.SetTSVars(ca.TrafficSource.Vars)
+	req.SetCPAValue(ca.CPAValue)
 
 	f := flow.GetFlow(req.FlowId())
 	if f == nil {
@@ -274,7 +289,13 @@ func (ca *Campaign) OnConversionScript(w http.ResponseWriter, req request.Reques
 }
 
 func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
-	url := ca.ReplaceTSPostBackURL(req, ca.TrafficSource.PostbackURL)
+	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	req.SetTSCost(&ca.TrafficSource.Cost)
+	req.SetTSVars(ca.TrafficSource.Vars)
+	req.SetCPAValue(ca.CPAValue)
+
+
+	url := req.ParseUrlTokens(ca.TrafficSource.PostbackURL)
 
 	err := func() error {
 		resp, err := http.Get(url)
@@ -299,53 +320,50 @@ func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
 	return nil
 }
 
-// ReplaceTSPostBackURL 把Traffic Source的Postback URL里面的参数替换好
-func (ca *Campaign) ReplaceTSPostBackURL(req request.Request, url string) string {
-	// TODO: 有些值还取不到，需要完善
-	url = strings.Replace(url, "{externalid}", req.ExternalId(), -1)
-	// url = strings.Replace(url, "{payout}", , -1)
-	url = strings.Replace(url, "{campaign.id}", fmt.Sprintf("%v", req.CampaignId()), -1)
-	url = strings.Replace(url, "{trafficsource.id}", fmt.Sprintf("%v", req.TrafficSourceId()), -1)
-	url = strings.Replace(url, "{lander.id}", fmt.Sprintf("%v", req.LanderId()), -1)
-	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
-	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
-	// url = strings.Replace(url, "{device}", req.Device(), -1)	// 目前Device还没有地方可以拿到
-	url = strings.Replace(url, "{brand}", req.Brand(), -1)
-	url = strings.Replace(url, "{model}", req.Model(), -1)
-	url = strings.Replace(url, "{browser}", req.Browser(), -1)
-	url = strings.Replace(url, "{browserversion}", req.BrowserVersion(), -1)
-	url = strings.Replace(url, "{os}", req.OS(), -1)
-	url = strings.Replace(url, "{osversion}", req.OSVersion(), -1)
-	url = strings.Replace(url, "{countryCode}", req.CountryCode(), -1)
-	url = strings.Replace(url, "{countryName}", req.CountryName(), -1)
-	url = strings.Replace(url, "{region}", req.Region(), -1)
-	url = strings.Replace(url, "{city}", req.City(), -1)
-	url = strings.Replace(url, "{isp}", req.ISP(), -1)
-	url = strings.Replace(url, "{connection.type}", req.ConnectionType(), -1)
-	url = strings.Replace(url, "{carrier}", req.Carrier(), -1)
-	url = strings.Replace(url, "{ip}", req.RemoteIp(), -1)
-	// url = strings.Replace(url, "{countryname}", req.Country(), -1)
-	url = strings.Replace(url, "{referrerdomain}", req.ReferrerDomain(), -1)
-	url = strings.Replace(url, "{language}", req.Language(), -1)
-	// url = strings.Replace(url, "{transaction.id}", req.Tra(), -1)
-	// ClickId是我们自己的Visits的id
-	url = strings.Replace(url, "{click.id}", req.Id(), -1)
-
-	for i := 0; i < len(ca.TrafficSource.Vars); i++ {
-		vn := req.Vars(uint(i))
-		if len(vn) != 0 {
-			url = strings.Replace(url, fmt.Sprintf("{var%d}", i), vn, -1)
-		}
-	}
-
-	for i := 0; i < len(ca.TrafficSource.Vars); i++ {
-		vn := req.Vars(uint(i))
-		if len(vn) != 0 {
-			from := fmt.Sprintf("{var:%s}", ca.TrafficSource.Vars[i].Name)
-			url = strings.Replace(url, from, vn, -1)
-		}
-	}
-
-	url = strings.Replace(url, "{campaign.cpa}", fmt.Sprintf("%v", ca.CPAValue), -1)
-	return url
-}
+//// ReplaceTSPostBackURL 把Traffic Source的Postback URL里面的参数替换好
+//func (ca *Campaign) ReplaceTSPostBackURL(req request.Request, url string) string {
+//	url = strings.Replace(url, "{externalid}", req.ExternalId(), -1)
+//	url = strings.Replace(url, "{payout}", fmt.Sprintf("%v", req.Payout()), -1)
+//	url = strings.Replace(url, "{campaign.id}", fmt.Sprintf("%v", req.CampaignId()), -1)
+//	url = strings.Replace(url, "{trafficsource.id}", fmt.Sprintf("%v", req.TrafficSourceId()), -1)
+//	url = strings.Replace(url, "{lander.id}", fmt.Sprintf("%v", req.LanderId()), -1)
+//	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
+//	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
+//	// url = strings.Replace(url, "{device}", req.Device(), -1)	// 目前Device还没有地方可以拿到
+//	url = strings.Replace(url, "{brand}", req.Brand(), -1)
+//	url = strings.Replace(url, "{model}", req.Model(), -1)
+//	url = strings.Replace(url, "{browser}", req.Browser(), -1)
+//	url = strings.Replace(url, "{browserversion}", req.BrowserVersion(), -1)
+//	url = strings.Replace(url, "{os}", req.OS(), -1)
+//	url = strings.Replace(url, "{osversion}", req.OSVersion(), -1)
+//	url = strings.Replace(url, "{countrycode}", req.CountryCode(), -1)
+//	url = strings.Replace(url, "{countryname}", req.CountryName(), -1)
+//	url = strings.Replace(url, "{region}", req.Region(), -1)
+//	url = strings.Replace(url, "{city}", req.City(), -1)
+//	url = strings.Replace(url, "{isp}", req.ISP(), -1)
+//	url = strings.Replace(url, "{connection.type}", req.ConnectionType(), -1)
+//	url = strings.Replace(url, "{carrier}", req.Carrier(), -1)
+//	url = strings.Replace(url, "{ip}", req.RemoteIp(), -1)
+//	url = strings.Replace(url, "{referrerdomain}", req.ReferrerDomain(), -1)
+//	url = strings.Replace(url, "{language}", req.Language(), -1)
+//	url = strings.Replace(url, "{transaction.id}", req.TransactionID(), -1)
+//	url = strings.Replace(url, "{click.id}", req.Id(), -1) // ClickId是我们自己的Visits的id
+//
+//	for i := 0; i < len(ca.TrafficSource.Vars); i++ {
+//		vn := req.Vars(uint(i))
+//		if len(vn) != 0 {
+//			url = strings.Replace(url, fmt.Sprintf("{var%d}", i), vn, -1)
+//		}
+//	}
+//
+//	for i := 0; i < len(ca.TrafficSource.Vars); i++ {
+//		vn := req.Vars(uint(i))
+//		if len(vn) != 0 {
+//			from := fmt.Sprintf("{var:%s}", ca.TrafficSource.Vars[i].Name)
+//			url = strings.Replace(url, from, vn, -1)
+//		}
+//	}
+//
+//	url = strings.Replace(url, "{campaign.cpa}", fmt.Sprintf("%v", ca.CPAValue), -1)
+//	return url
+//}

@@ -108,6 +108,21 @@ type Request interface {
 	IPKey(timestamp int64) tracking.IPStatisKey
 	ReferrerKey(timestamp int64) tracking.ReferrerStatisKey
 	DomainKey(timestamp int64) tracking.ReferrerDomainStatisKey
+
+	// Payout
+	SetPayout(p float64)
+	Payout() float64
+	SetTransactionID(txid string)
+	TransactionID() string
+
+	SetTSExternalID(e *common.TrafficSourceParams)
+	SetTSCost(c *common.TrafficSourceParams)
+	SetTSVars(vars []common.TrafficSourceParams)
+	SetCPAValue(v float64)
+	TSExternalID() *common.TrafficSourceParams
+	TSCost() *common.TrafficSourceParams
+	TSVars() []common.TrafficSourceParams
+	CPAValue() float64
 }
 
 func CreateRequest(reqId, reqType string, r *http.Request) (req Request, err error) {
