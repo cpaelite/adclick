@@ -35,7 +35,10 @@
     rule: 'Rule',
     fromDate: 'From',
     toDate: 'To',
-    profile:'Profile'
+    profile:'Profile',
+    referralProgram:'ReferralProgram',
+    subscriptions:'Subscriptions',
+    domain:'Domain'
   };
   var i18n_zh = {
     ok: '确定',

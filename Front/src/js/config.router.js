@@ -122,6 +122,24 @@
         templateUrl: 'tpl/profile.html',
         controller: 'ProfileCtrl',
         data: {}
+      })
+      .state('setApp.referralProgram', {
+        url: '/referralProgram',
+        templateUrl: 'tpl/referralProgram.html',
+        controller: 'ReferralProgramCtrl',
+        data: {}
+      })
+      .state('setApp.subscriptions', {
+        url: '/subscriptions',
+        templateUrl: 'tpl/subscriptions.html',
+        controller: 'SubscriptionsCtrl',
+        data: {}
+      })
+      .state('setApp.domain', {
+        url: '/domain',
+        templateUrl: 'tpl/domain.html',
+        controller: 'DomainCtrl',
+        data: {}
       });
   }
 })();
