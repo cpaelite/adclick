@@ -849,6 +849,7 @@ md-table-container{
 }
 .view_column_con ul li input[type="checkbox"]{
     margin-right: 10px;
+    cursor: pointer;
 }
 .view_column_con button{
     background: #00838f !important;
@@ -1014,5 +1015,9 @@ h1.setting-title{
     float: left;
     margin-left: 10px;
     cursor: pointer;
+}
+.referral-program{
+    max-width: 1030px;
+    margin:0 auto;
 }
 /*End setting Style*/
