@@ -23,8 +23,8 @@ func randConversion() *Conversion {
 	c.ExternalID = randStr()
 	c.ClickID = randStr()
 	c.TransactionID = randStr()
-	c.Revenue = rand.Int63() % 1000 * 10000000
-	c.Cost = rand.Int63() % 1000 * 1000000
+	c.Revenue = rand.Float64() * 10
+	c.Cost = rand.Float64() * 10
 	c.CampaignName = "The Campaign Name"
 	c.CampaignID = rand.Int63()%100 + 1
 	c.LanderName = "The Lander Name"

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"AdClickTool/Service/common"
 	"AdClickTool/Service/db"
 	"AdClickTool/Service/log"
 )
@@ -20,36 +19,42 @@ func DBGetAllCampaigns() []CampaignConfig {
 }
 
 func dbGetCampaignTrafficConfig(trafficSourceId int64) (
-	ExternalId common.TrafficSourceParams,
-	Cost common.TrafficSourceParams,
-	Vars []common.TrafficSourceParams,
+	// ExternalId common.TrafficSourceParams,
+	// Cost common.TrafficSourceParams,
+	// Vars []common.TrafficSourceParams,
+	trafficSource TrafficSourceConfig,
 	err error,
 ) {
 	d := dbgetter()
-	sql := "SELECT externalId, cost, params FROM TrafficSource WHERE id=?"
+	sql := "SELECT id, userId, name, postbackUrl, pixelRedirectUrl, impTracking, externalId, cost, params FROM TrafficSource WHERE id=?"
 	row := d.QueryRow(sql, trafficSourceId)
 	var e, c, v string
-	err = row.Scan(&e, &c, &v)
+	err = row.Scan(&trafficSource.Id,
+		&trafficSource.UserId,
+		&trafficSource.Name,
+		&trafficSource.PostbackURL,
+		&trafficSource.PixelRedirectURL,
+		&trafficSource.ImpTracking,
+		&e, &c, &v)
 	if err != nil {
 		log.Errorf("Scan from sql:%v failed:%v", sql, err)
 		return
 	}
 
-	err = json.Unmarshal([]byte(e), &ExternalId)
+	err = json.Unmarshal([]byte(e), &trafficSource.ExternalId)
 	if err != nil {
 		log.Errorf("Unmarshal:%s to ExternalId failed:%v", e, err)
 	}
 
-	err = json.Unmarshal([]byte(c), &Cost)
+	err = json.Unmarshal([]byte(c), &trafficSource.Cost)
 	if err != nil {
 		log.Errorf("Unmarshal:%s to Cost failed:%v", c, err)
 	}
 
-	err = json.Unmarshal([]byte(v), &Vars)
+	err = json.Unmarshal([]byte(v), &trafficSource.Vars)
 	if err != nil {
 		log.Errorf("Unmarshal:%s to TrafficSourceParams failed:%v", v, err)
 	}
-
 	return
 }
 
@@ -70,7 +75,7 @@ func DBGetAvailableCampaigns() []CampaignConfig {
 			return nil
 		}
 
-		c.ExternalId, c.Cost, c.Vars, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
+		c.TrafficSource, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
 		if err != nil {
 			log.Errorf("[campaign][DBGetAvailableCampaigns] dbGetCampaignTrafficConfig failed:%v", err)
 		}
@@ -96,7 +101,7 @@ func DBGetUserCampaigns(userId int64) []CampaignConfig {
 			return nil
 		}
 
-		c.ExternalId, c.Cost, c.Vars, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
+		c.TrafficSource, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
 		if err != nil {
 			log.Errorf("[campaign][DBGetUserCampaigns] dbGetCampaignTrafficConfig failed:%v", err)
 		}
@@ -116,7 +121,7 @@ func DBGetCampaign(campaignId int64) (c CampaignConfig) {
 	}
 
 	var err error
-	c.ExternalId, c.Cost, c.Vars, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
+	c.TrafficSource, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
 	if err != nil {
 		log.Errorf("[campaign][DBGetCampaign] dbGetCampaignTrafficConfig failed:%v", err)
 	}
@@ -134,7 +139,7 @@ func DBGetCampaignByHash(campaignHash string) (c CampaignConfig) {
 	}
 
 	var err error
-	c.ExternalId, c.Cost, c.Vars, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
+	c.TrafficSource, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
 	if err != nil {
 		log.Errorf("[campaign][DBGetCampaign] dbGetCampaignTrafficConfig failed:%v", err)
 	}

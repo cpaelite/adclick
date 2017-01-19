@@ -3,6 +3,7 @@ package campaign
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"sync"
@@ -11,6 +12,7 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/units/flow"
+	"strings"
 )
 
 const (
@@ -22,6 +24,20 @@ const (
 	TargetTypeLander = 4
 	TargetTypeOffer  = 5
 )
+
+// TrafficSourceConfig 对应数据库里面的TrafficSource
+type TrafficSourceConfig struct {
+	Id               int64
+	UserId           int64
+	Name             string
+	PostbackURL      string
+	PixelRedirectURL string
+	ImpTracking      int64
+
+	ExternalId common.TrafficSourceParams
+	Cost       common.TrafficSourceParams
+	Vars       []common.TrafficSourceParams
+}
 
 type CampaignConfig struct {
 	Id                int64
@@ -40,18 +56,19 @@ type CampaignConfig struct {
 	TargetUrl         string
 	Status            int64
 
-	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
-	// 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
-	// 从TrafficSource表中读取
-	ExternalId common.TrafficSourceParams
-	Cost       common.TrafficSourceParams
-	Vars       []common.TrafficSourceParams
+	TrafficSource TrafficSourceConfig
+	// // 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
+	// // 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
+	// // 从TrafficSource表中读取
+	// ExternalId common.TrafficSourceParams
+	// Cost       common.TrafficSourceParams
+	// Vars       []common.TrafficSourceParams
 }
 
 // ParseVars 根据Vars解析出10个参数，分别是，v1-v10
 func (c *CampaignConfig) ParseVars(getter func(k string) string) []string {
 	vars := []string{}
-	for _, param := range c.Vars {
+	for _, param := range c.TrafficSource.Vars {
 		v := getter(param.Parameter)
 		vars = append(vars, v)
 	}
@@ -257,6 +274,67 @@ func (ca *Campaign) OnConversionScript(w http.ResponseWriter, req request.Reques
 }
 
 func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
-	//TODO 封装trafficsource需要的参数
+	url := ca.ReplaceTSPostBackURL(req, ca.TrafficSource.PostbackURL)
+
+	err := func() error {
+		resp, err := http.Get(url)
+		if err != nil {
+			return err
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			return err
+		}
+		log.Debugf("[campaign][PostbackToTrafficSource] req:%v success:[%s]",
+			req.Id(), body)
+		return nil
+	}()
+
+	if err != nil {
+		log.Debugf("[campaign][PostbackToTrafficSource] req:%v postback failed:[%v]", err)
+	}
+
 	return nil
+}
+
+// ReplaceTSPostBackURL 把Traffic Source的Postback URL里面的参数替换好
+func (ca *Campaign) ReplaceTSPostBackURL(req request.Request, url string) string {
+	url = strings.Replace(url, "{externalid}", req.ExternalId(), -1)
+	// url = strings.Replace(url, "{payout}", , -1)
+	url = strings.Replace(url, "{campaign.id}", fmt.Sprintf("%v", req.CampaignId()), -1)
+	url = strings.Replace(url, "{trafficsource.id}", fmt.Sprintf("%v", req.TrafficSourceId()), -1)
+	url = strings.Replace(url, "{lander.id}", fmt.Sprintf("%v", req.LanderId()), -1)
+	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
+	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
+	// url = strings.Replace(url, "{device}", req.Device(), -1)
+	url = strings.Replace(url, "{brand}", req.Brand(), -1)
+	url = strings.Replace(url, "{model}", req.Model(), -1)
+	url = strings.Replace(url, "{browser}", req.Browser(), -1)
+	url = strings.Replace(url, "{browserversion}", req.BrowserVersion(), -1)
+	url = strings.Replace(url, "{os}", req.OS(), -1)
+	url = strings.Replace(url, "{osversion}", req.OSVersion(), -1)
+	url = strings.Replace(url, "{country}", req.Country(), -1)
+	url = strings.Replace(url, "{region}", req.Region(), -1)
+	url = strings.Replace(url, "{city}", req.City(), -1)
+	url = strings.Replace(url, "{isp}", req.ISP(), -1)
+	url = strings.Replace(url, "{connection.type}", req.ConnectionType(), -1)
+	url = strings.Replace(url, "{carrier}", req.Carrier(), -1)
+	// url = strings.Replace(url, "{ip}", req.IP(), -1)
+	// url = strings.Replace(url, "{countryname}", req.Country(), -1)
+	url = strings.Replace(url, "{referrerdomain}", req.ReferrerDomain(), -1)
+	url = strings.Replace(url, "{language}", req.Language(), -1)
+	// url = strings.Replace(url, "{transaction.id}", req.Tra(), -1)
+	// url = strings.Replace(url, "{click.id}", req.ClickId(), -1)
+
+	for i := 0; i < 10; i++ {
+		vn := req.Vars(uint(i))
+		if len(vn) != 0 {
+			url = strings.Replace(url, fmt.Sprintf("{var%d}", i), vn, -1)
+		}
+	}
+
+	url = strings.Replace(url, "{campaign.cpa}", fmt.Sprintf("%v", ca.CPAValue), -1)
+	return url
 }

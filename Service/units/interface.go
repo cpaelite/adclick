@@ -105,7 +105,7 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		// 解析参数，传递到request中
-		req.ParseTSParams(ca.ExternalId, ca.Cost, ca.Vars, r.URL.Query())
+		req.ParseTSParams(ca.TrafficSource.ExternalId, ca.TrafficSource.Cost, ca.TrafficSource.Vars, r.URL.Query())
 	}
 
 	if err := u.OnLPOfferRequest(w, req); err != nil {
@@ -256,7 +256,9 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// 解析参数，传递到request中
-	req.ParseTSParams(ca.ExternalId, ca.Cost, ca.Vars, r.URL.Query())
+	req.ParseTSParams(ca.TrafficSource.ExternalId,
+		ca.TrafficSource.Cost,
+		ca.TrafficSource.Vars, r.URL.Query())
 
 	// 统计信息的添加
 	timestamp := tracking.Timestamp()
@@ -319,25 +321,65 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 统计payout
-	o := offer.GetOffer(req.OfferId())
-	if o == nil {
-		log.Errorf("[Units][OnS2SPostback] offer.GetOffer(%v) failed: no offer found", req.OfferId())
-	} else {
+	finalPayout := func() float64 {
+		o := offer.GetOffer(req.OfferId())
+		if o == nil {
+			log.Errorf("[Units][OnS2SPostback] offer.GetOffer(%v) failed: no offer found", req.OfferId())
+			return 0.0
+		}
 		switch o.PayoutMode {
 		case 0:
-			if payout != 0 {
-				user.TrackingRevenue(req, payout)
-			}
+			return payout
 		case 1:
-			if o.PayoutValue != 0 {
-				user.TrackingRevenue(req, o.PayoutValue)
-			}
+			return o.PayoutValue
 		}
-	}
+		return 0.0
+	}()
+	user.TrackingRevenue(req, finalPayout)
 
 	// 统计conversion
-	conv := MakeConversion(req)
+	var conv tracking.Conversion
+	conv.UserID = req.UserId()
+	conv.PostbackTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
+	// TODO: 这里需要拿到之前的时间
+	conv.VisitTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
+	conv.ExternalID = req.ExternalId()
+	conv.ClickID = clickId
+	// conv.TransactionID =
+	conv.Revenue = finalPayout
+	// conv.Cost = req.Cost()
+	// conv.CampaignName = req.CampaignName()
+	conv.CampaignID = req.CampaignId()
+	// conv.LanderName =
+	conv.LanderID = req.LanderId()
+
+	// conv.OfferName =
+	conv.OfferID = req.OfferId()
+	conv.Country = req.Country()
+	// conv.CountryCode = req.Country
+	// conv.TrafficSourceName
+	conv.TrafficSourceID = req.TrafficSourceId()
+	// conv.AffiliateNetworkName =
+	// conv.AffiliateNetworkID
+	// conv.Device = req.Device
+	conv.OS = req.OS()
+	conv.OSVersion = req.OSVersion()
+	conv.Brand = req.Brand()
+	conv.Model = req.Model()
+	conv.Browser = req.Browser()
+	conv.BrowserVersion = req.BrowserVersion()
+	conv.ISP = req.ISP()
+	conv.MobileCarrier = req.Carrier()
+	conv.VisitorIP = req.RemoteIp()
+	conv.VisitorReferrer = req.Referrer()
+
+	// 解析v1-v10
+	v := []*string{&conv.V1, &conv.V2, &conv.V3, &conv.V4, &conv.V5, &conv.V6, &conv.V7, &conv.V8, &conv.V9, &conv.V10}
+	for i := 0; i < len(v); i++ {
+		*v[i] = req.Vars(uint(i))
+	}
 	tracking.SaveConversion(&conv)
+
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
 		log.Errorf("[Units][OnS2SPostback]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
