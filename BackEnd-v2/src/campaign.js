@@ -528,7 +528,9 @@ router.post('/api/campaign/:id',function(req,res,next){
                                                     let offerResult;
                                                     
                                                     if (!value.flow.rules[i].paths[j].offers[z].id) {
-                                                        offerResult=await common.insertOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
+                                                        let postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter;
+                                                        value.flow.rules[i].paths[j].offers[z].postbackUrl=postbackUrl;
+                                                        offerResult=await common.insertOffer(value.userId,value.idText, value.flow.rules[i].paths[j].offers[z], connection);
                                                         await common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
                                                     }else{
                                                          

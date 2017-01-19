@@ -517,7 +517,9 @@ const start = (() => {
                                             let offerResult;
 
                                             if (!value.flow.rules[i].paths[j].offers[z].id) {
-                                                offerResult = yield common.insertOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
+                                                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+                                                value.flow.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
+                                                offerResult = yield common.insertOffer(value.userId, value.idText, value.flow.rules[i].paths[j].offers[z], connection);
                                                 yield common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
                                             } else {
 

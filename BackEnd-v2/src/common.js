@@ -512,7 +512,7 @@ function updateLander2Path(landerId, pathId, weight, connection) {
 }
 
 //Offer
-function insertOffer(userId, offer, connection) {
+function insertOffer(userId, idText,offer, connection) {
 
     //required
     var col = "`userId`"
@@ -530,16 +530,22 @@ function insertOffer(userId, offer, connection) {
     col += ",`payoutMode`";
     val += "," + offer.payoutMode
 
+    
+    
+
     //optional
     if (offer.country) {
         var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
         col += ",`country`";
         val += ",'" + countrycode + "'";
     }
-    if (offer.postbackUrl) {
-        col += ",`postbackUrl`";
-        val += ",'" + offer.postbackUrl + "'"
-    }
+
+     if (offer.postbackUrl) {
+         col += ",`postbackUrl`";
+         val += ",'" + offer.postbackUrl + "'"
+     }
+    
+       
     if (offer.payoutValue != undefined) {
         col += ",`payoutValue`";
         val += "," + offer.payoutValue
@@ -548,6 +554,11 @@ function insertOffer(userId, offer, connection) {
         col += ",`AffiliateNetworkId`";
         val += "," + offer.affiliateNetwork.id;
     }
+    if (offer.affiliateNetwork && offer.affiliateNetwork.name) {
+        col += ",`AffiliateNetworkName`";
+        val += ",'" + offer.affiliateNetwork.name +"'";
+    }
+
     var sqloffer = "insert into Offer (" + col + ") values (" + val + ") ";
     return  new Promise(function(resolve,reject){
        connection.query(sqloffer, function(err,result){  
@@ -575,6 +586,10 @@ function updateOffer(userId, offer, connection) {
     if (offer.affiliateNetwork && offer.affiliateNetwork.id) {
         sqlUpdateOffer += ",`AffiliateNetworkId`=" + offer.affiliateNetwork.id
     }
+    if (offer.affiliateNetwork && offer.affiliateNetwork.name) {
+        sqlUpdateOffer += ",`AffiliateNetworkName`='" + offer.affiliateNetwork.name+"'"
+    }
+
     if (offer.name) {
         sqlUpdateOffer += ",`name`='" + offer.name + "'"
     }
@@ -597,6 +612,29 @@ function updateOffer(userId, offer, connection) {
         });
     });
 
+}
+
+function getOfferDetail(id,userId,connection){
+    let sqlLander= "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `deleted`=? and `id`=?";
+    let sqltag="select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    return new Promise(function(resolve,reject){
+         connection.query(sqlLander,[userId,0,id],function(err,lander){
+             if(err){
+                 reject(err);
+             }
+             connection.query(sqltag,[userId,id,3,0],function(err,tagsResult){
+                 if(err){
+                     reject(err);
+                 }
+                 let tags=[];
+                for(let index=0;index<tagsResult.length;index++){
+                    tags.push(tagsResult[index].name);
+                }
+                lander[0].tags=tags;
+                resolve(lander[0])
+             })
+         })
+    })
 }
 
 //Offer2Path
@@ -705,3 +743,4 @@ exports.getConnection=getConnection;
 exports.getRedisClient=getRedisClient;
 exports.getLanderDetail=getLanderDetail;
 exports.getCampaign=getCampaign;
+exports.getOfferDetail=getOfferDetail;
