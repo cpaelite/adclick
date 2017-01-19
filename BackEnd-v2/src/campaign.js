@@ -405,14 +405,16 @@ router.post('/api/campaign/:id',function(req,res,next){
                     await common.updateCampaign(value, connection);
                     } else {
                     campResult= await common.insertCampaign(value, connection);
-                    }               
+                    }     
 
+        
                     //Flow
                     if (value.flow && !value.flow.id) {
                         flowResult =await common.insertFlow(value.userId,value.flow, connection)
                     } else if (value.flow && value.flow.id) {
                         await common.updateFlow(value.userId,value.flow, connection)
                     } 
+                        
                      
                    let campaignId = value.id ? value.id: (campResult? (campResult.insertId ? campResult.insertId: 0) :0);
                     
@@ -563,6 +565,7 @@ router.post('/api/campaign/:id',function(req,res,next){
                 await common.rollback(connection);
                 throw err;
             } 
+           connection.release(); 
            delete value.userId;  
            delete value.idText;        
            Result=value;
@@ -579,7 +582,40 @@ router.post('/api/campaign/:id',function(req,res,next){
  };
 
 
+/**
+* @api {get} /api/campaign/:id   campaign detail
+ * @apiName  campaign detail
+ * @apiGroup campaign
+ */
+router.get('/api/campaign/:id',function(req,res,next){
+     var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.userId= req.userId;
+    req.query.id=req.params.id;
 
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.getCampaign(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success',
+                data:result
+            });
+
+        }catch(e){
+            return next(e);
+        }
+       
+        
+    }
+    start();
+
+});
 
 
 module.exports = router;

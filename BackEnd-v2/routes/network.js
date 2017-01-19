@@ -59,9 +59,11 @@ router.post('/api/affilate', function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
+                delete value.userId;
                 res.json({
                     status: 1,
-                    message: 'success'
+                    message: 'success',
+                    data:value
                 });
             });
         });

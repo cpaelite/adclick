@@ -207,6 +207,7 @@ const start = (() => {
                 yield common.rollback(connection);
                 throw err;
             }
+            connection.release();
             delete value.userId;
             Result = value;
         } catch (e) {

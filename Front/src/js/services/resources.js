@@ -24,13 +24,22 @@ angular.module('app')
   .factory('Flow', ['$resource', function ($resource) {
     return $resource('/api/flow/:id', {id: '@id'});
   }])
+  .factory('Flows', ['$resource', function ($resource) {
+    return $resource('/api/flows');
+  }])
   .factory('Rule', ['$resource', function ($resource) {
     return $resource('/api/rule/:id', {id: '@id'});
   }])
   .factory('TrafficSource', ['$resource', function ($resource) {
-    return $resource('/api/traffic/source/:id', {id: '@id'});
+    return $resource('/api/trafficsources/:id', {id: '@id'});
+  }])
+  .factory('TrafficSources', ['$resource', function ($resource) {
+    return $resource('/api/trafficsources');
   }])
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
     return $resource('/api/affilate/:id', {id: '@id'});
+  }])
+  .factory('Country', ['$resource', function ($resource) {
+    return $resource('/countries');
   }])
 ;
