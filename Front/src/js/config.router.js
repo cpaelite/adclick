@@ -98,6 +98,12 @@
         controller: 'RuleCtrl',
         data: {}
       })
+      .state('app.flow', {
+        url: '/flow?id',
+        templateUrl: 'tpl/flow-edit.html',
+        controller: 'FlowEditCtrl',
+        data: {}
+      })
       .state('access', {
         url: '/access',
         template: '<div ui-view class="fade-in-right-big smooth"></div>'
