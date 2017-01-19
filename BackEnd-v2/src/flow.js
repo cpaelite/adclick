@@ -185,7 +185,7 @@ module.exports=router;
                                                     
                                                     if (!value.rules[i].paths[j].offers[z].id) {
                                                         let postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter;
-                                                        value.rules[i].paths[j].offers[z]=postbackUrl;
+                                                        value.rules[i].paths[j].offers[z].postbackUrl=postbackUrl;
                                                         offerResult=await common.insertOffer(value.userId,value.idText, value.rules[i].paths[j].offers[z], connection);
                                                         await common.insertOffer2Path(offerResult.insertId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                                     }else{

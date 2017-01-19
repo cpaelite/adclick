@@ -97,9 +97,6 @@ const start = (() => {
                 }
 
                 let flowId = value.id ? value.id : flowResult ? flowResult.insertId ? flowResult.insertId : 0 : 0;
-                console.log(JSON.stringify(flowResult));
-                console.log("===============");
-                console.log(flowId);
 
                 if (!flowId) {
                     throw new Error('Flow ID Lost');
@@ -181,7 +178,7 @@ const start = (() => {
 
                                             if (!value.rules[i].paths[j].offers[z].id) {
                                                 let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
-                                                value.rules[i].paths[j].offers[z] = postbackUrl;
+                                                value.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
                                                 offerResult = yield common.insertOffer(value.userId, value.idText, value.rules[i].paths[j].offers[z], connection);
                                                 yield common.insertOffer2Path(offerResult.insertId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                             } else {
