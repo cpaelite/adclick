@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./bin/www",
-    "build": "babel src -d routes"
+    "build": "babel src -d routes  --presets stage-0"
   },
   "author": "aedanlee",
   "license": "ISC",
@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
-    "babel-preset-stage-3": "^6.17.0"
+    "babel-preset-stage-0": "^6.16.0"
   }
 }

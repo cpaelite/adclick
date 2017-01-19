@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common=require('./common');
+var Pub =require('./redis_sub_pub');
+var setting=require('../config/setting');
  
 
 
@@ -308,7 +310,8 @@ router.post('/api/campaign',function(req,res,next){
             status:1,
             message:'success',
             data:data
-        })
+        });
+        
     }).catch(function(err){
         next(err);
     });
@@ -566,9 +569,12 @@ router.post('/api/campaign/:id',function(req,res,next){
                 throw err;
             } 
            connection.release(); 
+           //redis pub
+           new Pub(true).publish(setting.redis.channel,value.userId);
            delete value.userId;  
            delete value.idText;        
            Result=value;
+          
          }catch(e){
             ResultError=e;
          } 

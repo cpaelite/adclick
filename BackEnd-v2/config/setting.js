@@ -6,8 +6,9 @@ module.exports = {
     database: 'AdClickTool'
   },
   "redis":{
-    host:"",
-    port:""
+    host:"newbidder001.augmjh.ng.0001.usw1.cache.amazonaws.com",
+    port:"6379",
+    channel:"channel_campaign_changed_users"
   },
   "jwtTokenSrcret": "&s4ha7$dj8",
   "newbidder":{

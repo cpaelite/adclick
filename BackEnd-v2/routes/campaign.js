@@ -4,6 +4,8 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
+var Pub = require('./redis_sub_pub');
+var setting = require('../config/setting');
 
 // * @apiParam {String} from 开始时间
 // * @apiParam {String} to   截止时间
@@ -552,6 +554,8 @@ const start = (() => {
                 throw err;
             }
             connection.release();
+            //redis pub
+            new Pub(true).publish(setting.redis.channel, value.userId);
             delete value.userId;
             delete value.idText;
             Result = value;

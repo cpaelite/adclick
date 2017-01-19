@@ -215,7 +215,6 @@ function getCampaign(id,userId,connection){
                  reject(err);
              }
              connection.query(sqltag,[userId,id,1,0],function(err,tagsResult){
-                 connection.release();
                  if(err){
                      reject(err);
                  }
