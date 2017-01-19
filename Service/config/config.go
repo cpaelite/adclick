@@ -105,7 +105,7 @@ func String(section, key string) string {
 	v, err := instance.String(section, key)
 
 	if err != nil {
-		log.Errorf("Read config string value error:%v\n", err)
+		log.Errorf("Read config string value for section:%v key:%v error:%v\n", section, key, err)
 	}
 
 	return v
@@ -121,7 +121,7 @@ func Bool(section, key string) bool {
 
 	v, err := instance.Bool(section, key)
 	if err != nil {
-		log.Errorf("Read config bool value error:%v", err)
+		log.Errorf("Read config bool value for section:%v key:%v error:%v", section, key, err)
 	}
 
 	return v
@@ -137,7 +137,7 @@ func Int(section, key string) int {
 
 	v, err := instance.Int(section, key)
 	if err != nil {
-		log.Errorf("Read config int value error:%v\n", err)
+		log.Errorf("Read config int value for section:%v, key:%v error:%v\n", section, key, err)
 	}
 	return v
 }
@@ -152,7 +152,7 @@ func Float(section, key string) float64 {
 
 	v, err := instance.Float(section, key)
 	if err != nil {
-		log.Errorf("Read config float value error:%v\n", err)
+		log.Errorf("Read config float value for section:%v key:%v error:%v\n", section, key, err)
 	}
 
 	return v

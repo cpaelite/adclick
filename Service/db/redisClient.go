@@ -13,6 +13,10 @@ import (
 var redisMux sync.RWMutex
 var redisClients map[string]*redis.Client
 
+func init() {
+	redisClients = make(map[string]*redis.Client)
+}
+
 func GetRedisClient(title string) *redis.Client {
 	redisMux.RLock()
 	if client, ok := redisClients[title]; ok {
