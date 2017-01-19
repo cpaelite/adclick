@@ -74,7 +74,8 @@ type Request interface {
 	RemoteIp() string
 	Language() string
 	Model() string
-	Country() string
+	CountryCode() string // ISO-ALPHA-3
+	CountryName() string
 	City() string
 	Region() string
 	Carrier() string

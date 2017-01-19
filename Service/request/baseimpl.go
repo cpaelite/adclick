@@ -49,7 +49,8 @@ type reqbase struct {
 	language       string
 	model          string
 	brand          string
-	country        string
+	countryCode    string
+	countryName    string
 	region         string
 	city           string
 	carrier        string
@@ -97,7 +98,8 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 
 	// parse location from ip
 	location := ip2location.Get_all(req.ip)
-	req.country = location.Country_short
+	req.countryCode = location.Country_short
+	req.countryName = location.Country_long
 	req.region = location.Region
 	req.city = location.City
 	req.carrier = location.Mobilebrand
@@ -285,8 +287,11 @@ func (r *reqbase) Language() string {
 func (r *reqbase) Model() string {
 	return r.model
 }
-func (r *reqbase) Country() string {
-	return r.country
+func (r *reqbase) CountryCode() string { // ISO-ALPHA-3
+	return r.countryCode
+}
+func (r *reqbase) CountryName() string {
+	return r.countryName
 }
 func (r *reqbase) City() string {
 	return r.city
@@ -390,7 +395,7 @@ func (r *reqbase) AdStatisKey(timestamp int64) (key tracking.AdStatisKey) {
 	key.TrafficSourceID = r.TrafficSourceId()
 	key.Language = r.Language()
 	key.Model = r.Model()
-	key.Country = r.Country()
+	key.Country = r.CountryCode()
 	key.City = r.City()
 	key.Region = r.Region()
 	key.ISP = r.ISP()

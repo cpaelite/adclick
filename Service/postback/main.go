@@ -101,8 +101,8 @@ func main() {
 }
 
 func StartServe() error {
-	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
-	log.Info("Start listening postback at", config.GetBindPort())
+	reqServer := &http.Server{Addr: ":" + config.GetPostbackPort(), Handler: http.DefaultServeMux}
+	log.Info("Start listening postback at", config.GetPostbackPort())
 	return servehttp.Serve(reqServer) // reqServer.ListenAndServe()
 }
 

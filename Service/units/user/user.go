@@ -289,13 +289,15 @@ func initUser() {
 	userIdText2Id = make(map[string]int64)
 }
 func newUser(c UserConfig) (u *User) {
-	_, err := url.ParseRequestURI(c.RootDomainRedirect)
-	if err != nil {
-		log.Errorf("[NewUser]Invalid url for user(%+v), err(%s)\n", c, err.Error())
-		return nil
+	if c.RootDomainRedirect != "" {
+		_, err := url.ParseRequestURI(c.RootDomainRedirect)
+		if err != nil {
+			log.Errorf("[NewUser]Invalid url for user(%+v), err(%s)\n", c, err.Error())
+			return nil
+		}
 	}
-	err = campaign.InitUserCampaigns(c.Id)
-	if err != nil {
+
+	if err := campaign.InitUserCampaigns(c.Id); err != nil {
 		log.Errorf("[NewUser]InitUserCampaigns failed for user(%+v), err(%s)\n", c, err.Error())
 		return nil
 	}

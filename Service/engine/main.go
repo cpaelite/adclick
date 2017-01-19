@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"runtime/debug"
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/config"
@@ -17,6 +18,10 @@ import (
 )
 
 func main() {
+	defer func() {
+		log.Alert("Quit main()")
+		log.Alert(string(debug.Stack()))
+	}()
 	help := flag.Bool("help", false, "show help")
 	flag.Parse()
 	if *help {
@@ -95,8 +100,8 @@ func main() {
 	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), units.OnLPOfferRequest)
 	http.HandleFunc(config.String("DEFAULT", "lpclickurl"), units.OnLandingPageClick)
 	http.HandleFunc(config.String("DEFAULT", "impressionurl"), units.OnImpression)
-	reqServer := &http.Server{Addr: ":" + config.GetBindPort(), Handler: http.DefaultServeMux}
-	log.Info("Start listening request at", config.GetBindPort())
+	reqServer := &http.Server{Addr: ":" + config.GetEnginePort(), Handler: http.DefaultServeMux}
+	log.Info("Start listening request at", config.GetEnginePort())
 	log.Error(servehttp.Serve(reqServer))
 	log.Infof("http server stopped. stopping other goroutines...")
 	// 只需要在HTTP服务器退出的时候，等待协程退出
