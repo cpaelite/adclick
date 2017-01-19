@@ -712,6 +712,99 @@ function insertRule2Flow(ruleId, flowId, status, connection) {
     });
 }
 
+function insertTrafficSource(userId,traffic,connection){
+      return  new Promise(function(resolve,reject){
+         //required
+        var col = "`userId`"
+        var val = userId
+
+        col += ",`name`";
+        val += ",'" + traffic.name + "'"
+
+        col += ",`hash`";
+        val += ",'" + uuidV4() + "'"
+
+        if(traffic.postbackUrl){
+             col += ",`postbackUrl`";
+             val += ",'" + traffic.postbackUrl + "'"
+        }
+
+        if(traffic.pixelRedirectUrl){
+             col += ",`pixelRedirectUrl`";
+             val += ",'" + traffic.pixelRedirectUrl + "'"
+         }
+
+         if(traffic.impTracking !=undefined){
+             col += ",`impTracking`";
+             val += "," + traffic.impTracking  
+        }
+         if(traffic.externalId){
+             col += ",`externalId`";
+             val += ",'" + traffic.externalId + "'"
+        }
+        if(traffic.cost){
+             col += ",`cost`";
+             val += ",'" + traffic.cost + "'"
+        }
+        if(traffic.params){
+             col += ",`params`";
+             val += ",'" + traffic.params + "'"
+        }
+        var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val + ") ";
+ 
+        connection.query(sqltraffic, function(err,result){ 
+            if(err){
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function updatetraffic(userId,traffic,connection){
+    return new Promise(function(resolve,reject){
+        var sqlUpdateOffer = "update  TrafficSource  set `id`=" + traffic.id;
+        if (traffic.name) {
+           sqlUpdateOffer += ",`name`='" + traffic.name +"'"
+        }
+        if (traffic.postbackUrl) {
+           sqlUpdateOffer += ",`postbackUrl`='" + traffic.postbackUrl +"'"
+        }
+        if (traffic.pixelRedirectUrl) {
+           sqlUpdateOffer += ",`pixelRedirectUrl`='" + traffic.pixelRedirectUrl +"'"
+        }
+        if (traffic.impTracking != undefined) {
+           sqlUpdateOffer += ",`impTracking`=" + traffic.impTracking  
+        }
+        if (traffic.externalId) {
+           sqlUpdateOffer += ",`externalId`='" + traffic.externalId +"'"
+        }
+        if (traffic.cost) {
+           sqlUpdateOffer += ",`cost`='" + traffic.cost +"'"
+        }
+        if (traffic.params) {
+           sqlUpdateOffer += ",`params`='" + traffic.params +"'"
+        }
+         sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
+        connection.query(sqlUpdateOffer, [userId, traffic.id], function(err,result){  
+            if(err){
+                reject(err);
+            }
+            resolve(result);
+        });
+    })
+}
+
+function gettrafficDetail(id,userId,connection){
+       return  new Promise(function(resolve,reject){
+          connection.query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId,id], function(err,result){ 
+            if(err){
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
 
 exports.updateRule2Flow=updateRule2Flow;
 exports.insertRule2Flow=insertRule2Flow;
@@ -744,3 +837,6 @@ exports.getRedisClient=getRedisClient;
 exports.getLanderDetail=getLanderDetail;
 exports.getCampaign=getCampaign;
 exports.getOfferDetail=getOfferDetail;
+exports.insertTrafficSource=insertTrafficSource;
+exports.gettrafficDetail=gettrafficDetail;
+exports.updatetraffic=updatetraffic;
