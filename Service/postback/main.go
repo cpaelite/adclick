@@ -111,7 +111,7 @@ func Status(w http.ResponseWriter, r *http.Request) {
 }
 
 func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
-	//TODO 去除重复的clickId和transactionId的conversions
+	//TODO 需要根据affiliateNetwork的设置，决定是否去除重复的clickId和transactionId的conversions
 	if r.Method != http.MethodGet {
 		http.NotFound(w, r)
 		return

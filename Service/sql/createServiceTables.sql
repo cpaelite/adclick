@@ -205,6 +205,7 @@ CREATE TABLE AdClickTool.`TemplateAffiliateNetwork` (
 CREATE TABLE AdClickTool.`UrlTokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(64) NOT NULL,
+  `desc` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

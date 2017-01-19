@@ -40,6 +40,7 @@ type TrafficSourceConfig struct {
 
 type CampaignConfig struct {
 	Id                int64
+	Name              string
 	UserId            int64
 	Hash              string
 	Url               string
@@ -218,7 +219,6 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 	req.SetTSVars(ca.TrafficSource.Vars)
 	req.SetCPAValue(ca.CPAValue)
 
-
 	if ca.TargetType == TargetTypeUrl {
 		if ca.TargetUrl != "" {
 			http.Redirect(w, gr, req.ParseUrlTokens(ca.TargetUrl), http.StatusFound)
@@ -241,10 +241,10 @@ func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Reques
 		return errors.New("[Campaign][OnLandingPageClick]Nil ca")
 	}
 
-	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
-	req.SetTSCost(&ca.TrafficSource.Cost)
-	req.SetTSVars(ca.TrafficSource.Vars)
-	req.SetCPAValue(ca.CPAValue)
+	//	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	//	req.SetTSCost(&ca.TrafficSource.Cost)
+	//	req.SetTSVars(ca.TrafficSource.Vars)
+	//	req.SetCPAValue(ca.CPAValue)
 
 	// 不要用Campaign现在的设置，因为有可能中途被改变
 	f := flow.GetFlow(req.FlowId())
@@ -263,10 +263,10 @@ func (ca *Campaign) OnS2SPostback(w http.ResponseWriter, req request.Request) er
 		return errors.New("[Campaign][OnS2SPostback]Nil ca")
 	}
 
-	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
-	req.SetTSCost(&ca.TrafficSource.Cost)
-	req.SetTSVars(ca.TrafficSource.Vars)
-	req.SetCPAValue(ca.CPAValue)
+	//	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	//	req.SetTSCost(&ca.TrafficSource.Cost)
+	//	req.SetTSVars(ca.TrafficSource.Vars)
+	//	req.SetCPAValue(ca.CPAValue)
 
 	f := flow.GetFlow(req.FlowId())
 	if f == nil {
@@ -289,12 +289,12 @@ func (ca *Campaign) OnConversionScript(w http.ResponseWriter, req request.Reques
 }
 
 func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
-	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
-	req.SetTSCost(&ca.TrafficSource.Cost)
-	req.SetTSVars(ca.TrafficSource.Vars)
-	req.SetCPAValue(ca.CPAValue)
+	//	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
+	//	req.SetTSCost(&ca.TrafficSource.Cost)
+	//	req.SetTSVars(ca.TrafficSource.Vars)
+	//	req.SetCPAValue(ca.CPAValue)
 
-
+	//TODO 需要检查用户是否已经针对该campaign单独设置了PostbackUrl
 	url := req.ParseUrlTokens(ca.TrafficSource.PostbackURL)
 
 	err := func() error {

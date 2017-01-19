@@ -12,13 +12,15 @@ import (
 )
 
 type OfferConfig struct {
-	Id                 int64
-	UserId             int64
-	Url                string
-	AffiliateNetworkId int64
-	PostbackUrl        string
-	PayoutMode         int64
-	PayoutValue        float64
+	Id                   int64
+	Name                 string
+	UserId               int64
+	Url                  string
+	AffiliateNetworkId   int64
+	AffiliateNetworkName string
+	PostbackUrl          string
+	PayoutMode           int64
+	PayoutValue          float64
 }
 
 func (c OfferConfig) String() string {
@@ -105,7 +107,10 @@ func (o *Offer) OnLPOfferRequest(w http.ResponseWriter, req request.Request) err
 	if o == nil {
 		return fmt.Errorf("[Offer][OnLPOfferRequest]Nil o for request(%s)", req.Id())
 	}
-	//TODO 替换clickid
+	req.SetOfferId(o.Id)
+	req.SetOfferName(o.Name)
+	req.SetAffiliateId(o.AffiliateNetworkId)
+	req.SetAffiliateName(o.AffiliateNetworkName)
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
 	return nil
 }
@@ -114,7 +119,10 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 	if o == nil {
 		return fmt.Errorf("[Offer][OnLandingPageClick]Nil o for request(%s)", req.Id())
 	}
-	//TODO 替换clickid
+	req.SetOfferId(o.Id)
+	req.SetOfferName(o.Name)
+	req.SetAffiliateId(o.AffiliateNetworkId)
+	req.SetAffiliateName(o.AffiliateNetworkName)
 	// 加载AffiliateNetwork配置，如果Append click ID to offer URLs勾选，添加click ID(requestid)
 	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
 	return nil

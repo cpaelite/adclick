@@ -81,6 +81,7 @@ func (u *User) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		return fmt.Errorf("[Units][OnLPOfferRequest]Campaign with hash(%s) does not belong to user %d for %s\n", campaignHash, u.Id, req.Id())
 	}
 	req.SetCampaignId(ca.Id)
+	req.SetCampaignName(ca.Name)
 	err := ca.OnLPOfferRequest(w, req)
 	if err != nil {
 		return err

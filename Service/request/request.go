@@ -58,6 +58,8 @@ type Request interface {
 	SetCampaignHash(hash string)
 	CampaignId() int64
 	SetCampaignId(id int64)
+	CampaignName() string
+	SetCampaignName(name string)
 	FlowId() int64
 	SetFlowId(id int64)
 	RuleId() int64
@@ -66,8 +68,25 @@ type Request interface {
 	SetPathId(id int64)
 	LanderId() int64
 	SetLanderId(id int64)
+	LanderName() string
+	SetLanderName(name string)
 	OfferId() int64
 	SetOfferId(id int64)
+	OfferName() string
+	SetOfferName(name string)
+	AffiliateId() int64
+	SetAffiliateId(id int64)
+	AffiliateName() string
+	SetAffiliateName(name string)
+
+	ImpTimeStamp() int64
+	SetImpTimeStamp(timestamp int64)
+	VisitTimeStamp() int64
+	SetVisitTimeStamp(timestamp int64)
+	ClickTimeStamp() int64
+	SetClickTimeStamp(timestamp int64)
+	PostBackTimeStamp() int64
+	SetPostbackTimeStamp(timestamp int64)
 
 	DeviceType() string
 	UserAgent() string
@@ -108,12 +127,13 @@ type Request interface {
 	IPKey(timestamp int64) tracking.IPStatisKey
 	ReferrerKey(timestamp int64) tracking.ReferrerStatisKey
 	DomainKey(timestamp int64) tracking.ReferrerDomainStatisKey
+	ConversionKey() tracking.Conversion
 
 	// Payout
 	SetPayout(p float64)
 	Payout() float64
-	SetTransactionID(txid string)
-	TransactionID() string
+	SetTransactionId(txid string)
+	TransactionId() string
 
 	SetTSExternalID(e *common.TrafficSourceParams)
 	SetTSCost(c *common.TrafficSourceParams)

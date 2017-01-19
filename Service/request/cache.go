@@ -135,8 +135,10 @@ func req2cacheStr(req *reqbase) (caStr string) {
 	ku.Add("ua", req.ua)
 
 	ku.Add("externalId", req.externalId)
-	ku.Add("cost", fmt.Sprintf("%v", req.cost))
+	ku.Add("cost", fmt.Sprintf("%f", req.cost))
 	ku.Add("vars", strings.Join(req.vars, ";"))
+	ku.Add("txId", req.txid)
+	ku.Add("payout", fmt.Sprintf("%f", req.payout))
 
 	ku.Add("tsId", fmt.Sprintf("%d", req.trafficSourceId))
 	ku.Add("tsName", req.trafficSourceName)
@@ -144,11 +146,21 @@ func req2cacheStr(req *reqbase) (caStr string) {
 	ku.Add("uIdText", req.userIdText)
 	ku.Add("cHash", req.campaignHash)
 	ku.Add("cId", fmt.Sprintf("%d", req.campaignId))
+	ku.Add("cName", req.campaignName)
 	ku.Add("fId", fmt.Sprintf("%d", req.flowId))
 	ku.Add("rId", fmt.Sprintf("%d", req.ruleId))
 	ku.Add("pId", fmt.Sprintf("%d", req.pathId))
 	ku.Add("lId", fmt.Sprintf("%d", req.landerId))
+	ku.Add("lName", req.landerName)
 	ku.Add("oId", fmt.Sprintf("%d", req.offerId))
+	ku.Add("oName", req.offerName)
+	ku.Add("affId", fmt.Sprintf("%d", req.affiliateId))
+	ku.Add("affName", req.affiliateName)
+
+	ku.Add("impTs", fmt.Sprintf("%d", req.impTimeStamp))
+	ku.Add("visitTs", fmt.Sprintf("%d", req.visitTimeStamp))
+	ku.Add("clickTs", fmt.Sprintf("%d", req.clickTimeStamp))
+	ku.Add("pbTs", fmt.Sprintf("%d", req.postbackTimeStamp))
 
 	ku.Add("dType", req.deviceType)
 	ku.Add("trkDomain", req.trackingDomain)
@@ -170,6 +182,19 @@ func req2cacheStr(req *reqbase) (caStr string) {
 	ku.Add("browserv", req.browserVersion)
 	ku.Add("connType", req.connectionType)
 	ku.Add("bot", fmt.Sprintf("%v", req.bot))
+	ku.Add("cpaValue", fmt.Sprintf("%f", req.cpaValue))
+	//	req.tsExternalId
+	if req.tsExternalId != nil {
+		ku.Add("tsEId", req.tsExternalId.Encode())
+	}
+	//	req.tsCost
+	if req.tsCost != nil {
+		ku.Add("tsCost", req.tsCost.Encode())
+	}
+	//	req.tsVars
+	if len(req.tsVars) > 0 {
+		ku.Add("tsVars", common.EncodeParams(req.tsVars))
+	}
 
 	return base64.URLEncoding.EncodeToString(xxtea.XxteaEncrypt([]byte(ku.Encode())))
 }
@@ -188,8 +213,6 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		return
 	}
 
-	cost, _ := strconv.ParseFloat(bd.Get("cost"), 64)
-
 	req = &reqbase{
 		id: bd.Get("id"),
 		t:  bd.Get("t"),
@@ -197,10 +220,15 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		ua: bd.Get("ua"),
 
 		externalId: bd.Get("externalId"),
-		cost:       cost,
 		vars:       strings.Split(bd.Get("vars"), ";"),
+		txid:       bd.Get("txId"),
 
 		trafficSourceName: bd.Get("tsname"),
+		campaignHash:      bd.Get("cHash"),
+		campaignName:      bd.Get("cName"),
+		landerName:        bd.Get("lName"),
+		offerName:         bd.Get("oName"),
+		affiliateName:     bd.Get("affName"),
 		userIdText:        bd.Get("uIdText"),
 
 		deviceType:     bd.Get("dType"),
@@ -223,6 +251,12 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		connectionType: bd.Get("connType"),
 	}
 
+	req.cost, _ = strconv.ParseFloat(bd.Get("cost"), 64)
+	req.payout, _ = strconv.ParseFloat(bd.Get("payout"), 64)
+	req.impTimeStamp, _ = strconv.ParseInt(bd.Get("impTs"), 10, 64)
+	req.visitTimeStamp, _ = strconv.ParseInt(bd.Get("visitTs"), 10, 64)
+	req.clickTimeStamp, _ = strconv.ParseInt(bd.Get("clickTs"), 10, 64)
+	req.postbackTimeStamp, _ = strconv.ParseInt(bd.Get("pbTs"), 10, 64)
 	req.trafficSourceId, _ = strconv.ParseInt(bd.Get("tsId"), 10, 64)
 	req.userId, _ = strconv.ParseInt(bd.Get("uId"), 10, 64)
 	req.campaignId, _ = strconv.ParseInt(bd.Get("cId"), 10, 64)
@@ -231,6 +265,13 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 	req.pathId, _ = strconv.ParseInt(bd.Get("pId"), 10, 64)
 	req.landerId, _ = strconv.ParseInt(bd.Get("lId"), 10, 64)
 	req.offerId, _ = strconv.ParseInt(bd.Get("oId"), 10, 64)
+	req.affiliateId, _ = strconv.ParseInt(bd.Get("affId"), 10, 64)
 	req.bot, _ = strconv.ParseBool(bd.Get("bot"))
+	req.cpaValue, _ = strconv.ParseFloat(bd.Get("cpaValue"), 64)
+	req.tsExternalId = &common.TrafficSourceParams{}
+	req.tsExternalId.Decode(bd.Get("tsEId"))
+	req.tsCost = &common.TrafficSourceParams{}
+	req.tsCost.Decode(bd.Get("tsCost"))
+	req.tsVars = common.DecodeParams(bd.Get("tsVars"))
 	return
 }

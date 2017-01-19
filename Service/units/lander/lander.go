@@ -13,6 +13,7 @@ import (
 
 type LanderConfig struct {
 	Id             int64
+	Name           string
 	UserId         int64
 	Url            string
 	NumberOfOffers int64
@@ -102,6 +103,8 @@ func (l *Lander) OnLPOfferRequest(w http.ResponseWriter, req request.Request) er
 	if l == nil {
 		return fmt.Errorf("[Lander][OnLPOfferRequest]Nil l for request(%s)", req.Id())
 	}
+	req.SetLanderId(l.Id)
+	req.SetLanderName(l.Name)
 	http.Redirect(w, gr, req.ParseUrlTokens(l.Url), http.StatusFound)
 	return nil
 }

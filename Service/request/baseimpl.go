@@ -28,8 +28,8 @@ type reqbase struct {
 	externalId string
 	cost       float64 // 从traffic source里面的Cost字段传过来的cost
 	vars       []string
-	payout float64
-	txid string
+	payout     float64
+	txid       string
 
 	trafficSourceId   int64
 	trafficSourceName string
@@ -37,11 +37,21 @@ type reqbase struct {
 	userIdText        string
 	campaignHash      string
 	campaignId        int64
+	campaignName      string
 	flowId            int64
 	ruleId            int64
 	pathId            int64
 	landerId          int64
+	landerName        string
 	offerId           int64
+	offerName         string
+	affiliateId       int64
+	affiliateName     string
+
+	impTimeStamp      int64
+	visitTimeStamp    int64
+	clickTimeStamp    int64
+	postbackTimeStamp int64
 
 	deviceType     string
 	trackingDomain string
@@ -68,10 +78,10 @@ type reqbase struct {
 
 	urlParam map[string]string
 
-	tsExternalId *common.TrafficSourceParams	// Traffic Source的一些配置
+	tsExternalId *common.TrafficSourceParams // Traffic Source的一些配置
 	tsCost       *common.TrafficSourceParams
 	tsVars       []common.TrafficSourceParams
-	cpaValue float64
+	cpaValue     float64
 }
 
 func (r *reqbase) SetTSExternalID(e *common.TrafficSourceParams) {
@@ -137,7 +147,7 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 
 	// parse location from ip
 	location := ip2location.Get_all(req.ip)
-	req.countryCode = location.Country_short
+	req.countryCode = location.Country_short //TODO alpha-2 => alpha-3
 	req.countryName = location.Country_long
 	req.region = location.Region
 	req.city = location.City
@@ -280,6 +290,12 @@ func (r *reqbase) CampaignId() int64 {
 func (r *reqbase) SetCampaignId(id int64) {
 	r.campaignId = id
 }
+func (r *reqbase) CampaignName() string {
+	return r.campaignName
+}
+func (r *reqbase) SetCampaignName(name string) {
+	r.campaignName = name
+}
 func (r *reqbase) FlowId() int64 {
 	return r.flowId
 }
@@ -304,11 +320,60 @@ func (r *reqbase) LanderId() int64 {
 func (r *reqbase) SetLanderId(id int64) {
 	r.landerId = id
 }
+func (r *reqbase) LanderName() string {
+	return r.landerName
+}
+func (r *reqbase) SetLanderName(name string) {
+	r.landerName = name
+}
 func (r *reqbase) OfferId() int64 {
 	return r.offerId
 }
 func (r *reqbase) SetOfferId(id int64) {
 	r.offerId = id
+}
+func (r *reqbase) OfferName() string {
+	return r.offerName
+}
+func (r *reqbase) SetOfferName(name string) {
+	r.offerName = name
+}
+func (r *reqbase) AffiliateId() int64 {
+	return r.affiliateId
+}
+func (r *reqbase) SetAffiliateId(id int64) {
+	r.affiliateId = id
+}
+func (r *reqbase) AffiliateName() string {
+	return r.affiliateName
+}
+func (r *reqbase) SetAffiliateName(name string) {
+	r.affiliateName = name
+}
+
+func (r *reqbase) ImpTimeStamp() int64 {
+	return r.impTimeStamp
+}
+func (r *reqbase) SetImpTimeStamp(timestamp int64) {
+	r.impTimeStamp = timestamp
+}
+func (r *reqbase) VisitTimeStamp() int64 {
+	return r.visitTimeStamp
+}
+func (r *reqbase) SetVisitTimeStamp(timestamp int64) {
+	r.visitTimeStamp = timestamp
+}
+func (r *reqbase) ClickTimeStamp() int64 {
+	return r.clickTimeStamp
+}
+func (r *reqbase) SetClickTimeStamp(timestamp int64) {
+	r.clickTimeStamp = timestamp
+}
+func (r *reqbase) PostBackTimeStamp() int64 {
+	return r.postbackTimeStamp
+}
+func (r *reqbase) SetPostbackTimeStamp(timestamp int64) {
+	r.postbackTimeStamp = timestamp
 }
 
 func (r *reqbase) DeviceType() string {
@@ -428,7 +493,7 @@ func (r *reqbase) ParseUrlTokens(url string) string {
 	url = strings.Replace(url, "{ip}", r.RemoteIp(), -1)
 	url = strings.Replace(url, "{referrerdomain}", r.ReferrerDomain(), -1)
 	url = strings.Replace(url, "{language}", r.Language(), -1)
-	url = strings.Replace(url, "{transaction.id}", r.TransactionID(), -1)
+	url = strings.Replace(url, "{transaction.id}", r.TransactionId(), -1)
 	url = strings.Replace(url, "{click.id}", r.Id(), -1) // ClickId是我们自己的Visits的id
 
 	for i := 0; i < len(r.TSVars()); i++ {
@@ -531,6 +596,51 @@ func (r *reqbase) DomainKey(timestamp int64) tracking.ReferrerDomainStatisKey {
 	domain.ReferrerDomain = r.ReferrerDomain()
 	return domain
 }
+func (r *reqbase) ConversionKey() tracking.Conversion {
+	var conv tracking.Conversion
+	if r == nil {
+		return conv
+	}
+	conv.UserID = r.UserId()
+	conv.PostbackTimestamp = r.PostBackTimeStamp() / int64(time.Millisecond)
+	conv.VisitTimestamp = r.VisitTimeStamp() / int64(time.Millisecond)
+	conv.ExternalID = r.ExternalId()
+	conv.ClickID = r.Id()
+	conv.TransactionID = r.TransactionId()
+	conv.Revenue = r.Payout()
+	conv.Cost = r.Cost()
+	conv.CampaignID = r.CampaignId()
+	conv.CampaignName = r.CampaignName()
+	conv.LanderID = r.LanderId()
+	conv.LanderName = r.LanderName()
+
+	conv.OfferID = r.OfferId()
+	conv.OfferName = r.OfferName()
+	conv.Country = r.CountryCode()
+	conv.CountryCode = r.CountryCode()
+	conv.TrafficSourceName = r.TrafficSourceName()
+	conv.TrafficSourceID = r.TrafficSourceId()
+	conv.AffiliateNetworkID = r.AffiliateId()
+	conv.AffiliateNetworkName = r.AffiliateName()
+	// conv.Device = r.Device	// 目前还没有
+	conv.OS = r.OS()
+	conv.OSVersion = r.OSVersion()
+	conv.Brand = r.Brand()
+	conv.Model = r.Model()
+	conv.Browser = r.Browser()
+	conv.BrowserVersion = r.BrowserVersion()
+	conv.ISP = r.ISP()
+	conv.MobileCarrier = r.Carrier()
+	conv.VisitorIP = r.RemoteIp()
+	conv.VisitorReferrer = r.Referrer()
+
+	// 解析v1-v10
+	v := []*string{&conv.V1, &conv.V2, &conv.V3, &conv.V4, &conv.V5, &conv.V6, &conv.V7, &conv.V8, &conv.V9, &conv.V10}
+	for i := 0; i < len(v); i++ {
+		*v[i] = r.Vars(uint(i))
+	}
+	return conv
+}
 
 func (r *reqbase) SetPayout(p float64) {
 	r.payout = p
@@ -540,10 +650,10 @@ func (r *reqbase) Payout() float64 {
 	return r.payout
 }
 
-func (r *reqbase) SetTransactionID(txid string) {
+func (r *reqbase) SetTransactionId(txid string) {
 	r.txid = txid
 }
 
-func (r *reqbase) TransactionID() string {
+func (r *reqbase) TransactionId() string {
 	return r.txid
 }

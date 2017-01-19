@@ -255,6 +255,8 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	req.SetCampaignId(ca.Id)
+	req.SetCampaignName(ca.Name)
 	// 解析参数，传递到request中
 	req.ParseTSParams(ca.TrafficSource.ExternalId,
 		ca.TrafficSource.Cost,
@@ -310,7 +312,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 后面统计信息要使用
-	req.SetTransactionID(txId)
+	req.SetTransactionId(txId)
 
 	payout, err := strconv.ParseFloat(payoutStr, 64)
 	if err != nil {
@@ -335,6 +337,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 
 	// 后面会用到payout，所以这里要提前设置好
 	req.SetPayout(finalPayout)
+	req.SetPostbackTimeStamp(time.Now().UnixNano())
 
 	if err := u.OnS2SPostback(w, req); err != nil {
 		log.Errorf("[Units][OnS2SPostback]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
@@ -345,46 +348,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	user.TrackingRevenue(req, finalPayout)
 
 	// 统计conversion
-	var conv tracking.Conversion
-	conv.UserID = req.UserId()
-	conv.PostbackTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
-	// TODO: 这里需要拿到之前的时间
-	conv.VisitTimestamp = time.Now().UnixNano() / int64(time.Millisecond)
-	conv.ExternalID = req.ExternalId()
-	conv.ClickID = clickId
-	conv.TransactionID = txId
-	conv.Revenue = finalPayout
-	conv.Cost = req.Cost()
-	// conv.CampaignName = req.CampaignName()
-	conv.CampaignID = req.CampaignId()
-	// conv.LanderName =
-	conv.LanderID = req.LanderId()
-
-	// conv.OfferName =
-	conv.OfferID = req.OfferId()
-	conv.Country = req.CountryCode()
-	conv.CountryCode = req.CountryCode()
-	//conv.TrafficSourceName =
-	conv.TrafficSourceID = req.TrafficSourceId()
-	// conv.AffiliateNetworkName =
-	// conv.AffiliateNetworkID
-	// conv.Device = req.Device	// 目前还没有
-	conv.OS = req.OS()
-	conv.OSVersion = req.OSVersion()
-	conv.Brand = req.Brand()
-	conv.Model = req.Model()
-	conv.Browser = req.Browser()
-	conv.BrowserVersion = req.BrowserVersion()
-	conv.ISP = req.ISP()
-	conv.MobileCarrier = req.Carrier()
-	conv.VisitorIP = req.RemoteIp()
-	conv.VisitorReferrer = req.Referrer()
-
-	// 解析v1-v10
-	v := []*string{&conv.V1, &conv.V2, &conv.V3, &conv.V4, &conv.V5, &conv.V6, &conv.V7, &conv.V8, &conv.V9, &conv.V10}
-	for i := 0; i < len(v); i++ {
-		*v[i] = req.Vars(uint(i))
-	}
+	conv := req.ConversionKey()
 	tracking.SaveConversion(&conv)
 
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
