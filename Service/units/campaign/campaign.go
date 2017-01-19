@@ -301,6 +301,7 @@ func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
 
 // ReplaceTSPostBackURL 把Traffic Source的Postback URL里面的参数替换好
 func (ca *Campaign) ReplaceTSPostBackURL(req request.Request, url string) string {
+	// TODO: 有些值还取不到，需要完善
 	url = strings.Replace(url, "{externalid}", req.ExternalId(), -1)
 	// url = strings.Replace(url, "{payout}", , -1)
 	url = strings.Replace(url, "{campaign.id}", fmt.Sprintf("%v", req.CampaignId()), -1)
@@ -308,7 +309,7 @@ func (ca *Campaign) ReplaceTSPostBackURL(req request.Request, url string) string
 	url = strings.Replace(url, "{lander.id}", fmt.Sprintf("%v", req.LanderId()), -1)
 	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
 	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", req.OfferId()), -1)
-	// url = strings.Replace(url, "{device}", req.Device(), -1)
+	// url = strings.Replace(url, "{device}", req.Device(), -1)	// 目前Device还没有地方可以拿到
 	url = strings.Replace(url, "{brand}", req.Brand(), -1)
 	url = strings.Replace(url, "{model}", req.Model(), -1)
 	url = strings.Replace(url, "{browser}", req.Browser(), -1)
@@ -321,17 +322,26 @@ func (ca *Campaign) ReplaceTSPostBackURL(req request.Request, url string) string
 	url = strings.Replace(url, "{isp}", req.ISP(), -1)
 	url = strings.Replace(url, "{connection.type}", req.ConnectionType(), -1)
 	url = strings.Replace(url, "{carrier}", req.Carrier(), -1)
-	// url = strings.Replace(url, "{ip}", req.IP(), -1)
+	url = strings.Replace(url, "{ip}", req.RemoteIp(), -1)
 	// url = strings.Replace(url, "{countryname}", req.Country(), -1)
 	url = strings.Replace(url, "{referrerdomain}", req.ReferrerDomain(), -1)
 	url = strings.Replace(url, "{language}", req.Language(), -1)
 	// url = strings.Replace(url, "{transaction.id}", req.Tra(), -1)
-	// url = strings.Replace(url, "{click.id}", req.ClickId(), -1)
+	// ClickId是我们自己的Visits的id
+	url = strings.Replace(url, "{click.id}", req.Id(), -1)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < len(ca.TrafficSource.Vars); i++ {
 		vn := req.Vars(uint(i))
 		if len(vn) != 0 {
 			url = strings.Replace(url, fmt.Sprintf("{var%d}", i), vn, -1)
+		}
+	}
+
+	for i := 0; i < len(ca.TrafficSource.Vars); i++ {
+		vn := req.Vars(uint(i))
+		if len(vn) != 0 {
+			from := fmt.Sprintf("{var:%s}", ca.TrafficSource.Vars[i].Name)
+			url = strings.Replace(url, from, vn, -1)
 		}
 	}
 
