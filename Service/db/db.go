@@ -33,6 +33,11 @@ func GetDB(title string) (db *sql.DB) {
 	maxopen := config.Int(title, "max_open_conns")
 	maxidle := config.Int(title, "max_idle_conns")
 
+	mux.Lock()
+	defer mux.Unlock()
+	if db, ok := dbSingletonMap[title]; ok {
+		return db
+	}
 	db = connect(dbname, host, port, user, pass, maxopen, maxidle)
 	if db == nil {
 		log.Errorf("[GetDB]NewDB %s failed:db connect failure\n", title)
@@ -43,9 +48,7 @@ func GetDB(title string) (db *sql.DB) {
 		return nil
 	}
 
-	mux.Lock()
 	dbSingletonMap[title] = db
-	mux.Unlock()
 	return
 }
 

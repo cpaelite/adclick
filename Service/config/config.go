@@ -158,24 +158,10 @@ func Float(section, key string) float64 {
 	return v
 }
 
-// 默认为development
-func Mode() string {
-	mode := os.Getenv("adbund_mode")
-	if mode == "" {
-		mode = "development"
-	}
-
-	return mode
+func GetEnginePort() string {
+	return String("DEFAULT", "engineport")
 }
 
-func GetNoticeIp() string {
-	return String("DEFAULT", "noticeip")
-}
-
-func GetBindPort() string {
-	return String("DEFAULT", "bind")
-}
-
-func GetNoticePort() string {
-	return String("DEFAULT", "noticeport")
+func GetPostbackPort() string {
+	return String("DEFAULT", "postbackport")
 }

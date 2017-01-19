@@ -81,8 +81,8 @@ func init() {
 		"connectiontype": func(req request.Request) interface{} {
 			return strings.ToUpper(req.ConnectionType())
 		},
-		"country": func(req request.Request) interface{} {
-			return strings.ToUpper(req.Country())
+		"countrycode": func(req request.Request) interface{} {
+			return strings.ToUpper(req.CountryCode())
 		},
 		"region": func(req request.Request) interface{} {
 			return strings.ToUpper(req.Region())

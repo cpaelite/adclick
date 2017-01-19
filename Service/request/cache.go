@@ -158,7 +158,8 @@ func req2cacheStr(req *reqbase) (caStr string) {
 	ku.Add("language", req.language)
 	ku.Add("model", req.model)
 	ku.Add("brand", req.brand)
-	ku.Add("country", req.country)
+	ku.Add("countryCode", req.countryCode)
+	ku.Add("countryName", req.countryName)
 	ku.Add("region", req.region)
 	ku.Add("city", req.city)
 	ku.Add("carrier", req.carrier)
@@ -209,7 +210,8 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		language:       bd.Get("language"),
 		model:          bd.Get("model"),
 		brand:          bd.Get("brand"),
-		country:        bd.Get("country"),
+		countryCode:    bd.Get("countryCode"),
+		countryName:    bd.Get("countryName"),
 		region:         bd.Get("region"),
 		city:           bd.Get("city"),
 		carrier:        bd.Get("carrier"),

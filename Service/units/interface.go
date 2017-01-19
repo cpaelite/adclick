@@ -355,7 +355,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 
 	// conv.OfferName =
 	conv.OfferID = req.OfferId()
-	conv.Country = req.Country()
+	conv.Country = req.CountryCode()
 	// conv.CountryCode = req.Country
 	// conv.TrafficSourceName
 	conv.TrafficSourceID = req.TrafficSourceId()
