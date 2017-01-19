@@ -7,7 +7,7 @@
 
         <div flex></div>
         <div class="home">
-            <i class="material-icons" ng-click="toCampaign()">home</i>
+            <i class="material-icons" ng-click="toReport()">home</i>
         </div>
         <div class="setting">
             <i class="material-icons" ng-click="toSetting()">settings</i>
@@ -17,7 +17,7 @@
             <li class="dropdown" uib-dropdown>
                 <a href class="dropdown-toggle clear" uib-dropdown-toggle>
                     <i class="material-icons md-mini">&#xE87C;</i>
-                    <span class="hidden-sm hidden-md text-md">{{currentUser.name}}</span>
+                    <span class="hidden-sm hidden-md text-md">{{currentUser.firstname}}</span>
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight w" uib-dropdown-menu>
@@ -33,7 +33,7 @@
 
 <!-- <md-sidenav md-is-locked-open="screenGtSmall" md-component-id="left"
             class="md-sidenav-left md-whiteframe-z2 cs-left-aside"> -->
-<md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside" ng-show="nav">
+<md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside">
     <nav ui-nav class="navi clearfix">
         <ul class="nav">
             <li ui-sref-active="active">

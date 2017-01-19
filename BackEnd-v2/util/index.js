@@ -29,10 +29,11 @@ exports.checkToken = function() {
   }
 }
 
-exports.setToken = function(userid,idText) {
+exports.setToken = function(userid,idText, firstname) {
   return jwt.encode({
     userid: userid,
-    idText:idText
+    idText:idText,
+    firstname: firstname
   }, setting['jwtTokenSrcret'])
 }
 

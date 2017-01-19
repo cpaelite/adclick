@@ -10,7 +10,7 @@
     function SignupCtrl($scope, $auth, $state, toastr, AccountCheck, userPreferences) {
         $scope.app.subtitle = 'Sign up';
         $scope.user = {
-            json: userPreferences
+            json: JSON.stringify(userPreferences)
         };
         $scope.signup = function () {
             $auth.signup($scope.user, { ignoreAuthModule: true })

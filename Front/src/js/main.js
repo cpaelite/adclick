@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preferences',
+      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preferences', 'userPreferences',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preferences) {
+  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preferences, userPreferences) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -63,8 +63,7 @@
       $scope.showLogin = false;
 
       var payload = $auth.getPayload();
-      console.log(payload);
-      if ($rootScope.currentUser && $rootScope.currentUser.uid == payload.uid) {
+      if ($rootScope.currentUser && $rootScope.currentUser.id == payload.id) {
         $rootScope.currentUser = payload;
         authService.loginConfirmed(payload);
       } else {
@@ -73,12 +72,13 @@
         });
         $rootScope.currentUser = payload;
 
-        // 用户配置信息
+        /*// 用户配置信息
         Preferences.get(null, function (res) {
           if (res.status == 1) {
             $rootScope.preferences = res.data;
           }
-        });
+        });*/
+          $rootScope.preferences = userPreferences;
 
       }
     });
@@ -99,12 +99,14 @@
     };
 
     // home{
-
+    $scope.toReport = function(){
+        $scope.$state.go('app.report.campaign');
+    };
     // setting
     $scope.toSetting = function(){
-        $scope.nav = false;
-        $scope.settingNav = true;
-        $scope.$state.go('app.setting');
+        // $scope.nav = false;
+        // $scope.settingNav = true;
+        $scope.$state.go('setApp.profile');
     };
 
     if ($auth.isAuthenticated()) {

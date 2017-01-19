@@ -112,16 +112,16 @@
         templateUrl: 'tpl/signup.html',
         controller: 'SignupCtrl'
       })
-      .state('app.setting', {
-        url: '/setting',
-        templateUrl: 'tpl/setting.html',
-        controller: 'SettingCtrl',
-        data: {}
-      })
       .state('setApp', {
         abstract: true,
         url: '/setApp',
         templateUrl: "tpl/setApp.html"
+      })
+      .state('setApp.profile', {
+        url: '/profile',
+        templateUrl: 'tpl/profile.html',
+        controller: 'ProfileCtrl',
+        data: {}
       });
   }
 })();

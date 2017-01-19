@@ -59,7 +59,7 @@ router.post('/auth/login', function(req, res, next) {
                                     firstname: rows[0].firstname
                                 }
                             })*/
-                            res.json({token: util.setToken(rows[0].id, rows[0].idText)});
+                            res.json({token: util.setToken(rows[0].id, rows[0].idText, rows[0].firstname)});
                         } else {
                             res.json({
                                 status: 1002,
@@ -103,7 +103,7 @@ router.post('/auth/signup', function(req, res, next) {
         password: Joi.string().required(),
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
-        json: Joi.object().optional()
+        json: Joi.string().optional()
     });
     Joi.validate(req.body, schema, function(err, value) {
         if (err) {
@@ -124,7 +124,8 @@ router.post('/auth/signup', function(req, res, next) {
             if (value.json) {
                 sql =
                     "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`,`json`) values (?,?,?,?,?,0,?)"
-                params.push(JSON.stringify(value.json))
+                //params.push(JSON.stringify(value.json))
+                params.push(value.json)
             }
             connection.query(sql, params, function(err) {
                 connection.release();

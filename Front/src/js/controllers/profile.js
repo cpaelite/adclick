@@ -2,12 +2,12 @@
     'use strict';
 
     angular.module('app')
-        .controller('SettingCtrl', [
+        .controller('ProfileCtrl', [
             '$scope', 
-            SettingCtrl
+            ProfileCtrl
         ]);
 
-    function SettingCtrl($scope) {
+    function ProfileCtrl($scope) {
         $scope.app.subtitle = 'Setting';
     }
 })();
