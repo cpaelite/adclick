@@ -302,6 +302,7 @@
     }
 
     this.save = function () {
+      // cost model value
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
