@@ -217,6 +217,7 @@ module.exports=router;
                 await common.rollback(connection);
                 throw err;
             } 
+           connection.release(); 
            delete value.userId;          
            Result=value;
          }catch(e){

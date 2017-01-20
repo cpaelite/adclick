@@ -80,10 +80,10 @@
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
       //TODO 用户配置信息提交后台保存
-      Preferences.save();
+      Preferences.save($scope.preferences);
     };
 
-    $scope.checkboxIsChecked = function(num){
+    $scope.checkboxIsChecked = function (num) {
       $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
     };
 
@@ -121,25 +121,21 @@
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
-      var resource;
-      var func;
+      var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        resource = 'Campaign';
-        func = editCampaignCtrl;
+        controller = ['$scope', '$mdDialog', 'Campaign', 'Flows', 'TrafficSources', editCampaignCtrl];
       } else if (perfType == 'flow') {
-        resource = 'Flow';
-        func = editFlowCtrl;
+        controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
       } else if (perfType == 'lander') {
-        resource = 'Lander';
-        func = editLanderCtrl
+        controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
-        resource = 'Offer';
-        func = editOfferCtrl;
+        controller = ['$scope', '$mdDialog', 'Offer', editOfferCtrl];
       }
+
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', resource, func],
+        controller: controller,
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: {item: item, perfType: perfType},
@@ -219,36 +215,65 @@
 
     // tree isShow
     $scope.trData = [
-      {id:0,name:'campaign',id:1,impressions:2,visits:3,click:4,conversions:5,revenue:6,cost:7,profit:8,cpv:9,ictr:10,operation:11},
-      {id:1,name:'flow',id:1,impressions:2,visits:3,click:4,conversions:5,revenue:6,cost:7,profit:8,cpv:9,ictr:10,operation:11}
+      {
+        id: 0,
+        name: 'campaign',
+        id: 1,
+        impressions: 2,
+        visits: 3,
+        click: 4,
+        conversions: 5,
+        revenue: 6,
+        cost: 7,
+        profit: 8,
+        cpv: 9,
+        ictr: 10,
+        operation: 11
+      },
+      {
+        id: 1,
+        name: 'flow',
+        id: 1,
+        impressions: 2,
+        visits: 3,
+        click: 4,
+        conversions: 5,
+        revenue: 6,
+        cost: 7,
+        profit: 8,
+        cpv: 9,
+        ictr: 10,
+        operation: 11
+      }
     ];
     $scope.selectedIndex = 0;
-    $scope.select = function(i){
-      
-      
+    $scope.select = function (i) {
+
+
     };
     $scope.isActive = [];
     $scope.isDown = [];
     $scope.treeFirstChildIsShow = [];
     $scope.treeSecondChildIsShow = [];
-    $scope.firstTreeClick = function($index){
+    $scope.firstTreeClick = function ($index) {
       $scope.isActive[$index] = !$scope.isActive[$index];
       $scope.treeFirstChildIsShow[$index] = !$scope.treeFirstChildIsShow[$index];
       $scope.treeSecondChildIsShow[$index] = false;
     };
-    $scope.secondTreeClick = function($index){
+    $scope.secondTreeClick = function ($index) {
       $scope.isDown[$index] = !$scope.isDown[$index];
       $scope.treeSecondChildIsShow[$index] = !$scope.treeSecondChildIsShow[$index];
     };
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign) {
+  function editCampaignCtrl($scope, $mdDialog, Campaign, Flows, TrafficSources) {
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Campaign.get(item.id, function(campaign) {
+        $scope.item = angular.copy(campaign);
+      });
       this.title = "edit";
     } else {
       $scope.item = {
-        trafficSource: {},
         costModel: 0,
         targetType: 1,
         status: '1',
@@ -257,6 +282,19 @@
       this.title = "add";
     }
     this.titleType = angular.copy(this.perfType);
+
+    // TrafficSource
+    TrafficSources.get(null, function (trafficSource) {
+      $scope.trafficSources = trafficSource.data;
+    });
+
+    // Country
+    $scope.countries = $scope.$root.countries;
+
+    // Flow
+    Flows.get(null, function (flow) {
+      $scope.flows = flow.data;
+    });
 
     this.cancel = $mdDialog.cancel;
 
@@ -329,57 +367,6 @@
       }
     };
     $scope.isDisabled = false;
-    $scope.trafficSources = [
-      {
-        id: 1,
-        name: "Adwords"
-      },
-      {
-        id: 2,
-        name: "Popads"
-      },
-      {
-        id: 3,
-        name: "Avazu"
-      }
-    ];
-    $scope.countries = [
-      {
-        "id": 1,
-        "code": "AD",
-        "name": "Andorra"
-      }, {
-        "id": 2,
-        "code": "AE",
-        "name": "United Arab Emirates"
-      }, {
-        "id": 3,
-        "code": "AF",
-        "name": "Afghanistan"
-      }, {
-        "id": 4,
-        "code": "AG",
-        "name": "Antigua And Barbuda"
-      }, {
-        "id": 5,
-        "code": "AI",
-        "name": "Anguilla"
-      }
-    ];
-    $scope.flows = [
-      {
-        id: 1,
-        name: "flow1"
-      },
-      {
-        id: 2,
-        name: "flow2"
-      },
-      {
-        id: 3,
-        name: "flow3"
-      }
-    ];
   }
 
   function editFlowCtrl($scope, $mdDialog, Flow) {
@@ -394,6 +381,9 @@
     }
 
     this.titleType = angular.copy(this.perfType);
+
+    // Country
+    $scope.countries = $scope.$root.countries;
 
     this.cancel = $mdDialog.cancel;
 
@@ -411,15 +401,21 @@
 
   function editLanderCtrl($scope, $mdDialog, Lander) {
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Lander.get({id: item.id}, function (lander) {
+        $scope.item = angular.copy(lander);
+      });
       this.title = "edit";
     } else {
       $scope.item = {
-        url: ''
+        url: 'http://',
+        numberOfOffers: 1
       };
       this.title = "add";
     }
     this.titleType = angular.copy(this.perfType);
+
+    // Country
+    $scope.countries = $scope.$root.countries;
 
     this.cancel = $mdDialog.cancel;
 
@@ -461,7 +457,9 @@
 
   function editOfferCtrl($scope, $mdDialog, Offer) {
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Offer.get({id: item.id}, function (offer) {
+        $scope.item = angular.copy(offer);
+      });
       this.title = "edit";
     } else {
       $scope.item = {
@@ -470,6 +468,10 @@
       };
       this.title = "add";
     }
+
+    // Country
+    $scope.countries = $scope.$root.countries;
+
     this.titleType = angular.copy(this.perfType);
 
     this.cancel = $mdDialog.cancel;

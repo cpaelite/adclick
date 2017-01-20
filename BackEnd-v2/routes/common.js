@@ -61,28 +61,13 @@ function validate(data, schema) {
 
 // Campaign
 function insertCampaign(value, connection) {
-    console.log(JSON.stringify(value));
     var hash = uuidV4();
     //url
     let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
     let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash;
-    let urlValueParams = "";
-    let impPixelUrlParams = "";
-    if (value.trafficSource && value.trafficSource.params) {
-        var params = JSON.parse(value.trafficSource.params);
-        for (let index = 0; index < params.length; index++) {
-            if (params[index].Track) {
-                urlValueParams += params[index].Parameter + "=" + params[index].Placeholder;
-            }
-            impPixelUrlParams += params[index].Parameter + "=" + params[index].Placeholder;
-        }
-    }
-    if (urlValueParams) {
-        urlValue += "?" + urlValueParams;
-    }
-    if (impPixelUrlParams) {
-        impPixelUrl += "?" + impPixelUrlParams;
-    }
+
+    value.url = urlValue;
+    value.impPixelUrl = impPixelUrl;
     //required
     var col = "`userId`";
     var val = value.userId;
@@ -215,6 +200,30 @@ function updateCampaign(value, connection) {
     });
 }
 
+function getCampaign(id, userId, connection) {
+    let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`,`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?";
+    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, [userId, id, 0], function (err, camResult) {
+            if (err) {
+                reject(err);
+            }
+            connection.query(sqltag, [userId, id, 1, 0], function (err, tagsResult) {
+                connection.release();
+                if (err) {
+                    reject(err);
+                }
+                let tags = [];
+                for (let index = 0; index < tagsResult.length; index++) {
+                    tags.push(tagsResult[index].name);
+                }
+                camResult[0].tags = tags;
+                resolve(camResult[0]);
+            });
+        });
+    });
+}
+
 //Flow
 function insertFlow(userId, flow, connection) {
     //required
@@ -234,7 +243,7 @@ function insertFlow(userId, flow, connection) {
     val += "," + flow.redirectMode;
 
     //optional
-    if (value.flow.country) {
+    if (flow.country) {
         var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code : "";
         col += ",`country`";
         val += ",'" + countryCode + "'";
@@ -262,12 +271,10 @@ function updateFlow(userId, flow, connection) {
     if (flow.redirectMode != undefined) {
         sqlFlow += ",`redirectMode`=" + flow.redirectMode;
     }
-    if (flow.name) {
-        sqlFlow += ",`name`='" + flow.name + "'";
+    if (flow.deleted != undefined) {
+        sqlFlow += ",`deleted`=" + flow.deleted;
     }
-    if (value.flow.name) {
-        sqlFlow += ",`name`='" + flow.name + "'";
-    }
+
     sqlFlow += " where `id`=" + flow.id + " and `userId`=" + userId;
 
     return new Promise(function (resolve, reject) {
@@ -442,6 +449,29 @@ function updateLander(userId, lander, connection) {
                 reject(err);
             }
             resolve(result);
+        });
+    });
+}
+
+function getLanderDetail(id, userId, connection) {
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`numberOfOffers` from `Lander` where `userId`=? and `deleted`=? and `id`=?";
+    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlLander, [userId, 0, id], function (err, lander) {
+            if (err) {
+                reject(err);
+            }
+            connection.query(sqltag, [userId, id, 2, 0], function (err, tagsResult) {
+                if (err) {
+                    reject(err);
+                }
+                let tags = [];
+                for (let index = 0; index < tagsResult.length; index++) {
+                    tags.push(tagsResult[index].name);
+                }
+                lander[0].tags = tags;
+                resolve(lander[0]);
+            });
         });
     });
 }
@@ -656,3 +686,5 @@ exports.commit = commit;
 exports.beginTransaction = beginTransaction;
 exports.getConnection = getConnection;
 exports.getRedisClient = getRedisClient;
+exports.getLanderDetail = getLanderDetail;
+exports.getCampaign = getCampaign;
