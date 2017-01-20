@@ -4,6 +4,7 @@
 import argparse
 import logging
 import uuid
+import MySQLdb
 
 # 这个脚本用来填充数据库
 # 主要是为了方便测试
@@ -24,7 +25,6 @@ args = parser.parse_args()
 logging.basicConfig(level=args.loglevel)
 
 
-import MySQLdb
 logging.debug("connectin MySQL...")
 conn = MySQLdb.Connect(host=args.host, port=args.port, user=args.user, passwd=args.password, db=args.db)
 logging.debug("MySQL connected")
@@ -63,8 +63,7 @@ idText = str(uuid.uuid4())[:8]
 print type(idText)
 cursor.execute("INSERT INTO User (idText, email, password, firstname, lastname, rootdomainredirect, json)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
-               (idText, 'tempusage@yeah.net', 'unknown', 'firstname', 'lastname', 'http://www.newbidder.com/', 'json'),
-               )
+               (idText, 'tempusage@yeah.net', 'unknown', 'firstname', 'lastname', 'http://www.newbidder.com/', 'json'),)
 conn.commit()
 userId = cursor.lastrowid
 print "userId", userId
@@ -76,8 +75,7 @@ print "userId", userId
 
 cursor.execute("INSERT INTO AffiliateNetwork (userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "AffiliateNetwork.test1", "12345678", "postback", 0, 1, """192.168.0.1"""),
-               )
+               (userId, "AffiliateNetwork.test1", "12345678", "postback", 0, 1, """192.168.0.1"""),)
 conn.commit()
 
 affiliateId1 = cursor.lastrowid
@@ -85,8 +83,7 @@ print "affiliateId1", affiliateId1
 
 cursor.execute("INSERT INTO AffiliateNetwork (userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "AffiliateNetwork.test2", "12345678", "postback", 0, 1, """192.168.0.1"""),
-               )
+               (userId, "AffiliateNetwork.test2", "12345678", "postback", 0, 1, """192.168.0.1"""),)
 conn.commit()
 affiliateId2 = cursor.lastrowid
 print "affiliateId2", affiliateId2
@@ -99,14 +96,12 @@ offerPostbackUrl = "http://zx1jg.voluumtrk2.com/postback?cid=REPLACE&payout=OPTI
 
 cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "Offer 1", "offer.hash", "offer.url", "CHN", affiliateId1, "affiliateName1", offerPostbackUrl, 1, 1.0),
-               )
+               (userId, "Offer 1", "offer.hash", "offer.url", "CHN", affiliateId1, "affiliateName1", offerPostbackUrl, 1, 1.0),)
 offer1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "Offer 2", "offer.hash", "offer.url", "CHN", affiliateId2, "affiliateName2", offerPostbackUrl, 0, 0.0),
-               )
+               (userId, "Offer 2", "offer.hash", "offer.url", "CHN", affiliateId2, "affiliateName2", offerPostbackUrl, 0, 0.0),)
 offer2 = cursor.lastrowid
 
 print "offer1", offer1
@@ -117,13 +112,11 @@ print "offer2", offer2
 ################################################################################
 
 cursor.execute("INSERT INTO Lander (userId, name, hash, url, country, numberOfOffers) VALUES (%s,%s,%s,%s,%s,%s)",
-               (userId, "Lander 1", "lander.hash", "http://lander.com/my/lander/page/1/", "CHN", 1),
-               )
+               (userId, "Lander 1", "lander.hash", "http://lander.com/my/lander/page/1/", "CHN", 1),)
 lander1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Lander (userId, name, hash, url, country, numberOfOffers) VALUES (%s,%s,%s,%s,%s,%s)",
-               (userId, "Lander 2", "lander.hash", "http://lander.com/my/lander/page/2/", "CHN", 3),
-               )
+               (userId, "Lander 2", "lander.hash", "http://lander.com/my/lander/page/2/", "CHN", 3),)
 lander2 = cursor.lastrowid
 
 
@@ -156,11 +149,11 @@ cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,
 ################################################################################
 
 cursor.execute("INSERT INTO Rule (userId, name, hash, type, json, status) VALUES(%s,%s,%s,%s,%s,%s)",
-               (userId, "rule.1", "rule.1.hash", 0, "{}", 1))
+               (userId, "rule.1", "rule.1.hash", 0, "[]", 1))
 rule1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Rule (userId, name, hash, type, json, status) VALUES(%s,%s,%s,%s,%s,%s)",
-               (userId, "rule.2", "rule.2.hash", 1, "{}", 1))
+               (userId, "rule.2", "rule.2.hash", 1, "[]", 1))
 rule2 = cursor.lastrowid
 
 
@@ -213,8 +206,7 @@ cursor.execute("INSERT INTO TrackingCampaign (userId, name, hash, url, impPixelU
                "status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "campaign.1", "campaign.1.hash", "http://zhanchenxing.newbidder.com/campaign.1/",
                 "http://zhanchenxing.newbidder.com/impression/campaign.1/", traffic1, "TrafficSource.1",
-                "CHN", 1, 1.1, 1.2, 1.3, 0, 1, flow1, "", 1,
-                ))
+                "CHN", 1, 1.1, 1.2, 1.3, 0, 1, flow1, "", 1,))
 campaign1 = cursor.lastrowid
 
 
@@ -223,10 +215,7 @@ cursor.execute("INSERT INTO TrackingCampaign (userId, name, hash, url, impPixelU
                "status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "campaign.2", "campaign.2.hash", "http://zhanchenxing.newbidder.com/campaign.2/",
                 "http://zhanchenxing.newbidder.com/impression/campaign.2/", traffic1, "TrafficSource.1",
-                "CHN", 2, 1.1, 1.2, 1.3, 0, 1, flow2, "", 1,
-                ))
+                "CHN", 2, 1.1, 1.2, 1.3, 0, 1, flow2, "", 1,))
 campaign2 = cursor.lastrowid
-
-
 
 conn.commit()
