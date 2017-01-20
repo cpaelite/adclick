@@ -237,7 +237,6 @@ const start = (() => {
                                     }
                                 }
                             }
-                            yield common.commit(connection);
                         } catch (e) {
                             throw e;
                         }
@@ -247,6 +246,7 @@ const start = (() => {
                 yield common.rollback(connection);
                 throw err;
             }
+            yield common.commit(connection);
             connection.release();
             delete value.userId;
             Result = value;

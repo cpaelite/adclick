@@ -243,7 +243,7 @@ module.exports=router;
 
                                         }
                                     }
-                                     await common.commit(connection);
+                                    
                                 }catch(e){
                                     throw e;
                                 }
@@ -253,7 +253,8 @@ module.exports=router;
             }catch(err){
                 await common.rollback(connection);
                 throw err;
-            } 
+            }
+           await common.commit(connection);  
            connection.release(); 
            delete value.userId;          
            Result=value;

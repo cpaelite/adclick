@@ -538,11 +538,11 @@ const start = (() => {
                         }
                     }
                 }
-                yield common.commit(connection);
             } catch (err) {
                 yield common.rollback(connection);
                 throw err;
             }
+            yield common.commit(connection);
             connection.release();
             //redis pub
             new Pub(true).publish(setting.redis.channel, value.userId);
