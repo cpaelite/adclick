@@ -6,3 +6,10 @@
 **/bower_components
 **/*.exe
 **/logs
+Service/engine/engine
+
+Service/postback/postback
+
+Doc/tags
+
+.DS_Store

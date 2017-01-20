@@ -51,18 +51,16 @@ type CampaignConfig struct {
 	CPCValue          float64
 	CPAValue          float64
 	CPMValue          float64
+	PostbackUrl       string
+	PixelRedirectUrl  string
 	TargetType        int64
 	TargetFlowId      int64
 	TargetUrl         string
 	Status            int64
 
+	// 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
+	// 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
 	TrafficSource TrafficSourceConfig
-	// // 每个campaign的link中包含的参数(traffic source会进行替换，但是由用户自己指定)
-	// // 例如：[["bannerid","{bannerid}"],["campaignid","{campaignid}"],["zoneid","{zoneid}"]]
-	// // 从TrafficSource表中读取
-	// ExternalId common.TrafficSourceParams
-	// Cost       common.TrafficSourceParams
-	// Vars       []common.TrafficSourceParams
 }
 
 // ParseVars 根据Vars解析出10个参数，分别是，v1-v10
@@ -241,11 +239,6 @@ func (ca *Campaign) OnLandingPageClick(w http.ResponseWriter, req request.Reques
 		return errors.New("[Campaign][OnLandingPageClick]Nil ca")
 	}
 
-	//	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
-	//	req.SetTSCost(&ca.TrafficSource.Cost)
-	//	req.SetTSVars(ca.TrafficSource.Vars)
-	//	req.SetCPAValue(ca.CPAValue)
-
 	// 不要用Campaign现在的设置，因为有可能中途被改变
 	f := flow.GetFlow(req.FlowId())
 	if f == nil {
@@ -262,11 +255,6 @@ func (ca *Campaign) OnS2SPostback(w http.ResponseWriter, req request.Request) er
 	if ca == nil {
 		return errors.New("[Campaign][OnS2SPostback]Nil ca")
 	}
-
-	//	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
-	//	req.SetTSCost(&ca.TrafficSource.Cost)
-	//	req.SetTSVars(ca.TrafficSource.Vars)
-	//	req.SetCPAValue(ca.CPAValue)
 
 	f := flow.GetFlow(req.FlowId())
 	if f == nil {
@@ -288,14 +276,20 @@ func (ca *Campaign) OnConversionScript(w http.ResponseWriter, req request.Reques
 	return nil
 }
 
-func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
-	//	req.SetTSExternalID(&ca.TrafficSource.ExternalId)
-	//	req.SetTSCost(&ca.TrafficSource.Cost)
-	//	req.SetTSVars(ca.TrafficSource.Vars)
-	//	req.SetCPAValue(ca.CPAValue)
+func (ca *Campaign) getPostbackUrl() string {
+	if len(ca.PostbackUrl) > 0 {
+		return ca.PostbackUrl
+	}
+	return ca.TrafficSource.PostbackURL
+}
 
+func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
 	//TODO 需要检查用户是否已经针对该campaign单独设置了PostbackUrl
-	url := req.ParseUrlTokens(ca.TrafficSource.PostbackURL)
+	url := req.ParseUrlTokens(ca.getPostbackUrl())
+	if len(url) == 0 {
+		// 有可能不需要postback
+		return nil
+	}
 
 	err := func() error {
 		resp, err := http.Get(url)
