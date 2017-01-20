@@ -31,7 +31,7 @@ type gatherSaver struct {
 	g      *gracequit.GraceQuit
 }
 
-func newGatherSaver(g *gracequit.GraceQuit, insertSQL string) gatherSaver {
+func newGatherSaver(g *gracequit.GraceQuit, insertSQL string, saveInterval time.Duration) gatherSaver {
 	// saver只负责汇总之后的数据的保存
 	// 所以其chan buffer不需要太大
 	s := saver.NewSaver(2, insertSQL)
@@ -39,7 +39,7 @@ func newGatherSaver(g *gracequit.GraceQuit, insertSQL string) gatherSaver {
 		saver: s,
 		// gather负责消息的汇总
 		// 其buffer需要大一些
-		gather: gather.NewGather(1024, valueNewer, s, 10*60*time.Second),
+		gather: gather.NewGather(1024, valueNewer, s, saveInterval),
 		g:      g,
 	}
 }

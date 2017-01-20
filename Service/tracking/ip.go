@@ -3,6 +3,7 @@ package tracking
 import (
 	"AdClickTool/Service/gracequit"
 	"database/sql"
+	"time"
 )
 
 // AdIPStatis表的支持工作
@@ -42,7 +43,7 @@ Impressions = Impressions+?`
 var IP gatherSaver
 
 // InitIPGatherSaver 初始化tracking.IP
-func InitIPGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	IP = newGatherSaver(g, ipStatisSQL)
+func InitIPGatherSaver(g *gracequit.GraceQuit, db *sql.DB, saveInterval time.Duration) {
+	IP = newGatherSaver(g, ipStatisSQL, saveInterval)
 	IP.Start(db)
 }
