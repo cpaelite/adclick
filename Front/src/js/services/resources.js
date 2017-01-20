@@ -31,7 +31,7 @@ angular.module('app')
     return $resource('/api/rule/:id', {id: '@id'});
   }])
   .factory('TrafficSource', ['$resource', function ($resource) {
-    return $resource('/api/trafficsources/:id', {id: '@id'});
+    return $resource('/api/traffic/:id', {id: '@id'});
   }])
   .factory('TrafficSources', ['$resource', function ($resource) {
     return $resource('/api/trafficsources');

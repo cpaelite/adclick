@@ -131,6 +131,8 @@
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
         controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetworks', editOfferCtrl];
+      } else if (perfType == 'trafficSource') {
+        controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
       }
 
       $mdDialog.show({
@@ -306,9 +308,6 @@
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
-
-      var country = $scope.countries[$scope.country];
-      $scope.country = country;
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
@@ -524,6 +523,80 @@
         $scope.item.url = itemUrl + url;
       }
     };
+  }
+
+  function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
+    if (this.item) {
+      TrafficSource.get({id: this.item.id}, function (trafficsource) {
+        $scope.item = trafficsource;
+      });
+      this.title = "edit";
+    } else {
+      $scope.item = {
+        costModel: 'Do not track costs',
+        status: '0',
+        params: [
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''}
+        ]
+      };
+      $scope.params = [];
+      this.title = "add";
+      $scope.urlToken = '';
+    }
+    this.cancel = $mdDialog.cancel;
+
+    function success(item) {
+      $mdDialog.hide(item);
+    }
+
+    this.save = function () {
+      $scope.editForm.$setSubmitted();
+
+      if ($scope.editForm.$valid) {
+        TrafficSource.save($scope.item, success);
+      }
+    };
+
+    $scope.urlItem = [
+      "{campaign.id}",
+      "{brand}",
+      "{device}",
+      "{trafficSource.name}",
+      "{trafficSource.id}",
+      "{lander.id}"
+    ];
+    $scope.urlTokenClick = function(url){
+      $scope.urlToken = $scope.urlToken + url;
+    };
+
+    $scope.visible = false;
+    $scope.toggleShow = function(){
+      $scope.isActive = !$scope.isActive;
+      $scope.visible = !$scope.visible;
+    };
+
+    $scope.selectTrafficSourceTemplate = function (ev, item) {
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: ['$scope', '$mdDialog', selectTrafficSourceTemplateCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: { item: item, currentUser: $scope.currentUser },
+        bindToController: true,
+        targetEvent: ev,
+        templateUrl: 'tpl/trafficSource-template-dialog.html',
+      });
+    };
+
   }
 
   function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer) {
