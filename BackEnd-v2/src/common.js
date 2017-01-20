@@ -231,7 +231,9 @@ function getCampaign(id,userId,connection){
                 for(let index=0;index<tagsResult.length;index++){
                     tags.push(tagsResult[index].name);
                 }
-                camResult[0].tags=tags;
+                if(camResult[0]){
+                    camResult[0].tags=tags;
+                } 
                 resolve(camResult[0])
              })
         })
@@ -487,7 +489,10 @@ function getLanderDetail(id,userId,connection){
                 for(let index=0;index<tagsResult.length;index++){
                     tags.push(tagsResult[index].name);
                 }
-                lander[0].tags=tags;
+                if(lander[0]){
+                  lander[0].tags=tags;
+                }
+               
                 resolve(lander[0])
              })
          })
@@ -639,7 +644,9 @@ function getOfferDetail(id,userId,connection){
                 for(let index=0;index<tagsResult.length;index++){
                     tags.push(tagsResult[index].name);
                 }
-                lander[0].tags=tags;
+                if( lander[0]){
+                   lander[0].tags=tags;
+                }
                 resolve(lander[0])
              })
          })

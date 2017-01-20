@@ -28,7 +28,6 @@ router.post('/api/flow', function (req, res, next) {
     }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
-    console.log(JSON.stringify(req.body));
     start(req.body, schema).then(function (data) {
         res.json({
             status: 1,

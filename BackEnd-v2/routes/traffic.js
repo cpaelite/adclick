@@ -164,7 +164,7 @@ router.get('/api/traffic/:id', function (req, res, next) {
                 res.json({
                     status: 1,
                     message: 'success',
-                    data: result
+                    data: result ? result : {}
                 });
             } catch (e) {
                 return next(err);
