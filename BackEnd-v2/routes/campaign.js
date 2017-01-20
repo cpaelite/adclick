@@ -260,11 +260,10 @@ var setting = require('../config/setting');
  */
 router.post('/api/campaign', function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().optional(),
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().optional(),
+
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
@@ -279,13 +278,15 @@ router.post('/api/campaign', function (req, res, next) {
             country: Joi.object(),
             redirectMode: Joi.number()
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode'),
+        url: Joi.string().optional(),
         country: Joi.object().optional(),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional()
+        hash: Joi.string().optional(),
+        targetUrl: Joi.string().optional()
     });
     req.body.userId = req.userId;
     req.body.idText = req.idText;
@@ -338,7 +339,6 @@ router.post('/api/campaign/:id', function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().optional(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
@@ -353,13 +353,16 @@ router.post('/api/campaign/:id', function (req, res, next) {
             country: Joi.object(),
             redirectMode: Joi.number()
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode'),
+        url: Joi.string().optional(),
         country: Joi.object().optional(),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional()
+        hash: Joi.string().optional(),
+        targetUrl: Joi.string().optional()
+
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
