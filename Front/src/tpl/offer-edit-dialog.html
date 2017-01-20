@@ -61,9 +61,10 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Postback Url<span class="star-icon">*</span>：</label>
+                <label class="col-sm-3 control-label">Postback Url：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl">
+                    <input type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-show="item.postbackUrl">
+                    <label ng-show="!item.postbackUrl">ID will be available after saving the campaign.</label>
                 </div>
             </div>
             <div class="form-group">

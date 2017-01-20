@@ -306,6 +306,10 @@
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
+
+      var country = $scope.countries[$scope.country];
+      $scope.country = country;
+
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Campaign.save($scope.item, success);

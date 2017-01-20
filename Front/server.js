@@ -1210,6 +1210,20 @@ app.delete('/api/lander/:landId', function (req, res) {
   res.send(result);
 });
 
+app.get('/api/flows', function (req, res) {
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      flows: [
+        {id: 1, name: 'flow1'},
+        {id: 2, name: 'flow2'},
+      ]
+    }
+  };
+  res.send(result);
+});
+
 /**
  * @apiName 根据offerId获取Offer信息
  *
@@ -1310,6 +1324,21 @@ app.delete('/api/offer/:offerId', function (req, res) {
       "status": "SUCCESSFUL",
       "references": []
     }]
+  };
+  res.send(result);
+});
+
+app.get('/api/trafficsources', function (req, res) {
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      trafficsources: [
+        {id: 1, name: '1'},
+        {id: 2, name: '2'},
+        {id: 3, name: '3'}
+      ]
+    }
   };
   res.send(result);
 });
