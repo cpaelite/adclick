@@ -19,6 +19,7 @@ var common=require('./common');
  * @apiParam {Number} offset
  * @apiParam {Number} limit
  * @apiParam {String} [filter]
+ * @apiParam {Number} active
  *
  *
  */
@@ -37,7 +38,8 @@ router.post('/api/report', function (req, res, next) {
         offset: Joi.number().required(),
         limit: Joi.number().required(),
         filter: Joi.string().optional(),
-        sort:Joi.string().required()
+        sort:Joi.string().required(),
+        active:Joi.number().required()
     })
     req.body.userId = req.userId;
     const start= async()=>{
@@ -117,6 +119,12 @@ function trafficReport(value,connection){
         if(value.filter){
             sql += " and t.`name` LIKE '%" +value.filter +"%'";
         } 
+
+        if(value.active == 0 ){
+            sql += " and t.`deleted` = 0";
+        } else if(value.active == 1) {
+            sql += " and t.`deleted` = 1";
+        }
         
 
         if(value.sort){
@@ -189,6 +197,12 @@ function affiliateReport(value,connection){
         if(value.filter){
             sql += " and t.`name` LIKE '%" +value.filter +"%'";
         } 
+
+         if(value.active == 0 ){
+            sql += " and t.`deleted` = 0";
+        } else if(value.active == 1) {
+            sql += " and t.`deleted` = 1";
+        }
         
 
         if(value.sort){
@@ -262,6 +276,12 @@ function flowReport(value,connection){
         if(value.filter){
             sql += " and t.`name` LIKE '%" +value.filter +"%'";
         } 
+
+         if(value.active == 0 ){
+            sql += " and t.`deleted` = 0";
+        } else if(value.active == 1) {
+            sql += " and t.`deleted` = 1";
+        }
         
 
         if(value.sort){
@@ -334,6 +354,11 @@ function landerReport(value,connection){
         if(value.filter){
             sql += " and t.`name` LIKE '%" +value.filter +"%'";
         } 
+       if(value.active == 0 ){
+            sql += " and t.`deleted` = 0";
+        } else if(value.active == 1) {
+            sql += " and t.`deleted` = 1";
+        }
         
 
         if(value.sort){
@@ -411,6 +436,12 @@ function campaignReport(value,connection){
         if(value.filter){
             sql += " and t.`name` LIKE '%" +value.filter +"%'";
         } 
+
+         if(value.active == 0 ){
+            sql += " and t.`deleted` = 0";
+        } else if(value.active == 1) {
+            sql += " and t.`deleted` = 1";
+        }
         
 
         if(value.sort){
@@ -488,6 +519,12 @@ function offerReport(value,connection){
         if(value.filter){
             sql += " and t.`name` LIKE '%" +value.filter +"%'";
         } 
+
+         if(value.active == 0 ){
+            sql += " and t.`deleted` = 0";
+        } else if(value.active == 1) {
+            sql += " and t.`deleted` = 1";
+        }
         
 
         if(value.sort){
