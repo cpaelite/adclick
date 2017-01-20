@@ -33,4 +33,10 @@ angular.module('app')
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
     return $resource('/api/affilate/:id', {id: '@id'});
   }])
+  .factory('Condition', ['$resource', function ($resource) {
+    return $resource('/api/conditions', {}, {'query':  {method:'GET', isArray:true}});
+  }])
+  .factory('Country', ['$resource', function ($resource) {
+    return $resource('/api/countries', {}, {'query':  {method:'GET', isArray:true}});
+  }])
 ;

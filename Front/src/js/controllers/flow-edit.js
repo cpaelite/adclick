@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('FlowEditCtrl', [
-        '$scope', '$mdDialog', '$timeout', 'Flow',
+        '$scope', '$mdDialog', '$q', 'Flow', 'Lander', 'Offer', 'Condition', 'Country',
         FlowEditCtrl
     ]);
 
-  function FlowEditCtrl($scope, $mdDialog, $timeout, Flow) {
+  function FlowEditCtrl($scope, $mdDialog, $q, Flow, Lander, Offer, Condition, Country) {
     $scope.app.subtitle = 'Flow';
     var flowId = $scope.$stateParams.id;
 
@@ -30,35 +30,107 @@
       isDeleted: false
     };
 
+    // init load data
+    var initPromises = [],
+        prms;
+
+    var theFlow;
     if (flowId) {
-      Flow.get({id:flowId}, function(flow) {
-        $scope.flow = flow;
-      });
+      prms = Flow.get({id:flowId}, function(result) {
+        theFlow = result;
+      }).$promise;
+      initPromises.push(prms);
 
     } else {
       var defaultRule = angular.copy(ruleSkel);
       defaultRule.name = 'Default paths';
       defaultRule.isDefault = true;
 
-      $scope.flow = {
+      theFlow = {
         name: 'new flow',
-        country: 'global',
+        country: 'glb',
         redirect: '302',
         rules: [ defaultRule ]
       };
     }
 
-    function findIndex(arr, ele) {
-      for (var i=0; i<arr.length; ++i) {
-        if (arr[i] == ele) return i;
+    var allLanders;
+    prms = Lander.query({columns:'id,name'}, function(result) {
+      allLanders = result;
+    }).$promise;
+    initPromises.push(prms);
+
+    var allOffers;
+    prms = Offer.query({columns:'id,name'}, function(result) {
+      allOffers = result;
+    }).$promise;
+    initPromises.push(prms);
+
+    var allConditions;
+    prms = Condition.query({}, function(result) {
+      allConditions = result;
+      $scope.allConditions = allConditions;
+    }).$promise;
+    initPromises.push(prms);
+
+    prms = Country.query({}, function(result) {
+      //console.log(result);
+      $scope.allCountries = result;
+    }).$promise;
+    initPromises.push(prms);
+
+    $scope.initState = 'init';
+    function initSuccess() {
+      var offerMap = {};
+      allOffers.forEach(function(offer, idx) {
+        offerMap[offer.id] = idx;
+      });
+      var landerMap = {};
+      allLanders.forEach(function(lander, idx) {
+        landerMap[lander.id] = idx;
+      });
+      var conditionMap = {};
+      allConditions.forEach(function(condition, idx) {
+        conditionMap[condition.id] = idx;
+        //console.log("id:", condition.id, ",display:", condition.display);
+      });
+      
+      // fulfill flow with lander/offer/condition
+      theFlow.rules.forEach(function(rule) {
+        rule.conditions.forEach(function(condition) {
+          condition._def = allConditions[conditionMap[condition.id]];
+        });
+
+        rule.paths.forEach(function(path) {
+          path.landers.forEach(function(lander) {
+            lander._def = allLanders[landerMap[lander.id]];
+          });
+          path.offers.forEach(function(offer) {
+            offer._def = allOffers[offerMap[offer.id]];
+          });
+        });
+      });
+
+      $scope.flow = theFlow;
+      $scope.initState = 'success';
+    }
+    function initError() {
+      $scope.initState = 'error';
+    }
+    $q.all(initPromises).then(initSuccess, initError);
+    // end init data
+
+    function findIndex(list, item) {
+      for (var i=0; i<list.length; ++i) {
+        if (list[i] == item) return i;
       }
       return -1;
     }
 
-    function deleteElement(arr, ele) {
-      var idx = findIndex(arr, ele);
+    function deleteElement(list, item) {
+      var idx = findIndex(list, item);
       if (idx >= 0) {
-        arr.splice(idx, 1);
+        list.splice(idx, 1);
         return true;
       } else {
         return false;
@@ -71,12 +143,12 @@
         if (!o.isDeleted)
           total += o.weight;
       });
-      for (var i=0; i<obj.length; ++i) {
-        if (!obj[i].isDeleted) {
-          var rel = 100 * obj[i].weight / total;
-          obj[i].relativeWeight = rel;
+      obj.forEach(function(item) {
+        if (!item.isDeleted) {
+          var rel = 100 * item.weight / total;
+          item.relativeWeight = rel;
         }
-      }
+      });
     }
 
     $scope.onEdit = 'flow';
@@ -155,16 +227,66 @@
     $scope.restore = function() {
       if ($scope.onEdit == 'rule') {
         $scope.curRule.isDeleted = false;
+        calculateRelativeWeight($scope.flow.rules);
       } else if ($scope.onEdit == 'path') {
         $scope.curPath.isDeleted = false;
+        calculateRelativeWeight($scope.curRule.paths);
       }
       $scope.isDeleted = false;
     };
 
+    function createFilterFor(query, property) {
+      var lcQuery = angular.lowercase(query);
+
+      return function(item) {
+        return (item[property].indexOf(lcQuery) >= 0);
+      };
+    }
+
+    $scope.searchTextChange = function(text) {
+      console.info('Text changed to ' + text);
+    };
+
+    $scope.selectedItemChange = function(item) {
+      console.info('Item changed to', item);
+    };
+
+
+    // operation on path/landers
+    /*
+    var allLanders = null;
+    var landersPromise = null;
+    function getAllLanders() {
+      console.log("get landers");
+      return Lander.get({columns:'id,name'}, function(result) {
+        allLanders = result.data;
+        landersPromise = null;
+      }).$promise;
+    }
+    $scope.queryLanders = function(query) {
+      if (allLanders !== null) {
+        return query ? allLanders.filter(createFilterFor(query)) : allLanders;
+      } else if (!landersPromise) {
+        landersPromise = getAllLanders();
+      }
+      return landersPromise.then(function(data) {
+        return query ? allLanders.filter(createFilterFor(query)) : allLanders;
+      });
+    };
+    */
+    $scope.queryLanders = function(query) {
+      if (allLanders) {
+        return query ? allLanders.filter(createFilterFor(query, "name")) : allLanders;
+      } else {
+        return [];
+      }
+    };
     $scope.addLander = function() {
+      // todo
       $scope.curPath.landers.push({
         id: 0,
         name: '',
+        _def: null,
         weight: 100
       });
       //calculateRelativeWeight($scope.curPath.landers);
@@ -186,42 +308,18 @@
         calculateRelativeWeight($scope.curPath.landers);
     }, true);
 
-    // operation on conditions
-    var wdays = {
-      mon: 'Monday',
-      tue: 'Canada',
-      wed: 'Wednesday',
-      thu: 'Thursday',
-      fri: 'Friday',
-      sat: 'Saturday',
-      sun: 'Sunday'
-    };
-    var oses = {
-      win: 'Windows',
-      linux: 'Linux',
-      android: 'Android',
-      mac: 'Mac'
-    };
-    $scope.countries = {
-      us: 'American',
-      ca: 'Canada',
-      cn: 'China',
-      jp: 'Japen',
-      hk: 'Hongkong'
-    };
-    $scope.availableConditions = [
-      { id: 1, name: 'Day of week', multiple: true, values: wdays },
-      { id: 2, name: 'Country', multiple: false, values: $scope.countries },
-      { id: 3, name: 'OS', multiple: false, values: oses }
-    ];
-
-    $scope.addCondition = function(cond) {
-      $scope.curRule.conditions.unshift({
-        cid: cond.id,
-        cdtn: cond,
-        operand: 'is',
-        value: ''
+    $scope.addCondition = function(condition) {
+      var newCond = {
+        id: condition.id,
+        _def: condition,
+        operand: 'is'
+      };
+      condition.fields.forEach(function(f) {
+        if (f.type == "chips" || f.type == "checkbox" || f.type == 'l2select') {
+          newCond[f.name] = [];
+        }
       });
+      $scope.curRule.conditions.unshift(newCond);
     };
     $scope.deleteCondition = function(cond) {
       var idx;
@@ -234,16 +332,61 @@
         $scope.curRule.conditions.splice(idx, 1);
       }
     };
+    $scope.querySearchIn = function(query, options, selected) {
+      console.log("st:", query);
+      var matched = query ? options.filter(createFilterFor(query, "display")) : options;
+      return matched.filter(excludeIn(selected));
+    };
+
+    function excludeIn(list) {
+      return function(item) {
+        return findIndex(list, item) == -1;
+      };
+    }
 
     $scope.deleteAllConditions = function() {
       $scope.curRule.conditions = [];
     };
 
+    $scope.exists = function(item, list) {
+      return findIndex(list, item) >= 0;
+    };
+    $scope.toggle = function (item, list) {
+      var idx = findIndex(list, item);
+      if (idx > -1) {
+        list.splice(idx, 1);
+      } else {
+        list.push(item);
+      }
+    };
+                                                                            };
+    $scope.save = function() {
+      // clean up flow data
+      var flowCopy = angular.copy(theFlow);
+      flowCopy.rules.forEach(function(rule) {
+        rule.conditions.forEach(function(condition) {
+          delete condition._def;
+        });
+
+        rule.paths.forEach(function(path) {
+          path.landers.forEach(function(lander) {
+            delete lander._def;
+          });
+          path.offers.forEach(function(offer) {
+            delete offer._def;
+          });
+        });
+      });
+      console.log(flowCopy);
+    };
+
+    /*
     function success(items) {
       $scope.items = items;
     }
     $scope.getList = function () {
       $scope.promise = Flow.get($scope.query, success).$promise;
     };
+    */
   }
 })();

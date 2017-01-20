@@ -42,7 +42,7 @@
   }
 
   function config($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/app/track/campaign');
+    $urlRouterProvider.otherwise('/app/dashboard');
 
     $stateProvider
       .state('app', {
