@@ -549,13 +549,12 @@ router.post('/api/campaign/:id',function(req,res,next){
 
                                         }
                                     }
-                                     await common.commit(connection);
                                 }catch(e){
                                     throw e;
                                 }
                         }
                     }
-                   
+                  await common.commit(connection);
             }catch(err){
                 await common.rollback(connection);
                 throw err;

@@ -533,12 +533,12 @@ const start = (() => {
                                     }
                                 }
                             }
-                            yield common.commit(connection);
                         } catch (e) {
                             throw e;
                         }
                     }
                 }
+                yield common.commit(connection);
             } catch (err) {
                 yield common.rollback(connection);
                 throw err;
