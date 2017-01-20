@@ -1,83 +1,99 @@
-<div flex class="row cs-page-flow">
-  <div class="col-md-4 cs-flow-tree">
-    <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}">
-      <i class="material-icons md-mini">view_column</i>
+<div class="cs-page-flow">
+  <div class="col-sm-4 col-md-4 cs-flow-tree">
+    <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li">
+      <i class="material-icons tree-icon">album</i>
       <span class="cs-flow-name">{{flow.name}}</span>
     </div>
-
     <div ng-repeat="rule in flow.rules" class="cs-flow-rule">
-      <div ng-click="editRule(rule)" ng-class="{
+      <div ng-click="editRule(rule)" class="tree-li" ng-class="{
         'cs-flow-active': onEdit=='rule' && curRule==rule,
         'cs-rule-default': rule.isDefault,
         'cs-rule-unexpanded': rule.unexpanded,
         'cs-is-deleted': rule.isDeleted
-      }">
+        }">
         <span ng-click="toggleExpand(rule)">
-          <i class="material-icons md-mini cs-arrow-right">keyboard_arrow_right</i>
-          <i class="material-icons md-mini cs-arrow-down">keyboard_arrow_down</i>
+          <!--           <i class="material-icons md-mini cs-arrow-right">keyboard_arrow_right</i>
+          -->         <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
         </span>
-        <i class="material-icons md-mini">panorama_fish_eye</i>
-        <span class="cs-rule-name">{{rule.name}}</span>
+        <span class="cs-path-name">
+          <i class="material-icons tree-icon">album</i>
+          <span class="cs-rule-name">{{rule.name}}</span>
+        </span>
+
       </div>
       <ul>
-        <li ng-repeat="path in rule.paths" ng-click="editPath(rule, path)" ng-class="{
+        <li ng-repeat="path in rule.paths" class="tree-li" ng-click="editPath(rule, path)" ng-class="{
           'cs-flow-active': onEdit=='path' && curPath==path,
           'cs-is-deleted': path.isDeleted
-        }">
-          <i class="material-icons md-mini">panorama_fish_eye</i>
-          <span class="cs-path-name">
-            {{path.name}} {{path.weight}}(<em ng-hide="path.isDeleted">{{path.relativeWeight | number:2}}%</em><em ng-show="path.isDeleted">N/A</em>)</span>
+          }">
+          <i class="material-icons tree-icon">album</i>
+          <span class="cs-path-name clearfix">
+            <span class="path-name">{{path.name}} </span>
+            <span class="weight-num">
+              {{path.weight}}(<em ng-hide="path.isDeleted">{{path.relativeWeight | number:2}}%</em><em ng-show="path.isDeleted">N/A</em>)
+            </span>
+          </span>
         </li>
-        <li ng-click="addPath(rule)" class="cs-flow-addpath">
-          <i class="material-icons md-mini">add</i>
-          <span>{{'add_flow_path' | translate}}</span>
+        <li ng-click="addPath(rule)" class="cs-flow-addpath tree-li">
+          <i class="material-icons add-box">add_box</i>
+          <span class="add-flow-path">{{'add_flow_path' | translate}}</span>
         </li>
       </ul>
     </div>
-
-    <div ng-click="addRule()" class="cs-flow-addrule">
-      <i class="material-icons md-mini">add</i>
-      <span>{{'add_flow_rule' | translate}}</span>
+    <div ng-click="addRule()" class="cs-flow-addrule tree-li">
+      <i class="material-icons add-box">add_box</i>
+      <span class="add-flow-rule">{{'add_flow_rule' | translate}}</span>
     </div>
   </div>
-
-  <div class="col-md-8 cs-flow-content">
+  <div class="col-sm-8 col-md-8 cs-flow-content">
     <div class="cs-flow-top-actions">
-      <div ng-show="onEdit=='rule' && !isDeleted">
-        <button class="btn btn-danger" ng-click="deleteRule()">Delete rule</button>
-        <button class="btn btn-default" ng-click="duplicateRule()">Duplicate rule</button>
+      <div ng-show="onEdit=='rule' && !isDeleted"  class="top-btn-list">
+        <button class="btn btn-danger" ng-click="deleteRule()">
+          <i class="material-icons">delete</i>
+          Delete rule
+        </button>
+        <button class="btn btn-default" ng-click="duplicateRule()">
+          <i class="material-icons">control_point_duplicate</i>
+          Duplicate rule
+        </button>
       </div>
-      <div ng-show="onEdit=='path' && !isDeleted">
-        <button class="btn btn-danger" ng-click="deletePath()">Delete path</button>
-        <button class="btn btn-default" ng-click="duplicatePath()">Duplicate path</button>
+      <div ng-show="onEdit=='path' && !isDeleted" class="top-btn-list">
+        <button class="btn btn-danger" ng-click="deletePath()">
+          <i class="material-icons">delete</i>
+          Delete path
+        </button>
+        <button class="btn btn-default" ng-click="duplicatePath()">
+          <i class="material-icons">control_point_duplicate</i>
+          Duplicate path
+        </button>
       </div>
-      <div ng-show="isDeleted">
-        <button class="btn btn-success" ng-click="restore()">Restore</button>
+      <div ng-show="isDeleted" class="top-btn-list">
+        <button class="btn btn-success" ng-click="restore()">
+          <i class="material-icons">restore</i>
+          Restore path
+        </button>
       </div>
     </div>
 
     <div class="cs-deleted-mask" ng-if="isDeleted"></div>
 
-    <form name="editFlowForm" method="post" ng-submit="save()" class="" ng-if="onEdit=='flow'">
+    <form name="editFlowForm" method="post" ng-submit="save()" class="form-content" ng-if="onEdit=='flow'">
+
       <div class="form-group">
-        <label class="col-sm-3 control-label">Name:</label>
-        <div class="col-sm-8">
-          <input type="text" class="form-control" ng-model="flow.name" required>
-        </div>
+        <label class="label-name">Name:</label>
+        <input type="text" class="form-control" ng-model="flow.name" required>
       </div>
 
       <div class="form-group">
-        <label class="col-sm-3 control-label">Country:</label>
-        <div class="col-sm-8">
-          <md-select class="" ng-model="flow.country" required>
-            <md-option value="global">Global</md-option>
-            <md-option ng-repeat="(c,n) in countries" value="{{c}}">{{n}}</md-option>
-          </md-select>
-        </div>
+        <label class="label-name">Country:</label>
+        <md-select class="" ng-model="flow.country" required>
+          <md-option value="global">Global</md-option>
+          <md-option ng-repeat="(c,n) in countries" value="{{c}}">{{n}}</md-option>
+        </md-select>
       </div>
 
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Default redirect mode:</label>
+      <div class="form-group clearfix">
+        <label class="col-sm-4 control-label label-radio">Default redirect mode:</label>
         <div class="col-sm-8">
           <label class="radio-inline">
             <input type="radio" ng-model="flow.redirect" value="302"> 302
@@ -92,119 +108,180 @@
       </div>
     </form>
 
-    <form name="editRuleForm" method="post" ng-submit="save()" class="" ng-if="onEdit=='rule'">
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Name:</label>
-        <div class="col-sm-8">
+    <form name="editRuleForm" method="post" ng-submit="save()" class="editRuleForm" ng-if="onEdit=='rule'">
+      <div class="row">
+        <div class="form-group col-sm-8 col-md-8 name-div">
+          <label class="label-name">Name:</label>
           <input type="text" class="form-control" ng-model="curRule.name" required>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Status:</label>
-        <div class="col-sm-8">
-          <md-switch ng-model="curRule.enabled" aria-label="Enabled"></md-switch>
+        <div class="form-group col-sm-4 col-sm-4">
+          <label class="label-name">Status:</label>
+          <md-switch class="md-primary" ng-model="curRule.enabled" aria-label="Enabled"></md-switch>
         </div>
       </div>
+      
+
+      
 
       <div class="cs-conditions">
         <div class="cs-conditions-button">
           <div class="btn-group" uib-dropdown>
             <button type="button" class="btn btn-primary" uib-dropdown-toggle>
+              <i class="material-icons">add</i>
               Add condition <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+            <ul class="drpdown-menu" uib-dropdown-menu role="menu">
               <li role="menuitem" ng-repeat="c in availableConditions">
                 <a href="#" ng-click="addCondition(c)">{{c.name}}</a>
               </li>
             </ul>
           </div>
-          <button class="btn btn-default" ng-click="deleteAllConditions()">Delete all</button>
+          <button class="btn btn-default delete-btn" ng-click="deleteAllConditions()">
+            <i class="material-icons">close</i>
+            Delete all</button>
         </div>
 
         <ul class="cs-conditions-content">
-          <li ng-repeat="c in curRule.conditions" layout="row">
-            <span class="label label-default">{{c.cdtn.name}} <em ng-click="deleteCondition(c)">x</em></span>
-            <div class="btn-group">
+          <li ng-repeat="c in curRule.conditions">
+            <i class="material-icons tree-icon">album</i>
+            <span class="label label-default condition-select-content">{{c.cdtn.name}} <em ng-click="deleteCondition(c)" class="delete-condition">x</em></span>
+            <div class="btn-group is-btn">
               <label class="btn btn-primary" ng-model="c.operand" uib-btn-radio="'is'">is</label>
               <label class="btn btn-primary" ng-model="c.operand" uib-btn-radio="'isnt'">is not</label>
             </div>
-            <md-select class="" ng-model="c.value" required>
+            </br>
+            <div class="condition-select">
+              <md-select class="" ng-model="c.value" required>
               <md-option ng-repeat="(v,n) in c.cdtn.values" value="{{v}}">{{n}}</md-option>
-            </md-select>
+              </md-select>
+            </div>
           </li>
         </ul>
       </div>
     </form>
-
-    <form name="editPathForm" method="post" ng-submit="save()" class="" ng-if="onEdit=='path'">
-      <div class="row">
-        <div class="col-md-8" layout="column">
-          <label>Name:</label>
+    
+    <form name="editPathForm" method="post" ng-submit="save()" class="editPathForm" ng-if="onEdit=='path'">
+      <div class="row path-top">
+        <div class="col-sm-7 col-md-7 name-div" layout="column">
+          <label class="label-name">Name:</label>
           <input type="text" class="form-control" ng-model="curPath.name" required>
         </div>
-        <div class="col-md-2" layout="column">
-          <label>Weight:</label>
+        <div class="col-sm-3 col-md-3" layout="column">
+          <label class="label-name">Weight:</label>
           <input type="text" class="form-control" ng-model="curPath.weight" required>
         </div>
-        <div class="col-md-2" layout="column">
-          <label>Status:</label>
-          <md-switch ng-model="curPath.enabled" aria-label="Enabled"></md-switch>
+        <div class="col-sm-2 col-md-2" layout="column">
+          <label class="label-name">Status:</label>
+          <md-switch ng-model="curPath.enabled" aria-label="Enabled" class="md-primary"></md-switch>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-8">
-          <label>Redirect mode:</label>
-          <label class="radio-inline">
-            <input type="radio" ng-model="curPath.redirect" value="302"> 302
-          </label>
-          <label class="radio-inline">
-            <input type="radio" ng-model="curPath.redirect" value="meta"> Meta refresh
-          </label>
-          <label class="radio-inline">
-            <input type="radio" ng-model="curPath.redirect" value="double-meta"> Double meta refresh
-          </label>
+        <label class="label-name">Redirect mode:</label>
+        <label class="radio-inline">
+          <input type="radio" ng-model="curPath.redirect" value="302"> 302
+        </label>
+        <label class="radio-inline">
+          <input type="radio" ng-model="curPath.redirect" value="meta"> Meta refresh
+        </label>
+        <label class="radio-inline">
+          <input type="radio" ng-model="curPath.redirect" value="double-meta"> Double meta refresh
+        </label>
+      </div>
+
+      <div class="row">
+        <label class="label-name">Direct linking:</label>
+        <md-checkbox class="md-primary" ng-model="curPath.directLinking"></md-checkbox>
+      </div>
+      <div class="form-group direct-content clearfix">
+        <div class="col-sm-12 col-md-6 lander-content">
+          <div class="cs-flow-lander-header clearfix">
+            <div class="col-sm-9 col-md-9">Lander</div>
+            <div class="col-sm-3 col-md-3">Weight</div>
+          </div>
+          <div class="cs-flow-lander-row clearfix" ng-repeat="lander in curPath.landers">
+            <div class="col-sm-9 col-md-9">
+              <!-- <p class="cs-flow-lander-view">{{lander.name}}</p> -->
+              <div class="cs-flow-lander-edit clearfix">
+                <md-select ng-model="lander.id" required>
+                  <md-option value="1" selected>American</md-option>
+                  <md-option value="2">Canada</md-option>
+                  <md-option value="3">China</md-option>
+                </md-select>
+                <!-- <i class="material-icons md-mini" ng-show="lander.id>0">edit</i> -->
+                <i class="material-icons md-mini edit-btn">edit</i>
+              </div>
+            </div>
+            <div class="col-sm-3 col-md-3 input-content">
+              <p class="cs-flow-view" ng-click="landerEditClick()">{{lander.weight}} ({{lander.relativeWeight | number:2}}%)</p>
+              <div class="cs-flow-edit clearfix" ng-show="landerEditIsShow">
+                <input type="text" class="form-control"  ng-blur="landerEditIsShow=false" ng-model="lander.weight" required>
+                <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
+              </div>
+            </div>
+          </div>
+          <div class="cs-flow-lander-action clearfix">
+            <button class="btn btn-default add-lander-btn">
+            <i class="material-icons add-box">add_box</i>
+              Add New Lander
+            </button>
+            <button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
+              Add Lander
+            </button>
+          </div>
         </div>
-        <div class="col-md-4">
-          <label>Direct linking:</label>
-          <md-checkbox class="md-secondary" ng-model="curPath.directLinking"></md-checkbox>
+        <!-- offer content -->
+        <div class="col-sm-12 col-md-6 offer-content">
+          <div class="cs-flow-lander-header clearfix">
+            <div class="col-sm-9 col-md-9">Lander</div>
+            <div class="col-sm-3 col-md-3">Weight</div>
+          </div>
+          <div class="cs-flow-lander-row clearfix" ng-repeat="lander in curPath.landers">
+            <div class="col-sm-9 col-md-9">
+              <!-- <p class="cs-flow-lander-view">{{lander.name}}</p> -->
+              <div class="cs-flow-lander-edit clearfix">
+                <md-select ng-model="lander.id" required>
+                  <md-option value="1" selected>American</md-option>
+                  <md-option value="2">Canada</md-option>
+                  <md-option value="3">China</md-option>
+                </md-select>
+                <!-- <i class="material-icons md-mini" ng-show="lander.id>0">edit</i> -->
+                <i class="material-icons md-mini edit-btn">edit</i>
+              </div>
+            </div>
+            <div class="col-sm-3 col-md-3 input-content">
+              <p class="cs-flow-view" ng-click="offerEditClick()">{{lander.weight}} ({{lander.relativeWeight | number:2}}%)</p>
+              <div class="cs-flow-edit clearfix" ng-show="offerEditIsShow">
+                <input type="text" class="form-control" ng-blur="offerEditIsShow=false" ng-model="lander.weight" required>
+                <i ng-click="deleteLander(oferr)" class="material-icons md-mini lander-delete-btn">delete</i>
+              </div>
+            </div>
+          </div>
+          <div class="cs-flow-lander-action clearfix">
+            <button class="btn btn-default add-lander-btn">
+            <i class="material-icons add-box">add_box</i>
+              Add New Offer
+            </button>
+            <button ng-click="addLander(curPathOffer)" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
+              Add Offer
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="row cs-flow-lander-header">
-        <div class="col-md-9">Lander</div>
-        <div class="col-md-3">Weight</div>
-      </div>
-      <div class="row cs-flow-lander-row" ng-repeat="lander in curPath.landers">
-        <div class="col-md-9">
-          <p class="cs-flow-lander-view">{{lander.name}}</p>
-          <div class="cs-flow-lander-edit">
-            <md-select ng-model="lander.id" required>
-              <md-option value="1">American</md-option>
-              <md-option value="2">Canada</md-option>
-              <md-option value="3">China</md-option>
-            </md-select>
-            <i class="material-icons md-mini" ng-show="lander.id>0">edit</i>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <p class="cs-flow-view">{{lander.weight}} ({{lander.relativeWeight | number:2}}%)</p>
-          <div class="cs-flow-edit">
-            <input type="text" class="form-control" ng-model="lander.weight" required>
-            <i ng-click="deleteLander(lander)" class="material-icons md-mini">delete</i>
-          </div>
-        </div>
-      </div>
-      <div class="cs-flow-lander-action">
-        <button ng-click="addLander(curPath)" class="btn btn-default">Add Lander</button>
-      </div>
     </form>
 
-    <div class="cs-flow-bottom-actions">
-      <button class="btn btn-primary">Save</button>
-      <button class="btn btn-link">Cancle</button>
+    <div class="cs-flow-bottom-actions clearfix">
+      <button class="btn btn-primary save-btn">
+        <i class="material-icons">check</i>
+        Save
+      </button>
+      <button class="btn close-btn">
+        <i class="material-icons">close</i>
+        Close
+      </button>
     </div>
-
   </div>
 </div>
