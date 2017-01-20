@@ -311,6 +311,19 @@ function updateFlow(userId, flow, connection) {
     });
 }
 
+function deleteFlow(id, userId, connection) {
+    var sqlCampaign = "update Flow set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
+        });
+    });
+}
+
 //Tags
 function insertTags(userId, targetId, name, type, connection) {
     return new Promise(function (resolve, reject) {
@@ -503,6 +516,19 @@ function getLanderDetail(id, userId, connection) {
     });
 }
 
+function deleteLander(id, userId, connection) {
+    var sqlCampaign = "update Lander set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
+        });
+    });
+}
+
 //Lander2Path
 function insertLander2Path(landerid, pathid, pathweight, connection) {
     var sqllander2path = "insert into Lander2Path (`landerId`,`pathId`,`weight`) values (?,?,?)";
@@ -644,6 +670,19 @@ function getOfferDetail(id, userId, connection) {
                 }
                 resolve(lander[0]);
             });
+        });
+    });
+}
+
+function deleteOffer(id, userId, connection) {
+    var sqlCampaign = "update Offer set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
         });
     });
 }
@@ -815,6 +854,19 @@ function gettrafficDetail(id, userId, connection) {
     });
 }
 
+function deletetraffic(id, userId, connection) {
+    var sqlCampaign = "update TrafficSource set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
+        });
+    });
+}
+
 exports.updateRule2Flow = updateRule2Flow;
 exports.insertRule2Flow = insertRule2Flow;
 exports.updatePath2Rule = updatePath2Rule;
@@ -850,3 +902,7 @@ exports.insertTrafficSource = insertTrafficSource;
 exports.gettrafficDetail = gettrafficDetail;
 exports.updatetraffic = updatetraffic;
 exports.deleteCampaign = deleteCampaign;
+exports.deleteFlow = deleteFlow;
+exports.deleteLander = deleteLander;
+exports.deleteOffer = deleteOffer;
+exports.deletetraffic = deletetraffic;

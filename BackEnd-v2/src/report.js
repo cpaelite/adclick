@@ -15,7 +15,7 @@ var common=require('./common');
  * @apiParam {String} tz   timezone
  * @apiParam {String} sort  排序字段
  * @apiParam {String} direction  desc
- * @apiParam {String} groupBy   表名
+ * @apiParam {String} groupBy    
  * @apiParam {Number} offset
  * @apiParam {Number} limit
  * @apiParam {String} [filter]
@@ -47,17 +47,17 @@ router.post('/api/report', function (req, res, next) {
             let result;
             let value=await common.validate(req.body,schema);
             let connection= await common.getConnection();
-            if(value.groupBy == "Campaign"){
+            if(value.groupBy == "campaign"){
               result = await campaignReport(value,connection);
-            }else if(value.groupBy == "Offer"){
+            }else if(value.groupBy == "offer"){
               result= await offerReport(value,connection);
-            }else if(value.groupBy == "Lander"){
+            }else if(value.groupBy == "lander"){
               result= await landerReport(value,connection);
-            }else if(value.groupBy== "Flow"){
+            }else if(value.groupBy== "flow"){
               result= await flowReport(value,connection);
-            }else if(value.groupBy== "AffiliateNetwork"){
+            }else if(value.groupBy== "affiliateNetwork"){
               result= await affiliateReport(value,connection);
-            }else if(value.groupBy== "TrafficSource"){
+            }else if(value.groupBy== "trafficSource"){
               result= await trafficReport(value,connection);     
             }
             connection.release();
