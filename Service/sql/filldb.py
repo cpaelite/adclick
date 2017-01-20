@@ -52,7 +52,7 @@ if args.cleardb:
     ]
     cursor = conn.cursor()
     for table, where in clear_tables:
-        cursor.execute("DELETE FROM %s WHERE id!=%s", table, where)
+        cursor.execute("DELETE FROM %s WHERE `%s`!=0" % (table, where))
     conn.commit()
 
 # 执行数据库
@@ -97,15 +97,15 @@ print "affiliateId2", affiliateId2
 
 offerPostbackUrl = "http://zx1jg.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
 
-cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, postbackUrl, payoutMode, payoutValue)"
-               " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "Offer 1", "offer.hash", "offer.url", "CHN", affiliateId1, offerPostbackUrl, 1, 1.0),
+cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue)"
+               " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+               (userId, "Offer 1", "offer.hash", "offer.url", "CHN", affiliateId1, "affiliateName1", offerPostbackUrl, 1, 1.0),
                )
 offer1 = cursor.lastrowid
 
-cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, postbackUrl, payoutMode, payoutValue)"
-               " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "Offer 2", "offer.hash", "offer.url", "CHN", affiliateId2, offerPostbackUrl, 0, 0.0),
+cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue)"
+               " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+               (userId, "Offer 2", "offer.hash", "offer.url", "CHN", affiliateId2, "affiliateName2", offerPostbackUrl, 0, 0.0),
                )
 offer2 = cursor.lastrowid
 
@@ -194,13 +194,13 @@ cursor.execute("INSERT INTO Rule2Flow (ruleId, flowId, status) VALUES (%s,%s,%s)
 cursor.execute("INSERT INTO TrafficSource (userId, name, hash, postbackUrl, pixelRedirectUrl, impTracking, externalId,"
                " cost, params) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "TrafficSource.1", "TrafficSource.1.hash", "http://traffic.source.com/post/back/url/1/",
-                "http://traffic.source.com/pixel/redirect/url/1/", 0, "{}", "{}", "{}"))
+                "http://traffic.source.com/pixel/redirect/url/1/", 0, "{}", "{}", "[]"))
 traffic1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO TrafficSource (userId, name, hash, postbackUrl, pixelRedirectUrl, impTracking, externalId,"
                " cost, params) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "TrafficSource.2", "TrafficSource.2.hash", "http://traffic.source.com/post/back/url/2/",
-                "http://traffic.source.com/pixel/redirect/url/2/", 0, "{}", "{}", "{}"))
+                "http://traffic.source.com/pixel/redirect/url/2/", 0, "{}", "{}", "[]"))
 traffic2 = cursor.lastrowid
 
 
@@ -229,3 +229,4 @@ campaign2 = cursor.lastrowid
 
 
 
+conn.commit()

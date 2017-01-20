@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"AdClickTool/Service/log"
 	"errors"
 	"fmt"
 	"net/http"
@@ -80,6 +81,7 @@ func newFlow(c FlowConfig) (f *Flow) {
 	}
 	err := rule.InitRule(d.RuleId) // default始终有效
 	if err != nil {
+		log.Errorf("InitRule:%v failed:%v", d.RuleId, err)
 		return nil
 	}
 	for _, rc := range r {
@@ -88,6 +90,7 @@ func newFlow(c FlowConfig) (f *Flow) {
 		}
 		err = rule.InitRule(rc.RuleId)
 		if err != nil {
+			log.Errorf("InitRule:%v failed:%v", rc.RuleId, err)
 			return nil
 		}
 	}

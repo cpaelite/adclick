@@ -51,7 +51,7 @@ func DBGetUserFlows(userId int64) []FlowConfig {
 	var arr []FlowConfig
 	for rows.Next() {
 		if err := rows.Scan(&c.Id, &c.UserId, &c.RedirectMode); err != nil {
-			log.Errorf("[lander][DBGetUserFlows] scan failed:%v", err)
+			log.Errorf("[flow][DBGetUserFlows] scan failed:%v", err)
 			return nil
 		}
 		arr = append(arr, c)
@@ -61,11 +61,11 @@ func DBGetUserFlows(userId int64) []FlowConfig {
 
 func DBGetFlow(flowId int64) (c FlowConfig) {
 	d := dbgetter()
-	sql := "SELECT id, userId, redirectMode FROM Flow WHERE flowId=?"
+	sql := "SELECT id, userId, redirectMode FROM Flow WHERE id=?"
 	row := d.QueryRow(sql, flowId)
 
 	if err := row.Scan(&c.Id, &c.UserId, &c.RedirectMode); err != nil {
-		log.Errorf("[lander][DBGetUserFlows] scan failed:%v", err)
+		log.Errorf("[lander][DBGetFlow] scan failed:%v", err)
 		return c
 	}
 	return c
@@ -73,11 +73,11 @@ func DBGetFlow(flowId int64) (c FlowConfig) {
 
 func DBGetFlowRuleIds(flowId int64) (defaultRuleId FlowRule, ruleIds []FlowRule) {
 	d := dbgetter()
-	sql := "SELECT ruleId, status FROM Rule2Flow WHERE flowId=? AND deleted=0"
+	sql := "SELECT ruleId, status FROM Rule2Flow WHERE id=? AND deleted=0"
 
 	rows, err := d.Query(sql, flowId)
 	if err != nil {
-		log.Errorf("[flow][DBGetFlowRuleIds]Query: %s with flowId:%v failed:%v", sql, flowId, err)
+		log.Errorf("[flow][DBGetFlowRuleIds]Query: %s with id:%v failed:%v", sql, flowId, err)
 		return
 	}
 
