@@ -130,7 +130,7 @@
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', 'Offer', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetworks', editOfferCtrl];
       }
 
       $mdDialog.show({
@@ -216,9 +216,8 @@
     // tree isShow
     $scope.trData = [
       {
-        id: 0,
-        name: 'campaign',
-        id: 1,
+        id: 32,
+        name: 'campaign1',
         impressions: 2,
         visits: 3,
         click: 4,
@@ -231,9 +230,8 @@
         operation: 11
       },
       {
-        id: 1,
-        name: 'flow',
-        id: 1,
+        id: 33,
+        name: 'campaign2',
         impressions: 2,
         visits: 3,
         click: 4,
@@ -268,16 +266,17 @@
 
   function editCampaignCtrl($scope, $mdDialog, Campaign, Flows, TrafficSources) {
     if (this.item) {
-      Campaign.get(item.id, function(campaign) {
+      Campaign.get({id: this.item.id}, function(campaign) {
         $scope.item = angular.copy(campaign);
       });
       this.title = "edit";
     } else {
       $scope.item = {
         costModel: 0,
+        redirectMode: 0,
         targetType: 1,
         status: '1',
-        targetUrl: ''
+        tags: []
       };
       this.title = "add";
     }
@@ -285,7 +284,7 @@
 
     // TrafficSource
     TrafficSources.get(null, function (trafficSource) {
-      $scope.trafficSources = trafficSource.data;
+      $scope.trafficSources = trafficSource.data.trafficsources;
     });
 
     // Country
@@ -293,7 +292,7 @@
 
     // Flow
     Flows.get(null, function (flow) {
-      $scope.flows = flow.data;
+      $scope.flows = flow.data.flows;
     });
 
     this.cancel = $mdDialog.cancel;
@@ -314,7 +313,6 @@
 
     var self = this;
     self.readonly = false;
-    $scope.item.tags = [];
     self.newVeg = function (chip) {
       return {
         name: chip,
@@ -362,6 +360,9 @@
     ];
     $scope.urlTokenClick = function (url) {
       var targetUrl = $scope.item.targetUrl;
+      if (!targetUrl) {
+        targetUrl = '';
+      }
       if (targetUrl.indexOf(url) == -1) {
         $scope.item.targetUrl = targetUrl + url;
       }
@@ -371,7 +372,9 @@
 
   function editFlowCtrl($scope, $mdDialog, Flow) {
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Flow.get({id: this.item.id}, function (flow) {
+        $scope.item = angular.copy(flow);
+      });
       this.title = "edit";
     } else {
       $scope.item = {
@@ -401,7 +404,7 @@
 
   function editLanderCtrl($scope, $mdDialog, Lander) {
     if (this.item) {
-      Lander.get({id: item.id}, function (lander) {
+      Lander.get({id: this.item.id}, function (lander) {
         $scope.item = angular.copy(lander);
       });
       this.title = "edit";
@@ -455,9 +458,9 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, Offer) {
+  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetworks) {
     if (this.item) {
-      Offer.get({id: item.id}, function (offer) {
+      Offer.get({id: this.item.id}, function (offer) {
         $scope.item = angular.copy(offer);
       });
       this.title = "edit";
@@ -471,6 +474,13 @@
 
     // Country
     $scope.countries = $scope.$root.countries;
+
+    // AffiliateNetword
+    $scope.affiliates = [
+      {id: 1, name: '1'},
+      {id: 2, name: '2'},
+      {id: 3, name: '3'}
+    ];
 
     this.titleType = angular.copy(this.perfType);
 

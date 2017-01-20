@@ -39,6 +39,9 @@ angular.module('app')
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
     return $resource('/api/affilate/:id', {id: '@id'});
   }])
+  .factory('AffiliateNetworks', ['$resource', function ($resource) {
+    return $resource('/api/affilate');
+  }])
   .factory('Country', ['$resource', function ($resource) {
     return $resource('/countries');
   }])
