@@ -9,6 +9,7 @@ import (
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
+	"AdClickTool/Service/units/affiliate"
 )
 
 type OfferConfig struct {
@@ -36,10 +37,10 @@ var offers = make(map[int64]*Offer)
 
 func setOffer(o *Offer) error {
 	if o == nil {
-		return errors.New("setPath error:o is nil")
+		return errors.New("setOffer error:o is nil")
 	}
 	if o.Id <= 0 {
-		return fmt.Errorf("setPath error:o.Id(%d) is not positive", o.Id)
+		return fmt.Errorf("setOffer error:o.Id(%d) is not positive", o.Id)
 	}
 	cmu.Lock()
 	defer cmu.Unlock()
@@ -87,7 +88,12 @@ func newOffer(c OfferConfig) (o *Offer) {
 	}
 	_, err := url.ParseRequestURI(c.Url)
 	if err != nil {
-		log.Errorf("[NewOffer]Invalid url for offer(%+v), err(%s)\n", c, err.Error())
+		log.Errorf("[newOffer]Invalid url for offer(%+v), err(%s)\n", c, err.Error())
+		return nil
+	}
+	err = affiliate.InitAffiliateNetwork(c.AffiliateNetworkId)
+	if err != nil {
+		log.Errorf("[newOffer]InitAffiliateNetwork failed with %+v, err(%s)\n", c, err.Error())
 		return nil
 	}
 	o = &Offer{
@@ -124,7 +130,11 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 	req.SetAffiliateId(o.AffiliateNetworkId)
 	req.SetAffiliateName(o.AffiliateNetworkName)
 	// 加载AffiliateNetwork配置，如果Append click ID to offer URLs勾选，添加click ID(requestid)
-	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	appended := ""
+	if aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId); aff.AppendClickId == 1 {
+		appended = req.Id()
+	}
+	http.Redirect(w, gr, req.ParseUrlTokens(o.Url)+appended, http.StatusFound)
 	return nil
 }
 

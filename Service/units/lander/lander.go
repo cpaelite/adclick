@@ -32,10 +32,10 @@ var landers = make(map[int64]*Lander)
 
 func setLander(l *Lander) error {
 	if l == nil {
-		return errors.New("setPath error:l is nil")
+		return errors.New("setLander error:l is nil")
 	}
 	if l.Id <= 0 {
-		return fmt.Errorf("setPath error:l.Id(%d) is not positive", l.Id)
+		return fmt.Errorf("setLander error:l.Id(%d) is not positive", l.Id)
 	}
 	cmu.Lock()
 	defer cmu.Unlock()

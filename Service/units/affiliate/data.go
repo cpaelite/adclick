@@ -70,46 +70,44 @@ func DBGetUserAffliateNetworks(userId int64) []AffiliateNetworkConfig {
 	return arr
 }
 
-func DBGetAffiliateNetwork(id int64) AffiliateNetworkConfig {
+func DBGetAffiliateNetwork(id int64) (c AffiliateNetworkConfig) {
 	d := dbgetter()
 	sql := "SELECT id, userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList" +
 		" FROM AffiliateNetwork WHERE id=?"
 	row := d.QueryRow(sql, id)
 
-	var c AffiliateNetworkConfig
 	var ipWhiteList string
 
 	err := row.Scan(&c.Id, &c.UserId, &c.Name, &c.Hash, &c.PostbackUrl,
 		&c.AppendClickId, &c.DuplicatePostback, &ipWhiteList)
 	if err != nil {
 		log.Errorf("[affiliate][DBGetAffiliateNetwork] scan failed:%v", err)
-		return nil
+		return
 	}
 
 	c.IpWhiteList = parseIpWhiteList(ipWhiteList)
 
-	return c
+	return
 }
 
-func DBGetAffiliateNetworkByHash(hash string) AffiliateNetworkConfig {
+func DBGetAffiliateNetworkByHash(hash string) (c AffiliateNetworkConfig) {
 	d := dbgetter()
 	sql := "SELECT id, userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList" +
 		" FROM AffiliateNetwork WHERE hash=?"
 	row := d.QueryRow(sql, hash)
 
-	var c AffiliateNetworkConfig
 	var ipWhiteList string
 
 	err := row.Scan(&c.Id, &c.UserId, &c.Name, &c.Hash, &c.PostbackUrl,
 		&c.AppendClickId, &c.DuplicatePostback, &ipWhiteList)
 	if err != nil {
 		log.Errorf("[affiliate][DBGetAffiliateNetwork] scan failed:%v", err)
-		return nil
+		return
 	}
 
 	c.IpWhiteList = parseIpWhiteList(ipWhiteList)
 
-	return c
+	return
 }
 
 func parseIpWhiteList(s string) []string {
