@@ -90,10 +90,10 @@ func GetPath(pathId int64) (p *Path) {
 	p = getPath(pathId)
 	if p == nil {
 		p = newPath(DBGetPath(pathId))
-	}
-	if p != nil {
-		if err := setPath(p); err != nil {
-			return nil
+		if p != nil {
+			if err := setPath(p); err != nil {
+				return nil
+			}
 		}
 	}
 	return

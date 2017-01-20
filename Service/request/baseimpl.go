@@ -201,31 +201,16 @@ func (r *reqbase) ExternalId() string {
 	return r.externalId
 }
 
-//func (r *reqbase) SetExternalId(id string) {
-//	r.externalId = id
-//}
-
 func (r *reqbase) Cost() float64 {
 	return r.cost
 }
 
-//func (r *reqbase) SetCost(cost string) {
-//	r.cost = cost
-//}
-
 func (r *reqbase) Vars(n uint) string {
-	if n > VarsMaxNum {
+	if n >= VarsMaxNum {
 		return ""
 	}
-	return r.vars[n-1]
+	return r.vars[n]
 }
-
-//func (r *reqbase) SetVars(n uint, v string) {
-//	if n > VarsMaxNum {
-//		return
-//	}
-//	r.vars[n-1] = v
-//}
 
 func (r *reqbase) ParseTSParams(
 	externalId common.TrafficSourceParams,
@@ -546,7 +531,7 @@ func (r *reqbase) AdStatisKey(timestamp int64) (key tracking.AdStatisKey) {
 	key.Region = r.Region()
 	key.ISP = r.ISP()
 	key.MobileCarrier = r.Carrier()
-	key.Domain = r.TrackingDomain()
+	key.Domain = r.ReferrerDomain()
 	key.DeviceType = r.DeviceType()
 	key.Brand = r.Brand()
 	key.OS = r.OS()

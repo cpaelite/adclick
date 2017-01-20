@@ -43,6 +43,6 @@ var Ref gatherSaver
 
 // InitRefGatherSaver 初始化tracking.Ref
 func InitRefGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	Ref := newGatherSaver(g, referrerStatisSQL)
+	Ref = newGatherSaver(g, referrerStatisSQL)
 	Ref.Start(db)
 }

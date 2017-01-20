@@ -107,10 +107,10 @@ func GetFlow(flowId int64) (f *Flow) {
 	f = getFlow(flowId)
 	if f == nil {
 		f = newFlow(DBGetFlow(flowId))
-	}
-	if f != nil {
-		if err := setFlow(f); err != nil {
-			return nil
+		if f != nil {
+			if err := setFlow(f); err != nil {
+				return nil
+			}
 		}
 	}
 	return

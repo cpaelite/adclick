@@ -91,6 +91,7 @@ func setCampaign(ca *Campaign) error {
 	if ca.Id <= 0 {
 		return fmt.Errorf("setCampaign error:ca.Id(%d) is not positive", ca.Id)
 	}
+	log.Debugf("[setCampaign]ca.Id(%d),ca.Hash(%s)\n", ca.Id, ca.Hash)
 	cmu.Lock()
 	defer cmu.Unlock()
 	campaigns[ca.Id] = ca
@@ -160,23 +161,26 @@ func GetCampaign(cId int64) (ca *Campaign) {
 	ca = getCampaign(cId)
 	if ca == nil {
 		ca = newCampaign(DBGetCampaign(cId))
-	}
-	if ca != nil {
-		if err := setCampaign(ca); err != nil {
-			return nil
+		if ca != nil {
+			if err := setCampaign(ca); err != nil {
+				return nil
+			}
 		}
 	}
 
 	return
 }
 func GetCampaignByHash(cHash string) (ca *Campaign) {
+	defer func() {
+		log.Infof("[GetCampaignByHash]cHash(%s), ca(%+v)\n", cHash, ca)
+	}()
 	ca = getCampaignByHash(cHash)
 	if ca == nil {
 		ca = newCampaign(DBGetCampaignByHash(cHash))
-	}
-	if ca != nil {
-		if err := setCampaign(ca); err != nil {
-			return nil
+		if ca != nil {
+			if err := setCampaign(ca); err != nil {
+				return nil
+			}
 		}
 	}
 

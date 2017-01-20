@@ -43,6 +43,6 @@ var IP gatherSaver
 
 // InitIPGatherSaver 初始化tracking.IP
 func InitIPGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	ip := newGatherSaver(g, ipStatisSQL)
-	ip.Start(db)
+	IP = newGatherSaver(g, ipStatisSQL)
+	IP.Start(db)
 }

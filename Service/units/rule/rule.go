@@ -121,10 +121,10 @@ func GetRule(ruleId int64) (r *Rule) {
 	r = getRule(ruleId)
 	if r == nil {
 		r = newRule(DBGetRule(ruleId))
-	}
-	if r != nil {
-		if err := setRule(r); err != nil {
-			return nil
+		if r != nil {
+			if err := setRule(r); err != nil {
+				return nil
+			}
 		}
 	}
 	return

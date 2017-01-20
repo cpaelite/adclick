@@ -35,11 +35,8 @@ type Request interface {
 	ParseUrlTokens(url string) string
 
 	ExternalId() string
-	//SetExternalId(id string)
 	Cost() float64
-	//SetCost(cost string)
-	Vars(n uint) string // n:1~VarsMaxNum
-	//SetVars(n uint, v string) // n:1~VarsMaxNum
+	Vars(n uint) string // n:0~VarsMaxNum-1
 	ParseTSParams(
 		externalId common.TrafficSourceParams,
 		cost common.TrafficSourceParams,

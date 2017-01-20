@@ -73,10 +73,10 @@ func GetOffer(offerId int64) (o *Offer) {
 	o = getOffer(offerId)
 	if o == nil {
 		o = newOffer(DBGetOffer(offerId))
-	}
-	if o != nil {
-		if err := setOffer(o); err != nil {
-			return nil
+		if o != nil {
+			if err := setOffer(o); err != nil {
+				return nil
+			}
 		}
 	}
 	return

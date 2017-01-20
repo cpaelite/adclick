@@ -179,6 +179,8 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	req.SetUserId(u.Id)
+	req.SetUserIdText(u.IdText)
 	if err := u.OnLandingPageClick(w, req); err != nil {
 		log.Errorf("[Units][OnLandingPageClick]user.OnLandingPageClick failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -241,6 +243,8 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	req.SetUserId(u.Id)
+	req.SetUserIdText(u.IdText)
 	req.SetCampaignHash(campaignHash)
 	// if err := u.OnImpression(w, req); err != nil {
 	// 	log.Errorf("[Units][OnImpression]user.OnImpression failed for %s;%s\n", req.String(), err.Error())

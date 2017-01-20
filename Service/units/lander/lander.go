@@ -68,10 +68,10 @@ func GetLander(landerId int64) (l *Lander) {
 	l = getLander(landerId)
 	if l == nil {
 		l = newLander(DBGetLander(landerId))
-	}
-	if l != nil {
-		if err := setLander(l); err != nil {
-			return nil
+		if l != nil {
+			if err := setLander(l); err != nil {
+				return nil
+			}
 		}
 	}
 	return

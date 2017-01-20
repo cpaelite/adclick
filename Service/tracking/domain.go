@@ -43,6 +43,6 @@ var Domain gatherSaver
 
 // InitDomainGatherSaver 初始化tracking.Domain
 func InitDomainGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	Domain := newGatherSaver(g, referrerDomainStatisSQL)
+	Domain = newGatherSaver(g, referrerDomainStatisSQL)
 	Domain.Start(db)
 }
