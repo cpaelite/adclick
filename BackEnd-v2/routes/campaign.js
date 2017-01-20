@@ -363,7 +363,6 @@ router.post('/api/campaign/:id', function (req, res, next) {
         hash: Joi.string().optional(),
         targetUrl: Joi.string().optional(),
         targetFlowId: Joi.number().optional()
-
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
@@ -599,6 +598,42 @@ router.get('/api/campaign/:id', function (req, res, next) {
 
         return function start() {
             return _ref2.apply(this, arguments);
+        };
+    })();
+    start();
+});
+
+/**
+* @api {delete} /api/campaign/:id   delete campaign
+ * @apiName  delete campaign
+ * @apiGroup campaign
+ */
+router.delete('/api/campaign/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
+
+    const start = (() => {
+        var _ref3 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.deleteCampaign(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success'
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref3.apply(this, arguments);
         };
     })();
     start();

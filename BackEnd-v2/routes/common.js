@@ -128,9 +128,9 @@ function insertCampaign(value, connection) {
     }
 
     //flow targetType=1 &&  flow.id
-    if (value.flow && value.flow.id) {
+    if (value.targetFlowId) {
         col += ",`targetFlowId`";
-        val += "," + value.flow.id;
+        val += "," + value.targetFlowId;
     }
 
     return new Promise(function (resolve, reject) {
@@ -194,8 +194,8 @@ function updateCampaign(value, connection) {
     }
 
     //flow targetType=1 &&  flow.id
-    if (value.flow && value.flow.id) {
-        sqlCampaign += ",`targetFlowId`=" + value.flow.id;
+    if (value.targetFlowId) {
+        sqlCampaign += ",`targetFlowId`=" + value.targetFlowId;
     }
 
     sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
@@ -230,6 +230,19 @@ function getCampaign(id, userId, connection) {
                 }
                 resolve(camResult[0]);
             });
+        });
+    });
+}
+
+function deleteCampaign(id, userId, connection) {
+    var sqlCampaign = "update TrackingCampaign set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
         });
     });
 }
@@ -835,3 +848,4 @@ exports.getOfferDetail = getOfferDetail;
 exports.insertTrafficSource = insertTrafficSource;
 exports.gettrafficDetail = gettrafficDetail;
 exports.updatetraffic = updatetraffic;
+exports.deleteCampaign = deleteCampaign;
