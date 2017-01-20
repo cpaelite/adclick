@@ -20,6 +20,7 @@ var common = require('./common');
  * @apiParam {Number} offset
  * @apiParam {Number} limit
  * @apiParam {String} [filter]
+ * @apiParam {Number} active
  *
  *
  */
@@ -94,6 +95,12 @@ function trafficReport(value, connection) {
                         sql += " and t.`name` LIKE '%" + value.filter + "%'";
                     }
 
+                    if (value.active == 0) {
+                        sql += " and t.`deleted` = 0";
+                    } else if (value.active == 1) {
+                        sql += " and t.`deleted` = 1";
+                    }
+
                     if (value.sort) {
                         sql += " ORDER BY `" + value.sort + "` " + value.direction;
                     }
@@ -138,6 +145,12 @@ function affiliateReport(value, connection) {
 
                     if (value.filter) {
                         sql += " and t.`name` LIKE '%" + value.filter + "%'";
+                    }
+
+                    if (value.active == 0) {
+                        sql += " and t.`deleted` = 0";
+                    } else if (value.active == 1) {
+                        sql += " and t.`deleted` = 1";
                     }
 
                     if (value.sort) {
@@ -186,6 +199,12 @@ function flowReport(value, connection) {
                         sql += " and t.`name` LIKE '%" + value.filter + "%'";
                     }
 
+                    if (value.active == 0) {
+                        sql += " and t.`deleted` = 0";
+                    } else if (value.active == 1) {
+                        sql += " and t.`deleted` = 1";
+                    }
+
                     if (value.sort) {
                         sql += " ORDER BY `" + value.sort + "` " + value.direction;
                     }
@@ -230,6 +249,11 @@ function landerReport(value, connection) {
 
                     if (value.filter) {
                         sql += " and t.`name` LIKE '%" + value.filter + "%'";
+                    }
+                    if (value.active == 0) {
+                        sql += " and t.`deleted` = 0";
+                    } else if (value.active == 1) {
+                        sql += " and t.`deleted` = 1";
                     }
 
                     if (value.sort) {
@@ -278,6 +302,12 @@ function campaignReport(value, connection) {
                         sql += " and t.`name` LIKE '%" + value.filter + "%'";
                     }
 
+                    if (value.active == 0) {
+                        sql += " and t.`deleted` = 0";
+                    } else if (value.active == 1) {
+                        sql += " and t.`deleted` = 1";
+                    }
+
                     if (value.sort) {
                         sql += " ORDER BY `" + value.sort + "` " + value.direction;
                     }
@@ -322,6 +352,12 @@ function offerReport(value, connection) {
 
                     if (value.filter) {
                         sql += " and t.`name` LIKE '%" + value.filter + "%'";
+                    }
+
+                    if (value.active == 0) {
+                        sql += " and t.`deleted` = 0";
+                    } else if (value.active == 1) {
+                        sql += " and t.`deleted` = 1";
                     }
 
                     if (value.sort) {

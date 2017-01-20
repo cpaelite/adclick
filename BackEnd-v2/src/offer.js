@@ -186,6 +186,8 @@ router.get('/api/offer/:id',function(req,res,next){
     }
    start();
 
-})
+});
+
+
 
 module.exports = router;

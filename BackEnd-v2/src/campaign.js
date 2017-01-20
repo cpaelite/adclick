@@ -264,21 +264,20 @@ router.post('/api/campaign',function(req,res,next){
         userId: Joi.number().required(),
         idText:Joi.string().required(),
         name: Joi.string().required(),
-        
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().required().keys({
-            rules: Joi.array().required().length(1),
+        flow: Joi.object().optional().keys({
+            rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
              id: Joi.number(),
             name: Joi.string(),
             country: Joi.object(),
             redirectMode: Joi.number()
-        }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode'),
+        }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode','rules'),
         url: Joi.string().optional(),
         country: Joi.object().optional(),
         impPixelUrl: Joi.string().optional(),
@@ -287,7 +286,8 @@ router.post('/api/campaign',function(req,res,next){
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
-        targetUrl:Joi.string().optional()
+        targetUrl:Joi.string().optional(),
+        targetFlowId:Joi.number().optional()
     });
     req.body.userId = req.userId;
     req.body.idText=req.idText;
@@ -346,15 +346,15 @@ router.post('/api/campaign/:id',function(req,res,next){
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().required().keys({
-            rules: Joi.array().required().length(1),
+        flow: Joi.object().optional().keys({
+            rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
              id: Joi.number(),
             name: Joi.string(),
             country: Joi.object(),
             redirectMode: Joi.number()
-        }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode'),
+        }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode','rules'),
         url: Joi.string().optional(),
         country: Joi.object().optional(),
         impPixelUrl: Joi.string().optional(),
@@ -363,7 +363,8 @@ router.post('/api/campaign/:id',function(req,res,next){
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
-        targetUrl:Joi.string().optional()
+        targetUrl:Joi.string().optional(),
+        targetFlowId:Joi.number().optional()
 
     });
     req.body.userId = req.userId;
