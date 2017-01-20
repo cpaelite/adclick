@@ -194,13 +194,13 @@ cursor.execute("INSERT INTO Rule2Flow (ruleId, flowId, status) VALUES (%s,%s,%s)
 cursor.execute("INSERT INTO TrafficSource (userId, name, hash, postbackUrl, pixelRedirectUrl, impTracking, externalId,"
                " cost, params) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "TrafficSource.1", "TrafficSource.1.hash", "http://traffic.source.com/post/back/url/1/",
-                "http://traffic.source.com/pixel/redirect/url/1/", 0, "{}", "{}", "{}"))
+                "http://traffic.source.com/pixel/redirect/url/1/", 0, "{}", "{}", "[]"))
 traffic1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO TrafficSource (userId, name, hash, postbackUrl, pixelRedirectUrl, impTracking, externalId,"
                " cost, params) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "TrafficSource.2", "TrafficSource.2.hash", "http://traffic.source.com/post/back/url/2/",
-                "http://traffic.source.com/pixel/redirect/url/2/", 0, "{}", "{}", "{}"))
+                "http://traffic.source.com/pixel/redirect/url/2/", 0, "{}", "{}", "[]"))
 traffic2 = cursor.lastrowid
 
 
