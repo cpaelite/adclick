@@ -27,8 +27,8 @@
       offset: 1,
       sort: $scope.preferences.reportViewSort.key,
       direction: $scope.preferences.reportViewSort.direction,
-      zt: $scope.preferences.reportTimeZone,
-      status: $scope.preferences.entityType,
+      tz: $scope.preferences.reportTimeZone,
+      active: $scope.preferences.entityType,
       groupBy: perfType,
       from: $scope.fromDate + ' ' + $scope.fromTime,
       to: $scope.toDate + ' ' + $scope.toTime

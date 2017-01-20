@@ -220,6 +220,56 @@ router.get('/api/flows', function (req, res, next) {
 });
 
 
+/**
+ * @api {get} /api/networks  获取用户所有affilatenetworks
+ * @apiName  
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
+ *
+ */
+router.get('/api/networks', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    Joi.validate(req.body, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select  `id`,`name` from AffiliateNetwork where `userId` = ? and `deleted` =0 ", [
+                    value.userId
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data:{
+                            networks:result
+                        }
+                    });
+
+                });
+        });
+    });
+});
+
 
 
 

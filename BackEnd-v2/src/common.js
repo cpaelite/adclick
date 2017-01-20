@@ -128,6 +128,11 @@ function insertCampaign(value, connection) {
         val += ",'" + countryCode + "'";
     }
 
+     if (value.targetUrl) {
+        col += ",`targetUrl`";
+        val += ",'" + value.targetUrl + "'";
+    }
+
     //flow targetType=1 &&  flow.id
     if (value.flow && value.flow.id) {
         col += ",`targetFlowId`";
@@ -188,6 +193,10 @@ function updateCampaign(value, connection) {
     }
     if (value.targetType != undefined) {
         sqlCampaign += ",`targetType`=" + value.targetType
+    }
+    
+    if (value.targetUrl) {
+        sqlCampaign += ",`targetUrl`='" + value.targetUrl +"'"
     }
 
     //flow targetType=1 &&  flow.id
