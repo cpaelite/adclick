@@ -113,5 +113,14 @@ func DBGetAffiliateNetworkByHash(hash string) AffiliateNetworkConfig {
 }
 
 func parseIpWhiteList(s string) []string {
-	return strings.Split(s, "\n")
+	arr := strings.Split(s, "\n")
+	count := 0
+	for _, s := range arr {
+		trimed := strings.TrimSpace(s)
+		if len(trimed) != 0 {
+			arr[count] = trimed
+			count++
+		}
+	}
+	return arr[:count]
 }
