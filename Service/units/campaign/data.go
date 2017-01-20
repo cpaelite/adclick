@@ -63,6 +63,7 @@ func DBGetAvailableCampaigns() []CampaignConfig {
 		log.Errorf("[campaign][DBGetAvailableCampaigns]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c CampaignConfig
 	var arr []CampaignConfig
@@ -89,6 +90,7 @@ func DBGetUserCampaigns(userId int64) []CampaignConfig {
 		log.Errorf("[campaign][DBGetUserCampaigns]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c CampaignConfig
 	var arr []CampaignConfig
@@ -112,7 +114,7 @@ func DBGetCampaign(campaignId int64) (c CampaignConfig) {
 	sql := "SELECT id, name, userId, hash, url, impPixelUrl, trafficSourceId, trafficSourceName, costModel, cpcValue, cpaValue, cpmValue, postbackUrl, pixelRedirectUrl, targetType, targetFlowId, targetUrl, status FROM TrackingCampaign WHERE campaignId=?"
 	row := d.QueryRow(sql, campaignId)
 
-	if err := row.Scan(&c.Id, &c.Name, &c.UserId, &c.Hash, &c.Url, &c.ImpPixelUrl, &c.TrafficSourceId, &c.TrafficSourceName, &c.CostModel, &c.CPCValue, &c.CPAValue, &c.CPMValue, &c.PostbackUrl, &c.PixelRedirectUrl,  &c.TargetType, &c.TargetFlowId, &c.TargetUrl, &c.Status); err != nil {
+	if err := row.Scan(&c.Id, &c.Name, &c.UserId, &c.Hash, &c.Url, &c.ImpPixelUrl, &c.TrafficSourceId, &c.TrafficSourceName, &c.CostModel, &c.CPCValue, &c.CPAValue, &c.CPMValue, &c.PostbackUrl, &c.PixelRedirectUrl, &c.TargetType, &c.TargetFlowId, &c.TargetUrl, &c.Status); err != nil {
 		log.Errorf("[campaign][DBGetCampaign] scan failed:%v", err)
 		return
 	}

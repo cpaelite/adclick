@@ -18,6 +18,8 @@ func DBGetAvailableOffers() []OfferConfig {
 		log.Errorf("[offer][DBGetAvailableOffers]Query %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
+
 	var c OfferConfig
 	var arr []OfferConfig
 	for rows.Next() {
@@ -50,6 +52,8 @@ func DBGetUserOffers(userId int64) []OfferConfig {
 		log.Errorf("[offer][DBGetAvailableOffers]Query %s with userId:%v failed:%v", sql, userId, err)
 		return nil
 	}
+	defer rows.Close()
+
 	var c OfferConfig
 	var arr []OfferConfig
 	for rows.Next() {

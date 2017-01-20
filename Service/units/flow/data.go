@@ -25,6 +25,7 @@ func DBGetAvailableFlows() []FlowConfig {
 		log.Errorf("[flow][DBGetAvailableFlows]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c FlowConfig
 	var arr []FlowConfig
@@ -46,6 +47,7 @@ func DBGetUserFlows(userId int64) []FlowConfig {
 		log.Errorf("[flow][DBGetUserFlows]Query: %s with userId:%v failed:%v", sql, userId, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c FlowConfig
 	var arr []FlowConfig
@@ -72,14 +74,19 @@ func DBGetFlow(flowId int64) (c FlowConfig) {
 }
 
 func DBGetFlowRuleIds(flowId int64) (defaultRuleId FlowRule, ruleIds []FlowRule) {
+	defer func() {
+		log.Infof("DBGetFlowRuleIds:flowId(%d),defaultRuleId(%+v),ruleIds(%+v)\n",
+			flowId, defaultRuleId, ruleIds)
+	}()
 	d := dbgetter()
-	sql := "SELECT ruleId, status FROM Rule2Flow WHERE id=? AND deleted=0"
+	sql := "SELECT ruleId, status FROM Rule2Flow WHERE flowId=? AND deleted=0"
 
 	rows, err := d.Query(sql, flowId)
 	if err != nil {
 		log.Errorf("[flow][DBGetFlowRuleIds]Query: %s with id:%v failed:%v", sql, flowId, err)
 		return
 	}
+	defer rows.Close()
 
 	var c FlowRule
 	for rows.Next() {

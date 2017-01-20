@@ -77,6 +77,7 @@ func InitFlow(fId int64) error {
 func newFlow(c FlowConfig) (f *Flow) {
 	d, r := DBGetFlowRuleIds(c.Id)
 	if d.RuleId <= 0 {
+		log.Errorf("newFlow failed because default ruleId is 0 for flow(%d)\n", c.Id)
 		return nil
 	}
 	err := rule.InitRule(d.RuleId) // default始终有效

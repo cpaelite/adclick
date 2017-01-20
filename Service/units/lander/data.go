@@ -24,6 +24,7 @@ func DBGetAvailableLanders() []LanderConfig {
 		log.Errorf("[lander][DBGetAllLanders]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var l LanderConfig
 	var arr []LanderConfig
@@ -46,6 +47,7 @@ func DBGetUserLanders(userId int64) []LanderConfig {
 		log.Errorf("[lander][DBGetAllLanders]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var l LanderConfig
 	var arr []LanderConfig

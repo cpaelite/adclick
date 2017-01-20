@@ -126,7 +126,7 @@ func newCampaign(c CampaignConfig) (ca *Campaign) {
 	}
 	if c.TargetFlowId > 0 {
 		if err := flow.InitFlow(c.TargetFlowId); err != nil {
-			log.Errorf("[newCampaign]InitFlow failed with flow:%d for campaign:%d\n", c.TargetFlowId, c.Id)
+			log.Errorf("[newCampaign]InitFlow failed with flow(%d) for campaign(%d), err(%s)\n", c.TargetFlowId, c.Id, err.Error())
 			return nil
 		}
 	} else {

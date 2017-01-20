@@ -23,6 +23,7 @@ func DBGetAvailableAffliateNetworks() []AffiliateNetworkConfig {
 		log.Errorf("[affiliate][DBGetAvailableAffliateNetworks]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c AffiliateNetworkConfig
 	var arr []AffiliateNetworkConfig
@@ -51,6 +52,7 @@ func DBGetUserAffliateNetworks(userId int64) []AffiliateNetworkConfig {
 		log.Errorf("[affiliate][DBGetUserAffliateNetworks]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c AffiliateNetworkConfig
 	var arr []AffiliateNetworkConfig
