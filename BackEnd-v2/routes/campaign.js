@@ -268,7 +268,7 @@ router.post('/api/campaign', function (req, res, next) {
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().optional().keys({
+        flow: Joi.object().required().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
@@ -344,7 +344,7 @@ router.post('/api/campaign/:id', function (req, res, next) {
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().optional().keys({
+        flow: Joi.object().required().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),

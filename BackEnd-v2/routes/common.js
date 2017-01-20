@@ -128,9 +128,9 @@ function insertCampaign(value, connection) {
     }
 
     //flow targetType=1 &&  flow.id
-    if (value.targetFlowId) {
+    if (value.flow && value.flow.id) {
         col += ",`targetFlowId`";
-        val += "," + value.targetFlowId;
+        val += "," + value.flow.id;
     }
 
     return new Promise(function (resolve, reject) {
@@ -194,8 +194,9 @@ function updateCampaign(value, connection) {
     }
 
     //flow targetType=1 &&  flow.id
-    if (value.targetFlowId) {
-        sqlCampaign += ",`targetFlowId`=" + value.targetFlowId;
+    if (value.flow && value.flow.id) {
+        col += ",`targetFlowId`";
+        val += "," + value.flow.id;
     }
 
     sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;

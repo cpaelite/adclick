@@ -269,7 +269,7 @@ router.post('/api/campaign',function(req,res,next){
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().optional().keys({
+        flow: Joi.object().required().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
@@ -346,7 +346,7 @@ router.post('/api/campaign/:id',function(req,res,next){
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().optional().keys({
+        flow: Joi.object().required().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
@@ -406,10 +406,11 @@ router.post('/api/campaign/:id',function(req,res,next){
                     } else if (value.flow && value.flow.id) {
                         await common.updateFlow(value.userId,value.flow, connection)
                     } 
+                     
                         
                      
                    let campaignId = value.id ? value.id: (campResult? (campResult.insertId ? campResult.insertId: 0) :0);
-                    
+                      
                     if (!campaignId) {
                         throw new Error('Campaign ID Lost')
                     }
