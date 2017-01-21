@@ -42,7 +42,7 @@ func cookie(step string, req request.Request) (c *http.Cookie) {
 	}
 	c.Domain = req.TrackingDomain()
 	// 同一用户的所有cookie共享，所以不应该限制Path
-	//c.Path = req.TrackingPath()
+	c.Path = "/"
 	c.Name = "tstep"
 	c.HttpOnly = true // 客户端无法访问该Cookie
 	// 关闭浏览器，就无法继续跳转到后续页面，所以Cookie失效即可

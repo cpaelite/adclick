@@ -157,7 +157,7 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 
 	// parse mobile info from ua
 	ua := useragent.New(r.UserAgent())
-	log.Info(ua.UA())
+	log.Debug("User-Agent:", ua.UA())
 	req.os = ua.OS()
 	req.osVersion = ua.OSInfo().Version
 	req.browser, req.browserVersion = ua.Browser()

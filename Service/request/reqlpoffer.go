@@ -10,7 +10,7 @@ type LPOfferRequest struct {
 
 func CreateLPOfferRequest(reqId string, r *http.Request) (req *LPOfferRequest) {
 	breq, err := getReqCache(reqId)
-	if err == nil || breq != nil {
+	if err == nil && breq != nil {
 		breq.t = ReqLPOffer
 		return &LPOfferRequest{*breq}
 	}
