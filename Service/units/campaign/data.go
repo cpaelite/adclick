@@ -111,7 +111,7 @@ func DBGetUserCampaigns(userId int64) []CampaignConfig {
 
 func DBGetCampaign(campaignId int64) (c CampaignConfig) {
 	d := dbgetter()
-	sql := "SELECT id, name, userId, hash, url, impPixelUrl, trafficSourceId, trafficSourceName, costModel, cpcValue, cpaValue, cpmValue, postbackUrl, pixelRedirectUrl, targetType, targetFlowId, targetUrl, status FROM TrackingCampaign WHERE campaignId=?"
+	sql := "SELECT id, name, userId, hash, url, impPixelUrl, trafficSourceId, trafficSourceName, costModel, cpcValue, cpaValue, cpmValue, postbackUrl, pixelRedirectUrl, targetType, targetFlowId, targetUrl, status FROM TrackingCampaign WHERE id=?"
 	row := d.QueryRow(sql, campaignId)
 
 	if err := row.Scan(&c.Id, &c.Name, &c.UserId, &c.Hash, &c.Url, &c.ImpPixelUrl, &c.TrafficSourceId, &c.TrafficSourceName, &c.CostModel, &c.CPCValue, &c.CPAValue, &c.CPMValue, &c.PostbackUrl, &c.PixelRedirectUrl, &c.TargetType, &c.TargetFlowId, &c.TargetUrl, &c.Status); err != nil {
@@ -133,14 +133,14 @@ func DBGetCampaignByHash(campaignHash string) (c CampaignConfig) {
 	row := d.QueryRow(sql, campaignHash)
 
 	if err := row.Scan(&c.Id, &c.Name, &c.UserId, &c.Hash, &c.Url, &c.ImpPixelUrl, &c.TrafficSourceId, &c.TrafficSourceName, &c.CostModel, &c.CPCValue, &c.CPAValue, &c.CPMValue, &c.PostbackUrl, &c.PixelRedirectUrl, &c.TargetType, &c.TargetFlowId, &c.TargetUrl, &c.Status); err != nil {
-		log.Errorf("[campaign][DBGetCampaign] scan failed:%v", err)
+		log.Errorf("[campaign][DBGetCampaign] campaignHash:%s scan failed:%v", campaignHash, err)
 		return
 	}
 
 	var err error
 	c.TrafficSource, err = dbGetCampaignTrafficConfig(c.TrafficSourceId)
 	if err != nil {
-		log.Errorf("[campaign][DBGetCampaign] dbGetCampaignTrafficConfig failed:%v", err)
+		log.Errorf("[campaign][DBGetCampaign] dbGetCampaignTrafficConfig:%v failed:%v", c.TrafficSourceId, err)
 	}
 	return c
 }

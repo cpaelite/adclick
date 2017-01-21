@@ -3,7 +3,6 @@ package tracking
 import (
 	"AdClickTool/Service/log"
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -13,7 +12,6 @@ func Saving(db *sql.DB, stop chan struct{}) {
 	for {
 		select {
 		case m := <-toSave:
-			fmt.Println("Saving...", len(m))
 			err := doSave(db, m)
 			if err != nil {
 				panic(err)
@@ -23,7 +21,6 @@ func Saving(db *sql.DB, stop chan struct{}) {
 			for {
 				select {
 				case m := <-toSave:
-					fmt.Println("Saving...", len(m))
 					err := doSave(db, m)
 					if err != nil {
 						panic(err)

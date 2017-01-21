@@ -46,7 +46,7 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 
 	u := user.GetUserByIdText(userIdText)
 	if u == nil {
-		log.Errorf("[Units][OnLPOfferRequest]Invalid userIdText for %s:%s\n", requestId, common.SchemeHostURI(r))
+		log.Errorf("[Units][OnLPOfferRequest]Invalid userIdText:%s for %s:%s\n", userIdText, requestId, common.SchemeHostURI(r))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
