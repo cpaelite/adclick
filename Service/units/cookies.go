@@ -91,8 +91,8 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 	campaignId := cInfo.Get("campaignId")
 	es := cInfo.Get("step")
 	if reqId == "" || campaignId == "" || es == "" {
-		return nil, fmt.Errorf("[ParseCookie]Cookie(%s) does not have valid parameters in step(%s) with url(%s)\n",
-			c.Value, step, common.SchemeHostURI(r))
+		return nil, fmt.Errorf("[ParseCookie]Cookie(%s) does not have valid parameters in step(%s) with url(%s) reqId:%s campaignId:%s es:%s\n",
+			c.Value, step, common.SchemeHostURI(r), reqId, campaignId, es)
 	}
 	switch step {
 	case request.ReqLPClick:

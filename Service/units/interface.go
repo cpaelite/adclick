@@ -110,6 +110,8 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		req.ParseTSParams(ca.TrafficSource.ExternalId, ca.TrafficSource.Cost, ca.TrafficSource.Vars, r.URL.Query())
 	}
 
+	SetCookie(w, request.ReqLPOffer, req)
+
 	if err := u.OnLPOfferRequest(w, req); err != nil {
 		log.Errorf("[Units][OnLPOfferRequest]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -133,8 +135,6 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		tracking.Ref.AddVisit(req.ReferrerKey(timestamp), 1)
 	}
 
-	SetCookie(w, request.ReqLPOffer, req)
-
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
 		log.Errorf("[Units][OnLPOfferRequest]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
@@ -150,6 +150,7 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 	req, err := ParseCookie(request.ReqLPClick, r)
 	if err != nil || req == nil {
 		//TODO add error log
+		log.Errorf("ParseCookie failed Cookies:%+v err:%v", r.Cookies(), err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
