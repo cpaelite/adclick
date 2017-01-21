@@ -73,7 +73,7 @@ print "userId", userId
 # 创建 AffiliateNetwork
 ################################################################################
 
-postabck_url = "http://%s.%s.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"%(idText, args.campdomain)
+postabck_url = "http://%s.%s/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"%(idText, args.campdomain)
 
 cursor.execute("INSERT INTO AffiliateNetwork (userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
@@ -227,8 +227,8 @@ traffic2 = cursor.lastrowid
 cursor.execute("INSERT INTO TrackingCampaign (userId, name, hash, url, impPixelUrl, trafficSourceId, trafficSourceName,"
                " country, costModel, cpcValue, cpaValue, cpmValue, redirectMode, targetType, targetFlowId, targetUrl, "
                "status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "campaign.1", "campaign.1.hash", "http://%s.%s.com/campaign.1/"%(idText, args.campdomain),
-                "http://%s.%s.com/impression/campaign.1/"%(idText, args.campdomain), traffic1, "TrafficSource.1",
+               (userId, "campaign.1", "campaign.1.hash", "http://%s.%s/campaign.1/"%(idText, args.campdomain),
+                "http://%s.%s/impression/campaign.1/"%(idText, args.campdomain), traffic1, "TrafficSource.1",
                 "CHN", 1, 1.1, 1.2, 1.3, 0, 1, flow1, "", 1,))
 campaign1 = cursor.lastrowid
 
@@ -236,8 +236,8 @@ campaign1 = cursor.lastrowid
 cursor.execute("INSERT INTO TrackingCampaign (userId, name, hash, url, impPixelUrl, trafficSourceId, trafficSourceName,"
                " country, costModel, cpcValue, cpaValue, cpmValue, redirectMode, targetType, targetFlowId, targetUrl, "
                "status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "campaign.2", "campaign.2.hash", "http://%s.%s.com/campaign.2/"%(idText, args.campdomain),
-                "http://%s.%s.com/impression/campaign.2/"%(idText, args.campdomain), traffic1, "TrafficSource.1",
+               (userId, "campaign.2", "campaign.2.hash", "http://%s.%s/campaign.2/"%(idText, args.campdomain),
+                "http://%s.%s/impression/campaign.2/"%(idText, args.campdomain), traffic1, "TrafficSource.1",
                 "CHN", 2, 1.1, 1.2, 1.3, 0, 1, flow2, "", 1,))
 campaign2 = cursor.lastrowid
 
