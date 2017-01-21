@@ -5,6 +5,7 @@ var util = require('../util/index');
 var log4js = require('log4js');
 var log = log4js.getLogger('user');
 var md5 = require('md5');
+var moment =require('moment');
 
 
 /**
@@ -51,11 +52,13 @@ router.post('/auth', function(req, res, next) {
                     }
                     if (rows.length > 0) {
                         if (rows[0].password == md5(value.password)) {
+                            var expires = moment().add(7,'days').valueOf();
                             res.json({
                                 status: 1,
                                 message: 'success',
                                 data: {
-                                    token: util.setToken(rows[0].id,rows[0].idText),
+                                    token: util.setToken(rows[0].id,expires),
+                                    expires: expires,
                                     firstname: rows[0].firstname
                                 }
                             })
@@ -68,7 +71,7 @@ router.post('/auth', function(req, res, next) {
                     } else {
                         res.json({
                             status: 1001,
-                            message: "email not exist"
+                            message: "account not exist"
                         });
                     }
                 });

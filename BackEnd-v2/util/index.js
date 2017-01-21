@@ -3,22 +3,35 @@ var log4js = require('log4js');
 var log = log4js.getLogger('util');
 var uuidV4 = require('uuid/v4');
 var setting = require('../config/setting');
+ 
 
 exports.checkToken = function() {
   return function(req, res, next) {
-    /*var token = (req.body && req.body.access_token) || (req.query && req.query
-        .access_token) ||
-      req.headers['x-access-token'];*/
     var token = req.headers['authorization'];
     if (token) {
       token = token.split(' ')[1];
       try {
         var decode = jwt.decode(token, setting['jwtTokenSrcret']);
-        console.log(JSON.stringify(decode));
-        req.userId = decode.userid
-        req.idText=decode.idText
-          //TODO  验证userId
-        next();
+        if(decode.exp <= Date.now()){
+             return  next(new Error('access token has expired'));
+        }
+        pool.getConnection(function(err,connection){
+          if(err){
+            err.status =303 
+            return next(err);
+          }
+          connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss ,function(err,user){
+                if(err){
+                    return next(err); 
+                }
+                if(!user.length){
+                     next(new Error('no user'));
+                }
+                 req.userId = user[0].id;
+                 req.idText= user[0].idText;
+                 next();
+          });
+        });
       } catch (e) {
         log.error('[util.js][checkToken] error', e)
         next(e);
@@ -29,10 +42,10 @@ exports.checkToken = function() {
   }
 }
 
-exports.setToken = function(userid,idText) {
+exports.setToken = function(userid,expires) {
   return jwt.encode({
-    userid: userid,
-    idText:idText
+    iss: userid,
+    exp:expires
   }, setting['jwtTokenSrcret'])
 }
 

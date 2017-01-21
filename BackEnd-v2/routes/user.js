@@ -266,9 +266,9 @@ router.post('/api/password/reset', function (req, res, next) {
                 let connection = yield common.getConnection();
                 let result = yield query("select `password` from User where `id`= " + value.userId, connection);
                 let message;
-                if (result) {
+                if (result && result[0]) {
                     if (md5(value.oldpwd) == result[0].password) {
-                        yield query("update User set `password`= '" + value.pwd + "' where `id`=" + value.userId, connection);
+                        yield query("update User set `password`= '" + md5(value.pwd) + "' where `id`=" + value.userId, connection);
                         message = "success";
                     } else {
                         message = "old password error";
