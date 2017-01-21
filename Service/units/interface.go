@@ -78,6 +78,8 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	req.SetUserId(u.Id)
+
 	req.SetCampaignHash(campaignHash)
 	var ca *campaign.Campaign
 	if req.CampaignId() > 0 { // 如果是从cache中获取campaignId的话，需要对比下campaignHash和campaignId是否匹配
