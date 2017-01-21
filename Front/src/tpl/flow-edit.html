@@ -157,16 +157,36 @@
               </div>
 
               <div ng-if="f.type=='l2select'" ng-class="{'col-md-10': f.label}">
-                <div class="col-md-6 cs-select-panel">
+                <div class="col-md-6 cs-l2select-l1panel">
                   <div class="cs-select-query">
                     <input ng-model="cdt._t1.display">
                   </div>
                   <div ng-repeat="o in f.options | filter:cdt._t1">
-                    <label ng-click="cdt._suboptions=o.suboptions"
+                    <label ng-click="toggleL2select(cdt, o, f.name)"
                            ng-class="'cs-selected':exists(o.value, cdt[f.name])">
                       {{o.display}} 
                     </label>
                   </div>
+                </div>
+                <div class="col-md-6 cs-l2select-l2panel">
+                  <div class="cs-select-query">
+                    <input ng-model="cdt._t2.display">
+                  </div>
+                  <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
+                    <label ng-click="toggleL2select(cdt, o, f.name)"
+                           ng-class="'cs-selected':exists(o.value, cdt[f.name])">
+                      <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])">
+                      {{o.display}} 
+                    </label>
+                  </div>
+                  <div ng-unless="cdt._suboptions">
+                    <label>No items to select</label>
+                  </div>
+                </div>
+                <div class="col-md-12 cs-l2select-selected">
+                  <md-chips ng-model="cdt[f.name]" readonly="true" md-removable="true">
+                    <md-chip-template>{{cdt._def._fv2n[f.name][$chip]}}</md-chip-template>
+                  </md-chips>
                 </div>
               </div>
 

@@ -93,6 +93,22 @@
       allConditions.forEach(function(condition, idx) {
         conditionMap[condition.id] = idx;
         //console.log("id:", condition.id, ",display:", condition.display);
+        condition.fields.forEach(function(field) {
+          if (field.type == 'l2select') {
+            var val2name = {};
+            field.options.forEach(function(opt) {
+              val2name[opt.value] = opt.display;
+
+              opt.suboptions.forEach(function(subopt) {
+                val2name[subopt.value] = subopt.display;
+              });
+            });
+            if (!condition._fv2n) {
+              condition._fv2n = {};
+            }
+            condition._fv2n[field.name] = val2name;
+          }
+        });
       });
       
       // fulfill flow with lander/offer/condition
@@ -359,21 +375,33 @@
         list.push(item);
       }
     };
-                                                                            };
+    $scope.toggleL2select = function(cdt, option, fname) {
+      cdt._suboptions = option.suboptions;
+      $scope.toggle(option.value, cdt[fname]);
+    };
+
+    function cleanUpObject(obj) {
+      Object.keys(obj).forEach(function(key) {
+        if (key.indexOf('_') == 0) {
+          delete obj[key];
+        }
+      });
+    }
+
     $scope.save = function() {
-      // clean up flow data
+      // clean up before save
       var flowCopy = angular.copy(theFlow);
       flowCopy.rules.forEach(function(rule) {
         rule.conditions.forEach(function(condition) {
-          delete condition._def;
+          cleanUpObject(condition) {
         });
 
         rule.paths.forEach(function(path) {
           path.landers.forEach(function(lander) {
-            delete lander._def;
+            cleanUpObject(lander) {
           });
           path.offers.forEach(function(offer) {
-            delete offer._def;
+            cleanUpObject(offer) {
           });
         });
       });

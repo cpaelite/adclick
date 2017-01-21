@@ -1154,6 +1154,8 @@ app.get('/landers/:landerId', function (req, res) {
 
 /**
  * get list of landers
+ * params:
+ *  columns - needed columns, comma seperated, e.g. id,name
  * shang@v1
  */
 app.get('/api/landers', function (req, res) {
@@ -1265,6 +1267,8 @@ app.get('/api/offers/:offerId', function (req, res) {
 
 /**
  * get offers list
+ * params:
+ *  columns - needed columns, comma seperated, e.g. id,name
  * shang@v1
  */
 app.get('/api/offers', function (req, res) {
