@@ -29,9 +29,10 @@
       direction: $scope.preferences.reportViewSort.direction,
       tz: $scope.preferences.reportTimeZone,
       active: $scope.preferences.entityType,
-      groupBy: perfType,
+      groupBy: 'CampaignID',
       from: $scope.fromDate + ' ' + $scope.fromTime,
-      to: $scope.toDate + ' ' + $scope.toTime
+      to: $scope.toDate + ' ' + $scope.toTime,
+      type: 'TrackingCampaign'
     };
 
     function success(result) {
@@ -267,6 +268,7 @@
   }
 
   function editCampaignCtrl($scope, $mdDialog, Campaign, Flows, TrafficSources) {
+    $scope.tags = [];
     if (this.item) {
       Campaign.get({id: 18}, function(campaign) {
         $scope.item = angular.copy(campaign.data);
@@ -280,9 +282,18 @@
           $scope.radioTitle = 'CPM';
           $scope.costModelValue = $scope.item.cpmValue;
         }
+        $scope.tags = $scope.item.tags;
         $scope.trafficSource = {
           id: $scope.item.trafficSourceId,
           name: $scope.item.trafficSourceName
+        };
+        if (!$scope.item['costModel']) {
+          $scope.item = {
+            costModel: 0,
+            redirectMode: 0,
+            targetType: 1,
+            status: '1',
+          };
         }
       });
       this.title = "edit";
@@ -292,7 +303,6 @@
         redirectMode: 0,
         targetType: 1,
         status: '1',
-        tags: []
       };
       this.title = "add";
     }
@@ -322,6 +332,7 @@
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
+      $scope.item.tags = $scope.tags;
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
@@ -419,16 +430,23 @@
   }
 
   function editLanderCtrl($scope, $mdDialog, Lander) {
+    $scope.tags = [];
     if (this.item) {
-      Lander.get({id: 41}, function (lander) {
+      Lander.get({id: 46}, function (lander) {
         $scope.item = angular.copy(lander.data);
+        $scope.tags = $scope.item.tags;
+        if (!$scope.item['url']) {
+          $scope.item = {
+            url: 'http://',
+            numberOfOffers: 1,
+          };
+        }
       });
       this.title = "edit";
     } else {
       $scope.item = {
         url: 'http://',
         numberOfOffers: 1,
-        tags: []
       };
       this.title = "add";
     }
@@ -444,6 +462,7 @@
     }
 
     this.save = function () {
+      $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Lander.save($scope.item, success);
@@ -475,16 +494,21 @@
   }
 
   function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetworks) {
+    $scope.tags = [];
     if (this.item) {
-      Offer.get({id: 18}, function (offer) {
+      Offer.get({id: 22}, function (offer) {
         $scope.item = angular.copy(offer.data);
+        if (!$scope.item['payoutMode']) {
+          $scope.item = {
+            payoutMode: 0,
+          };
+        }
       });
       this.title = "edit";
     } else {
       $scope.item = {
         payoutMode: 0,
-        url: '',
-        tags: []
+        url: ''
       };
       this.title = "add";
     }
@@ -494,7 +518,7 @@
 
     // AffiliateNetword
     AffiliateNetworks.get(null, function (affiliates) {
-      $scope.affiliates = affiliates.data.affiliatenetworks;
+      $scope.affiliates = affiliates.data.networks;
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -506,6 +530,7 @@
     }
 
     this.save = function () {
+      $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Offer.save($scope.item, success);
@@ -537,7 +562,7 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
     if (this.item) {
-      TrafficSource.get({id: 11}, function (trafficsource) {
+      TrafficSource.get({id: 15}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
         if (!$scope.item.params) {
           $scope.item.params = [
@@ -557,8 +582,7 @@
       this.title = "edit";
     } else {
       $scope.item = {
-        costModel: 'Do not track costs',
-        status: '0',
+        impTracking: 0,
         params: [
           {Parameter: '', Placeholder: '', Name: '', Track: ''},
           {Parameter: '', Placeholder: '', Name: '', Track: ''},
@@ -586,6 +610,7 @@
     }
 
     this.save = function () {
+      $scope.item.params = JSON.stringify($scope.item.params);
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {

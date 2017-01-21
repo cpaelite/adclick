@@ -16,7 +16,7 @@ var common =require('./common');
  * @apiParam {String} name
  * @apiParam {String} url
  * @apiParam {Number} numberOfOffers
- * @apiParam {Object} [country]
+ * @apiParam {String} [country]
  * @apiParam {Array} [tags]
  *
  * @apiSuccessExample {json} Success-Response:
@@ -30,7 +30,7 @@ router.post('/api/lander', function (req, res, next) {
         userId: Joi.number().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.object().optional(),
+        country: Joi.string().optional(),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional()
     });
@@ -73,7 +73,7 @@ router.post('/api/lander', function (req, res, next) {
  * @apiParam {String} name
  * @apiParam {String} url
  * @apiParam {Number} numberOfOffers
- * @apiParam {Object} [country]
+ * @apiParam {String} [country]
  * @apiParam {Array} [tags]
  *
  * @apiSuccessExample {json} Success-Response:
@@ -88,7 +88,7 @@ router.post('/api/lander/:id', function (req, res, next) {
         userId: Joi.number().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.object().optional(),
+        country: Joi.string().optional(),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional()
