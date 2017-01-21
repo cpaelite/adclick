@@ -178,4 +178,39 @@ router.get('/api/traffic/:id', function (req, res, next) {
     start();
 });
 
+/**
+ * @api {delete} /api/traffic/:id 删除traffic
+ * @apiName  删除traffic
+ * @apiGroup traffic
+ */
+router.delete('/api/traffic/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    req.body.id = req.params.id;
+    const start = (() => {
+        var _ref4 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.deletetraffic(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success'
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref4.apply(this, arguments);
+        };
+    })();
+    start();
+});
+
 module.exports = router;

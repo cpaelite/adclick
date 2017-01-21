@@ -49,7 +49,6 @@ router.post('/api/flow',function(req,res,next){
  * @apiParam {String} name
  * @apiParam {Object} country
  * @apiParam {Number} redirectMode
- * @apiParam {Number} [deleted]
  */
 router.post('/api/flow/:id',function(req,res,next){
    var schema=Joi.object().keys({
@@ -61,8 +60,7 @@ router.post('/api/flow/:id',function(req,res,next){
             country: Joi.object(),
             redirectMode: Joi.number(),
             userId:Joi.number().required(),
-            idText:Joi.string().required(),
-            deleted:Joi.number() 
+            idText:Joi.string().required()
         }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode','deleted');
     req.body.userId = req.userId; 
     req.body.idText=req.idText;   
@@ -76,6 +74,37 @@ router.post('/api/flow/:id',function(req,res,next){
     }).catch(function(err){
         next(err);
     }); 
+});
+
+
+/**
+ * @api {delete} /api/flow/:id 删除flow
+ * @apiName  删除flow
+ * @apiGroup flow
+ */
+router.delete('/api/flow/:id',function(req,res,next){
+    var schema=Joi.object().keys({
+            id: Joi.number().required(),
+            userId:Joi.number().required()
+    });
+    req.body.userId = req.userId;  
+    req.body.id=req.params.id;
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.deleteFlow(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success'
+            });
+        }catch(e){
+            return next(e);
+        }   
+    }
+    start();
+
 });
 
 module.exports=router;
@@ -214,7 +243,7 @@ module.exports=router;
 
                                         }
                                     }
-                                     await common.commit(connection);
+                                    
                                 }catch(e){
                                     throw e;
                                 }
@@ -224,7 +253,8 @@ module.exports=router;
             }catch(err){
                 await common.rollback(connection);
                 throw err;
-            } 
+            }
+           await common.commit(connection);  
            connection.release(); 
            delete value.userId;          
            Result=value;

@@ -190,4 +190,36 @@ router.get('/api/offer/:id',function(req,res,next){
 
 
 
+/**
+ * @api {delete} /api/offer/:id 删除offer
+ * @apiName  删除offer
+ * @apiGroup offer
+ */
+router.delete('/api/offer/:id',function(req,res,next){
+    var schema=Joi.object().keys({
+            id: Joi.number().required(),
+            userId:Joi.number().required()
+    });
+    req.body.userId = req.userId;  
+    req.body.id=req.params.id;
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.deleteOffer(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success'
+            });
+        }catch(e){
+            return next(e);
+        }   
+    }
+    start();
+
+});
+
+
+
 module.exports = router;

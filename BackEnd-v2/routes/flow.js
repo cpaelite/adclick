@@ -46,7 +46,6 @@ router.post('/api/flow', function (req, res, next) {
  * @apiParam {String} name
  * @apiParam {Object} country
  * @apiParam {Number} redirectMode
- * @apiParam {Number} [deleted]
  */
 router.post('/api/flow/:id', function (req, res, next) {
     var schema = Joi.object().keys({
@@ -58,8 +57,7 @@ router.post('/api/flow/:id', function (req, res, next) {
         country: Joi.object(),
         redirectMode: Joi.number(),
         userId: Joi.number().required(),
-        idText: Joi.string().required(),
-        deleted: Joi.number()
+        idText: Joi.string().required()
     }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode', 'deleted');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
@@ -75,10 +73,45 @@ router.post('/api/flow/:id', function (req, res, next) {
     });
 });
 
+/**
+ * @api {delete} /api/flow/:id 删除flow
+ * @apiName  删除flow
+ * @apiGroup flow
+ */
+router.delete('/api/flow/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    req.body.id = req.params.id;
+    const start = (() => {
+        var _ref = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.deleteFlow(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success'
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref.apply(this, arguments);
+        };
+    })();
+    start();
+});
+
 module.exports = router;
 
 const start = (() => {
-    var _ref = _asyncToGenerator(function* (data, schema) {
+    var _ref2 = _asyncToGenerator(function* (data, schema) {
         let Result;
         let ResultError;
         try {
@@ -204,7 +237,6 @@ const start = (() => {
                                     }
                                 }
                             }
-                            yield common.commit(connection);
                         } catch (e) {
                             throw e;
                         }
@@ -214,6 +246,7 @@ const start = (() => {
                 yield common.rollback(connection);
                 throw err;
             }
+            yield common.commit(connection);
             connection.release();
             delete value.userId;
             Result = value;
@@ -230,6 +263,6 @@ const start = (() => {
     });
 
     return function start(_x, _x2) {
-        return _ref.apply(this, arguments);
+        return _ref2.apply(this, arguments);
     };
 })();

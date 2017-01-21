@@ -549,17 +549,17 @@ router.post('/api/campaign/:id',function(req,res,next){
 
                                         }
                                     }
-                                     await common.commit(connection);
                                 }catch(e){
                                     throw e;
                                 }
                         }
                     }
-                   
+                  
             }catch(err){
                 await common.rollback(connection);
                 throw err;
             } 
+           await common.commit(connection); 
            connection.release(); 
            //redis pub
            new Pub(true).publish(setting.redis.channel,value.userId);

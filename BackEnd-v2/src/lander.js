@@ -75,7 +75,6 @@ router.post('/api/lander', function (req, res, next) {
  * @apiParam {Number} numberOfOffers
  * @apiParam {Object} [country]
  * @apiParam {Array} [tags]
- * @apiParam {Number} [deleted]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -92,7 +91,6 @@ router.post('/api/lander/:id', function (req, res, next) {
         country: Joi.object().optional(),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional(),
-        deleted: Joi.number().optional(),
         hash: Joi.string().optional()
     });
 
@@ -164,5 +162,37 @@ router.get('/api/lander/:id',function(req,res,next){
    start();
 
 })
+
+
+
+/**
+ * @api {delete} /api/lander/:id 删除lander
+ * @apiName  删除lander
+ * @apiGroup lander
+ */
+router.delete('/api/lander/:id',function(req,res,next){
+    var schema=Joi.object().keys({
+            id: Joi.number().required(),
+            userId:Joi.number().required()
+    });
+    req.body.userId = req.userId;  
+    req.body.id=req.params.id;
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.deleteLander(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success'
+            });
+        }catch(e){
+            return next(e);
+        }   
+    }
+    start();
+
+});
 
 module.exports = router;
