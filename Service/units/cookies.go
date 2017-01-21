@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
@@ -27,7 +26,6 @@ func cookie(step string, req request.Request) (c *http.Cookie) {
 		log.Infof("new cookie:%+v\n", *c)
 	}()
 	req.AddCookie("reqId", req.Id())
-	req.AddCookie("campaignId", fmt.Sprintf("%d", req.CampaignId()))
 	switch step {
 	case request.ReqImpression:
 		req.AddCookie("step", request.ReqImpression)
@@ -87,12 +85,11 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 			c.Value, err, step, common.SchemeHostURI(r))
 	}
 
-	reqId := cInfo.Get("reqid")
-	campaignId := cInfo.Get("campaignId")
+	reqId := cInfo.Get("reqId")
 	es := cInfo.Get("step")
-	if reqId == "" || campaignId == "" || es == "" {
-		return nil, fmt.Errorf("[ParseCookie]Cookie(%s) does not have valid parameters in step(%s) with url(%s) reqId:%s campaignId:%s es:%s\n",
-			c.Value, step, common.SchemeHostURI(r), reqId, campaignId, es)
+	if reqId == "" || es == "" {
+		return nil, fmt.Errorf("[ParseCookie]Cookie(%s) does not have valid parameters in step(%s) with url(%s) reqId:%s es:%s\n",
+			c.Value, step, common.SchemeHostURI(r), reqId, es)
 	}
 	switch step {
 	case request.ReqLPClick:
@@ -121,17 +118,10 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 	req, err = request.CreateRequest(reqId, step, r)
 	if req == nil || err != nil {
 		return nil, fmt.Errorf("[ParseCookie]CreateRequest error(%v) in step(%s) with url(%s)\n",
-			c.Value, err, step, common.SchemeHostURI(r))
+			err, step, common.SchemeHostURI(r))
 	}
 
 	log.Infof("[ParseCookie]Cookie(%s) for request(%s) in step(%s) with url(%s)\n",
 		vs, req.Id(), step, common.SchemeHostURI(r))
-
-	cid, err := strconv.ParseInt(campaignId, 10, 64)
-	if err != nil || cid <= 0 {
-		return nil, fmt.Errorf("[ParseCookie]Parse campaignId(%s) failed with error(%v) for request(%s)\n",
-			campaignId, err, req.Id())
-	}
-	req.SetCampaignId(cid)
 	return
 }

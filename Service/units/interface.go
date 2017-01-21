@@ -184,6 +184,9 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 
 	req.SetUserId(u.Id)
 	req.SetUserIdText(u.IdText)
+
+	SetCookie(w, request.ReqLPClick, req)
+
 	if err := u.OnLandingPageClick(w, req); err != nil {
 		log.Errorf("[Units][OnLandingPageClick]user.OnLandingPageClick failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -197,7 +200,6 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 	tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
 	tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
 
-	SetCookie(w, request.ReqLPClick, req)
 
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
 		log.Errorf("[Units][OnLandingPageClick]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))

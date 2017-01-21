@@ -12,7 +12,7 @@ import (
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/db"
 	"AdClickTool/Service/log"
-	"AdClickTool/Service/util/xxtea"
+	"time"
 )
 
 const cacheSvrTitle = "REQCACHE"
@@ -54,7 +54,7 @@ func gentToken(req *reqbase) (token string) {
 	}
 	return common.GenRandId()
 }
-func setReqCache(req *reqbase) (err error) {
+func setReqCache(req *reqbase, expire time.Duration) (err error) {
 	if req == nil {
 		return errors.New("req is nil for setReqCache")
 	}
@@ -70,7 +70,9 @@ func setReqCache(req *reqbase) (err error) {
 			if svr == nil {
 				return fmt.Errorf("[setReqCache]%s redis client does not exist", cacheSvrTitle)
 			}
-			err = svr.Append(req.Id(), req2cacheStr(req)).Err()
+			v := req2cacheStr(req)
+			err = svr.Set(req.Id(), v, expire).Err()
+			log.Infof("[request][setReqCache] key:%s value:%s err:%v\n", req.Id(), v, err)
 		}
 	case 2: //方案2：使用程序内部的Cache。外部通过userIdText做分流。
 		{
@@ -89,7 +91,8 @@ func getReqCache(reqId string) (req *reqbase, err error) {
 			if svr == nil {
 				return nil, fmt.Errorf("[getReqCache]%s redis client does not exist", cacheSvrTitle)
 			}
-			req = cacheStr2Req(svr.Get(reqId).String())
+			cmd := svr.Get(reqId)
+			req = cacheStr2Req(cmd.Val())
 		}
 	case 2: //方案2：使用程序内部的Cache。外部通过userIdText做分流。
 		{
@@ -196,7 +199,7 @@ func req2cacheStr(req *reqbase) (caStr string) {
 		ku.Add("tsVars", common.EncodeParams(req.tsVars))
 	}
 
-	return base64.URLEncoding.EncodeToString(xxtea.XxteaEncrypt([]byte(ku.Encode())))
+	return base64.URLEncoding.EncodeToString([]byte(ku.Encode()))
 }
 
 func cacheStr2Req(caStr string) (req *reqbase) {
@@ -205,11 +208,13 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 	}
 	bt, err := base64.URLEncoding.DecodeString(caStr)
 	if err != nil {
+		log.Errorf("DecodeString:%s failed:%v", caStr, err)
 		return
 	}
-	bc := xxtea.XxteaDecrypt(bt)
-	bd, err := url.ParseQuery(string(bc))
+	//bc := xxtea.XxteaDecrypt(bt)
+	bd, err := url.ParseQuery(string(bt))
 	if err != nil {
+		log.Errorf("ParseQuery:%s failed:%v", caStr, err)
 		return
 	}
 
@@ -249,6 +254,8 @@ func cacheStr2Req(caStr string) (req *reqbase) {
 		browser:        bd.Get("browser"),
 		browserVersion: bd.Get("browserv"),
 		connectionType: bd.Get("connType"),
+		cookie:         make(map[string]string),
+		urlParam:       make(map[string]string),
 	}
 
 	req.cost, _ = strconv.ParseFloat(bd.Get("cost"), 64)

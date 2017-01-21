@@ -500,9 +500,16 @@ func (r *reqbase) ParseUrlTokens(url string) string {
 	return url
 }
 
+func getDurationForRedis(expire time.Time) time.Duration {
+	d := expire.Sub(time.Now())
+	if d < 0 {
+		return 0
+	}
+	return d
+}
+
 func (r *reqbase) CacheSave(expire time.Time) bool {
-	//TODO 加入expire支持
-	if err := setReqCache(r); err != nil {
+	if err := setReqCache(r, getDurationForRedis(expire)); err != nil {
 		log.Errorf("[reqbase][CacheSave]setReqCache failed for expire(%s) with err(%s) for request(%s)\n",
 			expire.String(), err.Error(), r.String())
 		return false

@@ -211,7 +211,7 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 
 	pp := strings.Split(req.TrackingPath(), "/")
 	switch len(pp) {
-	case 0: // path为/click，按照权重选择一个Offer
+	case 2: // path为/click，按照权重选择一个Offer
 		y := rand.Intn(int(p.owSum))
 		oy := 0
 		for _, o := range p.offers {
@@ -224,8 +224,8 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 				return offer.GetOffer(o.OfferId).OnLandingPageClick(w, req)
 			}
 		}
-	case 1: // path为/click/N，按照指定顺序(1~)选择一个Offer
-		i, err := strconv.ParseInt(pp[1], 10, 64)
+	case 3: // path为/click/N，按照指定顺序(1~)选择一个Offer
+		i, err := strconv.ParseInt(pp[2], 10, 64)
 		if err != nil || i == 0 || i > int64(len(p.offers)) {
 			return fmt.Errorf("[Path][OnLandingPageClick]Target offer path(%s)(i:%d) parse failed err(%v) for request(%s) in path(%d)(offers:%d)",
 				req.TrackingPath(), i, req.Id(), p.Id, len(p.offers))

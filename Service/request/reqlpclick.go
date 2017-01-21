@@ -11,12 +11,12 @@ type LPClickRequest struct {
 	reqbase
 }
 
-func CreateLPClickRequest(reqId string, r *http.Request) (req *LPClickRequest) {
+func CreateLPClickRequest(reqId string, r *http.Request) Request {
 	breq, err := getReqCache(reqId)
 	if err != nil || breq == nil {
 		log.Errorf("[CreateLPClickRequest]Failed with reqId(%s) from %s with err(%v)\n",
 			reqId, common.SchemeHostURI(r), err)
-		return
+		return nil
 	}
 
 	breq.t = ReqLPClick
