@@ -129,6 +129,15 @@ func TrackingRevenue(req request.Request, Revenue float64) {
 	tracking.Ref.AddRevenue(req.ReferrerKey(timestamp), Revenue)
 }
 
+// TrackingConversion 添加Revenue统计信息
+func TrackingConversion(req request.Request, count int) {
+	timestamp := tracking.Timestamp()
+	tracking.AddConversion(req.AdStatisKey(timestamp), count)
+	tracking.IP.AddConversion(req.IPKey(timestamp), count)
+	tracking.Domain.AddConversion(req.DomainKey(timestamp), count)
+	tracking.Ref.AddConversion(req.ReferrerKey(timestamp), count)
+}
+
 func (u *User) OnLandingPageClick(w http.ResponseWriter, req request.Request) error {
 	campaignId := req.CampaignId()
 	ca := campaign.GetCampaign(campaignId)

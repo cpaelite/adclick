@@ -313,7 +313,7 @@ func (ca *Campaign) PostbackToTrafficSource(req request.Request) error {
 	}()
 
 	if err != nil {
-		log.Debugf("[campaign][PostbackToTrafficSource] req:%v postback failed:[%v]", err)
+		log.Debugf("[campaign][PostbackToTrafficSource] postback failed:[%v]", err)
 	}
 
 	return nil
