@@ -1193,10 +1193,7 @@ app.get('/api/offer/:offerId', function (req, res) {
     data: {
       "id": "9f91a026-aa8e-437c-b202-cd23fe6f02de",
       "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
-      "namePostfix": "yoshop-Android-benson-CAUSAU",
-      "updatedTime": "2017-01-04T02:54:43.730Z",
-      "createdTime": "2016-12-30T09:57:24.493Z",
-      "clientId": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
+      "payoutMode": 0,
       "affiliateNetwork": {
         "id": "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c",
         "name": "hasoffer"
@@ -1296,46 +1293,69 @@ app.get('/api/trafficsources', function (req, res) {
     message: "",
     data: {
       trafficsources: [
-        {id: 10, name: '10'},
-        {id: 2, name: '2'},
-        {id: 3, name: '3'}
+        {id: 10, name: 'traffic-source-1'},
+        {id: 2, name: 'traffic-source-2'},
+        {id: 3, name: 'traffic-source-3'}
       ]
     }
   };
   res.send(result);
 });
 
-app.get('/traffic/source', function (req, res) {
-  var result = {
-    rows: [
-      {id: 1, name: 'traffic1', token: '1', status: 1, budget: 0.5},
-      {id: 2, name: 'traffic2', token: '1', status: 1, budget: 0.5},
-      {id: 3, name: 'traffic3', token: '1', status: 1, budget: 0.5},
-      {id: 4, name: 'traffic4', token: '1', status: 1, budget: 0.5},
-      {id: 5, name: 'traffic5', token: '1', status: 1, budget: 0.5}
-    ],
-    count: 10
-  };
-  res.send(result);
-});
-
-app.post('/traffic/source', function (req, res) {
+app.post('/api/traffic', function (req, res) {
   var item = req.body;
   item.id = 123;
   res.send({item: item});
 });
 
-app.post('/traffic/source/:tsId', function (req, res) {
+app.get('/api/traffic/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      id: 1,
+      name: "traffic1",
+      params: []
+    }
+  };
+  res.send(result);
+});
+
+app.post('/api/traffic/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      id: 1,
+      name: "traffic1",
+      params: []
+    }
+  };
   res.send({item: req.body});
 });
 
-app.delete('/traffic/source/:tsId', function (req, res) {
+app.delete('/api/traffic/:id', function (req, res) {
   res.send({item: {id: req.params.tsId}});
 });
 
 app.post('/traffic/source/status', function (req, res) {
   var item = req.body;
   res.send({item: item});
+});
+
+app.get('/api/networks', function (req, res) {
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      affiliatenetworks: [
+        {id: 10, name: 'affiliate-network-1'},
+        {id: 2, name: 'affiliate-network-2'},
+        {id: 3, name: 'affiliate-network-3'}
+      ]
+    }
+  };
+  res.send(result);
 });
 
 app.listen(5000, function () {

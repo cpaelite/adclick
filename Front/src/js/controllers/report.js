@@ -280,6 +280,10 @@
           $scope.radioTitle = 'CPM';
           $scope.costModelValue = $scope.item.cpmValue;
         }
+        $scope.trafficSource = {
+          id: $scope.item.trafficSourceId,
+          name: $scope.item.trafficSourceName
+        }
       });
       this.title = "edit";
     } else {
@@ -490,7 +494,7 @@
 
     // AffiliateNetword
     AffiliateNetworks.get(null, function (affiliates) {
-      $scope.affiliates = affiliates.data
+      $scope.affiliates = affiliates.data.affiliatenetworks;
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -535,6 +539,20 @@
     if (this.item) {
       TrafficSource.get({id: 11}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
+        if (!$scope.item.params) {
+          $scope.item.params = [
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''}
+          ];
+        }
       });
       this.title = "edit";
     } else {
@@ -558,6 +576,9 @@
       this.title = "add";
       $scope.urlToken = '';
     }
+
+    this.titleType = angular.copy(this.perfType);
+
     this.cancel = $mdDialog.cancel;
 
     function success(item) {

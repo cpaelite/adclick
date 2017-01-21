@@ -40,7 +40,7 @@ angular.module('app')
     return $resource('/api/affilate/:id', {id: '@id'});
   }])
   .factory('AffiliateNetworks', ['$resource', function ($resource) {
-    return $resource('/api/affilate');
+    return $resource('/api/networks');
   }])
   .factory('Country', ['$resource', function ($resource) {
     return $resource('/countries');
