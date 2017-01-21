@@ -268,8 +268,18 @@
 
   function editCampaignCtrl($scope, $mdDialog, Campaign, Flows, TrafficSources) {
     if (this.item) {
-      Campaign.get({id: this.item.id}, function(campaign) {
-        $scope.item = angular.copy(campaign);
+      Campaign.get({id: 18}, function(campaign) {
+        $scope.item = angular.copy(campaign.data);
+        if ($scope.item.costModel == 1) {
+          $scope.radioTitle = 'CPC';
+          $scope.costModelValue = $scope.item.cpcValue;
+        } else if ($scope.item.costModel == 2) {
+          $scope.radioTitle = 'CPA';
+          $scope.costModelValue = $scope.item.cpaValue;
+        } else if ($scope.item.costModel == 3) {
+          $scope.radioTitle = 'CPM';
+          $scope.costModelValue = $scope.item.cpmValue;
+        }
       });
       this.title = "edit";
     } else {
@@ -336,9 +346,7 @@
       }
     };
 
-    $scope.typeRadio = false;
     $scope.radioSelect = function (type) {
-      $scope.typeRadio = true;
       $scope.radioTitle = type;
     };
 
@@ -377,7 +385,7 @@
   function editFlowCtrl($scope, $mdDialog, Flow) {
     if (this.item) {
       Flow.get({id: this.item.id}, function (flow) {
-        $scope.item = angular.copy(flow);
+        $scope.item = angular.copy(flow.data);
       });
       this.title = "edit";
     } else {
@@ -408,14 +416,15 @@
 
   function editLanderCtrl($scope, $mdDialog, Lander) {
     if (this.item) {
-      Lander.get({id: this.item.id}, function (lander) {
-        $scope.item = angular.copy(lander);
+      Lander.get({id: 41}, function (lander) {
+        $scope.item = angular.copy(lander.data);
       });
       this.title = "edit";
     } else {
       $scope.item = {
         url: 'http://',
-        numberOfOffers: 1
+        numberOfOffers: 1,
+        tags: []
       };
       this.title = "add";
     }
@@ -439,7 +448,6 @@
 
     var self = this;
     self.readonly = false;
-    $scope.item.tags = [];
     self.newVeg = function (chip) {
       return {
         name: chip,
@@ -464,14 +472,15 @@
 
   function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetworks) {
     if (this.item) {
-      Offer.get({id: this.item.id}, function (offer) {
-        $scope.item = angular.copy(offer);
+      Offer.get({id: 18}, function (offer) {
+        $scope.item = angular.copy(offer.data);
       });
       this.title = "edit";
     } else {
       $scope.item = {
         payoutMode: 0,
-        url: ''
+        url: '',
+        tags: []
       };
       this.title = "add";
     }
@@ -480,11 +489,9 @@
     $scope.countries = $scope.$root.countries;
 
     // AffiliateNetword
-    $scope.affiliates = [
-      {id: 1, name: '1'},
-      {id: 2, name: '2'},
-      {id: 3, name: '3'}
-    ];
+    AffiliateNetworks.get(null, function (affiliates) {
+      $scope.affiliates = affiliates.data
+    });
 
     this.titleType = angular.copy(this.perfType);
 
@@ -502,7 +509,6 @@
     };
     var self = this;
     self.readonly = false;
-    $scope.item.tags = [];
     self.newVeg = function (chip) {
       return {
         name: chip,
@@ -527,8 +533,8 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
     if (this.item) {
-      TrafficSource.get({id: this.item.id}, function (trafficsource) {
-        $scope.item = trafficsource;
+      TrafficSource.get({id: 11}, function (trafficsource) {
+        $scope.item = angular.copy(trafficsource.data);
       });
       this.title = "edit";
     } else {
