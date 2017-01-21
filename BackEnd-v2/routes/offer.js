@@ -19,7 +19,7 @@ var common = require('./common');
  * @apiParam {Number} payoutMode
  * @apiParam {Object} affiliateNetwork {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {Object} country  "country": {"id": 1,"name": "Andorra","alpha2Code": "AD", "alpha3Code": "AND", "numCode": 20 }
+ * @apiParam {String} country ""
  * @apiParam {Array}  [tags]  
  *
  * @apiSuccessExample {json} Success-Response:
@@ -34,7 +34,7 @@ router.post('/api/offer', function (req, res, next) {
         idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.object().required(),
+        country: Joi.string().required(),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().required().keys({
             id: Joi.number().required(),
@@ -92,7 +92,7 @@ router.post('/api/offer', function (req, res, next) {
  * @apiParam {Number} [payoutMode]
  * @apiParam {Number} [affiliateNetwork] {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {Object} [country]  "country": {"id": 1,"name": "Andorra","alpha2Code": "AD", "alpha3Code": "AND", "numCode": 20 }
+ * @apiParam {String} [country]  
  * @apiParam {Number} [deleted]
  * @apiParam {Array} [tags]
  *
@@ -111,7 +111,7 @@ router.post('/api/offer/:id', function (req, res, next) {
         idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.object().required(),
+        country: Joi.string().required(),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().required().keys({
             id: Joi.number().required(),

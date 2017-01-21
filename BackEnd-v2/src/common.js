@@ -123,9 +123,9 @@ function insertCampaign(value, connection) {
     }
 
     if (value.country) {
-        var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+       // var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countryCode + "'";
+        val += ",'" + value.country + "'";
     }
 
      if (value.targetUrl) {
@@ -178,8 +178,8 @@ function updateCampaign(value, connection) {
     }
 
     if (value.country) {
-        var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
-        sqlCampaign += ",`country`='" + countryCode + "'"
+        //var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+        sqlCampaign += ",`country`='" + value.country + "'"
     }
 
     if (value.costModel != undefined) {
@@ -274,9 +274,9 @@ function insertFlow(userId,flow, connection) {
 
     //optional
     if (flow.country) {
-        var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
+        //var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countryCode + "'";
+        val += ",'" + flow.country + "'";
     };
 
     return new Promise(function(resolve,reject){
@@ -296,8 +296,8 @@ function updateFlow(userId,flow, connection) {
         sqlFlow += ",`name`='" + flow.name + "'"
     }
     if (flow.country) {
-        var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
-        sqlFlow += ",`country`='" + countryCode + "'";
+        //var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
+        sqlFlow += ",`country`='" + flow.country + "'";
     }
     if (flow.redirectMode != undefined) {
         sqlFlow += ",`redirectMode`=" + flow.redirectMode;
@@ -456,9 +456,9 @@ function insertLander(userId, lander, connection) {
 
     //optional
     if (lander.country) {
-        var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
+        //var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countryCode + "'";
+        val += ",'" + lander.country + "'";
     }
 
    return  new Promise(function(resolve,reject){
@@ -475,8 +475,8 @@ function insertLander(userId, lander, connection) {
 function updateLander(userId, lander, connection) {
     var sqlUpdateLander = "update Lander set `id`=" + lander.id;
     if (lander.country) {
-        var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
-        sqlUpdateLander += ",`country`='" + countryCode + "'"
+       // var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
+        sqlUpdateLander += ",`country`='" + lander.country + "'"
     }
     if (lander.name) {
         sqlUpdateLander += ",`name`='" + lander.name + "'"
@@ -589,9 +589,9 @@ function insertOffer(userId, idText,offer, connection) {
 
     //optional
     if (offer.country) {
-        var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
+        //var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countrycode + "'";
+        val += ",'" + offer.country + "'";
     }
 
      if (offer.postbackUrl) {
@@ -627,8 +627,8 @@ function insertOffer(userId, idText,offer, connection) {
 function updateOffer(userId, offer, connection) {
     var sqlUpdateOffer = "update  Offer  set `id`=" + offer.id;
     if (offer.country) {
-        var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
-        sqlUpdateOffer += ",`country`='" + countrycode + "'"
+       // var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
+        sqlUpdateOffer += ",`country`='" + offer.country + "'"
     }
     if (offer.postbackUrl) {
         sqlUpdateOffer += ",`postbackUrl`='" + offer.postbackUrl + "'"

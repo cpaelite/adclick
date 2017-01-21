@@ -13,13 +13,7 @@ var setting = require('../config/setting');
 //     "url": "hddssds",
 //     "redirectMode": 0,
 //     "impPixelUrl": "idddsdsds",
-//     "country": {
-//         "id": 1,
-//         "name": "Andorra",
-//         "alpha2Code": "AD",
-//         "alpha3Code": "AND",
-//         "numCode": 20
-//     },
+//     "country": "",
 //     "costModel": 0,
 //     "cpc": 0.8,
 //     "targetType": 0,
@@ -35,13 +29,7 @@ var setting = require('../config/setting');
 //     "flow": {
 //         "type": 1,
 //         "name": "flowtest",
-//         "country": {
-//             "id": 1,
-//             "name": "Andorra",
-//             "alpha2Code": "AD",
-//             "alpha3Code": "AND",
-//             "numCode": 20
-//         },
+//         "country": "",
 //         "redirectMode": 0,
 //         "rules": [
 //             {
@@ -62,13 +50,7 @@ var setting = require('../config/setting');
 //                             {
 //                                 "name": "landertest",
 //                                 "url": "dddffd",
-//                                 "country": {
-//                                     "id": 1,
-//                                     "name": "Andorra",
-//                                     "alpha2Code": "AD",
-//                                     "alpha3Code": "AND",
-//                                     "numCode": 20
-//                                 },
+//                                 "country": "",
 //                                 "numberOfOffers": 2,
 //                                 "weight": 100,
 //                                 "tags": [
@@ -83,13 +65,7 @@ var setting = require('../config/setting');
 //                                 "name": "offertest",
 //                                 "url": "eweewwe",
 //                                 "weight": 100,
-//                                 "country": {
-//                                     "id": 1,
-//                                     "name": "Andorra",
-//                                     "alpha2Code": "AD",
-//                                     "alpha3Code": "AND",
-//                                     "numCode": 20
-//                                 },
+//                                 "country":"",
 //                                 "affiliateNetwork": {
 //                                     "id": 1,
 //                                     "name": "appnext"
@@ -125,13 +101,7 @@ var setting = require('../config/setting');
 //     "url": "hddssds",
 //     "redirectMode": 0,
 //     "impPixelUrl": "idddsdsds",
-//     "country": {
-//       "id": 1,
-//       "name": "Andorra",
-//       "alpha2Code": "AD",
-//       "alpha3Code": "AND",
-//       "numCode": 20
-//     },
+//     "country": "",
 //     "costModel": 0,
 //     "cpc": 0.8,
 //     "targetType": 0,
@@ -147,13 +117,7 @@ var setting = require('../config/setting');
 //     "flow": {
 //       "type": 1,
 //       "name": "flowtest",
-//       "country": {
-//         "id": 1,
-//         "name": "Andorra",
-//         "alpha2Code": "AD",
-//         "alpha3Code": "AND",
-//         "numCode": 20
-//       },
+//       "country": "",
 //       "redirectMode": 0,
 //       "rules": [
 //         {
@@ -174,13 +138,7 @@ var setting = require('../config/setting');
 //                 {
 //                   "name": "landertest",
 //                   "url": "dddffd",
-//                   "country": {
-//                     "id": 1,
-//                     "name": "Andorra",
-//                     "alpha2Code": "AD",
-//                     "alpha3Code": "AND",
-//                     "numCode": 20
-//                   },
+//                   "country": "",
 //                   "numberOfOffers": 2,
 //                   "weight": 100,
 //                   "tags": [
@@ -195,13 +153,7 @@ var setting = require('../config/setting');
 //                   "name": "offertest",
 //                   "url": "eweewwe",
 //                   "weight": 100,
-//                   "country": {
-//                     "id": 1,
-//                     "name": "Andorra",
-//                     "alpha2Code": "AD",
-//                     "alpha3Code": "AND",
-//                     "numCode": 20
-//                   },
+//                   "country": "",
 //                   "affiliateNetwork": {
 //                     "id": 1,
 //                     "name": "appnext"
@@ -237,7 +189,7 @@ var setting = require('../config/setting');
  * @apiParam {String} [url]
  * @apiParam {String} [impPixelUrl]
  * @apiParam {Object} trafficSource {id:1,name:""}
- * @apiParam {Object} country  {"id": 1,"name": "Andorra", "alpha2Code": "AD","alpha3Code": "AND","numCode": 20}
+ * @apiParam {String} country   AND
  * @apiParam {Number} costModel  0:Do-not-track-costs;1:cpc;2:cpa;3:cpm;4:auto?
  * @apiParam {Number} [cpc]
  * @apiParam {Number} [cpa]
@@ -274,11 +226,11 @@ router.post('/api/campaign', function (req, res, next) {
             type: Joi.number(),
             id: Joi.number(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number()
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
         url: Joi.string().optional(),
-        country: Joi.object().optional(),
+        country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
@@ -312,7 +264,7 @@ router.post('/api/campaign', function (req, res, next) {
  * @apiParam {String} [url]
  * @apiParam {String} [impPixelUrl]
  * @apiParam {Object} trafficSource {id:1,name:""}
- * @apiParam {Object} country  {"id": 1,"name": "Andorra", "alpha2Code": "AD","alpha3Code": "AND","numCode": 20}
+ * @apiParam {String} country   "AND" 
  * @apiParam {Number} costModel  0:Do-not-track-costs;1:cpc;2:cpa;3:cpm;4:auto?
  * @apiParam {Number} [cpc]
  * @apiParam {Number} [cpa]
@@ -350,11 +302,11 @@ router.post('/api/campaign/:id', function (req, res, next) {
             type: Joi.number(),
             id: Joi.number(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number()
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
         url: Joi.string().optional(),
-        country: Joi.object().optional(),
+        country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),

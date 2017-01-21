@@ -13,7 +13,7 @@ var setting=require('../config/setting');
  * @apiName 新增flow
  * @apiGroup flow
  * @apiParam {String} name
- * @apiParam {Object} country
+ * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
 router.post('/api/flow',function(req,res,next){
@@ -25,7 +25,7 @@ router.post('/api/flow',function(req,res,next){
             type: Joi.number(),
             id: Joi.number(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number()
         }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
@@ -47,7 +47,7 @@ router.post('/api/flow',function(req,res,next){
  * @apiName  编辑flow
  * @apiGroup flow
  * @apiParam {String} name
- * @apiParam {Object} country
+ * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
 router.post('/api/flow/:id',function(req,res,next){
@@ -57,7 +57,7 @@ router.post('/api/flow/:id',function(req,res,next){
             type: Joi.number(),
             id: Joi.number().required(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number(),
             userId:Joi.number().required(),
             idText:Joi.string().required()
