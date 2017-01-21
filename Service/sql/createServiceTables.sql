@@ -5,8 +5,11 @@ CREATE TABLE AdClickTool.`User` (
   `password` varchar(256) NOT NULL,
   `firstname` varchar(256) NOT NULL,
   `lastname` varchar(256) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '0:New;1:运行中;2:已过期',
+  `lastLogon` int(11) COMMENT '上次登录时间的时间戳',
   `rootdomainredirect` varchar(512) NOT NULL DEFAULT '' COMMENT '当访问用户的rootdomain时的跳转页面，如果为空则显示默认的404页面',
-  `json` text NOT NULL COMMENT '按照既定规则生成的User信息',
+  `json` text NOT NULL COMMENT '按照既定规则生成的User信息(CompanyName,Phone,DefaultTimeZone,DefaultHomeScreen)',
+  `referralToken` varchar(128) NOT NULL COMMENT '用户推荐链接中的token，链接中其他部分现拼',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idText` (`idtext`),
@@ -230,5 +233,68 @@ CREATE TABLE AdClickTool.`TimeZones` (
   `detail` varchar(256) NOT NULL,
   `region` varchar(256) NOT NULL,
   `utcShift` varchar(6) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserReferralLog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `referredUserId` int(11) NOT NULL,
+  `acquired` varchar(64) NOT NULL,
+  `status` int(11) NOT NULL COMMENT '0:New;1:Activated',
+  `recentCommission` int(11) NOT NULL,
+  `totalCommission` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`TemplatePlan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `desc` text NOT NULL,
+  `normalPrice` int(11) NOT NULL,
+  `onSalePrice` int(11) NOT NULL,
+  `eventsLimit` int(11) NOT NULL,
+  `supportType` int(11) NOT NULL COMMENT '0:Pro;1:Premium;2:Dedicated',
+  `retentionLimit` int(11) NOT NULL COMMENT '报表最长时间月份数',
+  `domainLimit` int(11) NOT NULL COMMENT '可支持Domain的个数',
+  `userLimit` int(11) NOT NULL COMMENT '可支持的user的个数，包括自己',
+  `volumeDiscount` int(11) NOT NULL COMMENT '百分比',
+  `overageCPM` int(11) NOT NULL COMMENT '超出流量每千次的价格',
+  `totalCommission` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserBilling` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `planId` int(11) NOT NULL,
+  `planStart` int(11) COMMENT 'plan开始时间的时间戳',
+  `planEnd` int(11) COMMENT 'plan结束时间的时间戳',
+  `billedEvents` int(11) NOT NULL,
+  `totalEvents` int(11) NOT NULL,
+  `includedEvents` int(11) NOT NULL COMMENT '套餐包含的Events数',
+  `overageEvents` int(11) NOT NULL,
+  `expired` int(11) NOT NULL COMMENT '0:本期账单;1:以往账单',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserBotBlacklist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `ipRange` text NOT NULL COMMENT 'IpRange字符串数组的json',
+  `userAgent` text COMMENT 'UserAgent字符串数组的json',
+  `enabled` int(11) NOT NULL DEFAULT 1 COMMENT '0:disabled;1:enabled',
+  `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserEventLog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `entityType` int(11) NOT NULL COMMENT '1:Campaign;2:Lander;3:Offer;4:TrafficSource;5:AffiliateNetwork',
+  `entityName` text NOT NULL,
+  `entityId` varchar(256) NOT NULL,
+  `actionType` int(11) NOT NULL COMMENT '1:Create;2:Change;3:Archive;4:Restore',
+  `changedAt` int(11) NOT NULL COMMENT '创建的时间戳',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
