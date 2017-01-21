@@ -355,6 +355,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.TrackingRevenue(req, finalPayout)
+	user.TrackingConversion(req, 1)
 
 	// 统计conversion
 	conv := req.ConversionKey()
