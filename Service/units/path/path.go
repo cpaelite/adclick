@@ -49,6 +49,20 @@ type Path struct {
 	owSum   uint64 // offer总权重
 }
 
+func (p *Path) RandOwSum() int {
+	if p.owSum == 0 {
+		return 0
+	}
+	return rand.Intn(int(p.owSum))
+}
+
+func (p *Path) RandLwSum() int {
+	if p.lwSum == 0 {
+		return 0
+	}
+	return rand.Intn(int(p.lwSum))
+}
+
 var cmu sync.RWMutex // protects the following
 var paths = make(map[int64]*Path)
 
@@ -120,6 +134,11 @@ func newPath(c PathConfig) (p *Path) {
 		}
 		owSum += c.Weight
 	}
+
+	if owSum == 0 {
+		log.Errorf("path:%v have %v offers and owSum=%v", c.Id, len(offers), owSum)
+	}
+
 	p = &Path{
 		PathConfig: c,
 		landers:    landers,
@@ -136,7 +155,7 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
 	}
 
-	x := rand.Intn(int(p.lwSum))
+	x := p.RandLwSum() // rand.Intn(int(p.lwSum))
 	lx := 0
 	if p.DirectLink == 0 {
 		for _, l := range p.landers {
@@ -151,7 +170,7 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		}
 	}
 
-	y := rand.Intn(int(p.owSum))
+	y := p.RandOwSum() // rand.Intn(int(p.owSum))
 	oy := 0
 	for _, o := range p.offers {
 		if o.OfferId <= 0 {

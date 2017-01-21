@@ -58,7 +58,7 @@ func DBGetUserPaths(userId int64) []PathConfig {
 
 func DBGetPath(pathId int64) (c PathConfig) {
 	d := dbgetter()
-	sql := "SELECT id, userId, redirectMode, directLink, status FROM Path WHERE pathId=?"
+	sql := "SELECT id, userId, redirectMode, directLink, status FROM Path WHERE id=?"
 	row := d.QueryRow(sql, pathId)
 
 	if err := row.Scan(&c.Id, &c.UserId, &c.RedirectMode, &c.DirectLink, &c.Status); err != nil {

@@ -3,7 +3,6 @@
 
 import argparse
 import logging
-import uuid
 import MySQLdb
 
 # 这个脚本用来填充数据库
@@ -19,7 +18,8 @@ parser.add_argument("--user", default="root", help="MySQL user")
 parser.add_argument("--password", default="", help="MySQL password")
 parser.add_argument("--loglevel", default="DEBUG", help="ERROR,WARN,INFO,DEBUG")
 parser.add_argument("--cleardb", default=False, type=bool, help="clear database")
-
+parser.add_argument("--idtext", default="chenxing", help="User.idText")
+parser.add_argument("--campdomain", default="mymac", help="campaign url domain")
 
 args = parser.parse_args()
 logging.basicConfig(level=args.loglevel)
@@ -59,7 +59,7 @@ if args.cleardb:
 
 # user表
 cursor = conn.cursor()
-idText = str(uuid.uuid4())[:8]
+idText = args.idtext
 print type(idText)
 cursor.execute("INSERT INTO User (idText, email, password, firstname, lastname, rootdomainredirect, json)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
@@ -73,9 +73,11 @@ print "userId", userId
 # 创建 AffiliateNetwork
 ################################################################################
 
+postabck_url = "http://%s.%s/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"%(idText, args.campdomain)
+
 cursor.execute("INSERT INTO AffiliateNetwork (userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "AffiliateNetwork.test1", "12345678", "postback", 0, 1, """192.168.0.1"""),)
+               (userId, "AffiliateNetwork.test1", "12345678", postabck_url, 0, 1, """192.168.0.1"""),)
 conn.commit()
 
 affiliateId1 = cursor.lastrowid
@@ -83,7 +85,7 @@ print "affiliateId1", affiliateId1
 
 cursor.execute("INSERT INTO AffiliateNetwork (userId, name, hash, postbackUrl, appendClickId, duplicatedPostback, ipWhiteList)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "AffiliateNetwork.test2", "12345678", "postback", 0, 1, """192.168.0.1"""),)
+               (userId, "AffiliateNetwork.test2", "12345678", postabck_url, 0, 1, """192.168.0.1"""),)
 conn.commit()
 affiliateId2 = cursor.lastrowid
 print "affiliateId2", affiliateId2
@@ -92,16 +94,18 @@ print "affiliateId2", affiliateId2
 # 创建 Offer
 ################################################################################
 
+offer_url = "http://download.androidapp.baidu.com/public/uploads/store_0/static/mobisummer4_gl_bd_apk-com.duapps.cleaner-1220_mobisummer4_gl_bd_apk.apk"
+
 offerPostbackUrl = "http://zx1jg.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
 
 cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "Offer 1", "offer.hash", "offer.url", "CHN", affiliateId1, "affiliateName1", offerPostbackUrl, 1, 1.0),)
+               (userId, "Offer 1", "offer.hash", offer_url, "CHN", affiliateId1, "affiliateName1", offerPostbackUrl, 1, 1.0),)
 offer1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Offer (userId, name, hash, url, country, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue)"
                " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "Offer 2", "offer.hash", "offer.url", "CHN", affiliateId2, "affiliateName2", offerPostbackUrl, 0, 0.0),)
+               (userId, "Offer 2", "offer.hash", offer_url, "CHN", affiliateId2, "affiliateName2", offerPostbackUrl, 0, 0.0),)
 offer2 = cursor.lastrowid
 
 print "offer1", offer1
@@ -144,6 +148,12 @@ cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,
 cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
                (lander2, path2, 400))
 
+#
+cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer1, path1, 100, 0))
+cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer2, path1, 100, 0))
+cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer1, path2, 100, 0))
+cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer2, path2, 100, 0))
+
 ################################################################################
 # 创建 Rule
 ################################################################################
@@ -155,6 +165,19 @@ rule1 = cursor.lastrowid
 cursor.execute("INSERT INTO Rule (userId, name, hash, type, json, status) VALUES(%s,%s,%s,%s,%s,%s)",
                (userId, "rule.2", "rule.2.hash", 1, "[]", 1))
 rule2 = cursor.lastrowid
+
+# 每个rule都有两个path
+cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
+    (path1, rule1, 100, 1))
+
+cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
+    (path2, rule1, 100, 1))
+
+cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
+    (path1, rule2, 100, 1))
+
+cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
+    (path2, rule2, 100, 1))
 
 
 ################################################################################
@@ -204,8 +227,8 @@ traffic2 = cursor.lastrowid
 cursor.execute("INSERT INTO TrackingCampaign (userId, name, hash, url, impPixelUrl, trafficSourceId, trafficSourceName,"
                " country, costModel, cpcValue, cpaValue, cpmValue, redirectMode, targetType, targetFlowId, targetUrl, "
                "status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "campaign.1", "campaign.1.hash", "http://zhanchenxing.newbidder.com/campaign.1/",
-                "http://zhanchenxing.newbidder.com/impression/campaign.1/", traffic1, "TrafficSource.1",
+               (userId, "campaign.1", "campaign.1.hash", "http://%s.%s/campaign.1/"%(idText, args.campdomain),
+                "http://%s.%s/impression/campaign.1/"%(idText, args.campdomain), traffic1, "TrafficSource.1",
                 "CHN", 1, 1.1, 1.2, 1.3, 0, 1, flow1, "", 1,))
 campaign1 = cursor.lastrowid
 
@@ -213,8 +236,8 @@ campaign1 = cursor.lastrowid
 cursor.execute("INSERT INTO TrackingCampaign (userId, name, hash, url, impPixelUrl, trafficSourceId, trafficSourceName,"
                " country, costModel, cpcValue, cpaValue, cpmValue, redirectMode, targetType, targetFlowId, targetUrl, "
                "status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-               (userId, "campaign.2", "campaign.2.hash", "http://zhanchenxing.newbidder.com/campaign.2/",
-                "http://zhanchenxing.newbidder.com/impression/campaign.2/", traffic1, "TrafficSource.1",
+               (userId, "campaign.2", "campaign.2.hash", "http://%s.%s/campaign.2/"%(idText, args.campdomain),
+                "http://%s.%s/impression/campaign.2/"%(idText, args.campdomain), traffic1, "TrafficSource.1",
                 "CHN", 2, 1.1, 1.2, 1.3, 0, 1, flow2, "", 1,))
 campaign2 = cursor.lastrowid
 

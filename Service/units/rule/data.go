@@ -87,6 +87,7 @@ func DBGetRulePaths(ruleId int64) (paths []RulePath) {
 			log.Errorf("[rule][DBGetRulePaths]Scan RulePath failed:%v", err)
 			return nil
 		}
+		paths = append(paths, rp)
 	}
 	return paths
 }

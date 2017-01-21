@@ -52,6 +52,14 @@ type Rule struct {
 	pwSum uint64
 }
 
+// // Rand returns, as an int, a non-negative pseudo-random number in [0,n)
+func (r *Rule) Rand() int {
+	if r.pwSum <=0 {
+		return 0
+	}
+	return rand.Intn(int(r.pwSum))
+}
+
 var cmu sync.RWMutex // protects the following
 var rules = make(map[int64]*Rule)
 
@@ -97,6 +105,9 @@ func newRule(c RuleConfig) (r *Rule) {
 	}
 	var pwSum uint64
 	paths := DBGetRulePaths(c.Id)
+	if len(paths) == 0 {
+		log.Errorf("rule:%d have no paths", c.Id)
+	}
 	for _, p := range paths {
 		if p.Status != RulePathStatusRunning {
 			continue
@@ -104,7 +115,7 @@ func newRule(c RuleConfig) (r *Rule) {
 		pwSum += p.Weight
 		err := path.InitPath(p.PathId)
 		if err != nil {
-			log.Errorf("[newRule]InitPath failed for p%d:r%d with error(%s)\n", p.PathId, r.Id, err.Error())
+			log.Errorf("[newRule]InitPath failed for p%d:r%d with error(%s)\n", p.PathId, c.Id, err.Error())
 			return nil
 		}
 	}
@@ -147,9 +158,10 @@ func (r *Rule) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	if !r.Accept(req) {
 		return fmt.Errorf("[Rule][OnLPOfferRequest]Request(%s) not accepted by rule(%d)", req.Id(), r.Id)
 	}
-	x := rand.Intn(int(r.pwSum))
+	x := r.Rand()
 	cx := 0
 	for _, p := range r.paths {
+		// TODO: 这里跳过会不会影响到随机的结果
 		if p.PathId <= 0 {
 			continue
 		}

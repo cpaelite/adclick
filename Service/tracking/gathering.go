@@ -52,8 +52,8 @@ func flush() {
 }
 
 // Gathering 统计信息汇总
-func Gathering(stop chan struct{}) {
-	ticker := time.NewTicker(60 * time.Second)
+func Gathering(stop chan struct{}, interval time.Duration) {
+	ticker := time.NewTicker(interval)
 	for {
 		select {
 		case a := <-gatherChan:

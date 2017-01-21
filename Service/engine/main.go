@@ -15,6 +15,7 @@ import (
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
 	"AdClickTool/Service/units/user"
+	"time"
 )
 
 func main() {
@@ -59,17 +60,30 @@ func main() {
 
 	// 启动汇总协程
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
-		tracking.Gathering(c)
+		secondsAdStatis := config.Int("TRACKING", "adstatis-interval")
+		interval := time.Duration(secondsAdStatis)*time.Second
+		if interval == 0 {
+			log.Warnf("config: TRACKING:adstatis-interval not found. Using default interval: 10 minutes")
+			interval = 10*60*time.Second
+		}
+		tracking.Gathering(c, interval)
 	})
 
+	secondsIpReferrerDomain := config.Int("TRACKING", "ip-interval")
+	interval := time.Duration(secondsIpReferrerDomain)*time.Second
+	if interval == 0 {
+		log.Warnf("config: TRACKING:ip-interval not found. Using default interval: 10 minutes")
+		interval = 10*60*time.Second
+	}
+
 	// 启动AdIPStatis表的汇总协程
-	tracking.InitIPGatherSaver(&gracequit.G, db.GetDB("DB"))
+	tracking.InitIPGatherSaver(&gracequit.G, db.GetDB("DB"), interval)
 
 	// 启动AdReferrerStatis表的汇总协程
-	tracking.InitRefGatherSaver(&gracequit.G, db.GetDB("DB"))
+	tracking.InitRefGatherSaver(&gracequit.G, db.GetDB("DB"), interval)
 
 	// 启动AdReferrerDomainStatis表的汇总协程
-	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"))
+	tracking.InitDomainGatherSaver(&gracequit.G, db.GetDB("DB"), interval)
 
 	// redis 要能够连接
 	redisClient := db.GetRedisClient("MSGQUEUE")

@@ -3,6 +3,7 @@ package tracking
 import (
 	"AdClickTool/Service/gracequit"
 	"database/sql"
+	"time"
 )
 
 // AdReferrerDomainStatis表的支持工作
@@ -42,7 +43,7 @@ Impressions = Impressions+?`
 var Domain gatherSaver
 
 // InitDomainGatherSaver 初始化tracking.Domain
-func InitDomainGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	Domain = newGatherSaver(g, referrerDomainStatisSQL)
+func InitDomainGatherSaver(g *gracequit.GraceQuit, db *sql.DB, saveInterval time.Duration) {
+	Domain = newGatherSaver(g, referrerDomainStatisSQL, saveInterval)
 	Domain.Start(db)
 }

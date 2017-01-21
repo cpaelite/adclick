@@ -3,6 +3,7 @@ package tracking
 import (
 	"AdClickTool/Service/gracequit"
 	"database/sql"
+	"time"
 )
 
 // AdReferrerStatis表的支持工作
@@ -42,7 +43,7 @@ Impressions = Impressions+?`
 var Ref gatherSaver
 
 // InitRefGatherSaver 初始化tracking.Ref
-func InitRefGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	Ref = newGatherSaver(g, referrerStatisSQL)
+func InitRefGatherSaver(g *gracequit.GraceQuit, db *sql.DB, saveInterval time.Duration) {
+	Ref = newGatherSaver(g, referrerStatisSQL, saveInterval)
 	Ref.Start(db)
 }

@@ -176,6 +176,7 @@ func GetCampaignByHash(cHash string) (ca *Campaign) {
 	}()
 	ca = getCampaignByHash(cHash)
 	if ca == nil {
+		log.Warnf("GetCampaignByHash(%v) failed: not cached, reloading from db...", cHash)
 		ca = newCampaign(DBGetCampaignByHash(cHash))
 		if ca != nil {
 			if err := setCampaign(ca); err != nil {
