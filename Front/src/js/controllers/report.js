@@ -287,7 +287,7 @@
           id: $scope.item.trafficSourceId,
           name: $scope.item.trafficSourceName
         };
-        if (!$scope.item['costModel']) {
+        if ($scope.item['costModel'] == null) {
           $scope.item = {
             costModel: 0,
             redirectMode: 0,
@@ -435,7 +435,7 @@
       Lander.get({id: 46}, function (lander) {
         $scope.item = angular.copy(lander.data);
         $scope.tags = $scope.item.tags;
-        if (!$scope.item['url']) {
+        if ($scope.item['url'] == null) {
           $scope.item = {
             url: 'http://',
             numberOfOffers: 1,
@@ -498,7 +498,7 @@
     if (this.item) {
       Offer.get({id: 22}, function (offer) {
         $scope.item = angular.copy(offer.data);
-        if (!$scope.item['payoutMode']) {
+        if ($scope.item['payoutMode'] == null) {
           $scope.item = {
             payoutMode: 0,
           };
@@ -531,6 +531,9 @@
 
     this.save = function () {
       $scope.item.tags = $scope.tags;
+      delete $scope.item.AffiliateNetworkId;
+      delete $scope.item.AffiliateNetworkName;
+      delete $scope.item.postbackUrl;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Offer.save($scope.item, success);

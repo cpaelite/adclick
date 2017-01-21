@@ -301,9 +301,9 @@ router.post('/api/password/reset',function(req,res,next){
             let connection=await common.getConnection();
             let result= await query("select `password` from User where `id`= " + value.userId,connection);
             let message;
-            if(result){
+            if(result && result[0]){
                   if( md5(value.oldpwd) == result[0].password ){
-                       await query ("update User set `password`= '"+value.pwd +"' where `id`="+value.userId,connection);
+                       await query ("update User set `password`= '"+ md5(value.pwd) +"' where `id`="+value.userId,connection);
                         message="success"
                   }else{
                         message="old password error"

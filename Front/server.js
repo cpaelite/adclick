@@ -1188,17 +1188,19 @@ app.get('/api/flows', function (req, res) {
  */
 app.get('/api/offer/:offerId', function (req, res) {
   var result = {
-    status: 1,
-    message: "",
-    data: {
-      "id": "9f91a026-aa8e-437c-b202-cd23fe6f02de",
-      "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
+    "status": 1,
+    "message": "success",
+    "data": {
+      "id": 22,
+      "name": "Offer1",
+      "hash": "03f1d070-9089-4502-842d-28101d83f474",
+      "url": "http://adbund.com",
+      "country": "AND",
+      "AffiliateNetworkId": 13,
+      "AffiliateNetworkName": "AffiliateNetwork.test2",
+      "postbackUrl": "http://2drvh2.newbidder.com/postBackRouter?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
       "payoutMode": 0,
-      "affiliateNetwork": {
-        "id": "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c",
-        "name": "hasoffer"
-      },
-      "url": "http://hasoffers.mobisummer.com/aff_c?offer_id=28270&aff_id=5598&aff_sub={clickid}&aff_sub2={campaign.id}",
+      "payoutValue": 0,
       "tags": []
     }
   };
@@ -1310,12 +1312,18 @@ app.post('/api/traffic', function (req, res) {
 
 app.get('/api/traffic/:id', function (req, res) {
   var result = {
-    status: 1,
-    message: "",
-    data: {
-      id: 1,
-      name: "traffic1",
-      params: []
+    "status": 1,
+    "message": "success",
+    "data": {
+      "id": 15,
+      "name": "TrafficSource2",
+      "hash": "aa088269-5680-470c-a232-582e1dc68d21",
+      "postbackUrl": "",
+      "pixelRedirectUrl": "",
+      "impTracking": 1,
+      "externalId": "",
+      "cost": "",
+      "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]"
     }
   };
   res.send(result);

@@ -6,19 +6,31 @@ var setting = require('../config/setting');
 
 exports.checkToken = function() {
   return function(req, res, next) {
-    /*var token = (req.body && req.body.access_token) || (req.query && req.query
-        .access_token) ||
-      req.headers['x-access-token'];*/
     var token = req.headers['authorization'];
     if (token) {
       token = token.split(' ')[1];
       try {
         var decode = jwt.decode(token, setting['jwtTokenSrcret']);
-        console.log(JSON.stringify(decode));
-        req.userId = decode.userid
-        req.idText=decode.idText
-          //TODO  验证userId
-        next();
+        if(decode.exp <= Date.now()){
+          return  next(new Error('access token has expired'));
+        }
+        pool.getConnection(function(err,connection){
+          if(err){
+            err.status =303
+            return next(err);
+          }
+          connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss ,function(err,user){
+            if(err){
+              return next(err);
+            }
+            if(!user.length){
+              next(new Error('no user'));
+            }
+            req.userId = user[0].id;
+            req.idText= user[0].idText;
+            next();
+          });
+        });
       } catch (e) {
         log.error('[util.js][checkToken] error', e)
         next(e);
@@ -28,34 +40,29 @@ exports.checkToken = function() {
     }
   }
 }
-
-exports.setToken = function(userid,idText, firstname) {
+exports.setToken = function(userid,expires) {
   return jwt.encode({
-    userid: userid,
-    idText:idText,
-    firstname: firstname
+    iss: userid,
+    exp:expires
   }, setting['jwtTokenSrcret'])
 }
-
-
 exports.getRandomString = function(len) {
   var chars = ["a", "b", "c", "d", "e", "f",
     "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
     "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
     "6", "7", "8", "9"
   ];
-  var stringToHex = function(str) {　　　　
-    var val = "";　　　　
-    for (var i = 0; i < str.length; i++) {　　　　　　
+  var stringToHex = function(str) {
+    var val = "";
+    for (var i = 0; i < str.length; i++) {
       if (val == "") {
-        val = str.charCodeAt(i).toString(16);　　
+        val = str.charCodeAt(i).toString(16);
       } else　 {
-        val += str.charCodeAt(i).toString(16);　
-      }　　　　　　　　　　
-    }　　　　
-    return val;　　
+        val += str.charCodeAt(i).toString(16);
+      }
+    }
+    return val;
   }
-
   var result = ""
   var uuid = uuidV4().replace(new RegExp(/-/g), '')
   for (var i = 0; i < len; i++) {
