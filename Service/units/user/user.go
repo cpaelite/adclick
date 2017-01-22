@@ -9,6 +9,7 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/units/blacklist"
 	"AdClickTool/Service/units/campaign"
 	"AdClickTool/Service/units/flow"
 	"AdClickTool/Service/units/lander"
@@ -43,6 +44,8 @@ func InitAllUsers() error {
 			return fmt.Errorf("[InitAllUsers]newUser failed for user%d", u.Id)
 		}
 		setUser(u.Id, nu)
+
+		blacklist.ReloadUserBlacklist(u.Id)
 	}
 
 	return nil

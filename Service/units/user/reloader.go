@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"AdClickTool/Service/units/blacklist"
+
 	"gopkg.in/redis.v5"
 )
 
@@ -19,11 +21,13 @@ import (
 // 目前试下来，redis客户端是能够支持断线重新连接的
 
 var subscribe = "channel_campaign_changed_users"
+var botblacklist = "channel_blacklist_changed_users"
 
 // CollectorCampChangedUsers 收集服务器启动期间改变了Campaign的用户
 type CollectorCampChangedUsers struct {
-	Users  []int64 // 收集到的需要修改campaign的用户
-	pubsub *redis.PubSub
+	Users          []int64 // 收集到的需要修改campaign的用户
+	BlacklistUsers []int64 // 所有blacklist有改变的用户
+	pubsub         *redis.PubSub
 }
 
 // Stop 停止收集
@@ -36,7 +40,7 @@ func (c *CollectorCampChangedUsers) Start() {
 	go func() {
 		redis := db.GetRedisClient("MSGQUEUE")
 		var err error
-		c.pubsub, err = redis.Subscribe(subscribe)
+		c.pubsub, err = redis.Subscribe(subscribe, botblacklist)
 		if err != nil {
 			log.Errorf("collector: PSubscribe %v failed:%v", subscribe, err)
 			return
@@ -54,7 +58,11 @@ func (c *CollectorCampChangedUsers) Start() {
 			if err != nil {
 				log.Errorf("user:%v is not an integer", received.Payload)
 			} else {
-				c.Users = append(c.Users, user)
+				if received.Channel == botblacklist {
+					c.BlacklistUsers = append(c.BlacklistUsers, user)
+				} else {
+					c.Users = append(c.Users, user)
+				}
 			}
 		}
 	}()
@@ -73,7 +81,7 @@ func (r Reloader) Running() {
 	log.Infof("reloader: running with redis:%v...", redis)
 
 	// redis.S
-	pubsub, err := redis.Subscribe(subscribe)
+	pubsub, err := redis.Subscribe(subscribe, botblacklist)
 	if err != nil {
 		log.Errorf("reloader: PSubscribe %v failed:%v", subscribe, err)
 		return
@@ -92,7 +100,11 @@ func (r Reloader) Running() {
 		if err != nil {
 			log.Errorf("reloader: user:%v is not an integer", received.Payload)
 		} else {
-			ReloadUser(user)
+			if received.Channel == botblacklist {
+				blacklist.ReloadUserBlacklist(user)
+			} else {
+				ReloadUser(user)
+			}
 		}
 	}
 }

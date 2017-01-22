@@ -14,6 +14,7 @@ import (
 	"AdClickTool/Service/servehttp"
 	"AdClickTool/Service/tracking"
 	"AdClickTool/Service/units"
+	"AdClickTool/Service/units/blacklist"
 	"AdClickTool/Service/units/user"
 	"time"
 )
@@ -61,19 +62,19 @@ func main() {
 	// 启动汇总协程
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
 		secondsAdStatis := config.Int("TRACKING", "adstatis-interval")
-		interval := time.Duration(secondsAdStatis)*time.Second
+		interval := time.Duration(secondsAdStatis) * time.Second
 		if interval == 0 {
 			log.Warnf("config: TRACKING:adstatis-interval not found. Using default interval: 10 minutes")
-			interval = 10*60*time.Second
+			interval = 10 * 60 * time.Second
 		}
 		tracking.Gathering(c, interval)
 	})
 
 	secondsIpReferrerDomain := config.Int("TRACKING", "ip-interval")
-	interval := time.Duration(secondsIpReferrerDomain)*time.Second
+	interval := time.Duration(secondsIpReferrerDomain) * time.Second
 	if interval == 0 {
 		log.Warnf("config: TRACKING:ip-interval not found. Using default interval: 10 minutes")
-		interval = 10*60*time.Second
+		interval = 10 * 60 * time.Second
 	}
 
 	// 启动AdIPStatis表的汇总协程
@@ -107,6 +108,10 @@ func main() {
 	log.Debugf("redisClient:%p", db.GetRedisClient("MSGQUEUE"))
 	for _, uid := range collector.Users {
 		user.ReloadUser(uid)
+	}
+
+	for _, uid := range collector.BlacklistUsers {
+		blacklist.ReloadUserBlacklist(uid)
 	}
 
 	http.HandleFunc("/status", Status1)
