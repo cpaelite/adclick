@@ -67,6 +67,14 @@ angular.module('app').value('columnDefinition', {
       key: 'payout',
       name: 'Payout'
     }],
+  trafficSource: [{
+    key: 'trafficSource',
+    name: 'Traffic source'
+  },
+    {
+      key: 'trafficSourceId',
+      name: 'Traffic source ID'
+    }],
   common: [{
     key: 'visits',
     name: 'Visits'

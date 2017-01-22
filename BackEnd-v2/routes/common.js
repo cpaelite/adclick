@@ -117,9 +117,14 @@ function insertCampaign(value, connection) {
     }
 
     if (value.country) {
-        var countryCode = value.country.alpha3Code ? value.country.alpha3Code : "";
+        // var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countryCode + "'";
+        val += ",'" + value.country + "'";
+    }
+
+    if (value.targetUrl) {
+        col += ",`targetUrl`";
+        val += ",'" + value.targetUrl + "'";
     }
 
     //flow targetType=1 &&  flow.id
@@ -167,8 +172,8 @@ function updateCampaign(value, connection) {
     }
 
     if (value.country) {
-        var countryCode = value.country.alpha3Code ? value.country.alpha3Code : "";
-        sqlCampaign += ",`country`='" + countryCode + "'";
+        //var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
+        sqlCampaign += ",`country`='" + value.country + "'";
     }
 
     if (value.costModel != undefined) {
@@ -184,9 +189,14 @@ function updateCampaign(value, connection) {
         sqlCampaign += ",`targetType`=" + value.targetType;
     }
 
+    if (value.targetUrl) {
+        sqlCampaign += ",`targetUrl`='" + value.targetUrl + "'";
+    }
+
     //flow targetType=1 &&  flow.id
     if (value.flow && value.flow.id) {
-        sqlCampaign += ",`targetFlowId`=" + value.flow.id;
+        col += ",`targetFlowId`";
+        val += "," + value.flow.id;
     }
 
     sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
@@ -209,7 +219,6 @@ function getCampaign(id, userId, connection) {
                 reject(err);
             }
             connection.query(sqltag, [userId, id, 1, 0], function (err, tagsResult) {
-                connection.release();
                 if (err) {
                     reject(err);
                 }
@@ -217,9 +226,24 @@ function getCampaign(id, userId, connection) {
                 for (let index = 0; index < tagsResult.length; index++) {
                     tags.push(tagsResult[index].name);
                 }
-                camResult[0].tags = tags;
+                if (camResult[0]) {
+                    camResult[0].tags = tags;
+                }
                 resolve(camResult[0]);
             });
+        });
+    });
+}
+
+function deleteCampaign(id, userId, connection) {
+    var sqlCampaign = "update TrackingCampaign set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
         });
     });
 }
@@ -244,9 +268,9 @@ function insertFlow(userId, flow, connection) {
 
     //optional
     if (flow.country) {
-        var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code : "";
+        //var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countryCode + "'";
+        val += ",'" + flow.country + "'";
     };
 
     return new Promise(function (resolve, reject) {
@@ -265,8 +289,8 @@ function updateFlow(userId, flow, connection) {
         sqlFlow += ",`name`='" + flow.name + "'";
     }
     if (flow.country) {
-        var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code : "";
-        sqlFlow += ",`country`='" + countryCode + "'";
+        //var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
+        sqlFlow += ",`country`='" + flow.country + "'";
     }
     if (flow.redirectMode != undefined) {
         sqlFlow += ",`redirectMode`=" + flow.redirectMode;
@@ -283,6 +307,19 @@ function updateFlow(userId, flow, connection) {
                 reject(err);
             }
             resolve(result);
+        });
+    });
+}
+
+function deleteFlow(id, userId, connection) {
+    var sqlCampaign = "update Flow set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
         });
     });
 }
@@ -410,9 +447,9 @@ function insertLander(userId, lander, connection) {
 
     //optional
     if (lander.country) {
-        var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code : "";
+        //var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countryCode + "'";
+        val += ",'" + lander.country + "'";
     }
 
     return new Promise(function (resolve, reject) {
@@ -428,8 +465,8 @@ function insertLander(userId, lander, connection) {
 function updateLander(userId, lander, connection) {
     var sqlUpdateLander = "update Lander set `id`=" + lander.id;
     if (lander.country) {
-        var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code : "";
-        sqlUpdateLander += ",`country`='" + countryCode + "'";
+        // var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
+        sqlUpdateLander += ",`country`='" + lander.country + "'";
     }
     if (lander.name) {
         sqlUpdateLander += ",`name`='" + lander.name + "'";
@@ -469,9 +506,25 @@ function getLanderDetail(id, userId, connection) {
                 for (let index = 0; index < tagsResult.length; index++) {
                     tags.push(tagsResult[index].name);
                 }
-                lander[0].tags = tags;
+                if (lander[0]) {
+                    lander[0].tags = tags;
+                }
+
                 resolve(lander[0]);
             });
+        });
+    });
+}
+
+function deleteLander(id, userId, connection) {
+    var sqlCampaign = "update Lander set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
         });
     });
 }
@@ -502,7 +555,7 @@ function updateLander2Path(landerId, pathId, weight, connection) {
 }
 
 //Offer
-function insertOffer(userId, offer, connection) {
+function insertOffer(userId, idText, offer, connection) {
 
     //required
     var col = "`userId`";
@@ -522,14 +575,16 @@ function insertOffer(userId, offer, connection) {
 
     //optional
     if (offer.country) {
-        var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code : "";
+        //var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + countrycode + "'";
+        val += ",'" + offer.country + "'";
     }
+
     if (offer.postbackUrl) {
         col += ",`postbackUrl`";
         val += ",'" + offer.postbackUrl + "'";
     }
+
     if (offer.payoutValue != undefined) {
         col += ",`payoutValue`";
         val += "," + offer.payoutValue;
@@ -538,6 +593,11 @@ function insertOffer(userId, offer, connection) {
         col += ",`AffiliateNetworkId`";
         val += "," + offer.affiliateNetwork.id;
     }
+    if (offer.affiliateNetwork && offer.affiliateNetwork.name) {
+        col += ",`AffiliateNetworkName`";
+        val += ",'" + offer.affiliateNetwork.name + "'";
+    }
+
     var sqloffer = "insert into Offer (" + col + ") values (" + val + ") ";
     return new Promise(function (resolve, reject) {
         connection.query(sqloffer, function (err, result) {
@@ -552,8 +612,8 @@ function insertOffer(userId, offer, connection) {
 function updateOffer(userId, offer, connection) {
     var sqlUpdateOffer = "update  Offer  set `id`=" + offer.id;
     if (offer.country) {
-        var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code : "";
-        sqlUpdateOffer += ",`country`='" + countrycode + "'";
+        // var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
+        sqlUpdateOffer += ",`country`='" + offer.country + "'";
     }
     if (offer.postbackUrl) {
         sqlUpdateOffer += ",`postbackUrl`='" + offer.postbackUrl + "'";
@@ -564,6 +624,10 @@ function updateOffer(userId, offer, connection) {
     if (offer.affiliateNetwork && offer.affiliateNetwork.id) {
         sqlUpdateOffer += ",`AffiliateNetworkId`=" + offer.affiliateNetwork.id;
     }
+    if (offer.affiliateNetwork && offer.affiliateNetwork.name) {
+        sqlUpdateOffer += ",`AffiliateNetworkName`='" + offer.affiliateNetwork.name + "'";
+    }
+
     if (offer.name) {
         sqlUpdateOffer += ",`name`='" + offer.name + "'";
     }
@@ -581,6 +645,44 @@ function updateOffer(userId, offer, connection) {
                 reject(err);
             }
             resolve(result);
+        });
+    });
+}
+
+function getOfferDetail(id, userId, connection) {
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `deleted`=? and `id`=?";
+    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlLander, [userId, 0, id], function (err, lander) {
+            if (err) {
+                reject(err);
+            }
+            connection.query(sqltag, [userId, id, 3, 0], function (err, tagsResult) {
+                if (err) {
+                    reject(err);
+                }
+                let tags = [];
+                for (let index = 0; index < tagsResult.length; index++) {
+                    tags.push(tagsResult[index].name);
+                }
+                if (lander[0]) {
+                    lander[0].tags = tags;
+                }
+                resolve(lander[0]);
+            });
+        });
+    });
+}
+
+function deleteOffer(id, userId, connection) {
+    var sqlCampaign = "update Offer set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
         });
     });
 }
@@ -658,6 +760,113 @@ function updateRule2Flow(status, ruleId, flowId, connection) {
     });
 }
 
+function insertTrafficSource(userId, traffic, connection) {
+    return new Promise(function (resolve, reject) {
+        //required
+        var col = "`userId`";
+        var val = userId;
+
+        col += ",`name`";
+        val += ",'" + traffic.name + "'";
+
+        col += ",`hash`";
+        val += ",'" + uuidV4() + "'";
+
+        if (traffic.postbackUrl) {
+            col += ",`postbackUrl`";
+            val += ",'" + traffic.postbackUrl + "'";
+        }
+
+        if (traffic.pixelRedirectUrl) {
+            col += ",`pixelRedirectUrl`";
+            val += ",'" + traffic.pixelRedirectUrl + "'";
+        }
+
+        if (traffic.impTracking != undefined) {
+            col += ",`impTracking`";
+            val += "," + traffic.impTracking;
+        }
+        if (traffic.externalId) {
+            col += ",`externalId`";
+            val += ",'" + traffic.externalId + "'";
+        }
+        if (traffic.cost) {
+            col += ",`cost`";
+            val += ",'" + traffic.cost + "'";
+        }
+        if (traffic.params) {
+            col += ",`params`";
+            val += ",'" + traffic.params + "'";
+        }
+        var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val + ") ";
+
+        connection.query(sqltraffic, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function updatetraffic(userId, traffic, connection) {
+    return new Promise(function (resolve, reject) {
+        var sqlUpdateOffer = "update  TrafficSource  set `id`=" + traffic.id;
+        if (traffic.name) {
+            sqlUpdateOffer += ",`name`='" + traffic.name + "'";
+        }
+        if (traffic.postbackUrl) {
+            sqlUpdateOffer += ",`postbackUrl`='" + traffic.postbackUrl + "'";
+        }
+        if (traffic.pixelRedirectUrl) {
+            sqlUpdateOffer += ",`pixelRedirectUrl`='" + traffic.pixelRedirectUrl + "'";
+        }
+        if (traffic.impTracking != undefined) {
+            sqlUpdateOffer += ",`impTracking`=" + traffic.impTracking;
+        }
+        if (traffic.externalId) {
+            sqlUpdateOffer += ",`externalId`='" + traffic.externalId + "'";
+        }
+        if (traffic.cost) {
+            sqlUpdateOffer += ",`cost`='" + traffic.cost + "'";
+        }
+        if (traffic.params) {
+            sqlUpdateOffer += ",`params`='" + traffic.params + "'";
+        }
+        sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
+        connection.query(sqlUpdateOffer, [userId, traffic.id], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function gettrafficDetail(id, userId, connection) {
+    return new Promise(function (resolve, reject) {
+        connection.query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function deletetraffic(id, userId, connection) {
+    var sqlCampaign = "update TrafficSource set `deleted`= 1";
+    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
+        });
+    });
+}
+
 exports.updateRule2Flow = updateRule2Flow;
 exports.insertRule2Flow = insertRule2Flow;
 exports.updatePath2Rule = updatePath2Rule;
@@ -688,3 +897,12 @@ exports.getConnection = getConnection;
 exports.getRedisClient = getRedisClient;
 exports.getLanderDetail = getLanderDetail;
 exports.getCampaign = getCampaign;
+exports.getOfferDetail = getOfferDetail;
+exports.insertTrafficSource = insertTrafficSource;
+exports.gettrafficDetail = gettrafficDetail;
+exports.updatetraffic = updatetraffic;
+exports.deleteCampaign = deleteCampaign;
+exports.deleteFlow = deleteFlow;
+exports.deleteLander = deleteLander;
+exports.deleteOffer = deleteOffer;
+exports.deletetraffic = deletetraffic;

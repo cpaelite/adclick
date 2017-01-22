@@ -5,17 +5,15 @@ var util = require('../util/index');
 var log4js = require('log4js');
 var log = log4js.getLogger('user');
 var md5 = require('md5');
-
-
+var moment =require('moment');
 /**
- * @api {post} /auth  登陆
+ * @api {post} /auth/login  登陆
  * @apiName Login
  * @apiGroup Oauth
  *
  * @apiParam {String} email
  * @apiParam {String} password
  *
-
  * @apiSuccessExample {json} Success-Response:
  *{
  * status: 1,
@@ -41,42 +39,43 @@ router.post('/auth/login', function(req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`idText`,`email`,`password`,`firstname` from User where `email` = ? and `deleted` =0 ", [
-                    value.email
-                ],
-                function(err, rows) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    if (rows.length > 0) {
-                        if (rows[0].password == md5(value.password)) {
-                            /*res.json({
-                                status: 1,
-                                message: 'success',
-                                data: {
-                                    token: util.setToken(rows[0].id,rows[0].idText),
-                                    firstname: rows[0].firstname
-                                }
-                            })*/
-                            res.json({token: util.setToken(rows[0].id, rows[0].idText, rows[0].firstname)});
-                        } else {
-                            res.json({
-                                status: 1002,
-                                message: "password error"
-                            });
-                        }
-                    } else {
-                        res.json({
-                            status: 1001,
-                            message: "email not exist"
-                        });
-                    }
-                });
+              "select  `id`,`idText`,`email`,`password`,`firstname` from User where `email` = ? and `deleted` =0 ", [
+                  value.email
+              ],
+              function(err, rows) {
+                  connection.release();
+                  if (err) {
+                      return next(err);
+                  }
+                  if (rows.length > 0) {
+                      if (rows[0].password == md5(value.password)) {
+                          var expires = moment().add(7,'days').valueOf();
+                          /*res.json({
+                              status: 1,
+                              message: 'success',
+                              data: {
+                                  token: util.setToken(rows[0].id,expires),
+                                  expires: expires,
+                                  firstname: rows[0].firstname
+                              }
+                          })*/
+                          res.json({token: util.setToken(rows[0].id, expires)});
+                      } else {
+                          res.json({
+                              status: 1002,
+                              message: "password error"
+                          });
+                      }
+                  } else {
+                      res.json({
+                          status: 1001,
+                          message: "account not exist"
+                      });
+                  }
+              });
         });
     });
 });
-
 /**
  * @api {post} /auth/signup  注册
  * @apiName register
@@ -103,7 +102,7 @@ router.post('/auth/signup', function(req, res, next) {
         password: Joi.string().required(),
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
-        json: Joi.string().optional()
+        json: Joi.object().optional()
     });
     Joi.validate(req.body, schema, function(err, value) {
         if (err) {
@@ -116,16 +115,15 @@ router.post('/auth/signup', function(req, res, next) {
             }
             var idtext = util.getRandomString(6)
             var sql =
-                "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`) values (?,?,?,?,?,0)";
+              "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`) values (?,?,?,?,?,0)";
             var params = [
                 value.firstname, value.lastname, value.email,
                 md5(value.password), idtext
             ]
             if (value.json) {
                 sql =
-                    "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`,`json`) values (?,?,?,?,?,0,?)"
-                //params.push(JSON.stringify(value.json))
-                params.push(value.json)
+                  "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`deleted`,`json`) values (?,?,?,?,?,0,?)"
+                params.push(JSON.stringify(value.json))
             }
             connection.query(sql, params, function(err) {
                 connection.release();
@@ -141,7 +139,6 @@ router.post('/auth/signup', function(req, res, next) {
         });
     });
 });
-
 /**
  * @api {post} /account/check  检查用户是否存在
  * @apiName account check
@@ -192,9 +189,6 @@ router.post('/account/check', function(req, res, next) {
         });
     });
 });
-
-
-
 /**
  * @api {get} /countries  获取所有国家
  * @apiName  get all countries
@@ -216,24 +210,22 @@ router.get('/countries', function(req, res, next) {
             return next(err);
         }
         connection.query(
-            "select `id`,`name`,`alpha2Code`,`alpha3Code`,`numCode` from `Country`",
-            function(err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: {
-                        countries: result
-                    }
-                });
-            });
+          "select `id`,`name`,`alpha2Code`,`alpha3Code`,`numCode` from `Country`",
+          function(err, result) {
+              connection.release();
+              if (err) {
+                  return next(err);
+              }
+              res.json({
+                  status: 1,
+                  message: 'success',
+                  data: {
+                      countries: result
+                  }
+              });
+          });
     });
 });
-
-
 /**
  * @api {get} /timezones  获取所有timezones
  * @apiName  get all timezones
@@ -255,21 +247,20 @@ router.get('/timezones', function(req, res, next) {
             return next(err);
         }
         connection.query(
-            "select `id`,`name`,`detail`,`region`,`utcShift` from `TimeZones`",
-            function(err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: {
-                        timezones: result
-                    }
-                });
-            });
+          "select `id`,`name`,`detail`,`region`,`utcShift` from `TimeZones`",
+          function(err, result) {
+              connection.release();
+              if (err) {
+                  return next(err);
+              }
+              res.json({
+                  status: 1,
+                  message: 'success',
+                  data: {
+                      timezones: result
+                  }
+              });
+          });
     });
 });
-
 module.exports = router;

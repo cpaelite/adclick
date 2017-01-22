@@ -86,10 +86,10 @@
         controller: 'ReportCtrl',
         data: {}
       })
-      .state('app.trafficSource', {
-        url: '/traffic/source',
-        templateUrl: 'tpl/trafficSource.html',
-        controller: 'TrafficSourceCtrl',
+      .state('app.report.trafficSource', {
+        url: '/trafficsource',
+        templateUrl: 'tpl/report.html',
+        controller: 'ReportCtrl',
         data: {}
       })
       .state('app.rule', {

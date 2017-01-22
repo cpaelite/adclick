@@ -114,7 +114,7 @@
             </div>
 
             <div class="selectAll">
-                <md-select class="cs-subform-select" ng-model="query.status" required>
+                <md-select class="cs-subform-select" ng-model="query.active" required>
                     <md-option value="0">Archived</md-option>
                     <md-option value="1">Active</md-option>
                     <md-option value="2">All</md-option>
@@ -154,7 +154,7 @@
                 <th md-column class="cs-cell-action">{{'operation' | translate}}</th>
             </tr>
             </thead>
-            <tbody md-body ng-repeat="tr in trData track by $index">
+            <tbody md-body ng-repeat="tr in trData">
             <tr md-row class="first-tree">
                 <td md-cell><i class="material-icons table-arrow-down" ng-class="{'active':isActive[$index]}"
                                ng-click="firstTreeClick($index)">keyboard_arrow_right</i></td>
@@ -170,6 +170,27 @@
                 <td md-cell>{{tr.cpv}}</td>
                 <td md-cell>{{tr.ictr}}</td>
                 <td md-cell>{{tr.operation}}</td>
+                <td md-cell class="cs-cell-action">
+                    <md-fab-speed-dial md-direction="left" md-open="fab[$index].isOpen"
+                                       class="md-scale md-mini cs-fab-action"
+                                       ng-mouseenter="toggleFab($index, true)" ng-mouseleave="toggleFab($index, false)">
+                        <md-fab-trigger>
+                            <md-button aria-label="operation" class="md-primary md-icon-button md-mini">
+                                <md-icon aria-label="menu">menu</md-icon>
+                            </md-button>
+                        </md-fab-trigger>
+                        <md-fab-actions>
+                            <md-button aria-label="Edit" class="md-fab md-raised md-mini"
+                                       ng-click="editItem($event, tr)">
+                                <md-icon aria-label="Edit">edit</md-icon>
+                            </md-button>
+                            <md-button aria-label="Delete" class="md-fab md-raised md-mini"
+                                       ng-click="deleteItem($event, tr)">
+                                <md-icon aria-label="Delete">delete</md-icon>
+                            </md-button>
+                        </md-fab-actions>
+                    </md-fab-speed-dial>
+                </td>
             </tr>
             <tr md-row ng-show="treeFirstChildIsShow[$index]">
                 <td md-cell><i class="material-icons table-arrow-down" ng-class="{'down':isDown[$index]}"

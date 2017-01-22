@@ -9,7 +9,7 @@
 
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-3 control-label">Name：</label>
+                <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
                     <input type="text" name="name" class="form-control" ng-model="item.name" required>
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
@@ -18,17 +18,21 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
+                <label class="col-sm-3 control-label">CampaignlUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl">
-                    <span style="color:red" ng-show="editForm.impPixelUrl.$dirty && editForm.impPixelUrl.$invalid">
-                    <span ng-show="editForm.impPixelUrl.$error.required">ImpPixelUrl is required.</span>
-                    <span ng-show="editForm.impPixelUrl.$error.url">ImpPixelUrl must be a valid URL</span>
-                    </span>
+                    <input type="url" name="url" class="form-control" ng-model="item.url" ng-show="item.url">
+                    <label ng-show="!item.url">ID will be available after saving the campaign.</label>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">TrafficSource: </label>
+                <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
+                <div class="col-sm-5">
+                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl">
+                    <label ng-show="!item.impPixelUrl">ID will be available after saving the campaign.</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <md-select class="cs-subform-select" name="trafficSource" ng-model="item.trafficSource" required>
                         <md-option value="{{ts}}" ng-repeat="ts in trafficSources">{{ts.name}}</md-option>
@@ -39,10 +43,10 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Country: </label>
+                <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-                        <md-option value="{{country}}" ng-repeat="country in countries">{{country.name}}</md-option>
+                        <md-option value="{{cou.alpha3Code}}" ng-repeat="cou in countries">{{cou.name}}</md-option>
                     </md-select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>
@@ -71,18 +75,34 @@
                 </div>
             </div>
 
-            <div class="form-group CPC-Con" ng-show="typeRadio">
-                <label class="col-sm-3 control-label" ng-modle="radioTitle">{{radioTitle}}：</label>
+            <div class="form-group CPC-Con" ng-show="item.costModel==1 || item.costModel==2 || item.costModel==3">
+                <label class="col-sm-3 control-label">{{radioTitle}}：</label>
                 <div class="col-sm-5">
                     <span class="dollar-icon">$</span>
                     <input type="text" class="form-control dollar-input" ng-model="costModelValue" ng-value="$">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Redirect Model：</label>
+                <div class="col-sm-5 campaign-radio">
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="item.redirectMode" value="0">302
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="item.redirectMode" value="1">Meta refresh
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="item.redirectMode" value="2">Double meta refresh
+                    </label>
+                    </label>
                 </div>
             </div>
             <div class="form-group tag-items">
                 <label class="col-sm-3 control-label">Tags：</label>
                 <div class="col-sm-5 selectize-input form-group">
                     <md-chips
-                            ng-model="item.tags"
+                            ng-model="tags"
                             readonly="ctrl.readonly"
                             md-removable="ctrl.removable"
                             placeholder="Enter a tag"
@@ -135,8 +155,7 @@
                     <label class="col-sm-3 control-label">Flow：</label>
                     <div class="col-sm-5">
                         <md-select class="cs-subform-select" ng-model="item.flow.id">
-                            <md-option value="0"></md-option>
-                            <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
+                            <md-option value="{{flow.id}}" ng-repeat="flow in flows" ng-selected="item.targetFlowId==flow.id">{{flow.name}}</md-option>
                         </md-select>
                     </div>
                 </div>

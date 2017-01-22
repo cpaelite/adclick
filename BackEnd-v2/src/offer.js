@@ -9,15 +9,17 @@ var common =require('./common');
 
 
 /**
- * @api {post} /api/lander  新增lander
- * @apiName lander
- * @apiGroup lander
+ * @api {post} /api/offer  新增offer
+ * @apiName 新增offer
+ * @apiGroup offer
  *
  * @apiParam {String} name
  * @apiParam {String} url
- * @apiParam {Number} numberOfOffers
- * @apiParam {String} [country]
- * @apiParam {Array} [tags]
+ * @apiParam {Number} payoutMode
+ * @apiParam {Object} affiliateNetwork {"id":1,name:""}
+ * @apiParam {Number} [payoutValue]
+ * @apiParam {String} country ""
+ * @apiParam {Array}  [tags]  
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -25,28 +27,38 @@ var common =require('./common');
  *    message: 'success' *   }
  *
  */
-router.post('/api/lander', function (req, res, next) {
+router.post('/api/offer', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
+        idText:Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.string().optional(),
-        numberOfOffers: Joi.number().required(),
+        country: Joi.string().required(),
+        payoutMode: Joi.number().required(),
+        affiliateNetwork: Joi.object().required().keys({
+            id:Joi.number().required(),
+            name:Joi.string().required()
+        }),
+        payoutValue: Joi.number().optional(),
         tags: Joi.array().optional()
     });
 
-    req.body.userId = req.userId
+    req.body.userId = req.userId;
+    req.body.idText=req.idText;
     const start = async ()=>{
         try{
             let value=await common.validate(req.body,schema);
             let connection=await common.getConnection();
-            let landerResult=await common.insertLander(value.userId,value,connection);
+            let postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter;
+            value.postbackUrl=postbackUrl;
+            let landerResult=await common.insertOffer(value.userId,value.idText,value,connection);
             if(value.tags && value.tags.length){
                 for(let index=0;index<value.tags.length;index++){
-                    await common.insertTags(value.userId,landerResult.insertId,value.tags[index],2,connection);
+                    await common.insertTags(value.userId,landerResult.insertId,value.tags[index],3,connection);
                 }
             }
             delete value.userId;
+            delete value.idText;
             value.id=landerResult.insertId;
             connection.release();
             res.json({
@@ -65,56 +77,69 @@ router.post('/api/lander', function (req, res, next) {
 
 
 /**
- * @api {post} /api/lander/:id  编辑lander
- * @apiName lander
- * @apiGroup lander
+ * @api {post} /api/offer/:offerId  编辑offer
+ * @apiName 编辑offer
+ * @apiGroup offer
  *
- *
- * @apiParam {String} name
- * @apiParam {String} url
- * @apiParam {Number} numberOfOffers
- * @apiParam {String} [country]
+ * @apiParam {Number} id
+ * @apiParam {String} [name]
+ * @apiParam {String} [url]
+ * @apiParam {String} [postbackUrl]
+ * @apiParam {Number} [payoutMode]
+ * @apiParam {Number} [affiliateNetwork] {"id":1,name:""}
+ * @apiParam {Number} [payoutValue]
+ * @apiParam {String} [country]  
+ * @apiParam {Number} [deleted]
  * @apiParam {Array} [tags]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
  *    status: 1,
- *    message: 'success' *   }
+ *    message: 'success'
+ *   }
  *
  */
-router.post('/api/lander/:id', function (req, res, next) {
+router.post('/api/offer/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
+        hash: Joi.string().optional(),
         userId: Joi.number().required(),
+        idText:Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.string().optional(),
-        numberOfOffers: Joi.number().required(),
+        country: Joi.string().required(),
+        payoutMode: Joi.number().required(),
+        affiliateNetwork: Joi.object().required().keys({
+            id:Joi.number().required(),
+            name:Joi.string().required()
+        }),
+        payoutValue: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional()
+        deleted: Joi.number().optional(),
     });
 
-    req.body.userId = req.userId
-    req.body.id = req.params.id;
+     req.body.userId = req.userId;
+      req.body.idText=req.idText;
+     req.body.id = req.params.id;
    const start = async ()=>{
        try{
            let value=await common.validate(req.body,schema);
            let connection=await common.getConnection();
-           await common.updateLander(value.userId,value,connection);
-           await common.updateTags(value.userId,value.id,2,connection);
+           await common.updateOffer(value.userId,value,connection);
+           await common.updateTags(value.userId,value.id,3,connection);
            if(value.tags && value.tags.length){
                 for(let index=0;index<value.tags.length;index++){
-                    await common.insertTags(value.userId,value.id,value.tags[index],2,connection);
+                    await common.insertTags(value.userId,value.id,value.tags[index],3,connection);
                 }
             }
             delete value.userId;
+            delete value.idText;
             connection.release();
             res.json({
                 status: 1,
                 message: 'success',
                 data: value
             }); 
-
 
        }catch(e){
           next(e);
@@ -125,9 +150,9 @@ router.post('/api/lander/:id', function (req, res, next) {
 
 
 /**
- * @api {get} /api/lander/:id  lander detail
- * @apiName lander
- * @apiGroup lander
+ * @api {get} /api/offer/:id  offer detail
+ * @apiName offer
+ * @apiGroup offer
  *
  *
  *
@@ -137,7 +162,7 @@ router.post('/api/lander/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/lander/:id',function(req,res,next){
+router.get('/api/offer/:id',function(req,res,next){
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -148,12 +173,12 @@ router.get('/api/lander/:id',function(req,res,next){
         try{
            let value = await common.validate(req.query,schema);
            let connection= await common.getConnection();
-           let result=await common.getLanderDetail(value.id,value.userId,connection);
+           let result=await common.getOfferDetail(value.id,value.userId,connection);
            connection.release();
            res.json({
                status:1,
                message:'success',
-               data:result ?  result :{}
+               data:result ? result :{}
            });
         }catch(e){
             return next(err);
@@ -161,16 +186,16 @@ router.get('/api/lander/:id',function(req,res,next){
     }
    start();
 
-})
+});
 
 
 
 /**
- * @api {delete} /api/lander/:id 删除lander
- * @apiName  删除lander
- * @apiGroup lander
+ * @api {delete} /api/offer/:id 删除offer
+ * @apiName  删除offer
+ * @apiGroup offer
  */
-router.delete('/api/lander/:id',function(req,res,next){
+router.delete('/api/offer/:id',function(req,res,next){
     var schema=Joi.object().keys({
             id: Joi.number().required(),
             userId:Joi.number().required()
@@ -181,7 +206,7 @@ router.delete('/api/lander/:id',function(req,res,next){
         try{
             let value=await common.validate(req.query,schema);
             let connection=await common.getConnection();
-            let result= await common.deleteLander(value.id,value.userId,connection);
+            let result= await common.deleteOffer(value.id,value.userId,connection);
             connection.release();
             res.json({
                 status:1,
@@ -194,5 +219,7 @@ router.delete('/api/lander/:id',function(req,res,next){
     start();
 
 });
+
+
 
 module.exports = router;
