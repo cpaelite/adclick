@@ -16,7 +16,7 @@ type UserBlacklists struct {
 }
 
 // UserReqAllowed 判断是否允许这次调用
-// remoteAdd (ip地址，支持192.168.0.155:52323这种格式)
+// remoteAddr (ip地址，支持192.168.0.155:52323这种格式)
 // userAgent User Agent
 func UserReqAllowed(userId int64, remoteAddr, userAgent string) bool {
 	b := GetUserBlacklist(userId)
