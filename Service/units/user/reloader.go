@@ -36,7 +36,7 @@ func (c *CollectorCampChangedUsers) Start() {
 	go func() {
 		redis := db.GetRedisClient("MSGQUEUE")
 		var err error
-		c.pubsub, err = redis.PSubscribe(subscribe)
+		c.pubsub, err = redis.Subscribe(subscribe)
 		if err != nil {
 			log.Errorf("collector: PSubscribe %v failed:%v", subscribe, err)
 			return
@@ -73,7 +73,7 @@ func (r Reloader) Running() {
 	log.Infof("reloader: running with redis:%v...", redis)
 
 	// redis.S
-	pubsub, err := redis.PSubscribe(subscribe)
+	pubsub, err := redis.Subscribe(subscribe)
 	if err != nil {
 		log.Errorf("reloader: PSubscribe %v failed:%v", subscribe, err)
 		return
