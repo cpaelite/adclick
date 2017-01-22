@@ -15,7 +15,7 @@
       enabled: true,
       weight: 100,
       relativeWeight: 100,
-      redirect: '302',
+      redirectMode: '0',
       directLinking: false,
       landers: [],
       offers: [],
@@ -49,7 +49,7 @@
       theFlow = {
         name: 'new flow',
         country: 'glb',
-        redirect: '302',
+        redirectMode: '0',
         rules: [ defaultRule ]
       };
     }
@@ -92,7 +92,6 @@
       var conditionMap = {};
       allConditions.forEach(function(condition, idx) {
         conditionMap[condition.id] = idx;
-        //console.log("id:", condition.id, ",display:", condition.display);
         condition.fields.forEach(function(field) {
           if (field.type == 'l2select') {
             var val2name = {};
@@ -113,16 +112,29 @@
       
       // fulfill flow with lander/offer/condition
       theFlow.rules.forEach(function(rule) {
+        if (!Array.isArray(rule.conditions)) {
+          rule.conditions = [];
+        }
         rule.conditions.forEach(function(condition) {
           condition._def = allConditions[conditionMap[condition.id]];
         });
 
+        if (!Array.isArray(rule.paths)) {
+          rule.paths = [];
+        }
         rule.paths.forEach(function(path) {
+          if (!Array.isArray(path.landers)) {
+            path.landers = [];
+          }
           path.landers.forEach(function(lander) {
-            lander._def = allLanders[landerMap[lander.id]];
+            lander.name = allLanders[landerMap[lander.id]].name;
           });
+
+          if (!Array.isArray(path.offers)) {
+            path.offers = [];
+          }
           path.offers.forEach(function(offer) {
-            offer._def = allOffers[offerMap[offer.id]];
+            offer.name = allOffers[offerMap[offer.id]].name;
           });
         });
       });
@@ -136,15 +148,8 @@
     $q.all(initPromises).then(initSuccess, initError);
     // end init data
 
-    function findIndex(list, item) {
-      for (var i=0; i<list.length; ++i) {
-        if (list[i] == item) return i;
-      }
-      return -1;
-    }
-
     function deleteElement(list, item) {
-      var idx = findIndex(list, item);
+      var idx = list.indexOf(item);
       if (idx >= 0) {
         list.splice(idx, 1);
         return true;
@@ -153,16 +158,17 @@
       }
     }
 
-    function calculateRelativeWeight(obj) {
+    function calculateRelativeWeight(list, isValid) {
       var total = 0;
-      obj.forEach(function(o) {
-        if (!o.isDeleted)
-          total += o.weight;
+      list.forEach(function(item) {
+        if (isValid(item))
+          total += item.weight | 0;
       });
-      obj.forEach(function(item) {
-        if (!item.isDeleted) {
-          var rel = 100 * item.weight / total;
-          item.relativeWeight = rel;
+      list.forEach(function(item) {
+        if (isValid(item)) {
+          item.relativeWeight = 100 * item.weight / total;
+        } else {
+          item.relativeWeight = -1;
         }
       });
     }
@@ -196,6 +202,7 @@
       var newRule = angular.copy(ruleSkel);
       newRule.name = 'Rule ' + $scope.flow.rules.length;
       $scope.flow.rules.push(newRule);
+      $scope.editRule(newRule);
     };
     $scope.deleteRule = function() {
       $scope.isDeleted = true;
@@ -205,6 +212,7 @@
       var newRule = angular.copy($scope.curRule);
       newRule.name = 'Rule ' + $scope.flow.rules.length;
       $scope.flow.rules.push(newRule);
+      $scope.editRule(newRule);
     };
     $scope.toggleExpand = function(rule) {
       rule.unexpanded = !rule.unexpanded;
@@ -221,35 +229,38 @@
       var newPath = angular.copy(pathSkel);
       newPath.name = 'Path ' + (rule.paths.length + 1);
       rule.paths.push(newPath);
-      calculateRelativeWeight(rule.paths);
+      $scope.editPath(rule, newPath);
     };
     $scope.deletePath = function() {
       $scope.isDeleted = true;
       $scope.curPath.isDeleted = true;
-      calculateRelativeWeight($scope.curRule.paths);
     };
     $scope.duplicatePath = function() {
       var newPath = angular.copy($scope.curPath);
       newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
       $scope.curRule.paths.push(newPath);
-      //$scope.curPath = newPath;
-      calculateRelativeWeight($scope.curRule.paths);
+      $scope.editPath($scope.curRule, newPath);
     };
-    $scope.$watch($scope.curPath && $scope.curPath.weight, function(newVal, oldVal) {
-      if (newVal != oldVal && $scope.curPath)
-        calculateRelativeWeight($scope.curRule.paths);
-    });
 
     $scope.restore = function() {
       if ($scope.onEdit == 'rule') {
         $scope.curRule.isDeleted = false;
-        calculateRelativeWeight($scope.flow.rules);
       } else if ($scope.onEdit == 'path') {
         $scope.curPath.isDeleted = false;
-        calculateRelativeWeight($scope.curRule.paths);
       }
       $scope.isDeleted = false;
     };
+
+    $scope.$watch(function() {
+      if ($scope.curRule == null) return [];
+      return $scope.curRule.paths.map(function(item) {
+        return item.isDeleted ? -1 : item.weight | 0;
+      });
+    }, function(newVal, oldVal) {
+      if (!angular.equals(newVal, oldVal) && $scope.curRule != null) {
+        calculateRelativeWeight($scope.curRule.paths, function(item) { return !item.isDeleted; });
+      }
+    }, true);
 
     function createFilterFor(query, property) {
       var lcQuery = angular.lowercase(query);
@@ -263,13 +274,9 @@
       console.info('Text changed to ' + text);
     };
 
-    $scope.selectedItemChange = function(item) {
-      console.info('Item changed to', item);
-    };
 
-
-    // operation on path/landers
     /*
+    // demo code for async load autocomplete options
     var allLanders = null;
     var landersPromise = null;
     function getAllLanders() {
@@ -290,6 +297,23 @@
       });
     };
     */
+    // operations on path lander
+    $scope.addLander = function(evt) {
+      $scope.curPath.landers.push({
+        id: null,
+        name: null,
+        weight: 100,
+        relativeWeight: -1,
+        _onEdit: true
+      });
+      evt.stopPropagation();
+    };
+    $scope.deleteLander = function(lander) {
+      var idx = $scope.curPath.landers.indexOf(lander);
+      if (idx >= 0) {
+        $scope.curPath.landers.splice(idx, 1);
+      }
+    };
     $scope.queryLanders = function(query) {
       if (allLanders) {
         return query ? allLanders.filter(createFilterFor(query, "name")) : allLanders;
@@ -297,33 +321,79 @@
         return [];
       }
     };
-    $scope.addLander = function() {
-      // todo
-      $scope.curPath.landers.push({
-        id: 0,
-        name: '',
-        _def: null,
-        weight: 100
-      });
-      //calculateRelativeWeight($scope.curPath.landers);
-    };
-    $scope.deleteLander = function(lander) {
-      var idx;
-      // todo: use findIndex, if available
-      $scope.curPath.landers.forEach(function(ele, i) {
-        if (ele == lander) {
-          idx = i;
-        }
-      });
-      if (idx !== undefined) {
-        $scope.curPath.landers.splice(idx, 1);
+    $scope.selectedLanderChange = function(item, lander) {
+      if (item) {
+        lander.id = item.id;
+        lander.name = item.name;
       }
     };
-    $scope.$watch($scope.curPath && $scope.curPath.landers, function(newVal, oldVal) {
-      if (newVal != oldVal && $scope.curPath)
-        calculateRelativeWeight($scope.curPath.landers);
+    $scope.$watch(function() {
+      if ($scope.curPath == null) return [];
+      return $scope.curPath.landers.map(function(item) {
+        return item.id == null ? -1 : item.weight | 0;
+      });
+    }, function(newVal, oldVal) {
+      if (!angular.equals(newVal, oldVal) && $scope.curPath != null) {
+        calculateRelativeWeight($scope.curPath.landers, function(item) { return item.id != null; });
+      }
     }, true);
 
+    // operations on path offer
+    $scope.addOffer = function(evt) {
+      $scope.curPath.offers.push({
+        id: null,
+        name: null,
+        weight: 100,
+        relativeWeight: -1,
+        _onEdit: true
+      });
+      evt.stopPropagation();
+    };
+    $scope.deleteOffer = function(offer) {
+      var idx = $scope.curPath.offers.indexOf(offer);
+      if (idx >= 0) {
+        $scope.curPath.offers.splice(idx, 1);
+      }
+    };
+    $scope.queryOffers = function(query) {
+      if (allOffers) {
+        return query ? allOffers.filter(createFilterFor(query, "name")) : allOffers;
+      } else {
+        return [];
+      }
+    };
+    $scope.selectedOfferChange = function(item, offer) {
+      if (item) {
+        offer.id = item.id;
+        offer.name = item.name;
+      }
+    };
+    $scope.$watch(function() {
+      if ($scope.curPath == null) return [];
+      return $scope.curPath.offers.map(function(item) {
+        return item.id == null ? -1 : item.weight | 0;
+      });
+    }, function(newVal, oldVal) {
+      if (!angular.equals(newVal, oldVal) && $scope.curPath != null) {
+        calculateRelativeWeight($scope.curPath.offers, function(item) { return item.id != null; });
+      }
+    }, true);
+
+    $scope.setEdit = function(evt, item) {
+      item._onEdit = true;
+      evt.stopPropagation();
+    };
+    $scope.clearOnEdit = function() {
+      if ($scope.curPath == null) return;
+      $scope.curPath.landers.forEach(function(lander) {
+        lander._onEdit = false;
+      });
+      $scope.curPath.offers.forEach(function(offer) {
+        offer._onEdit = false;
+      });
+    };
+
+    // operations on rule condition
     $scope.addCondition = function(condition) {
       var newCond = {
         id: condition.id,
@@ -338,25 +408,20 @@
       $scope.curRule.conditions.unshift(newCond);
     };
     $scope.deleteCondition = function(cond) {
-      var idx;
-      $scope.curRule.conditions.forEach(function(ele, i) {
-        if (ele == cond) {
-          idx = i;
-        }
-      });
-      if (idx !== undefined) {
+      var idx = $scope.curRule.conditions.indexOf(cond);
+      if (idx >= 0) {
         $scope.curRule.conditions.splice(idx, 1);
       }
     };
     $scope.querySearchIn = function(query, options, selected) {
-      console.log("st:", query);
+      //console.log("st:", query);
       var matched = query ? options.filter(createFilterFor(query, "display")) : options;
       return matched.filter(excludeIn(selected));
     };
 
     function excludeIn(list) {
       return function(item) {
-        return findIndex(list, item) == -1;
+        list.indexOf(item) == -1;
       };
     }
 
@@ -365,11 +430,11 @@
     };
 
     $scope.exists = function(item, list) {
-      return findIndex(list, item) >= 0;
+      list.indexOf(item) >= 0;
     };
     $scope.toggle = function (item, list) {
-      var idx = findIndex(list, item);
-      if (idx > -1) {
+      var idx = list.indexOf(item);
+      if (idx >= 0) {
         list.splice(idx, 1);
       } else {
         list.push(item);
@@ -380,41 +445,85 @@
       $scope.toggle(option.value, cdt[fname]);
     };
 
-    function cleanUpObject(obj) {
-      Object.keys(obj).forEach(function(key) {
-        if (key.indexOf('_') == 0) {
-          delete obj[key];
-        }
-      });
-    }
-
+    // save
     $scope.save = function() {
       // clean up before save
-      var flowCopy = angular.copy(theFlow);
-      flowCopy.rules.forEach(function(rule) {
+      var flowData = {
+        id: theFlow.id || null,
+        name: theFlow.name,
+        country: theFlow.country,
+        redirectMode: theFlow.redirectMode | 0,
+        rules: []
+      };
+
+      theFlow.rules.forEach(function(rule) {
+        if (rule.isDeleted)
+          return;
+        var ruleData = {
+          id: rule.id || null,
+          name: rule.name,
+          enabled: rule.enabled,
+          isDefault: rule.isDefault,
+          conditions: [],
+          paths: [],
+        };
+
         rule.conditions.forEach(function(condition) {
-          cleanUpObject(condition) {
+          conData = {};
+          Object.keys(condition).forEach(function(key) {
+            if (key.indexOf('_') != 0) {
+              conData[key] = condition[key];
+            }
+          });
+          ruleData.conditions.push(conData);
         });
+
+        if (ruleData.isDefault) {
+          delete ruleData.name;
+          delete ruleData.enabled;
+          delete ruleData.conditions;
+        } else if (ruleData.conditions.length == 0) {
+          delete ruleData.conditions;
+        }
 
         rule.paths.forEach(function(path) {
-          path.landers.forEach(function(lander) {
-            cleanUpObject(lander) {
-          });
-          path.offers.forEach(function(offer) {
-            cleanUpObject(offer) {
-          });
-        });
-      });
-      console.log(flowCopy);
-    };
+          if (path.isDeleted)
+            return;
+          pathData = {
+            name: path.name,
+            enabled: path.enabled,
+            weight: path.weight,
+            redirectMode: path.redirectMode | 0,
+            directLinking: path.directLinking,
+            landers: [],
+            offers: []
+          };
 
-    /*
-    function success(items) {
-      $scope.items = items;
-    }
-    $scope.getList = function () {
-      $scope.promise = Flow.get($scope.query, success).$promise;
+          path.landers.forEach(function(lander) {
+            if (lander.id !== null)
+              pathData.landers.push({id: lander.id, weight: lander.weight});
+          });
+          if (pathData.landers.length == 0) {
+            delete pathData.landers;
+          }
+
+          path.offers.forEach(function(offer) {
+            if (offer.id !== null)
+              pathData.offers.push({id: offer.id, weight: offer.weight});
+          });
+          if (pathData.offers.length == 0) {
+            delete pathData.offers;
+          }
+
+          ruleData.paths.push(pathData);
+        });
+
+        flowData.rules.push(ruleData);
+      });
+
+      console.log(flowData);
+      $scope.onSave = true;
+      Flow.save(flowData, function() { $scope.onSave = false; });
     };
-    */
   }
 })();

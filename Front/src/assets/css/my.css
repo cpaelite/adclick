@@ -1014,3 +1014,14 @@ h1.setting-title{
     margin:0 auto;
 }
 /*End setting Style*/
+
+.cs-flow-lander-view, .cs-flow-lander-onedit .cs-flow-lander-edit,
+.cs-flow-offer-view, .cs-flow-offer-onedit .cs-flow-offer-edit
+{
+    display: block !important;
+}
+.cs-flow-lander-edit, .cs-flow-lander-onedit .cs-flow-lander-view,
+.cs-flow-offer-edit, .cs-flow-offer-onedit .cs-flow-offer-view
+{
+    display: none !important;
+}

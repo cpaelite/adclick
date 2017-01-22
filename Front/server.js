@@ -819,65 +819,82 @@ app.delete('/api/campaigns/:campaignId', function (req, res) {
 /**
  * @apiName 根据ID获取Flow
  *
+ * shang@v1
  */
 app.get('/api/flows/:flowId', function (req, res) {
   var result = {
     "id": 1,
     "name": "Global - yoshop-Android-benson",
-    "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-    "type": 0, //0: 匿名，1：普通
-    "country": "",
+    "country": "us",
     "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-    "rules": [
-      {
-        id: 1,
-        name: "123",
-        hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-        type: 0,    //0: 匿名，1：普通
-        json: {},   // 规则
-        status: 0,  //0: 停止， 1：运行
-        paths: [
-          {
-            "id": 1,
-            "name": "Path 1",
-            "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-            redirecMode: 0,
-            directLink: 0,  //0:No, 1:Yes
-            status: 0,
-            weight: 100,
-            landers: [
-              {
-                "id": 1,
-                "name": "Path 1",
-                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                url: "",
-                country: "",
-                numberOfOffers: 2,
-                weight: 100,
-                tags: []
-              }
-            ],
-            offers: [
-              {
-                "id": 1,
-                "name": "Path 1",
-                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                url: "",
-                country: "",
-                AffiliateNetwork: {
-                  id: 1,
-                  name: ""
-                },
-                postbackUrl: "",
-                payoutMode: 0,  //0:Auto; 1:Manual
-                payoutValue: 0.8,
-                tags: []
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    "rules": [{
+      "id": 3,
+      "isDefault": true,
+      "paths": [{
+        "name": "path name 1",
+        "redirecMode": 0,
+        "directLinking": false,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "2343",  // lander id
+          "weight": 100
+        }],
+        "offers": [{
+          "id": "3432",  // offer id
+          "weight": 100
+        }]
+      }]
+    }, {
+      "id": 4,
+      "name": "the rule name",
+      "isDefault": false,
+      "enabled": true,   // is this rule enabled/disabled
+      "conditions": [{
+        "id": "3434",    // condition id, refer to /api/conditions
+        "operand": "is", // is/isnt
+        "value": ["windows", "android4.5", "android7"]
+      }, {
+        "id": "1234",
+        "operand": "isnt",
+        "tz": "+0800",
+        "weekday": ["tue", "fri"]
+      }],
+      "paths": [{
+        "name": "path name 1",
+        "redirecMode": 0,
+        "directLinking": false,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "2343",
+          "weight": 100
+        }, {
+          "id": "3943",
+          "weight": 50
+        }],
+        "offers": [{
+          "id": "3432",
+          "weight": 100
+        }, {
+          "id": "8923",
+          "weight": 200
+        }]
+      }, {
+        "name": "path name 2",
+        "redirecMode": 0,
+        "directLinking": true,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "4842",
+          "weight": 100
+        }, {
+          "id": "7265",
+          "weight": 50
+        }]
+      }]
+    }]
   };
   res.send(result);
 });
@@ -918,100 +935,82 @@ app.get('/api/flows/:flowId/campaigns', function (req, res) {
 /**
  * @apiName 添加Flow
  *
- conditionalPathsGroups: [],
- countries: [],
- defaultOfferRedirectMode: "REGULAR",
- defaultPaths: [
- {
-     active: true,
-     id: "047bb73f-6787-4227-b51c-247f6db63a2a",
-     landers: [
-         {
-             lander: {
-                 id: "04fc2632-f637-4636-bd02-1f25e5a10672",
-                 name: "Global - yoshop2-en"
-             },
-             weight: 100
-         }
-     ],
-     name: "Path 1",
-     offerRedirectMode: "REGULAR",
-     offers: [
-         {
-             offer: {
-                 id: "9f91a026-aa8e-437c-b202-cd23fe6f02de",
-                 name: "hasoffer - Global - yoshop-Android-benson-CAUSAU"
-             },
-             weight: 100
-         }
-     ],
-     realtimeRoutingApiState: "DISABLED",
-     weight: 100
- }
- ],
- id: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
- name: "Global - yoshop-Android-benson",
- realtimeRoutingApi: "DISABLED"
+ * the post data is the same as in `GET /api/flows/:flowId`, except that there
+ * is no id for flow and rules
  *
+ * shang@v1
  */
 app.post('/api/flows/', function (req, res) {
   var result = {
-    "id": 1,
     "name": "Global - yoshop-Android-benson",
-    "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-    "type": 0, //0: 匿名，1：普通
-    "country": "",
+    "country": "us",
     "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-    "rules": [
-      {
-        id: 1,
-        name: "123",
-        hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-        type: 0,    //0: 匿名，1：普通
-        json: {},   // 规则
-        status: 0,  //0: 停止， 1：运行
-        paths: [
-          {
-            "id": 1,
-            "name": "Path 1",
-            "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-            redirecMode: 0,
-            directLink: 0,  //0:No, 1:Yes
-            status: 0,
-            weight: 100,
-            landers: [
-              {
-                "id": 1,
-                "name": "Path 1",
-                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                url: "",
-                country: "",
-                numberOfOffers: 2,
-                weight: 100,
-                tags: []
-              }
-            ],
-            offers: [
-              {
-                "id": 1,
-                "name": "Path 1",
-                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                url: "",
-                country: "",
-                AffiliateNetwork: {
-                  id: 1,
-                  name: ""
-                },
-                postbackUrl: "",
-                payoutMode: 0,  //0:Auto; 1:Manual
-                payoutValue: 0.8,
-                tags: []
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    "rules": [{
+      "isDefault": true,
+      "paths": [{
+        "name": "path name 1",
+        "redirecMode": 0,
+        "directLinking": false,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "2343",  // lander id
+          "weight": 100
+        }],
+        "offers": [{
+          "id": "3432",  // offer id
+          "weight": 100
+        }]
+      }]
+    }, {
+      "name": "the rule name",
+      "isDefault": false,
+      "enabled": true,   // is this rule enabled/disabled
+      "conditions": [{
+        "id": "3434",    // condition id, refer to /api/conditions
+        "operand": "is", // is/isnt
+        "value": ["windows", "android4.5", "android7"]
+      }, {
+        "id": "1234",
+        "operand": "isnt",
+        "tz": "+0800",
+        "weekday": ["tue", "fri"]
+      }],
+      "paths": [{
+        "name": "path name 1",
+        "redirecMode": 0,
+        "directLinking": false,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "2343",
+          "weight": 100
+        }, {
+          "id": "3943",
+          "weight": 50
+        }],
+        "offers": [{
+          "id": "3432",
+          "weight": 100
+        }, {
+          "id": "8923",
+          "weight": 200
+        }]
+      }, {
+        "name": "path name 2",
+        "redirecMode": 0,
+        "directLinking": true,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "4842",
+          "weight": 100
+        }, {
+          "id": "7265",
+          "weight": 50
+        }]
+      }]
+    }]
   };
   res.send(result);
 });
@@ -1019,100 +1018,84 @@ app.post('/api/flows/', function (req, res) {
 /**
  * @apiName 修改Flow
  *
- conditionalPathsGroups: [],
- countries: [],
- defaultOfferRedirectMode: "REGULAR",
- defaultPaths: [
- {
-     active: true,
-     id: "047bb73f-6787-4227-b51c-247f6db63a2a",
-     landers: [
-         {
-             lander: {
-                 id: "04fc2632-f637-4636-bd02-1f25e5a10672",
-                 name: "Global - yoshop2-en"
-             },
-             weight: 100
-         }
-     ],
-     name: "Path 1",
-     offerRedirectMode: "REGULAR",
-     offers: [
-         {
-             offer: {
-                 id: "9f91a026-aa8e-437c-b202-cd23fe6f02de",
-                 name: "hasoffer - Global - yoshop-Android-benson-CAUSAU"
-             },
-             weight: 100
-         }
-     ],
-     realtimeRoutingApiState: "DISABLED",
-     weight: 100
- }
- ],
- id: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
- name: "Global - yoshop-Android-benson",
- realtimeRoutingApi: "DISABLED"
+ * the post data is the same as in `GET /api/flows/:flowId`
  *
+ * shang@v1
  */
 app.post('/api/flows/:flowId', function (req, res) {
   var result = {
     "id": 1,
     "name": "Global - yoshop-Android-benson",
-    "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-    "type": 0, //0: 匿名，1：普通
-    "country": "global",
+    "country": "us",
     "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-    "rules": [
-      {
-        id: 1,
-        name: "123",
-        hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-        type: 0,    //0: 匿名，1：普通
-        json: {},   // 规则
-        status: 0,  //0: 停止， 1：运行
-        paths: [
-          {
-            "id": 1,
-            "name": "Path 1",
-            "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-            redirecMode: 0,
-            directLink: 0,  //0:No, 1:Yes
-            status: 0,
-            weight: 100,
-            landers: [
-              {
-                "id": 1,
-                "name": "Path 1",
-                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                url: "",
-                country: "",
-                numberOfOffers: 2,
-                weight: 100,
-                tags: []
-              }
-            ],
-            offers: [
-              {
-                "id": 1,
-                "name": "Path 1",
-                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                url: "",
-                country: "",
-                AffiliateNetwork: {
-                  id: 1,
-                  name: ""
-                },
-                postbackUrl: "",
-                payoutMode: 0,  //0:Auto; 1:Manual
-                payoutValue: 0.8,
-                tags: []
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    "rules": [{
+      "id": 3,
+      "isDefault": true,
+      "paths": [{
+        "name": "path name 1",
+        "redirecMode": 0,
+        "directLinking": false,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "2343",  // lander id
+          "weight": 100
+        }],
+        "offers": [{
+          "id": "3432",  // offer id
+          "weight": 100
+        }]
+      }]
+    }, {
+      "id": 4,
+      "name": "the rule name",
+      "isDefault": false,
+      "enabled": true,   // is this rule enabled/disabled
+      "conditions": [{
+        "id": "3434",    // condition id, refer to /api/conditions
+        "operand": "is", // is/isnt
+        "value": ["windows", "android4.5", "android7"]
+      }, {
+        "id": "1234",
+        "operand": "isnt",
+        "tz": "+0800",
+        "weekday": ["tue", "fri"]
+      }],
+      "paths": [{
+        "name": "path name 1",
+        "redirecMode": 0,
+        "directLinking": false,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "2343",
+          "weight": 100
+        }, {
+          "id": "3943",
+          "weight": 50
+        }],
+        "offers": [{
+          "id": "3432",
+          "weight": 100
+        }, {
+          "id": "8923",
+          "weight": 200
+        }]
+      }, {
+        "name": "path name 2",
+        "redirecMode": 0,
+        "directLinking": true,
+        "enabled": true,
+        "weight": 100,
+        "landers": [{
+          "id": "4842",
+          "weight": 100
+        }, {
+          "id": "7265",
+          "weight": 50
+        }]
+      }]
+    }]
   };
   res.send(result);
 });
@@ -1429,7 +1412,7 @@ app.get('/api/conditions', function (req, res) {
         { "value": "utc", "display": "UTC" },
         { "value": "-8", "display": "-8 PDT" },
         { "value": "+8", "display": "+8 Shanghai" },
-        { "value": "+7", "display": "+7 Soul" },
+        { "value": "-7", "display": "+7 Soul" },
         { "value": "+7", "display": "+7 Tokyo" }
       ]
     }]
