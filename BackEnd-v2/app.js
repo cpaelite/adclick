@@ -5,7 +5,7 @@ global.pool = mysql.createPool({
     user: setting.mysql.user,
     password: setting.mysql.password,
     database: setting.mysql.database,
-    debug: true
+    debug: false
 });
 var express = require('express');
 var favicon = require('serve-favicon');
