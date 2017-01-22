@@ -27,11 +27,12 @@
       offset: 1,
       sort: $scope.preferences.reportViewSort.key,
       direction: $scope.preferences.reportViewSort.direction,
-      zt: $scope.preferences.reportTimeZone,
-      status: $scope.preferences.entityType,
-      groupBy: perfType,
+      tz: $scope.preferences.reportTimeZone,
+      active: $scope.preferences.entityType,
+      groupBy: 'CampaignID',
       from: $scope.fromDate + ' ' + $scope.fromTime,
-      to: $scope.toDate + ' ' + $scope.toTime
+      to: $scope.toDate + ' ' + $scope.toTime,
+      type: 'TrackingCampaign'
     };
 
     function success(result) {
@@ -80,10 +81,10 @@
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
       //TODO 用户配置信息提交后台保存
-      Preferences.save();
+      Preferences.save($scope.preferences);
     };
 
-    $scope.checkboxIsChecked = function(num){
+    $scope.checkboxIsChecked = function (num) {
       $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
     };
 
@@ -121,25 +122,23 @@
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
-      var resource;
-      var func;
+      var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        resource = 'Campaign';
-        func = editCampaignCtrl;
+        controller = ['$scope', '$mdDialog', 'Campaign', 'Flows', 'TrafficSources', editCampaignCtrl];
       } else if (perfType == 'flow') {
-        resource = 'Flow';
-        func = editFlowCtrl;
+        controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
       } else if (perfType == 'lander') {
-        resource = 'Lander';
-        func = editLanderCtrl
+        controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
-        resource = 'Offer';
-        func = editOfferCtrl;
+        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetworks', editOfferCtrl];
+      } else if (perfType == 'trafficSource') {
+        controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
       }
+
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', resource, func],
+        controller: controller,
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: {item: item, perfType: perfType},
@@ -219,44 +218,108 @@
 
     // tree isShow
     $scope.trData = [
-      {id:0,name:'campaign',id:1,impressions:2,visits:3,click:4,conversions:5,revenue:6,cost:7,profit:8,cpv:9,ictr:10,operation:11},
-      {id:1,name:'flow',id:1,impressions:2,visits:3,click:4,conversions:5,revenue:6,cost:7,profit:8,cpv:9,ictr:10,operation:11}
+      {
+        id: 32,
+        name: 'campaign1',
+        impressions: 2,
+        visits: 3,
+        click: 4,
+        conversions: 5,
+        revenue: 6,
+        cost: 7,
+        profit: 8,
+        cpv: 9,
+        ictr: 10,
+        operation: 11
+      },
+      {
+        id: 33,
+        name: 'campaign2',
+        impressions: 2,
+        visits: 3,
+        click: 4,
+        conversions: 5,
+        revenue: 6,
+        cost: 7,
+        profit: 8,
+        cpv: 9,
+        ictr: 10,
+        operation: 11
+      }
     ];
     $scope.selectedIndex = 0;
-    $scope.select = function(i){
-      
-      
+    $scope.select = function (i) {
+
+
     };
     $scope.isActive = [];
     $scope.isDown = [];
     $scope.treeFirstChildIsShow = [];
     $scope.treeSecondChildIsShow = [];
-    $scope.firstTreeClick = function($index){
+    $scope.firstTreeClick = function ($index) {
       $scope.isActive[$index] = !$scope.isActive[$index];
       $scope.treeFirstChildIsShow[$index] = !$scope.treeFirstChildIsShow[$index];
       $scope.treeSecondChildIsShow[$index] = false;
     };
-    $scope.secondTreeClick = function($index){
+    $scope.secondTreeClick = function ($index) {
       $scope.isDown[$index] = !$scope.isDown[$index];
       $scope.treeSecondChildIsShow[$index] = !$scope.treeSecondChildIsShow[$index];
     };
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign) {
+  function editCampaignCtrl($scope, $mdDialog, Campaign, Flows, TrafficSources) {
+    $scope.tags = [];
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Campaign.get({id: 18}, function(campaign) {
+        $scope.item = angular.copy(campaign.data);
+        if ($scope.item.costModel == 1) {
+          $scope.radioTitle = 'CPC';
+          $scope.costModelValue = $scope.item.cpcValue;
+        } else if ($scope.item.costModel == 2) {
+          $scope.radioTitle = 'CPA';
+          $scope.costModelValue = $scope.item.cpaValue;
+        } else if ($scope.item.costModel == 3) {
+          $scope.radioTitle = 'CPM';
+          $scope.costModelValue = $scope.item.cpmValue;
+        }
+        $scope.tags = $scope.item.tags;
+        $scope.trafficSource = {
+          id: $scope.item.trafficSourceId,
+          name: $scope.item.trafficSourceName
+        };
+        if ($scope.item['costModel'] == null) {
+          $scope.item = {
+            costModel: 0,
+            redirectMode: 0,
+            targetType: 1,
+            status: '1',
+          };
+        }
+      });
       this.title = "edit";
     } else {
       $scope.item = {
-        trafficSource: {},
         costModel: 0,
+        redirectMode: 0,
         targetType: 1,
         status: '1',
-        targetUrl: ''
       };
       this.title = "add";
     }
     this.titleType = angular.copy(this.perfType);
+
+    // TrafficSource
+    TrafficSources.get(null, function (trafficSource) {
+      $scope.trafficSources = trafficSource.data.trafficsources;
+    });
+
+    // Country
+    $scope.countries = $scope.$root.countries;
+
+    // Flow
+    Flows.get(null, function (flow) {
+      $scope.flows = flow.data.flows;
+    });
 
     this.cancel = $mdDialog.cancel;
 
@@ -265,9 +328,12 @@
     }
 
     this.save = function () {
+      // cost model value
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
+      $scope.item.tags = $scope.tags;
+
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Campaign.save($scope.item, success);
@@ -276,7 +342,6 @@
 
     var self = this;
     self.readonly = false;
-    $scope.item.tags = [];
     self.newVeg = function (chip) {
       return {
         name: chip,
@@ -296,9 +361,7 @@
       }
     };
 
-    $scope.typeRadio = false;
     $scope.radioSelect = function (type) {
-      $scope.typeRadio = true;
       $scope.radioTitle = type;
     };
 
@@ -324,67 +387,21 @@
     ];
     $scope.urlTokenClick = function (url) {
       var targetUrl = $scope.item.targetUrl;
+      if (!targetUrl) {
+        targetUrl = '';
+      }
       if (targetUrl.indexOf(url) == -1) {
         $scope.item.targetUrl = targetUrl + url;
       }
     };
     $scope.isDisabled = false;
-    $scope.trafficSources = [
-      {
-        id: 1,
-        name: "Adwords"
-      },
-      {
-        id: 2,
-        name: "Popads"
-      },
-      {
-        id: 3,
-        name: "Avazu"
-      }
-    ];
-    $scope.countries = [
-      {
-        "id": 1,
-        "code": "AD",
-        "name": "Andorra"
-      }, {
-        "id": 2,
-        "code": "AE",
-        "name": "United Arab Emirates"
-      }, {
-        "id": 3,
-        "code": "AF",
-        "name": "Afghanistan"
-      }, {
-        "id": 4,
-        "code": "AG",
-        "name": "Antigua And Barbuda"
-      }, {
-        "id": 5,
-        "code": "AI",
-        "name": "Anguilla"
-      }
-    ];
-    $scope.flows = [
-      {
-        id: 1,
-        name: "flow1"
-      },
-      {
-        id: 2,
-        name: "flow2"
-      },
-      {
-        id: 3,
-        name: "flow3"
-      }
-    ];
   }
 
   function editFlowCtrl($scope, $mdDialog, Flow) {
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Flow.get({id: this.item.id}, function (flow) {
+        $scope.item = angular.copy(flow.data);
+      });
       this.title = "edit";
     } else {
       $scope.item = {
@@ -394,6 +411,9 @@
     }
 
     this.titleType = angular.copy(this.perfType);
+
+    // Country
+    $scope.countries = $scope.$root.countries;
 
     this.cancel = $mdDialog.cancel;
 
@@ -410,16 +430,30 @@
   }
 
   function editLanderCtrl($scope, $mdDialog, Lander) {
+    $scope.tags = [];
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Lander.get({id: 46}, function (lander) {
+        $scope.item = angular.copy(lander.data);
+        $scope.tags = $scope.item.tags;
+        if ($scope.item['url'] == null) {
+          $scope.item = {
+            url: 'http://',
+            numberOfOffers: 1,
+          };
+        }
+      });
       this.title = "edit";
     } else {
       $scope.item = {
-        url: ''
+        url: 'http://',
+        numberOfOffers: 1,
       };
       this.title = "add";
     }
     this.titleType = angular.copy(this.perfType);
+
+    // Country
+    $scope.countries = $scope.$root.countries;
 
     this.cancel = $mdDialog.cancel;
 
@@ -428,6 +462,7 @@
     }
 
     this.save = function () {
+      $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Lander.save($scope.item, success);
@@ -436,7 +471,6 @@
 
     var self = this;
     self.readonly = false;
-    $scope.item.tags = [];
     self.newVeg = function (chip) {
       return {
         name: chip,
@@ -459,9 +493,17 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, Offer) {
+  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetworks) {
+    $scope.tags = [];
     if (this.item) {
-      $scope.item = angular.copy(this.item);
+      Offer.get({id: 22}, function (offer) {
+        $scope.item = angular.copy(offer.data);
+        if ($scope.item['payoutMode'] == null) {
+          $scope.item = {
+            payoutMode: 0,
+          };
+        }
+      });
       this.title = "edit";
     } else {
       $scope.item = {
@@ -470,6 +512,15 @@
       };
       this.title = "add";
     }
+
+    // Country
+    $scope.countries = $scope.$root.countries;
+
+    // AffiliateNetword
+    AffiliateNetworks.get(null, function (affiliates) {
+      $scope.affiliates = affiliates.data.networks;
+    });
+
     this.titleType = angular.copy(this.perfType);
 
     this.cancel = $mdDialog.cancel;
@@ -479,6 +530,10 @@
     }
 
     this.save = function () {
+      $scope.item.tags = $scope.tags;
+      delete $scope.item.AffiliateNetworkId;
+      delete $scope.item.AffiliateNetworkName;
+      delete $scope.item.postbackUrl;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Offer.save($scope.item, success);
@@ -486,7 +541,6 @@
     };
     var self = this;
     self.readonly = false;
-    $scope.item.tags = [];
     self.newVeg = function (chip) {
       return {
         name: chip,
@@ -507,6 +561,97 @@
         $scope.item.url = itemUrl + url;
       }
     };
+  }
+
+  function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
+    if (this.item) {
+      TrafficSource.get({id: 15}, function (trafficsource) {
+        $scope.item = angular.copy(trafficsource.data);
+        if (!$scope.item.params) {
+          $scope.item.params = [
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''},
+            {Parameter: '', Placeholder: '', Name: '', Track: ''}
+          ];
+        }
+      });
+      this.title = "edit";
+    } else {
+      $scope.item = {
+        impTracking: 0,
+        params: [
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''},
+          {Parameter: '', Placeholder: '', Name: '', Track: ''}
+        ]
+      };
+      $scope.params = [];
+      this.title = "add";
+      $scope.urlToken = '';
+    }
+
+    this.titleType = angular.copy(this.perfType);
+
+    this.cancel = $mdDialog.cancel;
+
+    function success(item) {
+      $mdDialog.hide(item);
+    }
+
+    this.save = function () {
+      $scope.item.params = JSON.stringify($scope.item.params);
+      $scope.editForm.$setSubmitted();
+
+      if ($scope.editForm.$valid) {
+        TrafficSource.save($scope.item, success);
+      }
+    };
+
+    $scope.urlItem = [
+      "{campaign.id}",
+      "{brand}",
+      "{device}",
+      "{trafficSource.name}",
+      "{trafficSource.id}",
+      "{lander.id}"
+    ];
+    $scope.urlTokenClick = function(url){
+      $scope.urlToken = $scope.urlToken + url;
+    };
+
+    $scope.visible = false;
+    $scope.toggleShow = function(){
+      $scope.isActive = !$scope.isActive;
+      $scope.visible = !$scope.visible;
+    };
+
+    $scope.selectTrafficSourceTemplate = function (ev, item) {
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: ['$scope', '$mdDialog', selectTrafficSourceTemplateCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: { item: item, currentUser: $scope.currentUser },
+        bindToController: true,
+        targetEvent: ev,
+        templateUrl: 'tpl/trafficSource-template-dialog.html',
+      });
+    };
+
   }
 
   function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer) {

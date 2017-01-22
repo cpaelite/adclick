@@ -1,7 +1,7 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+            <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
 
@@ -17,16 +17,19 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Name：</label>
+                <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.name" required>
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
+                    <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Url：</label>
+                <label class="col-sm-3 control-label">Postback Url：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="urlToken" required>
+                    <input type="text" class="form-control" ng-model="item.postbackUrl">
                 </div>
             </div>
             <div class="url-tokens-row form-group">
@@ -43,26 +46,15 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Token：</label>
+                <label class="col-sm-3 control-label">Pixel redirect URL：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.token" required>
+                    <input type="text" class="form-control" ng-model="item.pixelRedirectUrl">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Status：</label>
+                <label class="col-sm-3 control-label">Impression tracking：</label>
                 <div class="col-sm-5">
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="item.status" value="0"> Active
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="item.status" value="1"> InActive
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Budget：</label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.budget" required>
+                    <input type="checkbox" class="form-control" ng-model="item.impTracking" ng-true-value="1" ng-false-value="0" ng-init="0">
                 </div>
             </div>
 
@@ -93,45 +85,24 @@
                     <tbody>
                     <tr>
                         <td class="col-sm-3 control-label">External ID：</td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text" disabled></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="item.externalId.Parameter"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="item.externalId.Placeholder"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="item.externalId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
                         <td class="col-sm-3 control-label">Cost：</td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text" disabled=></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="item.cost.Parameter"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="item.cost.Placeholder"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="item.cost.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
-                    <tr>
-                        <td class="col-sm-3 control-label">Custom variable1：</td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="checkbox"></td>
-                    </tr>
-                    <tr>
-                        <td class="col-sm-3 control-label">Custom variable2：</td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="checkbox"></td>
-                    </tr>
-                    <tr>
-                        <td class="col-sm-3 control-label">Custom variable3：</td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="checkbox"></td>
-                    </tr>
-                    <tr>
-                        <td class="col-sm-3 control-label">Custom variable4：</td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="text"></td>
-                        <td class="traficc-source-input"><input type="checkbox"></td>
+                    <tr ng-repeat="param in item.params">
+                        <td class="col-sm-3 control-label">Custom variable{{$index+1}}：</td>
+                        <td class="traficc-source-input"><input type="text" ng-model="param.Parameter"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="param.Placeholder"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="param.Name"></td>
+                        <td class="traficc-source-input"><input type="checkbox" ng-model="param.Track" ng-true-value="1" ng-false-value="0"></td>
                     </tr>
                     </tbody>
                 </table>

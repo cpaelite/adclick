@@ -17,7 +17,7 @@
             <li class="dropdown" uib-dropdown>
                 <a href class="dropdown-toggle clear" uib-dropdown-toggle>
                     <i class="material-icons md-mini">&#xE87C;</i>
-                    <span class="hidden-sm hidden-md text-md">{{currentUser.name}}</span>
+                    <span class="hidden-sm hidden-md text-md">{{currentUser.firstname}}</span>
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight w" uib-dropdown-menu>
@@ -66,18 +66,13 @@
                     <span>{{'offer' | translate}}</span>
                 </a>
             </li>
-            <!--<li ui-sref-active="active">
-                <a ui-sref="app.trafficSource" md-ink-ripple>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.trafficSource" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
                     <span>{{'trafficSource' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
-                <a ui-sref="app.affiliatenetwork" md-ink-ripple>
-                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'affiliateNetwork' | translate}}</span>
-                </a>
-            </li>-->
+
         </ul>
     </nav>
 </md-sidenav>

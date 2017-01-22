@@ -67,6 +67,14 @@ angular.module('app').value('columnDefinition', {
       key: 'payout',
       name: 'Payout'
     }],
+  trafficSource: [{
+    key: 'trafficSource',
+    name: 'Traffic source'
+  },
+    {
+      key: 'trafficSourceId',
+      name: 'Traffic source ID'
+    }],
   common: [{
     key: 'visits',
     name: 'Visits'
@@ -131,3 +139,138 @@ angular.module('app').value('reportFilter', [
 angular.module('app').value('urlTokens', [
 
 ]);
+
+angular.module('app').value('userPreferences', {
+  "reportViewLimit": 500,
+  "entityType": 1,
+  "reportViewSort": {
+    "key": "visits",
+    "direction": "desc"
+  },
+  "reportTimeZone": "+08:00",
+  "reportViewColumns": {
+    "offerName": {
+      "visible": true
+    },
+    "offerId": {
+      "visible": true
+    },
+    "offerUrl": {
+      "visible": false
+    },
+    "offerCountry": {
+      "visible": false
+    },
+    "payout": {
+      "visible": true
+    },
+    "impressions": {
+      "visible": true
+    },
+    "visits": {
+      "visible": true
+    },
+    "clicks": {
+      "visible": true
+    },
+    "conversions": {
+      "visible": true
+    },
+    "revenue": {
+      "visible": true
+    },
+    "cost": {
+      "visible": true
+    },
+    "profit": {
+      "visible": true
+    },
+    "cpv": {
+      "visible": true
+    },
+    "ictr": {
+      "visible": true
+    },
+    "ctr": {
+      "visible": true
+    },
+    "cr": {
+      "visible": true
+    },
+    "cv": {
+      "visible": true
+    },
+    "roi": {
+      "visible": true
+    },
+    "epv": {
+      "visible": true
+    },
+    "epc": {
+      "visible": true
+    },
+    "ap": {
+      "visible": true
+    },
+    "affiliateNetworkName": {
+      "visible": true
+    },
+    "campaignName": {
+      "visible": true
+    },
+    "campaignId": {
+      "visible": true
+    },
+    "campaignUrl": {
+      "visible": false
+    },
+    "campaignCountry": {
+      "visible": false
+    },
+    "pixelUrl": {
+      "visible": false
+    },
+    "postbackUrl": {
+      "visible": false
+    },
+    "trafficSourceName": {
+      "visible": true
+    },
+    "clickRedirectType": {
+      "visible": false
+    },
+    "costModel": {
+      "visible": false
+    },
+    "cpa": {
+      "visible": true
+    },
+    "cpc": {
+      "visible": true
+    },
+    "cpm": {
+      "visible": true
+    },
+    "city": {
+      "visible": true
+    },
+    "flowName": {
+      "visible": true
+    },
+    "landerName": {
+      "visible": true
+    },
+    "landerId": {
+      "visible": false
+    },
+    "landerUrl": {
+      "visible": false
+    },
+    "landerCountry": {
+      "visible": false
+    },
+    "numberOfOffers": {
+      "visible": false
+    }
+  }
+});

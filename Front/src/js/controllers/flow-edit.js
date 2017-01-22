@@ -161,6 +161,15 @@
       $scope.isDeleted = false;
     };
 
+    $scope.landerEditIsShow = false;
+    $scope.landerEditClick = function(){
+      $scope.landerEditIsShow = !$scope.landerEditIsShow;
+    };
+    $scope.offerEditIsShow = false;
+    $scope.offerEditClick = function(){
+      $scope.offerEditIsShow = !$scope.offerEditIsShow;
+    }
+
     $scope.addLander = function() {
       $scope.curPath.landers.push({
         id: 0,

@@ -4,21 +4,8 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
-
-// * @apiParam {String} from 开始时间
-// * @apiParam {String} to   截止时间
-// * @apiParam {String} tz   timezone
-// * @apiParam {String} sort  排序字段
-// * @apiParam {String} direction  desc
-// * @apiParam {String} groupBy   表名
-// * @apiParam {Number} offset
-// * @apiParam {Number} limit
-// * @apiParam {String} filter1
-// * @apiParam {String} filter1Value
-// * @apiParam {String} {filter2}
-// * @apiParam {String} {filter2Value}
-// * @apiParam {Array}  columns     列
-
+var Pub = require('./redis_sub_pub');
+var setting = require('../config/setting');
 
 //Request Example:
 //  {
@@ -26,13 +13,7 @@ var common = require('./common');
 //     "url": "hddssds",
 //     "redirectMode": 0,
 //     "impPixelUrl": "idddsdsds",
-//     "country": {
-//         "id": 1,
-//         "name": "Andorra",
-//         "alpha2Code": "AD",
-//         "alpha3Code": "AND",
-//         "numCode": 20
-//     },
+//     "country": "",
 //     "costModel": 0,
 //     "cpc": 0.8,
 //     "targetType": 0,
@@ -48,13 +29,7 @@ var common = require('./common');
 //     "flow": {
 //         "type": 1,
 //         "name": "flowtest",
-//         "country": {
-//             "id": 1,
-//             "name": "Andorra",
-//             "alpha2Code": "AD",
-//             "alpha3Code": "AND",
-//             "numCode": 20
-//         },
+//         "country": "",
 //         "redirectMode": 0,
 //         "rules": [
 //             {
@@ -75,13 +50,7 @@ var common = require('./common');
 //                             {
 //                                 "name": "landertest",
 //                                 "url": "dddffd",
-//                                 "country": {
-//                                     "id": 1,
-//                                     "name": "Andorra",
-//                                     "alpha2Code": "AD",
-//                                     "alpha3Code": "AND",
-//                                     "numCode": 20
-//                                 },
+//                                 "country": "",
 //                                 "numberOfOffers": 2,
 //                                 "weight": 100,
 //                                 "tags": [
@@ -96,13 +65,7 @@ var common = require('./common');
 //                                 "name": "offertest",
 //                                 "url": "eweewwe",
 //                                 "weight": 100,
-//                                 "country": {
-//                                     "id": 1,
-//                                     "name": "Andorra",
-//                                     "alpha2Code": "AD",
-//                                     "alpha3Code": "AND",
-//                                     "numCode": 20
-//                                 },
+//                                 "country":"",
 //                                 "affiliateNetwork": {
 //                                     "id": 1,
 //                                     "name": "appnext"
@@ -138,13 +101,7 @@ var common = require('./common');
 //     "url": "hddssds",
 //     "redirectMode": 0,
 //     "impPixelUrl": "idddsdsds",
-//     "country": {
-//       "id": 1,
-//       "name": "Andorra",
-//       "alpha2Code": "AD",
-//       "alpha3Code": "AND",
-//       "numCode": 20
-//     },
+//     "country": "",
 //     "costModel": 0,
 //     "cpc": 0.8,
 //     "targetType": 0,
@@ -160,13 +117,7 @@ var common = require('./common');
 //     "flow": {
 //       "type": 1,
 //       "name": "flowtest",
-//       "country": {
-//         "id": 1,
-//         "name": "Andorra",
-//         "alpha2Code": "AD",
-//         "alpha3Code": "AND",
-//         "numCode": 20
-//       },
+//       "country": "",
 //       "redirectMode": 0,
 //       "rules": [
 //         {
@@ -187,13 +138,7 @@ var common = require('./common');
 //                 {
 //                   "name": "landertest",
 //                   "url": "dddffd",
-//                   "country": {
-//                     "id": 1,
-//                     "name": "Andorra",
-//                     "alpha2Code": "AD",
-//                     "alpha3Code": "AND",
-//                     "numCode": 20
-//                   },
+//                   "country": "",
 //                   "numberOfOffers": 2,
 //                   "weight": 100,
 //                   "tags": [
@@ -208,13 +153,7 @@ var common = require('./common');
 //                   "name": "offertest",
 //                   "url": "eweewwe",
 //                   "weight": 100,
-//                   "country": {
-//                     "id": 1,
-//                     "name": "Andorra",
-//                     "alpha2Code": "AD",
-//                     "alpha3Code": "AND",
-//                     "numCode": 20
-//                   },
+//                   "country": "",
 //                   "affiliateNetwork": {
 //                     "id": 1,
 //                     "name": "appnext"
@@ -247,10 +186,10 @@ var common = require('./common');
  * @apiGroup campaign
  *
  * @apiParam {String} name
- * @apiParam {String} url
+ * @apiParam {String} [url]
  * @apiParam {String} [impPixelUrl]
  * @apiParam {Object} trafficSource {id:1,name:""}
- * @apiParam {Object} country  {"id": 1,"name": "Andorra", "alpha2Code": "AD","alpha3Code": "AND","numCode": 20}
+ * @apiParam {String} country   AND
  * @apiParam {Number} costModel  0:Do-not-track-costs;1:cpc;2:cpa;3:cpm;4:auto?
  * @apiParam {Number} [cpc]
  * @apiParam {Number} [cpa]
@@ -273,32 +212,33 @@ var common = require('./common');
  */
 router.post('/api/campaign', function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().optional(),
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
         flow: Joi.object().required().keys({
-            rules: Joi.array().required().length(1),
+            rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
             id: Joi.number(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number()
-        }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode'),
-        country: Joi.object().optional(),
+        }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
+        url: Joi.string().optional(),
+        country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional()
+        hash: Joi.string().optional(),
+        targetUrl: Joi.string().optional(),
+        targetFlowId: Joi.number().optional()
     });
     req.body.userId = req.userId;
     req.body.idText = req.idText;
@@ -321,10 +261,10 @@ router.post('/api/campaign', function (req, res, next) {
  *
  * @apiParam {Number} id
  * @apiParam {String} name
- * @apiParam {String} url
+ * @apiParam {String} [url]
  * @apiParam {String} [impPixelUrl]
  * @apiParam {Object} trafficSource {id:1,name:""}
- * @apiParam {Object} country  {"id": 1,"name": "Andorra", "alpha2Code": "AD","alpha3Code": "AND","numCode": 20}
+ * @apiParam {String} country   "AND" 
  * @apiParam {Number} costModel  0:Do-not-track-costs;1:cpc;2:cpa;3:cpm;4:auto?
  * @apiParam {Number} [cpc]
  * @apiParam {Number} [cpa]
@@ -351,28 +291,30 @@ router.post('/api/campaign/:id', function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
         flow: Joi.object().required().keys({
-            rules: Joi.array().required().length(1),
+            rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
             id: Joi.number(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number()
-        }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode'),
-        country: Joi.object().optional(),
+        }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
+        url: Joi.string().optional(),
+        country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional()
+        hash: Joi.string().optional(),
+        targetUrl: Joi.string().optional(),
+        targetFlowId: Joi.number().optional()
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
@@ -515,7 +457,9 @@ const start = (() => {
                                             let offerResult;
 
                                             if (!value.flow.rules[i].paths[j].offers[z].id) {
-                                                offerResult = yield common.insertOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
+                                                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+                                                value.flow.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
+                                                offerResult = yield common.insertOffer(value.userId, value.idText, value.flow.rules[i].paths[j].offers[z], connection);
                                                 yield common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
                                             } else {
 
@@ -541,7 +485,6 @@ const start = (() => {
                                     }
                                 }
                             }
-                            yield common.commit(connection);
                         } catch (e) {
                             throw e;
                         }
@@ -551,6 +494,10 @@ const start = (() => {
                 yield common.rollback(connection);
                 throw err;
             }
+            yield common.commit(connection);
+            connection.release();
+            //redis pub
+            new Pub(true).publish(setting.redis.channel, value.userId);
             delete value.userId;
             delete value.idText;
             Result = value;
@@ -570,5 +517,78 @@ const start = (() => {
         return _ref.apply(this, arguments);
     };
 })();
+
+/**
+* @api {get} /api/campaign/:id   campaign detail
+ * @apiName  campaign detail
+ * @apiGroup campaign
+ */
+router.get('/api/campaign/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
+
+    const start = (() => {
+        var _ref2 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.getCampaign(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: result ? result : {}
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref2.apply(this, arguments);
+        };
+    })();
+    start();
+});
+
+/**
+* @api {delete} /api/campaign/:id   delete campaign
+ * @apiName  delete campaign
+ * @apiGroup campaign
+ */
+router.delete('/api/campaign/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
+
+    const start = (() => {
+        var _ref3 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.deleteCampaign(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success'
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref3.apply(this, arguments);
+        };
+    })();
+    start();
+});
 
 module.exports = router;

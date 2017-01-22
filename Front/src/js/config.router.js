@@ -86,10 +86,10 @@
         controller: 'ReportCtrl',
         data: {}
       })
-      .state('app.trafficSource', {
-        url: '/traffic/source',
-        templateUrl: 'tpl/trafficSource.html',
-        controller: 'TrafficSourceCtrl',
+      .state('app.report.trafficSource', {
+        url: '/trafficsource',
+        templateUrl: 'tpl/report.html',
+        controller: 'ReportCtrl',
         data: {}
       })
       .state('app.rule', {
@@ -145,6 +145,36 @@
         url: '/domain',
         templateUrl: 'tpl/domain.html',
         controller: 'DomainCtrl',
+        data: {}
+      })
+      .state('setApp.setUp', {
+        url: '/setUp',
+        templateUrl: 'tpl/setUp.html',
+        controller: 'SetUpCtrl',
+        data: {}
+      })
+      .state('setApp.userManagement', {
+        url: '/userManagement',
+        templateUrl: 'tpl/userManagement.html',
+        controller: 'UserManagementCtrl',
+        data: {}
+      })
+      .state('setApp.botBlacklist', {
+        url: '/botBlacklist',
+        templateUrl: 'tpl/botBlacklist.html',
+        controller: 'BotBlacklistCtrl',
+        data: {}
+      })
+      .state('setApp.invoices', {
+        url: '/invoices',
+        templateUrl: 'tpl/invoices.html',
+        controller: 'InvoicesCtrl',
+        data: {}
+      })
+      .state('setApp.eventLog', {
+        url: '/eventLog',
+        templateUrl: 'tpl/eventLog.html',
+        controller: 'EventLogCtrl',
         data: {}
       });
   }

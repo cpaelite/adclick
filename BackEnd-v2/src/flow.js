@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common=require('./common');
+var setting=require('../config/setting');
 
 
 
@@ -12,21 +13,23 @@ var common=require('./common');
  * @apiName 新增flow
  * @apiGroup flow
  * @apiParam {String} name
- * @apiParam {Object} country
+ * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
 router.post('/api/flow',function(req,res,next){
    var schema=Joi.object().keys({
+            userId:Joi.number().required(),
+            idText:Joi.string().required(),
             rules: Joi.array().required().length(1),
             hash: Joi.string(),
             type: Joi.number(),
             id: Joi.number(),
             name: Joi.string(),
-            country: Joi.object(),
-            redirectMode: Joi.number(),
-            userId:Joi.number().required()
+            country: Joi.string(),
+            redirectMode: Joi.number()
         }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode');
-    req.body.userId = req.userId;    
+    req.body.userId = req.userId;
+    req.body.idText=req.idText;    
     start(req.body,schema).then(function(data){
         res.json({
             status:1,
@@ -44,23 +47,23 @@ router.post('/api/flow',function(req,res,next){
  * @apiName  编辑flow
  * @apiGroup flow
  * @apiParam {String} name
- * @apiParam {Object} country
+ * @apiParam {String} country
  * @apiParam {Number} redirectMode
- * @apiParam {Number} [deleted]
  */
 router.post('/api/flow/:id',function(req,res,next){
    var schema=Joi.object().keys({
             rules: Joi.array().required().length(1),
             hash: Joi.string(),
             type: Joi.number(),
-             id: Joi.number().required(),
+            id: Joi.number().required(),
             name: Joi.string(),
-            country: Joi.object(),
+            country: Joi.string(),
             redirectMode: Joi.number(),
             userId:Joi.number().required(),
-            deleted:Joi.number() 
+            idText:Joi.string().required()
         }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode','deleted');
-    req.body.userId = req.userId;    
+    req.body.userId = req.userId; 
+    req.body.idText=req.idText;   
     req.body.id=req.params.id;
     start(req.body,schema).then(function(data){
         res.json({
@@ -71,6 +74,37 @@ router.post('/api/flow/:id',function(req,res,next){
     }).catch(function(err){
         next(err);
     }); 
+});
+
+
+/**
+ * @api {delete} /api/flow/:id 删除flow
+ * @apiName  删除flow
+ * @apiGroup flow
+ */
+router.delete('/api/flow/:id',function(req,res,next){
+    var schema=Joi.object().keys({
+            id: Joi.number().required(),
+            userId:Joi.number().required()
+    });
+    req.body.userId = req.userId;  
+    req.body.id=req.params.id;
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.deleteFlow(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success'
+            });
+        }catch(e){
+            return next(e);
+        }   
+    }
+    start();
+
 });
 
 module.exports=router;
@@ -87,13 +121,14 @@ module.exports=router;
                      
                    let  flowResult; 
                     //Flow
-                    if (value.id) {
+                    if (!value.id) {
                         flowResult =await common.insertFlow(value.userId,value, connection)
                     } else if (value && value.id) {
                         await common.updateFlow(value.userId,value, connection)
                     } 
-
+                   
                     let flowId = value.id ? value.id: (flowResult ? (flowResult.insertId?flowResult.insertId: 0) :0);
+                  
 
                     if (!flowId) {
                         throw new Error('Flow ID Lost');
@@ -177,7 +212,9 @@ module.exports=router;
                                                     let offerResult;
                                                     
                                                     if (!value.rules[i].paths[j].offers[z].id) {
-                                                        offerResult=await common.insertOffer(value.userId, value.rules[i].paths[j].offers[z], connection);
+                                                        let postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter;
+                                                        value.rules[i].paths[j].offers[z].postbackUrl=postbackUrl;
+                                                        offerResult=await common.insertOffer(value.userId,value.idText, value.rules[i].paths[j].offers[z], connection);
                                                         await common.insertOffer2Path(offerResult.insertId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                                     }else{
                                                          
@@ -206,7 +243,7 @@ module.exports=router;
 
                                         }
                                     }
-                                     await common.commit(connection);
+                                    
                                 }catch(e){
                                     throw e;
                                 }
@@ -216,7 +253,9 @@ module.exports=router;
             }catch(err){
                 await common.rollback(connection);
                 throw err;
-            } 
+            }
+           await common.commit(connection);  
+           connection.release(); 
            delete value.userId;          
            Result=value;
          }catch(e){

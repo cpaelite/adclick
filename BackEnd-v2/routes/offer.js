@@ -1,8 +1,13 @@
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+/**
+ * Created by Aedan on 11/01/2017.
+ */
+
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var setting=require('../config/setting');
-
+var common = require('./common');
 
 /**
  * @api {post} /api/offer  新增offer
@@ -11,138 +16,68 @@ var setting=require('../config/setting');
  *
  * @apiParam {String} name
  * @apiParam {String} url
- * @apiParam {String} postbackUrl
  * @apiParam {Number} payoutMode
- * @apiParam {Number} AffiliateNetworkId
+ * @apiParam {Object} affiliateNetwork {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {String} country
+ * @apiParam {String} country ""
+ * @apiParam {Array}  [tags]  
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
  *    status: 1,
  *    message: 'success' *   }
-
  *
  */
 router.post('/api/offer', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        idText:Joi.string().required(),
+        idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
         country: Joi.string().required(),
-        postbackUrl: Joi.string().required(),
         payoutMode: Joi.number().required(),
-        AffiliateNetworkId: Joi.number().required(),
-        payoutValue: Joi.number().optional()
+        affiliateNetwork: Joi.object().required().keys({
+            id: Joi.number().required(),
+            name: Joi.string().required()
+        }),
+        payoutValue: Joi.number().optional(),
+        tags: Joi.array().optional()
     });
-    req.body.userId = req.userId;
-    req.body.idText=req.idText;
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter
-            var sql = "insert into Offer set `userId`= " +
-                value.userId + ",`name`='" + value.name +
-                "',`url`='" + value.url + "',`country`='" + value.country +
-                "',`postbackUrl`='" +
-                postbackUrl +
-                "',`payoutMode`=" +
-                value.payoutMode + ",`AffiliateNetworkId`=" +
-                value.AffiliateNetworkId + ",`deleted`=0";
 
-            if (value.payoutValue != undefined) {
-                sql += ",`payoutValue`=" + value.payoutValue
-            }
-            connection.query(sql, function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
+    req.body.userId = req.userId;
+    req.body.idText = req.idText;
+    const start = (() => {
+        var _ref = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.body, schema);
+                let connection = yield common.getConnection();
+                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+                value.postbackUrl = postbackUrl;
+                let landerResult = yield common.insertOffer(value.userId, value.idText, value, connection);
+                if (value.tags && value.tags.length) {
+                    for (let index = 0; index < value.tags.length; index++) {
+                        yield common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
+                    }
                 }
+                delete value.userId;
+                delete value.idText;
+                value.id = landerResult.insertId;
+                connection.release();
                 res.json({
                     status: 1,
-                    message: 'success'
+                    message: 'success',
+                    data: value
                 });
-            });
-        });
-    });
-});
-
-/**
- * @api {get} /api/offer  offer list
- * @apiName offer list
- * @apiGroup offer
- * @apiParam {Number} page
- * @apiParam {Number} limit
- * @apiParam {String} order
- *
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success",
- *       "data":{"lists":[]}
- *     }
- *
- */
-router.get('/api/offer', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        page: Joi.number().min(1).required(),
-        limit: Joi.number().required(),
-        order: Joi.string().required()
-    });
-    req.query.userId = req.userId
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
+            } catch (e) {
+                next(e);
             }
-            var page = parseInt(value.page);
-            var limit = parseInt(value.limit);
-            var offset = (page - 1) * limit;
-            var order = 'asc';
-            var sort = value.order;
-            var sign = sort.charAt(0);
-            if (sign == '-') {
-                order = 'desc'
-                sort = sort.substring(1);
-            }
-
-            var sql =
-                "select a.`id` as `id`,a.`name` as `name`,a.`url` as `url`,a.`country` as `country`,a.`postbackUrl`as `postbackUrl` ,b.`name` as `AffiliateNetworkName`,a.`payoutValue` as `payoutValue` from Offer a " +
-                "left  join AffiliateNetwork b  on   a.`AffiliateNetworkId` = b.`id` where a.`deleted`= ? and a.`userId`= ? order by " +
-                sort + " " + order + " " + "limit " + offset + "," + limit
-
-            console.log(sql)
-
-            connection.query(sql, [0, value.userId],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: 'success',
-                        data: {
-                            lists: result
-                        }
-                    });
-                });
         });
-    });
+
+        return function start() {
+            return _ref.apply(this, arguments);
+        };
+    })();
+    start();
 });
 
 /**
@@ -155,10 +90,11 @@ router.get('/api/offer', function (req, res, next) {
  * @apiParam {String} [url]
  * @apiParam {String} [postbackUrl]
  * @apiParam {Number} [payoutMode]
- * @apiParam {Number} [AffiliateNetworkId]
+ * @apiParam {Number} [affiliateNetwork] {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {String} [country]
+ * @apiParam {String} [country]  
  * @apiParam {Number} [deleted]
+ * @apiParam {Array} [tags]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -167,73 +103,137 @@ router.get('/api/offer', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/offer/:offerId', function (req, res, next) {
+router.post('/api/offer/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
+        hash: Joi.string().optional(),
         userId: Joi.number().required(),
-        name: Joi.string().optional(),
-        url: Joi.string().optional(),
-        country: Joi.string().optional(),
-        postbackUrl: Joi.string().optional(),
-        payoutMode: Joi.number().optional(),
-        AffiliateNetworkId: Joi.number().optional(),
+        idText: Joi.string().required(),
+        name: Joi.string().required(),
+        url: Joi.string().required(),
+        country: Joi.string().required(),
+        payoutMode: Joi.number().required(),
+        affiliateNetwork: Joi.object().required().keys({
+            id: Joi.number().required(),
+            name: Joi.string().required()
+        }),
         payoutValue: Joi.number().optional(),
+        tags: Joi.array().optional(),
         deleted: Joi.number().optional()
     });
 
-    req.body.userId = req.userId
-    req.body.id = req.params.offerId
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var sql = "update Offer set `id`= " + value.id;
-            if (value.deleted == 1) {
-                sql += ",`deleted`=" + value.deleted
-            }
-            if (value.name) {
-                sql += ",`name`='" + value.name + "'"
-            }
-            if (value.url) {
-                sql += ",`url`='" + value.url + "'"
-            }
-            if (value.country) {
-                sql += ",`country`='" + value.country + "'"
-            }
-            if (value.postbackUrl) {
-                sql += ",`postbackUrl`='" + value.postbackUrl + "'"
-            }
-            if (value.payoutMode != undefined) {
-                sql += ",`payoutMode`=" + value.payoutMode
-            }
-            if (value.AffiliateNetworkId != undefined) {
-                sql += ",`AffiliateNetworkId`=" + value.AffiliateNetworkId
-            }
-            if (value.payoutValue != undefined) {
-                sql += ",`payoutValue`=" + value.payoutValue
-            }
-
-            sql += " where `userId`=" + value.userId + " and `id`=" +
-                value.id
-            connection.query(sql,
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
+    req.body.userId = req.userId;
+    req.body.idText = req.idText;
+    req.body.id = req.params.id;
+    const start = (() => {
+        var _ref2 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.body, schema);
+                let connection = yield common.getConnection();
+                yield common.updateOffer(value.userId, value, connection);
+                yield common.updateTags(value.userId, value.id, 3, connection);
+                if (value.tags && value.tags.length) {
+                    for (let index = 0; index < value.tags.length; index++) {
+                        yield common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
                     }
-                    res.json({
-                        status: 1,
-                        message: 'success'
-                    });
+                }
+                delete value.userId;
+                delete value.idText;
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: value
                 });
+            } catch (e) {
+                next(e);
+            }
         });
-    });
+
+        return function start() {
+            return _ref2.apply(this, arguments);
+        };
+    })();
+    start();
 });
 
+/**
+ * @api {get} /api/offer/:id  offer detail
+ * @apiName offer
+ * @apiGroup offer
+ *
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',data:{}  }
+ *
+ */
+router.get('/api/offer/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.query.id = req.params.id;
+    req.query.userId = req.userId;
+    const start = (() => {
+        var _ref3 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.getOfferDetail(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: result ? result : {}
+                });
+            } catch (e) {
+                return next(err);
+            }
+        });
+
+        return function start() {
+            return _ref3.apply(this, arguments);
+        };
+    })();
+    start();
+});
+
+/**
+ * @api {delete} /api/offer/:id 删除offer
+ * @apiName  删除offer
+ * @apiGroup offer
+ */
+router.delete('/api/offer/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    req.body.id = req.params.id;
+    const start = (() => {
+        var _ref4 = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.deleteOffer(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success'
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref4.apply(this, arguments);
+        };
+    })();
+    start();
+});
 
 module.exports = router;

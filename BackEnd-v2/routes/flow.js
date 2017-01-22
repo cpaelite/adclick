@@ -4,27 +4,30 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
+var setting = require('../config/setting');
 
 /**
  * @api {post} /api/flow/ 新增flow
  * @apiName 新增flow
  * @apiGroup flow
  * @apiParam {String} name
- * @apiParam {Object} country
+ * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
 router.post('/api/flow', function (req, res, next) {
     var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
         rules: Joi.array().required().length(1),
         hash: Joi.string(),
         type: Joi.number(),
         id: Joi.number(),
         name: Joi.string(),
-        country: Joi.object(),
-        redirectMode: Joi.number(),
-        userId: Joi.number().required()
+        country: Joi.string(),
+        redirectMode: Joi.number()
     }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
+    req.body.idText = req.idText;
     start(req.body, schema).then(function (data) {
         res.json({
             status: 1,
@@ -41,9 +44,8 @@ router.post('/api/flow', function (req, res, next) {
  * @apiName  编辑flow
  * @apiGroup flow
  * @apiParam {String} name
- * @apiParam {Object} country
+ * @apiParam {String} country
  * @apiParam {Number} redirectMode
- * @apiParam {Number} [deleted]
  */
 router.post('/api/flow/:id', function (req, res, next) {
     var schema = Joi.object().keys({
@@ -52,12 +54,13 @@ router.post('/api/flow/:id', function (req, res, next) {
         type: Joi.number(),
         id: Joi.number().required(),
         name: Joi.string(),
-        country: Joi.object(),
+        country: Joi.string(),
         redirectMode: Joi.number(),
         userId: Joi.number().required(),
-        deleted: Joi.number()
+        idText: Joi.string().required()
     }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode', 'deleted');
     req.body.userId = req.userId;
+    req.body.idText = req.idText;
     req.body.id = req.params.id;
     start(req.body, schema).then(function (data) {
         res.json({
@@ -70,10 +73,45 @@ router.post('/api/flow/:id', function (req, res, next) {
     });
 });
 
+/**
+ * @api {delete} /api/flow/:id 删除flow
+ * @apiName  删除flow
+ * @apiGroup flow
+ */
+router.delete('/api/flow/:id', function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    req.body.id = req.params.id;
+    const start = (() => {
+        var _ref = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield common.deleteFlow(value.id, value.userId, connection);
+                connection.release();
+                res.json({
+                    status: 1,
+                    message: 'success'
+                });
+            } catch (e) {
+                return next(e);
+            }
+        });
+
+        return function start() {
+            return _ref.apply(this, arguments);
+        };
+    })();
+    start();
+});
+
 module.exports = router;
 
 const start = (() => {
-    var _ref = _asyncToGenerator(function* (data, schema) {
+    var _ref2 = _asyncToGenerator(function* (data, schema) {
         let Result;
         let ResultError;
         try {
@@ -84,7 +122,7 @@ const start = (() => {
 
                 let flowResult;
                 //Flow
-                if (value.id) {
+                if (!value.id) {
                     flowResult = yield common.insertFlow(value.userId, value, connection);
                 } else if (value && value.id) {
                     yield common.updateFlow(value.userId, value, connection);
@@ -171,7 +209,9 @@ const start = (() => {
                                             let offerResult;
 
                                             if (!value.rules[i].paths[j].offers[z].id) {
-                                                offerResult = yield common.insertOffer(value.userId, value.rules[i].paths[j].offers[z], connection);
+                                                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+                                                value.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
+                                                offerResult = yield common.insertOffer(value.userId, value.idText, value.rules[i].paths[j].offers[z], connection);
                                                 yield common.insertOffer2Path(offerResult.insertId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                             } else {
 
@@ -197,7 +237,6 @@ const start = (() => {
                                     }
                                 }
                             }
-                            yield common.commit(connection);
                         } catch (e) {
                             throw e;
                         }
@@ -207,6 +246,8 @@ const start = (() => {
                 yield common.rollback(connection);
                 throw err;
             }
+            yield common.commit(connection);
+            connection.release();
             delete value.userId;
             Result = value;
         } catch (e) {
@@ -222,6 +263,6 @@ const start = (() => {
     });
 
     return function start(_x, _x2) {
-        return _ref.apply(this, arguments);
+        return _ref2.apply(this, arguments);
     };
 })();

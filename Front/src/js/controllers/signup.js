@@ -3,13 +3,15 @@
 
     angular.module('app')
         .controller('SignupCtrl', [
-            '$scope', '$auth', '$state', 'toastr', 'AccountCheck',
+            '$scope', '$auth', '$state', 'toastr', 'AccountCheck', 'userPreferences',
             SignupCtrl
         ]);
 
-    function SignupCtrl($scope, $auth, $state, toastr, AccountCheck) {
+    function SignupCtrl($scope, $auth, $state, toastr, AccountCheck, userPreferences) {
         $scope.app.subtitle = 'Sign up';
-        $scope.user = {};
+        $scope.user = {
+            json: JSON.stringify(userPreferences)
+        };
         $scope.signup = function () {
             $auth.signup($scope.user, { ignoreAuthModule: true })
                 .then(function(response) {

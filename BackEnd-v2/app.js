@@ -25,6 +25,8 @@ var flow = require('./routes/flow');
 var report = require('./routes/report');
 var user = require('./routes/user');
 var campaign = require('./routes/campaign');
+var lander=require('./routes/lander');
+var traffic= require('./routes/traffic');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -53,7 +55,7 @@ app.get('/', function(req, res) {
 });
 
 app.all('/api/*', util.checkToken(), user, network, offer, flow, report,
-    campaign);
+    campaign,lander,traffic);
 
 app.use('/', routes, networktpl);
 

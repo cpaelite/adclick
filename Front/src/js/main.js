@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preferences',
+      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preferences', 'Country', 'userPreferences',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preferences) {
+  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preferences, Country, userPreferences) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -51,13 +51,6 @@
       $scope.lang.isopen = !$scope.lang.isopen;
     };
 
-    // 用户配置信息
-    Preferences.get(null, function (res) {
-      if (res.status == 1) {
-        $rootScope.preferences = res.data;
-      }
-    });
-
     $rootScope.currentUser = null;
     $scope.showLogin = false;
     $scope.$on("event:auth-loginRequired", function () {
@@ -70,8 +63,7 @@
       $scope.showLogin = false;
 
       var payload = $auth.getPayload();
-      console.log(payload);
-      if ($rootScope.currentUser && $rootScope.currentUser.uid == payload.uid) {
+      if ($rootScope.currentUser && $rootScope.currentUser.id == payload.id) {
         $rootScope.currentUser = payload;
         authService.loginConfirmed(payload);
       } else {
@@ -79,6 +71,19 @@
           return false;
         });
         $rootScope.currentUser = payload;
+
+        /*// 用户配置信息
+        Preferences.get(null, function (res) {
+          if (res.status == 1) {
+            $rootScope.preferences = res.data;
+          }
+        });*/
+          $rootScope.preferences = userPreferences;
+        
+        // 国家信息
+        Country.get(null, function (res) {
+          $rootScope.countries = res.data.countries;
+        });
 
       }
     });

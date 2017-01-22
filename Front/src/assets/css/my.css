@@ -29,6 +29,13 @@ header .setting:hover,
 header .home:hover{
     background: rgba(0, 0, 0, 0.05);
 }
+.star-icon{
+    color:red;
+    position: relative;
+    top: 4px;
+    display: inline-block;
+    width: 8px;
+}
 .navbar-right {
     height: 60px;
 }
@@ -918,7 +925,9 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
     background-color: #12bdce;
     color: #fff;
 }
-.data-tables-chart-container table thead{
+.data-tables-chart-container table thead,
+.table thead,
+.table tfoot{
     background: #00838f;
     color: #fff;
 }
@@ -987,6 +996,7 @@ h1.setting-title{
 .profile-content{
     padding: 80px 50px;
     background: rgba(18, 189, 206, 0.14);
+    margin-bottom: 20px;
 }
 .password-change .profile-form-footer{
     margin-right: 0;
@@ -1013,4 +1023,651 @@ h1.setting-title{
     max-width: 1030px;
     margin:0 auto;
 }
+.md-raised.copy-btn,
+.add-another-btn{
+    margin: 0;
+    box-shadow: none !important;
+    height: 32px;
+    line-height: 32px;
+    text-transform: lowercase;
+    padding: 0 10px;
+    background: #12bdce;
+    color: #fff;
+}
+.md-raised.copy-btn:hover{
+    background: #12bdce !important;
+}
+.table thead{
+    font-size: 12px;
+}
+.table tbody tr{
+    background: #fff
+}
+.table tbody tr:nth-child(2n+2){
+    background: #f8f8f8;
+}
+.referral-program .md-table-pagination{
+    border-top: none;
+}
+.subscription-title{
+    font-size: 14px;
+    color: #fff;
+    height: 39px;
+    line-height: 39px;
+    margin: 0;
+    padding: 0 10px;
+    background: #12bdce;
+}
+.table-out{
+    padding: 10px 35px;
+    background: #fff;
+}
+.table-out table{
+    width: 100%;
+}
+.table-out table td{
+    padding: 12px 0;
+}
+.table-out table td:last-child{
+    font-weight: 700;
+    text-align: right;
+}
+.pro{
+    margin:10px 0;
+}
+.pro span,
+.pro span.pro-price{
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 700;
+}
+.pro span.pro-right{
+    float: right;
+    font-size: 14px;
+    font-weight: normal;
+}
+.domain-p .material-icons{
+    vertical-align: top;
+}
+.domain-p p{
+    display: inline-block;
+    width: 90%;
+    margin-left: 5px;
+}
+.add-another-button ul{
+    margin:0;
+    padding: 0;
+}
+.add-another-button ul{
+    margin: 0;
+    padding: 0;
+    width: 60%;
+    float: left;
+}
+.add-another-button ul li{
+    float: left;
+    margin-right: 10px;
+}
+.add-another-btn{
+    float: right;
+    background: #8992aa !important;
+    color: #fff !important;
+}
+.add-another-button{
+    margin-bottom: 20px;
+}
+.domains-container{
+    height: 470px;
+    width: 100%;
+    border: 1px solid #c9c9c9;
+    padding: 0 100px;
+    overflow-y: auto;
+    margin-bottom: 40px;
+}
+.internal-domains .domain-btn-list{
+    padding: 0;
+}
+.domain-btn-list .md-raised.copy-btn{
+    float: right;
+    min-width: 146px;
+}
+.copy-btn.domain-btn{
+    background: #006064;
+}
+.copy-btn.domain-btn:hover{
+    background: rgba(0, 96, 100, 0.66) !important;
+}
+.copy-btn.main-domain{
+    padding: 0 15px;
+}
+.item-domains{
+    margin-bottom: 15px;
+}
+.item-domains label{
+    float: left;
+    line-height: 34px;
+}
+.item-domains .input-out{
+    width: 60%;
+    float: left;
+    margin:0 15px;
+}
+.item-domains.domains .input-out{
+    width: 33%;
+}
+.internal-domains{
+    padding: 10px 0;
+    margin-bottom: 12px;
+}
+.another-list-btn{
+    padding:0;
+    float: right;
+}
+.another-list-btn .add-another-btn{
+    margin-right: 10px;
+    float: left;
+}
+.another-list-btn .material-icons{
+    width: 36px;
+    height: 36px;
+    background: #8992aa;
+    color: #fff;
+    line-height: 36px;
+    text-align: center;
+}
+.domain-footer{
+    padding: 0 100px;
+}
+.cs-setting-page.cs-flow-bottom-actions{
+    position: static; 
+    margin-top: 20px;
+    float: right;
+}
+.blue-word{
+    color: #5281eb;
+}
+.user-mangement{
+    width: 698px;
+    height: 251px;
+    border: 1px solid #c9c9c9;
+    margin: 0 auto;
+    padding: 20px 50px;
+    background: #f1f5fa;
+}
+.user-mangement span{
+    display: block;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 15px;
+}
+.plan-btn{
+    text-align: center;
+    margin-top: 40px;
+}
+.plan-btn .md-raised.copy-btn{
+    padding: 0 25px;
+}
+.setting-title p{
+    font-size: 13px;
+    width: 750px;
+    margin:20px auto;
+    color: #000;
+}
+.bot-blacklist{
+    border-top: 1px solid #c9c9c9;
+}
+.table tr  .bot-th{
+    display: inline-block;
+    padding-left: 25px;
+}
+.bot-blacklist .table tbody tr:hover{
+    background: rgba(18, 189, 206, 0.27);
+    color: #fff;
+}
+input[type="checkbox"].th-checkbox{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+}
+.referral-program .profile-form-footer{
+    margin-top: 40px;
+}
+.bot-blacklist{
+    padding: 10px;
+}
+.bot-select{
+    float: left;
+}
+.bot-select .cs-subform-selec{
+    margin-top: 0;
+}
+
+.bot-select label{ 
+    font-weight: bold;
+    float: left;
+    display: block;
+    line-height: 38px;
+    margin-right: 15px;
+}
+.bot-blacklist-content{
+    max-width: 1004px;
+    margin:0 auto;
+}
+.bot-select .cs-subform-select{
+    margin-top: 0;
+}
+.btn-right .md-raised{
+    margin-left: 10px;
+}
+.btn-right{
+    float: right;
+}
+.payment-content{
+    background: #fff;
+    padding-bottom: 20px;
+}
+.payment-content .plan-btn{
+    margin-top: 20px;
+}
+.payment-content span{
+    display: block;
+}
+.payment-content h1{
+    margin-top: 0;
+    padding-top: 20px;
+}
+.payment-content span,
+.payment-content h1{
+    text-align: center;
+}
+.balance-content{
+    background: #fff;
+    padding:10px;
+    text-align: center;
+}
+.balance-content span{
+    font-size: 20px;
+    vertical-align: sub;
+}
+.balance-content span.amount{
+    font-size: 44px;
+    font-weight: 700;
+    vertical-align:middle;
+}
+.invoices .data-table{
+    padding: 0 15px;
+}
+.invoices .data-table h2{
+    font-size: 16px;
+    margin-top: 40px;
+}
+.invoices .data-table .material-icons{
+    color: rgba(128, 128, 128, 0.53);
+}
+.invoices .data-table .download{
+    color: #12bdce;
+}
+.event-log .md-table-pagination{
+    border-top: none;
+}
+.search-icon{
+    display: block;
+    margin:20px 0;
+    text-align: center;
+    font-size: 60px;
+    color: rgba(128, 128, 128, 0.36);
+}
+.search-word{
+    display: block;
+    text-align: center;
+    color: rgba(128, 128, 128, 0.36);
+}
+.cs-edit-dialog.bot-blacklist-dialog md-toolbar{
+    background: #fff;
+}
+.cs-edit-dialog.bot-blacklist-dialog .setting-title{
+    border-top: none;
+    border-bottom: 1px solid #c9c9c9;
+    font-size: 24px;
+    font-weight: bold;
+}
+.cs-edit-dialog.bot-blacklist-dialog .setting-title p{
+    font-weight: normal;
+}
+.bot-blacklist-editForm{
+    padding:0 20px;
+}
+.bot-blacklist-editForm .form-group{
+    margin-left: 0;
+    margin-right: 0;
+}
+.bot-blacklist-editForm .form-group label{
+    font-weight: bold;
+}
+.add-next-content{
+    float: right;
+    margin-right: 5%;
+}
+.material-icons.add-next{
+    color: #12bdce;
+}
+.ip-range{
+    margin-bottom: 15px;
+}
+.ip-range input{
+    float: left;
+    width: 95%;
+}
+.ip-range .material-icons{
+    float: right;
+}
+.bot-blacklist-add-content{
+    max-height: 300px;
+    overflow-y: auto;
+}
+@media screen and (max-width:998px){
+    .another-list-btn .add-another-btn{
+        margin-right: 1px;
+    }
+} 
 /*End setting Style*/
+/*Start Flow Style*/
+.cs-page-flow{
+    padding: 10px;
+}
+.cs-flow-tree{
+    background: rgba(18, 189, 206, 0.14);
+    padding: 30px 0;
+    border-radius: 4px;   
+    overflow: auto;
+    height: 100%;
+}
+.tree-li{
+    height: 35px;
+    line-height: 35px;
+    padding: 0 30px;
+
+}
+.tree-li.cs-flow-active{
+    background: rgba(18, 189, 206, 0.6);
+}
+.tree-li.cs-is-deleted .cs-path-name{
+    display: inline-block;
+    width: 90%;
+    color: #a4aab1;
+    position: relative;
+}
+.tree-li.cs-is-deleted .cs-path-name .cs-rule-name{
+    text-decoration: line-through;
+}
+.tree-li.cs-is-deleted .cs-path-name:after{
+    height: 1px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: #a4aab1;
+    top: 50%;
+}
+.tree-icon{
+    float: left;
+    color: #989898;
+    height: 35px;
+    font-size: 12px;
+    line-height: 36px;
+}
+.cs-flow-name,
+.cs-rule-name{
+    display: inline-block;
+    max-width: 280px;
+    font-size: 15px;
+    margin-left: 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    float: left
+}
+.path-name{
+    display: inline-block;
+    max-width: 280px;
+    font-size: 15px;
+    margin-left: 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    float: left
+}
+.flow-arrow-down{
+    float: left;
+    height: 35px;
+    line-height: 35px;
+    margin: 0 5px 0 -5px;
+    color: #989898;
+}
+.cs-flow-rule .tree-icon{
+    color: #312e63;
+}
+.cs-page-flow ul{
+    padding: 0;
+    margin: 0;
+}
+.cs-page-flow li.tree-li{ 
+    padding: 0 55px;
+}
+.cs-page-flow li.tree-li:hover{
+    background: rgba(18, 189, 206, 0.29);
+}
+.weight-num{
+    display: inline-block;
+    float: right;
+}
+.add-box{
+    font-size: 18px;
+    color: #12bdce;
+}
+.add-flow-path,
+.add-flow-rule{
+    font-size: 15px;
+}
+.cs-flow-content{
+    padding-left: 40px;
+}
+.form-content{
+    max-width:600px;
+}
+.label-name{
+    font-weight: 700;
+}
+.label-radio{
+    font-weight: 700;
+    padding-left: 0;
+}
+.save-btn,
+.close-btn{
+    cursor: pointer;
+}
+.close-btn{
+    background: #898989;
+}
+.close-btn:hover{
+    color: #fff;
+}
+md-content.cs-main-content{
+    height: 85%;
+}
+.cs-page-flow,
+.cs-flow-content{
+    height: 100%;
+}
+.cs-flow-bottom-actions{
+    position: absolute;
+    bottom: 0;
+    right: 15px;
+}
+.top-btn-list{
+    text-align: right;
+}
+.top-btn-list button,
+.top-btn-list button.active{
+    border: none;
+    background: #006064;
+    color: #fff !important;
+}
+.top-btn-list button:hover{
+    background: rgba(0, 96, 100, 0.66);
+    color: #fff !important;
+}
+.editPathForm md-switch,
+.editRuleForm md-switch{
+    margin:0;
+}
+.masking{
+    position: absolute;
+    background: #fff;
+}
+.editPathForm .row,
+.editRuleForm .row{
+    margin: 20px 0;
+}
+.name-div{
+    padding-left: 0;
+}
+.cs-flow-lander-header{
+    background: #00838f;
+    height: 35px;
+    line-height: 35px;
+    color: #fff;
+}
+.add-lander-btn{
+    float: right;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+.cs-flow-lander-action{
+    background: #f6f6f6;
+    border-top: 1px solid #fff;
+}
+.cs-flow-lander-row md-select{
+    margin: 0;
+}
+.cs-flow-lander-edit{
+    margin-top: 7px;
+}
+.edit-btn{
+    margin: 5px 0px 0 10px;
+}
+.cs-flow-lander-row md-select{
+    width: 89%;
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+    margin: 0;
+}
+.cs-flow-lander-row md-select md-select-value{
+    padding: 0;
+    margin: 0;
+    border-bottom: none;
+}
+.cs-flow-edit input[type="text"]{
+    float: left;
+    width: 70%;
+    margin-right: 10px;
+    height: 30px;
+    line-height: 30px;
+}
+.lander-delete-btn{
+    margin-top: 3px;
+}
+.cs-flow-edit{
+    position: absolute;
+    top: 7px;
+    height: 30px;
+}
+.cs-flow-view{
+    padding: 6px;
+    margin:7px;
+}
+.cs-flow-lander-row{
+    background: #f6f6f6;
+}
+.cs-flow-lander-row:nth-child(2n+1){
+    background: #e1e6ee;
+}
+.lander-content,
+.offer-content{
+    padding-left: 0px;
+}
+.direct-content,
+.lander-content,
+.offer-content{
+    max-height: 360px;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+.input-content{
+    padding-left: 0;
+}
+.cs-deleted-mask{
+    position: absolute;
+    top: 37px;
+    bottom: 37px;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    opacity: 0.6;
+    z-index: 10;
+}
+.cs-conditions-content{
+    max-height: 400px;
+    overflow: auto;
+}
+.cs-conditions-content li{
+    margin:15px 0;
+}
+.condition-select-content{
+    width: 45%;
+    height: 35px;
+    line-height: 35px;
+    background: #ebf1fa;
+    color: #363636;
+    text-shadow: none;
+    margin: 0 15px;
+    display: inline-block;
+    text-align: left;
+    font-weight: normal;
+}
+.delete-condition{
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    float: right;
+    margin-top: -2px;
+    font-size: 18px;
+}
+.btn-group.is-btn label{
+    display: inline-block;
+    width: 100px;
+    box-shadow: none;
+    margin-right: 15px;
+    border: none;
+}
+.btn-group.is-btn label:last-child,
+.delete-btn:hover{
+    background: #ccc;
+}
+.delete-btn{
+    box-shadow: none;
+    border: none;
+    background: #ccc;
+    margin-left: 15px;
+    color: #fff !important;
+}
+.condition-select{
+    margin-left: 30px;
+}
+.condition-select md-select{
+    margin: 15px 0;
+}
+/*End Start Style*/
