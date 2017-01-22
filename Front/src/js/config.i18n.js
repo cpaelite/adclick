@@ -38,7 +38,12 @@
     profile:'Profile',
     referralProgram:'ReferralProgram',
     subscriptions:'Subscriptions',
-    domain:'Domain'
+    domain:'Domain',
+    setUp:'SetUp',
+    userManagement:'UserManagement',
+    botBlacklist:'BotBlacklist',
+    invoices:'Invoices',
+    eventLog:'EventLog'
   };
   var i18n_zh = {
     ok: '确定',

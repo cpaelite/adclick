@@ -1,0 +1,72 @@
+<h1 class="setting-title">
+  Event log
+  <p>Event log enables you to browse changes that were made in your account.
+  A detailed overview of this feature can be found here.</p>
+</h1>
+<div class="form-column bot-blacklist">
+  <div class="bot-blacklist-content event-log clearfix">
+    <div class="form-group bot-select">
+      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+        <md-option value="benson@mobisummer.com" selected>benson@mobisummer.com</md-option>
+        <md-option value="All users">All users</md-option>
+      </md-select>
+    </div>
+    <div class="form-group bot-select">
+      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+        <md-option value="Create" selected>Create</md-option>
+        <md-option value="All actions">All actions</md-option>
+      </md-select>
+    </div>
+    <div class="form-group bot-select">
+      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+        <md-option value="Traffic source" selected>Traffic source</md-option>
+        <md-option value="Campaign">Campaign</md-option>
+      </md-select>
+    </div>
+    <div class="form-group bot-select">
+      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+        <md-option value="All entities" selected>All entities</md-option>
+        <md-option value="Adcash test">Adcash test</md-option>
+      </md-select>
+    </div>
+    <div class="form-group bot-select">
+      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+        <md-option value="Yesterday" selected>Yesterday</md-option>
+        <md-option value="Today">Today</md-option>
+      </md-select>
+    </div>
+    <div class="btn-right">
+      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event)"><i class="material-icons">refresh</i>Refresh</md-button>
+      <md-button class="md-raised add-another-btn"><i class="material-icons">list</i>Details</md-button>
+    </div>
+    <div class="data-table">
+      <table md-table class="table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Entity type</th>
+            <th>Entity name</th>
+            <th>Entity ID</th>
+            <th>Action</th>
+            <th>Changed at</th>
+          </tr>
+        </thead>
+        <tbody  ng-show="eventLogTbodyIsShow">
+          <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <md-table-pagination ng-show="eventLogTbodyIsShow" md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.offset"
+    md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+  </div>
+  <i class="material-icons search-icon">search</i>
+  <span class="search-word">No search results have been found in response to your search criteria.</span>
+
+</div>

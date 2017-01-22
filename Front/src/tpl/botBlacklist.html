@@ -1,0 +1,47 @@
+<h1 class="setting-title">
+  Bot Blacklist
+  <p>Bot Blacklist permits you to add bot rules based on IP / IP range and useragent values.
+Once bot rules are enabled, they will be applied globally to all active campaigns with bot traffic events excluded from your reporting.</p>
+  <p>Further information regarding the use of the Bot Blacklist can be referenced here.
+The maximum amount of the bot rules that can be created is 20. You can still add 20 bot rule(s).</p>
+</h1>
+<div class="form-column bot-blacklist">
+  <div class="bot-blacklist-content clearfix">
+    <div class="form-group bot-select">
+      <label>Bot rules: </label>
+        <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+        <md-option value="Disabled" selected>Disabled</md-option>
+        <md-option value="Enabled">Enabled</md-option>
+        </md-select>
+    </div>
+    <div class="btn-right">
+      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event)"><i class="material-icons">add</i>Create New</md-button>
+      <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
+      <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button>
+    </div>
+    <div class="data-table">
+      <table md-table class="table">
+        <thead>
+          <tr>
+            <th><input type="checkbox" class="th-checkbox"><span class="bot-th">Bot</span></th>
+            <th>IP / IP range</th>
+            <th>User agent</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><input type="checkbox" class="th-checkbox"><span class="bot-th">1</span></td>
+          <td>1.1.1.1</td>
+          <td>hahahah</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="th-checkbox"><span class="bot-th">2</span></td>
+          <td>1.1.1.1</td>
+          <td>hahahah</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
