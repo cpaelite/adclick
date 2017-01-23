@@ -1,7 +1,7 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+            <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
 
@@ -9,15 +9,21 @@
 
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-3 control-label">Name：</label>
+                <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.name" required>
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
+                    <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Url：</label>
+                <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.url" required>
+                    <input type="text" name="url" class="form-control" ng-model="item.url" required>
+                    <span style="color:red" ng-show="editForm.url.$dirty && editForm.url.$invalid">
+                    <span ng-show="editForm.url.$error.required">Url is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="url-tokens-row form-group">
@@ -25,73 +31,76 @@
                 <div class="col-sm-5">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
-                        <div class="url-token " data-token-value="{campaign.id}">
+                        <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
                             <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{campaign.id}</span>
+                            <span class="url-token-caption">{{url}}</span>
                         </div>
-                        
-                        <div class="url-token " data-token-value="{trafficsource.id}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{trafficsource.id}</span>
-                        </div>
-                        
-                        <div class="url-token " data-token-value="{trafficsource.name}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{trafficsource.name}</span>
-                        </div>
-                        
-                        <div class="url-token " data-token-value="{lander.id}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{lander.id}</span>
-                        </div>
-                        
-                        <div class="url-token " data-token-value="{device}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{device}</span>
-                        </div>
-                        
-                        <div class="url-token " data-token-value="{brand}">
-                            <span class="url-token-icon">+</span>
-                            <span class="url-token-caption">{brand}</span>
-                        </div>
-                        
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Country: </label>
+                <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" ng-model="item.country" required>
-                        <md-option value="1">American</md-option>
-                        <md-option value="2">Canada</md-option>
-                        <md-option value="3">China</md-option>
+                    <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+                        <md-option value="{{cou.alpha3Code}}" ng-repeat="cou in countries">{{cou.name}}</md-option>
                     </md-select>
+                    <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
+                    <span ng-show="editForm.country.$error.required">Country is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Affiliate network: </label>
+                <label class="col-sm-3 control-label">Affiliate network<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" ng-model="item.AffiliateNetworkId" required>
-                        <md-option value="1">EffectMobi</md-option>
-                        <md-option value="2">hasoffer</md-option>
+                    <md-select name="AffiliateNetworkId" class="cs-subform-select" ng-model="item.affiliateNetwork" required>
+                        <md-option value="{{affiliate}}" ng-repeat="affiliate in affiliates">{{affiliate.name}}</md-option>
                     </md-select>
+                    <span style="color:red" ng-show="editForm.AffiliateNetworkId.$dirty && editForm.AffiliateNetworkId.$invalid">
+                    <span ng-show="editForm.AffiliateNetworkId.$error.required">AffiliateNetwork is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Postback Url：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.postbackUrl" required>
+                    <input type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-show="item.postbackUrl">
+                    <label ng-show="!item.postbackUrl">ID will be available after saving the campaign.</label>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Payout：</label>
+                <label class="col-sm-3 control-label">Payout<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.payoutMode" value="0"> Auto
+                        <input type="radio" name="payoutMode" ng-model="item.payoutMode" value="0" required> Auto
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.payoutMode" value="1"> Manual
+                        <input type="radio" name="payoutMode" ng-model="item.payoutMode" value="1" required> Manual
                     </label>
+                    <span style="color:red" ng-show="editForm.payoutMode.$dirty && editForm.payoutMode.$invalid">
+                    <span ng-show="editForm.payoutMode.$error.required">PayoutMode is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group" ng-show="item.payoutMode == 1">
+                <label class="col-sm-3 control-label" ng-modle="radioTitle"></label>
+                <div class="col-sm-5">
+                    <span class="dollar-icon">$</span>
+                    <input type="text" class="form-control dollar-input" ng-model="item.payoutValue" ng-value="$">
+                </div>
+            </div>
+            <div class="form-group tag-items">
+                <label class="col-sm-3 control-label">Tags：</label>
+                <div class="col-sm-5 selectize-input form-group">
+                    <md-chips
+                            ng-model="tags"
+                            readonly="ctrl.readonly"
+                            md-removable="ctrl.removable"
+                            placeholder="Enter a tag"
+                            delete-button-label="Remove Tag"
+                            delete-hint="Press delete to remove tag"
+                            secondary-placeholder="+Tag"
+                            md-max-chips="10">
+                    </md-chips>
                 </div>
             </div>
         </form>

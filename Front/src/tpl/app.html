@@ -6,13 +6,18 @@
         <h1>{{app.name}}</h1>
 
         <div flex></div>
-
+        <div class="home">
+            <i class="material-icons" ng-click="toReport()">home</i>
+        </div>
+        <div class="setting">
+            <i class="material-icons" ng-click="toSetting()">settings</i>
+        </div>
         <ul class="nav navbar-nav navbar-right">
             <!-- dropdown for user -->
             <li class="dropdown" uib-dropdown>
                 <a href class="dropdown-toggle clear" uib-dropdown-toggle>
                     <i class="material-icons md-mini">&#xE87C;</i>
-                    <span class="hidden-sm hidden-md text-md">{{currentUser.name}}</span>
+                    <span class="hidden-sm hidden-md text-md">{{currentUser.firstname}}</span>
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight w" uib-dropdown-menu>
@@ -28,11 +33,7 @@
 
 <!-- <md-sidenav md-is-locked-open="screenGtSmall" md-component-id="left"
             class="md-sidenav-left md-whiteframe-z2 cs-left-aside"> -->
-<md-sidenav md-is-locked-open="screenGtSmall"
-            class="md-sidenav-left md-whiteframe-z2 cs-left-aside">
-    <!--<md-toolbar hide-gt-sm>
-      <h2 class="md-toolbar-tools">Sidenav Left</h2>
-    </md-toolbar>-->
+<md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside">
     <nav ui-nav class="navi clearfix">
         <ul class="nav">
             <li ui-sref-active="active">
@@ -42,51 +43,47 @@
                 </a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.trackcampaign" md-ink-ripple>
+                <a ui-sref="app.report.campaign" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'trackCampaign' | translate}}</span>
+                    <span>{{'campaign' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.affiliatenetwork" md-ink-ripple>
-                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'offerNetwork' | translate}}</span>
-                </a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref="app.offer" md-ink-ripple>
-                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'offer' | translate}}</span>
-                </a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref="app.lander" md-ink-ripple>
-                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'lander' | translate}}</span>
-                </a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref="app.flow" md-ink-ripple>
+                <a ui-sref="app.report.flow" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
                     <span>{{'flow' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.rule" md-ink-ripple>
+                <a ui-sref="app.report.lander" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'rule' | translate}}</span>
+                    <span>{{'lander' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.trafficSource" md-ink-ripple>
+                <a ui-sref="app.report.offer" md-ink-ripple>
+                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
+                    <span>{{'offer' | translate}}</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.trafficSource" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
                     <span>{{'trafficSource' | translate}}</span>
                 </a>
             </li>
+
+        </ul>
+    </nav>
+</md-sidenav>
+
+<md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside" ng-show="settingNav">
+    <nav ui-nav class="navi clearfix">
+        <ul class="nav">
             <li ui-sref-active="active">
-                <a ui-sref="app.affiliatenetwork" md-ink-ripple>
+                <a ui-sref="app.dashboard" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'affiliateNetwork' | translate}}</span>
+                    <span>{{'profile' | translate}}</span>
                 </a>
             </li>
         </ul>

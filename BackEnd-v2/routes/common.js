@@ -874,7 +874,7 @@ function gettrafficDetail(id, userId, connection) {
 
 function deletetraffic(id, userId, connection) {
     var sqlCampaign = "update TrafficSource set `deleted`= 1";
-    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId;
+    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId;
     return new Promise(function (resolve, reject) {
         connection.query(sqlCampaign, function (err, result) {
             if (err) {

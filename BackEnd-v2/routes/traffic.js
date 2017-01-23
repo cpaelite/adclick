@@ -184,12 +184,14 @@ router.get('/api/traffic/:id', function (req, res, next) {
  * @apiGroup traffic
  */
 router.delete('/api/traffic/:id', function (req, res, next) {
+    console.log("start");
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
+    console.info(req);
     const start = (() => {
         var _ref4 = _asyncToGenerator(function* () {
             try {

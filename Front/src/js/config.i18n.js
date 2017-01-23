@@ -1,4 +1,4 @@
-(function(){
+(function () {
   'use strict';
 
   var i18n_en = {
@@ -14,11 +14,11 @@
     signin: 'Login',
     goBackHomePage: 'Home Page',
     signup: 'Sign up',
+    campaign: 'Campaign',
     affiliateNetwork: 'AffiliateNetwork',
     affiliateNetworkName: 'Name',
     affiliateNetworkPostBackUrl: 'Url',
     dashBoard: 'DashBoard',
-    trackCampaign: 'TrackCampaign',
     trackCampaignName: 'Name',
     trackCampaignStatus: {
         0: 'Active',
@@ -26,13 +26,24 @@
     },
     offer: 'Offer',
     lander: 'Lander',
-    flow:'Flow',
-    trafficSource:'TrafficSource',
+    flow: 'Flow',
+    trafficSource: 'TrafficSource',
     trafficSourceStatus: {
-        0: 'Active',
-        1: 'InActive'
+      0: 'Active',
+      1: 'InActive'
     },
-    rule:'Rule'
+    rule: 'Rule',
+    fromDate: 'From',
+    toDate: 'To',
+    profile:'Profile',
+    referralProgram:'ReferralProgram',
+    subscriptions:'Subscriptions',
+    domain:'Domain',
+    setUp:'SetUp',
+    userManagement:'UserManagement',
+    botBlacklist:'BotBlacklist',
+    invoices:'Invoices',
+    eventLog:'EventLog'
   };
   var i18n_zh = {
     ok: '确定',
@@ -49,7 +60,7 @@
   };
 
   angular.module('app')
-    .config(['$translateProvider', function($translateProvider) {
+    .config(['$translateProvider', function ($translateProvider) {
       $translateProvider
         .translations('en', i18n_en)
         .translations('zh', i18n_zh);
@@ -59,6 +70,6 @@
 
       // Enable escaping of HTML
       $translateProvider.useSanitizeValueStrategy('escape');
-  }]);
+    }]);
 
 })();

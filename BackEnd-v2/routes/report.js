@@ -16,8 +16,8 @@ var common = require('./common');
  * @apiParam {String} tz   timezone
  * @apiParam {String} sort  排序字段
  * @apiParam {String} direction  desc
- * @apiParam {String} groupBy  
- * @apiParam {String} type     
+ * @apiParam {String} groupBy
+ * @apiParam {String} type
  * @apiParam {Number} offset
  * @apiParam {Number} limit
  * @apiParam {String} include    数据状态 all  traffic active 
@@ -64,23 +64,7 @@ router.post('/api/report', function (req, res, next) {
                 let result;
                 let value = yield common.validate(req.body, schema);
                 let connection = yield common.getConnection();
-                if (value.type) {
-                    result = yield campaignReport(value, connection);
-                    // if(value.type == "TrackingCampaign"){
-                    //     result = await campaignReport(value,connection);
-                    // }else if(value.tye == "offer"){
-                    //     result= await offerReport(value,connection);
-                    // }else if(value.type == "lander"){
-                    //     result= await landerReport(value,connection);
-                    // }else if(value.type== "flow"){
-                    //     result= await flowReport(value,connection);
-                    // }else if(value.type== "affiliateNetwork"){
-                    //     result= await affiliateReport(value,connection);
-                    // }else if(value.type== "trafficSource"){
-                    //     result= await trafficReport(value,connection);     
-                    // }
-                }
-
+                result = yield campaignReport(value, connection);
                 connection.release();
                 res.json({
                     status: 1,
@@ -99,7 +83,7 @@ router.post('/api/report', function (req, res, next) {
     start();
 });
 
-function trafficReport(value, connection) {
+function campaignReport(value, connection) {
     return new Promise(function (resolve, reject) {
 
         const start = (() => {
@@ -107,23 +91,28 @@ function trafficReport(value, connection) {
                 try {
                     let offset = (value.offset - 1) * value.limit;
                     let limit = value.limit;
-                    let sql = "select   t.`id`,t.`name` as `name`,t.`hash` as `hash`, `postbackUrl`," + "ifnull(a.`Impressions`,0) as `impressions`," + "ifnull(a.`Visits`,0) as `visits`,ifnull(a.`Clicks`,0) as `clicks`," + "ifnull(a.`Conversions`,0) as `conversions`,Round(ifnull(a.`Revenue`,0),2) as `revenue`," + "Round(ifnull(a.`Cost`,0),2)  as `cost`," + "Round(ifnull(a.`profit`,0),2)  as `profit`," + "Round(ifnull(a.`cpv`,0),4) as `cpv`," + "Round(ifnull(a.`ictr`,0)*100,2) as `ictr`," + "Round(ifnull(a.`ctr`,0)*100,2) as `ctr`," + "Round(ifnull(a.`cr`,0)*100,2) as `cr`," + "Round(ifnull(a.`cv`,0)*100,2)  as `cv`," + "Round(ifnull(a.`roi`,0)*100,2) as `roi`," + "Round(ifnull(a.`epv`,0)*100,4) as `epv`," + "Round(ifnull(a.`epc`,0)*100,2) as `epc`," + "Round(ifnull(a.`ap`,0)*100,2) as `ap`, " + "a.`V1`,a.`V2`,a.`V3`,a.`V4`,a.`V5`,a.`V6`,a.`V7`,a.`V8`,a.`V9`,a.`V10`  " + "from `TrafficSource` t left join  " + "(select sum(`Impressions`) as `Impressions`,sum(`Visits`) as `Visits`,sum(`Clicks`) as `Clicks`,sum(`Conversions`) as `Conversions`,sum(`Revenue`/1000000) as `Revenue`,sum(`Cost`/1000000) as `Cost` ,`TrafficSourceID`," + "sum(`Revenue`/1000000)-sum(`Cost`/1000000) as `profit` , " + "sum(`Cost`/1000000)/sum(`Impressions`) as `cpv`," + "sum(`Visits`)/sum(`Impressions`) as `ictr`," + "sum(`Clicks`)/sum(`Visits`) as `ctr`," + "sum(`Conversions`)/sum(`Clicks`) as `cr`," + "sum(`Conversions`)/sum(`Visits`) as `cv`," + "sum(`Revenue`/1000000)/sum(`Cost`/1000000) as `roi`," + "sum(`Revenue`/1000000)/sum(`Visits`) as `epv`," + "sum(`Revenue`/1000000)/sum(`Clicks`) as `epc`," + "sum(`Revenue`/1000000)/sum(`Conversions`) as `ap`, " + "`V1`,`V2`,`V3`,`V4`,`V5`,`V6`,`V7`,`V8`,`V9`,`V10` " + " from  `AdStatis`";
+                    let sql;
+                    sql = "select ads.UserID,ads.Language,ads.Model,ads.Country,ads.City,ads.Region,ads.ISP,ads.MobileCarrier,ads.Domain,ads.DeviceType,ads.Brand,ads.OS,ads.OSVersion,ads.Browser,ads.BrowserVersion,ads.ConnectionType,ads.Timestamp,sum(ads.Visits) as Visits,sum(ads.Clicks) as Clicks, sum(ads.Conversions) as Conversions, sum(ads.Cost) as Cost, sum(ads.Revenue) as Revenue,sum(ads.Impressions) as Impressions,ads.KeysMD5,ads.V1,ads.V2,ads.V3,ads.V4,ads.V5,ads.V6,ads.V7,ads.V8,ads.V9,ads.V10," + "c.id as CampaignId, c.name as CampaignName, c.url as CampaignUrl, c.country as CampaignCountry, " + "f.id as FlowId, f.name as FlowName, " + "l.id as LanderId, l.name as LanderName, l.url as LanderUrl, l.country as LanderCountry, " + "o.id as OfferId, o.name as OfferName, o.url as OfferUrl, o.country as OfferCountry, " + "t.id as TrafficSourceId, t.name as TrafficSourceName, " + "a.id as AffiliateNetworkId, a.name as AffiliateNetworkName, " + "sum(ads.`Revenue`/1000000)-sum(ads.`Cost`/1000000) as `profit`, " + "sum(ads.`Cost`/1000000)/sum(ads.`Impressions`) as `cpv`, " + "sum(ads.`Visits`)/sum(ads.`Impressions`) as `ictr`, " + "sum(ads.`Clicks`)/sum(ads.`Visits`) as `ctr`, " + "sum(ads.`Conversions`)/sum(ads.`Clicks`) as `cr`, " + "sum(ads.`Conversions`)/sum(ads.`Visits`) as `cv`, " + "sum(ads.`Revenue`/1000000)/sum(ads.`Cost`/1000000) as `roi`, " + "sum(ads.`Revenue`/1000000)/sum(ads.`Visits`) as `epv`, " + "sum(ads.`Revenue`/1000000)/sum(ads.`Clicks`) as `epc`, " + "sum(ads.`Revenue`/1000000)/sum(ads.`Conversions`) as `ap`" + "from AdStatis ads  " + "inner join TrackingCampaign c on c.id = ads.CampaignId " + "inner join Flow f on f.id = ads.FlowId " + "inner join Lander l on l.id = ads.LanderId " + "inner join Offer o on o.id = ads.OfferId " + "inner join TrafficSource t on t.id = ads.TrafficSourceId " + "inner join AffiliateNetwork a on a.id = ads.AffiliateNetworkId ";
 
-                    sql += " where `UserID`=" + value.userId + " and  `Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and `Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) group by `TrafficSourceID` ) a  on a.`TrafficSourceID`= t.`id` where t.`userId`= " + value.userId;
+                    sql += " where ads.UserID=" + value.userId + " and  ads.`Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and ads.`Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) ";
 
-                    if (value.filter) {
-                        sql += " and t.`name` LIKE '%" + value.filter + "%'";
+                    if (value.filter1 && value.filter1Value) {
+                        "and ads.`" + value.filter1 + "`='" + value.filter1Value + "'";
+                    }
+                    if (value.filter1 && value.filter1Value) {
+                        "and ads.`" + value.filter1 + "`='" + value.filter1Value + "'";
+                    }
+                    if (value.filter1 && value.filter1Value) {
+                        "and ads.`" + value.filter1 + "`='" + value.filter1Value + "'";
                     }
 
-                    if (value.active == 0) {
-                        sql += " and t.`deleted` = 0";
-                    } else if (value.active == 1) {
-                        sql += " and t.`deleted` = 1";
-                    }
+                    sql += "group by  ads.`" + value.groupBy + "`";
 
                     if (value.sort) {
                         sql += " ORDER BY `" + value.sort + "` " + value.direction;
                     }
+
+                    console.log(sql);
 
                     let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
@@ -145,285 +134,6 @@ function trafficReport(value, connection) {
 
             return function start() {
                 return _ref2.apply(this, arguments);
-            };
-        })();
-        start();
-    });
-}
-
-function affiliateReport(value, connection) {
-    return new Promise(function (resolve, reject) {
-
-        const start = (() => {
-            var _ref3 = _asyncToGenerator(function* () {
-                try {
-                    let offset = (value.offset - 1) * value.limit;
-                    let limit = value.limit;
-                    let sql = "select   t.`id`,t.`name` as `name`,t.`hash` as `hash`, t.`appendClickId`," + "ifnull(a.`Impressions`,0) as `impressions`," + "ifnull(a.`Visits`,0) as `visits`,ifnull(a.`Clicks`,0) as `clicks`," + "ifnull(a.`Conversions`,0) as `conversions`,Round(ifnull(a.`Revenue`,0),2) as `revenue`," + "Round(ifnull(a.`Cost`,0),2)  as `cost`," + "Round(ifnull(a.`profit`,0),2)  as `profit`," + "Round(ifnull(a.`cpv`,0),4) as `cpv`," + "Round(ifnull(a.`ictr`,0)*100,2) as `ictr`," + "Round(ifnull(a.`ctr`,0)*100,2) as `ctr`," + "Round(ifnull(a.`cr`,0)*100,2) as `cr`," + "Round(ifnull(a.`cv`,0)*100,2)  as `cv`," + "Round(ifnull(a.`roi`,0)*100,2) as `roi`," + "Round(ifnull(a.`epv`,0)*100,4) as `epv`," + "Round(ifnull(a.`epc`,0)*100,2) as `epc`," + "Round(ifnull(a.`ap`,0)*100,2) as `ap` " + "from `AffiliateNetwork` t left join  " + "(select sum(`Impressions`) as `Impressions`,sum(`Visits`) as `Visits`,sum(`Clicks`) as `Clicks`,sum(`Conversions`) as `Conversions`,sum(`Revenue`/1000000) as `Revenue`,sum(`Cost`/1000000) as `Cost` ,`AffiliateNetworkID`," + "sum(`Revenue`/1000000)-sum(`Cost`/1000000) as `profit` , " + "sum(`Cost`/1000000)/sum(`Impressions`) as `cpv`," + "sum(`Visits`)/sum(`Impressions`) as `ictr`," + "sum(`Clicks`)/sum(`Visits`) as `ctr`," + "sum(`Conversions`)/sum(`Clicks`) as `cr`," + "sum(`Conversions`)/sum(`Visits`) as `cv`," + "sum(`Revenue`/1000000)/sum(`Cost`/1000000) as `roi`," + "sum(`Revenue`/1000000)/sum(`Visits`) as `epv`," + "sum(`Revenue`/1000000)/sum(`Clicks`) as `epc`," + "sum(`Revenue`/1000000)/sum(`Conversions`) as `ap`  from  `AdStatis`";
-
-                    sql += " where `UserID`=" + value.userId + " and  `Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and `Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) group by `AffiliateNetworkID` ) a  on a.`AffiliateNetworkID`= t.`id` where t.`userId`= " + value.userId;
-
-                    if (value.filter) {
-                        sql += " and t.`name` LIKE '%" + value.filter + "%'";
-                    }
-
-                    if (value.active == 0) {
-                        sql += " and t.`deleted` = 0";
-                    } else if (value.active == 1) {
-                        sql += " and t.`deleted` = 1";
-                    }
-
-                    if (value.sort) {
-                        sql += " ORDER BY `" + value.sort + "` " + value.direction;
-                    }
-
-                    let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-
-                    sql += " limit " + offset + "," + limit;
-
-                    let sumSql = "select sum(`impressions`) as `impressions`, sum(`visits`) as `visits`,sum(`clicks`) as `clicks`,sum(`conversions`) as `conversions`,sum(`cost`) as `cost`,sum(`profit`) as `profit`,sum(`cpv`) as `cpv`,sum(`ictr`) as `ictr`,sum(`ctr`) as `ctr`,sum(`cr`) as `cr`,sum(`cv`) as `cv`,sum(`roi`) as `roi`,sum(`epv`) as `epv`,sum(`epc`) as `epc`,sum(`ap`) as `ap` from ((" + sql + ") as K)";
-
-                    let result = yield Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
-
-                    resolve({
-                        totalRows: result[1][0].total,
-                        totals: result[2][0],
-                        rows: result[0]
-                    });
-                } catch (e) {
-                    reject(e);
-                }
-            });
-
-            return function start() {
-                return _ref3.apply(this, arguments);
-            };
-        })();
-        start();
-    });
-}
-
-function flowReport(value, connection) {
-    return new Promise(function (resolve, reject) {
-
-        const start = (() => {
-            var _ref4 = _asyncToGenerator(function* () {
-                try {
-                    let offset = (value.offset - 1) * value.limit;
-                    let limit = value.limit;
-                    let sql = "select   t.`id`,t.`name` as `name`,t.`hash` as `hash`," + "ifnull(a.`Impressions`,0) as `impressions`," + "ifnull(a.`Visits`,0) as `visits`,ifnull(a.`Clicks`,0) as `clicks`," + "ifnull(a.`Conversions`,0) as `conversions`,Round(ifnull(a.`Revenue`,0),2) as `revenue`," + "Round(ifnull(a.`Cost`,0),2)  as `cost`," + "Round(ifnull(a.`profit`,0),2)  as `profit`," + "Round(ifnull(a.`cpv`,0),4) as `cpv`," + "Round(ifnull(a.`ictr`,0)*100,2) as `ictr`," + "Round(ifnull(a.`ctr`,0)*100,2) as `ctr`," + "Round(ifnull(a.`cr`,0)*100,2) as `cr`," + "Round(ifnull(a.`cv`,0)*100,2)  as `cv`," + "Round(ifnull(a.`roi`,0)*100,2) as `roi`," + "Round(ifnull(a.`epv`,0)*100,4) as `epv`," + "Round(ifnull(a.`epc`,0)*100,2) as `epc`," + "Round(ifnull(a.`ap`,0)*100,2) as `ap` " + "from `Flow` t left join  " + "(select sum(`Impressions`) as `Impressions`,sum(`Visits`) as `Visits`,sum(`Clicks`) as `Clicks`,sum(`Conversions`) as `Conversions`,sum(`Revenue`/1000000) as `Revenue`,sum(`Cost`/1000000) as `Cost` ,`FlowID`," + "sum(`Revenue`/1000000)-sum(`Cost`/1000000) as `profit` , " + "sum(`Cost`/1000000)/sum(`Impressions`) as `cpv`," + "sum(`Visits`)/sum(`Impressions`) as `ictr`," + "sum(`Clicks`)/sum(`Visits`) as `ctr`," + "sum(`Conversions`)/sum(`Clicks`) as `cr`," + "sum(`Conversions`)/sum(`Visits`) as `cv`," + "sum(`Revenue`/1000000)/sum(`Cost`/1000000) as `roi`," + "sum(`Revenue`/1000000)/sum(`Visits`) as `epv`," + "sum(`Revenue`/1000000)/sum(`Clicks`) as `epc`," + "sum(`Revenue`/1000000)/sum(`Conversions`) as `ap`  from  `AdStatis`";
-
-                    sql += " where `UserID`=" + value.userId + " and  `Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and `Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) group by `FlowID` ) a  on a.`FlowID`= t.`id` where t.`userId`= " + value.userId;
-
-                    if (value.filter) {
-                        sql += " and t.`name` LIKE '%" + value.filter + "%'";
-                    }
-
-                    if (value.active == 0) {
-                        sql += " and t.`deleted` = 0";
-                    } else if (value.active == 1) {
-                        sql += " and t.`deleted` = 1";
-                    }
-
-                    if (value.sort) {
-                        sql += " ORDER BY `" + value.sort + "` " + value.direction;
-                    }
-
-                    let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-
-                    sql += " limit " + offset + "," + limit;
-
-                    let sumSql = "select sum(`impressions`) as `impressions`, sum(`visits`) as `visits`,sum(`clicks`) as `clicks`,sum(`conversions`) as `conversions`,sum(`cost`) as `cost`,sum(`profit`) as `profit`,sum(`cpv`) as `cpv`,sum(`ictr`) as `ictr`,sum(`ctr`) as `ctr`,sum(`cr`) as `cr`,sum(`cv`) as `cv`,sum(`roi`) as `roi`,sum(`epv`) as `epv`,sum(`epc`) as `epc`,sum(`ap`) as `ap` from ((" + sql + ") as K)";
-
-                    let result = yield Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
-
-                    resolve({
-                        totalRows: result[1][0].total,
-                        totals: result[2][0],
-                        rows: result[0]
-                    });
-                } catch (e) {
-                    reject(e);
-                }
-            });
-
-            return function start() {
-                return _ref4.apply(this, arguments);
-            };
-        })();
-        start();
-    });
-}
-
-function landerReport(value, connection) {
-    return new Promise(function (resolve, reject) {
-
-        const start = (() => {
-            var _ref5 = _asyncToGenerator(function* () {
-                try {
-                    let offset = (value.offset - 1) * value.limit;
-                    let limit = value.limit;
-                    let sql = "select   t.`id`,t.`name` as `name`,t.`hash` as `hash` ,t.`url` ,t.`country`," + "t.`numberOfOffers` ,ifnull(a.`Impressions`,0) as `impressions`," + "ifnull(a.`Visits`,0) as `visits`,ifnull(a.`Clicks`,0) as `clicks`," + "ifnull(a.`Conversions`,0) as `conversions`,Round(ifnull(a.`Revenue`,0),2) as `revenue`," + "Round(ifnull(a.`Cost`,0),2)  as `cost`," + "Round(ifnull(a.`profit`,0),2)  as `profit`," + "Round(ifnull(a.`cpv`,0),4) as `cpv`," + "Round(ifnull(a.`ictr`,0)*100,2) as `ictr`," + "Round(ifnull(a.`ctr`,0)*100,2) as `ctr`," + "Round(ifnull(a.`cr`,0)*100,2) as `cr`," + "Round(ifnull(a.`cv`,0)*100,2)  as `cv`," + "Round(ifnull(a.`roi`,0)*100,2) as `roi`," + "Round(ifnull(a.`epv`,0)*100,4) as `epv`," + "Round(ifnull(a.`epc`,0)*100,2) as `epc`," + "Round(ifnull(a.`ap`,0)*100,2) as `ap` " + "from `Lander` t left join  " + "(select sum(`Impressions`) as `Impressions`,sum(`Visits`) as `Visits`,sum(`Clicks`) as `Clicks`,sum(`Conversions`) as `Conversions`,sum(`Revenue`/1000000) as `Revenue`,sum(`Cost`/1000000) as `Cost` ,`LanderID`," + "sum(`Revenue`/1000000)-sum(`Cost`/1000000) as `profit` , " + "sum(`Cost`/1000000)/sum(`Impressions`) as `cpv`," + "sum(`Visits`)/sum(`Impressions`) as `ictr`," + "sum(`Clicks`)/sum(`Visits`) as `ctr`," + "sum(`Conversions`)/sum(`Clicks`) as `cr`," + "sum(`Conversions`)/sum(`Visits`) as `cv`," + "sum(`Revenue`/1000000)/sum(`Cost`/1000000) as `roi`," + "sum(`Revenue`/1000000)/sum(`Visits`) as `epv`," + "sum(`Revenue`/1000000)/sum(`Clicks`) as `epc`," + "sum(`Revenue`/1000000)/sum(`Conversions`) as `ap`  from  `AdStatis`";
-
-                    sql += " where `UserID`=" + value.userId + " and  `Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and `Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) group by `LanderID` ) a  on a.`LanderID`= t.`id` where t.`userId`= " + value.userId;
-
-                    if (value.filter) {
-                        sql += " and t.`name` LIKE '%" + value.filter + "%'";
-                    }
-                    if (value.active == 0) {
-                        sql += " and t.`deleted` = 0";
-                    } else if (value.active == 1) {
-                        sql += " and t.`deleted` = 1";
-                    }
-
-                    if (value.sort) {
-                        sql += " ORDER BY `" + value.sort + "` " + value.direction;
-                    }
-
-                    let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-
-                    sql += " limit " + offset + "," + limit;
-
-                    let sumSql = "select sum(`impressions`) as `impressions`, sum(`visits`) as `visits`,sum(`clicks`) as `clicks`,sum(`conversions`) as `conversions`,sum(`cost`) as `cost`,sum(`profit`) as `profit`,sum(`cpv`) as `cpv`,sum(`ictr`) as `ictr`,sum(`ctr`) as `ctr`,sum(`cr`) as `cr`,sum(`cv`) as `cv`,sum(`roi`) as `roi`,sum(`epv`) as `epv`,sum(`epc`) as `epc`,sum(`ap`) as `ap` from ((" + sql + ") as K)";
-
-                    let result = yield Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
-
-                    resolve({
-                        totalRows: result[1][0].total,
-                        totals: result[2][0],
-                        rows: result[0]
-                    });
-                } catch (e) {
-                    reject(e);
-                }
-            });
-
-            return function start() {
-                return _ref5.apply(this, arguments);
-            };
-        })();
-        start();
-    });
-}
-
-function campaignReport(value, connection) {
-    return new Promise(function (resolve, reject) {
-
-        const start = (() => {
-            var _ref6 = _asyncToGenerator(function* () {
-                try {
-                    let offset = (value.offset - 1) * value.limit;
-                    let limit = value.limit;
-                    let sql;
-                    if (value.type == "TrackingCampaign") {
-                        sql = "select  t.`id`,t.`name` as `name`,t.`hash` as `hash` ,t.`url` ,t.`impPixelUrl` ,t.`country` ," + "t.`trafficSourceName` ,t.`costModel`,t.`cpcValue` as `cpc`,t.`cpaValue` as `cpa`,t.`cpmValue` as `cpm`," + "t.`redirectMode` as `redirect`,";
-                    } else if (value.type == "Offer") {
-                        sql = "select  t.`id`,t.`name` as `name`,t.`hash` as `hash` ,t.`url` ,t.`postbackUrl` ,t.`country` ," + "t.`AffiliateNetworkName` ,t.`payoutValue`,";
-                    }
-
-                    sql += "ifnull(a.`Impressions`,0) as `impressions`," + "ifnull(a.`Visits`,0) as `visits`,ifnull(a.`Clicks`,0) as `clicks`," + "ifnull(a.`Conversions`,0) as `conversions`,Round(ifnull(a.`Revenue`,0),2) as `revenue`," + "Round(ifnull(a.`Cost`,0),2)  as `cost`," + "Round(ifnull(a.`profit`,0),2)  as `profit`," + "Round(ifnull(a.`cpv`,0),4) as `cpv`," + "Round(ifnull(a.`ictr`,0)*100,2) as `ictr`," + "Round(ifnull(a.`ctr`,0)*100,2) as `ctr`," + "Round(ifnull(a.`cr`,0)*100,2) as `cr`," + "Round(ifnull(a.`cv`,0)*100,2)  as `cv`," + "Round(ifnull(a.`roi`,0)*100,2) as `roi`," + "Round(ifnull(a.`epv`,0)*100,4) as `epv`," + "Round(ifnull(a.`epc`,0)*100,2) as `epc`," + "Round(ifnull(a.`ap`,0)*100,2) as `ap` from `" + value.type + "`  t left join  " + "(select sum(`Impressions`) as `Impressions`,sum(`Visits`) as `Visits`,sum(`Clicks`) as `Clicks`," + "sum(`Conversions`) as `Conversions`,sum(`Revenue`/1000000) as `Revenue`,sum(`Cost`/1000000) as `Cost` ,`" + value.groupBy + "`," + "sum(`Revenue`/1000000)-sum(`Cost`/1000000) as `profit` , " + "sum(`Cost`/1000000)/sum(`Impressions`) as `cpv`," + "sum(`Visits`)/sum(`Impressions`) as `ictr`," + "sum(`Clicks`)/sum(`Visits`) as `ctr`," + "sum(`Conversions`)/sum(`Clicks`) as `cr`," + "sum(`Conversions`)/sum(`Visits`) as `cv`," + "sum(`Revenue`/1000000)/sum(`Cost`/1000000) as `roi`," + "sum(`Revenue`/1000000)/sum(`Visits`) as `epv`," + "sum(`Revenue`/1000000)/sum(`Clicks`) as `epc`," + "sum(`Revenue`/1000000)/sum(`Conversions`) as `ap`  from  `AdStatis`";
-
-                    sql += " where `UserID`=" + value.userId + " and  `Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and `Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) ";
-
-                    if (value.filter1 && value.filter1Value) {
-                        "and `" + value.filter1 + "`='" + value.filter1Value + "'";
-                    }
-                    if (value.filter1 && value.filter1Value) {
-                        "and `" + value.filter1 + "`='" + value.filter1Value + "'";
-                    }
-
-                    if (value.filter1 && value.filter1Value) {
-                        "and `" + value.filter1 + "`='" + value.filter1Value + "'";
-                    }
-
-                    sql += "group by  `" + value.groupBy + "` ) a  on a.`" + value.groupBy + "`= t.`id` where t.`userId`= " + value.userId;
-
-                    if (value.filter) {
-                        sql += " and t.`name` LIKE '%" + value.filter + "%'";
-                    }
-
-                    if (value.active == 0) {
-                        sql += " and t.`deleted` = 0";
-                    } else if (value.active == 1) {
-                        sql += " and t.`deleted` = 1";
-                    }
-
-                    if (value.sort) {
-                        sql += " ORDER BY `" + value.sort + "` " + value.direction;
-                    }
-
-                    let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-
-                    sql += " limit " + offset + "," + limit;
-
-                    let sumSql = "select sum(`impressions`) as `impressions`, sum(`visits`) as `visits`,sum(`clicks`) as `clicks`,sum(`conversions`) as `conversions`,sum(`cost`) as `cost`,sum(`profit`) as `profit`,sum(`cpv`) as `cpv`,sum(`ictr`) as `ictr`,sum(`ctr`) as `ctr`,sum(`cr`) as `cr`,sum(`cv`) as `cv`,sum(`roi`) as `roi`,sum(`epv`) as `epv`,sum(`epc`) as `epc`,sum(`ap`) as `ap` from ((" + sql + ") as K)";
-
-                    let result = yield Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
-
-                    resolve({
-                        totalRows: result[1][0].total,
-                        totals: result[2][0],
-                        rows: result[0]
-                    });
-                } catch (e) {
-                    reject(e);
-                }
-            });
-
-            return function start() {
-                return _ref6.apply(this, arguments);
-            };
-        })();
-        start();
-    });
-}
-
-function offerReport(value, connection) {
-    return new Promise(function (resolve, reject) {
-
-        const start = (() => {
-            var _ref7 = _asyncToGenerator(function* () {
-                try {
-                    let offset = (value.offset - 1) * value.limit;
-                    let limit = value.limit;
-                    let sql = "select  t.`id`,t.`name` as `name`,t.`hash` as `hash` ,t.`url` ,t.`postbackUrl` ,t.`country` ," + "t.`AffiliateNetworkName` ,t.`payoutValue`," + "ifnull(a.`Impressions`,0) as `impressions`," + "ifnull(a.`Visits`,0) as `visits`,ifnull(a.`Clicks`,0) as `clicks`," + "ifnull(a.`Conversions`,0) as `conversions`,Round(ifnull(a.`Revenue`,0),2) as `revenue`," + "Round(ifnull(a.`Cost`,0),2)  as `cost`," + "Round(ifnull(a.`profit`,0),2)  as `profit`," + "Round(ifnull(a.`cpv`,0),4) as `cpv`," + "Round(ifnull(a.`ictr`,0)*100,2) as `ictr`," + "Round(ifnull(a.`ctr`,0)*100,2) as `ctr`," + "Round(ifnull(a.`cr`,0)*100,2) as `cr`," + "Round(ifnull(a.`cv`,0)*100,2)  as `cv`," + "Round(ifnull(a.`roi`,0)*100,2) as `roi`," + "Round(ifnull(a.`epv`,0)*100,4) as `epv`," + "Round(ifnull(a.`epc`,0)*100,2) as `epc`," + "Round(ifnull(a.`ap`,0)*100,2) as `ap` " + "from `Offer` t left join  " + "(select sum(`Impressions`) as `Impressions`,sum(`Visits`) as `Visits`,sum(`Clicks`) as `Clicks`,sum(`Conversions`) as `Conversions`,sum(`Revenue`/1000000) as `Revenue`,sum(`Cost`/1000000) as `Cost` ,`OfferID`," + "sum(`Revenue`/1000000)-sum(`Cost`/1000000) as `profit` , " + "sum(`Cost`/1000000)/sum(`Impressions`) as `cpv`," + "sum(`Visits`)/sum(`Impressions`) as `ictr`," + "sum(`Clicks`)/sum(`Visits`) as `ctr`," + "sum(`Conversions`)/sum(`Clicks`) as `cr`," + "sum(`Conversions`)/sum(`Visits`) as `cv`," + "sum(`Revenue`/1000000)/sum(`Cost`/1000000) as `roi`," + "sum(`Revenue`/1000000)/sum(`Visits`) as `epv`," + "sum(`Revenue`/1000000)/sum(`Clicks`) as `epc`," + "sum(`Revenue`/1000000)/sum(`Conversions`) as `ap`  from  `AdStatis`";
-
-                    sql += " where `UserID`=" + value.userId + " and  `Timestamp` >=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.from + "', '+00:00','" + value.tz + "')) and `Timestamp` <=" + "UNIX_TIMESTAMP(CONVERT_TZ('" + value.to + "', '+00:00','" + value.tz + "')) group by `OfferID` ) a  on a.`OfferID`= t.`id` where t.`userId`= " + value.userId;
-
-                    if (value.filter) {
-                        sql += " and t.`name` LIKE '%" + value.filter + "%'";
-                    }
-
-                    if (value.active == 0) {
-                        sql += " and t.`deleted` = 0";
-                    } else if (value.active == 1) {
-                        sql += " and t.`deleted` = 1";
-                    }
-
-                    if (value.sort) {
-                        sql += " ORDER BY `" + value.sort + "` " + value.direction;
-                    }
-
-                    let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-
-                    sql += " limit " + offset + "," + limit;
-
-                    let sumSql = "select sum(`impressions`) as `impressions`, sum(`visits`) as `visits`,sum(`clicks`) as `clicks`,sum(`conversions`) as `conversions`,sum(`cost`) as `cost`,sum(`profit`) as `profit`,sum(`cpv`) as `cpv`,sum(`ictr`) as `ictr`,sum(`ctr`) as `ctr`,sum(`cr`) as `cr`,sum(`cv`) as `cv`,sum(`roi`) as `roi`,sum(`epv`) as `epv`,sum(`epc`) as `epc`,sum(`ap`) as `ap` from ((" + sql + ") as K)";
-
-                    let result = yield Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
-
-                    resolve({
-                        totalRows: result[1][0].total,
-                        totals: result[2][0],
-                        rows: result[0]
-                    });
-                } catch (e) {
-                    reject(e);
-                }
-            });
-
-            return function start() {
-                return _ref7.apply(this, arguments);
             };
         })();
         start();

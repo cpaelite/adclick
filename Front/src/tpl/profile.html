@@ -1,0 +1,107 @@
+<h1 class="setting-title">Your account data</h1>
+
+<div class="form-column profile-content">
+  <div class="basic-form clearfix">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>First name</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group">
+        <label>Company name</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group">
+        <label>Default time zone</label>
+        <md-select class="cs-subform-select" ng-model="item.country" required>
+          <md-option value="1">(UTC-12:00) International Date Line West</md-option>
+          <md-option value="2">(UTC-11:00) Coordinated Universal Time-11</md-option>
+          <md-option value="3">(UTC-10:00) Hawaii</md-option>
+        </md-select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Last name</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="number" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group clearfix">
+        <label>Default home screen</label>
+        <div class="campaign-radio">
+          <label class="radio-inline">
+            <input type="radio" ng-model="item.costModel" value="Dashboard" selected>Dashboard
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="item.costModel" value="Campaign list">Campaign list
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="profile-form-footer clearfix">
+    <div class="save-btn">
+      <i class="material-icons save-btn-icon">done</i>
+      save
+    </div>
+    <div class="close-btn">
+      <i class="material-icons close-btn-icon">close</i>
+      close
+    </div>
+  </div>
+</div>
+
+<h1 class="setting-title">Password and e-mail change</h1>
+
+<div class="form-column profile-content password-change">
+  <div class="basic-form clearfix">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Old password</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group">
+        <label>New password</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group">
+        <label>Repeat new password</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="profile-form-footer clearfix">
+        <div class="save-btn">
+          <i class="material-icons save-btn-icon">done</i>
+          save
+        </div>
+        <div class="close-btn">
+          <i class="material-icons close-btn-icon">close</i>
+          close
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Change e-mail address</label>
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="form-group">
+        <label>Confirm with your password</label>
+        <input type="number" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="profile-form-footer clearfix">
+        <div class="save-btn">
+          <i class="material-icons save-btn-icon">done</i>
+          save
+        </div>
+        <div class="close-btn">
+          <i class="material-icons close-btn-icon">close</i>
+          close
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

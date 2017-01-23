@@ -1,0 +1,66 @@
+<h1 class="setting-title">Referral program</h1>
+
+<div class="form-column profile-content">
+  <div class="referral-program">
+    <p>Use the below URLs to direct your referrals to either the Voluum main page or straight to the sign-up page. All sign-ups from these links will be permanently associated with your account. Visitors to these links will have 30 day cookies placed on their computers so you may see delayed referrals. You will be receiving 7% lifetime monthly commissions on all paying referrals, both on their base fees, and overage charges. </p>
+    <p>You can find more info and promo materials here.</p>
+    <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Link to sign up page</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+    </div>
+    <div class="data-table">
+      <table md-table class="table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Acquired</th>
+            <th>Status</th>
+            <th>Plan</th>
+            <th>Last activity</th>
+            <th>Commission from last 30 days</th>
+            <th>Total commissions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2a7670c7</td>
+            <td>06-01-2017, 00:00</td>
+            <td>New</td>
+            <td>No Plan</td>
+            <td>05-01-2017, 00:00</td>
+            <td>0.00$</td>
+            <td>0.00$</td>
+          </tr>
+          <tr>
+            <td>2a7670c7</td>
+            <td>06-01-2017, 00:00</td>
+            <td>New</td>
+            <td>No Plan</td>
+            <td>05-01-2017, 00:00</td>
+            <td>0.00$</td>
+            <td>0.00$</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>TOTAL</td>
+            <td>Referrals:2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>0.00$</td>
+            <td>0.00$</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.offset"
+    md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+  </div>
+</div>

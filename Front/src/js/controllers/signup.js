@@ -3,27 +3,24 @@
 
     angular.module('app')
         .controller('SignupCtrl', [
-            '$scope', '$auth', '$state', 'toastr', 'Signup', 'AccountCheck',
+            '$scope', '$auth', '$state', 'toastr', 'AccountCheck', 'userPreferences',
             SignupCtrl
         ]);
 
-    function SignupCtrl($scope, $auth, $state, toastr, Signup, AccountCheck) {
+    function SignupCtrl($scope, $auth, $state, toastr, AccountCheck, userPreferences) {
         $scope.app.subtitle = 'Sign up';
-        $scope.user = {};
+        $scope.user = {
+            json: JSON.stringify(userPreferences)
+        };
         $scope.signup = function () {
-            $scope.form.$setSubmitted();
-            function success(response) {
-                $auth.setToken(response);
-                $state.go('access.signin', {name: response.data.item.name});
-            }
-
-            function error(response) {
-                toastr.error(response.data.message, {timeOut: 7000, positionClass: 'toast-top-center'});
-            }
-
-            if ($scope.form.$valid) {
-                Signup.save($scope.user, success, error);
-            }
+            $auth.signup($scope.user, { ignoreAuthModule: true })
+                .then(function(response) {
+                    $auth.setToken(response);
+                    $state.go('access.signin', {});
+                })
+                .catch(function(response) {
+                    toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
+                });
         };
 
         $scope.checkEmail = function () {

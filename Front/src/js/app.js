@@ -1,4 +1,4 @@
-(function(){
+(function () {
   'use strict';
 
   // Prepare the 'app' module for subsequent registration of controllers and delegates
