@@ -68,6 +68,10 @@ func InitAffiliateNetwork(affId int64) error {
 }
 
 func GetAffiliateNetwork(affId int64) (o *AffiliateNetwork) {
+	if affId == 0 {
+		return nil
+	}
+
 	o = getAffiliateNetwork(affId)
 	if o == nil {
 		o = newAffiliateNetwork(DBGetAffiliateNetwork(affId))

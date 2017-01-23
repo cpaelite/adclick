@@ -101,6 +101,10 @@ func InitPath(pathId int64) error {
 }
 
 func GetPath(pathId int64) (p *Path) {
+	if pathId == 0 {
+		return nil
+	}
+
 	p = getPath(pathId)
 	if p == nil {
 		p = newPath(DBGetPath(pathId))
@@ -249,10 +253,12 @@ func (p *Path) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
 	}
 
 	// 不需要find，因为可能中途已被移除
-	l := lander.GetLander(req.LanderId())
-	if l != nil {
-		// 不一定肯定存在Lander
-		l.OnS2SPostback(w, req)
+	if req.LanderId() != 0 {
+		l := lander.GetLander(req.LanderId())
+		if l != nil {
+			// 不一定肯定存在Lander
+			l.OnS2SPostback(w, req)
+		}
 	}
 
 	o := offer.GetOffer(req.OfferId())

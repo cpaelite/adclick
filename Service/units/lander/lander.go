@@ -65,6 +65,10 @@ func InitLander(landerId int64) error {
 }
 
 func GetLander(landerId int64) (l *Lander) {
+	if landerId == 0 {
+		return nil
+	}
+
 	l = getLander(landerId)
 	if l == nil {
 		l = newLander(DBGetLander(landerId))

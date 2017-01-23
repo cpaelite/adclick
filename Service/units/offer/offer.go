@@ -70,6 +70,10 @@ func InitOffer(offerId int64) error {
 }
 
 func GetOffer(offerId int64) (o *Offer) {
+	if offerId == 0 {
+		return nil
+	}
+
 	o = getOffer(offerId)
 	if o == nil {
 		o = newOffer(DBGetOffer(offerId))

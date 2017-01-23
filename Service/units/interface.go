@@ -320,6 +320,11 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.OfferId() == 0 {
+		log.Errorf("[Units][OnS2SPostback] req:%v have no OfferId", req)
+		return
+	}
+
 	// 后面统计信息要使用
 	req.SetTransactionId(txId)
 

@@ -104,6 +104,10 @@ func newFlow(c FlowConfig) (f *Flow) {
 }
 
 func GetFlow(flowId int64) (f *Flow) {
+	if flowId == 0 {
+		return nil
+	}
+
 	f = getFlow(flowId)
 	if f == nil {
 		f = newFlow(DBGetFlow(flowId))

@@ -158,6 +158,10 @@ func InitUserCampaigns(userId int64) error {
 	return nil
 }
 func GetCampaign(cId int64) (ca *Campaign) {
+	if cId == 0 {
+		return nil
+	}
+
 	ca = getCampaign(cId)
 	if ca == nil {
 		ca = newCampaign(DBGetCampaign(cId))
@@ -171,6 +175,10 @@ func GetCampaign(cId int64) (ca *Campaign) {
 	return
 }
 func GetCampaignByHash(cHash string) (ca *Campaign) {
+	if len(cHash) == 0 {
+		return nil
+	}
+
 	defer func() {
 		log.Infof("[GetCampaignByHash]cHash(%s), ca(%+v)\n", cHash, ca)
 	}()

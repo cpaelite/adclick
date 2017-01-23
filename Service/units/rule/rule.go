@@ -129,6 +129,10 @@ func newRule(c RuleConfig) (r *Rule) {
 }
 
 func GetRule(ruleId int64) (r *Rule) {
+	if ruleId == 0 {
+		return nil
+	}
+
 	r = getRule(ruleId)
 	if r == nil {
 		r = newRule(DBGetRule(ruleId))

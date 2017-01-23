@@ -94,7 +94,7 @@ func DBGetOffer(offerId int64) (c OfferConfig) {
 	)
 
 	if err != nil {
-		log.Errorf("[offer][DBGetOffer]Scan failed:%v", err)
+		log.Errorf("[offer][DBGetOffer] offerId:%d Scan failed:%v", offerId, err)
 		return c
 	}
 

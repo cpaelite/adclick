@@ -66,7 +66,7 @@ func DBGetLander(landerId int64) (c LanderConfig) {
 	sql := "SELECT id, name, userId, url, numberOfOffers FROM Lander WHERE id=? and deleted=0"
 	row := d.QueryRow(sql, landerId)
 	if err := row.Scan(&c.Id, &c.Name, &c.UserId, &c.Url, &c.NumberOfOffers); err != nil {
-		log.Errorf("[lander][DBGetAllLanders] scan failed:%v", err)
+		log.Errorf("[lander][DBGetAllLanders] landerId:%v scan failed:%v", landerId, err)
 		return c
 	}
 	return c

@@ -52,6 +52,9 @@ func InitAllUsers() error {
 }
 
 func GetUser(uId int64) (u *User) {
+	if uId == 0 {
+		return nil
+	}
 	return getUser(uId)
 }
 func GetUserByIdText(uIdText string) (u *User) {
