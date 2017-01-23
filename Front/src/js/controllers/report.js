@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'reportFilter', 'Report', 'Preferences',
+      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'reportFilter', 'Report', 'Preference',
       ReportCtrl
     ]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, reportFilter, Report, Preferences) {
+  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, reportFilter, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop();
     $scope.app.subtitle = perfType;
 
@@ -14,37 +14,118 @@
     $scope.datetype = 1;
     $scope.fromDate = moment().format('YYYY-MM-DD');
     $scope.fromTime = '00:00';
-    $scope.toDate = moment().add('days', 1).format('YYYY-MM-DD');
+    $scope.toDate = moment().add(1, 'days').format('YYYY-MM-DD');
     $scope.toTime = '00:00';
-    $scope.reportSort = "-visits";
-    $scope.reportViewColumns = angular.copy($scope.preferences.reportViewColumns);
     $scope.repFilter = reportFilter;
-    $scope.reportGroupby1 = "";
-    $scope.reportGroupby2 = "";
-    $scope.reportGroupby3 = "";
+    $scope.groupBy = [perfType, "", ""];
     $scope.query = {
-      limit: $scope.preferences.reportViewLimit,
-      offset: 1,
-      sort: $scope.preferences.reportViewSort.key,
-      direction: $scope.preferences.reportViewSort.direction,
-      tz: $scope.preferences.reportTimeZone,
-      active: $scope.preferences.entityType,
+      page: 1,
       groupBy: 'CampaignID',
       from: $scope.fromDate + ' ' + $scope.fromTime,
       to: $scope.toDate + ' ' + $scope.toTime,
       type: 'TrackingCampaign'
     };
 
-    function success(result) {
-      if (result.status == 1) {
-        $scope.report = result.data;
-      }
+    $scope.treeView = false;
+
+    function buildSuccess(parentRow) {
+      return function success(result) {
+        if (result.status == 1) {
+          if (!parentRow) {
+            parentRow = { treeLevel: 0, expanded: true };
+          }
+          var rows = [];
+          result.data.rows.forEach(function(row) {
+            rows.push({
+              treeLevel: parentRow.treeLevel + 1,
+              expanded: false,
+              parentRow: parentRow,
+              childrenLoaded: false,
+              data: row
+            });
+          });
+
+          if (parentRow.treeLevel > 0) {
+            var idx = $scope.report.rows.indexOf(parentRow);
+            Array.prototype.splice.apply($scope.report.rows, [idx+1, 0].concat(rows));
+            parentRow.childrenLoaded = true;
+            parentRow.expanded = true;
+          } else {
+            $scope.report = result.data;
+            $scope.report.rows = rows;
+          }
+        }
+      };
     }
 
-    $scope.getList = function () {
-      $scope.promise = Report.save($scope.query, success).$promise;
+    $scope.getList = function(parentRow) {
+      var query = angular.copy($scope.query);
+      if (parentRow) {
+        query.groupBy = $scope.groupBy[parentRow.treeLevel];
+        query.page = 1;
+        query.limit = -1;
+
+        if (parentRow.treeLevel == 2) {
+          var ppRow = parentRow.parentRow;
+          var idKey = $scope.columns[1].key;
+          query[idKey] = ppRow.data[idKey];
+          // todo: add second level filter
+        } else {
+          var idKey = $scope.columns[1].key;
+          query[idKey] = parentRow.data[idKey];
+        }
+        console.log(idKey, query);
+      } else {
+        query.groupBy = $scope.groupBy[0];
+      }
+      $scope.promise = Report.get(query, buildSuccess(parentRow)).$promise;
     };
-    $scope.getList();
+
+    $scope.toggleRow = function(row) {
+      if (row.expanded) {
+        row.expanded = false;
+        $scope.report.rows.forEach(function(item) {
+          if (item.parentRow == row)
+            item.expanded = false;
+        });
+        return;
+      }
+      if (row.childrenLoaded) {
+        row.expanded = true;
+        return;
+      } else {
+        $scope.getList(row);
+      }
+    };
+
+    $scope.openMenu = function(row, key) {
+      // todo
+      if (key == 'name') {
+      }
+    };
+
+    var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
+      if (!newVal)
+        return;
+
+      $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
+      angular.extend($scope.query, {
+        limit: newVal.reportViewLimit,
+        sort: newVal.reportViewSort.key,
+        direction: newVal.reportViewSort.direction,
+        tz: newVal.reportTimeZone,
+        active: newVal.entityType
+      });
+      if (newVal.reportViewSort.direction == 'desc') {
+        $scope.reportSort = '-' + newVal.reportViewSort.key;
+      } else {
+        $scope.reportSort = newVal.reportViewSort.key;
+      }
+      $scope.getList();
+
+      unwatch();
+      unwatch = null;
+    }, true);
 
     $scope.$watch('datetype', function (newValue, oldValue) {
       if (newValue == oldValue) {
@@ -60,7 +141,7 @@
     });
 
     $scope.$watch('reportSort', function (newValue, oldValue) {
-      $scope.query.offset = 1;
+      $scope.query.page = 1;
       if (newValue !== oldValue) {
         var sort = newValue;
         var direction = '';
@@ -77,46 +158,22 @@
       }
     }, true);
 
-    $scope.applyChange = function () {
-      $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
-      $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
-      //TODO 用户配置信息提交后台保存
-      Preferences.save($scope.preferences);
-    };
-
-    $scope.checkboxIsChecked = function (num) {
-      $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
-    };
-
-    $scope.search = function () {
-      $scope.query.offset = 1;
+    $scope.applySearch = function(evt) {
+      $scope.treeView = $scope.groupBy.filter(function(item) { return item != ""; }).length > 1;
+      $scope.query.page = 1;
       $scope.query.from = $scope.fromDate + ' ' + $scope.fromTime;
       $scope.query.to = $scope.toDate + ' ' + $scope.toTime;
       $scope.getList();
     };
 
-    $scope.lineClick = function (groupbyValue, filter, filterValue, filterIndex) {
-      $scope.query.groupBy = groupbyValue;
-      $scope.query['fileter' + filterIndex] = filter;
-      $scope.query['fileter' + filterIndex + 'Value'] = filterValue;
-      $scope.getList();
+    $scope.applyChange = function () {
+      $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+      $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
+      Preference.save($scope.preferences);
     };
 
-    $scope.fab = [];
-    var cacheToggle = [];
-    $scope.toggleFab = function (idx, open) {
-      $scope.fab[idx].isOpen = open;
-      if (open) {
-        cacheToggle[idx] = $timeout(function () {
-          $scope.fab[idx].tooltipVisible = true;
-        }, 600);
-      } else {
-        if (cacheToggle[idx]) {
-          $timeout.cancel(cacheToggle[idx]);
-          cacheToggle[idx] = null;
-        }
-        $scope.fab[idx].tooltipVisible = false;
-      }
+    $scope.checkboxIsChecked = function (num) {
+      $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
     };
 
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
@@ -125,7 +182,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', 'Campaign', 'Flows', 'TrafficSources', editCampaignCtrl];
+        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSources', editCampaignCtrl];
       } else if (perfType == 'flow') {
         controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
       } else if (perfType == 'lander') {
@@ -215,59 +272,9 @@
     // 获取不同页面的不同显示列
     var cols = columnDefinition[perfType].concat(columnDefinition['common']);
     $scope.columns = cols;
-
-    // tree isShow
-    $scope.trData = [
-      {
-        id: 32,
-        name: 'campaign1',
-        impressions: 2,
-        visits: 3,
-        click: 4,
-        conversions: 5,
-        revenue: 6,
-        cost: 7,
-        profit: 8,
-        cpv: 9,
-        ictr: 10,
-        operation: 11
-      },
-      {
-        id: 33,
-        name: 'campaign2',
-        impressions: 2,
-        visits: 3,
-        click: 4,
-        conversions: 5,
-        revenue: 6,
-        cost: 7,
-        profit: 8,
-        cpv: 9,
-        ictr: 10,
-        operation: 11
-      }
-    ];
-    $scope.selectedIndex = 0;
-    $scope.select = function (i) {
-
-
-    };
-    $scope.isActive = [];
-    $scope.isDown = [];
-    $scope.treeFirstChildIsShow = [];
-    $scope.treeSecondChildIsShow = [];
-    $scope.firstTreeClick = function ($index) {
-      $scope.isActive[$index] = !$scope.isActive[$index];
-      $scope.treeFirstChildIsShow[$index] = !$scope.treeFirstChildIsShow[$index];
-      $scope.treeSecondChildIsShow[$index] = false;
-    };
-    $scope.secondTreeClick = function ($index) {
-      $scope.isDown[$index] = !$scope.isDown[$index];
-      $scope.treeSecondChildIsShow[$index] = !$scope.treeSecondChildIsShow[$index];
-    };
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign, Flows, TrafficSources) {
+  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSources) {
     $scope.tags = [];
     if (this.item) {
       Campaign.get({id: 18}, function(campaign) {
@@ -317,7 +324,7 @@
     $scope.countries = $scope.$root.countries;
 
     // Flow
-    Flows.get(null, function (flow) {
+    Flow.get(null, function (flow) {
       $scope.flows = flow.data.flows;
     });
 

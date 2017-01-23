@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preferences', 'Country', 'userPreferences',
+      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preferences, Country, userPreferences) {
+  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -72,13 +72,12 @@
         });
         $rootScope.currentUser = payload;
 
-        /*// 用户配置信息
-        Preferences.get(null, function (res) {
+        // load user preferences
+        Preference.get(null, function(res) {
           if (res.status == 1) {
-            $rootScope.preferences = res.data;
+            $scope.preferences = res.data;
           }
-        });*/
-          $rootScope.preferences = userPreferences;
+        });
         
         // 国家信息
         Country.query({}, function(result) {
@@ -101,17 +100,6 @@
       } else {
         $scope.$state.go('access.signin');
       }
-    };
-
-    // home{
-    $scope.toReport = function(){
-        $scope.$state.go('app.report.campaign');
-    };
-    // setting
-    $scope.toSetting = function(){
-        // $scope.nav = false;
-        // $scope.settingNav = true;
-        $scope.$state.go('setApp.profile');
     };
 
     if ($auth.isAuthenticated()) {
