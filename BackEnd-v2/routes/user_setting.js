@@ -26,11 +26,30 @@ var md5 = require('md5');
  *
  */
 router.get('/api/user/profile', function (req, res, next) {
-    res.json({
-        status: 1,
-        message: 'succes',
-        data: {}
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
     });
+    req.query.userId = req.userId;
+    const start = (() => {
+        var _ref = _asyncToGenerator(function* () {
+            try {
+                let value = yield common.validate(req.query, schema);
+                let connection = yield common.getConnection();
+                let result = yield query("select `idText`,`firstname`,`lastname`,`status`,`json` from User where `deleted`= 0 and `id`= " + value.userId, connection);
+                res.json({
+                    status: 1,
+                    message: 'succes',
+                    data: result.length ? result[0] : {}
+                });
+            } catch (e) {
+                next(e);
+            }
+        });
+
+        return function start() {
+            return _ref.apply(this, arguments);
+        };
+    })();
 });
 
 /**
@@ -53,16 +72,28 @@ router.get('/api/user/profile', function (req, res, next) {
 router.post('/api/user/profile', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        firstname: Joi.string().required(),
-        lastname: Joi.string().required(),
-        json: Joi.string().required()
+        firstname: Joi.string().optional(),
+        lastname: Joi.string().optional(),
+        json: Joi.string().optional()
     });
     req.body.userId = req.userId;
     const start = (() => {
-        var _ref = _asyncToGenerator(function* () {
+        var _ref2 = _asyncToGenerator(function* () {
             try {
                 let value = yield common.validate(req.body, schema);
-                //TODO
+                let connection = yield common.getConnection();
+                let sql = 'update User set ';
+                if (value.firstname) {
+                    sql += "`firstname`='" + value.firstname + "'";
+                }
+                if (value.lastname) {
+                    sql += "`lastname`='" + value.lastname + "'";
+                }
+                if (value.json) {
+                    sql += "`json`='" + value.json + "'";
+                }
+                sql += " where `id`=" + value.userId;
+                yield query(sql, connection);
                 res.json({
                     "status": 1,
                     "message": "success"
@@ -73,7 +104,7 @@ router.post('/api/user/profile', function (req, res, next) {
         });
 
         return function start() {
-            return _ref.apply(this, arguments);
+            return _ref2.apply(this, arguments);
         };
     })();
     start();
@@ -103,7 +134,7 @@ router.post('/api/user/passwordChange', function (req, res, next) {
     });
     req.body.userId = req.userId;
     const start = (() => {
-        var _ref2 = _asyncToGenerator(function* () {
+        var _ref3 = _asyncToGenerator(function* () {
             try {
                 let value = yield common.validate(req.body, schema);
                 let connection = yield common.getConnection();
@@ -130,14 +161,14 @@ router.post('/api/user/passwordChange', function (req, res, next) {
         });
 
         return function start() {
-            return _ref2.apply(this, arguments);
+            return _ref3.apply(this, arguments);
         };
     })();
     start();
 });
 
 /**
- * @api {post} /api/user/emailChange   用户修改密码
+ * @api {post} /api/user/emailChange   用户修改email
  * @apiName  
  * @apiGroup Setting
  * 
@@ -160,20 +191,34 @@ router.post('/api/user/emailChange', function (req, res, next) {
     });
     req.body.userId = req.userId;
     const start = (() => {
-        var _ref3 = _asyncToGenerator(function* () {
+        var _ref4 = _asyncToGenerator(function* () {
             try {
                 let value = yield common.validate(req.body, schema);
+                let connection = yield common.getConnection();
+                let result = yield query("select `password` from User where `id`= " + value.userId, connection);
+                let message;
+                if (result && result[0]) {
+                    if (md5(value.password) == result[0].password) {
+                        yield query("update User set `email`= '" + value.email + "' where `id`=" + value.userId, connection);
+                        message = "success";
+                    } else {
+                        message = "password error";
+                    }
+                } else {
+                    message = "no user";
+                }
+                connection.release();
                 res.json({
                     status: 1,
-                    message: 'success'
+                    message: message
                 });
             } catch (e) {
-                next(e);
+                return next(e);
             }
         });
 
         return function start() {
-            return _ref3.apply(this, arguments);
+            return _ref4.apply(this, arguments);
         };
     })();
     start();
