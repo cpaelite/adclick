@@ -116,6 +116,7 @@ router.post('/api/tags', function (req, res, next) {
  *
  */
 router.get('/api/trafficsources', function (req, res, next) {
+    console.log("11111");
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });

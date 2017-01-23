@@ -1306,12 +1306,18 @@ app.get('/api/trafficsources', function (req, res) {
   res.send(result);
 });
 
+/**
+ * 添加trafficSource tested
+ */
 app.post('/api/traffic', function (req, res) {
   var item = req.body;
   item.id = 123;
   res.send({item: item});
 });
 
+/**
+ * 获得Traffic Source 详细信息
+ */
 app.get('/api/traffic/:id', function (req, res) {
   var result = {
     "status": 1,
@@ -1348,11 +1354,17 @@ app.delete('/api/traffic/:id', function (req, res) {
   res.send({item: {id: req.params.tsId}});
 });
 
+/**
+ * TODO: define this function first.
+ */
 app.post('/traffic/source/status', function (req, res) {
   var item = req.body;
   res.send({item: item});
 });
 
+/**
+ * get affi networks, [warren] checked, same format.
+ */
 app.get('/api/networks', function (req, res) {
   var result = {
     status: 1,
@@ -1370,7 +1382,7 @@ app.get('/api/networks', function (req, res) {
 
 /**
  * get list of conditions
- * shang@v1
+ * shang@v1 [Warren] TODO
  */
 app.get('/api/conditions', function (req, res) {
   var result = [{
@@ -1482,7 +1494,7 @@ app.get('/api/conditions', function (req, res) {
 
 /**
  * get list of countries
- * shang@v1
+ * shang@v1 [warren, modified]
  */
 app.get('/api/countries', function (req, res) {
   var result = [
