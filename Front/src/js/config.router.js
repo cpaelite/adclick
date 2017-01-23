@@ -42,7 +42,7 @@
   }
 
   function config($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/app/track/campaign');
+    $urlRouterProvider.otherwise('/app/dashboard');
 
     $stateProvider
       .state('app', {
@@ -145,6 +145,36 @@
         url: '/domain',
         templateUrl: 'tpl/domain.html',
         controller: 'DomainCtrl',
+        data: {}
+      })
+      .state('setApp.setUp', {
+        url: '/setUp',
+        templateUrl: 'tpl/setUp.html',
+        controller: 'SetUpCtrl',
+        data: {}
+      })
+      .state('setApp.userManagement', {
+        url: '/userManagement',
+        templateUrl: 'tpl/userManagement.html',
+        controller: 'UserManagementCtrl',
+        data: {}
+      })
+      .state('setApp.botBlacklist', {
+        url: '/botBlacklist',
+        templateUrl: 'tpl/botBlacklist.html',
+        controller: 'BotBlacklistCtrl',
+        data: {}
+      })
+      .state('setApp.invoices', {
+        url: '/invoices',
+        templateUrl: 'tpl/invoices.html',
+        controller: 'InvoicesCtrl',
+        data: {}
+      })
+      .state('setApp.eventLog', {
+        url: '/eventLog',
+        templateUrl: 'tpl/eventLog.html',
+        controller: 'EventLogCtrl',
         data: {}
       });
   }

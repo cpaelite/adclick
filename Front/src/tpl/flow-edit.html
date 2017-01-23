@@ -1,4 +1,4 @@
-<div class="cs-page-flow">
+<div class="cs-page-flow" ng-click="clearOnEdit()">
   <div class="col-sm-4 col-md-4 cs-flow-tree">
     <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li">
       <i class="material-icons tree-icon">album</i>
@@ -25,12 +25,12 @@
         <li ng-repeat="path in rule.paths" class="tree-li" ng-click="editPath(rule, path)" ng-class="{
           'cs-flow-active': onEdit=='path' && curPath==path,
           'cs-is-deleted': path.isDeleted
-          }">
+        }">
           <i class="material-icons tree-icon">album</i>
           <span class="cs-path-name clearfix">
             <span class="path-name">{{path.name}} </span>
             <span class="weight-num">
-              {{path.weight}}(<em ng-hide="path.isDeleted">{{path.relativeWeight | number:2}}%</em><em ng-show="path.isDeleted">N/A</em>)
+              {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>)
             </span>
           </span>
         </li>
@@ -77,8 +77,7 @@
 
     <div class="cs-deleted-mask" ng-if="isDeleted"></div>
 
-    <form name="editFlowForm" method="post" ng-submit="save()" class="form-content" ng-if="onEdit=='flow'">
-
+    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-if="onEdit=='flow'">
       <div class="form-group">
         <label class="label-name">Name:</label>
         <input type="text" class="form-control" ng-model="flow.name" required>
@@ -86,9 +85,8 @@
 
       <div class="form-group">
         <label class="label-name">Country:</label>
-        <md-select class="" ng-model="flow.country" required>
-          <md-option value="global">Global</md-option>
-          <md-option ng-repeat="(c,n) in countries" value="{{c}}">{{n}}</md-option>
+        <md-select ng-model="flow.country" required>
+          <md-option ng-repeat="c in allCountries" value="{{c.value}}">{{c.display}}</md-option>
         </md-select>
       </div>
 
@@ -96,19 +94,19 @@
         <label class="col-sm-4 control-label label-radio">Default redirect mode:</label>
         <div class="col-sm-8">
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirect" value="302"> 302
+            <input type="radio" ng-model="flow.redirectMode" value="302"> 302
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirect" value="meta"> Meta refresh
+            <input type="radio" ng-model="flow.redirectMode" value="meta"> Meta refresh
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirect" value="double-meta"> Double meta refresh
+            <input type="radio" ng-model="flow.redirectMode" value="double-meta"> Double meta refresh
           </label>
         </div>
       </div>
     </form>
 
-    <form name="editRuleForm" method="post" ng-submit="save()" class="editRuleForm" ng-if="onEdit=='rule'">
+    <form name="editRuleForm" method="post" ng-submit="$event.preventDefault()" class="editRuleForm" ng-if="onEdit=='rule'">
       <div class="row">
         <div class="form-group col-sm-8 col-md-8 name-div">
           <label class="label-name">Name:</label>
@@ -130,9 +128,9 @@
               <i class="material-icons">add</i>
               Add condition <span class="caret"></span>
             </button>
-            <ul class="drpdown-menu" uib-dropdown-menu role="menu">
-              <li role="menuitem" ng-repeat="c in availableConditions">
-                <a href="#" ng-click="addCondition(c)">{{c.name}}</a>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+              <li role="menuitem" ng-repeat="cdt in allConditions">
+                <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
               </li>
             </ul>
           </div>
@@ -142,25 +140,101 @@
         </div>
 
         <ul class="cs-conditions-content">
-          <li ng-repeat="c in curRule.conditions">
+          <li ng-repeat="cdt in curRule.conditions">
             <i class="material-icons tree-icon">album</i>
-            <span class="label label-default condition-select-content">{{c.cdtn.name}} <em ng-click="deleteCondition(c)" class="delete-condition">x</em></span>
+            <span class="label label-default condition-select-content">{{cdt._def.display}} <em ng-click="deleteCondition(cdt)">x</em></span>
             <div class="btn-group is-btn">
-              <label class="btn btn-primary" ng-model="c.operand" uib-btn-radio="'is'">is</label>
-              <label class="btn btn-primary" ng-model="c.operand" uib-btn-radio="'isnt'">is not</label>
+              <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="'is'">is</label>
+              <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="'isnt'">is not</label>
             </div>
-            </br>
-            <div class="condition-select">
-              <md-select class="" ng-model="c.value" required>
-              <md-option ng-repeat="(v,n) in c.cdtn.values" value="{{v}}">{{n}}</md-option>
-              </md-select>
+            <br/>
+            <div class="cs-condition-field cs-condition-{{f.type}}" ng-repeat="f in cdt._def.fields">
+              <p class="cs-condition-desc" ng-if="f.desc">{{f.desc}}</p>
+              <div class="col-md-2" ng-if="f.label">{{f.label}}</div>
+              <div ng-if="f.type=='textarea'" ng-class="{'col-md-10': f.label}">
+                <textarea ng-model="cdt[f.name]"></textarea>
+              </div>
+
+              <div ng-if="f.type=='select'" ng-class="{'col-md-10': f.label}">
+                <md-select ng-model="cdt[f.name]">
+                  <md-option ng-repeat="o in f.options" value="{{o.value}}">{{o.display}}</md-option>
+                </md-select>
+              </div>
+
+              <div ng-if="f.type=='inputgroup'" ng-class="{'col-md-10': f.label}">
+                <label ng-repeat="ipt in f.inputs">
+                  {{ipt.label}} 
+                  <input ng-model="cdt[ipt.name]" placeholder="{{ipt.placeholder}}">
+                </label>
+              </div>
+
+              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}">
+                <label ng-repeat="o in f.options">
+                  <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
+                  {{o.display}} 
+                </label>
+              </div>
+
+              <div ng-if="f.type=='l2select'" ng-class="{'col-md-10': f.label}">
+                <div class="col-md-6 cs-l2select-l1panel">
+                  <div class="cs-select-query">
+                    <input ng-model="cdt._t1.display">
+                  </div>
+                  <div ng-repeat="o in f.options | filter:cdt._t1">
+                    <label ng-click="toggleL2select(cdt, o, f.name)"
+                           ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
+                      {{o.display}} 
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6 cs-l2select-l2panel">
+                  <div class="cs-select-query">
+                    <input ng-model="cdt._t2.display">
+                  </div>
+                  <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
+                    <label ng-click="toggle(o.value, cdt[f.name])"
+                           ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
+                      <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])">
+                      {{o.display}} 
+                    </label>
+                  </div>
+                  <div ng-hide="cdt._suboptions">
+                    <label>No items to select</label>
+                  </div>
+                </div>
+                <div class="col-md-12 cs-l2select-selected">
+                  <md-chips ng-model="cdt[f.name]" readonly="true" md-removable="true">
+                    <md-chip-template>{{cdt._def._fv2n[f.name][$chip]}}</md-chip-template>
+                  </md-chips>
+                </div>
+              </div>
+
+              <div ng-if="f.type=='chips'" ng-class="{'col-md-10': f.label}">
+                <md-chips
+                    ng-model="cdt[f.name]"
+                    md-autocomplete-snap
+                    md-require-match="true">
+                  <md-autocomplete
+                      md-selected-item="selectedItem"
+                      md-search-text="searchText"
+                      md-no-cache="true"
+                      md-min-length="0"
+                      md-items="item in querySearchIn(searchText, f.options, cdt[f.name])"
+                      md-item-text="item.display"
+                      placeholder="{{f.placeholder}}">
+                    <span md-highlight-text="searchText">{{item.display}}</span>
+                  </md-autocomplete>
+                  <md-chip-template><span>{{$chip.display}}</span></md-chip-template>
+                </md-chips>
+              </div>
             </div>
+
           </li>
         </ul>
       </div>
     </form>
     
-    <form name="editPathForm" method="post" ng-submit="save()" class="editPathForm" ng-if="onEdit=='path'">
+    <form name="editPathForm" method="post" ng-submit="$event.preventDefault()" class="editPathForm" ng-if="onEdit=='path'">
       <div class="row path-top">
         <div class="col-sm-7 col-md-7 name-div" layout="column">
           <label class="label-name">Name:</label>
@@ -179,13 +253,13 @@
       <div class="row">
         <label class="label-name">Redirect mode:</label>
         <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirect" value="302"> 302
+          <input type="radio" ng-model="curPath.redirectMode" value="302"> 302
         </label>
         <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirect" value="meta"> Meta refresh
+          <input type="radio" ng-model="curPath.redirectMode" value="meta"> Meta refresh
         </label>
         <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirect" value="double-meta"> Double meta refresh
+          <input type="radio" ng-model="curPath.redirectMode" value="double-meta"> Double meta refresh
         </label>
       </div>
 
@@ -193,95 +267,134 @@
         <label class="label-name">Direct linking:</label>
         <md-checkbox class="md-primary" ng-model="curPath.directLinking"></md-checkbox>
       </div>
+
       <div class="form-group direct-content clearfix">
         <div class="col-sm-12 col-md-6 lander-content">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Lander</div>
             <div class="col-sm-3 col-md-3">Weight</div>
           </div>
-          <div class="cs-flow-lander-row clearfix" ng-repeat="lander in curPath.landers">
+          <div class="cs-flow-lander-row clearfix"
+               ng-repeat="lander in curPath.landers" ng-click="setEdit($event, lander)"
+               ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
             <div class="col-sm-9 col-md-9">
-              <!-- <p class="cs-flow-lander-view">{{lander.name}}</p> -->
+              <p class="cs-flow-lander-view">{{lander.name || 'Select lander...'}}</p>
               <div class="cs-flow-lander-edit clearfix">
-                <md-select ng-model="lander.id" required>
-                  <md-option value="1" selected>American</md-option>
-                  <md-option value="2">Canada</md-option>
-                  <md-option value="3">China</md-option>
-                </md-select>
-                <!-- <i class="material-icons md-mini" ng-show="lander.id>0">edit</i> -->
-                <i class="material-icons md-mini edit-btn">edit</i>
+                <md-autocomplete
+                    md-selected-item="selected"
+                    md-search-text="searchText"
+                    md-items="item in queryLanders(searchText)"
+                    md-no-cache="true"
+                    md-select-on-focus="true"
+                    md-item-text="item.name"
+                    md-min-length="0"
+                    md-search-text-change="searchTextChange(searchText)"
+                    md-selected-item-change="selectedLanderChange(item, lander)"
+                    placeholder="Select lander...">
+                  <md-item-template>
+                    <span md-highlight-text="searchText">{{item.name}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No matching found.
+                  </md-not-found>
+                </md-autocomplete>
+                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
               </div>
             </div>
             <div class="col-sm-3 col-md-3 input-content">
-              <p class="cs-flow-view" ng-click="landerEditClick()">{{lander.weight}} ({{lander.relativeWeight | number:2}}%)</p>
-              <div class="cs-flow-edit clearfix" ng-show="landerEditIsShow">
-                <input type="text" class="form-control"  ng-blur="landerEditIsShow=false" ng-model="lander.weight" required>
+              <div class="cs-flow-lander-view">
+                {{lander.weight}}
+                <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
+                <em ng-show="lander.relativeWeight<=0">(N/A)</em>
+              </div>
+              <div class="cs-flow-lander-edit clearfix">
+                <input type="text" class="form-control" ng-model="lander.weight" required>
                 <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
               </div>
             </div>
           </div>
           <div class="cs-flow-lander-action clearfix">
-            <button class="btn btn-default add-lander-btn">
-            <i class="material-icons add-box">add_box</i>
+            <button ng-click="addLander($event)" type="button" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
               Add New Lander
             </button>
-            <button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
+            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
               <i class="material-icons add-box">add_box</i>
               Add Lander
-            </button>
+            </button-->
           </div>
         </div>
-        <!-- offer content -->
+
         <div class="col-sm-12 col-md-6 offer-content">
           <div class="cs-flow-lander-header clearfix">
-            <div class="col-sm-9 col-md-9">Lander</div>
+            <div class="col-sm-9 col-md-9">Offer</div>
             <div class="col-sm-3 col-md-3">Weight</div>
           </div>
-          <div class="cs-flow-lander-row clearfix" ng-repeat="lander in curPath.landers">
+          <div class="cs-flow-offer-row clearfix"
+               ng-repeat="offer in curPath.offers" ng-click="setEdit($event, offer)"
+               ng-class="{'cs-flow-offer-onedit':offer._onEdit}">
             <div class="col-sm-9 col-md-9">
-              <!-- <p class="cs-flow-lander-view">{{lander.name}}</p> -->
-              <div class="cs-flow-lander-edit clearfix">
-                <md-select ng-model="lander.id" required>
-                  <md-option value="1" selected>American</md-option>
-                  <md-option value="2">Canada</md-option>
-                  <md-option value="3">China</md-option>
-                </md-select>
-                <!-- <i class="material-icons md-mini" ng-show="lander.id>0">edit</i> -->
-                <i class="material-icons md-mini edit-btn">edit</i>
+              <p class="cs-flow-offer-view">{{offer.name || 'Select offer...'}}</p>
+              <div class="cs-flow-offer-edit clearfix">
+                <md-autocomplete
+                    md-selected-item="selected"
+                    md-search-text="searchText"
+                    md-items="item in queryOffers(searchText)"
+                    md-no-cache="true"
+                    md-select-on-focus="true"
+                    md-item-text="item.name"
+                    md-min-length="0"
+                    md-search-text-change="searchTextChange(searchText)"
+                    md-selected-item-change="selectedOfferChange(item, offer)"
+                    placeholder="Select offer...">
+                  <md-item-template>
+                    <span md-highlight-text="searchText">{{item.name}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No matching found.
+                  </md-not-found>
+                </md-autocomplete>
+                <!--i class="material-icons md-mini edit-btn" ng-show="offer.id">edit</i-->
               </div>
             </div>
             <div class="col-sm-3 col-md-3 input-content">
-              <p class="cs-flow-view" ng-click="offerEditClick()">{{lander.weight}} ({{lander.relativeWeight | number:2}}%)</p>
-              <div class="cs-flow-edit clearfix" ng-show="offerEditIsShow">
-                <input type="text" class="form-control" ng-blur="offerEditIsShow=false" ng-model="lander.weight" required>
-                <i ng-click="deleteLander(oferr)" class="material-icons md-mini lander-delete-btn">delete</i>
+              <div class="cs-flow-offer-view">
+                {{offer.weight}}
+                <em ng-show="offer.relativeWeight>0">({{offer.relativeWeight | number:2}}%)</em>
+                <em ng-show="offer.relativeWeight<=0">(N/A)</em>
+              </div>
+              <div class="cs-flow-offer-edit clearfix">
+                <input type="text" class="form-control" ng-model="lander.weight" required>
+                <i ng-click="deleteOffer(offer)" class="material-icons md-mini lander-delete-btn">delete</i>
               </div>
             </div>
           </div>
           <div class="cs-flow-lander-action clearfix">
-            <button class="btn btn-default add-lander-btn">
-            <i class="material-icons add-box">add_box</i>
+            <button ng-click="addOffer($event)" type="button" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
               Add New Offer
             </button>
-            <button ng-click="addLander(curPathOffer)" class="btn btn-default add-lander-btn">
+            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
               <i class="material-icons add-box">add_box</i>
-              Add Offer
-            </button>
+              Add Lander
+            </button-->
           </div>
         </div>
       </div>
-
     </form>
 
     <div class="cs-flow-bottom-actions clearfix">
-      <button class="btn btn-primary save-btn">
+      <button class="btn btn-primary save-btn" ng-click="save()">
         <i class="material-icons">check</i>
         Save
       </button>
-      <button class="btn close-btn">
+      <button class="btn close-btn" ng-click="cancel()">
         <i class="material-icons">close</i>
         Close
       </button>
     </div>
   </div>
+
+  <div ng-if="initState=='init'" class="cs-flow-init" translate>on-loading</div>
+  <div ng-if="initState=='error'" class="cs-flow-error" translate>loading-error</div>
 </div>

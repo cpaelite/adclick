@@ -81,8 +81,8 @@
           $rootScope.preferences = userPreferences;
         
         // 国家信息
-        Country.get(null, function (res) {
-          $rootScope.countries = res.data.countries;
+        Country.query({}, function(result) {
+          $rootScope.countries = result;
         });
 
       }

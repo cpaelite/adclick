@@ -1,0 +1,66 @@
+<md-dialog class="cs-edit-dialog bot-blacklist-dialog" ng-cloak>
+  <md-toolbar>
+    <div>
+      <h1 class="setting-title">
+        New Bot Rule
+        <p>To create a new bot rule, define a name and add at least 1 IP / IP range or useragent value within the respective fields.</p>
+        <p>The maximum amount of values* that can be added within a rule is 10. You can still add 10 value(s).
+        * 1 value equates to 1 field that is populated with an IP / IP range or useragent string.</p>
+      </h1>
+    </div>
+  </md-toolbar>
+
+    <md-dialog-content class="md-dialog-content">
+
+        <form name="editForm" class="form-horizontal bot-blacklist-editForm">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" placeholder="Name" ng-model="item.name" required>
+            </div>
+            <div class="bot-blacklist-add-content">
+              <div class="form-group">
+                  <label>IP or IP range</label>
+                  <div class="ip-range clearfix">
+                    <input type="text" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="item.name" required>
+                    <i class="material-icons">delete</i>
+                  </div>
+                  <div class="ip-range clearfix">
+                    <input type="text" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="item.name" required>
+                    <i class="material-icons">delete</i>
+                  </div>
+              </div>
+              <div class="clearfix">
+                <div class="add-next-content">
+                  <i class="material-icons add-next">add_circle</i>
+                  Add next
+                </div>
+              </div>
+              <div class="form-group">
+                  <label>Useragent</label>
+                  <div class="ip-range clearfix">
+                    <input type="text" class="form-control" placeholder="Useragent" ng-model="item.name" required>
+                    <i class="material-icons">delete</i>
+                  </div>
+                  <div class="ip-range clearfix">
+                    <input type="text" class="form-control" placeholder="Useragent" ng-model="item.name" required>
+                    <i class="material-icons">delete</i>
+                  </div>
+              </div>
+              <div class="clearfix">
+                <div class="add-next-content">
+                  <i class="material-icons add-next">add_circle</i>
+                  Add next
+                </div>
+              </div>
+            </div>
+        </form>
+
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+        </md-button>
+        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+
+</md-dialog>

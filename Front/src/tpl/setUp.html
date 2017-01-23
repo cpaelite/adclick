@@ -1,0 +1,85 @@
+<h1 class="setting-title">Referral program</h1>
+
+<div class="form-column profile-content">
+  <div class="domain-p">
+    <i class="material-icons">info_outline</i>
+    <p>With Voluum you don't need to place any PHP code on your landing pages. Visitors are redirected based on data stored in a cookie and referrer.</p>
+    <p>If your landing page has a single offer placement (within which you can have one offer, or rotate many), use the "Click URL". If your LP displays more than one offer, use the multi-offer click URL with the number at the end being the offer №. For example, if your landing page displays three offers, you'll need to add click links that end with /click/1, /click/2 and /click/3. You will then need to add/edit the LP in Voluum and set the "Number of offers" to 3.</p>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Click URL</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Multi-offer click URL</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+  <div class="domain-p">
+    <i class="material-icons">info_outline</i>
+    <p>Server-to-server postback URLs are the most secure and reliable method to count conversions. Use the URLs below to pass conversions from affiliate networks. To get your postback links working you have to:</p>
+    <p>1.Include the <<b>{clickId}</b>token in your offer URLs. For example, you can add ?subid={clickId} to the offer URL, to have the click ID passed to the postback via the <b>subid</b> parameter on the affiliate network/advertiser side.<br>
+    2.Copy-paste the postback URL to your affiliate network panel. Make sure to <b>replace the tokens</b> with affiliate network-specific tokens. The following is what your postback URL would look like on a HasOffers based network: <span class="blue-word">zx1jg.voluumtrk2.com/postback?cid={aff_sub} and payout={payout}</span></p>
+    <p>Consult the affiliate network documentation or support to find out which tokens you should use to pass back click ID and payout. The payout parameter is optional, if you do not use it, you can manually specify the payout in the offer configuration. Do not put these URLs or any of the tracking pixels / scripts in your landing pages.</p>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Postback URL</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Secure postback URL</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+  <div class="domain-p">
+    <i class="material-icons">info_outline</i>
+    <p>In cases when your affiliate network only supports client-side pixels, you can use a conversion pixel or script. Conversion pixels are cookie-based and so you have to use the same domain for the cookie to work correctly. The cid is also stored in a cookie, so conversion tracking will still work if the parameter is missing.</p>
+    <p>Consult your affiliate network documentation or support to find out how to specify conversion pixels in their web panel. The payout parameter is optional, if you do not use it, you can manually specify payout in the offer configuration.</p>
+    <p>Do not put these URLs or any of the postback URLs in your landing pages.</p>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Tracking pixel URL</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Tracking pixel</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+  <div class="form-group clearfix">
+      <label class="col-sm-2 control-label">Tracking script</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" ng-model="item.name" required>
+      </div>
+      <div class="col-md-3">
+        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+      </div>
+  </div>
+</div>
