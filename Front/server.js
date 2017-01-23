@@ -735,7 +735,7 @@ app.delete('/api/campaign/:campaignId', function (req, res) {
  *
  * shang@v1
  */
-app.get('/api/flow/:flowId', function (req, res) {
+app.get('/api/flows/:flowId', function (req, res) {
   var result = {
     "id": 1,
     "name": "Global - yoshop-Android-benson",
@@ -817,7 +817,7 @@ app.get('/api/flow/:flowId', function (req, res) {
  * @apiName 获取Flow关联的Campaign
  *
  */
-app.get('/api/flow/:flowId/campaigns', function (req, res) {
+app.get('/api/flows/:flowId/campaigns', function (req, res) {
   var result = [{
     "id": "01b30fdd-18ff-4068-8868-878f08886799",
     "name": "Popads - Canada - yoshop-benson-Android-0104",
@@ -854,7 +854,7 @@ app.get('/api/flow/:flowId/campaigns', function (req, res) {
  *
  * shang@v1
  */
-app.post('/api/flow/', function (req, res) {
+app.post('/api/flows', function (req, res) {
   var result = {
     "name": "Global - yoshop-Android-benson",
     "country": "us",
@@ -936,7 +936,7 @@ app.post('/api/flow/', function (req, res) {
  *
  * shang@v1
  */
-app.post('/api/flow/:flowId', function (req, res) {
+app.post('/api/flows/:flowId', function (req, res) {
   var result = {
     "id": 1,
     "name": "Global - yoshop-Android-benson",
@@ -1018,7 +1018,7 @@ app.post('/api/flow/:flowId', function (req, res) {
  * @apiName 删除Flow
  *
  */
-app.delete('/api/flow/:flowId', function (req, res) {
+app.delete('/api/flows/:flowId', function (req, res) {
   var result = {
     "status": "SUCCESSFUL",
     "items": [{
@@ -1035,7 +1035,7 @@ app.delete('/api/flow/:flowId', function (req, res) {
  * @apiName 根据ID获取Lander信息
  *
  */
-app.get('/api/lander/:landerId', function (req, res) {
+app.get('/api/landers/:landerId', function (req, res) {
   var result = {
     status: 1,
     message: "",
@@ -1089,7 +1089,7 @@ app.get('/api/landers', function (req, res) {
  * @apiParam url:"http://s.ktrack.net/w/SecurityAlert.php"
  *
  */
-app.post('/api/lander', function (req, res) {
+app.post('/api/landers', function (req, res) {
   var result = {
     "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
     "namePostfix": "SecurityAlert-en",
@@ -1113,7 +1113,7 @@ app.post('/api/lander', function (req, res) {
  * @apiParam url:"http://s.ktrack.net/w/SecurityAlert.php"
  *
  */
-app.post('/api/lander/:landerId', function (req, res) {
+app.post('/api/landers/:landerId', function (req, res) {
   var result = {
     "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
     "namePostfix": "SecurityAlert-en",
@@ -1131,7 +1131,7 @@ app.post('/api/lander/:landerId', function (req, res) {
  * @apiName 删除Lander
  *
  */
-app.delete('/api/lander/:landId', function (req, res) {
+app.delete('/api/landers/:landId', function (req, res) {
   var result = {
     "status": "SUCCESSFUL",
     "items": [{
@@ -1162,7 +1162,7 @@ app.get('/api/flows', function (req, res) {
  * @apiName 根据offerId获取Offer信息
  *
  */
-app.get('/api/offer/:offerId', function (req, res) {
+app.get('/api/offers/:offerId', function (req, res) {
   var result = {
     "status": 1,
     "message": "success",
@@ -1223,7 +1223,7 @@ app.get('/api/offers', function (req, res) {
  url: "http://hasoffers.mobisummer.com/aff_c?offer_id=28270&aff_id=5598&aff_sub={clickid}&aff_sub2={campaign.id}"
  *
  */
-app.post('/api/offer', function (req, res) {
+app.post('/api/offers', function (req, res) {
   var result = {
     "id": "9f91a026-aa8e-437c-b202-cd23fe6f02de",
     "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
@@ -1252,7 +1252,7 @@ app.post('/api/offer', function (req, res) {
  url: "http://hasoffers.mobisummer.com/aff_c?offer_id=28270&aff_id=5598&aff_sub={clickid}&aff_sub2={campaign.id}"
  *
  */
-app.post('/api/offer/:offerId', function (req, res) {
+app.post('/api/offers/:offerId', function (req, res) {
   var result = {
     "id": "53b87ca8-43fb-4911-95c6-0426292a4abe",
     "name": "Baidu - Afghanistan - TestTestTest",
@@ -1278,7 +1278,7 @@ app.post('/api/offer/:offerId', function (req, res) {
  * @apiName 删除Offer
  *
  */
-app.delete('/api/offer/:offerId', function (req, res) {
+app.delete('/api/offers/:offerId', function (req, res) {
   var result = {
     "status": "SUCCESSFUL",
     "items": [{

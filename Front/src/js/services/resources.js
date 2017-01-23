@@ -16,19 +16,13 @@ angular.module('app')
     return $resource('/dashboard/:id', {id: '@id'});
   }])
   .factory('Offer', ['$resource', function ($resource) {
-    return $resource('/api/offer/:id', {id: '@id'});
+    return $resource('/api/offers/:id', {id: '@id'});
   }])
   .factory('Lander', ['$resource', function ($resource) {
-    return $resource('/api/lander/:id', {id: '@id'});
+    return $resource('/api/landers/:id', {id: '@id'});
   }])
   .factory('Flow', ['$resource', function ($resource) {
-    return $resource('/api/flow/:id', {id: '@id'});
-  }])
-  .factory('Flows', ['$resource', function ($resource) {
-    return $resource('/api/flows');
-  }])
-  .factory('Rule', ['$resource', function ($resource) {
-    return $resource('/api/rule/:id', {id: '@id'});
+    return $resource('/api/flows/:id', {id: '@id'});
   }])
   .factory('TrafficSource', ['$resource', function ($resource) {
     return $resource('/api/traffic/:id', {id: '@id'});
