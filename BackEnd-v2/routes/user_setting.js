@@ -36,6 +36,7 @@ router.get('/api/user/profile', function (req, res, next) {
                 let value = yield common.validate(req.query, schema);
                 let connection = yield common.getConnection();
                 let result = yield query("select `idText`,`firstname`,`lastname`,`status`,`json` from User where `deleted`= 0 and `id`= " + value.userId, connection);
+                connection.release();
                 res.json({
                     status: 1,
                     message: 'succes',
@@ -50,6 +51,7 @@ router.get('/api/user/profile', function (req, res, next) {
             return _ref.apply(this, arguments);
         };
     })();
+    start();
 });
 
 /**
@@ -87,13 +89,14 @@ router.post('/api/user/profile', function (req, res, next) {
                     sql += "`firstname`='" + value.firstname + "'";
                 }
                 if (value.lastname) {
-                    sql += "`lastname`='" + value.lastname + "'";
+                    sql += ",`lastname`='" + value.lastname + "'";
                 }
                 if (value.json) {
-                    sql += "`json`='" + value.json + "'";
+                    sql += ",`json`='" + value.json + "'";
                 }
                 sql += " where `id`=" + value.userId;
                 yield query(sql, connection);
+                connection.release();
                 res.json({
                     "status": 1,
                     "message": "success"

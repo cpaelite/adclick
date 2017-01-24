@@ -35,6 +35,7 @@ router.get('/api/user/profile',function(req,res,next){
             let value= await common.validate(req.query,schema);
             let connection = await　common.getConnection();
             let result= await query("select `idText`,`firstname`,`lastname`,`status`,`json` from User where `deleted`= 0 and `id`= "+ value.userId,connection);
+            connection.release();
              res.json({
                 status:1,
                 message:'succes',
@@ -44,7 +45,7 @@ router.get('/api/user/profile',function(req,res,next){
            next(e);
         }
    }
-  
+   start();
 });
 
 /**
@@ -81,13 +82,14 @@ router.post('/api/user/profile',function(req,res,next){
                 sql += "`firstname`='" +  value.firstname +"'";  
             }
             if(value.lastname){
-                sql += "`lastname`='" +  value.lastname +"'";  
+                sql += ",`lastname`='" +  value.lastname +"'";  
             }
             if(value.json){
-                sql += "`json`='" +  value.json +"'";  
+                sql += ",`json`='" +  value.json +"'" ;  
             }
             sql += " where `id`=" + value.userId
             await query(sql,connection);
+            connection.release();
             res.json({
                 "status": 1,
                  "message": "success"
