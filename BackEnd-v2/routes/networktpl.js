@@ -20,7 +20,7 @@ var Joi = require('joi');
  *     }
  *
  */
-router.post('/affilate/tpl', function (req, res, next) {
+router.post('/affiliate/tpl', function (req, res, next) {
     var schema = Joi.object().keys({
         name: Joi.string().required(),
         postbackParams: Joi.string().required(),

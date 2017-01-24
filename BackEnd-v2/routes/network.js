@@ -21,7 +21,7 @@ var Joi = require('joi');
  *   }
  *
  */
-router.post('/api/affilate', function (req, res, next) {
+router.post('/api/affiliate', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -63,7 +63,7 @@ router.post('/api/affilate', function (req, res, next) {
                 res.json({
                     status: 1,
                     message: 'success',
-                    data:value
+                    data: value
                 });
             });
         });
@@ -71,7 +71,7 @@ router.post('/api/affilate', function (req, res, next) {
 });
 
 /**
- * @api {get} /api/affilate  network list
+ * @api {get} /api/affiliate  network list
  * @apiName network list
  * @apiGroup network
  *
@@ -88,59 +88,84 @@ router.post('/api/affilate', function (req, res, next) {
  *     }
  *
  */
-router.get('/api/affilate', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        page: Joi.number().min(1).required(),
-        limit: Joi.number().required(),
-        order: Joi.string().required()
-    });
+router.get('/api/affiliate', function (req, res, next) {
+    // var schema = Joi.object().keys({
+    // userId: Joi.number().required(),
+    // page: Joi.number().min(1).required(),
+    // limit: Joi.number().required(),
+    // order: Joi.string().required()
+    // });
     req.query.userId = req.userId
-    Joi.validate(req.query, schema, function (err, value) {
+    // Joi.validate(req.query, schema, function (err, value) {
+    //     if (err) {
+    //         return next(err);
+    //     }
+    //     pool.getConnection(function (err, connection) {
+    //         if (err) {
+    //             err.status = 303
+    //             return next(err);
+    //         }
+    //         var page = parseInt(value.page);
+    //         var limit = parseInt(value.limit);
+    //         var offset = (page - 1) * limit;
+    //         var order = 'asc';
+    //         var sort = value.order;
+    //         var sign = sort.charAt(0);
+    //         if (sign == '-') {
+    //             order = 'desc'
+    //             sort = sort.substring(1);
+    //         }
+
+    // var sql =
+    //     "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `deleted`= ? and `userId`= ? order by " +
+    //     sort + " " + order + " " + "limit " + offset + "," + limit
+    //     var sql =
+    //         "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `userId`= ?"
+    //     connection.query(sql, [
+    //             value.userId
+    //         ],
+    //         function (err, result) {
+    //             connection.release();
+    //             if (err) {
+    //                 return next(err);
+    //             }
+    //             res.json({
+    //                 status: 1,
+    //                 message: 'success',
+    //                 data: {
+    //                     lists: result
+    //                 }
+    //             });
+    //         });
+    // });
+    // });
+    pool.getConnection(function (err, connection) {
         if (err) {
+            err.status = 303
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var page = parseInt(value.page);
-            var limit = parseInt(value.limit);
-            var offset = (page - 1) * limit;
-            var order = 'asc';
-            var sort = value.order;
-            var sign = sort.charAt(0);
-            if (sign == '-') {
-                order = 'desc'
-                sort = sort.substring(1);
-            }
-
-            var sql =
-                "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `deleted`= ? and `userId`= ? order by " +
-                sort + " " + order + " " + "limit " + offset + "," + limit
-            connection.query(sql, [
-                    0, value.userId
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: 'success',
-                        data: {
-                            lists: result
-                        }
-                    });
+        connection.query(
+            "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `userId`= ?", [
+                req.userId
+            ],
+            function (err, result) {
+                connection.release();
+                if (err) {
+                    return next(err);
+                }
+                res.json({
+                    status: 1,
+                    message: "success",
+                    data: {networks: result}
                 });
-        });
+
+            });
     });
+
 });
 
 /**
- * @api {post} /api/affilate/:id  编辑affilate
+ * @api {post} /api/affiliate/:id  编辑affilate
  * @apiName 编辑affilate
  * @apiGroup network
  *
@@ -159,7 +184,7 @@ router.get('/api/affilate', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/affilate/:id', function (req, res, next) {
+router.post('/api/affiliate/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),

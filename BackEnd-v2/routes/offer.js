@@ -27,7 +27,7 @@ var common = require('./common');
  *    message: 'success' *   }
  *
  */
-router.post('/api/offer', function (req, res, next) {
+router.post('/api/offers', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -37,7 +37,8 @@ router.post('/api/offer', function (req, res, next) {
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().required().keys({
             id: Joi.number().required(),
-            name: Joi.string().required()
+            name: Joi.string().required(),
+            postbackUrl:Joi.string().optional()
         }),
         payoutValue: Joi.number().optional(),
         tags: Joi.array().optional()
