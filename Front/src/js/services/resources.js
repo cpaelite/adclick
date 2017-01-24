@@ -9,7 +9,7 @@ angular.module('app')
   .factory('Campaign', ['$resource', function ($resource) {
     return $resource('/api/campaign/:id', {id: '@id'});
   }])
-  .factory('Preferences', ['$resource', function ($resource) {
+  .factory('Preference', ['$resource', function ($resource) {
     return $resource('/api/preferences');
   }])
   .factory('DashBoard', ['$resource', function ($resource) {

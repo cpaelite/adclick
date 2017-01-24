@@ -22,7 +22,7 @@ function delayResponse(res, data) {
   //console.log(data);
   setTimeout(function () {
     res.send(data);
-  }, 2000);
+  }, 1000);
 }
 
 app.use(function (req, res, next) {
@@ -33,44 +33,39 @@ app.use(function (req, res, next) {
 /**
  * @apiName 登录
  *
+ * shang@v2
  */
 app.post('/auth/login', function (req, res) {
+  /**
+   * post data: { email: string, password: string }
+   * result:
+   *   { token: 'the JWT token' } on success
+   *   401 error code on failure
+   */
   var email = req.body.email;
   var password = req.body.password;
-  if (email && password == '123@qq.com') {
-    res.send({
-      status: 1,
-      message: "success",
-      data: {
-        token: createJWT()
-      }
-    });
+  if (email && password == 'abc') {
+    delayResponse(res, { token: createJWT() });
   } else {
-    res.send({
-      status: 401,
-      message: 'Invalid email and/or password!',
-      data: {}
-    });
+    res.status(401).send({ message: 'Invalid email and/or password!' });
   }
 });
 
 /**
  * @apiName 注册
  *
+ * shang@v2
  */
 app.post('/auth/signup', function (req, res) {
-  var result = {
-    status: 1,
-    message: "success",
-    data: {
-      id: 1,
-      email: "123@adbund.com",
-      password: "111111",
-      firstname: "123",
-      lastname: "123"
-    }
-  };
-  res.send(result);
+  var emailExist = Math.random() > 0.5;
+  var saveError = Math.random() < 0.3;
+  if (emailExist) {
+    res.status(409).send({ message: 'Email is already taken' });
+  } else if (saveError) {
+    res.status(500).send({ message: 'Internal error when saving user' });
+  } else {
+    res.send({ token: createJWT() });
+  }
 });
 
 /**
@@ -254,24 +249,21 @@ app.get('/api/preferences', function (req, res) {
       }
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
  * @apiName 保存用户配置信息
  *
  */
-app.post('/preferences', function (req, res) {
+app.post('/api/preferences', function (req, res) {
   var result = {
     "status": 1,
     "message": "",
     data: {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
-      "reportViewSort": {
-        "key": "visits",
-        "direction": "desc"
-      },
+      "reportViewOrder": "-visit",
       "reportTimeZone": "+08:00",
       "reportViewColumns": {
         "offerName": {
@@ -413,12 +405,12 @@ app.post('/preferences', function (req, res) {
  * @apiParam {String} sort:visits
  * @apiParam {String} direction:desc
  * @apiParam {String} groupBy:campaign
- * @apiParam {Number} offset:1
+ * @apiParam {Number} page:1
  * @apiParam {Number} limit:500
  * @apiParam {Number} status:1      //0:停止；1:运行; 2:All
  *
  */
-app.post('/api/report', function (req, res) {
+app.get('/api/report', function (req, res) {
   var result = {
     "status": 1,
     "messages": "",
@@ -461,7 +453,7 @@ app.post('/api/report', function (req, res) {
           "epv": 0.0,
           "errors": 0,
           "ictr": 0.0,
-          "impressions": 0,
+          "impressions": 13430,
           "profit": 0.0,
           "revenue": 0.0,
           "roi": 0.0,

@@ -421,7 +421,7 @@
 
     function excludeIn(list) {
       return function(item) {
-        list.indexOf(item) == -1;
+        return list.indexOf(item) == -1;
       };
     }
 
