@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 require("babel-core/register");
+require("babel-polyfill");
 
 // var cluster = require('express-cluster');
 var path = require('path');

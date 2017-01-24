@@ -19,6 +19,7 @@
     "babel-core": "^6.21.0",
     "babel-preset-latest": "^6.22.0",
     "babel-preset-stage-0": "^6.16.0",
+    "babel-polyfill": "^6.22.0",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-cluster": "0.0.4",
@@ -35,9 +36,8 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
-    "babel-polyfill": "^6.22.0",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "supertest": "^2.0.1"    
+    "supertest": "^2.0.1"
   }
 }
