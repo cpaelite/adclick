@@ -1,5 +1,3 @@
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 /**
  * Created by Aedan on 11/01/2017.
  */
@@ -8,6 +6,7 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
+
 
 /**
  * @api {post} /api/offer  新增offer
@@ -46,39 +45,36 @@ router.post('/api/offer', function (req, res, next) {
 
     req.body.userId = req.userId;
     req.body.idText = req.idText;
-    const start = (() => {
-        var _ref = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.body, schema);
-                let connection = yield common.getConnection();
-                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
-                value.postbackUrl = postbackUrl;
-                let landerResult = yield common.insertOffer(value.userId, value.idText, value, connection);
-                if (value.tags && value.tags.length) {
-                    for (let index = 0; index < value.tags.length; index++) {
-                        yield common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
-                    }
+    const start = async()=> {
+        try {
+            let value = await common.validate(req.body, schema);
+            let connection = await common.getConnection();
+            let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+            value.postbackUrl = postbackUrl;
+            let landerResult = await common.insertOffer(value.userId, value.idText, value, connection);
+            if (value.tags && value.tags.length) {
+                for (let index = 0; index < value.tags.length; index++) {
+                    await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
                 }
-                delete value.userId;
-                delete value.idText;
-                value.id = landerResult.insertId;
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: value
-                });
-            } catch (e) {
-                next(e);
             }
-        });
+            delete value.userId;
+            delete value.idText;
+            value.id = landerResult.insertId;
+            connection.release();
+            res.json({
+                status: 1,
+                message: 'success',
+                data: value
+            });
+        } catch (e) {
+            next(e);
+        }
 
-        return function start() {
-            return _ref.apply(this, arguments);
-        };
-    })();
+    }
     start();
+
 });
+
 
 /**
  * @api {post} /api/offer/:offerId  编辑offer
@@ -119,43 +115,39 @@ router.post('/api/offer/:id', function (req, res, next) {
         }),
         payoutValue: Joi.number().optional(),
         tags: Joi.array().optional(),
-        deleted: Joi.number().optional()
+        deleted: Joi.number().optional(),
     });
 
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.id = req.params.id;
-    const start = (() => {
-        var _ref2 = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.body, schema);
-                let connection = yield common.getConnection();
-                yield common.updateOffer(value.userId, value, connection);
-                yield common.updateTags(value.userId, value.id, 3, connection);
-                if (value.tags && value.tags.length) {
-                    for (let index = 0; index < value.tags.length; index++) {
-                        yield common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
-                    }
+    const start = async()=> {
+        try {
+            let value = await common.validate(req.body, schema);
+            let connection = await common.getConnection();
+            await common.updateOffer(value.userId, value, connection);
+            await common.updateTags(value.userId, value.id, 3, connection);
+            if (value.tags && value.tags.length) {
+                for (let index = 0; index < value.tags.length; index++) {
+                    await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
                 }
-                delete value.userId;
-                delete value.idText;
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: value
-                });
-            } catch (e) {
-                next(e);
             }
-        });
+            delete value.userId;
+            delete value.idText;
+            connection.release();
+            res.json({
+                status: 1,
+                message: 'success',
+                data: value
+            });
 
-        return function start() {
-            return _ref2.apply(this, arguments);
-        };
-    })();
+        } catch (e) {
+            next(e);
+        }
+    }
     start();
 });
+
 
 /**
  * @api {get} /api/offer/:id  offer detail
@@ -177,28 +169,23 @@ router.get('/api/offer/:id', function (req, res, next) {
     });
     req.query.id = req.params.id;
     req.query.userId = req.userId;
-    const start = (() => {
-        var _ref3 = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.query, schema);
-                let connection = yield common.getConnection();
-                let result = yield common.getOfferDetail(value.id, value.userId, connection);
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: result ? result : {}
-                });
-            } catch (e) {
-                return next(err);
-            }
-        });
-
-        return function start() {
-            return _ref3.apply(this, arguments);
-        };
-    })();
+    const start = async()=> {
+        try {
+            let value = await common.validate(req.query, schema);
+            let connection = await common.getConnection();
+            let result = await common.getOfferDetail(value.id, value.userId, connection);
+            connection.release();
+            res.json({
+                status: 1,
+                message: 'success',
+                data: result ? result : {}
+            });
+        } catch (e) {
+            return next(err);
+        }
+    }
     start();
+
 });
 
 /**
@@ -215,27 +202,27 @@ router.get('/api/offer/:id', function (req, res, next) {
  *
  */
 router.get('/api/offers', function (req, res, next) {
-    // var schema = Joi.object().keys({
-    //     userId: Joi.number().required()
-    // });
-    // TODO: validate schema
-    console.info(req.body);
+    // userId from jwt, don't need validation
     var sql = "select id, name from Offer where userId = " + req.userId;
-    console.info(sql);
     pool.getConnection(function (err, connection) {
         if (err) {
-            err.status = 303;
+            err.status = 303
             return next(err);
         }
-        connection.query(sql, function (err, result) {
-            connection.release();
-            if (err) {
-                return next(err);
-            }
-            res.json(result);
-        });
+        connection.query(
+            sql,
+            function (err, result) {
+                connection.release();
+                if (err) {
+                    return next(err);
+                }
+                res.json(
+                    result
+                );
+            });
     });
 });
+
 
 /**
  * @api {delete} /api/offer/:id 删除offer
@@ -249,27 +236,23 @@ router.delete('/api/offer/:id', function (req, res, next) {
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
-    const start = (() => {
-        var _ref4 = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.query, schema);
-                let connection = yield common.getConnection();
-                let result = yield common.deleteOffer(value.id, value.userId, connection);
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: 'success'
-                });
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-        return function start() {
-            return _ref4.apply(this, arguments);
-        };
-    })();
+    const start = async()=> {
+        try {
+            let value = await common.validate(req.query, schema);
+            let connection = await common.getConnection();
+            let result = await common.deleteOffer(value.id, value.userId, connection);
+            connection.release();
+            res.json({
+                status: 1,
+                message: 'success'
+            });
+        } catch (e) {
+            return next(e);
+        }
+    }
     start();
+
 });
+
 
 module.exports = router;

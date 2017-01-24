@@ -10,7 +10,7 @@
     "watch:test": "nodemon --watch ./ --recursive --exec npm run test",
     "nodemon": "nodemon ./bin/www",
     "start": "node ./bin/www",
-    "build": "babel src -d routes  --presets stage-0"
+    "build": "babel src -d routes"
   },
   "author": "aedanlee",
   "license": "ISC",

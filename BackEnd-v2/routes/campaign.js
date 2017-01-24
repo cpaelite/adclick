@@ -1,11 +1,12 @@
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var common = require('./common');
-var Pub = require('./redis_sub_pub');
-var setting = require('../config/setting');
+var common=require('./common');
+var Pub =require('./redis_sub_pub');
+var setting=require('../config/setting');
+ 
+
+ 
 
 //Request Example:
 //  {
@@ -90,7 +91,7 @@ var setting = require('../config/setting');
 //     },
 //     "id": 21
 // }
-
+ 
 
 //Response Example
 //  {
@@ -212,10 +213,10 @@ var setting = require('../config/setting');
  *   }
  *
  */
-router.post('/api/campaign', function (req, res, next) {
-    var schema = Joi.object().keys({
+router.post('/api/campaign',function(req,res,next){
+       var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        idText: Joi.string().required(),
+        idText:Joi.string().required(),
         name: Joi.string().required(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
@@ -226,11 +227,11 @@ router.post('/api/campaign', function (req, res, next) {
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
-            id: Joi.number(),
+             id: Joi.number(),
             name: Joi.string(),
             country: Joi.string(),
             redirectMode: Joi.number()
-        }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
+        }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode','rules'),
         url: Joi.string().optional(),
         country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional(),
@@ -239,21 +240,22 @@ router.post('/api/campaign', function (req, res, next) {
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
-        targetUrl: Joi.string().optional(),
-        targetFlowId: Joi.number().optional(),
+        targetUrl:Joi.string().optional(),
+        targetFlowId:Joi.number().optional(),
         postbackUrl: Joi.string().optional(),
-        pixelRedirectUrl: Joi.string().optional()
+        pixelRedirectUrl:Joi.string().optional(),
     });
     req.body.userId = req.userId;
-    req.body.idText = req.idText;
-
-    start(req.body, schema).then(function (data) {
+    req.body.idText=req.idText;
+    
+    start(req.body,schema).then(function(data){
         res.json({
-            status: 1,
-            message: 'success',
-            data: data
+            status:1,
+            message:'success',
+            data:data
         });
-    }).catch(function (err) {
+        
+    }).catch(function(err){
         next(err);
     });
 });
@@ -291,11 +293,11 @@ router.post('/api/campaign', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/campaign/:id', function (req, res, next) {
-    var schema = Joi.object().keys({
+router.post('/api/campaign/:id',function(req,res,next){
+       var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        idText: Joi.string().required(),
+        idText:Joi.string().required(),
         name: Joi.string().required(),
         trafficSource: Joi.object().required(),
         costModel: Joi.number().required(),
@@ -306,11 +308,11 @@ router.post('/api/campaign/:id', function (req, res, next) {
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
-            id: Joi.number(),
+             id: Joi.number(),
             name: Joi.string(),
             country: Joi.string(),
             redirectMode: Joi.number()
-        }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
+        }).optionalKeys('id','hash', 'type', 'name', 'country', 'redirectMode','rules'),
         url: Joi.string().optional(),
         country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional(),
@@ -319,248 +321,255 @@ router.post('/api/campaign/:id', function (req, res, next) {
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
-        targetUrl: Joi.string().optional(),
-        targetFlowId: Joi.number().optional(),
+        targetUrl:Joi.string().optional(),
+        targetFlowId:Joi.number().optional(),
         postbackUrl: Joi.string().optional(),
-        pixelRedirectUrl: Joi.string().optional()
+        pixelRedirectUrl:Joi.string().optional(),
     });
     req.body.userId = req.userId;
-    req.body.id = req.params.id;
-    req.body.idText = req.idText;
-
-    start(req.body, schema).then(function (data) {
+    req.body.id=req.params.id;
+    req.body.idText=req.idText;
+    
+    
+    start(req.body,schema).then(function(data){
         res.json({
-            status: 1,
-            message: 'success',
-            data: data
-        });
-    }).catch(function (err) {
+            status:1,
+            message:'success',
+            data:data
+        })
+    }).catch(function(err){
         next(err);
     });
 });
 
-const start = (() => {
-    var _ref = _asyncToGenerator(function* (data, schema) {
-        let Result;
-        let ResultError;
-        try {
-            let value = yield common.validate(data, schema);
-            let connection = yield common.getConnection();
-            yield common.beginTransaction(connection);
-            try {
-                //Campaign
-                let campResult, flowResult;
+
+ const start = async (data,schema) => {
+         let Result;
+         let ResultError;
+         try{
+            let value= await common.validate(data,schema);
+            let connection= await common.getConnection();
+            await common.beginTransaction(connection);
+            try{
+                    //Campaign
+                let campResult,flowResult; 
                 if (value.id) {
-                    yield common.updateCampaign(value, connection);
-                } else {
-                    campResult = yield common.insertCampaign(value, connection);
-                }
+                    await common.updateCampaign(value, connection);
+                    } else {
+                    campResult= await common.insertCampaign(value, connection);
+                    }     
 
-                //Flow
-                if (value.flow && !value.flow.id) {
-                    flowResult = yield common.insertFlow(value.userId, value.flow, connection);
-                } else if (value.flow && value.flow.id) {
-                    yield common.updateFlow(value.userId, value.flow, connection);
-                }
+        
+                    //Flow
+                    if (value.flow && !value.flow.id) {
+                        flowResult =await common.insertFlow(value.userId,value.flow, connection)
+                    } else if (value.flow && value.flow.id) {
+                        await common.updateFlow(value.userId,value.flow, connection)
+                    } 
+                     
+                        
+                     
+                   let campaignId = value.id ? value.id: (campResult? (campResult.insertId ? campResult.insertId: 0) :0);
+                      
+                    if (!campaignId) {
+                        throw new Error('Campaign ID Lost')
+                    }
+                    
 
-                let campaignId = value.id ? value.id : campResult ? campResult.insertId ? campResult.insertId : 0 : 0;
+                    //campaignId
+                    value.id = campaignId;
 
-                if (!campaignId) {
-                    throw new Error('Campaign ID Lost');
-                }
+                    let flowId = value.flow.id ? value.flow.id: (flowResult ? (flowResult.insertId?flowResult.insertId: 0) :0);
 
-                //campaignId
-                value.id = campaignId;
+                    if (!flowId) {
+                        throw new Error('Flow ID Lost');
+                    }
+                    //flowId
+                    value.flow.id = flowId; 
 
-                let flowId = value.flow.id ? value.flow.id : flowResult ? flowResult.insertId ? flowResult.insertId : 0 : 0;
+                   
 
-                if (!flowId) {
-                    throw new Error('Flow ID Lost');
-                }
-                //flowId
-                value.flow.id = flowId;
+                     
+                    //删除所有tags
+                     await common.updateTags(value.userId, campaignId, 1, connection);
 
-                //删除所有tags
-                yield common.updateTags(value.userId, campaignId, 1, connection);
-
-                //campain Tags
-                if (value.tags && value.tags.length > 0) {
+                    //campain Tags
                     if (value.tags && value.tags.length > 0) {
+                        if (value.tags && value.tags.length > 0) {
                         for (let index = 0; index < value.tags.length; index++) {
-                            yield common.insertTags(value.userId, campaignId, value.tags[index], 1, connection);
+                               await common.insertTags(value.userId, campaignId, value.tags[index], 1, connection);
+                            }
                         }
                     }
-                }
 
-                if (value.flow.rules && value.flow.rules.length > 0) {
-                    for (let i = 0; i < value.flow.rules.length; i++) {
-                        try {
-                            let ruleResult;
-                            //RULE
-                            if (!value.flow.rules[i].id) {
-                                ruleResult = yield common.insetRule(value.userId, value.flow.rules[i], connection);
-                                yield common.insertRule2Flow(ruleResult.insertId, flowId, value.flow.rules[i].rule2flow, connection);
-                            } else {
-                                yield common.updateRule(value.userId, value.flow.rules[i], connection);
-                                yield common.updateRule2Flow(value.flow.rules[i].rule2flow, value.flow.rules[i].id, flowId, connection);
-                            }
-                            let ruleId = value.flow.rules[i].id ? value.flow.rules[i].id : ruleResult ? ruleResult.insertId ? ruleResult.insertId : 0 : 0;
-                            if (!ruleId) {
-                                throw new Error('Rule ID Lost');
-                            }
-                            value.flow.rules[i].id = ruleId;
-
-                            //PATH
-                            if (value.flow.rules[i].paths && value.flow.rules[i].paths.length > 0) {
-                                for (let j = 0; j < value.flow.rules[i].paths.length; j++) {
-                                    let pathResult;
-                                    if (!value.flow.rules[i].paths[j].id) {
-                                        pathResult = yield common.insertPath(value.userId, value.flow.rules[i].paths[j], connection);
-                                        yield common.insertPath2Rule(pathResult.insertId, ruleId, value.flow.rules[i].paths[j].weight, value.flow.rules[i].paths[j].path2rule, connection);
-                                    } else {
-                                        yield common.updatePath(value.userId, value.flow.rules[i].paths[j], connection);
-                                        yield common.updatePath2Rule(value.flow.rules[i].paths[j].id, value.flow.rules[i].id, value.flow.rules[i].paths[j].weight, value.flow.rules[i].paths[j].path2rule, connection);
+                    if (value.flow.rules && value.flow.rules.length > 0) {
+                        for (let i = 0; i < value.flow.rules.length; i++) {
+                                try{
+                                    let ruleResult;
+                                    //RULE
+                                    if (!value.flow.rules[i].id) {
+                                        ruleResult = await  common.insetRule(value.userId, value.flow.rules[i], connection);    
+                                        await common.insertRule2Flow(ruleResult.insertId, flowId, value.flow.rules[i].rule2flow, connection); 
+                                    }else{
+                                        await  common.updateRule(value.userId, value.flow.rules[i], connection);
+                                        await  common.updateRule2Flow(value.flow.rules[i].rule2flow, value.flow.rules[i].id, flowId, connection);
                                     }
-
-                                    let pathId = value.flow.rules[i].paths[j].id ? value.flow.rules[i].paths[j].id : pathResult ? pathResult.insertId ? pathResult.insertId : 0 : 0;
-                                    if (!pathId) {
-                                        throw new Error('Path ID Lost');
+                                    let ruleId=value.flow.rules[i].id ? value.flow.rules[i].id :(ruleResult ?(ruleResult.insertId?ruleResult.insertId:0) :0);
+                                    if(!ruleId){
+                                        throw new Error('Rule ID Lost');
                                     }
-                                    value.flow.rules[i].paths[j].id = pathId;
+                                    value.flow.rules[i].id=ruleId;
 
-                                    //Lander
-                                    if (value.flow.rules[i].paths[j].landers && value.flow.rules[i].paths[j].landers.length > 0) {
-                                        for (let k = 0; k < value.flow.rules[i].paths[j].landers.length; k++) {
-                                            let landerResult;
-                                            if (!value.flow.rules[i].paths[j].landers[k].id) {
-                                                landerResult = yield common.insertLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
-                                                yield common.insertLander2Path(landerResult.insertId, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
-                                            } else {
-                                                yield common.updateLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
-                                                yield common.updateLander2Path(value.flow.rules[i].paths[j].landers[k].id, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
+                                    //PATH
+                                    if (value.flow.rules[i].paths && value.flow.rules[i].paths.length > 0) {
+                                        for (let j = 0; j < value.flow.rules[i].paths.length; j++) {
+                                            let pathResult;
+                                            if (!value.flow.rules[i].paths[j].id) {
+                                            pathResult=await common.insertPath(value.userId, value.flow.rules[i].paths[j], connection);
+                                            await common.insertPath2Rule(pathResult.insertId, ruleId, value.flow.rules[i].paths[j].weight, value.flow.rules[i].paths[j].path2rule, connection);
+                                             
+                                            }else{
+                                                await common.updatePath(value.userId, value.flow.rules[i].paths[j], connection);
+                                                await common.updatePath2Rule(value.flow.rules[i].paths[j].id, value.flow.rules[i].id, value.flow.rules[i].paths[j].weight, value.flow.rules[i].paths[j].path2rule, connection);
                                             }
-
-                                            let landerId = value.flow.rules[i].paths[j].landers[k].id ? value.flow.rules[i].paths[j].landers[k].id : landerResult ? landerResult.insertId ? landerResult.insertId : 0 : 0;
-                                            if (!landerId) {
-                                                throw new Error('Lander ID Lost');
+                                            
+                                            let pathId = value.flow.rules[i].paths[j].id? value.flow.rules[i].paths[j].id:(pathResult?(pathResult.insertId?pathResult.insertId:0):0);
+                                            if(!pathId){
+                                                throw new Error('Path ID Lost');
                                             }
-                                            value.flow.rules[i].paths[j].landers[k].id = landerId;
-                                            //Lander tags 
-                                            //删除所有tags
+                                            value.flow.rules[i].paths[j].id=pathId;
 
-                                            yield common.updateTags(value.userId, landerId, 2, connection);
-
-                                            if (value.flow.rules[i].paths[j].landers[k].tags && value.flow.rules[i].paths[j].landers[k].tags.length > 0) {
-                                                for (let q = 0; q < value.flow.rules[i].paths[j].landers[k].tags.length; q++) {
-
-                                                    yield common.insertTags(value.userId, landerId, value.flow.rules[i].paths[j].landers[k].tags[q], 2, connection);
+                                            //Lander
+                                            if (value.flow.rules[i].paths[j].landers && value.flow.rules[i].paths[j].landers.length > 0) {
+                                                for (let k = 0; k < value.flow.rules[i].paths[j].landers.length; k++) {
+                                                    let landerResult;
+                                                    if (!value.flow.rules[i].paths[j].landers[k].id) {
+                                                        landerResult= await common.insertLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
+                                                        await common.insertLander2Path(landerResult.insertId, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
+                                                    }else{
+                                                        await common.updateLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
+                                                        await common.updateLander2Path(value.flow.rules[i].paths[j].landers[k].id, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
+                                                    }
+                                                    
+                                                    let landerId = value.flow.rules[i].paths[j].landers[k].id? value.flow.rules[i].paths[j].landers[k].id:(landerResult?(landerResult.insertId?landerResult.insertId:0):0);
+                                                    if(!landerId){
+                                                        throw new Error('Lander ID Lost');
+                                                    }
+                                                    value.flow.rules[i].paths[j].landers[k].id=landerId;
+                                                    //Lander tags 
+                                                    //删除所有tags
+                                                    
+                                                    await common.updateTags(value.userId, landerId, 2, connection);
+                                                   
+                                                    if (value.flow.rules[i].paths[j].landers[k].tags && value.flow.rules[i].paths[j].landers[k].tags.length > 0) {
+                                                        for (let q = 0; q < value.flow.rules[i].paths[j].landers[k].tags.length; q++) {
+                                                            
+                                                            await common.insertTags(value.userId,landerId,value.flow.rules[i].paths[j].landers[k].tags[q],2,connection);
+                                                    }
+                                                    }
                                                 }
                                             }
-                                        }
-                                    }
 
-                                    //Offer
-                                    if (value.flow.rules[i].paths[j].offers && value.flow.rules[i].paths[j].offers.length > 0) {
-                                        for (let z = 0; z < value.flow.rules[i].paths[j].offers.length; z++) {
-                                            let offerResult;
+                                           
 
-                                            if (!value.flow.rules[i].paths[j].offers[z].id) {
-                                                let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
-                                                value.flow.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
-                                                offerResult = yield common.insertOffer(value.userId, value.idText, value.flow.rules[i].paths[j].offers[z], connection);
-                                                yield common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
-                                            } else {
-
-                                                yield common.updateOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
-
-                                                yield common.updateOffer2Path(value.flow.rules[i].paths[j].offers[z].id, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
-                                            }
-
-                                            let offerId = value.flow.rules[i].paths[j].offers[z].id ? value.flow.rules[i].paths[j].offers[z].id : offerResult ? offerResult.insertId ? offerResult.insertId : 0 : 0;
-                                            if (!offerId) {
-                                                throw new Error('Offer ID Lost');
-                                            }
-                                            value.flow.rules[i].paths[j].offers[z].id = offerId;
-                                            //删除所有offer tags
-                                            yield common.updateTags(value.userId, offerId, 3, connection);
-                                            //offer tags 
-                                            if (value.flow.rules[i].paths[j].offers[z].tags && value.flow.rules[i].paths[j].offers[z].tags.length > 0) {
-                                                for (let p = 0; p < value.flow.rules[i].paths[j].offers[z].tags.length; p++) {
-                                                    yield common.insertTags(value.userId, offerId, value.flow.rules[i].paths[j].offers[z].tags[p], 3, connection);
+                                            //Offer
+                                            if (value.flow.rules[i].paths[j].offers && value.flow.rules[i].paths[j].offers.length > 0) {
+                                                for (let z = 0; z < value.flow.rules[i].paths[j].offers.length; z++) {
+                                                    let offerResult;
+                                                    
+                                                    if (!value.flow.rules[i].paths[j].offers[z].id) {
+                                                        let postbackUrl= setting.newbidder.httpPix+value.idText+"."+setting.newbidder.mainDomain+setting.newbidder.postBackRouter;
+                                                        value.flow.rules[i].paths[j].offers[z].postbackUrl=postbackUrl;
+                                                        offerResult=await common.insertOffer(value.userId,value.idText, value.flow.rules[i].paths[j].offers[z], connection);
+                                                        await common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
+                                                    }else{
+                                                         
+                                                        await  common.updateOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
+                                                         
+                                                        await  common.updateOffer2Path(value.flow.rules[i].paths[j].offers[z].id, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
+                                                        
+                                                    }
+                                                    
+                                                    let offerId = value.flow.rules[i].paths[j].offers[z].id? value.flow.rules[i].paths[j].offers[z].id:(offerResult?(offerResult.insertId?offerResult.insertId:0):0);
+                                                    if(!offerId){
+                                                        throw new Error('Offer ID Lost');
+                                                    }
+                                                    value.flow.rules[i].paths[j].offers[z].id=offerId;
+                                                    //删除所有offer tags
+                                                    await common.updateTags(value.userId, offerId, 3, connection);
+                                                    //offer tags 
+                                                    if (value.flow.rules[i].paths[j].offers[z].tags && value.flow.rules[i].paths[j].offers[z].tags.length > 0) {
+                                                        for (let p = 0; p < value.flow.rules[i].paths[j].offers[z].tags.length; p++) {
+                                                            await common.insertTags(value.userId,offerId,value.flow.rules[i].paths[j].offers[z].tags[p],3,connection);
+                                                        }
+                                                    }                                                                              
                                                 }
                                             }
+
+
                                         }
                                     }
+                                }catch(e){
+                                    throw e;
                                 }
-                            }
-                        } catch (e) {
-                            throw e;
                         }
                     }
-                }
-            } catch (err) {
-                yield common.rollback(connection);
+                  
+            }catch(err){
+                await common.rollback(connection);
                 throw err;
-            }
-            yield common.commit(connection);
-            connection.release();
-            //redis pub
-            new Pub(true).publish(setting.redis.channel, value.userId);
-            delete value.userId;
-            delete value.idText;
-            Result = value;
-        } catch (e) {
-            ResultError = e;
-        }
+            } 
+           await common.commit(connection); 
+           connection.release(); 
+           //redis pub
+           new Pub(true).publish(setting.redis.channel,value.userId);
+           delete value.userId;  
+           delete value.idText;        
+           Result=value;
+          
+         }catch(e){
+            ResultError=e;
+         } 
 
-        return new Promise(function (resolve, reject) {
-            if (ResultError) {
-                reject(ResultError);
-            }
-            resolve(Result);
-        });
-    });
+         return new Promise(function(resolve,reject){
+             if(ResultError){
+                 reject(ResultError);
+             }
+             resolve(Result);
+         }); 
+ };
 
-    return function start(_x, _x2) {
-        return _ref.apply(this, arguments);
-    };
-})();
 
 /**
 * @api {get} /api/campaign/:id   campaign detail
  * @apiName  campaign detail
  * @apiGroup campaign
  */
-router.get('/api/campaign/:id', function (req, res, next) {
-    var schema = Joi.object().keys({
+router.get('/api/campaign/:id',function(req,res,next){
+     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
-    req.query.id = req.params.id;
+    req.query.userId= req.userId;
+    req.query.id=req.params.id;
 
-    const start = (() => {
-        var _ref2 = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.query, schema);
-                let connection = yield common.getConnection();
-                let result = yield common.getCampaign(value.id, value.userId, connection);
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: result ? result : {}
-                });
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-        return function start() {
-            return _ref2.apply(this, arguments);
-        };
-    })();
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.getCampaign(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success',
+                data:result ? result : {}
+            });
+        }catch(e){
+            return next(e);
+        }   
+    }
     start();
+
 });
 
 /**
@@ -568,35 +577,31 @@ router.get('/api/campaign/:id', function (req, res, next) {
  * @apiName  delete campaign
  * @apiGroup campaign
  */
-router.delete('/api/campaign/:id', function (req, res, next) {
-    var schema = Joi.object().keys({
+router.delete('/api/campaign/:id',function(req,res,next){
+      var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
-    req.query.id = req.params.id;
+    req.query.userId= req.userId;
+    req.query.id=req.params.id;
 
-    const start = (() => {
-        var _ref3 = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.query, schema);
-                let connection = yield common.getConnection();
-                let result = yield common.deleteCampaign(value.id, value.userId, connection);
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: 'success'
-                });
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-        return function start() {
-            return _ref3.apply(this, arguments);
-        };
-    })();
+    const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await common.deleteCampaign(value.id,value.userId,connection);
+            connection.release();
+            res.json({
+                status:1,
+                message:'success'
+            });
+        }catch(e){
+            return next(e);
+        }   
+    }
     start();
+
 });
+
 
 module.exports = router;
