@@ -552,79 +552,83 @@ app.get('/api/campaign/:campaignId', function (req, res) {
  */
 app.post('/api/campaign', function (req, res) {
   var result = {
-    "id": 1,
-    "hash": "fcb78739-e306-466a-86a5-792481e1cf48",
-    "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
-    "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
-    "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
-    "trafficSource": {
-      "id": 1,
-      "name": "PropellerAds"
-    },
-    "country": "",
-    "costModel": 0,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
-    "cpc": 0.6,
-    "cpa": 0.4,
-    "cpm": 0.3,
-    "flow": {
-      "id": 1,
-      "name": "Global - yoshop-Android-benson",
-      "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-      "type": 0, //0: 匿名，1：普通
-      "country": "",
-      "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-      "rules": [
-        {
-          id: 1,
-          name: "123",
-          hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-          type: 0,    //0: 匿名，1：普通
-          json: {},   // 规则
-          status: 0,  //0: 停止， 1：运行
-          paths: [
-            {
-              "id": 1,
-              "name": "Path 1",
-              "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-              redirecMode: 0,
-              directLink: 0,  //0:No, 1:Yes
-              status: 0,
-              weight: 100,
-              landers: [
-                {
-                  "id": 1,
-                  "name": "Path 1",
-                  "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                  url: "",
-                  country: "",
-                  numberOfOffers: 2,
-                  weight: 100,
-                  tags: []
-                }
-              ],
-              offers: [
-                {
-                  "id": 1,
-                  "name": "Path 1",
-                  "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                  url: "",
-                  country: "",
-                  AffiliateNetwork: {
-                    id: 1,
-                    name: ""
-                  },
-                  postbackUrl: "",
-                  payoutMode: 0,  //0:Auto; 1:Manual
-                  payoutValue: 0.8,
-                  tags: []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    "tags": []
+    status: 1,
+    message: "",
+    data: {
+      "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
+      "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
+      "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
+      "trafficSource": {
+        "id": 1,
+        "name": "PropellerAds",
+        "cost": 0.1,
+        "impTracking": "",
+        "params": ""
+      },
+      "country": "AND",
+      "status": 1,
+      "costModel": 1,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
+      "cpc": 0.6,
+      "flow": {
+        "id": 1,
+        "name": "Global - yoshop-Android-benson",
+        "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
+        "type": 0, //0: 匿名，1：普通
+        "country": "",
+        "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
+        "rules": [
+          {
+            id: 1,
+            name: "123",
+            hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
+            type: 0,    //0: 匿名，1：普通
+            json: {},   // 规则
+            status: 0,  //0: 停止， 1：运行
+            paths: [
+              {
+                "id": 1,
+                "name": "Path 1",
+                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
+                redirecMode: 0,
+                directLink: 0,  //0:No, 1:Yes
+                status: 0,
+                weight: 100,
+                landers: [
+                  {
+                    "id": 1,
+                    "name": "Path 1",
+                    "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
+                    url: "",
+                    country: "",
+                    numberOfOffers: 2,
+                    weight: 100,
+                    tags: []
+                  }
+                ],
+                offers: [
+                  {
+                    "id": 1,
+                    "name": "Path 1",
+                    "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
+                    url: "",
+                    country: "",
+                    AffiliateNetwork: {
+                      id: 1,
+                      name: ""
+                    },
+                    postbackUrl: "",
+                    payoutMode: 0,  //0:Auto; 1:Manual
+                    payoutValue: 0.8,
+                    tags: []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "tags": []
+    }
   };
   res.send(result);
 });
@@ -635,79 +639,84 @@ app.post('/api/campaign', function (req, res) {
  */
 app.post('/api/campaign/:campaignId', function (req, res) {
   var result = {
-    "id": 1,
-    "hash": "fcb78739-e306-466a-86a5-792481e1cf48",
-    "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
-    "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
-    "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
-    "trafficSource": {
+    status: 1,
+    message: "",
+    data: {
       "id": 1,
-      "name": "PropellerAds"
-    },
-    "country": "",
-    "costModel": 0,     //0:Do not;1:cpc; 2:cpa; 3:cpm
-    "cpc": 0.6,
-    "cpa": 0.4,
-    "cpm": 0.3,
-    "flow": {
-      "id": 1,
-      "name": "Global - yoshop-Android-benson",
-      "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-      "type": 0, //0: 匿名，1：普通
-      "country": "",
-      "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-      "rules": [
-        {
-          id: 1,
-          name: "123",
-          hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
-          type: 0,    //0: 匿名，1：普通
-          json: {},   // 规则
-          status: 0,  //0: 停止， 1：运行
-          paths: [
-            {
-              "id": 1,
-              "name": "Path 1",
-              "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-              redirecMode: 0,
-              directLink: 0,  //0:No, 1:Yes
-              status: 0,
-              weight: 100,
-              landers: [
-                {
-                  "id": 1,
-                  "name": "Path 1",
-                  "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                  url: "",
-                  country: "",
-                  numberOfOffers: 2,
-                  weight: 100,
-                  tags: []
-                }
-              ],
-              offers: [
-                {
-                  "id": 1,
-                  "name": "Path 1",
-                  "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
-                  url: "",
-                  country: "",
-                  AffiliateNetwork: {
-                    id: 1,
-                    name: ""
-                  },
-                  postbackUrl: "",
-                  payoutMode: 0,  //0:Auto; 1:Manual
-                  payoutValue: 0.8,
-                  tags: []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    "tags": []
+      "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
+      "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
+      "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
+      "trafficSource": {
+        "id": 1,
+        "name": "PropellerAds",
+        "cost": 0.1,
+        "impTracking": "",
+        "params": ""
+      },
+      "country": "AND",
+      "status": 1,
+      "costModel": 1,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
+      "cpc": 0.6,
+      "flow": {
+        "id": 1,
+        "name": "Global - yoshop-Android-benson",
+        "hash": "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
+        "type": 0, //0: 匿名，1：普通
+        "country": "",
+        "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
+        "rules": [
+          {
+            id: 1,
+            name: "123",
+            hash: "1e5ac21f-50a5-412a-8bc1-2569b76f78b4",
+            type: 0,    //0: 匿名，1：普通
+            json: {},   // 规则
+            status: 0,  //0: 停止， 1：运行
+            paths: [
+              {
+                "id": 1,
+                "name": "Path 1",
+                "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
+                redirecMode: 0,
+                directLink: 0,  //0:No, 1:Yes
+                status: 0,
+                weight: 100,
+                landers: [
+                  {
+                    "id": 1,
+                    "name": "Path 1",
+                    "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
+                    url: "",
+                    country: "",
+                    numberOfOffers: 2,
+                    weight: 100,
+                    tags: []
+                  }
+                ],
+                offers: [
+                  {
+                    "id": 1,
+                    "name": "Path 1",
+                    "hash": "047bb73f-6787-4227-b51c-247f6db63a2a",
+                    url: "",
+                    country: "",
+                    AffiliateNetwork: {
+                      id: 1,
+                      name: ""
+                    },
+                    postbackUrl: "",
+                    payoutMode: 0,  //0:Auto; 1:Manual
+                    payoutValue: 0.8,
+                    tags: []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "tags": []
+    }
   };
   res.send(result);
 });
@@ -718,13 +727,8 @@ app.post('/api/campaign/:campaignId', function (req, res) {
  */
 app.delete('/api/campaign/:campaignId', function (req, res) {
   var result = {
-    "status": "SUCCESSFUL",
-    "items": [{
-      "id": "0f11b450-27df-4d78-8ef2-285c286e6151",
-      "name": "Test",
-      "status": "SUCCESSFUL",
-      "references": []
-    }]
+    status: 1,
+    message: 'success'
   };
   res.send(result);
 });
@@ -817,31 +821,31 @@ app.get('/api/flows/:flowId', function (req, res) {
  *
  */
 app.get('/api/flows/:flowId/campaigns', function (req, res) {
-  var result = [{
-    "id": "01b30fdd-18ff-4068-8868-878f08886799",
-    "name": "Popads - Canada - yoshop-benson-Android-0104",
-    "namePostfix": "yoshop-benson-Android-0104"
-  }, {
-    "id": "3026f98e-e755-4905-8011-af79f8547e72",
-    "name": "Popads - Australia - yoshop-benson-Android-0104",
-    "namePostfix": "yoshop-benson-Android-0104"
-  }, {
-    "id": "34695609-97cd-404e-a75a-c7c7d93a042d",
-    "name": "Popads - United States - yoshop-benson-Android-0104",
-    "namePostfix": "yoshop-benson-Android-0104"
-  }, {
-    "id": "6f0dbc5a-c844-4caf-b740-f773c8f11954",
-    "name": "PropellerAds - United States - yoshop-benson-Android-0104",
-    "namePostfix": "yoshop-benson-Android-0104"
-  }, {
-    "id": "e60e0072-99c1-4773-b525-1fad1ed06768",
-    "name": "PropellerAds - Australia - yoshop-benson-Android-0104",
-    "namePostfix": "yoshop-benson-Android-0104"
-  }, {
-    "id": "fcb78739-e306-466a-86a5-792481e1cf48",
-    "name": "PropellerAds - Canada - yoshop-benson-Android-0104",
-    "namePostfix": "yoshop-benson-Android-0104"
-  }];
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      campaigns: [{
+        "id": "01b30fdd-18ff-4068-8868-878f08886799",
+        "name": "Popads - Canada - yoshop-benson-Android-0104",
+      }, {
+        "id": "3026f98e-e755-4905-8011-af79f8547e72",
+        "name": "Popads - Australia - yoshop-benson-Android-0104",
+      }, {
+        "id": "34695609-97cd-404e-a75a-c7c7d93a042d",
+        "name": "Popads - United States - yoshop-benson-Android-0104",
+      }, {
+        "id": "6f0dbc5a-c844-4caf-b740-f773c8f11954",
+        "name": "PropellerAds - United States - yoshop-benson-Android-0104",
+      }, {
+        "id": "e60e0072-99c1-4773-b525-1fad1ed06768",
+        "name": "PropellerAds - Australia - yoshop-benson-Android-0104",
+      }, {
+        "id": "fcb78739-e306-466a-86a5-792481e1cf48",
+        "name": "PropellerAds - Canada - yoshop-benson-Android-0104",
+      }]
+    }
+  };
   res.send(result);
 });
 
@@ -1019,13 +1023,8 @@ app.post('/api/flows/:flowId', function (req, res) {
  */
 app.delete('/api/flows/:flowId', function (req, res) {
   var result = {
-    "status": "SUCCESSFUL",
-    "items": [{
-      "id": "0f11b450-27df-4d78-8ef2-285c286e6151",
-      "name": "Test",
-      "status": "SUCCESSFUL",
-      "references": []
-    }]
+    status: 1,
+    message: 'success'
   };
   res.send(result);
 });
@@ -1040,11 +1039,10 @@ app.get('/api/landers/:landerId', function (req, res) {
     message: "",
     data: {
       "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
-      "namePostfix": "SecurityAlert-en",
       "name": "Global - SecurityAlert-en",
-      "updatedTime": "2017-01-10T08:16:53.050Z",
-      "createdTime": "2017-01-10T08:16:53.050Z",
+      "hash": "",
       "url": "http://s.ktrack.net/w/SecurityAlert.php",
+      "country": "",
       "numberOfOffers": 1,
       "tags": []
     }
@@ -1090,14 +1088,15 @@ app.get('/api/landers', function (req, res) {
  */
 app.post('/api/landers', function (req, res) {
   var result = {
-    "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
-    "namePostfix": "SecurityAlert-en",
-    "name": "Global - SecurityAlert-en",
-    "updatedTime": "2017-01-11T16:36:27.366Z",
-    "createdTime": "2017-01-10T08:16:53.050Z",
-    "url": "http://s.ktrack.net/w/SecurityAlert.php",
-    "numberOfOffers": 1,
-    "tags": []
+    status: 1,
+    message: "",
+    data: {
+      "name": "Global - SecurityAlert-en",
+      "url": "http://s.ktrack.net/w/SecurityAlert.php",
+      "country": "",
+      "numberOfOffers": 1,
+      "tags": []
+    }
   };
   res.send(result);
 });
@@ -1105,23 +1104,19 @@ app.post('/api/landers', function (req, res) {
 /**
  * @apiName 修改Lander信息
  *
- *
- * @apiParam namePostfix:"SecurityAlert-en"
- * @apiParam numberOfOffers:"1"
- * @apiParam tags:[]
- * @apiParam url:"http://s.ktrack.net/w/SecurityAlert.php"
- *
  */
 app.post('/api/landers/:landerId', function (req, res) {
   var result = {
-    "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
-    "namePostfix": "SecurityAlert-en",
-    "name": "Global - SecurityAlert-en",
-    "updatedTime": "2017-01-11T16:36:27.366Z",
-    "createdTime": "2017-01-10T08:16:53.050Z",
-    "url": "http://s.ktrack.net/w/SecurityAlert.php",
-    "numberOfOffers": 1,
-    "tags": []
+    status: 1,
+    message: "",
+    data: {
+      "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
+      "name": "Global - SecurityAlert-en",
+      "url": "http://s.ktrack.net/w/SecurityAlert.php",
+      "country": "",
+      "numberOfOffers": 1,
+      "tags": []
+    }
   };
   res.send(result);
 });
@@ -1132,13 +1127,8 @@ app.post('/api/landers/:landerId', function (req, res) {
  */
 app.delete('/api/landers/:landId', function (req, res) {
   var result = {
-    "status": "SUCCESSFUL",
-    "items": [{
-      "id": "0f11b450-27df-4d78-8ef2-285c286e6151",
-      "name": "Test",
-      "status": "SUCCESSFUL",
-      "references": []
-    }]
+    status: 1,
+    message: 'success'
   };
   res.send(result);
 });
@@ -1210,32 +1200,23 @@ app.get('/api/offers', function (req, res) {
 
 /**
  * @apiName 新增Offer
- *
- affiliateNetwork: {
-            id: "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c"
-        },
- country: {
-        code: "AF"
- },
- namePostfix: "yoshop-Android-benson-CAUSAU",
- tags: [],
- url: "http://hasoffers.mobisummer.com/aff_c?offer_id=28270&aff_id=5598&aff_sub={clickid}&aff_sub2={campaign.id}"
- *
  */
 app.post('/api/offers', function (req, res) {
   var result = {
-    "id": "9f91a026-aa8e-437c-b202-cd23fe6f02de",
-    "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
-    "namePostfix": "yoshop-Android-benson-CAUSAU",
-    "updatedTime": "2017-01-11T17:00:21.546Z",
-    "createdTime": "2016-12-30T09:57:24.493Z",
-    "clientId": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-    "affiliateNetwork": {
-      "id": "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c",
-      "name": "hasoffer"
-    },
-    "url": "http://hasoffers.mobisummer.com/aff_c?offer_id=28270&aff_id=5598&aff_sub={clickid}&aff_sub2={campaign.id}",
-    "tags": []
+    status: 1,
+    message: "",
+    data: {
+      "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
+      "url": "http://adbund.com",
+      "country": "AND",
+      "payoutMode": 0,
+      "payoutValue": 0.5,
+      "affiliateNetwork": {
+        "id": "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c",
+        "name": "hasoffer"
+      },
+      "tags": []
+    }
   };
   res.send(result);
 });
@@ -1243,32 +1224,24 @@ app.post('/api/offers', function (req, res) {
 /**
  * @apiName 修改Offer
  *
- affiliateNetwork: {
-            id: "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c"
-        },
- namePostfix: "yoshop-Android-benson-CAUSAU",
- tags: [],
- url: "http://hasoffers.mobisummer.com/aff_c?offer_id=28270&aff_id=5598&aff_sub={clickid}&aff_sub2={campaign.id}"
- *
  */
 app.post('/api/offers/:offerId', function (req, res) {
   var result = {
-    "id": "53b87ca8-43fb-4911-95c6-0426292a4abe",
-    "name": "Baidu - Afghanistan - TestTestTest",
-    "namePostfix": "TestTestTest",
-    "updatedTime": "2017-01-11T17:05:45.705Z",
-    "createdTime": "2017-01-11T17:05:45.705Z",
-    "clientId": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-    "country": {
-      "code": "AF",
-      "name": "Afghanistan"
-    },
-    "affiliateNetwork": {
-      "id": "001622f8-7ebc-4ab9-baf3-32353ba608b2",
-      "name": "Baidu"
-    },
-    "url": "http://www.TestTestTest.com",
-    "tags": []
+    status: 1,
+    message: "",
+    data: {
+      "id": 1,
+      "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
+      "url": "http://adbund.com",
+      "country": "AND",
+      "payoutMode": 0,
+      "payoutValue": 0.5,
+      "affiliateNetwork": {
+        "id": "fa4e2ce0-efc6-4523-8ad1-33a8c5739e1c",
+        "name": "hasoffer"
+      },
+      "tags": []
+    }
   };
   res.send(result);
 });
@@ -1279,38 +1252,55 @@ app.post('/api/offers/:offerId', function (req, res) {
  */
 app.delete('/api/offers/:offerId', function (req, res) {
   var result = {
-    "status": "SUCCESSFUL",
-    "items": [{
-      "id": "7178e781-09c7-477d-a3b3-032f2e01547c",
-      "name": "TestTestTestTest",
-      "status": "SUCCESSFUL",
-      "references": []
-    }]
+    status: 1,
+    message: 'success'
   };
   res.send(result);
 });
 
-app.get('/api/trafficsources', function (req, res) {
+/**
+ * 获取用户所有TrafficSource
+ *
+ */
+app.get('/api/traffic', function (req, res) {
   var result = {
-    status: 1,
-    message: "",
-    data: {
-      trafficsources: [
-        {id: 10, name: 'traffic-source-1'},
-        {id: 2, name: 'traffic-source-2'},
-        {id: 3, name: 'traffic-source-3'}
-      ]
+    "status": 1,
+    "message": "success",
+    "data": {
+      "trafficsources": [{
+        "id": 10,
+        "name": "TrafficSource1",
+        "cost": "",
+        "impTracking": 0,
+        "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:438\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:439\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:440\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:441\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:442\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:443\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:444\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:445\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:446\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:447\"}]"
+      }, {
+        "id": 15,
+        "name": "TrafficSource2",
+        "cost": "",
+        "impTracking": 1,
+        "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]"
+      }, {
+        "id": 17,
+        "name": "TrafficSource1",
+        "cost": "",
+        "impTracking": 1,
+        "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]"
+      }, {
+        "id": 18,
+        "name": "123",
+        "cost": "",
+        "impTracking": 0,
+        "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1671\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1672\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1673\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1674\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1675\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1676\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1677\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1678\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1679\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1680\"}]"
+      }]
     }
   };
   res.send(result);
 });
 
-app.post('/api/traffic', function (req, res) {
-  var item = req.body;
-  item.id = 123;
-  res.send({item: item});
-});
-
+/**
+ * 根据ID获取TrafficSource信息
+ *
+ */
 app.get('/api/traffic/:id', function (req, res) {
   var result = {
     "status": 1,
@@ -1330,39 +1320,143 @@ app.get('/api/traffic/:id', function (req, res) {
   res.send(result);
 });
 
+/**
+ * 新增TrafficSource
+ *
+ */
+app.post('/api/traffic', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      "name": "TrafficSource2",
+      "postbackUrl": "",
+      "pixelRedirectUrl": "",
+      "impTracking": 1,
+      "externalId": "",
+      "cost": "",
+      "params": ""
+    }
+  };
+  res.send(result)
+});
+
 app.post('/api/traffic/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      "id": 1,
+      "name": "TrafficSource2",
+      "postbackUrl": "",
+      "pixelRedirectUrl": "",
+      "impTracking": 1,
+      "externalId": "",
+      "cost": "",
+      "params": ""
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * 删除TrafficSource
+ *
+ */
+app.delete('/api/traffic/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+  res.send(result);
+});
+
+/**
+ * 获取用户所有
+ *
+ */
+app.get('/api/affiliate', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      lists: [
+        {id: 1, name: "affilate1", postbackUrl: ""},
+        {id: 2, name: "affilate2", postbackUrl: ""},
+        {id: 3, name: "affilate3", postbackUrl: ""}
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * 根据ID获取Affiliate
+ *
+ */
+app.get('/api/affiliate/:id', function (req,res) {
   var result = {
     status: 1,
     message: "",
     data: {
       id: 1,
-      name: "traffic1",
-      params: []
+      name: "affilate1",
+      postbackUrl: "",
+      appendClickId: 1,
+      duplicatedPostback: 1,
+      ipWhiteList: ""
     }
   };
-  res.send({item: req.body});
+  res.send(result);
 });
 
-app.delete('/api/traffic/:id', function (req, res) {
-  res.send({item: {id: req.params.tsId}});
-});
-
-app.post('/traffic/source/status', function (req, res) {
-  var item = req.body;
-  res.send({item: item});
-});
-
-app.get('/api/networks', function (req, res) {
+/**
+ * 新增Affiliate
+ *
+ */
+app.post('/api/affiliate', function (req, res) {
   var result = {
     status: 1,
     message: "",
     data: {
-      affiliatenetworks: [
-        {id: 10, name: 'affiliate-network-1'},
-        {id: 2, name: 'affiliate-network-2'},
-        {id: 3, name: 'affiliate-network-3'}
-      ]
+      name: "affilate1",
+      postbackUrl: "",
+      appendClickId: 1,
+      duplicatedPostback: 1,
+      ipWhiteList: ""
     }
+  };
+  res.send(result);
+});
+
+/**
+ * 编辑Affiliate
+ *
+ */
+app.post('/api/affiliate/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: "",
+    data: {
+      id: 1,
+      name: "affilate1",
+      postbackUrl: "",
+      appendClickId: 1,
+      duplicatedPostback: 1,
+      ipWhiteList: ""
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * 删除Affiliate
+ *
+ */
+app.delete('/api/affiliate/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
   };
   res.send(result);
 });

@@ -210,7 +210,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSources', editCampaignCtrl];
+        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
         $scope.$state.go('app.flow');
@@ -218,7 +218,7 @@
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetworks', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', editOfferCtrl];
       } else if (perfType == 'trafficsource') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
       }
@@ -316,7 +316,7 @@
     $scope.columns = cols;
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSources) {
+  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {
     $scope.tags = [];
     if (this.item) {
       Campaign.get({id: 18}, function(campaign) {
@@ -358,7 +358,7 @@
     this.titleType = angular.copy(this.perfType);
 
     // TrafficSource
-    TrafficSources.get(null, function (trafficSource) {
+    TrafficSource.get(null, function (trafficSource) {
       $scope.trafficSources = trafficSource.data.trafficsources;
     });
 
@@ -542,7 +542,7 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetworks) {
+  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetwork) {
     $scope.tags = [];
     if (this.item) {
       Offer.get({id: 22}, function (offer) {
@@ -566,7 +566,7 @@
     $scope.countries = $scope.$root.countries;
 
     // AffiliateNetword
-    AffiliateNetworks.get(null, function (affiliates) {
+    AffiliateNetwork.get(null, function (affiliates) {
       $scope.affiliates = affiliates.data.networks;
     });
 

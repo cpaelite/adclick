@@ -1,5 +1,4 @@
 angular.module('app')
-
   .factory('AccountCheck', ['$resource', function ($resource) {
     return $resource('/account/check');
   }])
@@ -27,14 +26,8 @@ angular.module('app')
   .factory('TrafficSource', ['$resource', function ($resource) {
     return $resource('/api/traffic/:id', {id: '@id'});
   }])
-  .factory('TrafficSources', ['$resource', function ($resource) {
-    return $resource('/api/trafficsources');
-  }])
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
-    return $resource('/api/affilate/:id', {id: '@id'});
-  }])
-  .factory('AffiliateNetworks', ['$resource', function ($resource) {
-    return $resource('/api/networks');
+    return $resource('/api/affiliate/:id', {id: '@id'});
   }])
   .factory('Condition', ['$resource', function ($resource) {
     return $resource('/api/conditions', {}, {'query':  {method:'GET', isArray:true}});
