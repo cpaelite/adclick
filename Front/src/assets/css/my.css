@@ -1589,8 +1589,45 @@ md-content.cs-main-content{
     padding: 6px;
     margin:7px;
 }
-.cs-flow-lander-row{
+.cs-flow-lander-row,
+.cs-flow-offer-row{
     background: #f6f6f6;
+    padding: 10px 0;
+}
+p.cs-flow-lander-view,
+p.cs-flow-offer-view{
+    margin: 0;
+}
+.em-close{
+    font-size: 20px;
+    float: right;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    margin-top: -1px;
+}
+.cs-condition-field{
+    padding-left: 30px;
+}
+.country-select md-select{
+    margin: 0;
+}
+.country-select md-select .md-select-value:focus{
+    border: none;
+}
+.day-input-content{
+    height: 30px;
+    line-height: 30px;
+    border-radius: 4px;
+    background: rgba(18, 189, 206, 0.14);
+}
+.day-checkbox{
+    margin: 15px 0;
+}
+.day-checkbox label{
+    font-size: 13px;
+    line-height: 30px;
+    margin-right: 10px;
 }
 .cs-flow-lander-row:nth-child(2n+1){
     background: #e1e6ee;
@@ -1630,7 +1667,7 @@ md-content.cs-main-content{
     width: 45%;
     height: 35px;
     line-height: 35px;
-    background: #ebf1fa;
+    background: rgba(18, 189, 206, 0.14);
     color: #363636;
     text-shadow: none;
     margin: 0 15px;
@@ -1669,6 +1706,107 @@ md-content.cs-main-content{
 }
 .condition-select md-select{
     margin: 15px 0;
+}
+.weight-input{
+    width: 77%;
+    float: left;
+}
+.cw-flow-rule-condition-base{
+
+}
+.condition-select-content{
+    margin-bottom: 15px;
+}
+.textarea-content textarea{
+    width: 100%;
+    min-height: 100px;
+    padding:10px;
+    resize: none;
+}
+.os-content .list-content{
+    padding:0;
+    margin-bottom: 20px;
+}
+.cs-l2select-selected.list-content{
+    padding-right: 15px;
+}
+.cs-select-content{
+    background: rgba(18, 189, 206, 0.14);
+    padding: 15px;
+}
+.cs-l2select-l1panel,
+.cs-l2select-l2panel{
+    padding-left: 0;
+}
+.cs-select-query input{
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #c9c9c9;
+    padding: 5px;
+}
+.cs-select-query .select-search-icon{
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: rgba(128, 128, 128, 0.55);
+}
+.options-list{
+    height: 150px;
+    overflow: auto;
+    padding: 15px;
+}
+.list-content .md-chips{
+    height: 210px;
+    background: rgba(18, 189, 206, 0.14);
+    box-shadow: none;
+    overflow-y: auto;
+    padding: 5px 10px;
+}
+.list-content .md-chips .md-chip{
+    font-size: 12px;
+    color: #fff;
+    background: #12bdce;
+    border-radius: 4px;
+}
+.inputgroup-input,
+.select-bg,
+.cs-conditions-content .ms-chips{
+    background: rgba(18, 189, 206, 0.14);
+    border: none;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 4px;
+    margin: 10px;
+}
+.select-bg .md-select-value{
+    border: 0;
+    padding: 0 10px;
+}
+.country-select md-select:not([disabled]):focus .md-select-value{
+    border-bottom-color:rgba(18, 189, 206, 0.14);
+}
+.inputgroup-input{
+    padding: 5px;
+}
+.chips-content .md-chips{
+    background: rgba(18, 189, 206, 0.137255);
+    height: 30px;
+    border: none;
+    box-shadow: none !important;
+}
+.chips-content md-chips .md-chips.md-focused{
+    box-shadow: none;
+
+}
+.md-chips .md-chip-input-container{
+    font-size: 15px;
+    color: #363636;
+    margin: 0;
+}
+.chips-con,
+.country-select,
+.textarea-content{
+    padding-right: 15px;
 }
 /*End Start Style*/
 
