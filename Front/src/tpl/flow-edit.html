@@ -70,7 +70,7 @@
       <div ng-show="isDeleted" class="top-btn-list">
         <button class="btn btn-success" ng-click="restore()">
           <i class="material-icons">restore</i>
-          Restore path
+          Restore
         </button>
       </div>
     </div>
@@ -201,9 +201,8 @@
                       </div>
                       <div class="options-list">
                         <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
-                          <label ng-click="toggle(o.value, cdt[f.name])"
-                                 ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
-                            <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])">
+                          <label ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
+                            <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
                             {{o.display}} 
                           </label>
                         </div>
@@ -340,7 +339,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 offer-content">
+        <div class="col-sm-12 col-md-6 offer-content" ng-hide="curPath.directLinking">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Offer</div>
             <div class="col-sm-3 col-md-3">Weight</div>

@@ -117,12 +117,19 @@ app.get('/api/preferences', function (req, res) {
     data: {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
-      "reportViewSort": {
-        "key": "visits",
-        "direction": "desc"
-      },
+      "reportViewOrder": "-visits",
       "reportTimeZone": "+08:00",
+      /*
+      // todo: use array for visible columns
+      "reportVisibleColumns": [
+        "visits", "clicks", "impressions", "conversions", "revenue", "cost", "profit",
+        "cpv", "ictr", "ctr", "cr", "cv", "roi", "epv", "epc", "ap"
+      ],
+      */
       "reportViewColumns": {
+        "name": {
+          "visible": true
+        },
         "offerName": {
           "visible": true
         },

@@ -11,7 +11,7 @@
     $scope.app.subtitle = perfType;
 
     // 初始化
-    $scope.treeView = false;
+    $scope.treeLevel = 1;
     $scope.datetype = '1';
     $scope.fromDate = moment().format('YYYY-MM-DD');
     $scope.fromTime = '00:00';
@@ -41,8 +41,15 @@
           if (!parentRow) {
             parentRow = { treeLevel: 0, expanded: true };
           }
+
+          var group = currentGroupBy[parentRow.treeLevel];
+          var nameKey = groupMap[group].nameKey;
+
           var rows = [];
           result.data.rows.forEach(function(row) {
+            if ($scope.treeLevel > 1) {
+              row.name = row[nameKey];
+            }
             rows.push({
               treeLevel: parentRow.treeLevel + 1,
               expanded: false,
@@ -92,6 +99,21 @@
       $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
     };
 
+    $scope.$watch('query', function (newVal, oldVal) {
+      if (!newVal || !newVal.limit) {
+        return;
+      }
+      if (angular.equals(newVal, oldVal)) {
+        return;
+      }
+      if (oldVal && (newVal.order != oldVal.order || newVal.limit != oldVal.limit) && newVal.page > 1) {
+        $scope.query.page = 1;
+        return;
+      }
+
+      getList();
+    }, true);
+
     var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
       if (!newVal)
         return;
@@ -109,48 +131,12 @@
       unwatch = null;
     }, true);
 
-    $scope.$watch('query', function (newVal, oldVal) {
-      if (!newVal || !newVal.limit) {
-        return;
-      }
-      if (angular.equals(newVal, oldVal)) {
-        return;
-      }
-      if (!oldVal || newVal.order != oldVal.order || newVal.limit != oldVal.limit) {
-        $scope.query.page = 1;
-        $scope.query.__tk += 1;
-        return;
-      }
-
-      getList();
-    }, true);
-
     $scope.changeGroupby = function(idx) {
       if (idx == 0) {
         $scope.groupBy[1] = "";
       }
       $scope.groupBy[2] = "";
     };
-
-    /* xxx
-    $scope.$watch('reportSort', function (newValue, oldValue) {
-      $scope.query.page = 1;
-      if (newValue !== oldValue) {
-        var sort = newValue;
-        var direction = '';
-        var sign = sort.charAt(0);
-        if (sign == '-') {
-          sort = newValue.substring(1);
-          direction = 'desc';
-        } else {
-          direction = 'asc';
-        }
-        $scope.query.sort = sort;
-        $scope.query.direction = direction;
-        $scope.getList();
-      }
-    }, true);
-    */
 
     function filteGroupBy(level) {
       return function(item) {
@@ -166,12 +152,30 @@
     $scope.filteGroupBy2 = filteGroupBy(2);
 
     $scope.applySearch = function(evt) {
-      $scope.treeView = $scope.groupBy.filter(function(item) { return !!item; }).length > 1;
+      $scope.treeLevel = $scope.groupBy.filter(function(item) { return !!item; }).length;
+      if ($scope.treeLevel == 0) {
+        $mdDialog.show(
+          $mdDialog.alert()
+          .clickOutsideToClose(true)
+          .title('No group by')
+          .textContent('You need to select at least one group by!')
+          .ok('Got it!')
+        );
+        return;
+      }
       currentGroupBy = angular.copy($scope.groupBy);
       getDateRange($scope.datetype);
       currentStatus = $scope.activeStatus;
       $scope.query.page = 1;
       $scope.query.__tk += 1;
+      // dirty fix tree view name column
+      if ($scope.treeLevel > 1) {
+        $scope.columns[0].key = 'name';
+        $scope.columns[0].name = 'Name';
+      } else {
+        $scope.columns[0].key = $scope.columns[0].origKey;
+        $scope.columns[0].name = $scope.columns[0].origName;
+      }
     };
 
     $scope.toggleRow = function(row) {
@@ -208,7 +212,9 @@
       if (perfType == 'campaign') {
         controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSources', editCampaignCtrl];
       } else if (perfType == 'flow') {
-        controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
+        //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
+        $scope.$state.go('app.flow');
+        return;
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
@@ -246,6 +252,7 @@
     $scope.viewColumnClick = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };
+    // todo: use array for report visible columns
     $scope.applyChange = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
@@ -302,7 +309,10 @@
     }
 
     // 获取不同页面的不同显示列
-    var cols = columnDefinition[perfType].concat(columnDefinition['common']);
+    var cols = angular.copy(columnDefinition[perfType]).concat(columnDefinition['common']);
+    // dirty fix tree view name column
+    cols[0].origKey = cols[0].key;
+    cols[0].origName = cols[0].name;
     $scope.columns = cols;
   }
 

@@ -150,7 +150,7 @@
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order">
             <tr md-row>
-                <th md-column ng-if="treeView"></th>
+                <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
                     ng-show="preferences.reportViewColumns[item.key].visible">{{item.name}}
                 </th>
@@ -159,10 +159,10 @@
             <tbody md-body>
               <tr md-row
                   ng-repeat="row in report.rows" ng-show="row.parentRow.expanded"
-                  ng-class="{'first-tree': treeView && row.treeLevel==1 }">
-                <td md-cell ng-if="treeView">
+                  ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1 }">
+                <td md-cell ng-if="treeLevel>1">
                   <i class="material-icons table-arrow-down" ng-class="{active:row.expanded}"
-                     ng-if="row.treeLevel<3"
+                     ng-if="row.treeLevel<treeLevel"
                      ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
                 <td md-cell
                     ng-repeat="column in columns"
@@ -174,7 +174,7 @@
             </tbody>
             <tfoot md-body ng-if="report.totalRows != 0">
               <tr md-row>
-                <td md-cell ng-if="treeView"></td>
+                <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell ng-show="preferences.reportViewColumns[columns[0].key].visible">Total</td>
                 <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">{{report.totals[column.key]}}</td>
                 <td md-cell></td>

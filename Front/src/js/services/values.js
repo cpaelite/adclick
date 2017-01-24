@@ -67,7 +67,7 @@ angular.module('app').value('columnDefinition', {
       key: 'payout',
       name: 'Payout'
     }],
-  trafficSource: [{
+  trafficsource: [{
     key: 'trafficSource',
     name: 'Traffic source'
   },
@@ -110,8 +110,9 @@ angular.module('app').value('columnDefinition', {
 });
 angular.module('app').value('groupByOptions', [
   { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName" },
-  { value: "affiliatenetwork", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName" },
+  { value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName" },
   { value: "brand", display: "Brands", idKey: "brandId", nameKey: "brandName" },
+  { value: "affiliatenetwork", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName" },
   { value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "bvName" },
   { value: "browser", display: "Browsers", idKey: "browserId", nameKey: "browserName" },
   { value: "city", display: "City", idKey: "cityId", nameKey: "cityName" },
