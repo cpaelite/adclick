@@ -7,3 +7,4 @@
 **/*.exe
 **/logs
 **/dist
+.DS_Store

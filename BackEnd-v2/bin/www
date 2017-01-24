@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 require("babel-core/register");
+require("babel-polyfill");
 
-var cluster = require('express-cluster');
+// var cluster = require('express-cluster');
 var path = require('path');
 
 try {
@@ -20,7 +21,7 @@ log4js.configure(path.join(__dirname, '../config/log4js.json'));
 
 var log = log4js.getLogger('startup');
 
-cluster(function() {
+// cluster(function() {
   var app = require('../app');
 
   app.set('port', process.env.PORT || 5000);
@@ -29,4 +30,4 @@ cluster(function() {
     log.info('adclick server listening on port', server.address().port,
       " with pid ", process.pid);
   });
-});
+// });

@@ -14,7 +14,7 @@ module.exports = {
   "newbidder":{
     "httpPix":"http://",
     "mainDomain":"newbidder.com",
-    "impRouter":"/impress",
-    "postBackRouter":"/postBackRouter?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
+    "impRouter":"/impression",
+    "postBackRouter":"/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
   }
 }

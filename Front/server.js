@@ -1298,8 +1298,11 @@ app.get('/api/traffic', function (req, res) {
 });
 
 /**
- * 根据ID获取TrafficSource信息
- *
+ * 添加trafficSource [warren] tested
+ */
+ */
+/**
+ * 获得Traffic Source 详细信息
  */
 app.get('/api/traffic/:id', function (req, res) {
   var result = {
@@ -1321,8 +1324,8 @@ app.get('/api/traffic/:id', function (req, res) {
 });
 
 /**
- * 新增TrafficSource
- *
+ * 修改Traffic Source 详细信息 [warren] tested
+ */
  */
 app.post('/api/traffic', function (req, res) {
   var result = {
@@ -1360,8 +1363,8 @@ app.post('/api/traffic/:id', function (req, res) {
 });
 
 /**
- * 删除TrafficSource
- *
+ * 修改Traffic Source 详细信息 [warren] tested
+ */
  */
 app.delete('/api/traffic/:id', function (req, res) {
   var result = {
@@ -1372,8 +1375,8 @@ app.delete('/api/traffic/:id', function (req, res) {
 });
 
 /**
- * 获取用户所有
- *
+ * TODO: define this function first.
+ */
  */
 app.get('/api/affiliate', function (req, res) {
   var result = {
@@ -1391,8 +1394,8 @@ app.get('/api/affiliate', function (req, res) {
 });
 
 /**
- * 根据ID获取Affiliate
- *
+ * get affi networks, [warren] checked, same format.
+ */
  */
 app.get('/api/affiliate/:id', function (req,res) {
   var result = {
@@ -1463,7 +1466,7 @@ app.delete('/api/affiliate/:id', function (req, res) {
 
 /**
  * get list of conditions
- * shang@v1
+ * shang@v1 [Warren] TODO
  */
 app.get('/api/conditions', function (req, res) {
   var result = [{
@@ -1575,7 +1578,7 @@ app.get('/api/conditions', function (req, res) {
 
 /**
  * get list of countries
- * shang@v1
+ * shang@v1 [warren, modified]
  */
 app.get('/api/countries', function (req, res) {
   var result = [
