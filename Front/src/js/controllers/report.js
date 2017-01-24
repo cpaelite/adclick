@@ -2,31 +2,38 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'reportFilter', 'Report', 'Preference',
+      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
       ReportCtrl
     ]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, reportFilter, Report, Preference) {
-    var perfType = $scope.$state.current.name.split('.').pop();
+  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, groupByOptions, Report, Preference) {
+    var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
     // 初始化
-    $scope.datetype = 1;
+    $scope.treeView = false;
+    $scope.datetype = '1';
     $scope.fromDate = moment().format('YYYY-MM-DD');
     $scope.fromTime = '00:00';
     $scope.toDate = moment().add(1, 'days').format('YYYY-MM-DD');
     $scope.toTime = '00:00';
-    $scope.repFilter = reportFilter;
+    $scope.groupByOptions = groupByOptions;
     $scope.groupBy = [perfType, "", ""];
     $scope.query = {
       page: 1,
-      groupBy: 'CampaignID',
-      from: $scope.fromDate + ' ' + $scope.fromTime,
-      to: $scope.toDate + ' ' + $scope.toTime,
-      type: 'TrackingCampaign'
+      __tk: 0
     };
 
-    $scope.treeView = false;
+    var currentGroupBy = angular.copy($scope.groupBy);
+    var currentStatus;
+    var currentDateRange = {};
+
+    getDateRange($scope.datetype);
+
+    var groupMap = {};
+    groupByOptions.forEach(function(group) {
+      groupMap[group.value] = group;
+    });
 
     function buildSuccess(parentRow) {
       return function success(result) {
@@ -58,50 +65,31 @@
       };
     }
 
-    $scope.getList = function(parentRow) {
-      var query = angular.copy($scope.query);
+    function getList(parentRow) {
+      var params = angular.extend({}, $scope.query, currentDateRange);
+      params.status = currentStatus;
+      delete params.__tk;
+
       if (parentRow) {
-        query.groupBy = $scope.groupBy[parentRow.treeLevel];
-        query.page = 1;
-        query.limit = -1;
+        params.groupBy = currentGroupBy[parentRow.treeLevel];
+        params.page = 1;
+        params.limit = -1;
+
+        var group = currentGroupBy[0];
+        var idKey = groupMap[group].idKey;
+        params[group] = parentRow.data[idKey];
 
         if (parentRow.treeLevel == 2) {
           var ppRow = parentRow.parentRow;
-          var idKey = $scope.columns[1].key;
-          query[idKey] = ppRow.data[idKey];
-          // todo: add second level filter
-        } else {
-          var idKey = $scope.columns[1].key;
-          query[idKey] = parentRow.data[idKey];
+          group = currentGroupBy[1];
+          idKey = groupMap[group].idKey;
+          params[group] = ppRow.data[idKey];
         }
-        console.log(idKey, query);
       } else {
-        query.groupBy = $scope.groupBy[0];
+        params.groupBy = currentGroupBy[0];
       }
-      $scope.promise = Report.get(query, buildSuccess(parentRow)).$promise;
-    };
 
-    $scope.toggleRow = function(row) {
-      if (row.expanded) {
-        row.expanded = false;
-        $scope.report.rows.forEach(function(item) {
-          if (item.parentRow == row)
-            item.expanded = false;
-        });
-        return;
-      }
-      if (row.childrenLoaded) {
-        row.expanded = true;
-        return;
-      } else {
-        $scope.getList(row);
-      }
-    };
-
-    $scope.openMenu = function(row, key) {
-      // todo
-      if (key == 'name') {
-      }
+      $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
     };
 
     var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
@@ -111,35 +99,40 @@
       $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
       angular.extend($scope.query, {
         limit: newVal.reportViewLimit,
-        sort: newVal.reportViewSort.key,
-        direction: newVal.reportViewSort.direction,
-        tz: newVal.reportTimeZone,
-        active: newVal.entityType
+        order: newVal.reportViewOrder,
+        tz: newVal.reportTimeZone
       });
-      if (newVal.reportViewSort.direction == 'desc') {
-        $scope.reportSort = '-' + newVal.reportViewSort.key;
-      } else {
-        $scope.reportSort = newVal.reportViewSort.key;
-      }
-      $scope.getList();
+      $scope.activeStatus = newVal.entityType;
+      currentStatus = newVal.entityType;
 
       unwatch();
       unwatch = null;
     }, true);
 
-    $scope.$watch('datetype', function (newValue, oldValue) {
-      if (newValue == oldValue) {
+    $scope.$watch('query', function (newVal, oldVal) {
+      if (!newVal || !newVal.limit) {
         return;
       }
-      getDateRange(newValue);
-    });
-
-    $scope.$watch('query.status', function (newValue, oldValue) {
-      if (newValue !== oldValue) {
-        $scope.getList();
+      if (angular.equals(newVal, oldVal)) {
+        return;
       }
-    });
+      if (!oldVal || newVal.order != oldVal.order || newVal.limit != oldVal.limit) {
+        $scope.query.page = 1;
+        $scope.query.__tk += 1;
+        return;
+      }
 
+      getList();
+    }, true);
+
+    $scope.changeGroupby = function(idx) {
+      if (idx == 0) {
+        $scope.groupBy[1] = "";
+      }
+      $scope.groupBy[2] = "";
+    };
+
+    /* xxx
     $scope.$watch('reportSort', function (newValue, oldValue) {
       $scope.query.page = 1;
       if (newValue !== oldValue) {
@@ -157,26 +150,57 @@
         $scope.getList();
       }
     }, true);
+    */
+
+    function filteGroupBy(level) {
+      return function(item) {
+        // todo: selected should contian filters
+        var selected = [];
+        selected.push($scope.groupBy[0]);
+        if (level == 2)
+          selected.push($scope.groupBy[1]);
+        return selected.indexOf(item) == -1;
+      }
+    }
+    $scope.filteGroupBy1 = filteGroupBy(1);
+    $scope.filteGroupBy2 = filteGroupBy(2);
 
     $scope.applySearch = function(evt) {
-      $scope.treeView = $scope.groupBy.filter(function(item) { return item != ""; }).length > 1;
+      $scope.treeView = $scope.groupBy.filter(function(item) { return !!item; }).length > 1;
+      currentGroupBy = angular.copy($scope.groupBy);
+      getDateRange($scope.datetype);
+      currentStatus = $scope.activeStatus;
       $scope.query.page = 1;
-      $scope.query.from = $scope.fromDate + ' ' + $scope.fromTime;
-      $scope.query.to = $scope.toDate + ' ' + $scope.toTime;
-      $scope.getList();
+      $scope.query.__tk += 1;
     };
 
-    $scope.applyChange = function () {
-      $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
-      $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
-      Preference.save($scope.preferences);
+    $scope.toggleRow = function(row) {
+      if (row.expanded) {
+        row.expanded = false;
+        $scope.report.rows.forEach(function(item) {
+          if (item.parentRow == row)
+            item.expanded = false;
+        });
+        return;
+      }
+      if (row.childrenLoaded) {
+        row.expanded = true;
+        return;
+      } else {
+        getList(row);
+      }
     };
 
-    $scope.checkboxIsChecked = function (num) {
-      $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
+    $scope.openMenu = function(row, key) {
+      // todo
+      if (key == 'name') {
+      }
     };
 
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
+    // fixme: dirty fix, rename the file
+    if (perfType == 'trafficsource')
+      editTemplateUrl = 'tpl/trafficSource-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
       var controller;
@@ -189,7 +213,7 @@
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
         controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetworks', editOfferCtrl];
-      } else if (perfType == 'trafficSource') {
+      } else if (perfType == 'trafficsource') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
       }
 
@@ -202,7 +226,7 @@
         bindToController: true,
         targetEvent: ev,
         templateUrl: editTemplateUrl
-      }).then($scope.getList);
+      }).then(getList);
     };
 
     $scope.deleteItem = function (ev, item) {
@@ -215,13 +239,22 @@
         locals: {type: perfType, item: item},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
-      }).then($scope.getList);
+      }).then(getList);
     };
+
     $scope.viewColumnIsShow = false;
     $scope.viewColumnClick = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };
+    $scope.applyChange = function () {
+      $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
+      $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
+      Preference.save($scope.preferences);
+    };
 
+    $scope.checkboxIsChecked = function (num) {
+      $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
+    };
     $scope.viewCloumnClose = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };
@@ -230,9 +263,6 @@
       var fromDate;
       var toDate;
       switch (value) {
-        case '0':
-          fromDate = moment().format('YYYY-MM-DD');
-          toDate = moment().add('days', 1).format('YYYY-MM-DD');
         case '1':
           fromDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
           toDate = moment().format('YYYY-MM-DD');
@@ -262,11 +292,13 @@
           toDate = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
           break;
       }
-      $scope.datetype = value;
-      $scope.fromDate = fromDate;
-      $scope.toDate = toDate;
-      $scope.query.from = $scope.fromDate + ' ' + $scope.fromTime;
-      $scope.query.to = $scope.toDate + ' ' + $scope.toTime;
+      if (value == '0') {
+        currentDateRange.from = $scope.fromDate + 'T' + $scope.fromTime;
+        currentDateRange.to = $scope.toDate + 'T' + $scope.toTime;
+      } else {
+        currentDateRange.from = fromDate + 'T00:00';
+        currentDateRange.to = toDate + 'T23:59';
+      }
     }
 
     // 获取不同页面的不同显示列

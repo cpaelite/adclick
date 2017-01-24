@@ -7,21 +7,21 @@
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[0]">
+                <md-select class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[1]">
+                <md-select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(1)">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filteGroupBy1">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[2]">
+                <md-select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose grouping">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filteGroupBy2">{{gb.display}}</md-option>
                 </md-select>
             </div>
         </div>
@@ -114,7 +114,7 @@
             </div>
 
             <div class="selectAll">
-                <md-select class="cs-subform-select" ng-model="query.active" required>
+                <md-select class="cs-subform-select" ng-model="activeStatus" required>
                     <md-option value="0">Archived</md-option>
                     <md-option value="1">Active</md-option>
                     <md-option value="2">All</md-option>
@@ -148,7 +148,7 @@
     </div>
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
-            <thead md-head md-order="reportSort">
+            <thead md-head md-order="query.order">
             <tr md-row>
                 <th md-column ng-if="treeView"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
@@ -183,5 +183,5 @@
         </table>
     </md-table-container>
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
-                         md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+                         md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>

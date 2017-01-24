@@ -263,10 +263,7 @@ app.post('/api/preferences', function (req, res) {
     data: {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
-      "reportViewSort": {
-        "key": "visits",
-        "direction": "desc"
-      },
+      "reportViewOrder": "-visit",
       "reportTimeZone": "+08:00",
       "reportViewColumns": {
         "offerName": {

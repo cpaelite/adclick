@@ -108,35 +108,31 @@ angular.module('app').value('columnDefinition', {
       name: 'ICTR'
     }]
 });
-angular.module('app').value('reportFilter', [
-  {code: "campaign", name: "Campaign"},
-  {code: "AffiliateNetwork", name: "Affiliate networks"},
-  {code: "brand", name: "Brands"},
-  {code: "BrowserVersion", name: "Browser versions"},
-  {code: "Browser", name: "Browsers"},
-  {code: "City", name: "City"},
-  {code: "ConnectionType", name: "Connection type"},
-  {code: "Conversions", name: "Conversions"},
-  {code: "Country", name: "Country"},
-  {code: "Day", name: "Day"},
-  {code: "DayOfWeek", name: "Day of week"},
-  {code: "DeviceType", name: "Device types"},
-  {code: "HourOfDay", name: "Hour of day"},
-  {code: "IP", name: "IP"},
-  {code: "ISP", name: "ISP / Carrier"},
-  {code: "Lander", name: "Landers"},
-  {code: "Language", name: "Language"},
-  {code: "MobileCarrier", name: "Mobile carrier"},
-  {code: "Model", name: "Models"},
-  {code: "Monty", name: "Month"},
-  {code: "OS", name: "OS"},
-  {code: "OSVersion", name: "OS versions"},
-  {code: "Offer", name: "Offers"},
-  {code: "Referrer", name: "Referrer"},
-  {code: "ReferrerDomain", name: "Referrer domain"},
-  {code: "Region", name: "State / Region"}
-]);
-
-angular.module('app').value('urlTokens', [
-
+angular.module('app').value('groupByOptions', [
+  { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName" },
+  { value: "affiliatenetwork", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName" },
+  { value: "brand", display: "Brands", idKey: "brandId", nameKey: "brandName" },
+  { value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "bvName" },
+  { value: "browser", display: "Browsers", idKey: "browserId", nameKey: "browserName" },
+  { value: "city", display: "City", idKey: "cityId", nameKey: "cityName" },
+  { value: "connectiontype", display: "Connection type", idKey: "ctId", nameKey: "ctName" },
+  { value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName" },
+  { value: "country", display: "Country", idKey: "countryId", nameKey: "countryName" },
+  { value: "day", display: "Day", idKey: "dayId", nameKey: "dayName" },
+  { value: "dayofweek", display: "Day of week", idKey: "dowId", nameKey: "dowName" },
+  { value: "devicetype", display: "Device types", idKey: "dtId", nameKey: "dtName" },
+  { value: "hourofday", display: "Hour of day", idKey: "hodId", nameKey: "hodName" },
+  { value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName" },
+  { value: "isp", display: "ISP / Carrier", idKey: "ispId", nameKey: "ispName" },
+  { value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName" },
+  { value: "language", display: "Language", idKey: "languageId", nameKey: "languageName" },
+  { value: "mobilecarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "mcName" },
+  { value: "model", display: "Models", idKey: "modelId", nameKey: "modelName" },
+  { value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName" },
+  { value: "os", display: "OS", idKey: "osId", nameKey: "osName" },
+  { value: "osversion", display: "OS versions", idKey: "osversionId", nameKey: "osversionName" },
+  { value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName" },
+  { value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName" },
+  { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
+  { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" }
 ]);
