@@ -24,7 +24,7 @@ exports.checkToken = function() {
               return next(err);
             }
             if(!user.length){
-              next(new Error('no user'));
+              return next(new Error('no user'));
             }
             req.userId = user[0].id;
             req.idText= user[0].idText;

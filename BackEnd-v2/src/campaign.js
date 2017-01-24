@@ -201,6 +201,8 @@ var setting=require('../config/setting');
  * @apiParam {Number} [targetFlowId] targetType 为 1
  * @apiParam {String} [targetUrl]  targetType 为 0
  * @apiParam {Number} status
+ * @apiParam {String} [postbackUrl]
+ * @apiParam {String} [pixelRedirectUrl]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -239,7 +241,9 @@ router.post('/api/campaign',function(req,res,next){
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
         targetUrl:Joi.string().optional(),
-        targetFlowId:Joi.number().optional()
+        targetFlowId:Joi.number().optional(),
+        postbackUrl: Joi.string().optional(),
+        pixelRedirectUrl:Joi.string().optional(),
     });
     req.body.userId = req.userId;
     req.body.idText=req.idText;
@@ -277,7 +281,9 @@ router.post('/api/campaign',function(req,res,next){
  * @apiParam {Number} [targetFlowId] targetType 为 1
  * @apiParam {String} [targetUrl]  targetType 为 0
  * @apiParam {Number} status
- *
+ * @apiParam {String} [postbackUrl]
+ * @apiParam {String} [pixelRedirectUrl]
+ * 
  * @apiSuccessExample {json} Success-Response:
  *   {
  *    status: 1,
@@ -316,7 +322,9 @@ router.post('/api/campaign/:id',function(req,res,next){
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
         targetUrl:Joi.string().optional(),
-        targetFlowId:Joi.number().optional()
+        targetFlowId:Joi.number().optional(),
+        postbackUrl: Joi.string().optional(),
+        pixelRedirectUrl:Joi.string().optional(),
     });
     req.body.userId = req.userId;
     req.body.id=req.params.id;

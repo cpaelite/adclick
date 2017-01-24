@@ -1,5 +1,3 @@
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 /**
  * Created by Aedan on 12/01/2017.
  */
@@ -7,8 +5,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var common = require('./common');
-var md5 = require('md5');
 
 /**
  * @api {get} /api/preferences  获取用户配置
@@ -236,73 +232,5 @@ router.get('/api/networks', function (req, res, next) {
         });
     });
 });
-
-/**
- * @api {get} /api/password/reset   用户修改密码
- * @apiName  
- * @apiGroup User
- * 
- * @apiParam {String} oldpwd
- * @apiParam {String} pwd
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *     }
- *
- */
-router.post('/api/password/reset', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        oldpwd: Joi.string().required(),
-        pwd: Joi.string().required()
-    });
-    req.body.userId = req.userId;
-    const start = (() => {
-        var _ref = _asyncToGenerator(function* () {
-            try {
-                let value = yield common.validate(req.body, schema);
-                let connection = yield common.getConnection();
-                let result = yield query("select `password` from User where `id`= " + value.userId, connection);
-                let message;
-                if (result && result[0]) {
-                    if (md5(value.oldpwd) == result[0].password) {
-                        yield query("update User set `password`= '" + md5(value.pwd) + "' where `id`=" + value.userId, connection);
-                        message = "success";
-                    } else {
-                        message = "old password error";
-                    }
-                } else {
-                    message = "no user";
-                }
-                connection.release();
-                res.json({
-                    status: 1,
-                    message: message
-                });
-            } catch (e) {
-                return next(e);
-            }
-        });
-
-        return function start() {
-            return _ref.apply(this, arguments);
-        };
-    })();
-    start();
-});
-
-function query(sql, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
-}
 
 module.exports = router;

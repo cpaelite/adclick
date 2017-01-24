@@ -5,7 +5,7 @@ global.pool = mysql.createPool({
     user: setting.mysql.user,
     password: setting.mysql.password,
     database: setting.mysql.database,
-    debug: false
+    debug: true
 });
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -27,6 +27,7 @@ var user = require('./routes/user');
 var campaign = require('./routes/campaign');
 var lander=require('./routes/lander');
 var traffic= require('./routes/traffic');
+var user_setting=require('./routes/user_setting');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -55,7 +56,7 @@ app.get('/', function(req, res) {
 });
 
 app.all('/api/*', util.checkToken(), user, network, offer, flow, report,
-    campaign,lander,traffic);
+    campaign,lander,traffic,user_setting);
 
 app.use('/', routes, networktpl);
 

@@ -122,6 +122,16 @@ function insertCampaign(value, connection) {
         val += "," + value.cpm;
     }
 
+    if (value.postbackUrl) {
+        col += ",`postbackUrl`";
+        val += ",'" + value.postbackUrl +"'";
+    }
+
+    if (value.pixelRedirectUrl) {
+        col += ",`postbackUrl`";
+        val += ",'" + value.pixelRedirectUrl +"'";
+    }
+
     if (value.country) {
        // var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
         col += ",`country`";
@@ -197,6 +207,14 @@ function updateCampaign(value, connection) {
     
     if (value.targetUrl) {
         sqlCampaign += ",`targetUrl`='" + value.targetUrl +"'"
+    }
+
+    if (value.postbackUrl) {
+        sqlCampaign += ",`postbackUrl`='" + value.postbackUrl +"'"
+    }
+
+    if (value.pixelRedirectUrl) {
+        sqlCampaign += ",`pixelRedirectUrl`='" + value.pixelRedirectUrl +"'"
     }
 
     //flow targetType=1 &&  flow.id

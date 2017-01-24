@@ -20,6 +20,7 @@ var common = require('./common');
  * @apiParam {String} type
  * @apiParam {Number} offset
  * @apiParam {Number} limit
+ * @apiParam {String} include    数据状态 all  traffic active 
  * @apiParam {String} [filter]
  * @apiParam {String} [filter1]
  * @apiParam {String} [filter1Value]
