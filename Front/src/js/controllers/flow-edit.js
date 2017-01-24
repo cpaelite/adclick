@@ -449,12 +449,13 @@
     $scope.save = function() {
       // clean up before save
       var flowData = {
-        id: theFlow.id || null,
         name: theFlow.name,
         country: theFlow.country,
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };
+      if (theFlow.id)
+        flowData.id = theFlow.id;
 
       theFlow.rules.forEach(function(rule) {
         if (rule.isDeleted)
