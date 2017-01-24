@@ -81,8 +81,8 @@
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
       })
-      .state('app.report.trafficsource', {
-        url: '/trafficsource',
+      .state('app.report.traffic', {
+        url: '/traffic',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
       })

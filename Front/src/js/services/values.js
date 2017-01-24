@@ -67,12 +67,12 @@ angular.module('app').value('columnDefinition', {
       key: 'payout',
       name: 'Payout'
     }],
-  trafficsource: [{
-    key: 'trafficSource',
+  traffic: [{
+    key: 'trafficName',
     name: 'Traffic source'
   },
     {
-      key: 'trafficSourceId',
+      key: 'trafficId',
       name: 'Traffic source ID'
     }],
   common: [{
@@ -111,8 +111,9 @@ angular.module('app').value('columnDefinition', {
 angular.module('app').value('groupByOptions', [
   { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName" },
   { value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName" },
+  /*
   { value: "brand", display: "Brands", idKey: "brandId", nameKey: "brandName" },
-  { value: "affiliatenetwork", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName" },
+  { value: "affiliate", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName" },
   { value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "bvName" },
   { value: "browser", display: "Browsers", idKey: "browserId", nameKey: "browserName" },
   { value: "city", display: "City", idKey: "cityId", nameKey: "cityName" },
@@ -125,15 +126,21 @@ angular.module('app').value('groupByOptions', [
   { value: "hourofday", display: "Hour of day", idKey: "hodId", nameKey: "hodName" },
   { value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName" },
   { value: "isp", display: "ISP / Carrier", idKey: "ispId", nameKey: "ispName" },
+  */
   { value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName" },
+  /*
   { value: "language", display: "Language", idKey: "languageId", nameKey: "languageName" },
   { value: "mobilecarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "mcName" },
   { value: "model", display: "Models", idKey: "modelId", nameKey: "modelName" },
   { value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName" },
   { value: "os", display: "OS", idKey: "osId", nameKey: "osName" },
   { value: "osversion", display: "OS versions", idKey: "osversionId", nameKey: "osversionName" },
+  */
   { value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName" },
+  /*
   { value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName" },
   { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
-  { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" }
+  { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
+  */
+  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" }
 ]);

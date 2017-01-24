@@ -203,7 +203,7 @@
 
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
     // fixme: dirty fix, rename the file
-    if (perfType == 'trafficsource')
+    if (perfType == 'traffic')
       editTemplateUrl = 'tpl/trafficSource-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
@@ -219,7 +219,7 @@
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
       } else if (perfType == 'offer') {
         controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', editOfferCtrl];
-      } else if (perfType == 'trafficsource') {
+      } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
       }
 

@@ -1298,10 +1298,6 @@ app.get('/api/traffic', function (req, res) {
 });
 
 /**
- * 添加trafficSource [warren] tested
- */
- */
-/**
  * 获得Traffic Source 详细信息
  */
 app.get('/api/traffic/:id', function (req, res) {
@@ -1324,8 +1320,7 @@ app.get('/api/traffic/:id', function (req, res) {
 });
 
 /**
- * 修改Traffic Source 详细信息 [warren] tested
- */
+ * Add new Traffic Source 详细信息 [warren] tested
  */
 app.post('/api/traffic', function (req, res) {
   var result = {
@@ -1363,8 +1358,7 @@ app.post('/api/traffic/:id', function (req, res) {
 });
 
 /**
- * 修改Traffic Source 详细信息 [warren] tested
- */
+ * Delete Traffic Source [warren] tested
  */
 app.delete('/api/traffic/:id', function (req, res) {
   var result = {
@@ -1375,15 +1369,14 @@ app.delete('/api/traffic/:id', function (req, res) {
 });
 
 /**
- * TODO: define this function first.
- */
+ * Get list of affiliates
  */
 app.get('/api/affiliate', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
     data: {
-      lists: [
+      networks: [
         {id: 1, name: "affilate1", postbackUrl: ""},
         {id: 2, name: "affilate2", postbackUrl: ""},
         {id: 3, name: "affilate3", postbackUrl: ""}
@@ -1394,8 +1387,7 @@ app.get('/api/affiliate', function (req, res) {
 });
 
 /**
- * get affi networks, [warren] checked, same format.
- */
+ * get affiliate network by id, [warren] checked, same format.
  */
 app.get('/api/affiliate/:id', function (req,res) {
   var result = {
