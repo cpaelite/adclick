@@ -330,3 +330,11 @@ CREATE TABLE AdClickTool.`BrandWithVersions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`MobileCarriers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `country` varchar(3) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
