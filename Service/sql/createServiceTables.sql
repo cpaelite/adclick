@@ -298,3 +298,35 @@ CREATE TABLE AdClickTool.`UserEventLog` (
   `changedAt` int(11) NOT NULL COMMENT '创建的时间戳',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`Languages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `code` varchar(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`OSWithVersions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(16) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`BrowserWithVersions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(16) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`BrandWithVersions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(16) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
