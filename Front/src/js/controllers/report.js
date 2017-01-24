@@ -145,7 +145,7 @@
         selected.push($scope.groupBy[0]);
         if (level == 2)
           selected.push($scope.groupBy[1]);
-        return selected.indexOf(item) == -1;
+        return selected.indexOf(item.value) == -1;
       }
     }
     $scope.filteGroupBy1 = filteGroupBy(1);
