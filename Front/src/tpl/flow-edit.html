@@ -140,9 +140,9 @@
         </div>
 
         <ul class="cs-conditions-content">
-          <li ng-repeat="cdt in curRule.conditions">
+          <li ng-repeat="cdt in curRule.conditions" class="clearfix">
             <i class="material-icons tree-icon">album</i>
-            <span class="label label-default condition-select-content">{{cdt._def.display}} <em ng-click="deleteCondition(cdt)">x</em></span>
+            <span class="label label-default condition-select-content">{{cdt._def.display}} <em ng-click="deleteCondition(cdt)" class="em-close">x</em></span>
             <div class="btn-group is-btn">
               <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="'is'">is</label>
               <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="'isnt'">is not</label>
@@ -150,13 +150,13 @@
             <br/>
             <div class="cs-condition-field cs-condition-{{f.type}}" ng-repeat="f in cdt._def.fields">
               <p class="cs-condition-desc" ng-if="f.desc">{{f.desc}}</p>
-              <div class="col-md-2" ng-if="f.label">{{f.label}}</div>
-              <div ng-if="f.type=='textarea'" ng-class="{'col-md-10': f.label}">
+              <div class="col-md-4 day-input-content" ng-if="f.label">{{f.label}}</div>
+              <div ng-if="f.type=='textarea'" ng-class="{'col-md-10': f.label}" class="textarea-content">
                 <textarea ng-model="cdt[f.name]"></textarea>
               </div>
 
-              <div ng-if="f.type=='select'" ng-class="{'col-md-10': f.label}">
-                <md-select ng-model="cdt[f.name]">
+              <div ng-if="f.type=='select'" ng-class="{'col-md-8': f.label}" class="country-select">
+                <md-select ng-model="cdt[f.name]" class="select-bg">
                   <md-option ng-repeat="o in f.options" value="{{o.value}}">{{o.display}}</md-option>
                 </md-select>
               </div>
@@ -164,56 +164,71 @@
               <div ng-if="f.type=='inputgroup'" ng-class="{'col-md-10': f.label}">
                 <label ng-repeat="ipt in f.inputs">
                   {{ipt.label}} 
-                  <input ng-model="cdt[ipt.name]" placeholder="{{ipt.placeholder}}">
+                  <input ng-model="cdt[ipt.name]" class="inputgroup-input" placeholder="{{ipt.placeholder}}">
                 </label>
               </div>
 
-              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}">
+              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}" class="day-checkbox">
                 <label ng-repeat="o in f.options">
                   <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
                   {{o.display}} 
                 </label>
               </div>
 
-              <div ng-if="f.type=='l2select'" ng-class="{'col-md-10': f.label}">
-                <div class="col-md-6 cs-l2select-l1panel">
-                  <div class="cs-select-query">
-                    <input ng-model="cdt._t1.display">
+              <div ng-if="f.type=='l2select'" class="os-content clearfix" ng-class="{'col-md-10': f.label}">
+                <div class="col-sm-12 col-md-8 list-content">
+                  <div class="col-sm-6 col-md-6 cs-l2select-l1panel">
+                    <div class="cs-select-content">
+                      <div class="cs-select-query">
+                        <input ng-model="cdt._t1.display">
+                        <i class="material-icons select-search-icon">search</i>
+                      </div>
+                      <div class="options-list">
+                        <div ng-repeat="o in f.options | filter:cdt._t1">
+                          <label ng-click="toggleL2select(cdt, o, f.name)"
+                                 ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
+                            {{o.display}} 
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div ng-repeat="o in f.options | filter:cdt._t1">
-                    <label ng-click="toggleL2select(cdt, o, f.name)"
-                           ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
-                      {{o.display}} 
-                    </label>
+                  <div class="col-sm-6 col-md-6 cs-l2select-l2panel">
+                    <div class="cs-select-content">
+                      <div class="cs-select-query">
+                        <input ng-model="cdt._t2.display">
+                        <i class="material-icons select-search-icon">search</i>
+                      </div>
+                      <div class="options-list">
+                        <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
+                          <label ng-click="toggle(o.value, cdt[f.name])"
+                                 ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
+                            <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])">
+                            {{o.display}} 
+                          </label>
+                        </div>
+                      </div>
+
+                      <div ng-hide="cdt._suboptions">
+                        <label>No items to select</label>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-                <div class="col-md-6 cs-l2select-l2panel">
-                  <div class="cs-select-query">
-                    <input ng-model="cdt._t2.display">
-                  </div>
-                  <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
-                    <label ng-click="toggle(o.value, cdt[f.name])"
-                           ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
-                      <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])">
-                      {{o.display}} 
-                    </label>
-                  </div>
-                  <div ng-hide="cdt._suboptions">
-                    <label>No items to select</label>
-                  </div>
-                </div>
-                <div class="col-md-12 cs-l2select-selected">
+
+                <div class="col-sm-12 col-md-4 cs-l2select-selected list-content">
                   <md-chips ng-model="cdt[f.name]" readonly="true" md-removable="true">
                     <md-chip-template>{{cdt._def._fv2n[f.name][$chip]}}</md-chip-template>
                   </md-chips>
                 </div>
               </div>
 
-              <div ng-if="f.type=='chips'" ng-class="{'col-md-10': f.label}">
+              <div ng-if="f.type=='chips'" ng-class="{'col-md-10': f.label}" class="chips-con">
                 <md-chips
                     ng-model="cdt[f.name]"
                     md-autocomplete-snap
-                    md-require-match="true">
+                    md-require-match="true" class="chips-content">
                   <md-autocomplete
                       md-selected-item="selectedItem"
                       md-search-text="searchText"
@@ -308,7 +323,7 @@
                 <em ng-show="lander.relativeWeight<=0">(N/A)</em>
               </div>
               <div class="cs-flow-lander-edit clearfix">
-                <input type="text" class="form-control" ng-model="lander.weight" required>
+                <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
                 <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
               </div>
             </div>
@@ -364,7 +379,7 @@
                 <em ng-show="offer.relativeWeight<=0">(N/A)</em>
               </div>
               <div class="cs-flow-offer-edit clearfix">
-                <input type="text" class="form-control" ng-model="offer.weight" required>
+                <input type="text" class="form-control weight-input" ng-model="offer.weight" required>
                 <i ng-click="deleteOffer(offer)" class="material-icons md-mini lander-delete-btn">delete</i>
               </div>
             </div>
