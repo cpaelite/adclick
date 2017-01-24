@@ -514,18 +514,24 @@ router.post('/api/campaign/:id',function(req,res,next){
                                 }
                         }
                     }
-                  
+                   await common.commit(connection); 
             }catch(err){
                 await common.rollback(connection);
                 throw err;
+            }
+            finally{
+               connection.release(); 
             } 
-           await common.commit(connection); 
-           connection.release(); 
+            
+            
+          
            //redis pub
            new Pub(true).publish(setting.redis.channel,value.userId);
            delete value.userId;  
            delete value.idText;        
            Result=value;
+
+          
           
          }catch(e){
             ResultError=e;
@@ -558,15 +564,17 @@ router.get('/api/campaign/:id',function(req,res,next){
             let value=await common.validate(req.query,schema);
             let connection=await common.getConnection();
             let result= await common.getCampaign(value.id,value.userId,connection);
-            connection.release();
             res.json({
                 status:1,
                 message:'success',
                 data:result ? result : {}
             });
         }catch(e){
-            return next(e);
+             next(e);
         }   
+        finally{
+               connection.release(); 
+        } 
     }
     start();
 
@@ -590,14 +598,17 @@ router.delete('/api/campaign/:id',function(req,res,next){
             let value=await common.validate(req.query,schema);
             let connection=await common.getConnection();
             let result= await common.deleteCampaign(value.id,value.userId,connection);
-            connection.release();
+            // connection.release();
             res.json({
                 status:1,
                 message:'success'
             });
         }catch(e){
-            return next(e);
+             next(e);
         }   
+        finally{
+               connection.release(); 
+       } 
     }
     start();
 

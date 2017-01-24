@@ -32,7 +32,7 @@ router.get('/api/flow/:id/campaigns',function(req,res,next){
             let value=await common.validate(req.query,schema);
             let connection=await common.getConnection();
             let result= await  query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = "+ value.id + " and `userId`="+value.userId,connection);
-            connection.release();
+            //connection.release();
             res.json({
                 status:1,
                 message:'success',
@@ -41,8 +41,11 @@ router.get('/api/flow/:id/campaigns',function(req,res,next){
                 }
             });
         }catch(e){
-            return next(e);
-        }   
+             next(e);
+        } 
+        finally{
+               connection.release(); 
+       }   
     }
     start();
 });
@@ -173,7 +176,7 @@ router.get('/api/flow/:id',function(req,res,next){
                      }
                  }
              }
-            connection.release();
+            //connection.release();
             res.json({
                 status:1,
                 message:'success',
@@ -181,7 +184,10 @@ router.get('/api/flow/:id',function(req,res,next){
             });
         }catch(e){
             return next(e);
-        }   
+        }
+        finally{
+               connection.release(); 
+       }    
     }
     start();
 });
@@ -273,7 +279,7 @@ router.delete('/api/flow/:id',function(req,res,next){
             let value=await common.validate(req.query,schema);
             let connection=await common.getConnection();
             let result= await common.deleteFlow(value.id,value.userId,connection);
-            connection.release();
+            //connection.release();
             res.json({
                 status:1,
                 message:'success'
@@ -281,6 +287,9 @@ router.delete('/api/flow/:id',function(req,res,next){
         }catch(e){
             return next(e);
         }   
+        finally{
+               connection.release(); 
+       } 
     }
     start();
 
@@ -434,12 +443,15 @@ module.exports=router;
                 throw err;
             }
            await common.commit(connection);  
-           connection.release(); 
+           //connection.release(); 
            delete value.userId;  
            delete value.idText;        
            Result=value;
          }catch(e){
             ResultError=e;
+         } 
+         finally{
+               connection.release(); 
          } 
 
          return new Promise(function(resolve,reject){

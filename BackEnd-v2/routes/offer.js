@@ -60,7 +60,7 @@ router.post('/api/offer', function (req, res, next) {
             delete value.userId;
             delete value.idText;
             value.id = landerResult.insertId;
-            connection.release();
+            //connection.release();
             res.json({
                 status: 1,
                 message: 'success',
@@ -69,6 +69,9 @@ router.post('/api/offer', function (req, res, next) {
         } catch (e) {
             next(e);
         }
+        finally{
+               connection.release(); 
+       } 
 
     }
     start();
@@ -134,7 +137,7 @@ router.post('/api/offer/:id', function (req, res, next) {
             }
             delete value.userId;
             delete value.idText;
-            connection.release();
+            //connection.release();
             res.json({
                 status: 1,
                 message: 'success',
@@ -144,6 +147,9 @@ router.post('/api/offer/:id', function (req, res, next) {
         } catch (e) {
             next(e);
         }
+        finally{
+            connection.release(); 
+       } 
     }
     start();
 });
@@ -181,8 +187,11 @@ router.get('/api/offer/:id', function (req, res, next) {
                 data: result ? result : {}
             });
         } catch (e) {
-            return next(err);
+             next(err);
         }
+        finally{
+               connection.release(); 
+       } 
     }
     start();
 
@@ -241,14 +250,17 @@ router.delete('/api/offer/:id', function (req, res, next) {
             let value = await common.validate(req.query, schema);
             let connection = await common.getConnection();
             let result = await common.deleteOffer(value.id, value.userId, connection);
-            connection.release();
+            //connection.release();
             res.json({
                 status: 1,
                 message: 'success'
             });
         } catch (e) {
-            return next(e);
+             next(e);
         }
+        finally{
+               connection.release(); 
+       } 
     }
     start();
 

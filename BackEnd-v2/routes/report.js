@@ -145,7 +145,7 @@ router.post('/api/report', async function (req, res, next) {
         let result;
         let connection = await common.getConnection();
         result = await campaignReport(req.body, connection);
-        connection.release();
+        //connection.release();
         res.json({
             status: 1,
             message: 'success',
@@ -154,6 +154,9 @@ router.post('/api/report', async function (req, res, next) {
     } catch (e) {
         return next(e);
     }
+    finally{
+        connection.release(); 
+     } 
 
 });
 
