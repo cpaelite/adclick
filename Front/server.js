@@ -1291,6 +1291,9 @@ app.delete('/api/offers/:offerId', function (req, res) {
   res.send(result);
 });
 
+/**
+ * trafficSource [warren] tested
+ */
 app.get('/api/trafficsources', function (req, res) {
   var result = {
     status: 1,
@@ -1307,7 +1310,7 @@ app.get('/api/trafficsources', function (req, res) {
 });
 
 /**
- * 添加trafficSource tested
+ * 添加trafficSource [warren] tested
  */
 app.post('/api/traffic', function (req, res) {
   var item = req.body;
@@ -1337,6 +1340,9 @@ app.get('/api/traffic/:id', function (req, res) {
   res.send(result);
 });
 
+/**
+ * 修改Traffic Source 详细信息 [warren] tested
+ */
 app.post('/api/traffic/:id', function (req, res) {
   var result = {
     status: 1,
@@ -1350,6 +1356,9 @@ app.post('/api/traffic/:id', function (req, res) {
   res.send({item: req.body});
 });
 
+/**
+ * 修改Traffic Source 详细信息 [warren] tested
+ */
 app.delete('/api/traffic/:id', function (req, res) {
   res.send({item: {id: req.params.tsId}});
 });
