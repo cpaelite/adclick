@@ -190,7 +190,7 @@ router.get('/api/flows', function (req, res, next) {
 
 /**
  * @api {get} /api/networks  获取用户所有affilatenetworks
- * @apiName  
+ * @apiName  获取用户所有affilatenetworks
  * @apiGroup User
  *
  * @apiSuccessExample {json} Success-Response:

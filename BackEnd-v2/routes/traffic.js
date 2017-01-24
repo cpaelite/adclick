@@ -82,7 +82,6 @@ router.post('/api/traffic', function (req, res, next) {
  * @apiParam {String} [externalId]
  * @apiParam {String} [cost]
  * @apiParam {String} [params]
- * @apiParam {Number} [deleted]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -102,8 +101,7 @@ router.post('/api/traffic/:id', function (req, res, next) {
         impTracking: Joi.number().optional(),
         externalId: Joi.string().optional(),
         cost: Joi.string().optional(),
-        params: Joi.string().optional(),
-        deleted: Joi.number().optional()
+        params: Joi.string().optional()
     });
 
     req.body.userId = req.userId;
@@ -189,8 +187,8 @@ router.delete('/api/traffic/:id', function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
-    req.body.userId = req.userId;
-    req.body.id = req.params.id;
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
     console.info(req);
     const start = (() => {
         var _ref4 = _asyncToGenerator(function* () {

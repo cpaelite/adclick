@@ -8,7 +8,7 @@ var md5 = require('md5');
 
 /**
  * @api {get} /api/user/profile    用户信息 
- * @apiName  
+ * @apiName  用户信息
  * @apiGroup Setting
  * 
  * @apiSuccessExample {json} Success-Response:
@@ -56,7 +56,7 @@ router.get('/api/user/profile', function (req, res, next) {
 
 /**
  * @api {post} /api/user/profileChange   用户信息修改
- * @apiName  
+ * @apiName  用户信息修改
  * @apiGroup Setting
  * 
  * @apiParam {String} firstname 
@@ -115,7 +115,7 @@ router.post('/api/user/profile', function (req, res, next) {
 
 /**
  * @api {post} /api/user/passwordChange   用户修改密码
- * @apiName  
+ * @apiName  用户修改密码
  * @apiGroup Setting
  * 
  * @apiParam {String} oldpwd
@@ -172,7 +172,7 @@ router.post('/api/user/passwordChange', function (req, res, next) {
 
 /**
  * @api {post} /api/user/emailChange   用户修改email
- * @apiName  
+ * @apiName  用户修改email
  * @apiGroup Setting
  * 
  * @apiParam {String} email
@@ -229,7 +229,7 @@ router.post('/api/user/emailChange', function (req, res, next) {
 
 /**
  * @api {post} /api/user/referral   用户推广收益
- * @apiName  
+ * @apiName  用户推广收益
  * @apiGroup Setting
  * 
  *
