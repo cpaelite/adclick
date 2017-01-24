@@ -421,7 +421,7 @@
 
     function excludeIn(list) {
       return function(item) {
-        list.indexOf(item) == -1;
+        return list.indexOf(item) == -1;
       };
     }
 
@@ -432,7 +432,7 @@
     $scope.exists = function(item, list) {
       list.indexOf(item) >= 0;
     };
-    $scope.toggle = function (item, list) {
+    $scope.toggle = function(item, list) {
       var idx = list.indexOf(item);
       if (idx >= 0) {
         list.splice(idx, 1);

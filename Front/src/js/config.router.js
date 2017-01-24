@@ -48,61 +48,53 @@
       .state('app', {
         abstract: true,
         url: '/app',
-        templateUrl: "tpl/app.html"
+        templateUrl: "tpl/app.html",
+        data: { needAuth: true }
       })
       .state('app.dashboard', {
         url: '/dashboard',
         templateUrl: 'tpl/dashBoard.html',
         controller: 'DashCtrl',
-        data: {}
       })
       .state('app.report', {
         abstract: true,
         url: '/report',
         template: '<div ui-view class="fade-in-up"></div>',
-        data: {}
       })
       .state('app.report.campaign', {
         url: '/campaign',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
-        data: {}
       })
       .state('app.report.flow', {
         url: '/flow',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
-        data: {}
       })
       .state('app.report.offer', {
         url: '/offer',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
-        data: {}
       })
       .state('app.report.lander', {
         url: '/lander',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
-        data: {}
       })
-      .state('app.report.trafficSource', {
+      .state('app.report.trafficsource', {
         url: '/trafficsource',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
-        data: {}
       })
       .state('app.rule', {
         url: '/rule',
         templateUrl: 'tpl/rule.html',
         controller: 'RuleCtrl',
-        data: {}
       })
       .state('app.flow', {
         url: '/flow?id',
         templateUrl: 'tpl/flow-edit.html',
         controller: 'FlowEditCtrl',
-        data: {}
       })
       .state('access', {
         url: '/access',
@@ -121,7 +113,8 @@
       .state('setApp', {
         abstract: true,
         url: '/setApp',
-        templateUrl: "tpl/setApp.html"
+        templateUrl: "tpl/setApp.html",
+        data: { needAuth: true }
       })
       .state('setApp.profile', {
         url: '/profile',

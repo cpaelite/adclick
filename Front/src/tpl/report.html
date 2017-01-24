@@ -7,28 +7,28 @@
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="reportGroupby1">
+                <md-select class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="reportGroupby2">
+                <md-select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(1)">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filteGroupBy1">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="reportGroupby3">
+                <md-select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose grouping">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{fil.code}}" ng-repeat="fil in repFilter">{{fil.name}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filteGroupBy2">{{gb.display}}</md-option>
                 </md-select>
             </div>
         </div>
         <div class="right-select">
             <div class="cs-subform-control search-con">
                 <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search...">
-                <md-icon class="material-icons md-24" ng-click="search()">search</md-icon>
+                <md-icon class="material-icons md-24" ng-click="applySearch($event)">search</md-icon>
             </div>
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="datetype">
@@ -114,12 +114,16 @@
             </div>
 
             <div class="selectAll">
-                <md-select class="cs-subform-select" ng-model="query.active" required>
+                <md-select class="cs-subform-select" ng-model="activeStatus" required>
                     <md-option value="0">Archived</md-option>
                     <md-option value="1">Active</md-option>
                     <md-option value="2">All</md-option>
                 </md-select>
             </div>
+            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applySearch($event)">{{'apply' |
+                translate}}
+            </md-button>
+
             <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="editItem($event)">{{'add' |
                 translate}}
             </md-button>
@@ -129,9 +133,8 @@
             </div>
             <div class="view_column_con" ng-show="viewColumnIsShow">
                 <ul class="view_column_list">
-                    <li ng-repeat="item in columns" ng-click="checkboxIsChecked(item.key)"><input type="checkbox"
-                                                                                                  ng-model="reportViewColumns[item.key].visible"
-                                                                                                  ng-checked="preferences.reportViewColumns[item.key].visible">{{item.name}}
+                    <li ng-repeat="item in columns" ng-click="checkboxIsChecked(item.key)">
+                      <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible">{{item.name}}
                     </li>
                 </ul>
                 <i class="material-icons btn-icon" ng-click="applyChange()">done</i>
@@ -145,120 +148,40 @@
     </div>
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
-            <thead md-head md-order="reportSort">
+            <thead md-head md-order="query.order">
             <tr md-row>
-                <th md-column></th>
+                <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
                     ng-show="preferences.reportViewColumns[item.key].visible">{{item.name}}
                 </th>
-                <th md-column class="cs-cell-action">{{'operation' | translate}}</th>
             </tr>
             </thead>
-            <tbody md-body ng-repeat="tr in trData">
-            <tr md-row class="first-tree">
-                <td md-cell><i class="material-icons table-arrow-down" ng-class="{'active':isActive[$index]}"
-                               ng-click="firstTreeClick($index)">keyboard_arrow_right</i></td>
-                <td md-cell>{{tr.name}}</td>
-                <td md-cell>{{tr.id}}</td>
-                <td md-cell>{{tr.impressions}}</td>
-                <td md-cell>{{tr.visits}}</td>
-                <td md-cell>{{tr.clicks}}</td>
-                <td md-cell>{{tr.conversions}}</td>
-                <td md-cell>{{tr.revenue}}</td>
-                <td md-cell>{{tr.cost}}</td>
-                <td md-cell>{{tr.profit}}</td>
-                <td md-cell>{{tr.cpv}}</td>
-                <td md-cell>{{tr.ictr}}</td>
-                <td md-cell>{{tr.operation}}</td>
-                <td md-cell class="cs-cell-action">
-                    <md-fab-speed-dial md-direction="left" md-open="fab[$index].isOpen"
-                                       class="md-scale md-mini cs-fab-action"
-                                       ng-mouseenter="toggleFab($index, true)" ng-mouseleave="toggleFab($index, false)">
-                        <md-fab-trigger>
-                            <md-button aria-label="operation" class="md-primary md-icon-button md-mini">
-                                <md-icon aria-label="menu">menu</md-icon>
-                            </md-button>
-                        </md-fab-trigger>
-                        <md-fab-actions>
-                            <md-button aria-label="Edit" class="md-fab md-raised md-mini"
-                                       ng-click="editItem($event, tr)">
-                                <md-icon aria-label="Edit">edit</md-icon>
-                            </md-button>
-                            <md-button aria-label="Delete" class="md-fab md-raised md-mini"
-                                       ng-click="deleteItem($event, tr)">
-                                <md-icon aria-label="Delete">delete</md-icon>
-                            </md-button>
-                        </md-fab-actions>
-                    </md-fab-speed-dial>
-                </td>
-            </tr>
-            <tr md-row ng-show="treeFirstChildIsShow[$index]">
-                <td md-cell><i class="material-icons table-arrow-down" ng-class="{'down':isDown[$index]}"
-                               ng-click="secondTreeClick($index)">keyboard_arrow_right</i></td>
-                <td md-cell>Campaign1</td>
-                <td md-cell>1</td>
-                <td md-cell>2</td>
-                <td md-cell>3</td>
-                <td md-cell>4</td>
-                <td md-cell>5</td>
-                <td md-cell>6</td>
-                <td md-cell>7</td>
-                <td md-cell>8</td>
-                <td md-cell>9</td>
-                <td md-cell>10</td>
-                <td md-cell>10</td>
-            </tr>
-            <tr md-row ng-show="treeSecondChildIsShow[$index]">
-                <td md-cell></td>
-                <td md-cell>Campaign2</td>
-                <td md-cell>1</td>
-                <td md-cell>2</td>
-                <td md-cell>3</td>
-                <td md-cell>4</td>
-                <td md-cell>5</td>
-                <td md-cell>6</td>
-                <td md-cell>7</td>
-                <td md-cell>8</td>
-                <td md-cell>9</td>
-                <td md-cell>10</td>
-                <td md-cell>10</td>
-            </tr>
-            </tbody>
-            <!--   <tbody md-body>
-              <tr md-row ng-repeat="item in report.rows" ng-init="fab[$index] = {isOpen: false, tooltipVisible:false}">
-                <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible" ng-click="lineClick(reportGroupby1, columns[1].key, item[columns[1].key], 1)">{{item[column.key]}}</td>
-                <td md-cell class="cs-cell-action">
-                  <md-fab-speed-dial md-direction="left" md-open="fab[$index].isOpen"
-                  class="md-scale md-mini cs-fab-action"
-                  ng-mouseenter="toggleFab($index, true)" ng-mouseleave="toggleFab($index, false)">
-                  <md-fab-trigger>
-                  <md-button aria-label="operation" class="md-primary md-icon-button md-mini">
-                  <md-icon aria-label="menu">menu</md-icon>
-                  </md-button>
-                  </md-fab-trigger>
-                  <md-fab-actions>
-                  <md-button aria-label="Edit" class="md-fab md-raised md-mini"
-                  ng-click="editItem($event, item)">
-                  <md-icon aria-label="Edit">edit</md-icon>
-                  </md-button>
-                  <md-button aria-label="Delete" class="md-fab md-raised md-mini"
-                  ng-click="deleteItem($event, item)">
-                  <md-icon aria-label="Delete">delete</md-icon>
-                  </md-button>
-                  </md-fab-actions>
-                  </md-fab-speed-dial>
+            <tbody md-body>
+              <tr md-row
+                  ng-repeat="row in report.rows" ng-show="row.parentRow.expanded"
+                  ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1 }">
+                <td md-cell ng-if="treeLevel>1">
+                  <i class="material-icons table-arrow-down" ng-class="{active:row.expanded}"
+                     ng-if="row.treeLevel<treeLevel"
+                     ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
+                <td md-cell
+                    ng-repeat="column in columns"
+                    ng-show="preferences.reportViewColumns[column.key].visible"
+                    ng-click="openMenu(row, column.key)">
+                  {{row.data[column.key]}}
                 </td>
               </tr>
             </tbody>
-            <tbody md-body ng-if="report.totalRows != 0">
+            <tfoot md-body ng-if="report.totalRows != 0">
               <tr md-row>
+                <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell ng-show="preferences.reportViewColumns[columns[0].key].visible">Total</td>
                 <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">{{report.totals[column.key]}}</td>
                 <td md-cell></td>
               </tr>
-            </tbody> -->
+            </tfoot>
         </table>
     </md-table-container>
-    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.offset"
-                         md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
+                         md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
