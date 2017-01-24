@@ -20,7 +20,7 @@ var common = require('./common');
  * @apiParam {Object} affiliateNetwork {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
  * @apiParam {String} country ""
- * @apiParam {Array}  [tags]  
+ * @apiParam {Array}  [tags]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -92,7 +92,7 @@ router.post('/api/offer', function (req, res, next) {
  * @apiParam {Number} [payoutMode]
  * @apiParam {Number} [affiliateNetwork] {"id":1,name:""}
  * @apiParam {Number} [payoutValue]
- * @apiParam {String} [country]  
+ * @apiParam {String} [country]
  * @apiParam {Number} [deleted]
  * @apiParam {Array} [tags]
  *
@@ -199,6 +199,42 @@ router.get('/api/offer/:id', function (req, res, next) {
         };
     })();
     start();
+});
+
+/**
+ * @api {get} /api/offers get offer list
+ * @apiName offers
+ * @apiGroup offer
+ *
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',data:{}  }
+ *
+ */
+router.get('/api/offers', function (req, res, next) {
+    // var schema = Joi.object().keys({
+    //     userId: Joi.number().required()
+    // });
+    // TODO: validate schema
+    console.info(req.body);
+    var sql = "select id, name from Offer where userId = " + req.userId;
+    console.info(sql);
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            err.status = 303;
+            return next(err);
+        }
+        connection.query(sql, function (err, result) {
+            connection.release();
+            if (err) {
+                return next(err);
+            }
+            res.json(result);
+        });
+    });
 });
 
 /**
