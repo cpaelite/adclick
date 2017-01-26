@@ -5,6 +5,198 @@ var common=require('./common');
 var setting=require('../config/setting');
 
 
+var setting=require('../config/setting');
+
+
+/**
+ * @api {get} /api/flow/:id/campaigns 获取flow相关的所有campaign
+ * @apiName 获取flow相关的所有campaign
+ * @apiGroup flow
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',
+ *    data:{
+ *        campaigns:[{id:,name:""}]
+ *     }
+ *
+ *   }
+ */
+
+router.get('/api/flow/:id/campaigns',function(req,res,next){
+     var schema=Joi.object().keys({
+            userId:Joi.number().required(),
+            id:Joi.number().required() 
+        });
+      req.query.userId = req.userId;
+      req.query.id=req.params.id;
+      const start =async ()=>{
+        try{
+            let value=await common.validate(req.query,schema);
+            let connection=await common.getConnection();
+            let result= await  query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = "+ value.id + " and `userId`="+value.userId,connection);
+            //connection.release();
+            res.json({
+                status:1,
+                message:'success',
+                data:{
+                    campaigns:result.length ? result :[]
+                }
+            });
+        }catch(e){
+             next(e);
+        } 
+        finally{
+               connection.release(); 
+        }   
+    }
+    start();
+});
+
+
+/**
+ * @api {get} /api/flow/:id 获取flow detail
+ * @apiName 获取flow detail
+ * @apiGroup flow
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',
+ *    data:{
+ *        campaigns:[{id:,name:""}]
+ *     }
+ *
+ *   }
+ */
+
+router.get('/api/flow/:id',function(req,res,next){
+     var schema=Joi.object().keys({
+            userId:Joi.number().required(),
+            id:Joi.number().required() 
+        });
+      req.query.userId = req.userId;
+      req.query.id=req.params.id;
+      const start =async ()=>{
+        try{
+            let Result ={};
+            Result.rules=[];
+            let value=await common.validate(req.query,schema);
+
+            let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = "+ value.id + " and `userId`="+value.userId;
+            let ruleSql= "select  f.`id` as parentId, r.`id`,r.`name`,r.`json`,r.`status`,r.`type` "+   
+            "from Flow f "+
+            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` "+
+            "left join `Rule` r on r.`id` = f2.`ruleId` "+
+            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` ="+ value.id +" and f.`userId`= "+value.userId ;
+
+            let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, p.`directLink`,p.`redirectMode`,p.`status`,r2.`weight` "+
+            "from Flow f "+
+            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` "+
+            "left join `Rule` r on r.`id` = f2.`ruleId`  "+
+            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` "+
+            "left join `Path` p on p.`id` = r2.`pathId` "+
+            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  "+
+            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 "+
+            "and f.`id` ="+ value.id +" and f.`userId`= "+value.userId;
+
+            let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` "+
+                "from Flow f "+
+                "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` "+
+                "left join `Rule` r on r.`id` = f2.`ruleId`  "+
+                "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` "+
+                "left join `Path` p on p.`id` = r2.`pathId` "+
+                "left join `Lander2Path` p2 on p2.`pathId` = p.`id`  "+
+                "left join `Lander` l on l.`id`= p2.`landerId` "+
+                "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  "+
+                "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 "+
+                "and p2.`deleted` = 0 and l.`deleted` = 0  "+
+                "and f.`id` ="+ value.id +" and f.`userId`= "+value.userId;
+
+            let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` "+
+            "from Flow f "+
+            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` "+
+            "left join `Rule` r on r.`id` = f2.`ruleId`  "+
+            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` "+
+            "left join `Path` p on p.`id` = r2.`pathId` "+
+            "left join `Offer2Path` p2 on p2.`pathId` = p.`id`  "+
+            "left join `Offer` l on l.`id`= p2.`offerId` "+
+            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  "+
+            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 "+
+            "and p2.`deleted` = 0 and l.`deleted` = 0  "+
+            "and f.`id` ="+ value.id +" and f.`userId`= "+value.userId; 
+
+            
+            let connection=await common.getConnection();
+            let PromiseResult= await  Promise.all([query(flowSql,connection),query(ruleSql,connection),query(pathsql,connection),query(landerSql,connection),query(offerSql,connection)]);
+             
+             if (PromiseResult.length){
+                 //flow
+                 if (PromiseResult[0].length){
+                     Object.assign(Result,PromiseResult[0][0]);
+                 }
+                 if(PromiseResult[1].length){
+                     for(let i =0 ;i<PromiseResult[1].length;i++){
+                         //Rule
+                         if (PromiseResult[1][i].parentId == Result.id){
+                              Result.rules[i]={};
+                              Result.rules[i].paths=[];
+                              delete PromiseResult[1][i].parentId;
+                              Object.assign(Result.rules[i],PromiseResult[1][i])
+                             for(let j =0;j<PromiseResult[2].length;j++){
+                                 //path
+                                 if(PromiseResult[2][j].parentId == PromiseResult[1][i].id){
+                                       Result.rules[i].paths[j]={};
+                                       Result.rules[i].paths[j].offers=[];
+                                       Result.rules[i].paths[j].landers=[];
+                                       delete PromiseResult[2][j].parentId
+                                       //Result.rules[i].paths.push(PromiseResult[2][j]);
+                                       Object.assign(Result.rules[i].paths[j],PromiseResult[2][j]);
+                                      
+                                        //lander 
+                                        for(let k =0;k<PromiseResult[3].length;k++){
+                                            if(PromiseResult[3][k].parentId == PromiseResult[2][j].id){
+                                                Result.rules[i].paths[j].landers[k]={};
+                                                delete PromiseResult[3][k].parentId;
+                                                //Result.rules[i].paths[j].landers.push(PromiseResult[3][k])
+                                                Object.assign(Result.rules[i].paths[j].landers[k],PromiseResult[3][k])
+                                            }
+                                        }
+                                         
+                                        //offer
+                                        for(let m =0;m<PromiseResult[4].length;m++){
+                                              if(PromiseResult[4][m].parentId == PromiseResult[2][j].id){
+                                                  Result.rules[i].paths[j].offers[m]={};
+                                                  delete PromiseResult[4][m].parentId;
+                                                 //Result.rules[i].paths[j].offers.push(PromiseResult[4][m])
+                                                 Object.assign(Result.rules[i].paths[j].offers[m],PromiseResult[4][m])
+                                            }
+                                        }
+                                         
+                                 }
+                             }
+                         }
+                         
+                     }
+                 }
+             }
+            // connection.release();
+            res.json({
+                status:1,
+                message:'success',
+                data: Result
+            });
+        }catch(e){
+             next(e);
+        } 
+        finally{
+               connection.release(); 
+        }   
+    }
+    start();
+});
+
+
+ 
 
 
 
@@ -20,7 +212,7 @@ router.post('/api/flows',function(req,res,next){
    var schema=Joi.object().keys({
             userId:Joi.number().required(),
             idText:Joi.string().required(),
-            rules: Joi.array().required().length(1),
+            rules: Joi.array().required(),
             hash: Joi.string(),
             type: Joi.number(),
             id: Joi.string().optional(),
@@ -52,7 +244,7 @@ router.post('/api/flows',function(req,res,next){
  */
 router.post('/api/flow/:id',function(req,res,next){
    var schema=Joi.object().keys({
-            rules: Joi.array().required().length(1),
+            rules: Joi.array().required(),
             hash: Joi.string(),
             type: Joi.number(),
             id: Joi.number().required(),
@@ -87,8 +279,8 @@ router.delete('/api/flow/:id',function(req,res,next){
             id: Joi.number().required(),
             userId:Joi.number().required()
     });
-    req.body.userId = req.userId;  
-    req.body.id=req.params.id;
+    req.query.userId = req.userId;  
+    req.query.id=req.params.id;
     const start =async ()=>{
         try{
             let value=await common.validate(req.query,schema);
