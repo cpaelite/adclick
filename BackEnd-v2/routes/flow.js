@@ -462,31 +462,7 @@ module.exports=router;
          }); 
  };
 
-/**
- * get list of landers
- * params:
- *  columns - needed columns, comma seperated, e.g. id,name
- * shang@v1
- */
-router.get('/api/landers', function (req, res) {
-    var result = [{
-        "id": "1234f491-a22b-455d-bcc9-5c1324a8885b",
-        "name": "Global - AecurityAlert-en 1",
-    }, {
-        "id": "3456f491-a22b-455d-bcc9-5c1324a8885b",
-        "name": "US - BecurityAlert-2",
-    }, {
-        "id": "5678f491-a22b-455d-bcc9-5c1324a8885b",
-        "name": "JP - CrityAlert-en3",
-    }, {
-        "id": "6789f491-a22b-455d-bcc9-5c1324a8885b",
-        "name": "CN - DecurityAlert-en4",
-    }, {
-        "id": "7890f491-a22b-455d-bcc9-5c1324a8885b",
-        "name": "CA - EecityArt-en5",
-    }];
-    res.json(result)
-});
+ 
 
 
 /**

@@ -172,6 +172,38 @@ router.get('/api/lander/:id',function(req,res,next){
 
 })
 
+/**
+ * @api {get} /api/landers  user landers 
+ * @apiName user landers 
+ * @apiGroup lander
+ *
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',data:{}  }
+ *
+ */
+router.get('/api/landers', function (req, res,next) {
+    // userId from jwt, don't need validation
+    var sql = "select id, name from Lander where userId = " + req.userId;
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            err.status = 303
+            return next(err);
+        }
+        connection.query(sql,function (err, result) {
+                connection.release();
+                if (err) {
+                    return next(err);
+                }
+                res.json(
+                    result
+                );
+            });
+    });
+});
 
 
 /**
