@@ -31,7 +31,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
             return next(err);
         }
         pool.getConnection(function (err, connection) {
-            connection.release();
+           
             if (err) {
                 err.status = 303
                 return next(err);
@@ -41,6 +41,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
                     value.name, value.postbackParams, value.desc, 0
                 ],
                 function (err) {
+                    connection.release();
                     if (err) {
                         return next(err);
                     }

@@ -9,8 +9,7 @@
     "watch:test:all": "nodemon --watch ./ --recursive --exec npm run test:all",
     "watch:test": "nodemon --watch ./ --recursive --exec npm run test",
     "nodemon": "nodemon ./bin/www",
-    "start": "node ./bin/www",
-    "build": "babel src -d routes"
+    "start": "node ./bin/www"
   },
   "author": "aedanlee",
   "license": "ISC",

@@ -3,7 +3,8 @@ module.exports = {
     host: 'dev.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
     user: 'root',
     password: 'R%LKsIJF412',
-    database: 'AdClickTool'
+    database: 'AdClickTool',
+    connectionLimit:1000
   },
   "redis":{
     host:"newbidderredis0001.augmjh.0001.usw1.cache.amazonaws.com",

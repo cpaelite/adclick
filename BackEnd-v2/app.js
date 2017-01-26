@@ -5,6 +5,7 @@ global.pool = mysql.createPool({
     user: setting.mysql.user,
     password: setting.mysql.password,
     database: setting.mysql.database,
+    connectionLimit:setting.mysql.connectionLimit,
     debug: process.env.DEBUG === 'true'
 });
 var express = require('express');
