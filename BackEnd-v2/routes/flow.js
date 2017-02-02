@@ -43,14 +43,14 @@ router.post('/api/flows',function(req,res,next){
 
 
 /**
- * @api {post} /api/flow/:id 编辑flow
+ * @api {put} /api/flows/:id 编辑flow
  * @apiName  编辑flow
  * @apiGroup flow
  * @apiParam {String} name
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flow/:id',function(req,res,next){
+router.put('/api/flows/:id',function(req,res,next){
    var schema=Joi.object().keys({
             rules: Joi.array().required().length(1),
             hash: Joi.string(),
@@ -78,11 +78,11 @@ router.post('/api/flow/:id',function(req,res,next){
 
 
 /**
- * @api {delete} /api/flow/:id 删除flow
+ * @api {delete} /api/flows/:id 删除flow
  * @apiName  删除flow
  * @apiGroup flow
  */
-router.delete('/api/flow/:id',function(req,res,next){
+router.delete('/api/flows/:id',function(req,res,next){
     var schema=Joi.object().keys({
             id: Joi.number().required(),
             userId:Joi.number().required()

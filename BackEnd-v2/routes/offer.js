@@ -9,7 +9,7 @@ var common = require('./common');
 
 
 /**
- * @api {post} /api/offer  新增offer
+ * @api {post} /api/offers  新增offer
  * @apiName 新增offer
  * @apiGroup offer
  *
@@ -78,7 +78,7 @@ router.post('/api/offers', function (req, res, next) {
 
 
 /**
- * @api {post} /api/offer/:offerId  编辑offer
+ * @api {put} /api/offers/:offerId  编辑offer
  * @apiName 编辑offer
  * @apiGroup offer
  *
@@ -100,7 +100,7 @@ router.post('/api/offers', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/offer/:id', function (req, res, next) {
+router.put('/api/offers/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         hash: Joi.string().optional(),
@@ -151,7 +151,7 @@ router.post('/api/offer/:id', function (req, res, next) {
 
 
 /**
- * @api {get} /api/offer/:id  offer detail
+ * @api {get} /api/offers/:id  offer detail
  * @apiName offer
  * @apiGroup offer
  *
@@ -163,7 +163,7 @@ router.post('/api/offer/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offer/:id', function (req, res, next) {
+router.get('/api/offers/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -226,11 +226,11 @@ router.get('/api/offers', function (req, res, next) {
 
 
 /**
- * @api {delete} /api/offer/:id 删除offer
+ * @api {delete} /api/offers/:id 删除offer
  * @apiName  删除offer
  * @apiGroup offer
  */
-router.delete('/api/offer/:id', function (req, res, next) {
+router.delete('/api/offers/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
