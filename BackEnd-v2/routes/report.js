@@ -166,7 +166,6 @@ router.get('/api/report', async function (req, res, next) {
 // tz:+08:00
 
 async function campaignReport(value, connection) {
-    console.log(value)
     let {
         groupBy,
         limit,
@@ -181,7 +180,6 @@ async function campaignReport(value, connection) {
         limit = 10000
     page = parseInt(page)
     let offset = (page - 1) * limit;
-    console.log(limit,offset)
     _.forEach(attrs, (attr)=> {
       if (value[attr]) {
         sqlWhere[attr] = value[attr];
@@ -203,7 +201,6 @@ async function campaignReport(value, connection) {
     let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
         sql + ") as K)";
 
-    console.log(sumSql);
 
 
     let result = await Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
