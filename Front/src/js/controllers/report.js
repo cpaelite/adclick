@@ -10,9 +10,9 @@
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
-    // 初始化
     $scope.treeLevel = 1;
     $scope.datetype = '1';
+    // todo: get fromDate/toDate from $stateParams
     $scope.fromDate = moment().format('YYYY-MM-DD');
     $scope.fromTime = '00:00';
     $scope.toDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -23,6 +23,15 @@
       page: 1,
       __tk: 0
     };
+
+    $scope.filters = [];
+    // get filters from $scope.$stateParams
+    groupByOptions.forEach(function(gb) {
+      var val = $scope.$stateParams[gb.value];
+      if (val) {
+        $scope.filters.push({ key: gb.value, val: val });
+      }
+    });
 
     var currentGroupBy = angular.copy($scope.groupBy);
     var currentStatus;
@@ -73,7 +82,9 @@
     }
 
     function getList(parentRow) {
-      var params = angular.extend({}, $scope.query, currentDateRange);
+      var params = {};
+      $scope.filters.forEach(function(f) { params[f.key] = f.val });
+      angular.extend(params, $scope.query, currentDateRange);
       params.status = currentStatus;
       delete params.__tk;
 
@@ -140,16 +151,28 @@
 
     function filteGroupBy(level) {
       return function(item) {
-        // todo: selected should contian filters
-        var selected = [];
-        selected.push($scope.groupBy[0]);
-        if (level == 2)
-          selected.push($scope.groupBy[1]);
-        return selected.indexOf(item.value) == -1;
+        var exclude = [];
+        $scope.filters.forEach(function(f) {
+          exclude.push(f.key);
+        });
+        exclude.push($scope.groupBy[0]);
+        if (level == 2) {
+          exclude.push($scope.groupBy[1]);
+        }
+        return exclude.indexOf(item.value) == -1;
       }
     }
-    $scope.filteGroupBy1 = filteGroupBy(1);
-    $scope.filteGroupBy2 = filteGroupBy(2);
+    $scope.groupbyFilter1 = filteGroupBy(1);
+    $scope.groupbyFilter2 = filteGroupBy(2);
+
+    $scope.hours = [];
+    for (var i=0; i<24; ++i) {
+      if (i < 10) {
+        $scope.hours.push('0' + i + ':00');
+      } else {
+        $scope.hours.push('' + i + ':00');
+      }
+    }
 
     $scope.applySearch = function(evt) {
       $scope.treeLevel = $scope.groupBy.filter(function(item) { return !!item; }).length;
@@ -166,6 +189,7 @@
       currentGroupBy = angular.copy($scope.groupBy);
       getDateRange($scope.datetype);
       currentStatus = $scope.activeStatus;
+      // todo: gogogo
       $scope.query.page = 1;
       $scope.query.__tk += 1;
       // dirty fix tree view name column
@@ -195,10 +219,38 @@
       }
     };
 
-    $scope.openMenu = function(row, key) {
-      // todo
-      if (key == 'name') {
+    $scope.menuAppendTo = null;
+    $scope.menuStatus = { isopen: false };
+    $scope.openMenu = function(evt, row, role) {
+      if (role == 'name') {
+        //todo: fixme
+        //$scope.menuAppendTo = evt.target;
+        $scope.menuStatus.isopen = true;
       }
+    };
+    // todo
+    $scope.canEdit = true;
+    $scope.drilldownFilter = function(item) {
+      var exclude = [];
+      exclude.push(currentGroupBy[0]);
+      $scope.filters.forEach(function(f) {
+        exclude.push(f.key);
+      });
+      return exclude.indexOf(item.value) == -1;
+    };
+    $scope.drilldown = function(row, gb) {
+      if ($scope.treeLevel > 1)
+        return;
+      var idKey = $scope.columns[1].key;
+      var params = {
+        from: currentDateRange.from,
+        to: currentDateRange.to
+      };
+      $scope.filters.forEach(function(f) {
+        params[f.key] = f.val;
+      });
+      params[currentGroupBy[0]] = row.data[idKey];
+      $scope.$state.go('app.report.' + gb.value, params);
     };
 
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
@@ -311,6 +363,7 @@
     // 获取不同页面的不同显示列
     var cols = angular.copy(columnDefinition[perfType]).concat(columnDefinition['common']);
     // dirty fix tree view name column
+    cols[0].role = 'name';
     cols[0].origKey = cols[0].key;
     cols[0].origName = cols[0].name;
     $scope.columns = cols;
