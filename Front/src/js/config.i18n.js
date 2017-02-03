@@ -27,7 +27,7 @@
     offer: 'Offer',
     lander: 'Lander',
     flow: 'Flow',
-    trafficSource: 'TrafficSource',
+    traffic: 'TrafficSource',
     trafficSourceStatus: {
       0: 'Active',
       1: 'InActive'

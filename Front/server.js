@@ -566,7 +566,7 @@ app.post('/api/campaign', function (req, res) {
         "impTracking": "",
         "params": ""
       },
-      "country": "AND",
+      "country": "CHN",
       "status": 1,
       "costModel": 1,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
       "cpc": 0.6,
@@ -654,7 +654,7 @@ app.post('/api/campaign/:campaignId', function (req, res) {
         "impTracking": "",
         "params": ""
       },
-      "country": "AND",
+      "country": "CHN",
       "status": 1,
       "costModel": 1,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
       "cpc": 0.6,
@@ -1161,7 +1161,7 @@ app.get('/api/offers/:offerId', function (req, res) {
       "name": "Offer1",
       "hash": "03f1d070-9089-4502-842d-28101d83f474",
       "url": "http://adbund.com",
-      "country": "AND",
+      "country": "CHN",
       "AffiliateNetworkId": 13,
       "AffiliateNetworkName": "AffiliateNetwork.test2",
       "postbackUrl": "http://2drvh2.newbidder.com/postBackRouter?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
@@ -1209,7 +1209,7 @@ app.post('/api/offers', function (req, res) {
     data: {
       "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
       "url": "http://adbund.com",
-      "country": "AND",
+      "country": "CHN",
       "payoutMode": 0,
       "payoutValue": 0.5,
       "affiliateNetwork": {
@@ -1234,7 +1234,7 @@ app.post('/api/offers/:offerId', function (req, res) {
       "id": 1,
       "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
       "url": "http://adbund.com",
-      "country": "AND",
+      "country": "CHN",
       "payoutMode": 0,
       "payoutValue": 0.5,
       "affiliateNetwork": {
@@ -1575,12 +1575,9 @@ app.get('/api/conditions', function (req, res) {
  */
 app.get('/api/countries', function (req, res) {
   var result = [
-    { "value": "glb", "display": "Global" },
-    { "value": "us", "display": "American" },
-    { "value": "ca", "display": "Canada" },
-    { "value": "cn", "display": "China" },
-    { "value": "jp", "display": "Japan" },
-    { "value": "hk", "display": "Hongkong" }
+    { "value": "Canada", "display": "Canada" },
+    { "value": "CHN", "display": "China" },
+    { "value": "JPN", "display": "Japan" }
   ];
   delayResponse(res, result);
 });

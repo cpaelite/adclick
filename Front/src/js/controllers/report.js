@@ -380,7 +380,7 @@
   function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {
     $scope.tags = [];
     if (this.item) {
-      Campaign.get({id: 18}, function(campaign) {
+      Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         $scope.item = angular.copy(campaign.data);
         if ($scope.item.costModel == 1) {
           $scope.radioTitle = 'CPC';
@@ -542,7 +542,7 @@
   function editLanderCtrl($scope, $mdDialog, Lander) {
     $scope.tags = [];
     if (this.item) {
-      Lander.get({id: 46}, function (lander) {
+      Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
         $scope.tags = $scope.item.tags;
         if ($scope.item['url'] == null) {
@@ -606,7 +606,7 @@
   function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetwork) {
     $scope.tags = [];
     if (this.item) {
-      Offer.get({id: 22}, function (offer) {
+      Offer.get({id: this.item.data.offerId}, function (offer) {
         $scope.item = angular.copy(offer.data);
         if ($scope.item['payoutMode'] == null) {
           $scope.item = {
@@ -628,7 +628,13 @@
 
     // AffiliateNetword
     AffiliateNetwork.get(null, function (affiliates) {
-      $scope.affiliates = affiliates.data.networks;
+      var affiliates = affiliates.data.networks;
+      $scope.affiliates = affiliates;
+      affiliates.forEach(function (affiliate) {
+        if (affiliate.id == affiliates.data.AffiliateNetworkId) {
+          $scope.item.affiliateNetwork = affiliate;
+        }
+      });
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -675,7 +681,7 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
     if (this.item) {
-      TrafficSource.get({id: 15}, function (trafficsource) {
+      TrafficSource.get({id: this.item.id}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
         if (!$scope.item.params) {
           $scope.item.params = [
@@ -766,8 +772,8 @@
 
   function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
     if (this.item) {
-      AffiliateNetwork.get({id: 22}, function (offer) {
-        $scope.item = angular.copy(offer.data);
+      AffiliateNetwork.get({id: 22}, function (affiliate) {
+        $scope.item = angular.copy(affiliate.data);
       });
       this.title = "edit";
     } else {
