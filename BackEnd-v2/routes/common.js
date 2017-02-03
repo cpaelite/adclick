@@ -220,8 +220,8 @@ function updateCampaign(value, connection) {
 
     //flow targetType=1 &&  flow.id
     if (value.flow && value.flow.id) {
-        col += ",`targetFlowId`";
-        val += "," + value.flow.id;
+        sqlCampaign += ",`targetFlowId`="+value.flow.id ;
+       
     }
 
     sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId
@@ -311,6 +311,7 @@ function insertFlow(userId, flow, connection) {
 };
 
 function updateFlow(userId, flow, connection) {
+     
     var sqlFlow = "update Flow set `id`=" + flow.id
     if (flow.name) {
         sqlFlow += ",`name`='" + flow.name + "'"
