@@ -288,7 +288,9 @@
         bindToController: true,
         targetEvent: ev,
         templateUrl: editTemplateUrl
-      }).then(getList);
+      }).then(function () {
+        getList();
+      });
     };
 
     $scope.deleteItem = function (ev, item) {
@@ -301,7 +303,9 @@
         locals: {type: perfType, item: item},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
-      }).then(getList);
+      }).then(function () {
+        getList();
+      });
     };
 
     $scope.viewColumnIsShow = false;
