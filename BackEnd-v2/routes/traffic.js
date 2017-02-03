@@ -29,7 +29,7 @@ var common = require('./common');
  *  *   }
  *
  */
-router.post('/api/traffic', function (req, res, next) {
+router.post('/api/traffic', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -42,14 +42,14 @@ router.post('/api/traffic', function (req, res, next) {
     });
 
     req.body.userId = req.userId
-    const start = async()=> {
+     let connection;
         try {
             let value = await common.validate(req.body, schema);
-            let connection = await common.getConnection();
+             connection = await common.getConnection();
             let trafficResult = await common.insertTrafficSource(value.userId, value, connection);
             delete value.userId;
             value.id = trafficResult.insertId;
-            //connection.release();
+            
             res.json({
                 status: 1,
                 message: 'success',
@@ -57,13 +57,13 @@ router.post('/api/traffic', function (req, res, next) {
             });
         } catch (e) {
             next(e);
-        }
-        finally{
+        }finally{
+            if(connection){
                connection.release(); 
+            }   
        } 
 
-    }
-    start();
+     
 
 });
 
@@ -90,7 +90,7 @@ router.post('/api/traffic', function (req, res, next) {
  *  *   }
  *
  */
-router.post('/api/traffic/:id', function (req, res, next) {
+router.post('/api/traffic/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -105,14 +105,15 @@ router.post('/api/traffic/:id', function (req, res, next) {
 
     req.body.userId = req.userId
     req.body.id = req.params.id;
-    const start = async()=> {
+    let connection;
+   
         try {
             let value = await common.validate(req.body, schema);
             let connection = await common.getConnection();
             await common.updatetraffic(value.userId, value, connection);
 
             delete value.userId;
-            //connection.release();
+            
             res.json({
                 status: 1,
                 message: 'success',
@@ -124,10 +125,12 @@ router.post('/api/traffic/:id', function (req, res, next) {
             next(e);
         }
         finally{
+            if(connection){
                connection.release(); 
+            }
+              
        } 
-    }
-    start();
+     
 });
 
 
@@ -144,19 +147,19 @@ router.post('/api/traffic/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/traffic/:id', function (req, res, next) {
+router.get('/api/traffic/:id',async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.id = req.params.id;
     req.query.userId = req.userId;
-    const start = async()=> {
+    let connection;
+    
         try {
             let value = await common.validate(req.query, schema);
-            let connection = await common.getConnection();
+             connection = await common.getConnection();
             let result = await common.gettrafficDetail(value.id, value.userId, connection);
-            //connection.release();
             res.json({
                 status: 1,
                 message: 'success',
@@ -164,13 +167,11 @@ router.get('/api/traffic/:id', function (req, res, next) {
             });
         } catch (e) {
              next(err);
-        }
-        finally{
-               connection.release(); 
+        }finally{
+            if(connection){
+                connection.release(); 
+            }      
        } 
-    }
-    start();
-
 });
 
 
@@ -179,17 +180,17 @@ router.get('/api/traffic/:id', function (req, res, next) {
  * @apiName  删除traffic
  * @apiGroup traffic
  */
-router.delete('/api/traffic/:id', function (req, res, next) {
+router.delete('/api/traffic/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
-    const start = async()=> {
+     let connection;
         try {
             let value = await common.validate(req.query, schema);
-            let connection = await common.getConnection();
+             connection = await common.getConnection();
             let result = await common.deletetraffic(value.id, value.userId, connection);
             //connection.release();
             res.json({
@@ -200,10 +201,11 @@ router.delete('/api/traffic/:id', function (req, res, next) {
              next(e);
         }
         finally{
-         connection.release(); 
+            if(connection){
+               connection.release(); 
+            }
        } 
-    }
-    start();
+     
 
 });
 

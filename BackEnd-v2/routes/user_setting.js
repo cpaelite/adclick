@@ -25,15 +25,15 @@ var md5 = require('md5');
  *     }
  *
  */
-router.get('/api/user/profile',function(req,res,next){
+router.get('/api/user/profile',async function(req,res,next){
   var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
     req.query.userId = req.userId;
-    const start = async ()=>{
+    let connection;
         try{
             let value= await common.validate(req.query,schema);
-            let connection = await　common.getConnection();
+             connection = await　common.getConnection();
             let result= await query("select `idText`,`firstname`,`lastname`,`status`,`json` from User where `deleted`= 0 and `id`= "+ value.userId,connection);
             //connection.release();
              res.json({
@@ -45,10 +45,11 @@ router.get('/api/user/profile',function(req,res,next){
            next(e);
         }
         finally{
-               connection.release(); 
+            if(connection){
+                connection.release(); 
+            }   
        } 
-   }
-   start();
+    
 });
 
 /**
@@ -68,7 +69,7 @@ router.get('/api/user/profile',function(req,res,next){
  *     }
  *
  */
-router.post('/api/user/profile',function(req,res,next){
+router.post('/api/user/profile',async function(req,res,next){
      var schema = Joi.object().keys({
         userId: Joi.number().required(),
         firstname:Joi.string().optional(),
@@ -76,10 +77,10 @@ router.post('/api/user/profile',function(req,res,next){
         json:Joi.string().optional()
     });
     req.body.userId=req.userId;
-    const start = async ()=>{
+     let connection ;
         try{
             let value= await common.validate(req.body,schema);
-            let connection = await　common.getConnection();
+             connection = await　common.getConnection();
             let sql='update User set ';
             if(value.firstname){
                 sql += "`firstname`='" +  value.firstname +"'";  
@@ -92,7 +93,7 @@ router.post('/api/user/profile',function(req,res,next){
             }
             sql += " where `id`=" + value.userId
             await query(sql,connection);
-            //connection.release();
+             
             res.json({
                 "status": 1,
                  "message": "success"
@@ -101,10 +102,12 @@ router.post('/api/user/profile',function(req,res,next){
             next(e);
         }
         finally{
-               connection.release(); 
+            if(connection){
+                connection.release(); 
+            }
+              
        } 
-    }
-    start();
+     
 });
 
 /**
@@ -123,17 +126,18 @@ router.post('/api/user/profile',function(req,res,next){
  *     }
  *
  */
-router.post('/api/user/passwordChange',function(req,res,next){
+router.post('/api/user/passwordChange',async function(req,res,next){
       var schema = Joi.object().keys({
         userId: Joi.number().required(),
         oldpwd:Joi.string().required(),
         pwd:Joi.string().required()
     });
     req.body.userId=req.userId;
-    const start = async ()=>{
+    let connection;
+     
         try{
             let value= await common.validate(req.body,schema);
-            let connection=await common.getConnection();
+             connection=await common.getConnection();
             let result= await query("select `password` from User where `id`= " + value.userId,connection);
             let message;
             if(result && result[0]){
@@ -155,10 +159,12 @@ router.post('/api/user/passwordChange',function(req,res,next){
                next(e);
         }
         finally{
-               connection.release(); 
+            if(connection){
+                connection.release(); 
+            }
+              
        } 
-    }
-    start();
+     
 });
 
 
@@ -178,17 +184,17 @@ router.post('/api/user/passwordChange',function(req,res,next){
  *     }
  *
  */
-router.post('/api/user/emailChange',function(req,res,next){
+router.post('/api/user/emailChange',async function(req,res,next){
      var schema = Joi.object().keys({
         userId: Joi.number().required(),
         email:Joi.string().required(),
         password:Joi.string().required()
     });
     req.body.userId=req.userId;
-    const start= async ()=>{
+     let connection;
           try{
             let value= await common.validate(req.body,schema);
-            let connection=await common.getConnection();
+             connection=await common.getConnection();
             let result= await query("select `password` from User where `id`= " + value.userId,connection);
             let message;
             if(result && result[0]){
@@ -210,10 +216,12 @@ router.post('/api/user/emailChange',function(req,res,next){
                next(e);
         }
         finally{
-            connection.release(); 
+            if(connection){
+               connection.release(); 
+            }
+            
        } 
-    }
-    start();
+    
 });
 
 

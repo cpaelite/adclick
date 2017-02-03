@@ -346,9 +346,10 @@ router.put('/api/campaigns/:id',function(req,res,next){
  const start = async (data,schema) => {
          let Result;
          let ResultError;
+         let connection;
          try{
             let value= await common.validate(data,schema);
-            let connection= await common.getConnection();
+            connection= await common.getConnection();
             await common.beginTransaction(connection);
             try{
                     //Campaign
@@ -520,7 +521,9 @@ router.put('/api/campaigns/:id',function(req,res,next){
                 throw err;
             }
             finally{
-               connection.release(); 
+               if(connection){
+                 connection.release(); 
+               } 
             } 
             
             
@@ -551,18 +554,18 @@ router.put('/api/campaigns/:id',function(req,res,next){
  * @apiName  campaign detail
  * @apiGroup campaign
  */
-router.get('/api/campaigns/:id',function(req,res,next){
+router.get('/api/campaigns/:id',async function(req,res,next){
      var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.userId= req.userId;
     req.query.id=req.params.id;
-
-    const start =async ()=>{
+    let connection;
+     
         try{
             let value=await common.validate(req.query,schema);
-            let connection=await common.getConnection();
+            connection=await common.getConnection();
             let result= await common.getCampaign(value.id,value.userId,connection);
             res.json({
                 status:1,
@@ -573,10 +576,12 @@ router.get('/api/campaigns/:id',function(req,res,next){
              next(e);
         }   
         finally{
+            if(connection){
                connection.release(); 
+            }
+              
         } 
-    }
-    start();
+    
 
 });
 
@@ -585,18 +590,18 @@ router.get('/api/campaigns/:id',function(req,res,next){
  * @apiName  delete campaign
  * @apiGroup campaign
  */
-router.delete('/api/campaigns/:id',function(req,res,next){
+router.delete('/api/campaigns/:id',async function(req,res,next){
       var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.userId= req.userId;
     req.query.id=req.params.id;
-
-    const start =async ()=>{
+    let connection;
+     
         try{
             let value=await common.validate(req.query,schema);
-            let connection=await common.getConnection();
+             connection=await common.getConnection();
             let result= await common.deleteCampaign(value.id,value.userId,connection);
             // connection.release();
             res.json({
@@ -607,10 +612,12 @@ router.delete('/api/campaigns/:id',function(req,res,next){
              next(e);
         }   
         finally{
+            if(connection){
                connection.release(); 
+            }
+              
        } 
-    }
-    start();
+     
 
 });
 

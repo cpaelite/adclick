@@ -27,7 +27,7 @@ var common = require('./common');
  *    message: 'success' *   }
  *
  */
-router.post('/api/offers', function (req, res, next) {
+router.post('/api/offers', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -46,10 +46,10 @@ router.post('/api/offers', function (req, res, next) {
 
     req.body.userId = req.userId;
     req.body.idText = req.idText;
-    const start = async()=> {
-        try {
+    let connection;
+    try {
             let value = await common.validate(req.body, schema);
-            let connection = await common.getConnection();
+            connection = await common.getConnection();
             let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
             value.postbackUrl = postbackUrl;
             let landerResult = await common.insertOffer(value.userId, value.idText, value, connection);
@@ -61,7 +61,6 @@ router.post('/api/offers', function (req, res, next) {
             delete value.userId;
             delete value.idText;
             value.id = landerResult.insertId;
-            //connection.release();
             res.json({
                 status: 1,
                 message: 'success',
@@ -71,12 +70,10 @@ router.post('/api/offers', function (req, res, next) {
             next(e);
         }
         finally{
+            if(connection){
                connection.release(); 
-       } 
-
-    }
-    start();
-
+            }    
+        }     
 });
 
 
@@ -103,7 +100,7 @@ router.post('/api/offers', function (req, res, next) {
  *   }
  *
  */
-router.put('/api/offers/:id', function (req, res, next) {
+router.put('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         hash: Joi.string().optional(),
@@ -125,10 +122,10 @@ router.put('/api/offers/:id', function (req, res, next) {
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.id = req.params.id;
-    const start = async()=> {
+    let connection;
         try {
             let value = await common.validate(req.body, schema);
-            let connection = await common.getConnection();
+            connection = await common.getConnection();
             await common.updateOffer(value.userId, value, connection);
             await common.updateTags(value.userId, value.id, 3, connection);
             if (value.tags && value.tags.length) {
@@ -138,7 +135,6 @@ router.put('/api/offers/:id', function (req, res, next) {
             }
             delete value.userId;
             delete value.idText;
-            //connection.release();
             res.json({
                 status: 1,
                 message: 'success',
@@ -149,10 +145,11 @@ router.put('/api/offers/:id', function (req, res, next) {
             next(e);
         }
         finally{
-            connection.release(); 
+           if(connection){
+               connection.release(); 
+            }    
        } 
-    }
-    start();
+     
 });
 
 
@@ -169,17 +166,17 @@ router.put('/api/offers/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offers/:id', function (req, res, next) {
+router.get('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.id = req.params.id;
     req.query.userId = req.userId;
-    const start = async()=> {
+    let connection; 
         try {
             let value = await common.validate(req.query, schema);
-            let connection = await common.getConnection();
+            connection = await common.getConnection();
             let result = await common.getOfferDetail(value.id, value.userId, connection);
             connection.release();
             res.json({
@@ -191,10 +188,11 @@ router.get('/api/offers/:id', function (req, res, next) {
              next(err);
         }
         finally{
-               connection.release(); 
+            if(connection){
+              connection.release(); 
+            }    
        } 
-    }
-    start();
+     
 
 });
 
@@ -239,32 +237,29 @@ router.get('/api/offers', function (req, res, next) {
  * @apiName  删除offer
  * @apiGroup offer
  */
-router.delete('/api/offers/:id', function (req, res, next) {
+router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
-    const start = async()=> {
+    let connection; 
         try {
             let value = await common.validate(req.query, schema);
-            let connection = await common.getConnection();
+            connection = await common.getConnection();
             let result = await common.deleteOffer(value.id, value.userId, connection);
-            //connection.release();
             res.json({
                 status: 1,
                 message: 'success'
             });
         } catch (e) {
              next(e);
-        }
-        finally{
+        }finally{
+               if(connection){
                connection.release(); 
-       } 
-    }
-    start();
-
+              }   
+        } 
 });
 
 

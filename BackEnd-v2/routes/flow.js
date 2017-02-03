@@ -5,9 +5,6 @@ var common=require('./common');
 var setting=require('../config/setting');
 
 
-var setting=require('../config/setting');
-
-
 /**
  * @api {get} /api/flow/:id/campaigns 获取flow相关的所有campaign
  * @apiName 获取flow相关的所有campaign
@@ -23,19 +20,18 @@ var setting=require('../config/setting');
  *   }
  */
 
-router.get('/api/flow/:id/campaigns',function(req,res,next){
+router.get('/api/flow/:id/campaigns',async function(req,res,next){
      var schema=Joi.object().keys({
             userId:Joi.number().required(),
             id:Joi.number().required() 
         });
       req.query.userId = req.userId;
       req.query.id=req.params.id;
-      const start =async ()=>{
+      let connection;
         try{
             let value=await common.validate(req.query,schema);
-            let connection=await common.getConnection();
+            connection=await common.getConnection();
             let result= await  query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = "+ value.id + " and `userId`="+value.userId,connection);
-            //connection.release();
             res.json({
                 status:1,
                 message:'success',
@@ -47,10 +43,11 @@ router.get('/api/flow/:id/campaigns',function(req,res,next){
              next(e);
         } 
         finally{
-               connection.release(); 
+            if(connection){
+                connection.release(); 
+            }
         }   
-    }
-    start();
+    
 });
 
 
@@ -69,14 +66,14 @@ router.get('/api/flow/:id/campaigns',function(req,res,next){
  *   }
  */
 
-router.get('/api/flow/:id',function(req,res,next){
+router.get('/api/flow/:id',async function(req,res,next){
      var schema=Joi.object().keys({
             userId:Joi.number().required(),
             id:Joi.number().required() 
         });
       req.query.userId = req.userId;
       req.query.id=req.params.id;
-      const start =async ()=>{
+       let connection;
         try{
             let Result ={};
             Result.rules=[];
@@ -126,7 +123,7 @@ router.get('/api/flow/:id',function(req,res,next){
             "and f.`id` ="+ value.id +" and f.`userId`= "+value.userId; 
 
             
-            let connection=await common.getConnection();
+            connection=await common.getConnection();
             let PromiseResult= await  Promise.all([query(flowSql,connection),query(ruleSql,connection),query(pathsql,connection),query(landerSql,connection),query(offerSql,connection)]);
              
              if (PromiseResult.length){
@@ -179,7 +176,7 @@ router.get('/api/flow/:id',function(req,res,next){
                      }
                  }
              }
-            // connection.release();
+            
             res.json({
                 status:1,
                 message:'success',
@@ -189,10 +186,11 @@ router.get('/api/flow/:id',function(req,res,next){
              next(e);
         } 
         finally{
-               connection.release(); 
+            if(connection){
+                connection.release(); 
+            }   
         }   
-    }
-    start();
+     
 });
 
 
@@ -274,29 +272,29 @@ router.put('/api/flows/:id',function(req,res,next){
  * @apiName  删除flow
  * @apiGroup flow
  */
-router.delete('/api/flows/:id',function(req,res,next){
+router.delete('/api/flows/:id',async function(req,res,next){
     var schema=Joi.object().keys({
             id: Joi.number().required(),
             userId:Joi.number().required()
     });
     req.query.userId = req.userId;  
     req.query.id=req.params.id;
-    const start =async ()=>{
+    let connection;
         try{
             let value=await common.validate(req.query,schema);
-            let connection=await common.getConnection();
+            connection=await common.getConnection();
             let result= await common.deleteFlow(value.id,value.userId,connection);
-            connection.release();
             res.json({
                 status:1,
                 message:'success'
             });
         }catch(e){
-            return next(e);
-        }   
-    }
-    start();
-
+             next(e);
+        } finally{
+            if(connection){
+                connection.release();
+            }
+        }  
 });
 
 module.exports=router;
@@ -305,9 +303,10 @@ module.exports=router;
  const start = async (data,schema) => {
          let Result;
          let ResultError;
+         let connection;
          try{
             let value= await common.validate(data,schema);
-            let connection= await common.getConnection();
+            connection= await common.getConnection();
             await common.beginTransaction(connection);
             try{
                      
@@ -447,12 +446,16 @@ module.exports=router;
                 throw err;
             }
            await common.commit(connection);  
-           connection.release(); 
+          
            delete value.userId;          
            Result=value;
          }catch(e){
             ResultError=e;
-         } 
+         } finally{
+            if(connection){
+                 connection.release(); 
+            }
+         }
 
          return new Promise(function(resolve,reject){
              if(ResultError){
