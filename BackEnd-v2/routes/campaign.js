@@ -353,19 +353,20 @@ const start = async(data, schema) => {
             //Campaign
             let campResult, flowResult;
             if (value.id) {
+                 
                 await common.updateCampaign(value, connection);
             } else {
                 campResult = await common.insertCampaign(value, connection);
             }
 
-
+             
             //Flow
             if (value.flow && !value.flow.id) {
                 flowResult = await common.insertFlow(value.userId, value.flow, connection)
             } else if (value.flow && value.flow.id) {
                 await common.updateFlow(value.userId, value.flow, connection)
             }
-
+             
 
             let campaignId = value.id ? value.id : (campResult ? (campResult.insertId ? campResult.insertId : 0) : 0);
 
