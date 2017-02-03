@@ -152,14 +152,11 @@
             </div>
             <div class="flow-action" ng-show="item.targetType==1">
                 <div class="form-group flow-select">
-                    <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
+                    <label class="col-sm-3 control-label">Flow：</label>
                     <div class="col-sm-5">
                         <md-select class="cs-subform-select" name="flow" ng-model="item.flow.id">
                             <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
                         </md-select>
-                        <span style="color:red" ng-show="editForm.flow.$dirty && editForm.flow.$invalid">
-                        <span ng-show="editForm.flow.$error.select">Flow is required.</span>
-                        </span>
                     </div>
                 </div>
 
@@ -183,9 +180,6 @@
                     <label class="col-sm-3 control-label">Url：</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl">
-                        <span style="color:red" ng-show="editForm.targetUrl.$dirty && editForm.targetUrl.$invalid">
-                        <span ng-show="editForm.targetUrl.$error.required">targetUrl is required.</span>
-                        </span>
                     </div>
                 </div>
                 <div class="url-tokens-row form-group">

@@ -643,7 +643,7 @@
 
     // AffiliateNetword
     AffiliateNetwork.get(null, function (affiliates) {
-      $scope.affiliates = affiliates.data.networks;
+      $scope.affiliates = affiliates.data.affiliates;
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -747,6 +747,7 @@
     }
 
     this.save = function () {
+      delete $scope.item.hash;
       $scope.item.params = JSON.stringify($scope.item.params);
       $scope.editForm.$setSubmitted();
 
