@@ -232,16 +232,16 @@ router.post('/api/campaigns', function (req, res, next) {
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
         url: Joi.string().optional(),
         country: Joi.string().optional(),
-        impPixelUrl: Joi.string().optional(),
+        impPixelUrl: Joi.string().optional().empty(""),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
-        targetUrl: Joi.string().optional(),
+        targetUrl: Joi.string().optional().empty(""),
         targetFlowId: Joi.number().optional(),
-        postbackUrl: Joi.string().optional(),
-        pixelRedirectUrl: Joi.string().optional(),
+        postbackUrl: Joi.string().optional().empty(""),
+        pixelRedirectUrl: Joi.string().optional().empty(""),
     });
     req.body.userId = req.userId;
     req.body.idText = req.idText;
@@ -318,11 +318,11 @@ router.post('/api/campaigns/:id', function (req, res, next) {
         cpa: Joi.number().optional(),
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional(),
-        targetUrl: Joi.string().optional(),
+        hash: Joi.string().optional().empty(""),
+        targetUrl: Joi.string().optional().empty(""),
         targetFlowId: Joi.number().optional(),
-        postbackUrl: Joi.string().optional(),
-        pixelRedirectUrl: Joi.string().optional(),
+        postbackUrl: Joi.string().optional().empty(""),
+        pixelRedirectUrl: Joi.string().optional().empty(""),
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
