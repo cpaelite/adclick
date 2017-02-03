@@ -393,10 +393,8 @@
           $scope.costModelValue = $scope.item.cpmValue;
         }
         $scope.tags = $scope.item.tags;
-        $scope.trafficSource = {
-          id: $scope.item.trafficSourceId,
-          name: $scope.item.trafficSourceName
-        };
+        $scope.trafficSourceId = $scope.item.trafficSourceId;
+        $scope.item.flow.id = $scope.item.targetFlowId;
         if ($scope.item['costModel'] == null) {
           $scope.item = {
             costModel: 0,
@@ -438,11 +436,39 @@
     }
 
     this.save = function () {
+      /*if ($scope.item.targetType == 1 && !$scope.item.flow) {
+        $scope.editForm.flow.$setValidity('select', false);
+        return;
+      } else {
+        $scope.editForm.flow.$setValidity('select', true);
+      }
+
+      if ($scope.item.targetType==0 && !$scope.item.targetUrl) {
+        $scope.editForm.targetUrl.$setValidity('required', false);
+        return;
+      } else {
+        $scope.editForm.targetUrl.$setValidity('required', true);
+      }*/
+
       // cost model value
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
       $scope.item.tags = $scope.tags;
+
+      $scope.trafficSources.forEach(function (traffic) {
+        if (traffic.id == $scope.trafficSourceId) {
+          $scope.item.trafficSource = JSON.stringify(traffic);
+          return;
+        }
+      });
+
+      delete $scope.item.trafficSourceId;
+      delete $scope.item.targetFlowId;
+      delete $scope.item.trafficSourceName;
+      delete $scope.item['cpcValue'];
+      delete $scope.item['cpaValue'];
+      delete $scope.item['cpmValue'];
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
@@ -473,18 +499,6 @@
 
     $scope.radioSelect = function (type) {
       $scope.radioTitle = type;
-    };
-
-    $scope.flowAction = true;
-    $scope.urlTokenCon = false;
-    $scope.destinationType = function (val) {
-      if (val == '0') {
-        $scope.flowAction = false;
-        $scope.urlTokenCon = true;
-      } else if (val == '1') {
-        $scope.flowAction = true;
-        $scope.urlTokenCon = false;
-      }
     };
 
     $scope.urlItem = [
@@ -608,6 +622,7 @@
     if (this.item) {
       Offer.get({id: this.item.data.offerId}, function (offer) {
         $scope.item = angular.copy(offer.data);
+        $scope.affiliateId = $scope.item.AffiliateNetworkId;
         if ($scope.item['payoutMode'] == null) {
           $scope.item = {
             payoutMode: 0,
@@ -628,13 +643,7 @@
 
     // AffiliateNetword
     AffiliateNetwork.get(null, function (affiliates) {
-      var affiliates = affiliates.data.networks;
-      $scope.affiliates = affiliates;
-      affiliates.forEach(function (affiliate) {
-        if (affiliate.id == affiliates.data.AffiliateNetworkId) {
-          $scope.item.affiliateNetwork = affiliate;
-        }
-      });
+      $scope.affiliates = affiliates.data.networks;
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -647,6 +656,15 @@
 
     this.save = function () {
       $scope.item.tags = $scope.tags;
+
+      // AffiliateNewwork
+      $scope.affiliates.forEach(function (affiliate) {
+        if (affiliate.id == $scope.affiliateId) {
+          $scope.item.affiliateNetwork = JSON.stringify(affiliate);
+          return;
+        }
+      });
+      
       delete $scope.item.AffiliateNetworkId;
       delete $scope.item.AffiliateNetworkName;
       delete $scope.item.postbackUrl;
@@ -775,8 +793,16 @@
       AffiliateNetwork.get({id: 22}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data);
       });
+      if ($scope.item['postbackUrl'] == null) {
+        $scope.item = {
+          postbackUrl: 'http://'
+        };
+      }
       this.title = "edit";
     } else {
+      $scope.item = {
+        postbackUrl: 'http://'
+      };
       this.title = "add";
     }
 
