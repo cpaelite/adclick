@@ -46,7 +46,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
                         status: 1,
                         message: "success",
                         data: {
-                            networks: result
+                            affiliates: result
                         }
                     });
 
@@ -97,7 +97,7 @@ router.get('/api/affiliates', function (req, res, next) {
                         status: 1,
                         message: "success",
                         data: {
-                            networks: result
+                            affiliates: result
                         }
                     });
 
