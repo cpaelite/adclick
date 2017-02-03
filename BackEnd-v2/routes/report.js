@@ -61,7 +61,7 @@ var groupByMapping = {
     campaign: 'Campaigns',
     lander: 'Landers',
     trafficSource: 'TrafficSource',
-    affiliateNetworkName: 'AffiliateNetworkName'
+    affiliate: 'AffiliateNetwork'
 }
 
 /**
@@ -154,6 +154,8 @@ async function campaignReport(value) {
         sql = offerListSql + ' where userId = ' + value.userId
     } else if (isListPageRequest && groupBy == 'traffic') {
         sql = trafficListSql + ' where userId = ' + value.userId
+    } else if (isListPageRequest && groupBy == 'affiliate') {
+        sql = affiliateListSql + ' where userId = ' + value.userId
     } else {
         sql = buildSql()({
             sqlWhere,
@@ -357,7 +359,7 @@ id as trafficId, name as trafficName,
 from Offer
 `
 
-var ListSql = `
+var affiliateListSql = `
 select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
 clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
 0 as campaignId, 0 as campaignName, 0 as campaignUrl, 0 as campaignCountry,
@@ -365,7 +367,7 @@ clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as Key
 0 as landerId, 0 as landerName, 0 as landerUrl, 0 as landerCountry,
 0 as offerId, 0 as offerName, 0 as offerUrl, 0 as offerCountry,
 0 as trafficId, 0 as trafficName,
-0 as affiliateId, 0 as affiliateName,
+id as affiliateId, name as affiliateName,
 0 as profit,
 0 as cpv,
 0 as ictr,
