@@ -532,5 +532,9 @@
         }
       });
     };
+
+    $scope.close = function() {
+      $scope.$state.go('app.report.flow');
+    };
   }
 })();
