@@ -38,7 +38,7 @@ router.post('/api/offers', async function (req, res, next) {
         affiliateNetwork: Joi.object().required().keys({
             id: Joi.number().required(),
             name: Joi.string().required(),
-            postbackUrl:Joi.string().optional()
+            postbackUrl: Joi.string().optional()
         }),
         payoutValue: Joi.number().optional(),
         tags: Joi.array().optional()
@@ -48,32 +48,32 @@ router.post('/api/offers', async function (req, res, next) {
     req.body.idText = req.idText;
     let connection;
     try {
-            let value = await common.validate(req.body, schema);
-            connection = await common.getConnection();
-            let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
-            value.postbackUrl = postbackUrl;
-            let landerResult = await common.insertOffer(value.userId, value.idText, value, connection);
-            if (value.tags && value.tags.length) {
-                for (let index = 0; index < value.tags.length; index++) {
-                    await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
-                }
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
+        value.postbackUrl = postbackUrl;
+        let landerResult = await common.insertOffer(value.userId, value.idText, value, connection);
+        if (value.tags && value.tags.length) {
+            for (let index = 0; index < value.tags.length; index++) {
+                await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
             }
-            delete value.userId;
-            delete value.idText;
-            value.id = landerResult.insertId;
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            });
-        } catch (e) {
-            next(e);
         }
-        finally{
-            if(connection){
-               connection.release(); 
-            }    
-        }     
+        delete value.userId;
+        delete value.idText;
+        value.id = landerResult.insertId;
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -123,33 +123,33 @@ router.put('/api/offers/:id', async function (req, res, next) {
     req.body.idText = req.idText;
     req.body.id = req.params.id;
     let connection;
-        try {
-            let value = await common.validate(req.body, schema);
-            connection = await common.getConnection();
-            await common.updateOffer(value.userId, value, connection);
-            await common.updateTags(value.userId, value.id, 3, connection);
-            if (value.tags && value.tags.length) {
-                for (let index = 0; index < value.tags.length; index++) {
-                    await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
-                }
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        await common.updateOffer(value.userId, value, connection);
+        await common.updateTags(value.userId, value.id, 3, connection);
+        if (value.tags && value.tags.length) {
+            for (let index = 0; index < value.tags.length; index++) {
+                await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
             }
-            delete value.userId;
-            delete value.idText;
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            });
-
-        } catch (e) {
-            next(e);
         }
-        finally{
-           if(connection){
-               connection.release(); 
-            }    
-       } 
-     
+        delete value.userId;
+        delete value.idText;
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
 });
 
 
@@ -173,26 +173,26 @@ router.get('/api/offers/:id', async function (req, res, next) {
     });
     req.query.id = req.params.id;
     req.query.userId = req.userId;
-    let connection; 
-        try {
-            let value = await common.validate(req.query, schema);
-            connection = await common.getConnection();
-            let result = await common.getOfferDetail(value.id, value.userId, connection);
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.getOfferDetail(value.id, value.userId, connection);
+        connection.release();
+        res.json({
+            status: 1,
+            message: 'success',
+            data: result ? result : {}
+        });
+    } catch (e) {
+        next(err);
+    }
+    finally {
+        if (connection) {
             connection.release();
-            res.json({
-                status: 1,
-                message: 'success',
-                data: result ? result : {}
-            });
-        } catch (e) {
-             next(err);
         }
-        finally{
-            if(connection){
-              connection.release(); 
-            }    
-       } 
-     
+    }
+
 
 });
 
@@ -244,22 +244,22 @@ router.delete('/api/offers/:id', async function (req, res, next) {
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
-    let connection; 
-        try {
-            let value = await common.validate(req.query, schema);
-            connection = await common.getConnection();
-            let result = await common.deleteOffer(value.id, value.userId, connection);
-            res.json({
-                status: 1,
-                message: 'success'
-            });
-        } catch (e) {
-             next(e);
-        }finally{
-               if(connection){
-               connection.release(); 
-              }   
-        } 
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.deleteOffer(value.id, value.userId, connection);
+        res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 

@@ -42,28 +42,27 @@ router.post('/api/traffic', async function (req, res, next) {
     });
 
     req.body.userId = req.userId
-     let connection;
-        try {
-            let value = await common.validate(req.body, schema);
-             connection = await common.getConnection();
-            let trafficResult = await common.insertTrafficSource(value.userId, value, connection);
-            delete value.userId;
-            value.id = trafficResult.insertId;
-            
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            });
-        } catch (e) {
-            next(e);
-        }finally{
-            if(connection){
-               connection.release(); 
-            }   
-       } 
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let trafficResult = await common.insertTrafficSource(value.userId, value, connection);
+        delete value.userId;
+        value.id = trafficResult.insertId;
 
-     
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
 
 });
 
@@ -106,31 +105,31 @@ router.post('/api/traffic/:id', async function (req, res, next) {
     req.body.userId = req.userId
     req.body.id = req.params.id;
     let connection;
-   
-        try {
-            let value = await common.validate(req.body, schema);
-            let connection = await common.getConnection();
-            await common.updatetraffic(value.userId, value, connection);
 
-            delete value.userId;
-            
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            });
+    try {
+        let value = await common.validate(req.body, schema);
+        let connection = await common.getConnection();
+        await common.updatetraffic(value.userId, value, connection);
+
+        delete value.userId;
+
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
 
 
-        } catch (e) {
-            next(e);
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
         }
-        finally{
-            if(connection){
-               connection.release(); 
-            }
-              
-       } 
-     
+
+    }
+
 });
 
 
@@ -147,7 +146,7 @@ router.post('/api/traffic/:id', async function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/traffic/:id',async function (req, res, next) {
+router.get('/api/traffic/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -155,23 +154,23 @@ router.get('/api/traffic/:id',async function (req, res, next) {
     req.query.id = req.params.id;
     req.query.userId = req.userId;
     let connection;
-    
-        try {
-            let value = await common.validate(req.query, schema);
-             connection = await common.getConnection();
-            let result = await common.gettrafficDetail(value.id, value.userId, connection);
-            res.json({
-                status: 1,
-                message: 'success',
-                data: result ? result : {}
-            });
-        } catch (e) {
-             next(err);
-        }finally{
-            if(connection){
-                connection.release(); 
-            }      
-       } 
+
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.gettrafficDetail(value.id, value.userId, connection);
+        res.json({
+            status: 1,
+            message: 'success',
+            data: result ? result : {}
+        });
+    } catch (e) {
+        next(err);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -187,25 +186,25 @@ router.delete('/api/traffic/:id', async function (req, res, next) {
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
-     let connection;
-        try {
-            let value = await common.validate(req.query, schema);
-             connection = await common.getConnection();
-            let result = await common.deletetraffic(value.id, value.userId, connection);
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success'
-            });
-        } catch (e) {
-             next(e);
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.deletetraffic(value.id, value.userId, connection);
+        //connection.release();
+        res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
         }
-        finally{
-            if(connection){
-               connection.release(); 
-            }
-       } 
-     
+    }
+
 
 });
 

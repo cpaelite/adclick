@@ -8,7 +8,6 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 
- 
 
 /**
  * @api {get} /api/preferences  获取用户配置
@@ -201,10 +200,8 @@ router.get('/api/preferences', function (req, res, next) {
             }
         }
     };
-   res.json(result)
+    res.json(result)
 });
-
-
 
 
 /**
@@ -223,12 +220,12 @@ router.get('/api/preferences', function (req, res, next) {
  *
  */
 
-router.post('/api/tags',function(req,res,next){
+router.post('/api/tags', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        type:Joi.number.required()
+        type: Joi.number.required()
     });
-    req.body.userId=req.userId;
+    req.body.userId = req.userId;
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -240,7 +237,7 @@ router.post('/api/tags',function(req,res,next){
             }
             connection.query(
                 "select  `id`,`name` from User where `userId` = ? and `type`= ? and `deleted` =0", [
-                    value.userId,value.type
+                    value.userId, value.type
                 ],
                 function (err, result) {
                     connection.release();
@@ -250,8 +247,8 @@ router.post('/api/tags',function(req,res,next){
                     res.json({
                         status: 1,
                         message: "success",
-                        data:{
-                            tags:result
+                        data: {
+                            tags: result
                         }
                     });
 
@@ -259,7 +256,6 @@ router.post('/api/tags',function(req,res,next){
         });
     });
 });
-
 
 
 /**
@@ -303,8 +299,8 @@ router.get('/api/trafficsources', function (req, res, next) {
                     res.json({
                         status: 1,
                         message: "success",
-                        data:{
-                            trafficsources:result
+                        data: {
+                            trafficsources: result
                         }
                     });
 
@@ -312,8 +308,6 @@ router.get('/api/trafficsources', function (req, res, next) {
         });
     });
 });
-
- 
 
 
 /**
@@ -356,8 +350,8 @@ router.get('/api/flows', function (req, res, next) {
                     res.json({
                         status: 1,
                         message: "success",
-                        data:{
-                            flows:result
+                        data: {
+                            flows: result
                         }
                     });
 
@@ -407,8 +401,8 @@ router.get('/api/networks', function (req, res, next) {
                     res.json({
                         status: 1,
                         message: "success",
-                        data:{
-                            networks:result
+                        data: {
+                            networks: result
                         }
                     });
 
@@ -416,12 +410,6 @@ router.get('/api/networks', function (req, res, next) {
         });
     });
 });
-
-
-
-
-
-
 
 
 module.exports = router;
