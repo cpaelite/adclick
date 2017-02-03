@@ -316,7 +316,10 @@
     $scope.applyChange = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
-      Preference.save($scope.preferences);
+      var preferences = {
+        json: $scope.preferences
+      };
+      Preference.save(preferences);
     };
 
     $scope.checkboxIsChecked = function (num) {
@@ -394,7 +397,9 @@
         }
         $scope.tags = $scope.item.tags;
         $scope.trafficSourceId = $scope.item.trafficSourceId;
-        $scope.item.flow.id = $scope.item.targetFlowId;
+        $scope.item.flow = {
+          id: $scope.item.targetFlowId
+        }
         if ($scope.item['costModel'] == null) {
           $scope.item = {
             costModel: 0,

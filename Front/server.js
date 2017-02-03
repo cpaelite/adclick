@@ -539,7 +539,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
       "cpmValue": 1.3,
       "redirectMode": 0,
       "targetType": 1,
-      "targetFlowId": 34,
+      "targetFlowId": 1,
       "targetUrl": "",
       "status": 1,
       "tags": []
