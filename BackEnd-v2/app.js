@@ -6,7 +6,7 @@ global.pool = mysql.createPool({
     password: setting.mysql.password,
     database: setting.mysql.database,
     connectionLimit:setting.mysql.connectionLimit,
-    debug: process.env.DEBUG === 'true',
+    debug: true,
     waitForConnections:false
 });
 pool.on('connection', function (connection) {

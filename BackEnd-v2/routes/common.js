@@ -148,10 +148,15 @@ function insertCampaign(value, connection) {
     return new Promise(function (resolve, reject) {
         connection.query("insert into TrackingCampaign (" + col + ") values (" + val + ")", function (err, result) {
             if (err) {
-                reject(err);
+                return reject(err);
             }
-            resolve(result);
-        })
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[value.userId,1,value.name,hash,1],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(result);  
+           });
+        });
     })
 }
 
@@ -375,7 +380,8 @@ function updateTags(userId, targetId, type, connection) {
 function insetRule(userId, rule, connection) {
     var sqlRule = "insert into `Rule` (`userId`,`name`,`hash`,`type`,`json`,`status`) values (?,?,?,?,?,?)";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlRule, [userId, rule.name, uuidV4(), rule.type, JSON.stringify(rule.json), rule.status], function (err, result) {
+        connection.query(sqlRule, [userId, rule.name?rule.name:"", uuidV4(), rule.isDefault?0:1, rule.conditions?
+JSON.stringify(rule.conditions):JSON.stringify([]), rule.enabled?1:0], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -413,7 +419,7 @@ function updateRule(userId, rule, connection) {
 function insertPath(userId, path, connection) {
     var sqlpath = "insert into `Path` (`userId`,`name`,`hash`,`redirectMode`,`directLink`,`status`) values (?,?,?,?,?,?)";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLink, path.status], function (err, result) {
+        connection.query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking?1:0, path.enabled?1:0], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -901,6 +907,18 @@ function deletetraffic(id, userId, connection) {
     })
 }
 
+function saveEventLog(userId,entityType,entityName,entityId,actionType,connection){
+ 
+    return new Promise(function (resolve, reject) {
+        connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,entityType,entityName,entityId,actionType],function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(1);
+        });
+    })
+}
+
 
 exports.updateRule2Flow = updateRule2Flow;
 exports.insertRule2Flow = insertRule2Flow;
@@ -941,3 +959,4 @@ exports.deleteFlow = deleteFlow;
 exports.deleteLander = deleteLander;
 exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
+exports.saveEventLog=saveEventLog;
