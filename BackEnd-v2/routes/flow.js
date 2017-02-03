@@ -258,14 +258,15 @@ router.post('/api/flows', function (req, res, next) {
         idText: Joi.string().required(),
         rules: Joi.array().required(),
         hash: Joi.string(),
-        type: Joi.number(),
+        type: Joi.number().required(),
         id: Joi.string().optional(),
         name: Joi.string(),
         country: Joi.string(),
         redirectMode: Joi.number()
-    }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode');
+    }).optionalKeys('id', 'hash', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
+    req.body.type=1;
     start(req.body, schema).then(function (data) {
         res.json({
             status: 1,
@@ -380,10 +381,10 @@ const start = async(data, schema) => {
                         //RULE
                         if (!value.rules[i].id) {
                             ruleResult = await  common.insetRule(value.userId, value.rules[i], connection);
-                            await common.insertRule2Flow(ruleResult.insertId, flowId, value.rules[i].rule2flow, connection);
+                            await common.insertRule2Flow(ruleResult.insertId, flowId, value.rules[i].enabled?1:0, connection);
                         } else {
                             await  common.updateRule(value.userId, value.rules[i], connection);
-                            await  common.updateRule2Flow(value.rules[i].rule2flow, value.rules[i].id, flowId, connection);
+                            await  common.updateRule2Flow(value.rules[i].enabled?1:0, value.rules[i].id, flowId, connection);
                         }
                         let ruleId = value.rules[i].id ? value.rules[i].id : (ruleResult ? (ruleResult.insertId ? ruleResult.insertId : 0) : 0);
                         if (!ruleId) {
@@ -397,11 +398,11 @@ const start = async(data, schema) => {
                                 let pathResult;
                                 if (!value.rules[i].paths[j].id) {
                                     pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
-                                    await common.insertPath2Rule(pathResult.insertId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].path2rule, connection);
+                                    await common.insertPath2Rule(pathResult.insertId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
 
                                 } else {
                                     await common.updatePath(value.userId, value.rules[i].paths[j], connection);
-                                    await common.updatePath2Rule(value.rules[i].paths[j].id, value.rules[i].id, value.rules[i].paths[j].weight, value.rules[i].paths[j].path2rule, connection);
+                                    await common.updatePath2Rule(value.rules[i].paths[j].id, value.rules[i].id, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
                                 }
 
                                 let pathId = value.rules[i].paths[j].id ? value.rules[i].paths[j].id : (pathResult ? (pathResult.insertId ? pathResult.insertId : 0) : 0);

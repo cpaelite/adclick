@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var _ = require('lodash');
-var Joi = require('joi');
 var common = require('./common');
 
 var mapping = {
@@ -57,38 +56,19 @@ var mapping = {
 
 
 var groupByMapping = {
-    offer: {table: 'Offers'},
-    campaign: 'Campaigns',
-    lander: 'Landers',
-    trafficSource: 'TrafficSource',
-    affiliate: 'AffiliateNetwork'
+    campaign: 'campaignId',
+    flow: 'flowId',
+    lander: 'landerId',
+    offer: 'offerId',
+    traffic: 'TrafficSourceId',
+    affiliate: 'affiliateId'
 }
 
 /**
- * @api {post} /api/report  报表
+ * @api {get} /api/report  报表
  * @apiName  报表
  * @apiGroup report
  * @apiDescription  报表
- *
- * @apiParam {String} from 开始时间
- * @apiParam {String} to   截止时间
- * @apiParam {String} tz   timezone
- * @apiParam {String} sort  排序字段
- * @apiParam {String} direction  desc
- * @apiParam {String} groupBy
- * @apiParam {String} type
- * @apiParam {Number} offset
- * @apiParam {Number} limit
- * @apiParam {String} include    数据状态 all  traffic active
- * @apiParam {String} [filter]
- * @apiParam {String} [filter1]
- * @apiParam {String} [filter1Value]
- * @apiParam {String} [filter2]
- * @apiParam {String} [filter2Value]
- * @apiParam {String} [filter3]
- * @apiParam {String} [filter3Value]
- * @apiParam {Number} active
- *
  *
  */
 
@@ -141,51 +121,83 @@ async function campaignReport(value) {
             sqlWhere[mapping[attr]] = value[attr];
         }
     })
-
     let isListPageRequest = Object.keys(sqlWhere).length === 0 && groupByMapping[groupBy]
-    let sql
-    if (isListPageRequest && groupBy == 'campaign') {
-        sql = campaignListSql + ' where userId = ' + value.userId
-    } else if (isListPageRequest && groupBy == 'flow') {
-        sql = flowListSql + ' where userId = ' + value.userId
-    } else if (isListPageRequest && groupBy == 'lander') {
-        sql = landerListSql + ' where userId = ' + value.userId
-    } else if (isListPageRequest && groupBy == 'offer') {
-        sql = offerListSql + ' where userId = ' + value.userId
-    } else if (isListPageRequest && groupBy == 'traffic') {
-        sql = trafficListSql + ' where userId = ' + value.userId
-    } else if (isListPageRequest && groupBy == 'affiliate') {
-        sql = affiliateListSql + ' where userId = ' + value.userId
+    if (isListPageRequest) {
+        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit)
     } else {
-        sql = buildSql()({
-            sqlWhere,
-            from,
-            to,
-            tz,
-            groupBy: mapping[groupBy]
-        });
+        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit)
     }
-    let countsql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
+}
+
+async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit) {
+    let sql = buildSql()({
+        sqlWhere,
+        from,
+        to,
+        tz,
+        groupBy: mapping[groupBy]
+    });
     sql += " limit " + offset + "," + limit;
-
-    console.log(sql);
-
+    console.log(sql)
+    let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
     let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
         sql + ") as K)";
-
-    let result = await Promise.all([query(sql), query(countsql), query(sumSql)]);
-    if (isListPageRequest) {
-        // TODO: it need fill the data
-    }
-
+    let result = await Promise.all([query(sql), query(countSql), query(sumSql)]);
     return ({
         totalRows: result[1][0].total,
         totals: result[2][0],
         rows: result[0]
     });
-
 }
+
+async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit) {
+    let listSql
+    if (groupBy == 'campaign') {
+        listSql = campaignListSql + ' where userId = ' + userId
+    } else if (groupBy == 'flow') {
+        listSql = flowListSql + ' where userId = ' + userId
+    } else if (groupBy == 'lander') {
+        listSql = landerListSql + ' where userId = ' + userId
+    } else if (groupBy == 'offer') {
+        listSql = offerListSql + ' where userId = ' + userId
+    } else if (groupBy == 'traffic') {
+        listSql = trafficListSql + ' where userId = ' + userId
+    } else if (groupBy == 'affiliate') {
+        listSql = affiliateListSql + ' where userId = ' + userId
+    } else {
+        console.error("some thing wrong!!!")
+        return {}
+    }
+    let countSql = "select COUNT(*) as `total` from ((" + listSql + ") as T)";
+    listSql += " limit " + offset + "," + limit;
+    let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
+        listSql + ") as K)";
+    let dataSql = buildSql()({
+        sqlWhere,
+        from,
+        to,
+        tz,
+        groupBy: mapping[groupBy]
+    });
+    let sqlResult = await Promise.all([query(listSql), query(countSql), query(sumSql), query(dataSql)]);
+    let r = {
+        totalRows: sqlResult[1][0].total,
+        totals: sqlResult[2][0],
+        rows: sqlResult[0]
+    }
+    let dataMatchKey = groupByMapping[groupBy]
+    let dataResult = sqlResult[3]
+    for (let i = 0; i < r.rows.length; i++) {
+        for (let j = 0; j < dataResult.length; j++) {
+            if (r.rows[i][dataMatchKey] == dataResult[j][dataMatchKey]) {
+                r.rows[i] = dataResult[j]
+            }
+        }
+    }
+    return r;
+}
+
 
 function query(sql) {
     return new Promise(function (resolve, reject) {
@@ -216,7 +228,7 @@ c.id as campaignId, c.name as campaignName, c.url as campaignUrl, c.country as c
 f.id as flowId, f.name as flowName,
 l.id as landerId, l.name as landerName, l.url as landerUrl, l.country as landerCountry,
 o.id as offerId, o.name as offerName, o.url as offerUrl, o.country as offerCountry,
-t.id as trafficId, t.name as trafficName,
+t.id as TrafficSourceId, t.name as trafficName,
 a.id as affiliateId, a.name as affiliateName,
 sum(ads.\`Revenue\`/1000000)-sum(ads.\`Cost\`/1000000) as \`profit\`,
 sum(ads.\`Cost\`/1000000)/sum(ads.\`Impressions\`) as \`cpv\`,
@@ -242,7 +254,7 @@ and ads.\`Timestamp\` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%=
 and ads.\`<%- key %>\`=<%= sqlWhere[key]%>
 <% }) %>
 and ads.\`Timestamp\` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>')) * 1000)
-group by \`<%= groupBy %>\`
+group by ads.\`<%= groupBy %>\`
 order by CampaignId `
 
     return _.template(template);

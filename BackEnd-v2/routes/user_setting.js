@@ -225,7 +225,7 @@ router.post('/api/user/emailChange', async function (req, res, next) {
 
 
 /**
- * @api {post} /api/user/referral   用户推广收益
+ * @api {get} /api/user/referrals   用户推广收益
  * @apiName  用户推广收益
  * @apiGroup Setting
  *
@@ -246,7 +246,7 @@ router.post('/api/user/emailChange', async function (req, res, next) {
  *     }
  *
  */
-router.post('/api/user/referral', function (req, res, next) {
+router.get('/api/user/referrals', function (req, res, next) {
 
 });
 
