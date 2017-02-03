@@ -790,14 +790,14 @@
 
   function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
     if (this.item) {
-      AffiliateNetwork.get({id: this.item.data.trafficId}, function (affiliate) {
+      AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data);
+        if ($scope.item['postbackUrl'] == null) {
+          $scope.item = {
+            postbackUrl: 'http://'
+          };
+        }
       });
-      if ($scope.item['postbackUrl'] == null) {
-        $scope.item = {
-          postbackUrl: 'http://'
-        };
-      }
       this.title = "edit";
     } else {
       $scope.item = {
