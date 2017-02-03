@@ -20,6 +20,7 @@ exports.checkToken = function() {
             return next(err);
           }
           connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss ,function(err,user){
+            connection.release();
             if(err){
               return next(err);
             }
