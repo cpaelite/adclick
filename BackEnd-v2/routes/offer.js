@@ -178,7 +178,6 @@ router.get('/api/offers/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = await common.getOfferDetail(value.id, value.userId, connection);
-        connection.release();
         res.json({
             status: 1,
             message: 'success',
