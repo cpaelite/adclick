@@ -5,7 +5,7 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var common =require('./common');
+var common = require('./common');
 
 
 /**
@@ -25,7 +25,7 @@ var common =require('./common');
  *    message: 'success' *   }
  *
  */
-router.post('/api/landers', function (req, res, next) {
+router.post('/api/landers', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -36,34 +36,32 @@ router.post('/api/landers', function (req, res, next) {
     });
 
     req.body.userId = req.userId
-    const start = async ()=>{
-        try{
-            let value=await common.validate(req.body,schema);
-            let connection=await common.getConnection();
-            let landerResult=await common.insertLander(value.userId,value,connection);
-            if(value.tags && value.tags.length){
-                for(let index=0;index<value.tags.length;index++){
-                    await common.insertTags(value.userId,landerResult.insertId,value.tags[index],2,connection);
-                }
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let landerResult = await common.insertLander(value.userId, value, connection);
+        if (value.tags && value.tags.length) {
+            for (let index = 0; index < value.tags.length; index++) {
+                await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 2, connection);
             }
-            delete value.userId;
-            value.id=landerResult.insertId;
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-                });                  
-        }catch(e){
-            next(e);
         }
-        finally{
-               connection.release(); 
-       } 
-       
+        delete value.userId;
+        value.id = landerResult.insertId;
+
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+    } catch (e) {
+        next(e);
     }
-    start();
-   
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -85,7 +83,7 @@ router.post('/api/landers', function (req, res, next) {
  *    message: 'success' *   }
  *
  */
-router.post('/api/landers/:id', function (req, res, next) {
+router.post('/api/landers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -99,34 +97,35 @@ router.post('/api/landers/:id', function (req, res, next) {
 
     req.body.userId = req.userId
     req.body.id = req.params.id;
-   const start = async ()=>{
-       try{
-           let value=await common.validate(req.body,schema);
-           let connection=await common.getConnection();
-           await common.updateLander(value.userId,value,connection);
-           await common.updateTags(value.userId,value.id,2,connection);
-           if(value.tags && value.tags.length){
-                for(let index=0;index<value.tags.length;index++){
-                    await common.insertTags(value.userId,value.id,value.tags[index],2,connection);
-                }
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        await common.updateLander(value.userId, value, connection);
+        await common.updateTags(value.userId, value.id, 2, connection);
+        if (value.tags && value.tags.length) {
+            for (let index = 0; index < value.tags.length; index++) {
+                await common.insertTags(value.userId, value.id, value.tags[index], 2, connection);
             }
-            delete value.userId;
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            }); 
+        }
+        delete value.userId;
+
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
 
 
-       }catch(e){
-          next(e);
-       }
-       finally{
-               connection.release(); 
-       } 
-   }
-   start();
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
 });
 
 
@@ -143,38 +142,40 @@ router.post('/api/landers/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/landers/:id',function(req,res,next){
+router.get('/api/landers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
-    req.query.id=req.params.id;
-    req.query.userId=req.userId;
-    const start = async ()=>{
-        try{
-           let value = await common.validate(req.query,schema);
-           let connection= await common.getConnection();
-           let result=await common.getLanderDetail(value.id,value.userId,connection);
-           //connection.release();
-           res.json({
-               status:1,
-               message:'success',
-               data:result ?  result :{}
-           });
-        }catch(e){
-             next(err);
-        }
-        finally{
-               connection.release(); 
-        } 
+    req.query.id = req.params.id;
+    req.query.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.getLanderDetail(value.id, value.userId, connection);
+        //connection.release();
+        res.json({
+            status: 1,
+            message: 'success',
+            data: result ? result : {}
+        });
+    } catch (e) {
+        next(err);
     }
-   start();
+    finally {
+        if (connection) {
+            connection.release();
+        }
+
+    }
+
 
 })
 
 /**
- * @api {get} /api/landers  user landers 
- * @apiName user landers 
+ * @api {get} /api/landers  user landers
+ * @apiName user landers
  * @apiGroup lander
  *
  *
@@ -185,7 +186,7 @@ router.get('/api/landers/:id',function(req,res,next){
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/landers', function (req, res,next) {
+router.get('/api/landers', function (req, res, next) {
     // userId from jwt, don't need validation
     var sql = "select id, name from Lander where userId = " + req.userId;
     pool.getConnection(function (err, connection) {
@@ -193,15 +194,15 @@ router.get('/api/landers', function (req, res,next) {
             err.status = 303
             return next(err);
         }
-        connection.query(sql,function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json(
-                    result
-                );
-            });
+        connection.query(sql, function (err, result) {
+            connection.release();
+            if (err) {
+                return next(err);
+            }
+            res.json(
+                result
+            );
+        });
     });
 });
 
@@ -211,31 +212,33 @@ router.get('/api/landers', function (req, res,next) {
  * @apiName  删除lander
  * @apiGroup lander
  */
-router.delete('/api/landers/:id',function(req,res,next){
-    var schema=Joi.object().keys({
-            id: Joi.number().required(),
-            userId:Joi.number().required()
+router.delete('/api/landers/:id', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required()
     });
-    req.query.userId = req.userId;  
-    req.query.id=req.params.id;
-    const start =async ()=>{
-        try{
-            let value=await common.validate(req.query,schema);
-            let connection=await common.getConnection();
-            let result= await common.deleteLander(value.id,value.userId,connection);
-            //connection.release();
-            res.json({
-                status:1,
-                message:'success'
-            });
-        }catch(e){
-             next(e);
-        } 
-        finally{
-               connection.release(); 
-       }   
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.deleteLander(value.id, value.userId, connection);
+
+        res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
     }
-    start();
+    finally {
+        if (connection) {
+            connection.release();
+        }
+
+    }
+
 
 });
 
