@@ -9,12 +9,7 @@ global.pool = mysql.createPool({
     debug: process.env.DEBUG === 'true',
     waitForConnections:false
 });
-pool.on('connection', function (connection) {
-    console.log('Connection %d 链接', connection.threadId);
-});
-pool.on('release', function (connection) {
-  console.log('Connection %d released', connection.threadId);
-});
+ 
 var express = require('express');
 var favicon = require('serve-favicon');
 var log4js = require('log4js');
