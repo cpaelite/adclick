@@ -257,6 +257,8 @@
     // fixme: dirty fix, rename the file
     if (perfType == 'traffic')
       editTemplateUrl = 'tpl/trafficSource-edit-dialog.html';
+    if (perfType == 'affiliate')
+      editTemplateUrl = 'tpl/affiliateNetwork-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
       var controller;
@@ -273,6 +275,8 @@
         controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
+      } else if (perfType == 'affiliate') {
+        controller = ['$scope', '$mdDialog', 'AffiliateNetwork', editAffiliateCtrl];
       }
 
       $mdDialog.show({
@@ -290,7 +294,7 @@
     $scope.deleteItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', deleteCtrl],
+        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', 'AffiliateNetwork', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
@@ -756,7 +760,57 @@
 
   }
 
-  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer) {
+  function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
+    if (this.item) {
+      AffiliateNetwork.get({id: 22}, function (offer) {
+        $scope.item = angular.copy(offer.data);
+      });
+      this.title = "edit";
+    } else {
+      this.title = "add";
+    }
+
+    this.titleType = angular.copy(this.perfType);
+
+    this.cancel = $mdDialog.cancel;
+
+    function success(item) {
+      $mdDialog.hide(item);
+    }
+
+    this.save = function () {
+      $scope.editForm.$setSubmitted();
+      if ($scope.editForm.$valid) {
+        AffiliateNetwork.save($scope.item, success);
+      }
+    };
+
+    $scope.textareaShow = false;
+    $scope.isChecked = function(){
+      $scope.textareaShow = !$scope.textareaShow;
+    };
+    
+    $scope.checkIP = function () {
+      // 验证IP格式
+      var ipList = $scope.item.ipWhiteList;
+      if (ipList) {
+        var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+        var ips = ipList.split('\n');
+
+        var isValid = true;
+        ips.forEach(function (ip) {
+          if (!re.test(ip)) {
+            isValid = false;
+            return;
+          }
+        });
+        $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
+      }
+    }
+
+  }
+
+  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {
     this.title = "delete";
     this.content = 'warnDelete';
 
@@ -772,6 +826,8 @@
         deferred = Lander.remove({id: item.id});
       } else if (type == 'offer') {
         deferred = Offer.remove({id: item.id});
+      } else if (type == 'affiliate') {
+        deferred = AffiliateNetwork.remove({id: item.id});
       }
       return deferred.$promise;
     }
