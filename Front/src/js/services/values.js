@@ -75,6 +75,14 @@ angular.module('app').value('columnDefinition', {
       key: 'trafficId',
       name: 'Traffic source ID'
     }],
+  affiliate: [{
+    key: 'affiliateName',
+    name: 'Affiliate Network'
+  },
+    {
+      key: 'affiliateId',
+      name: 'Affiliate Network ID'
+    }],
   common: [{
     key: 'visits',
     name: 'Visits'

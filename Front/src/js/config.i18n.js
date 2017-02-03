@@ -43,7 +43,8 @@
     userManagement:'UserManagement',
     botBlacklist:'BotBlacklist',
     invoices:'Invoices',
-    eventLog:'EventLog'
+    eventLog:'EventLog',
+    affiliate: 'AffiliateNetwork'
   };
   var i18n_zh = {
     ok: '确定',
