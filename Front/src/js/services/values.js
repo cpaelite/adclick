@@ -150,7 +150,8 @@ angular.module('app').value('groupByOptions', [
   { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
   { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
   */
-  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" }
+  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" },
+  { value: "affiliate", display: "Affiliate Network", idKey: "affiliateId", nameKey: "affiliateName" }
 ]);
 
 angular.module('app').value('userPreferences', {
