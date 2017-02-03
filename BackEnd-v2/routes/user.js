@@ -26,7 +26,7 @@ var Joi = require('joi');
 router.post('/api/preferences', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        json:Joi.string().required()
+        json:Joi.object().required()
     });
     req.body.userId = req.userId;
     Joi.validate(req.body, schema, function (err, value) {
@@ -38,9 +38,10 @@ router.post('/api/preferences', function (req, res, next) {
                 err.status = 303
                 return next(err);
             }
+            
             connection.query(
                 "update  User set `json`=?   where `id` = ?", [
-                    value.json,value.userId
+                    JSON.stringify(value.json),value.userId
                 ],
                 function (err) {
                     connection.release();

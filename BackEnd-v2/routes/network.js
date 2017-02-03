@@ -22,9 +22,10 @@ router.get('/api/affiliates/:id', function (req, res, next) {
         userId: Joi.number().required(),
         id: Joi.number().required()
     });
+     
     req.query.userId = req.userId;
     req.query.id=req.params.id;
-    Joi.validate(req.body, schema, function (err, value) {
+    Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
         }
