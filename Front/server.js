@@ -256,6 +256,7 @@ app.get('/api/preferences', function (req, res) {
       }
     }
   };
+  result.data = JSON.stringify(result.data);
   delayResponse(res, result);
 });
 

@@ -699,7 +699,7 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
     if (this.item) {
-      TrafficSource.get({id: this.item.id}, function (trafficsource) {
+      TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
         if (!$scope.item.params) {
           $scope.item.params = [
@@ -790,7 +790,7 @@
 
   function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
     if (this.item) {
-      AffiliateNetwork.get({id: 22}, function (affiliate) {
+      AffiliateNetwork.get({id: this.item.data.trafficId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data);
       });
       if ($scope.item['postbackUrl'] == null) {

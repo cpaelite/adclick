@@ -49,7 +49,7 @@ router.get('/api/preferences', function (req, res, next) {
                     res.json({
                         status: 1,
                         message: "success",
-                        data:JSON.parse(result.json)
+                        data:result[0].json
                     });
                 });
         });
@@ -199,7 +199,7 @@ router.get('/api/preferences', function (req, res, next) {
     //         }
     //     }
     // };
-    res.json(result)
+
 });
 
 
