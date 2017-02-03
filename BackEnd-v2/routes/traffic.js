@@ -95,11 +95,11 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         postbackUrl: Joi.string().optional().empty(""),
-        pixelRedirectUrl: Joi.string().optional(),
+        pixelRedirectUrl: Joi.string().optional().empty(""),
         impTracking: Joi.number().optional(),
         externalId: Joi.string().optional().empty(""),
-        cost: Joi.string().optional(),
-        params: Joi.string().optional()
+        cost: Joi.string().optional().empty(""),
+        params: Joi.string().optional().empty("")
     });
 
     req.body.userId = req.userId
