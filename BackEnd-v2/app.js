@@ -6,7 +6,14 @@ global.pool = mysql.createPool({
     password: setting.mysql.password,
     database: setting.mysql.database,
     connectionLimit:setting.mysql.connectionLimit,
-    debug: process.env.DEBUG === 'true'
+    debug: process.env.DEBUG === 'true',
+    waitForConnections:false
+});
+pool.on('connection', function (connection) {
+    console.log('Connection %d 链接', connection.threadId);
+});
+pool.on('release', function (connection) {
+  console.log('Connection %d released', connection.threadId);
 });
 var express = require('express');
 var favicon = require('serve-favicon');

@@ -193,7 +193,7 @@ app.get('/api/preferences', function (req, res) {
         "ap": {
           "visible": true
         },
-        "affiliateNetworkName": {
+        "affiliateName": {
           "visible": true
         },
         "campaignName": {

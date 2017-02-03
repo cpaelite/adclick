@@ -99,10 +99,8 @@ router.get('/api/report', async function (req, res, next) {
     req.query.userId = req.userId;
     try {
         let result;
-        let connection = await common.getConnection();
-        result = await campaignReport(req.query, connection);
-        connection.release();
-        res.json({
+        result = await campaignReport(req.query);
+        return res.json({
             status: 1,
             message: 'success',
             data: result
@@ -121,7 +119,7 @@ router.get('/api/report', async function (req, res, next) {
 // to:2017-01-24T23:59
 // tz:+08:00
 
-async function campaignReport(value, connection) {
+async function campaignReport(value) {
     let {
         groupBy,
         limit,
@@ -174,11 +172,10 @@ async function campaignReport(value, connection) {
     let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
         sql + ") as K)";
 
-    let result = await Promise.all([query(sql, connection), query(countsql, connection), query(sumSql, connection)]);
+    let result = await Promise.all([query(sql), query(countsql), query(sumSql)]);
     if (isListPageRequest) {
         // TODO: it need fill the data
     }
-    console.log(result)
 
     return ({
         totalRows: result[1][0].total,
@@ -188,15 +185,20 @@ async function campaignReport(value, connection) {
 
 }
 
-
-function query(sql, connection) {
+function query(sql) {
     return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
+        pool.getConnection(function(err,connection){
             if (err) {
-                reject(err)
+                return reject(err)
             }
-            resolve(result);
-        })
+            connection.query(sql, function (err, result) {
+                connection.release();
+                if (err) {
+                    reject(err)
+                }
+                resolve(result);
+           });
+        });
     })
 }
 

@@ -131,6 +131,11 @@
           to: null
         }
       })
+      .state('app.report.affiliate', {
+        url: '/affiliate',
+        templateUrl: 'tpl/report.html',
+        controller: 'ReportCtrl',
+      })
       .state('app.rule', {
         url: '/rule',
         templateUrl: 'tpl/rule.html',
