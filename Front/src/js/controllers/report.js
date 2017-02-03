@@ -791,7 +791,7 @@
   function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
     if (this.item) {
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
-        $scope.item = angular.copy(affiliate.data);
+        $scope.item = angular.copy(affiliate.data.affiliates);
         if ($scope.item['postbackUrl'] == null) {
           $scope.item = {
             postbackUrl: 'http://'
