@@ -78,7 +78,7 @@ router.post('/api/offers', async function (req, res, next) {
 
 
 /**
- * @api {put} /api/offers/:offerId  编辑offer
+ * @api {post} /api/offers/:offerId  编辑offer
  * @apiName 编辑offer
  * @apiGroup offer
  *
@@ -100,7 +100,7 @@ router.post('/api/offers', async function (req, res, next) {
  *   }
  *
  */
-router.put('/api/offers/:id', async function (req, res, next) {
+router.post('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         hash: Joi.string().optional(),
@@ -178,7 +178,6 @@ router.get('/api/offers/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = await common.getOfferDetail(value.id, value.userId, connection);
-        connection.release();
         res.json({
             status: 1,
             message: 'success',

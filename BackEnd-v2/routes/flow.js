@@ -4,9 +4,59 @@ var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
 
+/**
+ * @api {get} /api/flows  获取用户所有flows
+ * @apiName  get  user  flows
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
+ *
+ */
+router.get('/api/flows', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    Joi.validate(req.query, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select  `id`,`name` from Flow where `userId` = ? and `deleted` =0 and `type`=1", [
+                    value.userId
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data: {
+                            flows: result
+                        }
+                    });
+
+                });
+        });
+    });
+});
+
 
 /**
- * @api {get} /api/flow/:id/campaigns 获取flow相关的所有campaign
+ * @api {get} /api/flows/:id/campaigns 获取flow相关的所有campaign
  * @apiName 获取flow相关的所有campaign
  * @apiGroup flow
  * @apiSuccessExample {json} Success-Response:
@@ -20,7 +70,7 @@ var setting = require('../config/setting');
  *   }
  */
 
-router.get('/api/flow/:id/campaigns', async function (req, res, next) {
+router.get('/api/flows/:id/campaigns', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         id: Joi.number().required()
@@ -52,7 +102,7 @@ router.get('/api/flow/:id/campaigns', async function (req, res, next) {
 
 
 /**
- * @api {get} /api/flow/:id 获取flow detail
+ * @api {get} /api/flows/:id 获取flow detail
  * @apiName 获取flow detail
  * @apiGroup flow
  * @apiSuccessExample {json} Success-Response:
@@ -66,7 +116,7 @@ router.get('/api/flow/:id/campaigns', async function (req, res, next) {
  *   }
  */
 
-router.get('/api/flow/:id', async function (req, res, next) {
+router.get('/api/flows/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         id: Joi.number().required()
@@ -229,14 +279,14 @@ router.post('/api/flows', function (req, res, next) {
 
 
 /**
- * @api {put} /api/flows/:id 编辑flow
+ * @api {post} /api/flows/:id 编辑flow
  * @apiName  编辑flow
  * @apiGroup flow
  * @apiParam {String} name
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.put('/api/flows/:id', function (req, res, next) {
+router.post('/api/flows/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         rules: Joi.array().required(),
         hash: Joi.string(),

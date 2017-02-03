@@ -259,7 +259,7 @@ router.post('/api/campaigns', function (req, res, next) {
 });
 
 /**
- * @api {put} /api/campaigns/:id 编辑campaign
+ * @api {post} /api/campaigns/:id 编辑campaign
  * @apiName 编辑campaign
  * @apiGroup campaign
  *
@@ -291,7 +291,7 @@ router.post('/api/campaigns', function (req, res, next) {
  *   }
  *
  */
-router.put('/api/campaigns/:id', function (req, res, next) {
+router.post('/api/campaigns/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
