@@ -182,7 +182,7 @@ var setting=require('../config/setting');
 // }
 
 /**
- * @api {post} /api/campaign/ 新增campaign
+ * @api {post} /api/campaigns/ 新增campaign
  * @apiName 新增campaign
  * @apiGroup campaign
  *
@@ -213,7 +213,7 @@ var setting=require('../config/setting');
  *   }
  *
  */
-router.post('/api/campaign',function(req,res,next){
+router.post('/api/campaigns',function(req,res,next){
        var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText:Joi.string().required(),
@@ -261,7 +261,7 @@ router.post('/api/campaign',function(req,res,next){
 });
 
 /**
- * @api {post} /api/campaign/:id 编辑campaign
+ * @api {put} /api/campaigns/:id 编辑campaign
  * @apiName 编辑campaign
  * @apiGroup campaign
  *
@@ -293,7 +293,7 @@ router.post('/api/campaign',function(req,res,next){
  *   }
  *
  */
-router.post('/api/campaign/:id',function(req,res,next){
+router.put('/api/campaigns/:id',function(req,res,next){
        var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -551,7 +551,7 @@ router.post('/api/campaign/:id',function(req,res,next){
  * @apiName  campaign detail
  * @apiGroup campaign
  */
-router.get('/api/campaign/:id',function(req,res,next){
+router.get('/api/campaigns/:id',function(req,res,next){
      var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -581,11 +581,11 @@ router.get('/api/campaign/:id',function(req,res,next){
 });
 
 /**
-* @api {delete} /api/campaign/:id   delete campaign
+* @api {delete} /api/campaigns/:id   delete campaign
  * @apiName  delete campaign
  * @apiGroup campaign
  */
-router.delete('/api/campaign/:id',function(req,res,next){
+router.delete('/api/campaigns/:id',function(req,res,next){
       var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
