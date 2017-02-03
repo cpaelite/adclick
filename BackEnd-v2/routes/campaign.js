@@ -302,7 +302,7 @@ router.post('/api/campaigns/:id', function (req, res, next) {
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().required().keys({
+        flow: Joi.object().optional().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
