@@ -162,7 +162,7 @@ router.get('/api/traffics/:id', async function (req, res, next) {
         res.json({
             status: 1,
             message: 'success',
-            data: result ? result : {}
+            data: result.length ? result[0] : {}
         });
     } catch (e) {
         next(err);

@@ -46,9 +46,12 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Pixel redirect URL：</label>
+                <label class="col-sm-3 control-label">Pixel redirect URL<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.pixelRedirectUrl">
+                    <input type="text" class="form-control" name="pixelRedirectUrl" ng-model="item.pixelRedirectUrl" required>
+                    <span style="color:red" ng-show="editForm.pixelRedirectUrl.$dirty && editForm.pixelRedirectUrl.$invalid">
+                    <span ng-show="editForm.pixelRedirectUrl.$error.required">PixelRedirectUrl is required.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">
