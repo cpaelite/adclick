@@ -35,7 +35,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name` from AffiliateNetwork where `userId` = ? and `id` =? ", [
+                "select  `id`,`name`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [
                     value.userId,value.id
                 ],
                 function (err, result) {
@@ -47,7 +47,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
                         status: 1,
                         message: "success",
                         data: {
-                            affiliates: result
+                            affiliates: result.length?result[0]:{}
                         }
                     });
 
