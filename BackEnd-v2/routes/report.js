@@ -368,7 +368,7 @@ id as trafficId, name as trafficName,
 0 as epv,
 0 as epc,
 0 as ap
-from Offer
+from TrafficSource
 `
 
 var affiliateListSql = `
@@ -390,5 +390,5 @@ id as affiliateId, name as affiliateName,
 0 as epv,
 0 as epc,
 0 as ap
-from Offer
+from AffiliateNetwork
 `
