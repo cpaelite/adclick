@@ -15,13 +15,13 @@
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(1)">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filteGroupBy1">{{gb.display}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose grouping">
                     <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filteGroupBy2">{{gb.display}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}</md-option>
                 </md-select>
             </div>
         </div>
@@ -51,30 +51,7 @@
                         {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
                     </button>
                     <select class="cs-subform-select" ng-model="fromTime">
-                        <option value="00:00">00:00</option>
-                        <option value="01:00">01:00</option>
-                        <option value="02:00">02:00</option>
-                        <option value="03:00">03:00</option>
-                        <option value="04:00">04:00</option>
-                        <option value="05:00">05:00</option>
-                        <option value="06:00">06:00</option>
-                        <option value="07:00">07:00</option>
-                        <option value="08:00">08:00</option>
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="12:00">12:00</option>
-                        <option value="13:00">13:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:00">16:00</option>
-                        <option value="17:00">17:00</option>
-                        <option value="18:00">18:00</option>
-                        <option value="19:00">19:00</option>
-                        <option value="20:00">20:00</option>
-                        <option value="21:00">21:00</option>
-                        <option value="22:00">22:00</option>
-                        <option value="23:00">23:00</option>
+                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
                     </select>
                 </div>
                 <label class="cs-subform-label">{{'toDate' | translate}}：</label>
@@ -85,33 +62,11 @@
                         {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
                     </button>
                     <select class="cs-subform-select" ng-model="toTime">
-                        <option value="00:00">00:00</option>
-                        <option value="01:00">01:00</option>
-                        <option value="02:00">02:00</option>
-                        <option value="03:00">03:00</option>
-                        <option value="04:00">04:00</option>
-                        <option value="05:00">05:00</option>
-                        <option value="06:00">06:00</option>
-                        <option value="07:00">07:00</option>
-                        <option value="08:00">08:00</option>
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="12:00">12:00</option>
-                        <option value="13:00">13:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:00">16:00</option>
-                        <option value="17:00">17:00</option>
-                        <option value="18:00">18:00</option>
-                        <option value="19:00">19:00</option>
-                        <option value="20:00">20:00</option>
-                        <option value="21:00">21:00</option>
-                        <option value="22:00">22:00</option>
-                        <option value="23:00">23:00</option>
+                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
                     </select>
                 </div>
             </div>
+
 
             <div class="selectAll">
                 <md-select class="cs-subform-select" ng-model="activeStatus" required>
@@ -120,13 +75,9 @@
                     <md-option value="2">All</md-option>
                 </md-select>
             </div>
-            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applySearch($event)">{{'apply' |
-                translate}}
-            </md-button>
+            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applySearch($event)" translate>apply</md-button>
 
-            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="editItem($event)">{{'add' |
-                translate}}
-            </md-button>
+            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="editItem($event)" translate>add</md-button>
             <div class="view_column" ng-click="viewColumnClick()">
                 <i class="material-icons view-column-icon">view_column</i>
                 <i class="material-icons arrow-down-icon">keyboard_arrow_down</i>
@@ -146,6 +97,7 @@
             </div>
         </div>
     </div>
+
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order">
@@ -166,9 +118,26 @@
                      ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
                 <td md-cell
                     ng-repeat="column in columns"
-                    ng-show="preferences.reportViewColumns[column.key].visible"
-                    ng-click="openMenu(row, column.key)">
-                  {{row.data[column.key]}}
+                    ng-show="preferences.reportViewColumns[column.key].visible">
+                    <!--ng-click="openMenu($event, row, column.role)"-->
+                  <span ng-if="column.role=='name' && treeLevel==1" uib-dropdown>
+                    <a uib-dropdown-toggle>{{row.data[column.key]}}</a>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                      <li role="menuitem" ng-show="canEdit"><a ng-click="editItem($event, row)">Edit</a></li>
+                      <li class="divider" ng-show="canEdit"></li>
+                      <li class="dropdown-submenu">
+                        <a>Drilldown by...</a>
+                        <ul class="dropdown-menu">
+                          <li role="menuitem" ng-repeat="gb in groupByOptions | filter:drilldownFilter">
+                            <a ng-click="drilldown(row, gb)">{{gb.display}}</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </span>
+                  <span ng-if="column.role!='name' || treeLevel>1">
+                    {{row.data[column.key]}}
+                  </span>
                 </td>
               </tr>
             </tbody>

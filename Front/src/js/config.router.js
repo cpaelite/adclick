@@ -65,24 +65,74 @@
         url: '/campaign',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
+        params: {
+          campaign: null,
+          flow: null,
+          offer: null,
+          lander: null,
+          traffic: null,
+          from: null,
+          to: null
+        }
       })
       .state('app.report.flow', {
         url: '/flow',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
+        params: {
+          campaign: null,
+          flow: null,
+          offer: null,
+          lander: null,
+          traffic: null,
+          from: null,
+          to: null
+        }
       })
       .state('app.report.offer', {
         url: '/offer',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
+        params: {
+          campaign: null,
+          flow: null,
+          offer: null,
+          lander: null,
+          traffic: null,
+          from: null,
+          to: null
+        }
       })
       .state('app.report.lander', {
         url: '/lander',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
+        params: {
+          campaign: null,
+          flow: null,
+          offer: null,
+          lander: null,
+          traffic: null,
+          from: null,
+          to: null
+        }
       })
       .state('app.report.traffic', {
         url: '/traffic',
+        templateUrl: 'tpl/report.html',
+        controller: 'ReportCtrl',
+        params: {
+          campaign: null,
+          flow: null,
+          offer: null,
+          lander: null,
+          traffic: null,
+          from: null,
+          to: null
+        }
+      })
+      .state('app.report.affiliate', {
+        url: '/affiliate',
         templateUrl: 'tpl/report.html',
         controller: 'ReportCtrl',
       })

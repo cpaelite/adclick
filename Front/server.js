@@ -193,7 +193,7 @@ app.get('/api/preferences', function (req, res) {
         "ap": {
           "visible": true
         },
-        "affiliateNetworkName": {
+        "affiliateName": {
           "visible": true
         },
         "campaignName": {
@@ -418,6 +418,7 @@ app.post('/api/preferences', function (req, res) {
  *
  */
 app.get('/api/report', function (req, res) {
+  var groupBy = req.query.groupBy;
   var result = {
     "status": 1,
     "messages": "",
@@ -445,8 +446,8 @@ app.get('/api/report', function (req, res) {
       },
       rows: [
         {
-          "campaignName": "Campaign1",
-          "campaignId": "1",
+          [groupBy + "Name"]: groupBy + " 1",
+          [groupBy + "Id"]: "1",
           "ap": 0.0,
           "bids": 0,
           "clicks": 4368,
@@ -466,8 +467,8 @@ app.get('/api/report', function (req, res) {
           "roi": 0.0,
           "visits": 3572
         }, {
-          "campaignName": "Campaign2",
-          "campaignId": "2",
+          [groupBy + "Name"]: groupBy + " 2",
+          [groupBy + "Id"]: "2",
           "ap": 0.0,
           "bids": 0,
           "clicks": 4368,
@@ -487,8 +488,8 @@ app.get('/api/report', function (req, res) {
           "roi": 0.0,
           "visits": 3572
         }, {
-          "campaignName": "Campaign3",
-          "campaignId": "3",
+          [groupBy + "Name"]: groupBy + " 3",
+          [groupBy + "Id"]: "3",
           "ap": 0.0,
           "bids": 0,
           "clicks": 4368,

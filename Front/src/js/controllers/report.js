@@ -10,9 +10,9 @@
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
-    // 初始化
     $scope.treeLevel = 1;
     $scope.datetype = '1';
+    // todo: get fromDate/toDate from $stateParams
     $scope.fromDate = moment().format('YYYY-MM-DD');
     $scope.fromTime = '00:00';
     $scope.toDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -23,6 +23,15 @@
       page: 1,
       __tk: 0
     };
+
+    $scope.filters = [];
+    // get filters from $scope.$stateParams
+    groupByOptions.forEach(function(gb) {
+      var val = $scope.$stateParams[gb.value];
+      if (val) {
+        $scope.filters.push({ key: gb.value, val: val });
+      }
+    });
 
     var currentGroupBy = angular.copy($scope.groupBy);
     var currentStatus;
@@ -73,7 +82,9 @@
     }
 
     function getList(parentRow) {
-      var params = angular.extend({}, $scope.query, currentDateRange);
+      var params = {};
+      $scope.filters.forEach(function(f) { params[f.key] = f.val });
+      angular.extend(params, $scope.query, currentDateRange);
       params.status = currentStatus;
       delete params.__tk;
 
@@ -140,16 +151,28 @@
 
     function filteGroupBy(level) {
       return function(item) {
-        // todo: selected should contian filters
-        var selected = [];
-        selected.push($scope.groupBy[0]);
-        if (level == 2)
-          selected.push($scope.groupBy[1]);
-        return selected.indexOf(item.value) == -1;
+        var exclude = [];
+        $scope.filters.forEach(function(f) {
+          exclude.push(f.key);
+        });
+        exclude.push($scope.groupBy[0]);
+        if (level == 2) {
+          exclude.push($scope.groupBy[1]);
+        }
+        return exclude.indexOf(item.value) == -1;
       }
     }
-    $scope.filteGroupBy1 = filteGroupBy(1);
-    $scope.filteGroupBy2 = filteGroupBy(2);
+    $scope.groupbyFilter1 = filteGroupBy(1);
+    $scope.groupbyFilter2 = filteGroupBy(2);
+
+    $scope.hours = [];
+    for (var i=0; i<24; ++i) {
+      if (i < 10) {
+        $scope.hours.push('0' + i + ':00');
+      } else {
+        $scope.hours.push('' + i + ':00');
+      }
+    }
 
     $scope.applySearch = function(evt) {
       $scope.treeLevel = $scope.groupBy.filter(function(item) { return !!item; }).length;
@@ -166,6 +189,7 @@
       currentGroupBy = angular.copy($scope.groupBy);
       getDateRange($scope.datetype);
       currentStatus = $scope.activeStatus;
+      // todo: gogogo
       $scope.query.page = 1;
       $scope.query.__tk += 1;
       // dirty fix tree view name column
@@ -195,16 +219,46 @@
       }
     };
 
-    $scope.openMenu = function(row, key) {
-      // todo
-      if (key == 'name') {
+    $scope.menuAppendTo = null;
+    $scope.menuStatus = { isopen: false };
+    $scope.openMenu = function(evt, row, role) {
+      if (role == 'name') {
+        //todo: fixme
+        //$scope.menuAppendTo = evt.target;
+        $scope.menuStatus.isopen = true;
       }
+    };
+    // todo
+    $scope.canEdit = true;
+    $scope.drilldownFilter = function(item) {
+      var exclude = [];
+      exclude.push(currentGroupBy[0]);
+      $scope.filters.forEach(function(f) {
+        exclude.push(f.key);
+      });
+      return exclude.indexOf(item.value) == -1;
+    };
+    $scope.drilldown = function(row, gb) {
+      if ($scope.treeLevel > 1)
+        return;
+      var idKey = $scope.columns[1].key;
+      var params = {
+        from: currentDateRange.from,
+        to: currentDateRange.to
+      };
+      $scope.filters.forEach(function(f) {
+        params[f.key] = f.val;
+      });
+      params[currentGroupBy[0]] = row.data[idKey];
+      $scope.$state.go('app.report.' + gb.value, params);
     };
 
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
     // fixme: dirty fix, rename the file
     if (perfType == 'traffic')
       editTemplateUrl = 'tpl/trafficSource-edit-dialog.html';
+    if (perfType == 'affiliate')
+      editTemplateUrl = 'tpl/affiliateNetwork-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
       var controller;
@@ -221,6 +275,8 @@
         controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
+      } else if (perfType == 'affiliate') {
+        controller = ['$scope', '$mdDialog', 'AffiliateNetwork', editAffiliateCtrl];
       }
 
       $mdDialog.show({
@@ -238,7 +294,7 @@
     $scope.deleteItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', deleteCtrl],
+        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', 'AffiliateNetwork', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
@@ -311,6 +367,7 @@
     // 获取不同页面的不同显示列
     var cols = angular.copy(columnDefinition[perfType]).concat(columnDefinition['common']);
     // dirty fix tree view name column
+    cols[0].role = 'name';
     cols[0].origKey = cols[0].key;
     cols[0].origName = cols[0].name;
     $scope.columns = cols;
@@ -703,7 +760,57 @@
 
   }
 
-  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer) {
+  function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
+    if (this.item) {
+      AffiliateNetwork.get({id: 22}, function (offer) {
+        $scope.item = angular.copy(offer.data);
+      });
+      this.title = "edit";
+    } else {
+      this.title = "add";
+    }
+
+    this.titleType = angular.copy(this.perfType);
+
+    this.cancel = $mdDialog.cancel;
+
+    function success(item) {
+      $mdDialog.hide(item);
+    }
+
+    this.save = function () {
+      $scope.editForm.$setSubmitted();
+      if ($scope.editForm.$valid) {
+        AffiliateNetwork.save($scope.item, success);
+      }
+    };
+
+    $scope.textareaShow = false;
+    $scope.isChecked = function(){
+      $scope.textareaShow = !$scope.textareaShow;
+    };
+    
+    $scope.checkIP = function () {
+      // 验证IP格式
+      var ipList = $scope.item.ipWhiteList;
+      if (ipList) {
+        var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+        var ips = ipList.split('\n');
+
+        var isValid = true;
+        ips.forEach(function (ip) {
+          if (!re.test(ip)) {
+            isValid = false;
+            return;
+          }
+        });
+        $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
+      }
+    }
+
+  }
+
+  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {
     this.title = "delete";
     this.content = 'warnDelete';
 
@@ -719,6 +826,8 @@
         deferred = Lander.remove({id: item.id});
       } else if (type == 'offer') {
         deferred = Offer.remove({id: item.id});
+      } else if (type == 'affiliate') {
+        deferred = AffiliateNetwork.remove({id: item.id});
       }
       return deferred.$promise;
     }
