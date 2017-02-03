@@ -9,7 +9,7 @@ var common =require('./common');
 
 
 /**
- * @api {post} /api/lander  新增lander
+ * @api {post} /api/landers  新增lander
  * @apiName lander
  * @apiGroup lander
  *
@@ -25,7 +25,7 @@ var common =require('./common');
  *    message: 'success' *   }
  *
  */
-router.post('/api/lander', function (req, res, next) {
+router.post('/api/landers', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -68,7 +68,7 @@ router.post('/api/lander', function (req, res, next) {
 
 
 /**
- * @api {post} /api/lander/:id  编辑lander
+ * @api {post} /api/landers/:id  编辑lander
  * @apiName lander
  * @apiGroup lander
  *
@@ -85,7 +85,7 @@ router.post('/api/lander', function (req, res, next) {
  *    message: 'success' *   }
  *
  */
-router.post('/api/lander/:id', function (req, res, next) {
+router.post('/api/landers/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -143,7 +143,7 @@ router.post('/api/lander/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/lander/:id',function(req,res,next){
+router.get('/api/landers/:id',function(req,res,next){
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -211,7 +211,7 @@ router.get('/api/landers', function (req, res,next) {
  * @apiName  删除lander
  * @apiGroup lander
  */
-router.delete('/api/lander/:id',function(req,res,next){
+router.delete('/api/landers/:id',function(req,res,next){
     var schema=Joi.object().keys({
             id: Joi.number().required(),
             userId:Joi.number().required()
