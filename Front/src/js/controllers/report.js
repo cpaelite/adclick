@@ -436,20 +436,6 @@
     }
 
     this.save = function () {
-      /*if ($scope.item.targetType == 1 && !$scope.item.flow) {
-        $scope.editForm.flow.$setValidity('select', false);
-        return;
-      } else {
-        $scope.editForm.flow.$setValidity('select', true);
-      }
-
-      if ($scope.item.targetType==0 && !$scope.item.targetUrl) {
-        $scope.editForm.targetUrl.$setValidity('required', false);
-        return;
-      } else {
-        $scope.editForm.targetUrl.$setValidity('required', true);
-      }*/
-
       // cost model value
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
@@ -469,6 +455,14 @@
       delete $scope.item['cpcValue'];
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
+
+      if (!$scope.item['flow']) {
+        $scope.item['flow']={
+          type: 0,
+          name: 'defaultName',
+          redirectMode: 0
+        };
+      }
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {

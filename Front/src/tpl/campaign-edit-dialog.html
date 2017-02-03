@@ -20,14 +20,14 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="url" class="form-control" ng-model="item.url" ng-show="item.url">
+                    <input type="url" name="url" class="form-control" ng-model="item.url" ng-show="item.url" ng-disabled="true">
                     <label ng-show="!item.url">ID will be available after saving the campaign.</label>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl">
+                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl" ng-disabled="true">
                     <label ng-show="!item.impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
             </div>
