@@ -9,7 +9,7 @@ var common = require('./common');
 
 
 /**
- * @api {post} /api/traffic  新增traffic
+ * @api {post} /api/traffics  新增traffic
  * @apiName traffic
  * @apiGroup traffic
  *
@@ -29,7 +29,7 @@ var common = require('./common');
  *  *   }
  *
  */
-router.post('/api/traffic', async function (req, res, next) {
+router.post('/api/traffics', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -68,7 +68,7 @@ router.post('/api/traffic', async function (req, res, next) {
 
 
 /**
- * @api {post} /api/traffic/:id  编辑traffic
+ * @api {post} /api/traffics/:id  编辑traffic
  * @apiName traffic
  * @apiGroup traffic
  *
@@ -89,7 +89,7 @@ router.post('/api/traffic', async function (req, res, next) {
  *  *   }
  *
  */
-router.post('/api/traffic/:id', async function (req, res, next) {
+router.post('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -146,7 +146,7 @@ router.post('/api/traffic/:id', async function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/traffic/:id', async function (req, res, next) {
+router.get('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -175,11 +175,62 @@ router.get('/api/traffic/:id', async function (req, res, next) {
 
 
 /**
+ * @api {get} /api/traffics  获取用户所有trafficsources
+ * @apiName  get  user  trafficsources
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
+ *
+ */
+router.get('/api/traffics', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    Joi.validate(req.query, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select  `id`,`name`,`cost`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
+                    value.userId
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data: {
+                            trafficsources: result
+                        }
+                    });
+
+                });
+        });
+    });
+});
+
+
+/**
  * @api {delete} /api/traffic/:id 删除traffic
  * @apiName  删除traffic
  * @apiGroup traffic
  */
-router.delete('/api/traffic/:id', async function (req, res, next) {
+router.delete('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
