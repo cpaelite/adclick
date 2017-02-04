@@ -10,39 +10,75 @@
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
-    $scope.treeLevel = 1;
-    $scope.datetype = '1';
-    // todo: get fromDate/toDate from $stateParams
-    $scope.fromDate = moment().format('YYYY-MM-DD');
-    $scope.fromTime = '00:00';
-    $scope.toDate = moment().add(1, 'days').format('YYYY-MM-DD');
-    $scope.toTime = '00:00';
     $scope.groupByOptions = groupByOptions;
-    $scope.groupBy = [perfType, "", ""];
-    $scope.query = {
-      page: 1,
-      __tk: 0
-    };
+
+    // status, from, to, datetype, groupBy
+    var pageStatus = {};
+
+    var stateParams = $scope.$stateParams;
+    //console.log(stateParams);
+
+    if (stateParams.extgrpby) {
+      var egb = (stateParams.extgrpby+',').split(',');
+      $scope.groupBy = [perfType, egb[0], egb[1]];
+      $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
+    } else {
+      $scope.groupBy = [perfType, '', ''];
+      $scope.treeLevel = 1;
+    }
+    pageStatus.groupBy = angular.copy($scope.groupBy);
+
+
+    if (stateParams.datetype) {
+      $scope.datetype = stateParams.datetype;
+      if ($scope.datetype == '0') {
+        var fromDate = (stateParams.from||'').split('T');
+        var toDate = (stateParams.to||'').split('T');
+        $scope.fromDate = fromDate[0] || moment().format('YYYY-MM-DD');
+        $scope.fromTime = fromDate[1] || '00:00';
+        $scope.toDate = toDate[0] || moment().add(1, 'days').format('YYYY-MM-DD');
+        $scope.toTime = toDate[1] || '00:00';
+      }
+    } else {
+      $scope.datetype = '1';
+    }
+    pageStatus.datetype = $scope.datetype;
+    getDateRange($scope.datetype);
 
     $scope.filters = [];
-    // get filters from $scope.$stateParams
     groupByOptions.forEach(function(gb) {
-      var val = $scope.$stateParams[gb.value];
+      var val = stateParams[gb.value];
       if (val) {
         $scope.filters.push({ key: gb.value, val: val });
       }
     });
 
-    var currentGroupBy = angular.copy($scope.groupBy);
-    var currentStatus;
-    var currentDateRange = {};
+    if (stateParams.status) {
+      pageStatus.status = stateParams.status;
+      $scope.activeStatus = pageStatus.status;
+    }
 
-    getDateRange($scope.datetype);
+    $scope.query = {
+      page: 1,
+      __tk: 0
+    };
 
     var groupMap = {};
     groupByOptions.forEach(function(group) {
       groupMap[group.value] = group;
     });
+
+    // columns
+    var cols = angular.copy(columnDefinition[perfType]).concat(columnDefinition['common']);
+    // dirty fix tree view name column
+    cols[0].role = 'name';
+    cols[0].origKey = cols[0].key;
+    cols[0].origName = cols[0].name;
+    if ($scope.treeLevel > 1) {
+      cols[0].key = 'name';
+      cols[0].name = 'Name';
+    }
+    $scope.columns = cols;
 
     function buildSuccess(parentRow) {
       return function success(result) {
@@ -51,7 +87,7 @@
             parentRow = { treeLevel: 0, expanded: true };
           }
 
-          var group = currentGroupBy[parentRow.treeLevel];
+          var group = pageStatus.groupBy[parentRow.treeLevel];
           var nameKey = groupMap[group].nameKey;
 
           var rows = [];
@@ -81,30 +117,35 @@
       };
     }
 
+    function notEmpty(val) {
+      return !!val;
+    }
+
     function getList(parentRow) {
       var params = {};
       $scope.filters.forEach(function(f) { params[f.key] = f.val });
-      angular.extend(params, $scope.query, currentDateRange);
-      params.status = currentStatus;
+      angular.extend(params, $scope.query, pageStatus);
       delete params.__tk;
+      delete params.datetype;
+      delete params.groupBy;
 
       if (parentRow) {
-        params.groupBy = currentGroupBy[parentRow.treeLevel];
+        params.groupBy = pageStatus.groupBy[parentRow.treeLevel];
         params.page = 1;
         params.limit = -1;
 
-        var group = currentGroupBy[0];
+        var group = pageStatus.groupBy[0];
         var idKey = groupMap[group].idKey;
         params[group] = parentRow.data[idKey];
 
         if (parentRow.treeLevel == 2) {
           var ppRow = parentRow.parentRow;
-          group = currentGroupBy[1];
+          group = pageStatus.groupBy[1];
           idKey = groupMap[group].idKey;
           params[group] = ppRow.data[idKey];
         }
       } else {
-        params.groupBy = currentGroupBy[0];
+        params.groupBy = pageStatus.groupBy[0];
       }
 
       $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
@@ -135,8 +176,10 @@
         order: newVal.reportViewOrder,
         tz: newVal.reportTimeZone
       });
-      $scope.activeStatus = newVal.entityType;
-      currentStatus = newVal.entityType;
+      if (!pageStatus.status) {
+        $scope.activeStatus = newVal.entityType;
+        pageStatus.status = newVal.entityType;
+      }
 
       unwatch();
       unwatch = null;
@@ -175,7 +218,7 @@
     }
 
     $scope.applySearch = function(evt) {
-      $scope.treeLevel = $scope.groupBy.filter(function(item) { return !!item; }).length;
+      $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
       if ($scope.treeLevel == 0) {
         $mdDialog.show(
           $mdDialog.alert()
@@ -186,12 +229,21 @@
         );
         return;
       }
-      currentGroupBy = angular.copy($scope.groupBy);
+
       getDateRange($scope.datetype);
-      currentStatus = $scope.activeStatus;
-      // todo: gogogo
+      pageStatus.datetype = $scope.datetype;
+      pageStatus.status = $scope.activeStatus;
+
+      if ($scope.groupBy[0] != pageStatus.groupBy[0]) {
+        pageStatus.groupBy = angular.copy($scope.groupBy);
+        go($scope.groupBy[0]);
+        return;
+      }
+
+      pageStatus.groupBy = angular.copy($scope.groupBy);
       $scope.query.page = 1;
       $scope.query.__tk += 1;
+
       // dirty fix tree view name column
       if ($scope.treeLevel > 1) {
         $scope.columns[0].key = 'name';
@@ -219,20 +271,21 @@
       }
     };
 
+    // todo: use single menu for all rows
+    // need to decorate uibDropdownDirective
     $scope.menuAppendTo = null;
     $scope.menuStatus = { isopen: false };
     $scope.openMenu = function(evt, row, role) {
       if (role == 'name') {
-        //todo: fixme
-        //$scope.menuAppendTo = evt.target;
+        $scope.menuAppendTo = evt.target;
         $scope.menuStatus.isopen = true;
       }
     };
-    // todo
+    // fixme: are all types editable
     $scope.canEdit = true;
     $scope.drilldownFilter = function(item) {
       var exclude = [];
-      exclude.push(currentGroupBy[0]);
+      exclude.push(pageStatus.groupBy[0]);
       $scope.filters.forEach(function(f) {
         exclude.push(f.key);
       });
@@ -242,16 +295,28 @@
       if ($scope.treeLevel > 1)
         return;
       var idKey = $scope.columns[1].key;
-      var params = {
-        from: currentDateRange.from,
-        to: currentDateRange.to
-      };
+      $scope.filters.push({ key: pageStatus.groupBy[0], val: row.data[idKey] });
+
+      go(gb.value);
+    };
+
+    function go(page) {
+      var params = angular.copy(pageStatus);
+      if ($scope.treeLevel > 1) {
+        var extgrpby = pageStatus.groupBy.filter(notEmpty);
+        extgrpby.shift();
+        params.extgrpby = extgrpby.join(',');
+      }
+      delete params.groupBy;
+      if (params.datetype != '0') {
+        delete params.from;
+        delete params.to;
+      }
       $scope.filters.forEach(function(f) {
         params[f.key] = f.val;
       });
-      params[currentGroupBy[0]] = row.data[idKey];
-      $scope.$state.go('app.report.' + gb.value, params);
-    };
+      $scope.$state.go('app.report.' + page, params);
+    }
 
     var editTemplateUrl = 'tpl/' + perfType + '-edit-dialog.html';
     // fixme: dirty fix, rename the file
@@ -363,21 +428,13 @@
           break;
       }
       if (value == '0') {
-        currentDateRange.from = $scope.fromDate + 'T' + $scope.fromTime;
-        currentDateRange.to = $scope.toDate + 'T' + $scope.toTime;
+        pageStatus.from = $scope.fromDate + 'T' + $scope.fromTime;
+        pageStatus.to = $scope.toDate + 'T' + $scope.toTime;
       } else {
-        currentDateRange.from = fromDate + 'T00:00';
-        currentDateRange.to = toDate + 'T23:59';
+        pageStatus.from = fromDate + 'T00:00';
+        pageStatus.to = toDate + 'T23:59';
       }
     }
-
-    // 获取不同页面的不同显示列
-    var cols = angular.copy(columnDefinition[perfType]).concat(columnDefinition['common']);
-    // dirty fix tree view name column
-    cols[0].role = 'name';
-    cols[0].origKey = cols[0].key;
-    cols[0].origName = cols[0].name;
-    $scope.columns = cols;
   }
 
   function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {

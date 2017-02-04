@@ -283,63 +283,7 @@
       </div>
 
       <div class="form-group direct-content clearfix">
-        <div class="col-sm-12 col-md-6 lander-content">
-          <div class="cs-flow-lander-header clearfix">
-            <div class="col-sm-9 col-md-9">Lander</div>
-            <div class="col-sm-3 col-md-3">Weight</div>
-          </div>
-          <div class="cs-flow-lander-row clearfix"
-               ng-repeat="lander in curPath.landers" ng-click="setEdit($event, lander)"
-               ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
-            <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-lander-view">{{lander.name || 'Select lander...'}}</p>
-              <div class="cs-flow-lander-edit clearfix">
-                <md-autocomplete
-                    md-selected-item="selected"
-                    md-search-text="searchText"
-                    md-items="item in queryLanders(searchText)"
-                    md-no-cache="true"
-                    md-select-on-focus="true"
-                    md-item-text="item.name"
-                    md-min-length="0"
-                    md-search-text-change="searchTextChange(searchText)"
-                    md-selected-item-change="selectedLanderChange(item, lander)"
-                    placeholder="Select lander...">
-                  <md-item-template>
-                    <span md-highlight-text="searchText">{{item.name}}</span>
-                  </md-item-template>
-                  <md-not-found>
-                    No matching found.
-                  </md-not-found>
-                </md-autocomplete>
-                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
-              </div>
-            </div>
-            <div class="col-sm-3 col-md-3 input-content">
-              <div class="cs-flow-lander-view">
-                {{lander.weight}}
-                <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
-                <em ng-show="lander.relativeWeight<=0">(N/A)</em>
-              </div>
-              <div class="cs-flow-lander-edit clearfix">
-                <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
-                <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
-              </div>
-            </div>
-          </div>
-          <div class="cs-flow-lander-action clearfix">
-            <button ng-click="addLander($event)" type="button" class="btn btn-default add-lander-btn">
-              <i class="material-icons add-box">add_box</i>
-              Add New Lander
-            </button>
-            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
-              <i class="material-icons add-box">add_box</i>
-              Add Lander
-            </button-->
-          </div>
-        </div>
-
-        <div class="col-sm-12 col-md-6 offer-content" ng-hide="curPath.directLinking">
+        <div class="col-sm-12 col-md-6 offer-content">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Offer</div>
             <div class="col-sm-3 col-md-3">Weight</div>
@@ -394,6 +338,62 @@
             </button-->
           </div>
         </div>
+
+        <div class="col-sm-12 col-md-6 lander-content" ng-hide="curPath.directLinking">
+          <div class="cs-flow-lander-header clearfix">
+            <div class="col-sm-9 col-md-9">Lander</div>
+            <div class="col-sm-3 col-md-3">Weight</div>
+          </div>
+          <div class="cs-flow-lander-row clearfix"
+               ng-repeat="lander in curPath.landers" ng-click="setEdit($event, lander)"
+               ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
+            <div class="col-sm-9 col-md-9">
+              <p class="cs-flow-lander-view">{{lander.name || 'Select lander...'}}</p>
+              <div class="cs-flow-lander-edit clearfix">
+                <md-autocomplete
+                    md-selected-item="selected"
+                    md-search-text="searchText"
+                    md-items="item in queryLanders(searchText)"
+                    md-no-cache="true"
+                    md-select-on-focus="true"
+                    md-item-text="item.name"
+                    md-min-length="0"
+                    md-search-text-change="searchTextChange(searchText)"
+                    md-selected-item-change="selectedLanderChange(item, lander)"
+                    placeholder="Select lander...">
+                  <md-item-template>
+                    <span md-highlight-text="searchText">{{item.name}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No matching found.
+                  </md-not-found>
+                </md-autocomplete>
+                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
+              </div>
+            </div>
+            <div class="col-sm-3 col-md-3 input-content">
+              <div class="cs-flow-lander-view">
+                {{lander.weight}}
+                <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
+                <em ng-show="lander.relativeWeight<=0">(N/A)</em>
+              </div>
+              <div class="cs-flow-lander-edit clearfix">
+                <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
+                <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
+              </div>
+            </div>
+          </div>
+          <div class="cs-flow-lander-action clearfix">
+            <button ng-click="addLander($event)" type="button" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
+              Add New Lander
+            </button>
+            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
+              Add Lander
+            </button-->
+          </div>
+        </div>
       </div>
     </form>
 
@@ -402,7 +402,7 @@
         <i class="material-icons">check</i>
         Save
       </button>
-      <button class="btn close-btn" ng-click="cancel()">
+      <button class="btn close-btn" ng-click="close()">
         <i class="material-icons">close</i>
         Close
       </button>

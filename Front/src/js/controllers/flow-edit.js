@@ -454,8 +454,9 @@
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };
-      if (theFlow.id)
+      if (theFlow.id) {
         flowData.id = theFlow.id;
+      }
 
       theFlow.rules.forEach(function(rule) {
         if (rule.isDeleted)
@@ -524,7 +525,16 @@
 
       console.log(flowData);
       $scope.onSave = true;
-      Flow.save(flowData, function() { $scope.onSave = false; });
+      Flow.save(flowData, function(result) {
+        $scope.onSave = false;
+        if (!theFlow.id) {
+          theFlow.id = result.data.id;
+        }
+      });
+    };
+
+    $scope.close = function() {
+      $scope.$state.go('app.report.flow');
     };
   }
 })();
