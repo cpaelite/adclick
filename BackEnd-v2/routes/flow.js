@@ -130,13 +130,14 @@ router.get('/api/flows/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
 
         let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
-        let ruleSql = "select  f.`id` as parentId, r.`id`,r.`name`,r.`json`,r.`status`,r.`type` " +
+        let ruleSql = "select  f.`id` as parentId, r.`id`,r.`name`,r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type` " +
             "from Flow f " +
             "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "left join `Rule` r on r.`id` = f2.`ruleId` " +
             "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
-        let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, p.`directLink`,p.`redirectMode`,p.`status`,r2.`weight` " +
+        let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
+        "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight` " +
             "from Flow f " +
             "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "left join `Rule` r on r.`id` = f2.`ruleId`  " +
@@ -623,3 +624,16 @@ router.get('/api/conditions', function (req, res) {
     }];
     res.json(result)
 });
+
+
+
+function query(sql,connection){
+    return new Promise(function(resolve,reject){
+       connection.query(sql,function(err,result){
+           if(err){
+               return reject(err);
+           }
+       resolve(result);
+       })
+    });
+}
