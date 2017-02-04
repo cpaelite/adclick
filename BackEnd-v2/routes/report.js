@@ -106,7 +106,8 @@ async function campaignReport(value) {
         page,
         from,
         to,
-        tz
+        tz,
+        filter
     } = value;
 
     let sqlWhere = {};
@@ -123,14 +124,14 @@ async function campaignReport(value) {
     })
     let isListPageRequest = Object.keys(sqlWhere).length === 0 && groupByMapping[groupBy]
     if (isListPageRequest) {
-        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit)
+        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit,filter)
     } else {
-        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit)
+        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit,filter)
     }
 
 }
 
-async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit) {
+async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit,filter) {
     let sql = buildSql()({
         sqlWhere,
         from,
@@ -151,7 +152,7 @@ async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit) {
     });
 }
 
-async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit) {
+async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit,filter) {
     let listSql
     if (groupBy == 'campaign') {
         listSql = campaignListSql + ' where userId = ' + userId
@@ -168,6 +169,9 @@ async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, l
     } else {
         console.error("some thing wrong!!!")
         return {}
+    }
+    if(filter){
+        listSql += " and `name` like '%"+filter+"%'"
     }
     let countSql = "select COUNT(*) as `total` from ((" + listSql + ") as T)";
     listSql += " limit " + offset + "," + limit;
