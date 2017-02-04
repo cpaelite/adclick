@@ -15,7 +15,8 @@ app.get('/', function (req, res) {
 
 function createJWT() {
   var payload = 'eyJ1aWQiOiIxMjM0NTY3ODkwIiwibmlja25hbWUiOiJKb2huIFB1YiIsInJvbGUiOiJwdWJsaXNoZXIifQ';
-  return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + payload + '.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
+  //return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + payload + '.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
+  return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjksImV4cCI6MTQ4NjgwNTE0ODA5MSwiZmlyc3RuYW1lIjoiQmluIn0.38dk75hihQAttgiRadRTerhFJhLXNsuW3jRG3gf7cSo';
 }
 
 function delayResponse(res, data) {
@@ -539,10 +540,10 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
       "cpmValue": 1.3,
       "redirectMode": 0,
       "targetType": 1,
-      "targetFlowId": 1,
+      "targetFlowId": 0,
       "targetUrl": "",
       "status": 1,
-      "tags": []
+      "tags": ['123', '234']
     }
   };
   res.send(result);
@@ -1313,7 +1314,7 @@ app.get('/api/traffics/:id', function (req, res) {
       "postbackUrl": "",
       "pixelRedirectUrl": "",
       "impTracking": 1,
-      "externalId": "",
+      "externalId": "{\"Parameter\":\"1\",\"Placeholder\":\"1\"}",
       "cost": "",
       "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]"
     }

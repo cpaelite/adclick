@@ -329,7 +329,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
+        controller = ['$scope', '$state', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
         $scope.$state.go('app.flow');
@@ -437,7 +437,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {
+  function editCampaignCtrl($scope, $state, $mdDialog, Campaign, Flow, TrafficSource) {
     $scope.tags = [];
     if (this.item) {
       Campaign.get({id: this.item.data.campaignId}, function(campaign) {
@@ -454,28 +454,21 @@
         }
         $scope.tags = $scope.item.tags;
         $scope.trafficSourceId = $scope.item.trafficSourceId;
-        $scope.item.flow = {
-          id: $scope.item.targetFlowId
+        if ($scope.item.targetFlowId) {
+          $scope.item.flow = {
+            id: $scope.item.targetFlowId
+          };
         }
         if ($scope.item['costModel'] == null) {
-          $scope.item = {
-            costModel: 0,
-            redirectMode: 0,
-            targetType: 1,
-            status: '1',
-          };
+          $scope.item = defaultItem();
         }
       });
       this.title = "edit";
     } else {
-      $scope.item = {
-        costModel: 0,
-        redirectMode: 0,
-        targetType: 1,
-        status: '1',
-      };
+      $scope.item = defaultItem();
       this.title = "add";
     }
+
     this.titleType = angular.copy(this.perfType);
 
     // TrafficSource
@@ -491,7 +484,21 @@
       $scope.flows = flow.data.flows;
     });
 
+    $scope.toAddFlow = function () {
+      $mdDialog.hide();
+      $state.go('app.flow');
+    };
+
     this.cancel = $mdDialog.cancel;
+
+    function defaultItem() {
+      return {
+        costModel: 0,
+        redirectMode: 0,
+        targetType: 1,
+        status: '1',
+      };
+    }
 
     function success(item) {
       $mdDialog.hide(item);
@@ -757,6 +764,17 @@
     if (this.item) {
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
+        if($scope.item.cost) {
+          $scope.item.cost = JSON.parse($scope.item.cost);
+        } else {
+          $scope.item.cost = {};
+        }
+
+        if ($scope.item.externalId) {
+          $scope.item.externalId = JSON.parse($scope.item.externalId);
+        } else {
+          $scope.item.externalId = {};
+        }
         if (!$scope.item.params) {
           $scope.item.params = [
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
@@ -770,6 +788,8 @@
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
             {Parameter: '', Placeholder: '', Name: '', Track: ''}
           ];
+        } else {
+          $scope.item.params = JSON.parse($scope.item.params);
         }
       });
       this.title = "edit";
@@ -805,6 +825,8 @@
     this.save = function () {
       delete $scope.item.hash;
       $scope.item.params = JSON.stringify($scope.item.params);
+      $scope.item.cost = JSON.stringify($scope.item.cost);
+      $scope.item.externalId = JSON.stringify($scope.item.externalId);
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
