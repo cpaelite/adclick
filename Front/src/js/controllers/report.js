@@ -2,15 +2,20 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
+      '$scope', '$mdDialog', '$cacheFactory', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
       ReportCtrl
     ]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, columnDefinition, groupByOptions, Report, Preference) {
+  function ReportCtrl($scope, $mdDialog, $cacheFactory, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
     $scope.groupByOptions = groupByOptions;
+
+    var cache = $cacheFactory.get('report-page');
+    if (!cache) {
+      cache = $cacheFactory('report-page', {capacity:100});
+    }
 
     // status, from, to, datetype, groupBy
     var pageStatus = {};
@@ -49,7 +54,10 @@
     groupByOptions.forEach(function(gb) {
       var val = stateParams[gb.value];
       if (val) {
-        $scope.filters.push({ key: gb.value, val: val });
+        var cacheKey = gb.value + ':' + val;
+        // todo: get name from server if not in cache
+        var cacheName = cache.get(cacheKey) || val;
+        $scope.filters.push({ key: gb.value, val: val, name: cacheName });
       }
     });
 
@@ -88,6 +96,7 @@
           }
 
           var group = pageStatus.groupBy[parentRow.treeLevel];
+          var idKey = groupMap[group].idKey;
           var nameKey = groupMap[group].nameKey;
 
           var rows = [];
@@ -96,6 +105,8 @@
               row.name = row[nameKey];
             }
             rows.push({
+              id: row[idKey],
+              name: row[nameKey],
               treeLevel: parentRow.treeLevel + 1,
               expanded: false,
               parentRow: parentRow,
@@ -134,15 +145,13 @@
         params.page = 1;
         params.limit = -1;
 
-        var group = pageStatus.groupBy[0];
-        var idKey = groupMap[group].idKey;
-        params[group] = parentRow.data[idKey];
+        var pgrp = pageStatus.groupBy[parentRow.treeLevel-1];
+        params[pgrp] = parentRow.id;
 
         if (parentRow.treeLevel == 2) {
           var ppRow = parentRow.parentRow;
-          group = pageStatus.groupBy[1];
-          idKey = groupMap[group].idKey;
-          params[group] = ppRow.data[idKey];
+          var ppgrp = pageStatus.groupBy[0];
+          params[ppgrp] = ppRow.id;
         }
       } else {
         params.groupBy = pageStatus.groupBy[0];
@@ -184,6 +193,13 @@
       unwatch();
       unwatch = null;
     }, true);
+
+    $scope.deleteFilter = function(filter) {
+      var idx = $scope.filters.indexOf(filter);
+      $scope.filters.splice(idx, 1);
+      $scope.query.page = 1;
+      $scope.query.__tk += 1;
+    };
 
     $scope.changeGroupby = function(idx) {
       if (idx == 0) {
@@ -294,8 +310,13 @@
     $scope.drilldown = function(row, gb) {
       if ($scope.treeLevel > 1)
         return;
-      var idKey = $scope.columns[1].key;
-      $scope.filters.push({ key: pageStatus.groupBy[0], val: row.data[idKey] });
+
+      var group = pageStatus.groupBy[0];
+
+      var cacheKey = group + ':' + row.id;
+      cache.put(cacheKey, row.name);
+
+      $scope.filters.push({ key: group, val: row.id });
 
       go(gb.value);
     };
