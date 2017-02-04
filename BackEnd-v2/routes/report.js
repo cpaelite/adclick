@@ -173,6 +173,7 @@ async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, l
     if(filter){
         listSql += " and `name` like '%"+filter+"%'"
     }
+    
     let countSql = "select COUNT(*) as `total` from ((" + listSql + ") as T)";
     listSql += " limit " + offset + "," + limit;
     let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
