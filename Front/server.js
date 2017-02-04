@@ -114,7 +114,7 @@ app.get('/api/preferences', function (req, res) {
   var result = {
     "status": 1,
     "message": "",
-    data: {
+    data: JSON.stringify({
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
       "reportViewOrder": "-visits",
@@ -254,7 +254,7 @@ app.get('/api/preferences', function (req, res) {
           "visible": false
         }
       }
-    }
+    })
   };
   result.data = JSON.stringify(result.data);
   delayResponse(res, result);

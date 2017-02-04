@@ -3,6 +3,16 @@
         <span>{{app.subtitle | translate}}</span>
     </div>
 </div>
+
+<div class="cs-report-filter" ng-show="filters.length>0">
+  <span>Filters:</span>
+  <ul>
+    <li ng-repeat="f in filters">
+      <em>{{f.key}}</em>: <span>{{f.name}}</span><i class="material-icons" ng-click="deleteFilter(f)">close</i>
+    </li>
+  </ul>
+</div>
+
 <div flex layout="column" class="cs-page-content report">
     <div class="cs-action-bar clearfix">
         <div class="left-con">
