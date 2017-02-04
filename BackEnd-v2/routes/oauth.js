@@ -210,7 +210,7 @@ router.get('/api/countries', function (req, res, next) {
             return next(err);
         }
         connection.query(
-            "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country`",
+            "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
             function (err, result) {
                 connection.release();
                 if (err) {

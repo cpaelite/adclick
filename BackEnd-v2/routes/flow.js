@@ -299,7 +299,7 @@ router.post('/api/flows/:id', function (req, res, next) {
         redirectMode: Joi.number(),
         userId: Joi.number().required(),
         idText: Joi.string().required()
-    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode', 'deleted');
+    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.id = req.params.id;
