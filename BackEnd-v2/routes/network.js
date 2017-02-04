@@ -132,11 +132,11 @@ router.post('/api/affiliates/:id', function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
-        postbackUrl: Joi.string().optional(),
+        postbackUrl: Joi.string().optional().empty(""),
         appendClickId: Joi.number().optional(),
         duplicatedPostback: Joi.number().optional(),
-        ipWhiteList: Joi.string().optional(),
-        deleted: Joi.number().optional()
+        ipWhiteList: Joi.string().optional().empty("")
+         
     });
 
     req.body.userId = req.userId
@@ -210,10 +210,10 @@ router.post('/api/affiliates', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        postbackUrl: Joi.string().required(),
+        postbackUrl: Joi.string().required().empty(""),
         appendClickId: Joi.number().optional(),
         duplicatedPostback: Joi.number().optional(),
-        ipWhiteList: Joi.string().optional()
+        ipWhiteList: Joi.string().optional().empty("")
     });
     req.body.userId = req.userId
     Joi.validate(req.body, schema, function (err, value) {
