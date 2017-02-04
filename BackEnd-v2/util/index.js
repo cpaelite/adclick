@@ -20,6 +20,7 @@ exports.checkToken = function() {
             return next(err);
           }
           connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss ,function(err,user){
+            connection.release();
             if(err){
               return next(err);
             }
@@ -40,10 +41,11 @@ exports.checkToken = function() {
     }
   }
 }
-exports.setToken = function(userid,expires) {
+exports.setToken = function(userid,expires,firstname) {
   return jwt.encode({
     iss: userid,
-    exp:expires
+    exp:expires,
+    firstname:firstname
   }, setting['jwtTokenSrcret'])
 }
 exports.getRandomString = function(len) {

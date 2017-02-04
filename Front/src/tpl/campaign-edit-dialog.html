@@ -20,22 +20,22 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="url" class="form-control" ng-model="item.url" ng-show="item.url">
+                    <input type="url" name="url" class="form-control" ng-model="item.url" ng-show="item.url" ng-disabled="true">
                     <label ng-show="!item.url">ID will be available after saving the campaign.</label>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl">
+                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl" ng-disabled="true">
                     <label ng-show="!item.impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" name="trafficSource" ng-model="item.trafficSource" required>
-                        <md-option value="{{ts}}" ng-repeat="ts in trafficSources">{{ts.name}}</md-option>
+                    <md-select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required>
+                        <md-option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</md-option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
                         <span ng-show="editForm.trafficSource.$error.required">TrafficSource is required.</span>
                         </span>
@@ -143,19 +143,19 @@
                 <label class="col-sm-3 control-label">Destination：</label>
                 <div class="col-sm-5">
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.targetType" value="1" ng-click="destinationType('1')"> Flow
+                        <input type="radio" ng-model="item.targetType" value="1"> Flow
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.targetType" value="0" ng-click="destinationType('0')"> URL
+                        <input type="radio" ng-model="item.targetType" value="0"> URL
                     </label>
                 </div>
             </div>
-            <div class="flow-action" ng-show="flowAction">
+            <div class="flow-action" ng-show="item.targetType==1">
                 <div class="form-group flow-select">
                     <label class="col-sm-3 control-label">Flow：</label>
                     <div class="col-sm-5">
-                        <md-select class="cs-subform-select" ng-model="item.flow.id">
-                            <md-option value="{{flow.id}}" ng-repeat="flow in flows" ng-selected="item.targetFlowId==flow.id">{{flow.name}}</md-option>
+                        <md-select class="cs-subform-select" name="flow" ng-model="item.flow.id">
+                            <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
                         </md-select>
                     </div>
                 </div>
@@ -175,11 +175,11 @@
             </div>
 
 
-            <div class="url-token-con" ng-show="urlTokenCon">
+            <div class="url-token-con" ng-show="item.targetType==0">
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Url：</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" ng-model="item.targetUrl">
+                        <input type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl">
                     </div>
                 </div>
                 <div class="url-tokens-row form-group">

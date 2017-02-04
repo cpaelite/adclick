@@ -4,7 +4,7 @@ module.exports = {
     user: 'root',
     password: 'R%LKsIJF412',
     database: 'AdClickTool',
-    connectionLimit:1000
+    connectionLimit:10
   },
   "redis":{
     host:"newbidderredis0001.augmjh.0001.usw1.cache.amazonaws.com",

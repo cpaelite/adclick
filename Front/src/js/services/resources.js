@@ -6,7 +6,7 @@ angular.module('app')
     return $resource('/api/report');
   }])
   .factory('Campaign', ['$resource', function ($resource) {
-    return $resource('/api/campaign/:id', {id: '@id'});
+    return $resource('/api/campaigns/:id', {id: '@id'});
   }])
   .factory('Preference', ['$resource', function ($resource) {
     return $resource('/api/preferences');
@@ -24,10 +24,10 @@ angular.module('app')
     return $resource('/api/flows/:id', {id: '@id'});
   }])
   .factory('TrafficSource', ['$resource', function ($resource) {
-    return $resource('/api/traffic/:id', {id: '@id'});
+    return $resource('/api/traffics/:id', {id: '@id'});
   }])
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
-    return $resource('/api/affiliate/:id', {id: '@id'});
+    return $resource('/api/affiliates/:id', {id: '@id'});
   }])
   .factory('Condition', ['$resource', function ($resource) {
     return $resource('/api/conditions', {}, {'query':  {method:'GET', isArray:true}});

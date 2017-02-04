@@ -75,7 +75,7 @@
         // load user preferences
         Preference.get(null, function(res) {
           if (res.status == 1) {
-            $scope.preferences = res.data;
+            $scope.preferences = JSON.parse(res.data);
           }
         });
         

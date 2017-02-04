@@ -322,6 +322,8 @@
     // fixme: dirty fix, rename the file
     if (perfType == 'traffic')
       editTemplateUrl = 'tpl/trafficSource-edit-dialog.html';
+    if (perfType == 'affiliate')
+      editTemplateUrl = 'tpl/affiliateNetwork-edit-dialog.html';
 
     $scope.editItem = function (ev, item) {
       var controller;
@@ -338,6 +340,8 @@
         controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
+      } else if (perfType == 'affiliate') {
+        controller = ['$scope', '$mdDialog', 'AffiliateNetwork', editAffiliateCtrl];
       }
 
       $mdDialog.show({
@@ -349,20 +353,24 @@
         bindToController: true,
         targetEvent: ev,
         templateUrl: editTemplateUrl
-      }).then(getList);
+      }).then(function () {
+        getList();
+      });
     };
 
     $scope.deleteItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', deleteCtrl],
+        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', 'AffiliateNetwork', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
         locals: {type: perfType, item: item},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
-      }).then(getList);
+      }).then(function () {
+        getList();
+      });
     };
 
     $scope.viewColumnIsShow = false;
@@ -373,7 +381,10 @@
     $scope.applyChange = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
-      Preference.save($scope.preferences);
+      var preferences = {
+        json: $scope.preferences
+      };
+      Preference.save(preferences);
     };
 
     $scope.checkboxIsChecked = function (num) {
@@ -429,7 +440,7 @@
   function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {
     $scope.tags = [];
     if (this.item) {
-      Campaign.get({id: 18}, function(campaign) {
+      Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         $scope.item = angular.copy(campaign.data);
         if ($scope.item.costModel == 1) {
           $scope.radioTitle = 'CPC';
@@ -442,10 +453,10 @@
           $scope.costModelValue = $scope.item.cpmValue;
         }
         $scope.tags = $scope.item.tags;
-        $scope.trafficSource = {
-          id: $scope.item.trafficSourceId,
-          name: $scope.item.trafficSourceName
-        };
+        $scope.trafficSourceId = $scope.item.trafficSourceId;
+        $scope.item.flow = {
+          id: $scope.item.targetFlowId
+        }
         if ($scope.item['costModel'] == null) {
           $scope.item = {
             costModel: 0,
@@ -493,6 +504,28 @@
       }
       $scope.item.tags = $scope.tags;
 
+      $scope.trafficSources.forEach(function (traffic) {
+        if (traffic.id == $scope.trafficSourceId) {
+          $scope.item.trafficSource = JSON.stringify(traffic);
+          return;
+        }
+      });
+
+      delete $scope.item.trafficSourceId;
+      delete $scope.item.targetFlowId;
+      delete $scope.item.trafficSourceName;
+      delete $scope.item['cpcValue'];
+      delete $scope.item['cpaValue'];
+      delete $scope.item['cpmValue'];
+
+      if (!$scope.item['flow']) {
+        $scope.item['flow']={
+          type: 0,
+          name: 'defaultName',
+          redirectMode: 0
+        };
+      }
+
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Campaign.save($scope.item, success);
@@ -522,18 +555,6 @@
 
     $scope.radioSelect = function (type) {
       $scope.radioTitle = type;
-    };
-
-    $scope.flowAction = true;
-    $scope.urlTokenCon = false;
-    $scope.destinationType = function (val) {
-      if (val == '0') {
-        $scope.flowAction = false;
-        $scope.urlTokenCon = true;
-      } else if (val == '1') {
-        $scope.flowAction = true;
-        $scope.urlTokenCon = false;
-      }
     };
 
     $scope.urlItem = [
@@ -591,7 +612,7 @@
   function editLanderCtrl($scope, $mdDialog, Lander) {
     $scope.tags = [];
     if (this.item) {
-      Lander.get({id: 46}, function (lander) {
+      Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
         $scope.tags = $scope.item.tags;
         if ($scope.item['url'] == null) {
@@ -655,8 +676,9 @@
   function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetwork) {
     $scope.tags = [];
     if (this.item) {
-      Offer.get({id: 22}, function (offer) {
+      Offer.get({id: this.item.data.offerId}, function (offer) {
         $scope.item = angular.copy(offer.data);
+        $scope.affiliateId = $scope.item.AffiliateNetworkId;
         if ($scope.item['payoutMode'] == null) {
           $scope.item = {
             payoutMode: 0,
@@ -677,7 +699,7 @@
 
     // AffiliateNetword
     AffiliateNetwork.get(null, function (affiliates) {
-      $scope.affiliates = affiliates.data.networks;
+      $scope.affiliates = affiliates.data.affiliates;
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -690,6 +712,15 @@
 
     this.save = function () {
       $scope.item.tags = $scope.tags;
+
+      // AffiliateNewwork
+      $scope.affiliates.forEach(function (affiliate) {
+        if (affiliate.id == $scope.affiliateId) {
+          $scope.item.affiliateNetwork = JSON.stringify(affiliate);
+          return;
+        }
+      });
+      
       delete $scope.item.AffiliateNetworkId;
       delete $scope.item.AffiliateNetworkName;
       delete $scope.item.postbackUrl;
@@ -724,7 +755,7 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
     if (this.item) {
-      TrafficSource.get({id: 15}, function (trafficsource) {
+      TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
         if (!$scope.item.params) {
           $scope.item.params = [
@@ -772,6 +803,7 @@
     }
 
     this.save = function () {
+      delete $scope.item.hash;
       $scope.item.params = JSON.stringify($scope.item.params);
       $scope.editForm.$setSubmitted();
 
@@ -813,7 +845,65 @@
 
   }
 
-  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer) {
+  function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
+    if (this.item) {
+      AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
+        $scope.item = angular.copy(affiliate.data.affiliates);
+        if ($scope.item['postbackUrl'] == null) {
+          $scope.item = {
+            postbackUrl: 'http://'
+          };
+        }
+      });
+      this.title = "edit";
+    } else {
+      $scope.item = {
+        postbackUrl: 'http://'
+      };
+      this.title = "add";
+    }
+
+    this.titleType = angular.copy(this.perfType);
+
+    this.cancel = $mdDialog.cancel;
+
+    function success(item) {
+      $mdDialog.hide(item);
+    }
+
+    this.save = function () {
+      $scope.editForm.$setSubmitted();
+      if ($scope.editForm.$valid) {
+        AffiliateNetwork.save($scope.item, success);
+      }
+    };
+
+    $scope.textareaShow = false;
+    $scope.isChecked = function(){
+      $scope.textareaShow = !$scope.textareaShow;
+    };
+    
+    $scope.checkIP = function () {
+      // 验证IP格式
+      var ipList = $scope.item.ipWhiteList;
+      if (ipList) {
+        var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+        var ips = ipList.split('\n');
+
+        var isValid = true;
+        ips.forEach(function (ip) {
+          if (!re.test(ip)) {
+            isValid = false;
+            return;
+          }
+        });
+        $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
+      }
+    }
+
+  }
+
+  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {
     this.title = "delete";
     this.content = 'warnDelete';
 
@@ -829,6 +919,8 @@
         deferred = Lander.remove({id: item.id});
       } else if (type == 'offer') {
         deferred = Offer.remove({id: item.id});
+      } else if (type == 'affiliate') {
+        deferred = AffiliateNetwork.remove({id: item.id});
       }
       return deferred.$promise;
     }

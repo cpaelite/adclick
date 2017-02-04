@@ -8,7 +8,56 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 
- 
+/**
+ * @api {post} /api/preferences  编辑用户配置
+ * @apiParam json string
+ * @apiName  updates  user  preferences
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
+ *
+ */
+router.post('/api/preferences', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        json:Joi.object().required()
+    });
+    req.body.userId = req.userId;
+    Joi.validate(req.body, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            
+            connection.query(
+                "update  User set `json`=?   where `id` = ?", [
+                    JSON.stringify(value.json),value.userId
+                ],
+                function (err) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data:value.json
+                    });
+                });
+        });
+    });
+});
+
 
 /**
  * @api {get} /api/preferences  获取用户配置
@@ -25,186 +74,37 @@ var Joi = require('joi');
  *
  */
 router.get('/api/preferences', function (req, res, next) {
-    // var schema = Joi.object().keys({
-    //     userId: Joi.number().required()
-    // });
-    // req.body.userId = req.userId;
-    // Joi.validate(req.body, schema, function (err, value) {
-    //     if (err) {
-    //         return next(err);
-    //     }
-    //     pool.getConnection(function (err, connection) {
-    //         if (err) {
-    //             err.status = 303
-    //             return next(err);
-    //         }
-    //         connection.query(
-    //             "select  `json` from User where `id` = ? and `deleted` =0", [
-    //                 value.userId
-    //             ],
-    //             function (err, result) {
-    //                 connection.release();
-    //                 if (err) {
-    //                     return next(err);
-    //                 }
-    //                 res.json({
-    //                     status: 1,
-    //                     message: "success",
-    //                     // data:JSON.parse(result.json)
-    //                 });
-    //
-    //             });
-    //     });
-    // });
-    var result = {
-        "status": 1,
-        "message": "",
-        data: {
-            "reportViewLimit": 500,
-            "entityType": 1,    //0:停止;1:运行;2全部
-            "reportViewOrder": "-visits",
-            "reportTimeZone": "+08:00",
-            /*
-             // todo: use array for visible columns
-             "reportVisibleColumns": [
-             "visits", "clicks", "impressions", "conversions", "revenue", "cost", "profit",
-             "cpv", "ictr", "ctr", "cr", "cv", "roi", "epv", "epc", "ap"
-             ],
-             */
-            "reportViewColumns": {
-                "name": {
-                    "visible": true
-                },
-                "offerName": {
-                    "visible": true
-                },
-                "offerId": {
-                    "visible": true
-                },
-                "offerUrl": {
-                    "visible": false
-                },
-                "offerCountry": {
-                    "visible": false
-                },
-                "payout": {
-                    "visible": true
-                },
-                "impressions": {
-                    "visible": true
-                },
-                "visits": {
-                    "visible": true
-                },
-                "clicks": {
-                    "visible": true
-                },
-                "conversions": {
-                    "visible": true
-                },
-                "revenue": {
-                    "visible": true
-                },
-                "cost": {
-                    "visible": true
-                },
-                "profit": {
-                    "visible": true
-                },
-                "cpv": {
-                    "visible": true
-                },
-                "ictr": {
-                    "visible": true
-                },
-                "ctr": {
-                    "visible": true
-                },
-                "cr": {
-                    "visible": true
-                },
-                "cv": {
-                    "visible": true
-                },
-                "roi": {
-                    "visible": true
-                },
-                "epv": {
-                    "visible": true
-                },
-                "epc": {
-                    "visible": true
-                },
-                "ap": {
-                    "visible": true
-                },
-                "affiliateNetworkName": {
-                    "visible": true
-                },
-                "campaignName": {
-                    "visible": true
-                },
-                "campaignId": {
-                    "visible": true
-                },
-                "campaignUrl": {
-                    "visible": false
-                },
-                "campaignCountry": {
-                    "visible": false
-                },
-                "pixelUrl": {
-                    "visible": false
-                },
-                "postbackUrl": {
-                    "visible": false
-                },
-                "trafficSourceName": {
-                    "visible": true
-                },
-                "clickRedirectType": {
-                    "visible": false
-                },
-                "costModel": {
-                    "visible": false
-                },
-                "cpa": {
-                    "visible": true
-                },
-                "cpc": {
-                    "visible": true
-                },
-                "cpm": {
-                    "visible": true
-                },
-                "city": {
-                    "visible": true
-                },
-                "flowName": {
-                    "visible": true
-                },
-                "landerName": {
-                    "visible": true
-                },
-                "landerId": {
-                    "visible": false
-                },
-                "landerUrl": {
-                    "visible": false
-                },
-                "landerCountry": {
-                    "visible": false
-                },
-                "numberOfOffers": {
-                    "visible": false
-                }
-            }
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    Joi.validate(req.body, schema, function (err, value) {
+        if (err) {
+            return next(err);
         }
-    };
-   res.json(result)
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select  `json` from User where `id` = ? and `deleted` =0", [
+                    value.userId
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data:result[0].json
+                    });
+                });
+        });
+    });
 });
-
-
 
 
 /**
@@ -223,12 +123,12 @@ router.get('/api/preferences', function (req, res, next) {
  *
  */
 
-router.post('/api/tags',function(req,res,next){
+router.post('/api/tags', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        type:Joi.number.required()
+        type: Joi.number.required()
     });
-    req.body.userId=req.userId;
+    req.body.userId = req.userId;
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -240,7 +140,7 @@ router.post('/api/tags',function(req,res,next){
             }
             connection.query(
                 "select  `id`,`name` from User where `userId` = ? and `type`= ? and `deleted` =0", [
-                    value.userId,value.type
+                    value.userId, value.type
                 ],
                 function (err, result) {
                     connection.release();
@@ -250,8 +150,8 @@ router.post('/api/tags',function(req,res,next){
                     res.json({
                         status: 1,
                         message: "success",
-                        data:{
-                            tags:result
+                        data: {
+                            tags: result
                         }
                     });
 
@@ -262,160 +162,6 @@ router.post('/api/tags',function(req,res,next){
 
 
 
-/**
- * @api {get} /api/trafficsources  获取用户所有trafficsources
- * @apiName  get  user  trafficsources
- * @apiGroup User
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{}
- *     }
- *
- */
-router.get('/api/trafficsources', function (req, res, next) {
-    console.log("11111")
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.body.userId = req.userId;
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query(
-                "select  `id`,`name`,`cost`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
-                    value.userId
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: "success",
-                        data:{
-                            trafficsources:result
-                        }
-                    });
-
-                });
-        });
-    });
-});
-
- 
-
-
-/**
- * @api {get} /api/flows  获取用户所有flows
- * @apiName  get  user  flows
- * @apiGroup User
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{}
- *     }
- *
- */
-router.get('/api/flows', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.body.userId = req.userId;
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query(
-                "select  `id`,`name` from Flow where `userId` = ? and `deleted` =0 and `type`=1", [
-                    value.userId
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: "success",
-                        data:{
-                            flows:result
-                        }
-                    });
-
-                });
-        });
-    });
-});
-
-
-/**
- * @api {get} /api/networks  获取用户所有affilatenetworks
- * @apiName  获取用户所有affilatenetworks
- * @apiGroup User
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{}
- *     }
- *
- */
-router.get('/api/networks', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.body.userId = req.userId;
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query(
-                "select  `id`,`name` from AffiliateNetwork where `userId` = ? and `deleted` =0 ", [
-                    value.userId
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: "success",
-                        data:{
-                            networks:result
-                        }
-                    });
-
-                });
-        });
-    });
-});
 
 
 

@@ -31,7 +31,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
             return next(err);
         }
         pool.getConnection(function (err, connection) {
-           
+
             if (err) {
                 err.status = 303
                 return next(err);

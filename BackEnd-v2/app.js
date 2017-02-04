@@ -6,8 +6,10 @@ global.pool = mysql.createPool({
     password: setting.mysql.password,
     database: setting.mysql.database,
     connectionLimit:setting.mysql.connectionLimit,
-    debug: process.env.DEBUG === 'true'
+    debug: process.env.DEBUG === 'true',
+    waitForConnections:false
 });
+ 
 var express = require('express');
 var favicon = require('serve-favicon');
 var log4js = require('log4js');

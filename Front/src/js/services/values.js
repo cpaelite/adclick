@@ -75,6 +75,14 @@ angular.module('app').value('columnDefinition', {
       key: 'trafficId',
       name: 'Traffic source ID'
     }],
+  affiliate: [{
+    key: 'affiliateName',
+    name: 'Affiliate Network'
+  },
+    {
+      key: 'affiliateId',
+      name: 'Affiliate Network ID'
+    }],
   common: [{
     key: 'visits',
     name: 'Visits'
@@ -142,5 +150,141 @@ angular.module('app').value('groupByOptions', [
   { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
   { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
   */
-  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" }
+  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" },
+  { value: "affiliate", display: "Affiliate Network", idKey: "affiliateId", nameKey: "affiliateName" }
 ]);
+
+angular.module('app').value('userPreferences', {
+  "reportViewLimit": 500,
+  "entityType": 1,
+  "reportViewSort": {
+    "key": "visits",
+    "direction": "desc"
+  },
+  "reportTimeZone": "+08:00",
+  "reportViewColumns": {
+    "offerName": {
+      "visible": true
+    },
+    "offerId": {
+      "visible": true
+    },
+    "offerUrl": {
+      "visible": false
+    },
+    "offerCountry": {
+      "visible": false
+    },
+    "payout": {
+      "visible": true
+    },
+    "impressions": {
+      "visible": true
+    },
+    "visits": {
+      "visible": true
+    },
+    "clicks": {
+      "visible": true
+    },
+    "conversions": {
+      "visible": true
+    },
+    "revenue": {
+      "visible": true
+    },
+    "cost": {
+      "visible": true
+    },
+    "profit": {
+      "visible": true
+    },
+    "cpv": {
+      "visible": true
+    },
+    "ictr": {
+      "visible": true
+    },
+    "ctr": {
+      "visible": true
+    },
+    "cr": {
+      "visible": true
+    },
+    "cv": {
+      "visible": true
+    },
+    "roi": {
+      "visible": true
+    },
+    "epv": {
+      "visible": true
+    },
+    "epc": {
+      "visible": true
+    },
+    "ap": {
+      "visible": true
+    },
+    "affiliateName": {
+      "visible": true
+    },
+    "campaignName": {
+      "visible": true
+    },
+    "campaignId": {
+      "visible": true
+    },
+    "campaignUrl": {
+      "visible": false
+    },
+    "campaignCountry": {
+      "visible": false
+    },
+    "pixelUrl": {
+      "visible": false
+    },
+    "postbackUrl": {
+      "visible": false
+    },
+    "trafficName": {
+      "visible": true
+    },
+    "clickRedirectType": {
+      "visible": false
+    },
+    "costModel": {
+      "visible": false
+    },
+    "cpa": {
+      "visible": true
+    },
+    "cpc": {
+      "visible": true
+    },
+    "cpm": {
+      "visible": true
+    },
+    "city": {
+      "visible": true
+    },
+    "flowName": {
+      "visible": true
+    },
+    "landerName": {
+      "visible": true
+    },
+    "landerId": {
+      "visible": false
+    },
+    "landerUrl": {
+      "visible": false
+    },
+    "landerCountry": {
+      "visible": false
+    },
+    "numberOfOffers": {
+      "visible": false
+    }
+  }
+});

@@ -193,7 +193,7 @@ app.get('/api/preferences', function (req, res) {
         "ap": {
           "visible": true
         },
-        "affiliateNetworkName": {
+        "affiliateName": {
           "visible": true
         },
         "campaignName": {
@@ -214,7 +214,7 @@ app.get('/api/preferences', function (req, res) {
         "postbackUrl": {
           "visible": false
         },
-        "trafficSourceName": {
+        "trafficName": {
           "visible": true
         },
         "clickRedirectType": {
@@ -256,6 +256,7 @@ app.get('/api/preferences', function (req, res) {
       }
     }
   };
+  result.data = JSON.stringify(result.data);
   delayResponse(res, result);
 });
 
@@ -519,7 +520,7 @@ app.get('/api/report', function (req, res) {
  * @apiName 根据ID获取Campaign信息
  *
  */
-app.get('/api/campaign/:campaignId', function (req, res) {
+app.get('/api/campaigns/:campaignId', function (req, res) {
   var result = {
     "status": 1,
     "message": "success",
@@ -538,7 +539,7 @@ app.get('/api/campaign/:campaignId', function (req, res) {
       "cpmValue": 1.3,
       "redirectMode": 0,
       "targetType": 1,
-      "targetFlowId": 34,
+      "targetFlowId": 1,
       "targetUrl": "",
       "status": 1,
       "tags": []
@@ -551,7 +552,7 @@ app.get('/api/campaign/:campaignId', function (req, res) {
  * @apiName 新增Campaign
  *
  */
-app.post('/api/campaign', function (req, res) {
+app.post('/api/campaigns', function (req, res) {
   var result = {
     status: 1,
     message: "",
@@ -566,7 +567,7 @@ app.post('/api/campaign', function (req, res) {
         "impTracking": "",
         "params": ""
       },
-      "country": "AND",
+      "country": "CHN",
       "status": 1,
       "costModel": 1,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
       "cpc": 0.6,
@@ -638,7 +639,7 @@ app.post('/api/campaign', function (req, res) {
  * @apiName 修改Campaign
  *
  */
-app.post('/api/campaign/:campaignId', function (req, res) {
+app.post('/api/campaigns/:campaignId', function (req, res) {
   var result = {
     status: 1,
     message: "",
@@ -654,7 +655,7 @@ app.post('/api/campaign/:campaignId', function (req, res) {
         "impTracking": "",
         "params": ""
       },
-      "country": "AND",
+      "country": "CHN",
       "status": 1,
       "costModel": 1,     //0:Do not;1:cpc; 2:cpa; 3:cpm; 4:Auto
       "cpc": 0.6,
@@ -726,7 +727,7 @@ app.post('/api/campaign/:campaignId', function (req, res) {
  * @apiName 删除Campaign
  *
  */
-app.delete('/api/campaign/:campaignId', function (req, res) {
+app.delete('/api/campaigns/:campaignId', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
@@ -1161,8 +1162,8 @@ app.get('/api/offers/:offerId', function (req, res) {
       "name": "Offer1",
       "hash": "03f1d070-9089-4502-842d-28101d83f474",
       "url": "http://adbund.com",
-      "country": "AND",
-      "AffiliateNetworkId": 13,
+      "country": "CHN",
+      "AffiliateNetworkId": 1,
       "AffiliateNetworkName": "AffiliateNetwork.test2",
       "postbackUrl": "http://2drvh2.newbidder.com/postBackRouter?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
       "payoutMode": 0,
@@ -1209,7 +1210,7 @@ app.post('/api/offers', function (req, res) {
     data: {
       "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
       "url": "http://adbund.com",
-      "country": "AND",
+      "country": "CHN",
       "payoutMode": 0,
       "payoutValue": 0.5,
       "affiliateNetwork": {
@@ -1234,7 +1235,7 @@ app.post('/api/offers/:offerId', function (req, res) {
       "id": 1,
       "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
       "url": "http://adbund.com",
-      "country": "AND",
+      "country": "CHN",
       "payoutMode": 0,
       "payoutValue": 0.5,
       "affiliateNetwork": {
@@ -1263,7 +1264,7 @@ app.delete('/api/offers/:offerId', function (req, res) {
  * 获取用户所有TrafficSource
  *
  */
-app.get('/api/traffic', function (req, res) {
+app.get('/api/traffics', function (req, res) {
   var result = {
     "status": 1,
     "message": "success",
@@ -1301,7 +1302,7 @@ app.get('/api/traffic', function (req, res) {
 /**
  * 获得Traffic Source 详细信息
  */
-app.get('/api/traffic/:id', function (req, res) {
+app.get('/api/traffics/:id', function (req, res) {
   var result = {
     "status": 1,
     "message": "success",
@@ -1323,7 +1324,7 @@ app.get('/api/traffic/:id', function (req, res) {
 /**
  * Add new Traffic Source 详细信息 [warren] tested
  */
-app.post('/api/traffic', function (req, res) {
+app.post('/api/traffics', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
@@ -1340,7 +1341,7 @@ app.post('/api/traffic', function (req, res) {
   res.send(result)
 });
 
-app.post('/api/traffic/:id', function (req, res) {
+app.post('/api/traffics/:id', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
@@ -1361,7 +1362,7 @@ app.post('/api/traffic/:id', function (req, res) {
 /**
  * Delete Traffic Source [warren] tested
  */
-app.delete('/api/traffic/:id', function (req, res) {
+app.delete('/api/traffics/:id', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
@@ -1372,7 +1373,7 @@ app.delete('/api/traffic/:id', function (req, res) {
 /**
  * Get list of affiliates
  */
-app.get('/api/affiliate', function (req, res) {
+app.get('/api/affiliates', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
@@ -1390,7 +1391,7 @@ app.get('/api/affiliate', function (req, res) {
 /**
  * get affiliate network by id, [warren] checked, same format.
  */
-app.get('/api/affiliate/:id', function (req,res) {
+app.get('/api/affiliates/:id', function (req,res) {
   var result = {
     status: 1,
     message: "",
@@ -1410,7 +1411,7 @@ app.get('/api/affiliate/:id', function (req,res) {
  * 新增Affiliate
  *
  */
-app.post('/api/affiliate', function (req, res) {
+app.post('/api/affiliates', function (req, res) {
   var result = {
     status: 1,
     message: "",
@@ -1429,7 +1430,7 @@ app.post('/api/affiliate', function (req, res) {
  * 编辑Affiliate
  *
  */
-app.post('/api/affiliate/:id', function (req, res) {
+app.post('/api/affiliates/:id', function (req, res) {
   var result = {
     status: 1,
     message: "",
@@ -1449,7 +1450,7 @@ app.post('/api/affiliate/:id', function (req, res) {
  * 删除Affiliate
  *
  */
-app.delete('/api/affiliate/:id', function (req, res) {
+app.delete('/api/affiliates/:id', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
@@ -1575,12 +1576,9 @@ app.get('/api/conditions', function (req, res) {
  */
 app.get('/api/countries', function (req, res) {
   var result = [
-    { "value": "glb", "display": "Global" },
-    { "value": "us", "display": "American" },
-    { "value": "ca", "display": "Canada" },
-    { "value": "cn", "display": "China" },
-    { "value": "jp", "display": "Japan" },
-    { "value": "hk", "display": "Hongkong" }
+    { "value": "Canada", "display": "Canada" },
+    { "value": "CHN", "display": "China" },
+    { "value": "JPN", "display": "Japan" }
   ];
   delayResponse(res, result);
 });

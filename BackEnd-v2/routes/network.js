@@ -4,34 +4,28 @@ var Joi = require('joi');
 
 
 /**
- * @api {post} /api/affilate  新增affilate
- * @apiName 新增affilate
- * @apiGroup network
- *
- * @apiParam {String} name
- * @apiParam {String} postbackUrl
- * @apiParam {Number} [appendClickId]
- * @apiParam {Number} [duplicatedPostback]
- * @apiParam {String} [ipWhiteList]
+ * @api {get} /api/affiliates/:id  获取用户所有affilatenetworks
+ * @apiName  获取用户所有affilatenetworks
+ * @apiGroup User
  *
  * @apiSuccessExample {json} Success-Response:
- *   {
- *    status: 1,
- *    message: 'success'
- *   }
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
  *
  */
-router.post('/api/affiliate', function (req, res, next) {
+router.get('/api/affiliates/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        name: Joi.string().required(),
-        postbackUrl: Joi.string().required(),
-        appendClickId: Joi.number().optional(),
-        duplicatedPostback: Joi.number().optional(),
-        ipWhiteList: Joi.string().optional()
+        id: Joi.number().required()
     });
-    req.body.userId = req.userId
-    Joi.validate(req.body, schema, function (err, value) {
+     
+    req.query.userId = req.userId;
+    req.query.id=req.params.id;
+    Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
         }
@@ -40,132 +34,81 @@ router.post('/api/affiliate', function (req, res, next) {
                 err.status = 303
                 return next(err);
             }
-            var sql = "insert into AffiliateNetwork set `userId`= " +
-                value.userId + ",`name`='" + value.name +
-                "',`postbackUrl`='" +
-                value.postbackUrl + "',`deleted`=0";
-            if (value.appendClickId != undefined) {
-                sql += ",`appendClickId`='" + value.appendClickId + "'"
-            }
-            if (value.duplicatedPostback != undefined) {
-                sql += ",`duplicatedPostback`='" + value.duplicatedPostback +
-                    "'"
-            }
-            if (value.ipWhiteList) {
-                sql += ",`ipWhiteList`='" + value.ipWhiteList + "'"
-            }
-            connection.query(sql, function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                delete value.userId;
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: value
+            connection.query(
+                "select  `id`,`name`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [
+                    value.userId,value.id
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data: {
+                            affiliates: result.length?result[0]:{}
+                        }
+                    });
+
                 });
-            });
         });
     });
 });
 
+
 /**
- * @api {get} /api/affiliate  network list
- * @apiName network list
- * @apiGroup network
- *
- * @apiParam {Number} page
- * @apiParam {Number} limit
- * @apiParam {String} order
+ * @api {get} /api/affiliates  获取用户所有affilatenetworks
+ * @apiName  获取用户所有affilatenetworks
+ * @apiGroup User
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "status": 1,
- *       "message": "success",
- *       "data":{"lists":[]}
+ *       "message": "success"
+ *       "data":{}
  *     }
  *
  */
-router.get('/api/affiliate', function (req, res, next) {
-    // var schema = Joi.object().keys({
-    // userId: Joi.number().required(),
-    // page: Joi.number().min(1).required(),
-    // limit: Joi.number().required(),
-    // order: Joi.string().required()
-    // });
-    req.query.userId = req.userId
-    // Joi.validate(req.query, schema, function (err, value) {
-    //     if (err) {
-    //         return next(err);
-    //     }
-    //     pool.getConnection(function (err, connection) {
-    //         if (err) {
-    //             err.status = 303
-    //             return next(err);
-    //         }
-    //         var page = parseInt(value.page);
-    //         var limit = parseInt(value.limit);
-    //         var offset = (page - 1) * limit;
-    //         var order = 'asc';
-    //         var sort = value.order;
-    //         var sign = sort.charAt(0);
-    //         if (sign == '-') {
-    //             order = 'desc'
-    //             sort = sort.substring(1);
-    //         }
-
-    // var sql =
-    //     "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `deleted`= ? and `userId`= ? order by " +
-    //     sort + " " + order + " " + "limit " + offset + "," + limit
-    //     var sql =
-    //         "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `userId`= ?"
-    //     connection.query(sql, [
-    //             value.userId
-    //         ],
-    //         function (err, result) {
-    //             connection.release();
-    //             if (err) {
-    //                 return next(err);
-    //             }
-    //             res.json({
-    //                 status: 1,
-    //                 message: 'success',
-    //                 data: {
-    //                     lists: result
-    //                 }
-    //             });
-    //         });
-    // });
-    // });
-    pool.getConnection(function (err, connection) {
+router.get('/api/affiliates', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    Joi.validate(req.query, schema, function (err, value) {
         if (err) {
-            err.status = 303
             return next(err);
         }
-        connection.query(
-            "select `id`,`name`,`postbackUrl` from AffiliateNetwork  where `userId`= ?", [
-                req.userId
-            ],
-            function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json({
-                    status: 1,
-                    message: "success",
-                    data: {networks: result}
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select  `id`,`name` from AffiliateNetwork where `userId` = ? and `deleted` =0 ", [
+                    value.userId
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data: {
+                            affiliates: result
+                        }
+                    });
+
                 });
-
-            });
+        });
     });
-
 });
 
 /**
- * @api {post} /api/affiliate/:id  编辑affilate
+ * @api {post} /api/affiliates/:id  编辑affilate
  * @apiName 编辑affilate
  * @apiGroup network
  *
@@ -184,7 +127,7 @@ router.get('/api/affiliate', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/affiliate/:id', function (req, res, next) {
+router.post('/api/affiliates/:id', function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -240,6 +183,74 @@ router.post('/api/affiliate/:id', function (req, res, next) {
                         message: 'success'
                     });
                 });
+        });
+    });
+});
+
+
+/**
+ * @api {post} /api/affiliates  新增affilate
+ * @apiName 新增affilate
+ * @apiGroup network
+ *
+ * @apiParam {String} name
+ * @apiParam {String} postbackUrl
+ * @apiParam {Number} [appendClickId]
+ * @apiParam {Number} [duplicatedPostback]
+ * @apiParam {String} [ipWhiteList]
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success'
+ *   }
+ *
+ */
+router.post('/api/affiliates', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        name: Joi.string().required(),
+        postbackUrl: Joi.string().required(),
+        appendClickId: Joi.number().optional(),
+        duplicatedPostback: Joi.number().optional(),
+        ipWhiteList: Joi.string().optional()
+    });
+    req.body.userId = req.userId
+    Joi.validate(req.body, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            var sql = "insert into AffiliateNetwork set `userId`= " +
+                value.userId + ",`name`='" + value.name +
+                "',`postbackUrl`='" +
+                value.postbackUrl + "',`deleted`=0";
+            if (value.appendClickId != undefined) {
+                sql += ",`appendClickId`='" + value.appendClickId + "'"
+            }
+            if (value.duplicatedPostback != undefined) {
+                sql += ",`duplicatedPostback`='" + value.duplicatedPostback +
+                    "'"
+            }
+            if (value.ipWhiteList) {
+                sql += ",`ipWhiteList`='" + value.ipWhiteList + "'"
+            }
+            connection.query(sql, function (err, result) {
+                connection.release();
+                if (err) {
+                    return next(err);
+                }
+                delete value.userId;
+                res.json({
+                    status: 1,
+                    message: 'success',
+                    data: value
+                });
+            });
         });
     });
 });

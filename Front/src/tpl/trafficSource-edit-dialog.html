@@ -48,7 +48,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Pixel redirect URL：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" ng-model="item.pixelRedirectUrl">
+                    <input type="text" class="form-control" name="pixelRedirectUrl" ng-model="item.pixelRedirectUrl">
                 </div>
             </div>
             <div class="form-group">
@@ -97,7 +97,7 @@
                         <td class="traficc-source-input"><input type="text" ng-model="item.cost.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
-                    <tr ng-repeat="param in item.params">
+                    <tr ng-repeat="param in item.params track by $index">
                         <td class="col-sm-3 control-label">Custom variable{{$index+1}}：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Placeholder"></td>

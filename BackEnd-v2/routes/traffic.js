@@ -9,7 +9,7 @@ var common = require('./common');
 
 
 /**
- * @api {post} /api/traffic  新增traffic
+ * @api {post} /api/traffics  新增traffic
  * @apiName traffic
  * @apiGroup traffic
  *
@@ -29,7 +29,7 @@ var common = require('./common');
  *  *   }
  *
  */
-router.post('/api/traffic', function (req, res, next) {
+router.post('/api/traffics', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -42,34 +42,33 @@ router.post('/api/traffic', function (req, res, next) {
     });
 
     req.body.userId = req.userId
-    const start = async()=> {
-        try {
-            let value = await common.validate(req.body, schema);
-            let connection = await common.getConnection();
-            let trafficResult = await common.insertTrafficSource(value.userId, value, connection);
-            delete value.userId;
-            value.id = trafficResult.insertId;
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            });
-        } catch (e) {
-            next(e);
-        }
-        finally{
-               connection.release(); 
-       } 
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let trafficResult = await common.insertTrafficSource(value.userId, value, connection);
+        delete value.userId;
+        value.id = trafficResult.insertId;
 
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
     }
-    start();
+
 
 });
 
 
 /**
- * @api {post} /api/traffic/:id  编辑traffic
+ * @api {post} /api/traffics/:id  编辑traffic
  * @apiName traffic
  * @apiGroup traffic
  *
@@ -90,44 +89,47 @@ router.post('/api/traffic', function (req, res, next) {
  *  *   }
  *
  */
-router.post('/api/traffic/:id', function (req, res, next) {
+router.post('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
-        postbackUrl: Joi.string().optional(),
-        pixelRedirectUrl: Joi.string().optional(),
+        postbackUrl: Joi.string().optional().empty(""),
+        pixelRedirectUrl: Joi.string().optional().empty(""),
         impTracking: Joi.number().optional(),
-        externalId: Joi.string().optional(),
-        cost: Joi.string().optional(),
-        params: Joi.string().optional()
+        externalId: Joi.string().optional().empty(""),
+        cost: Joi.string().optional().empty(""),
+        params: Joi.string().optional().empty("")
     });
 
     req.body.userId = req.userId
     req.body.id = req.params.id;
-    const start = async()=> {
-        try {
-            let value = await common.validate(req.body, schema);
-            let connection = await common.getConnection();
-            await common.updatetraffic(value.userId, value, connection);
+    let connection;
 
-            delete value.userId;
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success',
-                data: value
-            });
+    try {
+        let value = await common.validate(req.body, schema);
+        let connection = await common.getConnection();
+        await common.updatetraffic(value.userId, value, connection);
+
+        delete value.userId;
+
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
 
 
-        } catch (e) {
-            next(e);
-        }
-        finally{
-               connection.release(); 
-       } 
+    } catch (e) {
+        next(e);
     }
-    start();
+    finally {
+        if (connection) {
+            connection.release();
+        }
+
+    }
+
 });
 
 
@@ -144,33 +146,82 @@ router.post('/api/traffic/:id', function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/traffic/:id', function (req, res, next) {
+router.get('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.id = req.params.id;
     req.query.userId = req.userId;
-    const start = async()=> {
-        try {
-            let value = await common.validate(req.query, schema);
-            let connection = await common.getConnection();
-            let result = await common.gettrafficDetail(value.id, value.userId, connection);
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success',
-                data: result ? result : {}
-            });
-        } catch (e) {
-             next(err);
-        }
-        finally{
-               connection.release(); 
-       } 
-    }
-    start();
+    let connection;
 
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.gettrafficDetail(value.id, value.userId, connection);
+        res.json({
+            status: 1,
+            message: 'success',
+            data: result.length ? result[0] : {}
+        });
+    } catch (e) {
+        next(err);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+/**
+ * @api {get} /api/traffics  获取用户所有trafficsources
+ * @apiName  get  user  trafficsources
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
+ *
+ */
+router.get('/api/traffics', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    Joi.validate(req.query, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select  `id`,`name`,`cost`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
+                    value.userId
+                ],
+                function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data: {
+                            trafficsources: result
+                        }
+                    });
+
+                });
+        });
+    });
 });
 
 
@@ -179,31 +230,32 @@ router.get('/api/traffic/:id', function (req, res, next) {
  * @apiName  删除traffic
  * @apiGroup traffic
  */
-router.delete('/api/traffic/:id', function (req, res, next) {
+router.delete('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
-    const start = async()=> {
-        try {
-            let value = await common.validate(req.query, schema);
-            let connection = await common.getConnection();
-            let result = await common.deletetraffic(value.id, value.userId, connection);
-            //connection.release();
-            res.json({
-                status: 1,
-                message: 'success'
-            });
-        } catch (e) {
-             next(e);
-        }
-        finally{
-         connection.release(); 
-       } 
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.deletetraffic(value.id, value.userId, connection);
+        //connection.release();
+        res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
     }
-    start();
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
 
 });
 
