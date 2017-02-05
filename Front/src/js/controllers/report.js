@@ -871,13 +871,17 @@
     if (this.item) {
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
-        if ($scope.item['postbackUrl'] == null) {
-          $scope.item = {
-            postbackUrl: 'http://'
-          };
+        if (!$scope.item['postbackUrl']) {
+          $scope.item['postbackUrl'] = 'http://';
         }
         if ($scope.item.ipWhiteList) {
           $scope.ipWhiteCheck = true;
+          var ips = JSON.parse($scope.item.ipWhiteList);
+          var ipList = "";
+          ips.forEach(function (ip) {
+            ipList = ipList + ip + "\n";
+          });
+          $scope.ipWhiteList = ipList;
         }
       });
       this.title = "edit";
@@ -899,10 +903,10 @@
 
     this.save = function () {
       if (!$scope.ipWhiteCheck) {
-        $scope.ipWhiteList = "[]";
+        $scope.item.ipWhiteList = "[]";
       } else {
-        var ips = $scope.ipWhiteList.split('\n');
-        $scope.ipWhiteList = JSON.stringify(ips);
+        var ips = $scope.ipWhiteList.split("\n");
+        $scope.item.ipWhiteList = JSON.stringify(ips);
       }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
@@ -913,7 +917,7 @@
     $scope.checkIP = function () {
       var isValid = true;
       // 验证IP格式
-      var ipList = $scope.item.ipWhiteList;
+      var ipList = $scope.ipWhiteList;
       if (ipList) {
         var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
         var ips = ipList.split('\n');

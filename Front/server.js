@@ -1400,10 +1400,10 @@ app.get('/api/affiliates/:id', function (req,res) {
       affiliates: {
         id: 1,
         name: "affilate1",
-        postbackUrl: "",
+        postbackUrl: "http://www.adbund.com",
         appendClickId: 1,
         duplicatedPostback: 1,
-        ipWhiteList: ""
+        ipWhiteList: '["1.1.1.1"]'
       }
     }
   };
