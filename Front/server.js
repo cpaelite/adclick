@@ -1397,12 +1397,14 @@ app.get('/api/affiliates/:id', function (req,res) {
     status: 1,
     message: "",
     data: {
-      id: 1,
-      name: "affilate1",
-      postbackUrl: "",
-      appendClickId: 1,
-      duplicatedPostback: 1,
-      ipWhiteList: ""
+      affiliates: {
+        id: 1,
+        name: "affilate1",
+        postbackUrl: "",
+        appendClickId: 1,
+        duplicatedPostback: 1,
+        ipWhiteList: ""
+      }
     }
   };
   res.send(result);

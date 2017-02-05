@@ -876,12 +876,16 @@
             postbackUrl: 'http://'
           };
         }
+        if ($scope.item.ipWhiteList) {
+          $scope.ipWhiteCheck = true;
+        }
       });
       this.title = "edit";
     } else {
       $scope.item = {
         postbackUrl: 'http://'
       };
+      $scope.ipWhiteCheck = false;
       this.title = "add";
     }
 
@@ -894,31 +898,33 @@
     }
 
     this.save = function () {
+      if (!$scope.ipWhiteCheck) {
+        $scope.ipWhiteList = "[]";
+      } else {
+        var ips = $scope.ipWhiteList.split('\n');
+        $scope.ipWhiteList = JSON.stringify(ips);
+      }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         AffiliateNetwork.save($scope.item, success);
       }
     };
-
-    $scope.textareaShow = false;
-    $scope.isChecked = function(){
-      $scope.textareaShow = !$scope.textareaShow;
-    };
     
     $scope.checkIP = function () {
+      var isValid = true;
       // 验证IP格式
       var ipList = $scope.item.ipWhiteList;
       if (ipList) {
         var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
         var ips = ipList.split('\n');
-
-        var isValid = true;
         ips.forEach(function (ip) {
           if (!re.test(ip)) {
             isValid = false;
             return;
           }
         });
+        $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
+      } else {
         $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
       }
     }
