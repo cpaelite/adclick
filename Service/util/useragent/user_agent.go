@@ -28,8 +28,12 @@ type UserAgent struct {
 	localization string
 	browser      Browser
 	bot          bool
-	mobile       bool
 	undecided    bool
+
+	mobile      bool // the following only available for mobile
+	mobilebrand string
+	mobilemodel string
+	devicetype  string
 }
 
 // Read from the given string until the given delimiter or the

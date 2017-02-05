@@ -10,6 +10,7 @@ import (
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/util/countrycode"
 	"AdClickTool/Service/util/ip"
 	"AdClickTool/Service/util/ip2location"
 	"AdClickTool/Service/util/useragent"
@@ -142,12 +143,12 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 		panic("newReqBase actually does not run for ReqS2SPostback")
 	}
 
-	//TODO connectiontype/brand/model/deviceType未采集到
+	//TODO connectiontype未采集到
 	// chuck说connectiontype实际上用得少，可以先不做
 
 	// parse location from ip
 	location := ip2location.Get_all(req.ip)
-	req.countryCode = location.Country_short //TODO alpha-2 => alpha-3
+	req.countryCode = countrycode.CountryCode2To3(location.Country_short) // alpha-2 => alpha-3
 	req.countryName = location.Country_long
 	req.region = location.Region
 	req.city = location.City
@@ -163,11 +164,13 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 	req.browser, req.browserVersion = ua.Browser()
 	req.bot = ua.Bot()
 	if ua.Mobile() {
-		//req.brand = ua.MobileBrand()
-		//req.model = ua.Model()
+		req.brand = ua.MobileBrand()
+		req.model = ua.MobileModel()
+		req.deviceType = ua.DeviceType()
 	} else {
-		req.brand = "UNKNOWN"
-		req.model = "UNKNOWN"
+		req.brand = "Desktop"
+		req.model = "Desktop"
+		req.deviceType = "Desktop"
 	}
 
 	req.referrer = r.Referer()

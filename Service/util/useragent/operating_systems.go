@@ -355,3 +355,15 @@ func (p *UserAgent) OSInfo() OSInfo {
 		Version:  version,
 	}
 }
+
+func (p *UserAgent) MobileBrand() string {
+	return p.mobilebrand
+}
+
+func (p *UserAgent) MobileModel() string {
+	return p.mobilemodel
+}
+
+func (p *UserAgent) DeviceType() string {
+	return p.devicetype
+}
