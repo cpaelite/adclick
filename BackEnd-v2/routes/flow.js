@@ -130,20 +130,20 @@ router.get('/api/flows/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
 
         let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
-        let ruleSql = "select  f.`id` as parentId, r.`id`,r.`name`,r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type` " +
+        let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault, 'false' as isDeleted " +
             "from Flow f " +
             "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "left join `Rule` r on r.`id` = f2.`ruleId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
-        "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight` " +
+        "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`,'false' as isDeleted  " +
             "from Flow f " +
             "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "left join `Rule` r on r.`id` = f2.`ruleId`  " +
             "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
             "left join `Path` p on p.`id` = r2.`pathId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  " +
+            "where f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
@@ -182,6 +182,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             if (PromiseResult[0].length) {
                 Object.assign(Result, PromiseResult[0][0]);
             }
+            console.info(PromiseResult[1])
             if (PromiseResult[1].length) {
                 for (let i = 0; i < PromiseResult[1].length; i++) {
                     //Rule
