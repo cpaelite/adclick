@@ -350,17 +350,17 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
+        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
         $scope.$state.go('app.flow');
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
+        controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', 'urlParameter', editOfferCtrl];
       } else if (perfType == 'traffic') {
-        controller = ['$scope', '$mdDialog', 'TrafficSource', editTrafficSourceCtrl];
+        controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
         controller = ['$scope', '$mdDialog', 'AffiliateNetwork', editAffiliateCtrl];
       }
@@ -458,7 +458,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {
+  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource, urlParameter) {
     $scope.tags = [];
     if (this.item) {
       Campaign.get({id: this.item.data.campaignId}, function(campaign) {
@@ -578,14 +578,7 @@
       $scope.radioTitle = type;
     };
 
-    $scope.urlItem = [
-      "{campaign.id}",
-      "{brand}",
-      "{device}",
-      "{trafficSource.name}",
-      "{trafficSource.id}",
-      "{lander.id}"
-    ];
+    $scope.urlItem = urlParameter["campaign"];
     $scope.urlTokenClick = function (url) {
       var targetUrl = $scope.item.targetUrl;
       if (!targetUrl) {
@@ -598,39 +591,7 @@
     $scope.isDisabled = false;
   }
 
-  function editFlowCtrl($scope, $mdDialog, Flow) {
-    if (this.item) {
-      Flow.get({id: this.item.id}, function (flow) {
-        $scope.item = angular.copy(flow.data);
-      });
-      this.title = "edit";
-    } else {
-      $scope.item = {
-        url: ''
-      };
-      this.title = "add";
-    }
-
-    this.titleType = angular.copy(this.perfType);
-
-    // Country
-    $scope.countries = $scope.$root.countries;
-
-    this.cancel = $mdDialog.cancel;
-
-    function success(item) {
-      $mdDialog.hide(item);
-    }
-
-    this.save = function () {
-      $scope.editForm.$setSubmitted();
-      if ($scope.editForm.$valid) {
-        Flow.save($scope.item, success);
-      }
-    };
-  }
-
-  function editLanderCtrl($scope, $mdDialog, Lander) {
+  function editLanderCtrl($scope, $mdDialog, Lander, urlParameter) {
     $scope.tags = [];
     if (this.item) {
       Lander.get({id: this.item.data.landerId}, function (lander) {
@@ -678,14 +639,7 @@
         type: 'unknown'
       };
     };
-    $scope.urlItem = [
-      "{campaign.id}",
-      "{brand}",
-      "{device}",
-      "{trafficSource.name}",
-      "{trafficSource.id}",
-      "{lander.id}"
-    ];
+    $scope.urlItem = urlParameter["lander"];
     $scope.urlTokenClick = function (url) {
       var itemUrl = $scope.item.url;
       if (itemUrl.indexOf(url) == -1) {
@@ -694,7 +648,7 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetwork) {
+  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetwork, urlParameter) {
     $scope.tags = [];
     if (this.item) {
       Offer.get({id: this.item.data.offerId}, function (offer) {
@@ -705,12 +659,18 @@
             payoutMode: 0,
           };
         }
+        if ($scope.item['url'] == null) {
+          $scope.item = {
+            url: 'http://',
+            numberOfOffers: 1,
+          };
+        }
       });
       this.title = "edit";
     } else {
       $scope.item = {
         payoutMode: 0,
-        url: ''
+        url: 'http://'
       };
       this.title = "add";
     }
@@ -758,14 +718,7 @@
         type: 'unknown'
       };
     };
-    $scope.urlItem = [
-      "{campaign.id}",
-      "{brand}",
-      "{device}",
-      "{trafficSource.name}",
-      "{trafficSource.id}",
-      "{lander.id}"
-    ];
+    $scope.urlItem = urlParameter["offer"];
     $scope.urlTokenClick = function (url) {
       var itemUrl = $scope.item.url;
       if (itemUrl.indexOf(url) == -1) {
@@ -833,14 +786,7 @@
       }
     };
 
-    $scope.urlItem = [
-      "{campaign.id}",
-      "{brand}",
-      "{device}",
-      "{trafficSource.name}",
-      "{trafficSource.id}",
-      "{lander.id}"
-    ];
+    $scope.urlItem = urlParameter["traffic"];
     $scope.urlTokenClick = function(url){
       $scope.urlToken = $scope.urlToken + url;
     };
