@@ -11,6 +11,7 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/units/blacklist"
 	"AdClickTool/Service/units/campaign"
 	"AdClickTool/Service/units/offer"
 	"AdClickTool/Service/units/user"
@@ -51,6 +52,12 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	allowed := blacklist.UserReqAllowed(u.Id, r.RemoteAddr, r.UserAgent())
+	if !allowed {
+		return
+	}
+
 	campaignHash := common.GetCampaignHash(r)
 	if campaignHash == "" {
 		log.Errorf("[Units][OnLPOfferRequest]Invalid campaignHash for %s:%s\n", requestId, common.SchemeHostURI(r))
