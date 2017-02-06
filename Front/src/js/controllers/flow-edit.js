@@ -37,7 +37,7 @@
     var theFlow;
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
-        theFlow = result;
+        theFlow = result.data;
       }).$promise;
       initPromises.push(prms);
 
@@ -48,7 +48,6 @@
 
       theFlow = {
         name: 'new flow',
-        country: 'glb',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
@@ -122,10 +121,14 @@
         if (!Array.isArray(rule.paths)) {
           rule.paths = [];
         }
+
+        calculateRelativeWeight(rule.paths, function(item) { return !item.isDeleted; });
         rule.paths.forEach(function(path) {
           if (!Array.isArray(path.landers)) {
             path.landers = [];
           }
+
+          calculateRelativeWeight(path.landers, function(item) { return !item.isDeleted; });
           path.landers.forEach(function(lander) {
             lander.name = allLanders[landerMap[lander.id]].name;
           });
@@ -133,6 +136,8 @@
           if (!Array.isArray(path.offers)) {
             path.offers = [];
           }
+
+          calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
           path.offers.forEach(function(offer) {
             offer.name = allOffers[offerMap[offer.id]].name;
           });
