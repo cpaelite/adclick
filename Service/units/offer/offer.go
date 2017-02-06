@@ -121,7 +121,7 @@ func (o *Offer) OnLPOfferRequest(w http.ResponseWriter, req request.Request) err
 	req.SetOfferName(o.Name)
 	req.SetAffiliateId(o.AffiliateNetworkId)
 	req.SetAffiliateName(o.AffiliateNetworkName)
-	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	req.Redirect(w, gr, req.ParseUrlTokens(o.Url))
 	return nil
 }
 
@@ -138,7 +138,7 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 	if aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId); aff.AppendClickId == 1 {
 		appended = req.Id()
 	}
-	http.Redirect(w, gr, req.ParseUrlTokens(o.Url)+appended, http.StatusFound)
+	req.Redirect(w, gr, req.ParseUrlTokens(o.Url)+appended)
 	return nil
 }
 

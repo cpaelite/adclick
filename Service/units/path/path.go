@@ -159,6 +159,8 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
 	}
 
+	req.SetRedirectMode(p.RedirectMode)
+
 	x := p.RandLwSum() // rand.Intn(int(p.lwSum))
 	lx := 0
 	if p.DirectLink == 0 {
@@ -196,6 +198,8 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 	if p == nil {
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
 	}
+
+	req.SetRedirectMode(p.RedirectMode)
 
 	// 不需要find，因为可能中途已被移除
 	/*

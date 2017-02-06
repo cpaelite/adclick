@@ -114,6 +114,7 @@ func main() {
 		blacklist.ReloadUserBlacklist(uid)
 	}
 
+	http.HandleFunc("/dmr", units.OnDoubleMetaRefresh)
 	http.HandleFunc("/status", Status1)
 	http.HandleFunc("/status/", Status2)
 	http.HandleFunc(config.String("DEFAULT", "lpofferrequrl"), units.OnLPOfferRequest)
@@ -131,6 +132,7 @@ func main() {
 }
 
 func Status1(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "host:[%s] Proto:[%s]\n", r.Host, r.Proto)
 	fmt.Fprint(w, "It works1!"+common.SchemeHostPath(r)+" *"+r.RequestURI+" *"+common.GetCampaignHash(r))
 }
 

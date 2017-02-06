@@ -109,7 +109,7 @@ func (l *Lander) OnLPOfferRequest(w http.ResponseWriter, req request.Request) er
 	}
 	req.SetLanderId(l.Id)
 	req.SetLanderName(l.Name)
-	http.Redirect(w, gr, req.ParseUrlTokens(l.Url), http.StatusFound)
+	req.Redirect(w, gr, req.ParseUrlTokens(l.Url))
 	return nil
 }
 

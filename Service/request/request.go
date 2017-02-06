@@ -140,6 +140,10 @@ type Request interface {
 	TSCost() *common.TrafficSourceParams
 	TSVars() []common.TrafficSourceParams
 	CPAValue() float64
+
+	SetRedirectMode(m int64)
+	GetRedirectMode() int64
+	Redirect(w http.ResponseWriter, req *http.Request, url string)
 }
 
 func CreateRequest(reqId, reqType string, r *http.Request) (req Request, err error) {

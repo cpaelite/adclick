@@ -2,6 +2,7 @@ package units
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"strconv"
 	"time"
@@ -200,7 +201,6 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 	tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
 	tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
 
-
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
 		log.Errorf("[Units][OnLandingPageClick]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
@@ -395,4 +395,13 @@ func RegisterToMQ() error {
 }
 func OnNotifyDBChanged(w http.ResponseWriter, r *http.Request) {
 	//TODO 是否通过HTTP通信，有待确认
+}
+
+// OnDoubleMetaRefresh 处理double meta refresh 请求
+func OnDoubleMetaRefresh(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	dest := r.FormValue("dest") // 最终的跳转地址
+	log.Debugf("OnDoubleMetaRefresh dest:%s", dest)
+	meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
+	fmt.Fprintln(w, meta)
 }
