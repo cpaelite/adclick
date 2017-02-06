@@ -54,7 +54,6 @@ type Conversion struct {
 var conversionsChan chan *Conversion
 
 func init() {
-	// TODO: 这里可以根据实际情况配置其chan大小
 	// 理论上讲Conversion的数据量会比较小，用不了那么大
 	conversionsChan = make(chan *Conversion, 1024)
 }

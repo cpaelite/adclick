@@ -54,7 +54,7 @@ type Rule struct {
 
 // // Rand returns, as an int, a non-negative pseudo-random number in [0,n)
 func (r *Rule) Rand() int {
-	if r.pwSum <=0 {
+	if r.pwSum <= 0 {
 		return 0
 	}
 	return rand.Intn(int(r.pwSum))
@@ -165,7 +165,6 @@ func (r *Rule) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 	x := r.Rand()
 	cx := 0
 	for _, p := range r.paths {
-		// TODO: 这里跳过会不会影响到随机的结果
 		if p.PathId <= 0 {
 			continue
 		}

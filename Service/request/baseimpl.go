@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"net/url"
 	"strings"
@@ -83,6 +84,8 @@ type reqbase struct {
 	tsCost       *common.TrafficSourceParams
 	tsVars       []common.TrafficSourceParams
 	cpaValue     float64
+
+	redirectMode int64
 }
 
 func (r *reqbase) SetTSExternalID(e *common.TrafficSourceParams) {
@@ -651,4 +654,34 @@ func (r *reqbase) SetTransactionId(txid string) {
 
 func (r *reqbase) TransactionId() string {
 	return r.txid
+}
+
+// SetRedirectMode 设置跳转模式（0:302;1:Meta refresh;2:Double meta refresh）
+func (r *reqbase) SetRedirectMode(m int64) {
+	r.redirectMode = m
+}
+
+// GetRedirectMode 获取跳转模式（0:302;1:Meta refresh;2:Double meta refresh）
+func (r *reqbase) GetRedirectMode() int64 {
+	return r.redirectMode
+}
+
+// Redirect 根据当前的跳转模式跳转
+func (r *reqbase) Redirect(w http.ResponseWriter, req *http.Request, dest string) {
+	switch r.redirectMode {
+	case 1:
+		// meta refresh
+		w.Header().Set("Content-Type", "text/html")
+		meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
+		fmt.Fprintln(w, meta)
+	case 2:
+		// double meta refresh
+		w.Header().Set("Content-Type", "text/html")
+		to := url.QueryEscape(dest)
+		first := fmt.Sprintf("/dmr?dest=%s", to)
+		meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(first) + `">`
+		fmt.Fprintln(w, meta)
+	default: // 0或者其它非法的值，都是302跳转
+		http.Redirect(w, req, dest, http.StatusFound)
+	}
 }

@@ -38,7 +38,6 @@ func Saving(db *sql.DB, stop chan struct{}) {
 var savedCount int
 
 func doSave(db *sql.DB, m map[string]*adStaticTableFields) error {
-	// TODO: 按表名重新归整数据
 	// 这样可以Prepare一下，存储更加快
 	start := time.Now()
 	defer func() {

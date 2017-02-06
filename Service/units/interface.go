@@ -2,6 +2,7 @@ package units
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"strconv"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/units/blacklist"
 	"AdClickTool/Service/units/campaign"
 	"AdClickTool/Service/units/offer"
 	"AdClickTool/Service/units/user"
@@ -50,6 +52,12 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	allowed := blacklist.UserReqAllowed(u.Id, r.RemoteAddr, r.UserAgent())
+	if !allowed {
+		return
+	}
+
 	campaignHash := common.GetCampaignHash(r)
 	if campaignHash == "" {
 		log.Errorf("[Units][OnLPOfferRequest]Invalid campaignHash for %s:%s\n", requestId, common.SchemeHostURI(r))
@@ -200,14 +208,12 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 	tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
 	tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
 
-
 	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
 		log.Errorf("[Units][OnLandingPageClick]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
 }
 
 func OnImpression(w http.ResponseWriter, r *http.Request) {
-	// TODO: Impression Pixel Tracking
 	// URL格式：http://zx1jg.voluumtrk.com/impression/be8da5d9-7955-4400-95e3-05c9231a6e92?keyword={keyword}&keyword_id={keyword_id}&creative_id={creative_id}&campaign_id={campaign_id}&country={country}&bid={bid}&click_id={click_id}
 	// 1. 通过链接拿到user和campaign，以及trafficsource
 	// 2. 通过IP拿到其它信息，如Language, Model, Country, City, ....
@@ -395,4 +401,14 @@ func RegisterToMQ() error {
 }
 func OnNotifyDBChanged(w http.ResponseWriter, r *http.Request) {
 	//TODO 是否通过HTTP通信，有待确认
+}
+
+// OnDoubleMetaRefresh 处理double meta refresh 请求
+func OnDoubleMetaRefresh(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	dest := r.FormValue("dest") // 最终的跳转地址
+	log.Debugf("OnDoubleMetaRefresh dest:%s", dest)
+	w.Header().Set("Content-Type", "text/html")
+	meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
+	fmt.Fprintln(w, meta)
 }

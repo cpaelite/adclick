@@ -128,9 +128,9 @@ lander2 = cursor.lastrowid
 # 创建 Path
 ################################################################################
 
-
+# path1
 cursor.execute("INSERT INTO Path (userId, name, hash, redirectMode, directLink, status) VALUES (%s,%s,%s,%s,%s,%s)",
-               (userId, "path.1", "pash.1.hash", 0, 0, 1))
+               (userId, "path.1", "path.1.hash", 0, 0, 1))
 path1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
@@ -138,9 +138,9 @@ cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,
 cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
                (lander2, path1, 50))
 
-
+# path2
 cursor.execute("INSERT INTO Path (userId, name, hash, redirectMode, directLink, status) VALUES (%s,%s,%s,%s,%s,%s)",
-               (userId, "path.2", "pash.2.hash", 1, 1, 1))
+               (userId, "path.2", "path.2.hash", 1, 1, 1))
 path2 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
@@ -148,11 +148,28 @@ cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,
 cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
                (lander2, path2, 400))
 
+
+# path3
+cursor.execute("INSERT INTO Path (userId, name, hash, redirectMode, directLink, status) VALUES (%s,%s,%s,%s,%s,%s)",
+               (userId, "path.3", "path.3.hash", 2, 1, 1))
+path3 = cursor.lastrowid
+
+cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
+               (lander1, path3, 100))
+cursor.execute("INSERT INTO Lander2Path (landerId, pathId, weight) VALUES(%s,%s,%s)",
+               (lander2, path3, 400))
+
+
 #
 cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer1, path1, 100, 0))
 cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer2, path1, 100, 0))
+
 cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer1, path2, 100, 0))
 cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer2, path2, 100, 0))
+
+cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer1, path3, 100, 0))
+cursor.execute("INSERT INTO Offer2Path (offerId, pathId, weight, deleted) VALUES(%s,%s,%s,%s)", (offer2, path3, 100, 0))
+
 
 ################################################################################
 # 创建 Rule
@@ -174,11 +191,16 @@ cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s
     (path2, rule1, 100, 1))
 
 cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
+    (path3, rule1, 100, 1))
+
+cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
     (path1, rule2, 100, 1))
 
 cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
     (path2, rule2, 100, 1))
 
+cursor.execute("INSERT INTO Path2Rule (pathId, ruleId, weight, status) VALUES(%s,%s,%s,%s)",
+    (path3, rule2, 100, 1))
 
 ################################################################################
 # 创建 Flow

@@ -53,6 +53,7 @@ type CampaignConfig struct {
 	CPMValue          float64
 	PostbackUrl       string
 	PixelRedirectUrl  string
+	RedirectMode      int64
 	TargetType        int64
 	TargetFlowId      int64
 	TargetUrl         string
@@ -229,10 +230,11 @@ func (ca *Campaign) OnLPOfferRequest(w http.ResponseWriter, req request.Request)
 	req.SetTSCost(&ca.TrafficSource.Cost)
 	req.SetTSVars(ca.TrafficSource.Vars)
 	req.SetCPAValue(ca.CPAValue)
+	req.SetRedirectMode(ca.RedirectMode)
 
 	if ca.TargetType == TargetTypeUrl {
 		if ca.TargetUrl != "" {
-			http.Redirect(w, gr, req.ParseUrlTokens(ca.TargetUrl), http.StatusFound)
+			req.Redirect(w, gr, req.ParseUrlTokens(ca.TargetUrl))
 			return nil
 		}
 	} else {
