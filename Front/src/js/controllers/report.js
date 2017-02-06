@@ -332,7 +332,11 @@
         controller = ['$scope', '$state', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
-        $scope.$state.go('app.flow');
+        var flowId = "";
+        if (item) {
+          flowId = item.data.flowId;
+        }
+        $scope.$state.go('app.flow', {id: flowId});
         return;
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', editLanderCtrl];
