@@ -37,7 +37,7 @@
     var theFlow;
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
-        theFlow = result;
+        theFlow = result.data;
       }).$promise;
       initPromises.push(prms);
 
@@ -48,7 +48,6 @@
 
       theFlow = {
         name: 'new flow',
-        country: 'glb',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
@@ -122,10 +121,14 @@
         if (!Array.isArray(rule.paths)) {
           rule.paths = [];
         }
+
+        calculateRelativeWeight(rule.paths, function(item) { return !item.isDeleted; });
         rule.paths.forEach(function(path) {
           if (!Array.isArray(path.landers)) {
             path.landers = [];
           }
+
+          calculateRelativeWeight(path.landers, function(item) { return !item.isDeleted; });
           path.landers.forEach(function(lander) {
             lander.name = allLanders[landerMap[lander.id]].name;
           });
@@ -133,6 +136,8 @@
           if (!Array.isArray(path.offers)) {
             path.offers = [];
           }
+
+          calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
           path.offers.forEach(function(offer) {
             offer.name = allOffers[offerMap[offer.id]].name;
           });
@@ -470,15 +475,17 @@
           paths: [],
         };
 
-        rule.conditions.forEach(function(condition) {
-          conData = {};
-          Object.keys(condition).forEach(function(key) {
-            if (key.indexOf('_') != 0) {
-              conData[key] = condition[key];
-            }
+        if (rule.conditions) {
+          rule.conditions.forEach(function(condition) {
+            conData = {};
+            Object.keys(condition).forEach(function(key) {
+              if (key.indexOf('_') != 0) {
+                conData[key] = condition[key];
+              }
+            });
+            ruleData.conditions.push(conData);
           });
-          ruleData.conditions.push(conData);
-        });
+        }
 
         if (ruleData.isDefault) {
           delete ruleData.name;
@@ -492,6 +499,7 @@
           if (path.isDeleted)
             return;
           pathData = {
+            id: path.id || null,
             name: path.name,
             enabled: path.enabled,
             weight: path.weight,
@@ -501,20 +509,24 @@
             offers: []
           };
 
-          path.landers.forEach(function(lander) {
-            if (lander.id !== null)
-              pathData.landers.push({id: lander.id, weight: lander.weight});
-          });
-          if (pathData.landers.length == 0) {
-            delete pathData.landers;
+          if (path.landers) {
+            path.landers.forEach(function(lander) {
+              if (lander.id !== null)
+                pathData.landers.push({id: lander.id, weight: lander.weight});
+            });
+            if (pathData.landers.length == 0) {
+              delete pathData.landers;
+            }
           }
 
-          path.offers.forEach(function(offer) {
-            if (offer.id !== null)
-              pathData.offers.push({id: offer.id, weight: offer.weight});
-          });
-          if (pathData.offers.length == 0) {
-            delete pathData.offers;
+          if (path.offers) {
+            path.offers.forEach(function(offer) {
+              if (offer.id !== null)
+                pathData.offers.push({id: offer.id, weight: offer.weight});
+            });
+            if (pathData.offers.length == 0) {
+              delete pathData.offers;
+            }
           }
 
           ruleData.paths.push(pathData);
@@ -523,12 +535,18 @@
         flowData.rules.push(ruleData);
       });
 
-      console.log(flowData);
       $scope.onSave = true;
       Flow.save(flowData, function(result) {
         $scope.onSave = false;
         if (!theFlow.id) {
           theFlow.id = result.data.id;
+          result.data.rules.forEach(function (rule, ruleIndex) {
+            theFlow.rules[ruleIndex].id = rule.id;
+            rule.paths.forEach(function (path, pathIndex) {
+              theFlow.rules[ruleIndex].paths[pathIndex].id = path.id;
+            });
+          });
+
         }
       });
     };

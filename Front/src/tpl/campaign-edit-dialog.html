@@ -162,11 +162,11 @@
 
                 <div class="form-group flow-actions">
                     <ul>
-                        <li class="new-flow">
+                        <li class="new-flow" ng-click="toAddFlow()">
                             <i class="material-icons">add</i>
                             Create new flow
                         </li>
-                        <li class="edit-flow">
+                        <li class="edit-flow" ng-show="item.flow">
                             <i class="material-icons">edit</i>
                             Edit flow
                         </li>

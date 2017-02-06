@@ -353,7 +353,11 @@
         controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
-        $scope.$state.go('app.flow');
+        var flowId = "";
+        if (item) {
+          flowId = item.data.flowId;
+        }
+        $scope.$state.go('app.flow', {id: flowId});
         return;
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
@@ -475,28 +479,21 @@
         }
         $scope.tags = $scope.item.tags;
         $scope.trafficSourceId = $scope.item.trafficSourceId;
-        $scope.item.flow = {
-          id: $scope.item.targetFlowId
+        if ($scope.item.targetFlowId) {
+          $scope.item.flow = {
+            id: $scope.item.targetFlowId
+          };
         }
         if ($scope.item['costModel'] == null) {
-          $scope.item = {
-            costModel: 0,
-            redirectMode: 0,
-            targetType: 1,
-            status: '1',
-          };
+          $scope.item = defaultItem();
         }
       });
       this.title = "edit";
     } else {
-      $scope.item = {
-        costModel: 0,
-        redirectMode: 0,
-        targetType: 1,
-        status: '1',
-      };
+      $scope.item = defaultItem();
       this.title = "add";
     }
+
     this.titleType = angular.copy(this.perfType);
 
     // TrafficSource
@@ -512,7 +509,21 @@
       $scope.flows = flow.data.flows;
     });
 
+    $scope.toAddFlow = function () {
+      $mdDialog.hide();
+      $state.go('app.flow');
+    };
+
     this.cancel = $mdDialog.cancel;
+
+    function defaultItem() {
+      return {
+        costModel: 0,
+        redirectMode: 0,
+        targetType: 1,
+        status: '1',
+      };
+    }
 
     function success(item) {
       $mdDialog.hide(item);
@@ -727,10 +738,21 @@
     };
   }
 
-  function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource) {
+  function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource, urlParameter) {
     if (this.item) {
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
+        if($scope.item.cost) {
+          $scope.item.cost = JSON.parse($scope.item.cost);
+        } else {
+          $scope.item.cost = {};
+        }
+
+        if ($scope.item.externalId) {
+          $scope.item.externalId = JSON.parse($scope.item.externalId);
+        } else {
+          $scope.item.externalId = {};
+        }
         if (!$scope.item.params) {
           $scope.item.params = [
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
@@ -744,6 +766,8 @@
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
             {Parameter: '', Placeholder: '', Name: '', Track: ''}
           ];
+        } else {
+          $scope.item.params = JSON.parse($scope.item.params);
         }
       });
       this.title = "edit";
@@ -779,6 +803,8 @@
     this.save = function () {
       delete $scope.item.hash;
       $scope.item.params = JSON.stringify($scope.item.params);
+      $scope.item.cost = JSON.stringify($scope.item.cost);
+      $scope.item.externalId = JSON.stringify($scope.item.externalId);
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
@@ -816,10 +842,17 @@
     if (this.item) {
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
-        if ($scope.item['postbackUrl'] == null) {
-          $scope.item = {
-            postbackUrl: 'http://'
-          };
+        if (!$scope.item['postbackUrl']) {
+          $scope.item['postbackUrl'] = 'http://';
+        }
+        if ($scope.item.ipWhiteList) {
+          $scope.ipWhiteCheck = true;
+          var ips = JSON.parse($scope.item.ipWhiteList);
+          var ipList = "";
+          ips.forEach(function (ip) {
+            ipList = ipList + ip + "\n";
+          });
+          $scope.ipWhiteList = ipList;
         }
       });
       this.title = "edit";
@@ -827,6 +860,7 @@
       $scope.item = {
         postbackUrl: 'http://'
       };
+      $scope.ipWhiteCheck = false;
       this.title = "add";
     }
 
@@ -839,31 +873,33 @@
     }
 
     this.save = function () {
+      if (!$scope.ipWhiteCheck) {
+        $scope.item.ipWhiteList = "[]";
+      } else {
+        var ips = $scope.ipWhiteList.split("\n");
+        $scope.item.ipWhiteList = JSON.stringify(ips);
+      }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         AffiliateNetwork.save($scope.item, success);
       }
     };
-
-    $scope.textareaShow = false;
-    $scope.isChecked = function(){
-      $scope.textareaShow = !$scope.textareaShow;
-    };
     
     $scope.checkIP = function () {
+      var isValid = true;
       // 验证IP格式
-      var ipList = $scope.item.ipWhiteList;
+      var ipList = $scope.ipWhiteList;
       if (ipList) {
         var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
         var ips = ipList.split('\n');
-
-        var isValid = true;
         ips.forEach(function (ip) {
           if (!re.test(ip)) {
             isValid = false;
             return;
           }
         });
+        $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
+      } else {
         $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
       }
     }
