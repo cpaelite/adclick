@@ -61,7 +61,6 @@ func Gathering(stop chan struct{}, interval time.Duration) {
 			a.action(&d.adStatisValues)
 
 		case <-ticker.C:
-			// TODO: 配置多长时间写一次数据库
 			flush()
 
 		case <-flushEvent:

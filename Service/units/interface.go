@@ -214,7 +214,6 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 }
 
 func OnImpression(w http.ResponseWriter, r *http.Request) {
-	// TODO: Impression Pixel Tracking
 	// URL格式：http://zx1jg.voluumtrk.com/impression/be8da5d9-7955-4400-95e3-05c9231a6e92?keyword={keyword}&keyword_id={keyword_id}&creative_id={creative_id}&campaign_id={campaign_id}&country={country}&bid={bid}&click_id={click_id}
 	// 1. 通过链接拿到user和campaign，以及trafficsource
 	// 2. 通过IP拿到其它信息，如Language, Model, Country, City, ....

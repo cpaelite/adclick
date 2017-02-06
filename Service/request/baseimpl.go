@@ -668,7 +668,6 @@ func (r *reqbase) GetRedirectMode() int64 {
 
 // Redirect 根据当前的跳转模式跳转
 func (r *reqbase) Redirect(w http.ResponseWriter, req *http.Request, dest string) {
-	// TODO:  跳转的最终实现
 	switch r.redirectMode {
 	case 1:
 		// meta refresh
