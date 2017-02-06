@@ -8,7 +8,10 @@
 // information that has been extracted from a parsed User Agent string.
 package useragent
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // A section contains the name of the product, its version and
 // an optional comment.
@@ -17,6 +20,13 @@ type section struct {
 	version string
 	comment []string
 }
+
+const (
+	DeviceMobile  = "Mobile"
+	DeviceTablet  = "Tablet"
+	DeviceDesktop = "Desktop"
+	DeviceUnknown = "Unknown"
+)
 
 // The UserAgent struct contains all the info that can be extracted
 // from the User-Agent string.
@@ -134,6 +144,9 @@ func (p *UserAgent) Parse(ua string) {
 
 	p.initialize()
 	p.ua = ua
+	p.devicetype = DeviceUnknown
+	p.mobilebrand = "Unknown"
+	p.mobilemodel = "Unknown"
 	for index, limit := 0, len(ua); index < limit; {
 		s := parseSection(ua, &index)
 		if !p.mobile && s.name == "Mobile" {
@@ -151,6 +164,8 @@ func (p *UserAgent) Parse(ua string) {
 		p.detectOS(sections[0])
 
 		if p.undecided {
+			fmt.Printf("ua:%s\n", ua)
+			fmt.Printf("sections:%+v\n", sections)
 			p.checkBot(sections)
 		}
 	}
