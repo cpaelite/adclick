@@ -390,6 +390,9 @@
     $scope.checkboxIsChecked = function (num) {
       $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
     };
+    $scope.checkboxInput = function($event){
+      $event.stopPropagation();
+    };
     $scope.viewCloumnClose = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };

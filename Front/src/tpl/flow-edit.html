@@ -13,7 +13,7 @@
         }">
         <span ng-click="toggleExpand(rule)">
           <!--           <i class="material-icons md-mini cs-arrow-right">keyboard_arrow_right</i>
-          -->         <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
+          -->         <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-click="stretchList(type)">keyboard_arrow_down</i>
         </span>
         <span class="cs-path-name">
           <i class="material-icons tree-icon">album</i>
@@ -36,7 +36,7 @@
         </li>
         <li ng-click="addPath(rule)" class="cs-flow-addpath tree-li">
           <i class="material-icons add-box">add_box</i>
-          <span class="add-flow-path">{{'add_flow_path' | translate}}</span>
+          <span class="add-flow-path">{{'add_new_path' | translate}}</span>
         </li>
       </ul>
     </div>
