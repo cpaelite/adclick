@@ -402,6 +402,7 @@ func OnDoubleMetaRefresh(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	dest := r.FormValue("dest") // 最终的跳转地址
 	log.Debugf("OnDoubleMetaRefresh dest:%s", dest)
+	w.Header().Set("Content-Type", "text/html")
 	meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
 	fmt.Fprintln(w, meta)
 }

@@ -97,14 +97,14 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 		case request.ReqLPOffer:
 		default:
 			return nil, fmt.Errorf("[ParseCookie]Request step(%s) does not match last step(%s) for request(%s)\n",
-				step, es, req.Id())
+				step, es, reqId)
 		}
 	case request.ReqLPOffer:
 		switch es {
 		case request.ReqImpression:
 		default:
 			return nil, fmt.Errorf("[ParseCookie]Request step(%s) does not match last step(%s) for request(%s)\n",
-				step, es, req.Id())
+				step, es, reqId)
 		}
 	case request.ReqS2SPostback:
 		switch es {
@@ -112,7 +112,7 @@ func ParseCookie(step string, r *http.Request) (req request.Request, err error) 
 		case request.ReqLPClick:
 		default:
 			return nil, fmt.Errorf("[ParseCookie]Request step(%s) does not match last step(%s) for request(%s)\n",
-				step, es, req.Id())
+				step, es, reqId)
 		}
 	}
 	req, err = request.CreateRequest(reqId, step, r)

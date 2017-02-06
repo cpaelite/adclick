@@ -672,10 +672,12 @@ func (r *reqbase) Redirect(w http.ResponseWriter, req *http.Request, dest string
 	switch r.redirectMode {
 	case 1:
 		// meta refresh
+		w.Header().Set("Content-Type", "text/html")
 		meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
 		fmt.Fprintln(w, meta)
 	case 2:
 		// double meta refresh
+		w.Header().Set("Content-Type", "text/html")
 		to := url.QueryEscape(dest)
 		first := fmt.Sprintf("/dmr?dest=%s", to)
 		meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(first) + `">`
