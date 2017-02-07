@@ -130,14 +130,14 @@ router.get('/api/flows/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
 
         let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
-        let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault, 'false' as isDeleted " +
+        let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
             "from Flow f " +
             "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "left join `Rule` r on r.`id` = f2.`ruleId` " +
             "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
-        "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`,'false' as isDeleted  " +
+        "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`  " +
             "from Flow f " +
             "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "left join `Rule` r on r.`id` = f2.`ruleId`  " +
@@ -172,7 +172,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
-      console.log(ruleSql);
+     
 
         connection = await common.getConnection();
         let PromiseResult = await  Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);
