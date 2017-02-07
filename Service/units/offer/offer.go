@@ -135,7 +135,7 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 	req.SetAffiliateName(o.AffiliateNetworkName)
 	// 加载AffiliateNetwork配置，如果Append click ID to offer URLs勾选，添加click ID(requestid)
 	appended := ""
-	if aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId); aff.AppendClickId == 1 {
+	if aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId); aff != nil && aff.AppendClickId == 1 {
 		appended = req.Id()
 	}
 	req.Redirect(w, gr, req.ParseUrlTokens(o.Url)+appended)
