@@ -575,9 +575,9 @@ function insertLander2Path(landerid, pathid, pathweight, connection) {
 }
 
 function updateLander2Path(landerId, pathId, weight, connection) {
-    var sqllander2path = "update  Lander2Path set `weight`= ? where `landerId` =? and `pathId`=?";
+    var sqllander2path = "delete from   Lander2Path   where `landerId` =? and `pathId`=?";
     return new Promise(function (resolve, reject) {
-        connection.query(sqllander2path, [weight, landerId, pathId], function (err, result) {
+        connection.query(sqllander2path, [landerId, pathId], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -739,10 +739,10 @@ function insertOffer2Path(offerid, pathid, pathweight, connection) {
 }
 
 function updateOffer2Path(offerId, pathId, weight, connection) {
-    var sqloffer2path = "update  Offer2Path set `weight`= ? where `offerId`=? and `pathId`=?";
+    var sqloffer2path = "delete from   Offer2Path  where `offerId`=? and `pathId`=?";
 
     return new Promise(function (resolve, reject) {
-        connection.query(sqloffer2path, [weight, offerId, pathId], function (err, result) {
+        connection.query(sqloffer2path, [offerId, pathId], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -764,9 +764,9 @@ function insertPath2Rule(pathId, ruleId, weight, status, connection) {
 }
 
 function updatePath2Rule(pathId, ruleId, weight, status, connection) {
-    var sqlpath2rule = "update  Path2Rule set `weight`=?,`status`=? where `pathId`=? and `ruleId`=?";
+    var sqlpath2rule = "delete  from Path2Rule   where `pathId`=? and `ruleId`=?";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlpath2rule, [weight, status, pathId, ruleId], function (err, result) {
+        connection.query(sqlpath2rule, [pathId, ruleId], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -790,9 +790,9 @@ function insertRule2Flow(ruleId, flowId, status, connection) {
 }
 
 function updateRule2Flow(status, ruleId, flowId, connection) {
-    var sqlrule2flow = "update  Rule2Flow set `status`=? where  `ruleId`=?  and `flowId`=?";
+    var sqlrule2flow = "delete from   Rule2Flow   where  `ruleId`=?  and `flowId`=?";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlrule2flow, [status, ruleId, flowId], function (err, result) {
+        connection.query(sqlrule2flow, [ruleId, flowId], function (err, result) {
             if (err) {
                 reject(err);
             }

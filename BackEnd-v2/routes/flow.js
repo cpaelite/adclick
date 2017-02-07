@@ -132,29 +132,29 @@ router.get('/api/flows/:id', async function (req, res, next) {
         let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
         let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId` " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId` " +
             "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
         "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`  " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId`  " +
-            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
-            "left join `Path` p on p.`id` = r2.`pathId` " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId`  " +
+            "inner join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
+            "inner join `Path` p on p.`id` = r2.`pathId` " +
             "where f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId`  " +
-            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
-            "left join `Path` p on p.`id` = r2.`pathId` " +
-            "left join `Lander2Path` p2 on p2.`pathId` = p.`id`  " +
-            "left join `Lander` l on l.`id`= p2.`landerId` " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId`  " +
+            "inner join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
+            "inner join `Path` p on p.`id` = r2.`pathId` " +
+            "inner join `Lander2Path` p2 on p2.`pathId` = p.`id`  " +
+            "inner join `Lander` l on l.`id`= p2.`landerId` " +
             "where    f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
@@ -162,17 +162,17 @@ router.get('/api/flows/:id', async function (req, res, next) {
 
         let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +   
-            "left join `Rule` r on r.`id` = f2.`ruleId`  " +
-            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
-            "left join `Path` p on p.`id` = r2.`pathId` " +
-            "left join `Offer2Path` p2 on p2.`pathId` = p.`id`  " +
-            "left join `Offer` l on l.`id`= p2.`offerId` " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +   
+            "inner join `Rule` r on r.`id` = f2.`ruleId`  " +
+            "inner join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
+            "inner join `Path` p on p.`id` = r2.`pathId` " +
+            "inner join `Offer2Path` p2 on p2.`pathId` = p.`id`  " +
+            "inner join `Offer` l on l.`id`= p2.`offerId` " +
             "where  f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
-     
+       
 
         connection = await common.getConnection();
         let PromiseResult = await  Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);
@@ -203,27 +203,24 @@ router.get('/api/flows/:id', async function (req, res, next) {
                                 pathResult[j].offers = [];
                                 pathResult[j].landers = [];
                                 delete pathResult[j].parentId;
-                                Result.rules[i].paths.push(pathResult[j]);
-                                
-
+                               
                                 //lander
                                 for (let k = 0; k < landerResult.length; k++) {
                                     if (landerResult[k].parentId == pathResult[j].id) {
                                         delete landerResult[k].parentId;
-                                        Result.rules[i].paths[j].landers.push(landerResult[k])
-                                         
+                                        pathResult[j].landers.push(landerResult[k])
                                     }
                                 }
 
                                 //offer
                                 for (let m = 0; m < offerResult.length; m++) {
-                                    if (offerResult[m].parentId == pathResult[j].id) {
-                                        
+                                    if (offerResult[m].parentId == pathResult[j].id) {   
                                         delete offerResult[m].parentId;
-                                        Result.rules[i].paths[j].offers.push(offerResult[m])
-                                         
+                                         pathResult[j].offers.push(offerResult[m])
                                     }
                                 }
+
+                                 Result.rules[i].paths.push(pathResult[j]);
 
                             }
                         }
@@ -387,7 +384,6 @@ const start = async(data, schema) => {
                         //RULE
                         if (!value.rules[i].id) {
                             ruleResult = await  common.insetRule(value.userId, value.rules[i], connection);
-                            await common.insertRule2Flow(ruleResult.insertId, flowId, value.rules[i].enabled?1:0, connection);
                         } else {
                             await  common.updateRule(value.userId, value.rules[i], connection);
                             await  common.updateRule2Flow(value.rules[i].enabled?1:0, value.rules[i].id, flowId, connection);
@@ -396,6 +392,7 @@ const start = async(data, schema) => {
                         if (!ruleId) {
                             throw new Error('Rule ID Lost');
                         }
+                          await common.insertRule2Flow(ruleId, flowId, value.rules[i].enabled?1:0, connection);
                         value.rules[i].id = ruleId;
 
                         //PATH
@@ -404,8 +401,7 @@ const start = async(data, schema) => {
                                 let pathResult;
                                 if (!value.rules[i].paths[j].id) {
                                     pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
-                                    await common.insertPath2Rule(pathResult.insertId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
-
+                                
                                 } else {
                                     await common.updatePath(value.userId, value.rules[i].paths[j], connection);
                                     await common.updatePath2Rule(value.rules[i].paths[j].id, value.rules[i].id, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
@@ -415,6 +411,7 @@ const start = async(data, schema) => {
                                 if (!pathId) {
                                     throw new Error('Path ID Lost');
                                 }
+                                await common.insertPath2Rule(pathId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
                                 value.rules[i].paths[j].id = pathId;
 
                                 //Lander
@@ -423,7 +420,7 @@ const start = async(data, schema) => {
                                         let landerResult;
                                         if (!value.rules[i].paths[j].landers[k].id) {
                                             landerResult = await common.insertLander(value.userId, value.rules[i].paths[j].landers[k], connection);
-                                            await common.insertLander2Path(landerResult.insertId, pathId, value.rules[i].paths[j].landers[k].weight, connection);
+                                           
                                         } else {
                                             await common.updateLander(value.userId, value.rules[i].paths[j].landers[k], connection);
                                             await common.updateLander2Path(value.rules[i].paths[j].landers[k].id, pathId, value.rules[i].paths[j].landers[k].weight, connection);
@@ -433,6 +430,7 @@ const start = async(data, schema) => {
                                         if (!landerId) {
                                             throw new Error('Lander ID Lost');
                                         }
+                                        await common.insertLander2Path(landerId, pathId, value.rules[i].paths[j].landers[k].weight, connection);
                                         value.rules[i].paths[j].landers[k].id = landerId;
                                         //Lander tags
                                         //删除所有tags
@@ -458,19 +456,16 @@ const start = async(data, schema) => {
                                             let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
                                             value.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
                                             offerResult = await common.insertOffer(value.userId, value.idText, value.rules[i].paths[j].offers[z], connection);
-                                            await common.insertOffer2Path(offerResult.insertId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                         } else {
-
                                             await  common.updateOffer(value.userId, value.rules[i].paths[j].offers[z], connection);
-
                                             await  common.updateOffer2Path(value.rules[i].paths[j].offers[z].id, pathId, value.rules[i].paths[j].offers[z].weight, connection);
-
                                         }
-
+                                      
                                         let offerId = value.rules[i].paths[j].offers[z].id ? value.rules[i].paths[j].offers[z].id : (offerResult ? (offerResult.insertId ? offerResult.insertId : 0) : 0);
                                         if (!offerId) {
                                             throw new Error('Offer ID Lost');
                                         }
+                                        await common.insertOffer2Path(offerId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                         value.rules[i].paths[j].offers[z].id = offerId;
                                         //删除所有offer tags
                                         await common.updateTags(value.userId, offerId, 3, connection);
