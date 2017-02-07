@@ -115,18 +115,18 @@ app.get('/api/preferences', function (req, res) {
   var result = {
     "status": 1,
     "message": "",
-    data: JSON.stringify({
+    data: {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
       "reportViewOrder": "-visits",
       "reportTimeZone": "+08:00",
       /*
-      // todo: use array for visible columns
-      "reportVisibleColumns": [
-        "visits", "clicks", "impressions", "conversions", "revenue", "cost", "profit",
-        "cpv", "ictr", "ctr", "cr", "cv", "roi", "epv", "epc", "ap"
-      ],
-      */
+       // todo: use array for visible columns
+       "reportVisibleColumns": [
+       "visits", "clicks", "impressions", "conversions", "revenue", "cost", "profit",
+       "cpv", "ictr", "ctr", "cr", "cv", "roi", "epv", "epc", "ap"
+       ],
+       */
       "reportViewColumns": {
         "name": {
           "visible": true
@@ -255,7 +255,7 @@ app.get('/api/preferences', function (req, res) {
           "visible": false
         }
       }
-    })
+    }
   };
   result.data = JSON.stringify(result.data);
   delayResponse(res, result);
@@ -878,6 +878,7 @@ app.post('/api/flows', function (req, res) {
       "country": "us",
       "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
       "rules": [{
+        "id": 1,
         "name": "Default paths",
         "isDefault": true,
         "paths": [{
@@ -897,6 +898,7 @@ app.post('/api/flows', function (req, res) {
           }]
         }]
       }, {
+        "id": 2,
         "name": "the rule name",
         "isDefault": false,
         "enabled": true,   // is this rule enabled/disabled
@@ -969,6 +971,7 @@ app.post('/api/flows/:flowId', function (req, res) {
       "id": 3,
       "isDefault": true,
       "paths": [{
+        "id": 1,
         "name": "path name 1",
         "redirecMode": 0,
         "directLinking": false,
@@ -999,6 +1002,7 @@ app.post('/api/flows/:flowId', function (req, res) {
         "weekday": ["tue", "fri"]
       }],
       "paths": [{
+        "id": 1,
         "name": "path name 1",
         "redirecMode": 0,
         "directLinking": false,
@@ -1019,6 +1023,7 @@ app.post('/api/flows/:flowId', function (req, res) {
           "weight": 200
         }]
       }, {
+        "id": 2,
         "name": "path name 2",
         "redirecMode": 0,
         "directLinking": true,
