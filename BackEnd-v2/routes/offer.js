@@ -200,7 +200,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  * @apiName offers
  * @apiGroup offer
  *
- *
+ * @apiParam [country]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -211,6 +211,11 @@ router.get('/api/offers/:id', async function (req, res, next) {
 router.get('/api/offers', function (req, res, next) {
     // userId from jwt, don't need validation
     var sql = "select id, name from Offer where userId = " + req.userId;
+
+    if(req.query.country){
+        sql += " and `country`=" + req.query.country;
+    }
+
     pool.getConnection(function (err, connection) {
         if (err) {
             err.status = 303
