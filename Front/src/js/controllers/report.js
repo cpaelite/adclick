@@ -556,6 +556,19 @@
       }
     };
 
+    $scope.treeLiIsShow = true;
+    $scope.offersIsShow = true;
+    $scope.offersConIsShow = true;
+    $scope.firstTreeClick = function($event){
+      $scope.treeLiIsShow = !$scope.treeLiIsShow;
+    };
+    $scope.secondTreeClick = function($event){
+      $scope.offersIsShow = !$scope.offersIsShow;
+    };
+    $scope.thirdTreeClick = function($event){
+      $scope.offersConIsShow = !$scope.offersConIsShow;
+    };
+
     $scope.radioSelect = function (type) {
       $scope.radioTitle = type;
     };
@@ -835,8 +848,10 @@
 
     $scope.selectTrafficSourceTemplate = function (ev, item) {
       $mdDialog.show({
+        multiple: true,
+        skipHide: true,
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', selectTrafficSourceTemplateCtrl],
+        controller: ['$scope', '$mdDialog', trafficSourceTemplateCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: { item: item, currentUser: $scope.currentUser },
@@ -846,6 +861,37 @@
       });
     };
 
+  }
+
+  function trafficSourceTemplateCtrl($scope, $mdDialog) {
+
+    $scope.trafficTemplateLists = [
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+    ];
+    $scope.selected = 0;
+    $scope.templateListClick = function($index){
+      $scope.selected = $index;
+    };
+
+    this.hide = function() {
+      $mdDialog.hide();
+    };
+
+    this.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    this.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
   }
 
   function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
@@ -904,6 +950,49 @@
       }
     }
 
+    $scope.trustedAffiliateNetworks = function (ev, item) {
+      $mdDialog.show({
+        multiple: true,
+        skipHide: true,
+        clickOutsideToClose: false,
+        controller: ['$scope', '$mdDialog', affiliateNetworkCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: { item: item, currentUser: $scope.currentUser },
+        bindToController: true,
+        targetEvent: ev,
+        templateUrl: 'tpl/trusted-affiliate-networks-dialog.html',
+      });
+    };
+
+  }
+
+  function affiliateNetworkCtrl($scope, $mdDialog) {
+
+    $scope.trafficTemplateLists = [
+      "50onRed Intext",
+      "50onRed Intext",
+    ];
+    $scope.selected = 0;
+    $scope.panelIsShow = 0;
+    $scope.isDown = 0;
+    $scope.templateListClick = function($index){
+      $scope.selected = $index;
+      $scope.panelIsShow = $index;
+      $scope.isDown = $index;
+    };
+
+    this.hide = function() {
+      $mdDialog.hide();
+    };
+
+    this.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    this.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
   }
 
   function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {

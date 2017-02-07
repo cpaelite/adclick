@@ -35,4 +35,7 @@ angular.module('app')
   .factory('Country', ['$resource', function ($resource) {
     return $resource('/api/countries', {}, {'query':  {method:'GET', isArray:true}});
   }])
+  .factory('User', ['$resource', function($resource) {
+    return $resource('/api/set/user/:id', {id: '@id'})
+  }])
 ;

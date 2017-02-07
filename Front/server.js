@@ -1570,6 +1570,23 @@ app.get('/api/conditions', function (req, res) {
   delayResponse(res, result);
 });
 
+app.get('/api/set/user/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      firstname: 'test',
+      lastname:'test',
+      companyname: 'zheng',
+      tel: 13120663670,
+      timezone:'1',
+      homescreen:'Dashboard',
+      visitconversion:'Visit'
+    }
+  };
+  res.send(result);
+});
+
 /**
  * get list of countries
  * shang@v1 [warren, modified]
