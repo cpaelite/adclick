@@ -162,7 +162,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
 
         let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +   
             "left join `Rule` r on r.`id` = f2.`ruleId`  " +
             "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
             "left join `Path` p on p.`id` = r2.`pathId` " +
@@ -172,7 +172,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
-
+      console.log(ruleSql);
 
         connection = await common.getConnection();
         let PromiseResult = await  Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);

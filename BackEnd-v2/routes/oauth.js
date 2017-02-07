@@ -59,7 +59,7 @@ router.post('/auth/login', function (req, res, next) {
                              firstname: rows[0].firstname
                              }
                              })*/
-                            res.json({token: util.setToken(rows[0].id, expires, rows[0].firstname)});
+                            res.json({token: util.setToken(rows[0].id, expires, rows[0].firstname,rows[0].idText)});
                         } else {
                             res.json({
                                 status: 1002,
