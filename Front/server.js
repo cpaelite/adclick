@@ -115,18 +115,18 @@ app.get('/api/preferences', function (req, res) {
   var result = {
     "status": 1,
     "message": "",
-    data: JSON.stringify({
+    data: {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
       "reportViewOrder": "-visits",
       "reportTimeZone": "+08:00",
       /*
-      // todo: use array for visible columns
-      "reportVisibleColumns": [
-        "visits", "clicks", "impressions", "conversions", "revenue", "cost", "profit",
-        "cpv", "ictr", "ctr", "cr", "cv", "roi", "epv", "epc", "ap"
-      ],
-      */
+       // todo: use array for visible columns
+       "reportVisibleColumns": [
+       "visits", "clicks", "impressions", "conversions", "revenue", "cost", "profit",
+       "cpv", "ictr", "ctr", "cr", "cv", "roi", "epv", "epc", "ap"
+       ],
+       */
       "reportViewColumns": {
         "name": {
           "visible": true
@@ -255,7 +255,7 @@ app.get('/api/preferences', function (req, res) {
           "visible": false
         }
       }
-    })
+    }
   };
   result.data = JSON.stringify(result.data);
   delayResponse(res, result);

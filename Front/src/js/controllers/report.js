@@ -823,6 +823,64 @@
       $scope.visible = !$scope.visible;
     };
 
+    $scope.$watch('item.externalId.Parameter', function (newValue, oldValue) {
+      if(!newValue) {
+        $scope.item.externalId = {
+          Placeholder: null
+        };
+        return;
+      }
+      var placeholder = $scope.item.externalId.Placeholder;
+      if (placeholder) {
+        placeholder = placeholder.substring(1, placeholder.length - 1);
+      }
+      if (placeholder == oldValue) {
+        $scope.item.externalId.Placeholder = '{' + newValue + '}';
+      }
+    });
+
+    $scope.$watch('item.cost.Parameter', function (newValue, oldValue) {
+      if (!newValue){
+        $scope.item.cost = {
+          Placeholder: null
+        };
+        return;
+      }
+
+      var placeholder = $scope.item.cost.Placeholder;
+      if (placeholder) {
+        placeholder = placeholder.substring(1, placeholder.length - 1);
+      }
+      if (placeholder == oldValue) {
+        $scope.item.cost.Placeholder = '{' + newValue + '}';
+      }
+    });
+
+    $scope.$watch('item.params', function (newValue, oldValue) {
+      newValue.forEach(function (value, index) {
+        if (!value.Parameter) {
+          $scope.item.params[index].Placeholder = "";
+          $scope.item.params[index].Name = "";
+          return;
+        }
+
+        var placeholder = value.Placeholder;
+        var name = value.Name;
+        if (placeholder) {
+          placeholder = placeholder.substring(1, placeholder.length - 1);
+        }
+
+        if (placeholder == oldValue[index].Parameter) {
+          $scope.item.params[index].Placeholder = '{' + newValue[index].Parameter + '}';
+        }
+
+        if (name == oldValue[index].Parameter) {
+          $scope.item.params[index].Name = newValue[index].Parameter;
+        }
+
+      });
+    }, true);
+
     $scope.selectTrafficSourceTemplate = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: false,
