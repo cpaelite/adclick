@@ -2,8 +2,8 @@ package blacklist
 
 import (
 	"AdClickTool/Service/db"
-	"AdClickTool/Service/ipcmp"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/util/ipcmp"
 	"database/sql"
 	"encoding/json"
 	"strings"

@@ -1,7 +1,7 @@
 package blacklist
 
 import (
-	"AdClickTool/Service/ipcmp"
+	"AdClickTool/Service/util/ipcmp"
 	"testing"
 )
 
