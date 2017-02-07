@@ -5,7 +5,7 @@
 package useragent
 
 import (
-	"fmt"
+	//"fmt"
 	"strings"
 )
 
@@ -337,8 +337,8 @@ func (p *UserAgent) detectOS(s section) {
 		if p.platform == "Windows" && len(s.comment) > 0 {
 			p.os = normalizeOS(s.comment[0])
 		}
-		fmt.Printf("s:%#+v\n", s)
-		fmt.Printf("p:%+v\n", *p)
+		//fmt.Printf("s:%#+v\n", s)
+		//fmt.Printf("p:%+v\n", *p)
 
 		// And finally get the OS depending on the engine.
 		switch p.browser.Engine {
@@ -354,14 +354,14 @@ func (p *UserAgent) detectOS(s section) {
 			trident(p, s.comment)
 		}
 	} else if s.name == "Opera" { // Opera
-		fmt.Printf("Opera s:%#+v\n", s)
-		fmt.Printf("Opera p:%+v\n", *p)
+		//fmt.Printf("Opera s:%#+v\n", s)
+		//fmt.Printf("Opera p:%+v\n", *p)
 		if len(s.comment) > 0 {
 			opera(p, s.comment)
 		}
 	} else if s.name == "Dalvik" { // Android VM
-		fmt.Printf("s:%#+v\n", s)
-		fmt.Printf("p:%+v\n", *p)
+		//fmt.Printf("s:%#+v\n", s)
+		//fmt.Printf("p:%+v\n", *p)
 		p.devicetype = DeviceMobile
 		if len(s.comment) > 0 {
 			dalvik(p, s.comment)

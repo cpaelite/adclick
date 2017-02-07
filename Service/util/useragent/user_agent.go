@@ -9,7 +9,7 @@
 package useragent
 
 import (
-	"fmt"
+	//"fmt"
 	"strings"
 )
 
@@ -164,8 +164,8 @@ func (p *UserAgent) Parse(ua string) {
 		p.detectOS(sections[0])
 
 		if p.undecided {
-			fmt.Printf("ua:%s\n", ua)
-			fmt.Printf("sections:%+v\n", sections)
+			//fmt.Printf("ua:%s\n", ua)
+			//fmt.Printf("sections:%+v\n", sections)
 			p.checkBot(sections)
 		}
 	}
