@@ -22,6 +22,25 @@ type AffiliateNetworkConfig struct {
 	IpWhiteList       []string
 }
 
+func (c *AffiliateNetworkConfig) OnlyAcceptFromWhiteList() bool {
+	return len(c.IpWhiteList) != 0
+}
+
+// Allow 返回是否接受这个ip的postback请求
+func (c *AffiliateNetworkConfig) Allow(ip string) bool {
+	if !c.OnlyAcceptFromWhiteList() {
+		return true
+	}
+
+	for _, whiteIP := range c.IpWhiteList {
+		if whiteIP == ip {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (c AffiliateNetworkConfig) String() string {
 	return fmt.Sprintf("affiliateNetwork %d:%d", c.Id, c.UserId)
 }
