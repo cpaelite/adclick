@@ -1,6 +1,7 @@
 package units
 
 import (
+	"AdClickTool/Service/db"
 	"fmt"
 	"html"
 	"net/http"
@@ -11,10 +12,12 @@ import (
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/units/affiliate"
 	"AdClickTool/Service/units/blacklist"
 	"AdClickTool/Service/units/campaign"
 	"AdClickTool/Service/units/offer"
 	"AdClickTool/Service/units/user"
+	"strings"
 )
 
 func Init() (err error) {
@@ -295,6 +298,15 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// parseIP 从192.168.0.155:61233解析出192.168.0.155
+func parseIP(remoteAddr string) string {
+	pos := strings.Index(remoteAddr, ":")
+	if pos == -1 {
+		return remoteAddr
+	}
+	return remoteAddr[:pos]
+}
+
 func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	if !started {
 		w.WriteHeader(http.StatusBadRequest)
@@ -328,6 +340,55 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 
 	if req.OfferId() == 0 {
 		log.Errorf("[Units][OnS2SPostback] req:%v have no OfferId", req)
+		return
+	}
+
+	isFirstCallback := func() bool {
+		o := offer.GetOffer(req.OfferId())
+		if o == nil {
+			log.Errorf("GetOffer:%v failed clickId:%v", req.OfferId(), clickId)
+			return true
+		}
+
+		aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId)
+		if aff == nil {
+			log.Errorf("GetAffiliateNetwork:%v failed clickId:%v", o.AffiliateNetworkId, clickId)
+			return true
+		}
+
+		if aff.DuplicatePostback != 0 {
+			// 允许多次callback
+			return true
+		}
+
+		ip := parseIP(r.RemoteAddr)
+		if !aff.Allow(ip) {
+			log.Warnf("AffiliateNetworkId:%v blocked postback from:%v by it's white-listed IPs clickId:%v",
+				o.AffiliateNetworkId, r.RemoteAddr, clickId)
+			return false
+		}
+
+		// 一天时间
+		svr := db.GetRedisClient(request.CacheSvrTitle)
+		k := fmt.Sprintf("postback:%s:tx:%s", clickId, txId)
+		v := time.Now().Unix()
+		cmd := svr.SetNX(k, v, 24*time.Hour)
+		if cmd.Err() != nil {
+			log.Errorf("[units][OnS2SPostback] SetNX k:%v v:%v failed:%v", k, v, cmd.Err())
+			return true
+		}
+
+		if cmd.Val() {
+			// 首次postback
+			log.Warnf("firsttime postback:k:%v v:%v", k, v)
+			return true
+		}
+
+		log.Warnf("Duplicate postback denied: clickId:%v txId:%v", clickId, txId)
+		return false
+	}()
+
+	if !isFirstCallback {
 		return
 	}
 

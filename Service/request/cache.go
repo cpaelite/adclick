@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const cacheSvrTitle = "REQCACHE"
+const CacheSvrTitle = "REQCACHE"
 
 var mu sync.RWMutex // protects the following
 var reqCache = make(map[string]string)
@@ -66,9 +66,9 @@ func setReqCache(req *reqbase, expire time.Duration) (err error) {
 	switch strategy {
 	case 1: //方案1：使用中心Cache服务器。
 		{
-			svr := db.GetRedisClient(cacheSvrTitle)
+			svr := db.GetRedisClient(CacheSvrTitle)
 			if svr == nil {
-				return fmt.Errorf("[setReqCache]%s redis client does not exist", cacheSvrTitle)
+				return fmt.Errorf("[setReqCache]%s redis client does not exist", CacheSvrTitle)
 			}
 			v := req2cacheStr(req)
 			err = svr.Set(req.Id(), v, expire).Err()
@@ -87,9 +87,9 @@ func getReqCache(reqId string) (req *reqbase, err error) {
 	switch strategy {
 	case 1: //方案1：使用中心Cache服务器。
 		{
-			svr := db.GetRedisClient(cacheSvrTitle)
+			svr := db.GetRedisClient(CacheSvrTitle)
 			if svr == nil {
-				return nil, fmt.Errorf("[getReqCache]%s redis client does not exist", cacheSvrTitle)
+				return nil, fmt.Errorf("[getReqCache]%s redis client does not exist", CacheSvrTitle)
 			}
 			cmd := svr.Get(reqId)
 			req = cacheStr2Req(cmd.Val())
@@ -107,9 +107,9 @@ func delReqCache(token string) {
 	switch strategy {
 	case 1: //方案1：使用中心Cache服务器。
 		{
-			svr := db.GetRedisClient(cacheSvrTitle)
+			svr := db.GetRedisClient(CacheSvrTitle)
 			if svr == nil {
-				log.Errorf("[getReqCache]%s redis client does not exist\n", cacheSvrTitle)
+				log.Errorf("[getReqCache]%s redis client does not exist\n", CacheSvrTitle)
 			}
 			if err := svr.Del(token).Err(); err != nil {
 				log.Errorf("[delReqCache]delReqCache token(%s) with err(%s)\n", token, err.Error())
