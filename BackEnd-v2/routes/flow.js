@@ -144,7 +144,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
             "left join `Path` p on p.`id` = r2.`pathId` " +
             "where f2.`deleted`= 0 and r.`deleted` = 0  " +
-            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
+            "and r2.`deleted`= 0 and p.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
@@ -155,8 +155,8 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "left join `Path` p on p.`id` = r2.`pathId` " +
             "left join `Lander2Path` p2 on p2.`pathId` = p.`id`  " +
             "left join `Lander` l on l.`id`= p2.`landerId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  " +
-            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
+            "where    f2.`deleted`= 0 and r.`deleted` = 0  " +
+            "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
@@ -168,8 +168,8 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "left join `Path` p on p.`id` = r2.`pathId` " +
             "left join `Offer2Path` p2 on p2.`pathId` = p.`id`  " +
             "left join `Offer` l on l.`id`= p2.`offerId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  " +
-            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
+            "where  f2.`deleted`= 0 and r.`deleted` = 0  " +
+            "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
@@ -177,47 +177,51 @@ router.get('/api/flows/:id', async function (req, res, next) {
         connection = await common.getConnection();
         let PromiseResult = await  Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);
 
+        let flowResult=PromiseResult[0];
+        let ruleResult=PromiseResult[1];
+        let pathResult=PromiseResult[2];
+        let landerResult=PromiseResult[3];
+        let offerResult=PromiseResult[4];
+
         if (PromiseResult.length) {
             //flow
-            if (PromiseResult[0].length) {
-                Object.assign(Result, PromiseResult[0][0]);
+            if (flowResult.length) {
+                Object.assign(Result, flowResult[0]);
             }
-            console.info(PromiseResult[1])
-            if (PromiseResult[1].length) {
-                for (let i = 0; i < PromiseResult[1].length; i++) {
+          
+            if (ruleResult.length) {
+                for (let i = 0; i < ruleResult.length; i++) {
                     //Rule
-                    if (PromiseResult[1][i].parentId == Result.id) {
-                        Result.rules[i] = {};
-                        Result.rules[i].paths = [];
-                        delete PromiseResult[1][i].parentId;
-                        Object.assign(Result.rules[i], PromiseResult[1][i])
-                        for (let j = 0; j < PromiseResult[2].length; j++) {
+                    if (ruleResult[i].parentId == Result.id) {
+                        ruleResult[i].paths = [];
+                        delete ruleResult[i].parentId;
+                        Result.rules.push(ruleResult[i])
+                        
+                        for (let j = 0; j < pathResult.length; j++) {
                             //path
-                            if (PromiseResult[2][j].parentId == PromiseResult[1][i].id) {
-                                Result.rules[i].paths[j] = {};
-                                Result.rules[i].paths[j].offers = [];
-                                Result.rules[i].paths[j].landers = [];
-                                delete PromiseResult[2][j].parentId
-                                //Result.rules[i].paths.push(PromiseResult[2][j]);
-                                Object.assign(Result.rules[i].paths[j], PromiseResult[2][j]);
+                            if (pathResult[j].parentId == ruleResult[i].id) {
+                                pathResult[j].offers = [];
+                                pathResult[j].landers = [];
+                                delete pathResult[j].parentId;
+                                Result.rules[i].paths.push(pathResult[j]);
+                                
 
                                 //lander
-                                for (let k = 0; k < PromiseResult[3].length; k++) {
-                                    if (PromiseResult[3][k].parentId == PromiseResult[2][j].id) {
-                                        Result.rules[i].paths[j].landers[k] = {};
-                                        delete PromiseResult[3][k].parentId;
-                                        //Result.rules[i].paths[j].landers.push(PromiseResult[3][k])
-                                        Object.assign(Result.rules[i].paths[j].landers[k], PromiseResult[3][k])
+                                for (let k = 0; k < landerResult.length; k++) {
+                                    if (landerResult[k].parentId == pathResult[j].id) {
+                                        delete landerResult[k].parentId;
+                                        Result.rules[i].paths[j].landers.push(landerResult[k])
+                                         
                                     }
                                 }
 
                                 //offer
-                                for (let m = 0; m < PromiseResult[4].length; m++) {
-                                    if (PromiseResult[4][m].parentId == PromiseResult[2][j].id) {
-                                        Result.rules[i].paths[j].offers[m] = {};
-                                        delete PromiseResult[4][m].parentId;
-                                        //Result.rules[i].paths[j].offers.push(PromiseResult[4][m])
-                                        Object.assign(Result.rules[i].paths[j].offers[m], PromiseResult[4][m])
+                                for (let m = 0; m < offerResult.length; m++) {
+                                    if (offerResult[m].parentId == pathResult[j].id) {
+                                        
+                                        delete offerResult[m].parentId;
+                                        Result.rules[i].paths[j].offers.push(offerResult[m])
+                                         
                                     }
                                 }
 
@@ -228,7 +232,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
                 }
             }
         }
-
+        
         res.json({
             status: 1,
             message: 'success',
