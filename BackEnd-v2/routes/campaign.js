@@ -586,21 +586,24 @@ router.get('/api/campaigns/:id', async function (req, res, next) {
  * @api {delete} /api/campaigns/:id   delete campaign
  * @apiName  delete campaign
  * @apiGroup campaign
+ * @apiParam hash 
+ * @apiParam name
+ * 
  */
 router.delete('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        hash:Joi.string().required(),
+        name:Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
     let connection;
-
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(value.id, value.userId, connection);
-        // connection.release();
+        let result = await common.deleteCampaign(value.id, value.userId,value.hash,value.name ,connection);
         res.json({
             status: 1,
             message: 'success'

@@ -230,7 +230,12 @@ function updateCampaign(value, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[value.userId,1,value.name,value.hash,2],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(result);  
+           });
         });
     })
 }
@@ -260,15 +265,20 @@ function getCampaign(id, userId, connection) {
     })
 }
 
-function deleteCampaign(id, userId, connection) {
+function deleteCampaign(id, userId, hash,name,connection) {
     var sqlCampaign = "update TrackingCampaign set `deleted`= 1"
-    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId
+    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
         connection.query(sqlCampaign, function (err, result) {
             if (err) {
                 reject(err);
             }
-            resolve(1);
+           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,1,name,hash,3],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(1);  
+           });
         });
     })
 }
