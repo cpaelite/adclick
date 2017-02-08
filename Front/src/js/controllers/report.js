@@ -350,7 +350,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$mdDialog', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
         var flowId = "";
@@ -415,6 +415,9 @@
     $scope.checkboxIsChecked = function (num) {
       $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
     };
+    $scope.checkboxInput = function($event){
+      $event.stopPropagation();
+    };
     $scope.viewCloumnClose = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };
@@ -462,11 +465,50 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource, urlParameter) {
+  function editCampaignCtrl($scope, $mdDialog, $q, Campaign, Flow, TrafficSource, urlParameter) {
     $scope.tags = [];
+
+    // init load data
+    var initPromises = [], prms;
     if (this.item) {
-      Campaign.get({id: this.item.data.campaignId}, function(campaign) {
-        $scope.item = angular.copy(campaign.data);
+      var theCampaign;
+      prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
+        theCampaign = campaign.data;
+      }).$promise;
+      initPromises.push(prms);
+
+      this.title = "edit";
+    } else {
+      $scope.item = defaultItem();
+      this.title = "add";
+    }
+
+    this.titleType = angular.copy(this.perfType);
+
+    // TrafficSource
+    var allTraffic;
+    prms = TrafficSource.get(null, function (trafficSource) {
+      //$scope.trafficSources = trafficSource.data.trafficsources;
+      allTraffic = trafficSource.data.trafficsources;
+    }).$promise;
+    initPromises.push(prms);
+
+    // Country
+    $scope.countries = $scope.$root.countries;
+
+    // Flow
+    var allFlow;
+    prms = Flow.get(null, function (flow) {
+      //$scope.flows = flow.data.flows;
+      allFlow = flow.data.flows;
+    }).$promise;
+    initPromises.push(prms);
+
+    function initSuccess() {
+      $scope.trafficSources = allTraffic;
+      $scope.flows = allFlow;
+      if (theCampaign) {
+        $scope.item = theCampaign;
         if ($scope.item.costModel == 1) {
           $scope.radioTitle = 'CPC';
           $scope.costModelValue = $scope.item.cpcValue;
@@ -487,31 +529,31 @@
         if ($scope.item['costModel'] == null) {
           $scope.item = defaultItem();
         }
-      });
-      this.title = "edit";
-    } else {
-      $scope.item = defaultItem();
-      this.title = "add";
+      } else {
+        $scope.trafficSourceId = allTraffic[0].id;
+      }
     }
 
-    this.titleType = angular.copy(this.perfType);
+    $q.all(initPromises).then(initSuccess);
 
-    // TrafficSource
-    TrafficSource.get(null, function (trafficSource) {
-      $scope.trafficSources = trafficSource.data.trafficsources;
-    });
-
-    // Country
-    $scope.countries = $scope.$root.countries;
-
-    // Flow
-    Flow.get(null, function (flow) {
-      $scope.flows = flow.data.flows;
+    $scope.$watch('trafficSourceId', function (newValue, oldValue) {
+      if (newValue != oldValue) {
+        $scope.trafficSources.forEach(function (traffic) {
+          if (newValue == traffic.id) {
+            $scope.impPixelUrl = traffic.impTracking;
+          }
+        });
+      }
     });
 
     $scope.toAddFlow = function () {
       $mdDialog.hide();
       $state.go('app.flow');
+    };
+
+    $scope.toEditFlow = function () {
+      $mdDialog.hide();
+      $scope.$state.go('app.flow', {id: $scope.item.flow.id});
     };
 
     this.cancel = $mdDialog.cancel;
@@ -583,6 +625,19 @@
         $scope.ztreeShow = !$scope.ztreeShow;
         $scope.isActive1 = !$scope.isActive1;
       }
+    };
+
+    $scope.treeLiIsShow = true;
+    $scope.offersIsShow = true;
+    $scope.offersConIsShow = true;
+    $scope.firstTreeClick = function($event){
+      $scope.treeLiIsShow = !$scope.treeLiIsShow;
+    };
+    $scope.secondTreeClick = function($event){
+      $scope.offersIsShow = !$scope.offersIsShow;
+    };
+    $scope.thirdTreeClick = function($event){
+      $scope.offersConIsShow = !$scope.offersConIsShow;
     };
 
     $scope.radioSelect = function (type) {
@@ -883,8 +938,10 @@
 
     $scope.selectTrafficSourceTemplate = function (ev, item) {
       $mdDialog.show({
+        multiple: true,
+        skipHide: true,
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', selectTrafficSourceTemplateCtrl],
+        controller: ['$scope', '$mdDialog', trafficSourceTemplateCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: { item: item, currentUser: $scope.currentUser },
@@ -894,6 +951,37 @@
       });
     };
 
+  }
+
+  function trafficSourceTemplateCtrl($scope, $mdDialog) {
+
+    $scope.trafficTemplateLists = [
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+      "50onRed Intext",
+    ];
+    $scope.selected = 0;
+    $scope.templateListClick = function($index){
+      $scope.selected = $index;
+    };
+
+    this.hide = function() {
+      $mdDialog.hide();
+    };
+
+    this.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    this.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
   }
 
   function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
@@ -962,6 +1050,49 @@
       }
     }
 
+    $scope.trustedAffiliateNetworks = function (ev, item) {
+      $mdDialog.show({
+        multiple: true,
+        skipHide: true,
+        clickOutsideToClose: false,
+        controller: ['$scope', '$mdDialog', affiliateNetworkCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: { item: item, currentUser: $scope.currentUser },
+        bindToController: true,
+        targetEvent: ev,
+        templateUrl: 'tpl/trusted-affiliate-networks-dialog.html',
+      });
+    };
+
+  }
+
+  function affiliateNetworkCtrl($scope, $mdDialog) {
+
+    $scope.trafficTemplateLists = [
+      "50onRed Intext",
+      "50onRed Intext",
+    ];
+    $scope.selected = 0;
+    $scope.panelIsShow = 0;
+    $scope.isDown = 0;
+    $scope.templateListClick = function($index){
+      $scope.selected = $index;
+      $scope.panelIsShow = $index;
+      $scope.isDown = $index;
+    };
+
+    this.hide = function() {
+      $mdDialog.hide();
+    };
+
+    this.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    this.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
   }
 
   function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {

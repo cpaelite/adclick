@@ -11,7 +11,7 @@
             <div class="form-group traffic-source">
                 <label class="col-sm-3 control-label"></label>
                 <div class="col-sm-5">
-                    <md-button class="traffic-source-templates" ng-click="selectTrafficSourceTemplate($event)">
+                    <md-button class="md-primary traffic-source-templates" ng-click="selectTrafficSourceTemplate($event)">
                         {{'Traffic source templates' | translate}}
                     </md-button>
                 </div>
@@ -53,7 +53,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Impression tracking：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-5 tracking-checkbox">
                     <input type="checkbox" class="form-control" ng-model="item.impTracking" ng-true-value="1" ng-false-value="0" ng-init="0">
                 </div>
             </div>

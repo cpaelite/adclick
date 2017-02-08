@@ -95,14 +95,17 @@
             <div class="view_column_con" ng-show="viewColumnIsShow">
                 <ul class="view_column_list">
                     <li ng-repeat="item in columns" ng-click="checkboxIsChecked(item.key)">
-                      <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible">{{item.name}}
+                      <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible" ng-click="checkboxInput($event)">{{item.name}}
                     </li>
                 </ul>
-                <i class="material-icons btn-icon" ng-click="applyChange()">done</i>
-                <md-button class="md-raised md-primary cs-compact cs-add-button">{{'apply changes' | translate}}
+                <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applyChange()">
+                    <i class="material-icons btn-icon">done</i>
+                    {{'apply changes' | translate}}
                 </md-button>
-                <i class="material-icons btn-icon close-icon" ng-click="viewCloumnClose()">close</i>
-                <md-button class="md-raised md-primary cs-compact cs-add-button close-btn">{{'close' | translate}}
+                
+                <md-button class="md-raised md-primary cs-compact cs-add-button"  ng-click="viewCloumnClose()">
+                    <i class="material-icons btn-icon close-icon">close</i>
+                    {{'close' | translate}}
                 </md-button>
             </div>
         </div>
@@ -156,7 +159,7 @@
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell ng-show="preferences.reportViewColumns[columns[0].key].visible">Total</td>
                 <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">{{report.totals[column.key]}}</td>
-                <td md-cell></td>
+                <!-- <td md-cell></td> -->
               </tr>
             </tfoot>
         </table>

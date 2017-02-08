@@ -5,7 +5,7 @@
         </div>
     </md-toolbar>
 
-    <md-dialog-content class="md-dialog-content">
+    <md-dialog-content class="md-dialog-content edit-page">
 
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
@@ -24,7 +24,7 @@
                     <label ng-show="!item.url">ID will be available after saving the campaign.</label>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" ng-show="impPixelUrl==1">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
                     <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl" ng-disabled="true">
@@ -166,7 +166,7 @@
                             <i class="material-icons">add</i>
                             Create new flow
                         </li>
-                        <li class="edit-flow" ng-show="item.flow">
+                        <li class="edit-flow" ng-show="item.flow" ng-click="toEditFlow()">
                             <i class="material-icons">edit</i>
                             Edit flow
                         </li>
@@ -207,10 +207,65 @@
                 </div>
             </div>
 
-            <div class="form-group" ng-show="ztreeShow">
-                <div class="col-sm-3">
-                    <ul tree class="ztree" ng-model="selectNode"></ul>
+            <div class="form-group flow-preview" ng-show="ztreeShow">
+              <div class="col-md-7">
+                <div class="cs-flow-rule">
+                  <div class="tree-li">
+                    <i class="material-icons tree-icon">album</i>
+                    <span class="cs-flow-name ng-binding">new flow</span>
+                  </div>
                 </div>
+                <div class="cs-flow-rule">
+                  <div class="tree-li cs-rule-default" ng-click="firstTreeClick($event)">
+                    <span>
+                      <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
+                      <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
+                    </span>
+                    <span class="cs-path-name">
+                      <i class="material-icons tree-icon">album</i>
+                      <span class="cs-rule-name ng-binding">Default paths</span>
+                    </span>
+                  </div>
+                  <ul ng-show="treeLiIsShow">
+                    <li class="tree-li ng-scope" ng-click="secondTreeClick($event)">
+                      <span>
+                        <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
+                        <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
+                      </span>
+                      <i class="material-icons tree-icon">album</i>
+                      <span class="cs-path-name clearfix">
+                        <span class="path-name ng-binding">Path 1 </span>
+                        <span class="weight-num ng-binding">
+                          100<em class="ng-binding" aria-hidden="false">(100.00%)</em><em class="ng-hide">(N/A)</em>)
+                        </span>
+                      </span>
+                    </li>
+                    <div ng-show="offersIsShow">
+                      <li class="tree-li third-tree-li ng-scope" ng-click="thirdTreeClick($event)">
+                        <span>
+                          <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
+                          <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
+                        </span>
+                        <i class="material-icons tree-icon">album</i>
+                        <span class="cs-path-name clearfix">
+                          <span class="path-name ng-binding">Offers</span>
+                        </span>
+                      </li>
+                      <div ng-show="offersConIsShow">
+                        <li class="tree-li fourth-tree-li ng-scope">
+                          <i class="material-icons tree-icon">album</i>
+                          <span class="cs-path-name clearfix">
+                            <span class="path-name ng-binding">Avazu Private Exchange - Global - TTTT</span>
+                            <span class="weight-num ng-binding">
+                              100<em class="ng-binding" aria-hidden="false">(100.00%)</em><em class="ng-hide">(N/A)</em>)
+                            </span>
+                          </span>
+                        </li>
+                      </div>
+                    </div>
+                  </ul>
+                </div>
+              </div>
             </div>
 
         </form>

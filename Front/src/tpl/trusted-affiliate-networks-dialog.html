@@ -1,0 +1,60 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 class="md-title">{{ctrl.title | translate}}</h2>
+    </div>
+  </md-toolbar>
+  <md-dialog-content class="md-dialog-content second-dailog">
+    <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+      <ul class="traffic-source-template-list">
+        <li ng-repeat="list in trafficTemplateLists track by $index" ng-click="templateListClick($index)">
+          <div class="panel-list">
+            <input type="radio" class="ng-pristine ng-untouched ng-valid ng-not-empty" name="radio" value={{$index}}
+            ng-checked="selected == $index" >
+            {{ list }}
+            <i class="material-icons" ng-class="{'arrowDown':isDown == $index}">expand_less</i>
+          </div>
+          <div class="panel-body" ng-show="panelIsShow == $index">
+            <div class="affiliate-network-description">
+              <p><strong>MUNDOmedia</strong> is the worlds leading digital performance-based network, specializing in Mobile Content, Application Installs and Toolbars. Founded in 2009, the company has grown from start-up roots to become an internationally-renowned pioneer in the mobile marketing space. Headquartered in Toronto, MUNDOmedia employs a team of over 200 professionals in 5 countries, relying on unparalleled expertise, cutting edge proprietary technology and top-notch customer service to deliver ROI-driven solutions for over 2,000 advertisers and close to 30,000 publishers worldwide</p>
+              <div class="lists pull-left full-width">
+                <div class="block list pull-left">
+                  <div class="header">Specialized verticals:         </div>
+                  <ul>
+                    <li>Mobile Content (PIN submits, Phone Submits, Mobile Subscription)</li>
+                    <li>Application Installs</li>
+                    <li>Toolbars</li>
+                    <li>Pay Per Call</li>
+                    <li>Mobile/Web Gaming</li>
+                    <li>Cost Per Sale (Diet, Skin, Biz-Op)</li>
+                    <li>Dating</li>
+                  </ul>
+                </div>
+                <div class="block list pull-left">
+                  <div class="header">Perks:</div>
+                  <ul>
+                    <li>Attentive and Knowledgeable Affiliate Management Team</li>
+                    <li>Exclusive In-House Developed Offers</li>
+                    <li>Variety of International Payment Options</li>
+                    <li>Proprietary Technology Solutions</li>
+                    <li>Annual Meet-Ups, Contests and Bonuses</li>
+                    <li>Leading Loyalty Program</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="pull-left full-width">Don't have an account with MundoMedia?
+                <a href="http://mundomedia.com/publisher-signup" target="_blank" class="sign-up-btn orange">Sign up here</a>
+              </p>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </form>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+    </md-button>
+    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+  </md-dialog-actions>
+</md-dialog>

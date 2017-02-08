@@ -1,57 +1,81 @@
 <h1 class="setting-title">Your account data</h1>
 
 <div class="form-column profile-content">
-  <div class="basic-form clearfix">
-    <div class="col-md-6">
-      <div class="form-group">
-        <label>First name</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
+  <form name="form" class="account-form">
+    <div class="basic-form clearfix">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>First name</label>
+          <input type="text" name="firstname" class="form-control" ng-model="item.firstname" required>
+          <span style="color:red" ng-show="form.firstname.$dirty && form.firstname.$invalid">
+          <span ng-show="form.firstname.$error.required">FirstName is required.</span>
+        </div>
+        <div class="form-group">
+          <label>Company name</label>
+          <input type="text" name="companyname" class="form-control" ng-model="item.companyname" required>
+          <span style="color:red" ng-show="form.companyname.$dirty && form.companyname.$invalid">
+          <span ng-show="form.companyname.$error.required">CompanyName is required.</span>
+          </span>
+        </div>
+        <div class="form-group">
+          <label>Default time zone</label>
+          <md-select class="cs-subform-select" ng-model="item.timezone" required>
+            <md-option value="1">(UTC-12:00) International Date Line West</md-option>
+            <md-option value="2">(UTC-11:00) Coordinated Universal Time-11</md-option>
+            <md-option value="3">(UTC-10:00) Hawaii</md-option>
+          </md-select>
+        </div>
+        <div class="form-group clearfix">
+          <label>Default home screen</label>
+          <div class="campaign-radio">
+            <label class="radio-inline">
+              <input type="radio" ng-model="item.homescreen" value="Dashboard" selected>Dashboard
+            </label>
+            <label class="radio-inline">
+              <input type="radio" ng-model="item.homescreen" value="Campaign list">Campaign list
+            </label>
+          </div>
+        </div>
+        <div class="form-group clearfix">
+          <label>Conversion registration time reporting</label>
+          <div class="campaign-radio">
+            <label class="radio-inline">
+              <input type="radio" ng-model="item.visitconversion" value="Visit" selected>Visit
+            </label>
+            <label class="radio-inline">
+              <input type="radio" ng-model="item.visitconversion" value="Conversion">Conversion
+            </label>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Company name</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
-      </div>
-      <div class="form-group">
-        <label>Default time zone</label>
-        <md-select class="cs-subform-select" ng-model="item.country" required>
-          <md-option value="1">(UTC-12:00) International Date Line West</md-option>
-          <md-option value="2">(UTC-11:00) Coordinated Universal Time-11</md-option>
-          <md-option value="3">(UTC-10:00) Hawaii</md-option>
-        </md-select>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="form-group">
-        <label>Last name</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="number" class="form-control" ng-model="item.name" required>
-      </div>
-      <div class="form-group clearfix">
-        <label>Default home screen</label>
-        <div class="campaign-radio">
-          <label class="radio-inline">
-            <input type="radio" ng-model="item.costModel" value="Dashboard" selected>Dashboard
-          </label>
-          <label class="radio-inline">
-            <input type="radio" ng-model="item.costModel" value="Campaign list">Campaign list
-          </label>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Last name</label>
+          <input type="text" name="lastname" class="form-control" ng-model="item.lastname" required>
+          <span style="color:red" ng-show="form.lastname.$dirty && form.lastname.$invalid">
+          <span ng-show="form.lastname.$error.required">LastName is required.</span>
+          </span>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" name="tel" class="form-control" ng-model="item.tel" maxlength="11" minlength="11" required>
+          <span style="color:red" ng-show="form.lastname.$dirty && form.lastname.$invalid">
+          <span ng-show="form.lastname.$error.required">Tel is required.</span>
+          </span>
         </div>
       </div>
     </div>
-  </div>
-  <div class="profile-form-footer clearfix">
-    <div class="save-btn">
-      <i class="material-icons save-btn-icon">done</i>
-      save
+    <div class="profile-form-footer clearfix">
+      <div class="save-btn" ng-click="accountSave()">
+        <i class="material-icons save-btn-icon">done</i>
+        save
+      </div>
+<!--       <div class="close-btn">
+        <i class="material-icons close-btn-icon">close</i>
+        close
+      </div> -->
     </div>
-    <div class="close-btn">
-      <i class="material-icons close-btn-icon">close</i>
-      close
-    </div>
-  </div>
+  </form>
 </div>
 
 <h1 class="setting-title">Password and e-mail change</h1>
@@ -76,10 +100,10 @@
           <i class="material-icons save-btn-icon">done</i>
           save
         </div>
-        <div class="close-btn">
+<!--         <div class="close-btn">
           <i class="material-icons close-btn-icon">close</i>
           close
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="col-md-6">
@@ -96,12 +120,11 @@
           <i class="material-icons save-btn-icon">done</i>
           save
         </div>
-        <div class="close-btn">
+<!--         <div class="close-btn">
           <i class="material-icons close-btn-icon">close</i>
           close
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
-
 </div>

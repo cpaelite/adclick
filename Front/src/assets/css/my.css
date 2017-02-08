@@ -640,7 +640,7 @@ md-content.cs-main-content{
 
 .collapsible-header{
     position: relative;
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
     cursor: pointer;
 }
 
@@ -657,7 +657,8 @@ md-content.cs-main-content{
 }
 
 .collapsible-tab .collapsible-header.active .material-icons.arrow-down,
-.collapsible-tab .collapsible-header.active1 .material-icons.arrow-down{
+.collapsible-tab .collapsible-header.active1 .material-icons.arrow-down,
+.panel-list .material-icons.arrowDown{
     ransform:rotate(180deg);
     -ms-transform:rotate(180deg);     /* IE 9 */
     -moz-transform:rotate(180deg);    /* Firefox */
@@ -715,15 +716,77 @@ table .traficc-source-input input[type="checkbox"]{
     height: 15px;
 }
 
-.traffic-source-templates{
+.traffic-source-templates,
+.md-button.traffic-source-templates.md-focused{
     background: #253c75;
     font-size: 12px;
-    color: #fff;
+    color: #fff !important;
     text-transform:lowercase;
     margin: 6px 0;
 }
 .md-button:not([disabled]):hover{
     background: #253c75;
+}
+.tracking-checkbox input[type="checkbox"]{
+    width: 16px;
+}
+md-backdrop.md-dialog-backdrop:nth-of-type(even){
+    z-index: 81;
+}
+.md-dialog-container:nth-of-type(even){
+    z-index: 82;
+}
+.traffic-source-template-list{
+    padding: 0;
+    width: 95%;
+    margin: 0 auto;
+}
+.traffic-source-template-list li{
+    min-height: 50px;
+    line-height: 50px;
+    background: #f1f2f7;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+.panel-body{
+    padding: 10px 60px;
+}
+.affiliate-network-description p{
+    line-height: 20px;
+}
+.affiliate-network-description .pull-left .header{
+    font-weight: bold;
+}
+.affiliate-network-description .lists.pull-left{
+    margin-bottom: 30px;
+}
+.affiliate-network-description .pull-left li{
+    min-height: 30px;
+    line-height: 30px;
+    margin: 0;
+    list-style-type: square;
+    color: #989898;
+}
+.affiliate-network-description a.sign-up-btn{
+    display: inline-block;
+    width: 92px;
+    height: 32px;
+    background: #253c75;
+    line-height: 20px;
+    margin-left: 15px;
+    border-radius: 4px;
+    padding: 5px;
+    color: #fff;
+}
+.panel-list .material-icons{
+    float: right;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    line-height: 50px;
+}
+.traffic-source-template-list li input[type="radio"]{
+    margin:0 15px;
 }
 /*end trafficSource style*/
 
@@ -830,19 +893,8 @@ md-table-container{
     min-width: 300px;
     padding:10px;
 }
-.view_column_con .material-icons.btn-icon{
-    position: absolute;
-    z-index: 30;
-    margin: 17px 0;
-    width: 183px;
-    text-align: left;
-    padding-left: 10px !important;
-    height: 34px;
+.material-icons.btn-icon{
     line-height: 34px;
-}
-.view_column_con .material-icons.btn-icon.close-icon{
-    left: 210px;
-    width: 104px;
 }
 .view_column_con ul li:hover{
     background: #00838f;
@@ -853,7 +905,7 @@ md-table-container{
 }
 .view_column_con button{
     background: #00838f !important;
-    padding-left: 35px;
+    padding-left: 0px;
 }
 .view_column_con button.close-btn{
     background: #8992aa !important;
@@ -890,7 +942,7 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
     border-bottom: 1px solid #c9c9c9;
 }
 .dash-board .data-list .data-list-con{
-    margin-bottom: 15px;
+    margin: 15px 0;
     padding-left: 0;
 }
 .dash-board .data-list .data-list-con:last-child{
@@ -929,6 +981,14 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
 .table thead,
 .table tfoot{
     background: #00838f;
+    color: #fff;
+}
+.md-table tfoot.md-body{
+    height: 48px;
+    line-height: 48px;
+    background: rgb(0, 96, 100);
+}
+table.md-table tfoot td.md-cell{
     color: #fff;
 }
 .data-tables-chart-container table tbody td:first-child{
@@ -986,6 +1046,11 @@ h1.setting-title{
     width: 100%;
     margin: 0;
 }
+.account-form,
+.basic-form{
+    max-width: 940px;
+    margin: 0 auto;
+}
 .basic-form .campaign-radio{
     height: 38px;
     line-height: 38px;
@@ -994,9 +1059,8 @@ h1.setting-title{
     margin-top: 13px;
 }
 .profile-content{
-    padding: 80px 50px;
+    padding: 80px 0px;
     background: rgba(18, 189, 206, 0.14);
-    margin-bottom: 20px;
 }
 .password-change .profile-form-footer{
     margin-right: 0;
@@ -1013,11 +1077,17 @@ h1.setting-title{
     width: 100px;
     background: #12bdce;
     padding: 5px 10px;
-    font-size: 16px;
+    font-size: 15px;
     color: #fff;
     float: left;
     margin-left: 10px;
     cursor: pointer;
+}
+.profile-form-footer .save-btn{
+    float: right;
+}
+.save-btn .material-icons{
+    font-size:22px;
 }
 .referral-program{
     max-width: 1030px;
@@ -1373,6 +1443,19 @@ input[type="checkbox"].th-checkbox{
 } 
 /*End setting Style*/
 /*Start Flow Style*/
+.flow-select .cs-subform-select,
+.edit-page .cs-subform-select{
+    margin-top: 0;
+}
+.flow-preview .tree-li{
+    padding: 0 38px;
+}
+.flow-preview .tree-li.third-tree-li{
+    padding-left: 72px;
+}
+.flow-preview .tree-li.fourth-tree-li{
+    padding-left: 120px;
+}
 .cs-page-flow{
     padding: 10px;
 }
