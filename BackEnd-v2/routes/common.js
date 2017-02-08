@@ -474,11 +474,13 @@ function insertLander(userId, lander, connection) {
 
     var val = userId
 
+    var hash= uuidV4();
+
     col += ",`name`";
     val += ",'" + lander.name + "'";
 
     col += ",`hash`";
-    val += ",'" + uuidV4() + "'"
+    val += ",'" + hash + "'"
 
     col += ",`url`";
     val += ",'" + lander.url + "'";
@@ -498,7 +500,12 @@ function insertLander(userId, lander, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,2,lander.name,hash,1],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(result);  
+           });
         });
     })
 
@@ -527,7 +534,12 @@ function updateLander(userId, lander, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,2,lander.name,lander.hash,2],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(result);  
+           });
         });
     })
 }
@@ -558,15 +570,20 @@ function getLanderDetail(id, userId, connection) {
     })
 }
 
-function deleteLander(id, userId, connection) {
+function deleteLander(id, userId, name,hash,connection) {
     var sqlCampaign = "update Lander set `deleted`= 1"
-    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId
+    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
         connection.query(sqlCampaign, function (err, result) {
             if (err) {
                 reject(err);
             }
-            resolve(1);
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,2,name,hash,3],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(1);  
+           });
         });
     })
 }

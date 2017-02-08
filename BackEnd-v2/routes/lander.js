@@ -215,11 +215,17 @@ router.get('/api/landers', function (req, res, next) {
  * @api {delete} /api/lander/:id 删除lander
  * @apiName  删除lander
  * @apiGroup lander
+ * 
+ * @apiParam {String} name
+ * @apiParam {String} hash
+ * 
  */
 router.delete('/api/landers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        name: Joi.string().required(),
+        hash: Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -227,7 +233,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteLander(value.id, value.userId, connection);
+        let result = await common.deleteLander(value.id, value.userId,value.name,value.hash, connection);
 
         res.json({
             status: 1,
