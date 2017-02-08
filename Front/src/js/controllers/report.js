@@ -366,7 +366,7 @@
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
-        controller = ['$scope', '$mdDialog', 'AffiliateNetwork', editAffiliateCtrl];
+        controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
 
       $mdDialog.show({
@@ -1004,7 +1004,6 @@
         targetEvent: ev,
         templateUrl: 'tpl/trafficSource-template-dialog.html',
       }).then(function(data){
-        console.log(data);
         $scope.item.postbackUrl = data;
       });
     };
@@ -1047,7 +1046,7 @@
     };
   }
 
-  function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
+  function editAffiliateCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
     if (this.item) {
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
@@ -1072,6 +1071,15 @@
       $scope.ipWhiteCheck = false;
       this.title = "add";
     }
+
+    // affiliate copy btn
+    $scope.btnWord = "Clipboard";
+    $scope.itemUrlClick = function(){
+      $scope.btnWord = "Copied";
+      $timeout(function() {
+        $scope.btnWord = "Clipboard";
+      }, 2000);
+    };
 
     this.titleType = angular.copy(this.perfType);
 
@@ -1118,13 +1126,15 @@
         multiple: true,
         skipHide: true,
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', affiliateNetworkCtrl],
+        controller: ['$scope', '$mdDialog', '$timeout', affiliateNetworkCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: { item: item, currentUser: $scope.currentUser },
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trusted-affiliate-networks-dialog.html',
+      }).then(function(data){
+        $scope.item.postbackurl = data;
       });
     };
 
@@ -1133,8 +1143,8 @@
   function affiliateNetworkCtrl($scope, $mdDialog) {
 
     $scope.trafficTemplateLists = [
-      "50onRed Intext",
-      "50onRed Intext",
+      "50onRed Intext111",
+      "50onRed Intext222",
     ];
     $scope.selected = 0;
     $scope.panelIsShow = 0;
@@ -1147,6 +1157,11 @@
 
     this.hide = function() {
       $mdDialog.hide();
+    };
+
+    this.save = function(){
+      var postbackUrl = $scope.trafficTemplateLists[$scope.selected];
+      $mdDialog.hide(postbackUrl);
     };
 
     this.cancel = function() {
@@ -1185,7 +1200,6 @@
     };
 
     function success() {
-      console.log("success delete");
       $mdDialog.hide();
     }
 
