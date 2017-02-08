@@ -121,6 +121,7 @@ func main() {
 		blacklist.ReloadUserBlacklist(uid)
 	}
 
+	http.HandleFunc("/robots.txt", robots)
 	http.HandleFunc("/dmr", units.OnDoubleMetaRefresh)
 	http.HandleFunc("/status", Status1)
 	http.HandleFunc("/status/", Status2)
@@ -145,4 +146,12 @@ func Status1(w http.ResponseWriter, r *http.Request) {
 
 func Status2(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "http://www.baidu.com", http.StatusFound)
+}
+
+var robotsTxt = `User-agent: *
+Disallow: /`
+
+func robots(w http.ResponseWriter, r *http.Request) {
+	log.Infof("robots.txt requested from:%v UserAgent:%v", r.RemoteAddr, r.UserAgent())
+	w.Write([]byte(robotsTxt))
 }
