@@ -558,6 +558,7 @@ app.post('/api/campaigns', function (req, res) {
     status: 1,
     message: "",
     data: {
+      "id": 1,
       "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
       "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
       "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",

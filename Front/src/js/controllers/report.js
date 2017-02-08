@@ -532,6 +532,9 @@
       } else {
         $scope.trafficSourceId = allTraffic[0].id;
       }
+      if (!$scope.item.targetUrl) {
+        $scope.item.targetUrl = "http://";
+      }
     }
 
     $q.all(initPromises).then(initSuccess);
@@ -568,7 +571,14 @@
     }
 
     function success(item) {
-      $mdDialog.hide(item);
+      var campaign = item.data;
+      $scope.item.url = campaign.url;
+      $scope.item.impPixelUrl = campaign.impPixelUrl;
+      if ($scope.item.id) {
+        $mdDialog.hide();
+      } else {
+        $scope.item.id = campaign.id;
+      }
     }
 
     this.save = function () {
@@ -648,7 +658,7 @@
     $scope.urlTokenClick = function (url) {
       var targetUrl = $scope.item.targetUrl;
       if (!targetUrl) {
-        targetUrl = '';
+        targetUrl = 'http://';
       }
       if (targetUrl.indexOf(url) == -1) {
         $scope.item.targetUrl = targetUrl + url;
