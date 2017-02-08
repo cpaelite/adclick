@@ -963,7 +963,95 @@ function saveEventLog(userId,entityType,entityName,entityId,actionType,connectio
     })
 }
 
+function insertAffiliates(userId, affiliate, connection){
+    return new Promise(function(resolve,reject){
+        var hash = uuidV4();
+        var sql = "insert into AffiliateNetwork set `userId`= " +
+                userId + ",`name`='" + affiliate.name +
+                "',`postbackUrl`='" +
+                affiliate.postbackUrl + "',`hash`= '"+hash +"'";
+            if (affiliate.appendClickId != undefined) {
+                sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
+            }
+            if (affiliate.duplicatedPostback != undefined) {
+                sql += ",`duplicatedPostback`='" + affiliate.duplicatedPostback +
+                    "'"
+            }
+            if (affiliate.ipWhiteList) {
+                sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
+            }
+            connection.query(sql, function (err, result) {
+                if(err){
+                    reject(err);
+                }
+                connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,5,affiliate.name,hash,1],function (err) {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(result);
+                }); 
+            });
+    });
+}
 
+function updateAffiliates(userId, affiliate, connection){
+    return new Promise(function(resolve,reject){
+          var sql = "update AffiliateNetwork set `id`= " + affiliate.id;
+             
+            if (affiliate.name) {
+                sql += ",`name`='" + affiliate.name + "'"
+            }
+            if (affiliate.postbackUrl) {
+                sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
+            }
+            if (affiliate.appendClickId != undefined) {
+                sql += ",`appendClickId`=" + affiliate.appendClickId
+            }
+            if (affiliate.duplicatedPostback != undefined) {
+                sql += ",`duplicatedPostback`=" + affiliate.duplicatedPostback
+            }
+            if (affiliate.ipWhiteList) {
+                sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
+            }
+
+            sql += " where `userId`=" + userId + " and `id`=" +
+                affiliate.id
+            connection.query(sql,function (err, result) {
+               if(err){
+                   reject(err);
+               }
+               connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,5,affiliate.name,affiliate.hash,2],function (err) {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(result);
+                }); 
+            });
+    });
+}
+
+ 
+function deleteAffiliate(id, userId, name,hash,connection) {
+    var sqlCampaign = "update AffiliateNetwork set `deleted`= 1"
+    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlCampaign, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,5,name,hash,3],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(1);  
+           });
+        });
+    })
+}
+
+exports.deleteAffiliate=deleteAffiliate;
+exports.updateAffiliates=updateAffiliates;
+exports.insertAffiliates=insertAffiliates;
 exports.updateRule2Flow = updateRule2Flow;
 exports.insertRule2Flow = insertRule2Flow;
 exports.updatePath2Rule = updatePath2Rule;
