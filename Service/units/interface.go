@@ -1,6 +1,7 @@
 package units
 
 import (
+	"AdClickTool/Service/config"
 	"AdClickTool/Service/db"
 	"fmt"
 	"html"
@@ -152,7 +153,7 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		tracking.Ref.AddVisit(req.ReferrerKey(timestamp), 1)
 	}
 
-	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+	if !req.CacheSave(config.ReqCacheTime) {
 		log.Errorf("[Units][OnLPOfferRequest]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
 }
@@ -217,7 +218,7 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 	tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
 	tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
 
-	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+	if !req.CacheSave(config.ReqCacheTime) {
 		log.Errorf("[Units][OnLandingPageClick]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
 }
@@ -299,7 +300,7 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 
 	SetCookie(w, request.ReqImpression, req)
 
-	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+	if !req.CacheSave(config.ReqCacheTime) {
 		log.Errorf("[Units][OnImpression]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
 }
@@ -378,7 +379,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		svr := db.GetRedisClient(request.CacheSvrTitle)
 		k := fmt.Sprintf("postback:%s:tx:%s", clickId, txId)
 		v := time.Now().Unix()
-		cmd := svr.SetNX(k, v, 24*time.Hour)
+		cmd := svr.SetNX(k, v, config.ReqCacheTime)
 		if cmd.Err() != nil {
 			log.Errorf("[units][OnS2SPostback] SetNX k:%v v:%v failed:%v", k, v, cmd.Err())
 			return true
@@ -439,7 +440,7 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 	conv := req.ConversionKey()
 	tracking.SaveConversion(&conv)
 
-	if !req.CacheSave(time.Now().Add(time.Hour * 1)) {
+	if !req.CacheSave(config.ReqCacheTime) {
 		log.Errorf("[Units][OnS2SPostback]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
 }

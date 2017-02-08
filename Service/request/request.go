@@ -116,7 +116,7 @@ type Request interface {
 	DelUrlParam(key string)
 	UrlParamString() string // 不包括"?"和"/"部分
 
-	CacheSave(expire time.Time) bool
+	CacheSave(duration time.Duration) bool
 	CacheClear() bool
 
 	// for tracking

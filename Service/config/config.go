@@ -10,6 +10,7 @@ import (
 	"github.com/robfig/config"
 
 	"AdClickTool/Service/log"
+	"time"
 )
 
 var instance *config.Config
@@ -81,6 +82,8 @@ func LoadConfig(isFirstTime bool) (err error) {
 		return
 	}
 	log.Info("load config file: %s\n", configfile)
+
+	InitVars()
 	return
 }
 
@@ -164,4 +167,12 @@ func GetEnginePort() string {
 
 func GetPostbackPort() string {
 	return String("DEFAULT", "postbackport")
+}
+
+// InitVars 初始化vars.go里面的变量
+func InitVars() {
+	reqcachetime := Int("[DEFAULT", "reqcachetime")
+	if reqcachetime > 0 {
+		ReqCacheTime = time.Duration(reqcachetime) * time.Second
+	}
 }
