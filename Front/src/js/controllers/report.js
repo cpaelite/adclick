@@ -77,7 +77,7 @@
     });
 
     // columns
-    var cols = angular.copy(columnDefinition[perfType]).concat(columnDefinition['common']);
+    var cols = angular.copy(columnDefinition[perfType]);
     // dirty fix tree view name column
     cols[0].role = 'name';
     cols[0].origKey = cols[0].key;
