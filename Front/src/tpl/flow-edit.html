@@ -168,11 +168,12 @@
                 </label>
               </div>
 
-              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}" class="day-checkbox">
-                <label ng-repeat="o in f.options">
-                  <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
-                  {{o.display}} 
-                </label>
+              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}" class="condition-checkbox">
+                <div ng-repeat="o in f.options">
+                  <md-checkbox ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
+                    {{o.display}}
+                  </md-checkbox>
+                </div>
               </div>
 
               <div ng-if="f.type=='l2select'" class="os-content clearfix" ng-class="{'col-md-10': f.label}">
@@ -200,16 +201,23 @@
                         <i class="material-icons select-search-icon">search</i>
                       </div>
                       <div class="options-list">
-                        <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
-                          <label ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
-                            <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
-                            {{o.display}} 
-                          </label>
+                        <div ng-hide="cdt._l1selected">
+                          <label>No items to select</label>
                         </div>
-                      </div>
-
-                      <div ng-hide="cdt._suboptions">
-                        <label>No items to select</label>
+                        <div ng-if="cdt._l1selected">
+                          <md-checkbox aria-label="Select All"
+                                       ng-checked="l2allIsChecked(cdt, f.name)"
+                                       md-indeterminate="l2IsIndeterminate(cdt, f.name)"
+                                       ng-click="l2toggleAll(cdt, f.name)">
+                            Select All
+                          </md-checkbox>
+                        </div>
+                        <div ng-repeat="o in cdt._l1selected.suboptions | filter:cdt._t2">
+                          <md-checkbox ng-checked="l2isChecked(o.value, cdt, f.name)"
+                                       ng-click="l2toggle(o.value, cdt, f.name)">
+                            {{o.display}}
+                          </md-checkbox>
+                        </div>
                       </div>
                     </div>
 

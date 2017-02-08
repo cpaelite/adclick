@@ -434,20 +434,92 @@
       $scope.curRule.conditions = [];
     };
 
-    $scope.exists = function(item, list) {
-      list.indexOf(item) >= 0;
-    };
-    $scope.toggle = function(item, list) {
+    function exists(item, list) {
+      return list.indexOf(item) >= 0;
+    }
+    $scope.exists = exists;
+    function toggle(item, list) {
       var idx = list.indexOf(item);
       if (idx >= 0) {
         list.splice(idx, 1);
       } else {
         list.push(item);
       }
-    };
+    }
+    $scope.toggle = toggle;
+
+    function l2containAny(selected, options) {
+      for (var i = 0; i < options.length; ++i) {
+        if (selected.indexOf(options[i].value) >= 0) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function l2containAll(selected, options) {
+      for (var i = 0; i < options.length; ++i) {
+        if (selected.indexOf(options[i].value) < 0) {
+          return false;
+        }
+      }
+      return true;
+    }
+    function l2removeAll(selected, options) {
+      options.forEach(function(opt) {
+        var idx = selected.indexOf(opt.value);
+        if (idx >= 0) {
+          selected.splice(idx, 1);
+        }
+      });
+    }
     $scope.toggleL2select = function(cdt, option, fname) {
-      cdt._suboptions = option.suboptions;
-      $scope.toggle(option.value, cdt[fname]);
+      cdt._l1selected = option;
+      var selected = cdt[fname];
+      if (!l2containAny(selected, option.suboptions)) {
+        toggle(option.value, selected);
+      }
+    };
+    $scope.l2allIsChecked = function(cdt, fname) {
+      return exists(cdt._l1selected.value, cdt[fname]);
+    };
+    $scope.l2IsIndeterminate = function(cdt, fname) {
+      return l2containAny(cdt[fname], cdt._l1selected.suboptions);
+    };
+    $scope.l2toggleAll = function(cdt, fname) {
+      var option = cdt._l1selected;
+      var selected = cdt[fname];
+      l2removeAll(selected, option.suboptions);
+      toggle(option.value, selected);
+    };
+    $scope.l2isChecked = function(value, cdt, fname) {
+      var option = cdt._l1selected;
+      var selected = cdt[fname];
+      if (exists(value, selected)) {
+        return true;
+      } else if (exists(option.value, selected)) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+    $scope.l2toggle = function(value, cdt, fname) {
+      var option = cdt._l1selected;
+      var selected = cdt[fname];
+      var checked = exists(value, selected);
+      if (exists(option.value, selected)) {
+        toggle(option.value, selected);
+        option.suboptions.forEach(function(opt) {
+          if (opt.value != value) {
+            selected.push(opt.value);
+          }
+        });
+      } else {
+        toggle(value, selected);
+        if (!checked && l2containAll(selected, option.suboptions)) {
+          selected.push(option.value);
+          l2removeAll(selected, option.suboptions);
+        }
+      }
     };
 
     // save
