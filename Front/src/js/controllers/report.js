@@ -1046,9 +1046,9 @@
         if (!$scope.item['postbackUrl']) {
           $scope.item['postbackUrl'] = 'http://';
         }
-        if ($scope.item.ipWhiteList) {
+        var ips = JSON.parse($scope.item.ipWhiteList);
+        if (ips.length) {
           $scope.ipWhiteCheck = true;
-          var ips = JSON.parse($scope.item.ipWhiteList);
           var ipList = "";
           ips.forEach(function (ip) {
             ipList = ipList + ip + "\n";
