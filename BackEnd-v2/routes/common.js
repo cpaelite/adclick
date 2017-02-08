@@ -603,12 +603,13 @@ function insertOffer(userId, idText, offer, connection) {
     //required
     var col = "`userId`"
     var val = userId
+    var hash=uuidV4();
 
     col += ",`name`";
     val += ",'" + offer.name + "'"
 
     col += ",`hash`";
-    val += ",'" + uuidV4() + "'"
+    val += ",'" +hash + "'"
 
     col += ",`url`";
     val += ",'" + offer.url + "'";
@@ -649,7 +650,12 @@ function insertOffer(userId, idText, offer, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,3,offer.name,hash,1],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(result);  
+           });
         });
     });
 }
@@ -692,7 +698,12 @@ function updateOffer(userId, offer, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,3,offer.name,offer.hash,2],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(result);  
+           });
         });
     });
 
@@ -723,15 +734,20 @@ function getOfferDetail(id, userId, connection) {
     })
 }
 
-function deleteOffer(id, userId, connection) {
+function deleteOffer(id, userId,name,hash, connection) {
     var sqlCampaign = "update Offer set `deleted`= 1"
-    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId
+    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId;
     return new Promise(function (resolve, reject) {
         connection.query(sqlCampaign, function (err, result) {
             if (err) {
                 reject(err);
             }
-            resolve(1);
+           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,3,name,hash,3],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(1);  
+           });
         });
     })
 }
