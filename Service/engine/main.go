@@ -148,10 +148,10 @@ func Status2(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "http://www.baidu.com", http.StatusFound)
 }
 
-var robotsTxt = `User-agent: *
-Disallow: /`
+var robotsTxt = []byte(`User-agent: *
+Disallow: /`)
 
 func robots(w http.ResponseWriter, r *http.Request) {
 	log.Infof("robots.txt requested from:%v UserAgent:%v", r.RemoteAddr, r.UserAgent())
-	w.Write([]byte(robotsTxt))
+	w.Write(robotsTxt)
 }
