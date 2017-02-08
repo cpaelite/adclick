@@ -25,10 +25,10 @@
                     </span>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">{{'affiliateNetworkPostBackUrl' | translate}}<span class="star-icon">*</span>: </label>
+            <div class="form-group" ng-show="false">
+                <label class="col-sm-3 control-label">{{'affiliateNetworkPostBackUrl' | translate}}: </label>
                 <div class="col-sm-4">
-                    <input type="url" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" required>
+                    <input type="url" name="postbackUrl" class="form-control" ng-model="item.postbackUrl">
                     <span style="color:red" ng-show="editForm.postbackUrl.$dirty && editForm.postbackUrl.$invalid">
                     <span ng-show="editForm.postbackUrl.$error.required">PostbackUrl is required.</span>
                     <span ng-show="editForm.postbackUrl.$error.url">PostbackUrl must be a valid URL</span>
@@ -50,12 +50,13 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label"></label>
                 <div class="col-sm-4">
-                    <input type="checkbox" ng-click="isChecked()"> Only accept postbacks from white-listed IPs
-                    <div class="network-textarea" ng-show="textareaShow">
-                        <i class="note">Please enter one IP per line.</i>
-                        <textarea ng-model="item.ipWhiteList" name="ipWhiteList" ng-blur="checkIP()"></textarea>
+                    <input type="checkbox" ng-model="ipWhiteCheck"> Only accept postbacks from white-listed IPs
+                    <div class="network-textarea" ng-show="ipWhiteCheck">
+                        <i class="note">Please enter one IP per line.<span class="star-icon">*</span></i>
+                        <textarea ng-model="ipWhiteList" name="ipWhiteList" ng-blur="checkIP()" ng-required="ipWhiteCheck"></textarea>
                         <span style="color:red" ng-show="editForm.ipWhiteList.$dirty && editForm.ipWhiteList.$invalid">
                         <span ng-show="editForm.ipWhiteList.$error.valid">IP address is valid.</span>
+                        <span ng-show="editForm.ipWhiteList.$error.required">IP address is not be empty.</span>
                         </span>
                     </div>
                 </div>

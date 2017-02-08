@@ -85,7 +85,7 @@
 
       <div class="form-group">
         <label class="label-name">Country:</label>
-        <md-select ng-model="flow.country" required>
+        <md-select ng-model="flow.country">
           <md-option ng-repeat="c in allCountries" value="{{c.value}}">{{c.display}}</md-option>
         </md-select>
       </div>
@@ -94,13 +94,13 @@
         <label class="col-sm-4 control-label label-radio">Default redirect mode:</label>
         <div class="col-sm-8">
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirectMode" value="302"> 302
+            <input type="radio" ng-model="flow.redirectMode" value="0"> 302
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirectMode" value="meta"> Meta refresh
+            <input type="radio" ng-model="flow.redirectMode" value="1"> Meta refresh
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirectMode" value="double-meta"> Double meta refresh
+            <input type="radio" ng-model="flow.redirectMode" value="2"> Double meta refresh
           </label>
         </div>
       </div>
@@ -267,13 +267,13 @@
       <div class="row">
         <label class="label-name">Redirect mode:</label>
         <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="302"> 302
+          <input type="radio" ng-model="curPath.redirectMode" value="0"> 302
         </label>
         <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="meta"> Meta refresh
+          <input type="radio" ng-model="curPath.redirectMode" value="1"> Meta refresh
         </label>
         <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="double-meta"> Double meta refresh
+          <input type="radio" ng-model="curPath.redirectMode" value="2"> Double meta refresh
         </label>
       </div>
 

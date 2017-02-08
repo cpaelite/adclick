@@ -85,7 +85,7 @@
       .state('app.report.offer',    configReport('offer'))
       .state('app.report.lander',   configReport('lander'))
       .state('app.report.traffic',  configReport('traffic'))
-      .state('app.report.affiliate',  configReport('affiliate'))
+      .state('app.report.affiliate', configReport('affiliate'))
       .state('app.rule', {
         url: '/rule',
         templateUrl: 'tpl/rule.html',

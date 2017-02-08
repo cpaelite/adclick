@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="url" class="form-control campaign-url" ng-model="item.url" ng-show="item.url" ng-disabled="true">
+                    <input type="url" name="url" class="form-control campaign-url" ng-model="item.url" ng-show="item.url" ng-readonly="true">
                     <label ng-show="!item.url">ID will be available after saving the campaign.</label>
                 </div>
                 <div class="col-sm-4">
@@ -31,10 +31,10 @@
                     </md-button>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" ng-show="impPixelUrl==1">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl" ng-disabled="true">
+                    <input type="url" name="impPixelUrl" class="form-control" ng-model="item.impPixelUrl" ng-show="item.impPixelUrl" ng-readonly="true">
                     <label ng-show="!item.impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
                 <div class="col-sm-4">
@@ -166,9 +166,9 @@
             </div>
             <div class="flow-action" ng-show="item.targetType==1">
                 <div class="form-group flow-select">
-                    <label class="col-sm-3 control-label">Flow：</label>
+                    <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
                     <div class="col-sm-5">
-                        <md-select class="cs-subform-select" name="flow" ng-model="item.flow.id">
+                        <md-select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
                             <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
                         </md-select>
                     </div>
@@ -176,11 +176,11 @@
 
                 <div class="form-group flow-actions">
                     <ul>
-                        <li class="new-flow">
+                        <li class="new-flow" ng-click="toAddFlow()">
                             <i class="material-icons">add</i>
                             Create new flow
                         </li>
-                        <li class="edit-flow">
+                        <li class="edit-flow" ng-show="item.flow" ng-click="toEditFlow()">
                             <i class="material-icons">edit</i>
                             Edit flow
                         </li>
@@ -191,9 +191,12 @@
 
             <div class="url-token-con" ng-show="item.targetType==0">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Url：</label>
+                    <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl">
+                        <input type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl" ng-required="item.targetType==0">
+                        <span style="color:red" ng-show="editForm.targetUrl.$dirty && editForm.targetUrl.$invalid">
+                        <span ng-show="editForm.targetUrl.$error.required">Url is required.</span>
+                        </span>
                     </div>
                 </div>
                 <div class="url-tokens-row form-group">
@@ -210,7 +213,7 @@
                 </div>
             </div>
 
-            <div class="form-group collapsible-tab">
+            <div class="form-group collapsible-tab" ng-show="flow">
                 <div class="collapsible-header" ng-class="{'active1':isActive1}" ng-click="toggleShow('2')">
                     <div class="line"></div>
                     <div class="label-con">
@@ -221,41 +224,40 @@
                 </div>
             </div>
 
-            <div class="form-group flow-preview" ng-show="ztreeShow">
+            <div class="form-group flow-preview" ng-show="ztreeShow && flow">
               <div class="col-md-7">
                 <div class="cs-flow-rule">
                   <div class="tree-li">
                     <i class="material-icons tree-icon">album</i>
-                    <span class="cs-flow-name ng-binding">new flow</span>
+                    <span class="cs-flow-name ng-binding">{{flow.name}}</span>
                   </div>
                 </div>
-                <div class="cs-flow-rule">
-                  <div class="tree-li cs-rule-default" ng-click="firstTreeClick($event)">
+                <div class="cs-flow-rule" ng-repeat="rule in flow.rules">
+                  <div class="tree-li cs-rule-default">
                     <span>
-                      <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
                       <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
                     </span>
                     <span class="cs-path-name">
                       <i class="material-icons tree-icon">album</i>
-                      <span class="cs-rule-name ng-binding">Default paths</span>
+                      <span class="cs-rule-name ng-binding">{{rule.name}}</span>
                     </span>
                   </div>
-                  <ul ng-show="treeLiIsShow">
-                    <li class="tree-li ng-scope" ng-click="secondTreeClick($event)">
+                  <ul ng-repeat="path in rule.paths">
+                    <li class="tree-li ng-scope">
                       <span>
                         <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
                         <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
                       </span>
                       <i class="material-icons tree-icon">album</i>
                       <span class="cs-path-name clearfix">
-                        <span class="path-name ng-binding">Path 1 </span>
+                        <span class="path-name ng-binding">{{path.name}} </span>
                         <span class="weight-num ng-binding">
-                          100<em class="ng-binding" aria-hidden="false">(100.00%)</em><em class="ng-hide">(N/A)</em>)
+                          {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>
                         </span>
                       </span>
                     </li>
-                    <div ng-show="offersIsShow">
-                      <li class="tree-li third-tree-li ng-scope" ng-click="thirdTreeClick($event)">
+                    <div ng-show="path.offers.length > 0">
+                      <li class="tree-li third-tree-li ng-scope">
                         <span>
                           <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
                           <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
@@ -265,18 +267,41 @@
                           <span class="path-name ng-binding">Offers</span>
                         </span>
                       </li>
-                      <div ng-show="offersConIsShow">
+                      <div ng-repeat="offer in path.offers">
                         <li class="tree-li fourth-tree-li ng-scope">
                           <i class="material-icons tree-icon">album</i>
                           <span class="cs-path-name clearfix">
-                            <span class="path-name ng-binding">Avazu Private Exchange - Global - TTTT</span>
+                            <span class="path-name ng-binding">{{offer.name}}</span>
                             <span class="weight-num ng-binding">
-                              100<em class="ng-binding" aria-hidden="false">(100.00%)</em><em class="ng-hide">(N/A)</em>)
+                              {{offer.weight}}<em ng-show="offer.relativeWeight>0">({{offer.relativeWeight | number:2}}%)</em><em ng-show="offer.relativeWeight<=0">(N/A)</em>
                             </span>
                           </span>
                         </li>
                       </div>
                     </div>
+                      <div ng-show="path.landers.length > 0">
+                          <li class="tree-li third-tree-li ng-scope" ng-click="thirdTreeClick()">
+                        <span>
+                          <!-- <i class="material-icons md-mini cs-arrow-right  flow-arrow-down">keyboard_arrow_right</i> -->
+                          <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
+                        </span>
+                              <i class="material-icons tree-icon">album</i>
+                              <span class="cs-path-name clearfix">
+                          <span class="path-name ng-binding">Landers</span>
+                        </span>
+                          </li>
+                          <div ng-repeat="lander in path.landers">
+                              <li class="tree-li fourth-tree-li ng-scope">
+                                  <i class="material-icons tree-icon">album</i>
+                                  <span class="cs-path-name clearfix">
+                                <span class="path-name ng-binding">{{lander.name}}</span>
+                                <span class="weight-num ng-binding">
+                                  {{lander.weight}}<em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em><em ng-show="lander.relativeWeight<=0">(N/A)</em>
+                                </span>
+                                </span>
+                              </li>
+                          </div>
+                      </div>
                   </ul>
                 </div>
               </div>

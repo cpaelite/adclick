@@ -20,9 +20,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="url" class="form-control" ng-model="item.url" required>
+                    <input type="url" name="url" class="form-control" ng-model="item.url" required>
                     <span style="color:red" ng-show="editForm.url.$dirty && editForm.url.$invalid">
                     <span ng-show="editForm.url.$error.required">Url is required.</span>
+                    <span ng-show="editForm.url.$error.url">Url is invalid.</span>
                     </span>
                 </div>
             </div>
