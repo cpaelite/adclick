@@ -48,19 +48,20 @@
 
       theFlow = {
         name: 'new flow',
+        country: 'global',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
     }
 
     var allLanders;
-    prms = Lander.query({columns:'id,name'}, function(result) {
+    prms = Lander.query({columns:'id,name,country'}, function(result) {
       allLanders = result;
     }).$promise;
     initPromises.push(prms);
 
     var allOffers;
-    prms = Offer.query({columns:'id,name'}, function(result) {
+    prms = Offer.query({columns:'id,name,country'}, function(result) {
       allOffers = result;
     }).$promise;
     initPromises.push(prms);
@@ -72,9 +73,10 @@
     }).$promise;
     initPromises.push(prms);
 
+    var allCountries;
     prms = Country.query({}, function(result) {
       //console.log(result);
-      $scope.allCountries = result;
+      allCountries = result;
     }).$promise;
     initPromises.push(prms);
 
@@ -109,6 +111,13 @@
         });
       });
       
+      var country = theFlow.country;
+      allCountries.forEach(function(ctry) {
+        if (ctry.value == country) {
+          theFlow.country = ctry;
+        }
+      });
+
       // fulfill flow with lander/offer/condition
       theFlow.rules.forEach(function(rule) {
         if (!Array.isArray(rule.conditions)) {
@@ -130,7 +139,7 @@
 
           calculateRelativeWeight(path.landers, function(item) { return !item.isDeleted; });
           path.landers.forEach(function(lander) {
-            lander.name = allLanders[landerMap[lander.id]].name;
+            lander._def = allLanders[landerMap[lander.id]];
           });
 
           if (!Array.isArray(path.offers)) {
@@ -139,7 +148,7 @@
 
           calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
           path.offers.forEach(function(offer) {
-            offer.name = allOffers[offerMap[offer.id]].name;
+            offer._def = allOffers[offerMap[offer.id]];
           });
         });
       });
@@ -193,7 +202,7 @@
     $scope.$watch('flow.country', function (newValue, oldValue) {
       // todo: update flow name
       //$scope.flow.name = $scope.flow.country + ' - ' + $scope.flow.name;
-    });
+    }, true);
 
     // operation on rule
     $scope.editRule = function(rule) {
@@ -271,14 +280,17 @@
       var lcQuery = angular.lowercase(query);
 
       return function(item) {
-        return (item[property].indexOf(lcQuery) >= 0);
+        return (item[property].toLowerCase().indexOf(lcQuery) >= 0);
       };
     }
 
-    $scope.searchTextChange = function(text) {
-      console.info('Text changed to ' + text);
+    $scope.queryCountries = function(query) {
+      if (allCountries) {
+        return query ? allCountries.filter(createFilterFor(query, "display")) : allCountries;
+      } else {
+        return [];
+      }
     };
-
 
     /*
     // demo code for async load autocomplete options
@@ -321,7 +333,10 @@
     };
     $scope.queryLanders = function(query) {
       if (allLanders) {
-        return query ? allLanders.filter(createFilterFor(query, "name")) : allLanders;
+        var countryFiltered = allLanders.filter(function(lander) {
+          return theFlow.country.value == 'global' || lander.country == theFlow.country.value ;
+        });
+        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
         return [];
       }
@@ -329,7 +344,7 @@
     $scope.selectedLanderChange = function(item, lander) {
       if (item) {
         lander.id = item.id;
-        lander.name = item.name;
+        lander._def = item;
       }
     };
     $scope.$watch(function() {
@@ -362,7 +377,10 @@
     };
     $scope.queryOffers = function(query) {
       if (allOffers) {
-        return query ? allOffers.filter(createFilterFor(query, "name")) : allOffers;
+        var countryFiltered = allOffers.filter(function(offer) {
+          return theFlow.country.value == 'global' || offer.country == theFlow.country.value ;
+        });
+        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
         return [];
       }
@@ -370,7 +388,7 @@
     $scope.selectedOfferChange = function(item, offer) {
       if (item) {
         offer.id = item.id;
-        offer.name = item.name;
+        offer._def = item;
       }
     };
     $scope.$watch(function() {
@@ -527,7 +545,7 @@
       // clean up before save
       var flowData = {
         name: theFlow.name,
-        country: theFlow.country,
+        country: theFlow.country.value,
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };

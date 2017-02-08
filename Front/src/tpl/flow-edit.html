@@ -85,9 +85,22 @@
 
       <div class="form-group">
         <label class="label-name">Country:</label>
-        <md-select ng-model="flow.country">
-          <md-option ng-repeat="c in allCountries" value="{{c.value}}">{{c.display}}</md-option>
-        </md-select>
+        <md-autocomplete
+            md-selected-item="flow.country"
+            md-search-text="searchText"
+            md-items="item in queryCountries(searchText)"
+            md-no-cache="true"
+            md-select-on-focus="true"
+            md-item-text="item.display"
+            md-min-length="0"
+            placeholder="Select country...">
+          <md-item-template>
+            <span md-highlight-text="searchText">{{item.display}}</span>
+          </md-item-template>
+          <md-not-found>
+            No matching found.
+          </md-not-found>
+        </md-autocomplete>
       </div>
 
       <div class="form-group clearfix">
@@ -300,7 +313,7 @@
                ng-repeat="offer in curPath.offers" ng-click="setEdit($event, offer)"
                ng-class="{'cs-flow-offer-onedit':offer._onEdit}">
             <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-offer-view">{{offer.name || 'Select offer...'}}</p>
+              <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
               <div class="cs-flow-offer-edit clearfix">
                 <md-autocomplete
                     md-selected-item="selected"
@@ -310,7 +323,6 @@
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-search-text-change="searchTextChange(searchText)"
                     md-selected-item-change="selectedOfferChange(item, offer)"
                     placeholder="Select offer...">
                   <md-item-template>
@@ -356,7 +368,7 @@
                ng-repeat="lander in curPath.landers" ng-click="setEdit($event, lander)"
                ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
             <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-lander-view">{{lander.name || 'Select lander...'}}</p>
+              <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
               <div class="cs-flow-lander-edit clearfix">
                 <md-autocomplete
                     md-selected-item="selected"
@@ -366,7 +378,6 @@
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-search-text-change="searchTextChange(searchText)"
                     md-selected-item-change="selectedLanderChange(item, lander)"
                     placeholder="Select lander...">
                   <md-item-template>
