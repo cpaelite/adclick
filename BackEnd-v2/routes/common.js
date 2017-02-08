@@ -849,12 +849,13 @@ function insertTrafficSource(userId, traffic, connection) {
         //required
         var col = "`userId`"
         var val = userId
+        var hash=uuidV4();
 
         col += ",`name`";
         val += ",'" + traffic.name + "'"
 
         col += ",`hash`";
-        val += ",'" + uuidV4() + "'"
+        val += ",'" + hash + "'"
 
         if (traffic.postbackUrl) {
             col += ",`postbackUrl`";
@@ -888,7 +889,12 @@ function insertTrafficSource(userId, traffic, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,4,traffic.name,hash,1],function (err) {
+            if (err) {
+                return reject(err);
+            }
+               resolve(result);
+           });
         });
     });
 }
@@ -922,7 +928,12 @@ function updatetraffic(userId, traffic, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(result);
+           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,4,traffic.name,traffic.hash,2],function (err) {
+            if (err) {
+                return reject(err);
+            }
+               resolve(result);
+           });
         });
     })
 }
@@ -938,7 +949,7 @@ function gettrafficDetail(id, userId, connection) {
     });
 }
 
-function deletetraffic(id, userId, connection) {
+function deletetraffic(id, userId, name,hash,connection) {
     var sqlCampaign = "update TrafficSource set `deleted`= 1"
     sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
@@ -946,7 +957,12 @@ function deletetraffic(id, userId, connection) {
             if (err) {
                 reject(err);
             }
-            resolve(1);
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,4,name,hash,3],function (err) {
+            if (err) {
+                return reject(err);
+            }
+              resolve(1);  
+           });
         });
     })
 }
