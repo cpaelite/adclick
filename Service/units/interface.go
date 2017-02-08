@@ -35,6 +35,12 @@ func Init() (err error) {
 var page404 = `<html><head><title>Error: Page not found. If you want to change the content of this page, go to your account Settings / Root domain.</title></head><body><h3>Error 404</h3><p>Page not found. If you want to change the content of this page, go to your account Settings / Root domain.</p></body></html>`
 
 func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
+	desc, in := blacklist.G.AddrIn(r.RemoteAddr)
+	if in {
+		log.Warnf("[units][OnLPOfferRequest] RemoteAddr:%v is blocked by:%v", r.RemoteAddr, desc)
+		return
+	}
+
 	requestId := common.GenRandId()
 	log.Infof("[Units][OnLPOfferRequest]Received request %s:%s\n", requestId, common.SchemeHostURI(r))
 	if !started {

@@ -25,6 +25,7 @@ func main() {
 		log.Alert(string(debug.Stack()))
 	}()
 	help := flag.Bool("help", false, "show help")
+	blacklistPath := flag.String("blacklist", "", "global blacklist.txt path. If it's empty, disable global blacklist.")
 	flag.Parse()
 	if *help {
 		flag.PrintDefaults()
@@ -48,6 +49,12 @@ func main() {
 	defer func() {
 		log.Flush()
 	}()
+
+	if len(*blacklistPath) != 0 {
+		if err := blacklist.EnableBlacklist(*blacklistPath); err != nil {
+			log.Errorf("EnableBlacklist with path:%v failed:%v", *blacklistPath, err)
+		}
+	}
 
 	// 启动保存协程
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
