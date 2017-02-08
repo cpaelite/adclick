@@ -525,6 +525,7 @@
           $scope.item.flow = {
             id: $scope.item.targetFlowId
           };
+          showFlow();
         }
         if ($scope.item['costModel'] == null) {
           $scope.item = defaultItem();
@@ -539,6 +540,41 @@
 
     $q.all(initPromises).then(initSuccess);
 
+    function calculateRelativeWeight(list, isValid) {
+      var total = 0;
+      if (!list) {
+        return;
+      }
+      list.forEach(function(item) {
+        if (isValid(item))
+          total += item.weight | 0;
+      });
+      list.forEach(function(item) {
+        if (isValid(item)) {
+          item.relativeWeight = 100 * item.weight / total;
+        } else {
+          item.relativeWeight = -1;
+        }
+      });
+    }
+
+    function showFlow() {
+      $scope.ztreeShow = true;
+      // Get Flow by Id
+      Flow.get({id: $scope.item.flow.id}, function (flow) {
+        $scope.flow = flow.data;
+
+        $scope.flow.rules.forEach(function(rule) {
+          calculateRelativeWeight(rule.paths, function(item) { return item; });
+
+          rule.paths.forEach(function(path) {
+            calculateRelativeWeight(path.landers, function(item) { return item; });
+            calculateRelativeWeight(path.offers, function(item) { return item; });
+          });
+        });
+      });
+    }
+
     $scope.$watch('trafficSourceId', function (newValue, oldValue) {
       if (newValue != oldValue) {
         $scope.trafficSources.forEach(function (traffic) {
@@ -549,14 +585,20 @@
       }
     });
 
+    $scope.$watch('item.flow.id', function (newValue, oldValue) {
+      if (newValue != oldValue) {
+        showFlow();
+      }
+    });
+
     $scope.toAddFlow = function () {
       $mdDialog.hide();
-      $state.go('app.flow');
+      $scope.$parent.$state.go('app.flow');
     };
 
     $scope.toEditFlow = function () {
       $mdDialog.hide();
-      $scope.$state.go('app.flow', {id: $scope.item.flow.id});
+      $scope.$parent.$state.go('app.flow', {id: $scope.item.flow.id});
     };
 
     this.cancel = $mdDialog.cancel;
@@ -637,18 +679,21 @@
       }
     };
 
-    $scope.treeLiIsShow = true;
+    /*$scope.treeLiIsShow = true;
     $scope.offersIsShow = true;
     $scope.offersConIsShow = true;
-    $scope.firstTreeClick = function($event){
+    $scope.landersIsShow = true;
+    $scope.landersConIsShow = true;*/
+
+    /*$scope.firstTreeClick = function(){
       $scope.treeLiIsShow = !$scope.treeLiIsShow;
     };
-    $scope.secondTreeClick = function($event){
+    $scope.secondTreeClick = function(){
       $scope.offersIsShow = !$scope.offersIsShow;
     };
-    $scope.thirdTreeClick = function($event){
+    $scope.thirdTreeClick = function(){
       $scope.offersConIsShow = !$scope.offersConIsShow;
-    };
+    };*/
 
     $scope.radioSelect = function (type) {
       $scope.radioTitle = type;
