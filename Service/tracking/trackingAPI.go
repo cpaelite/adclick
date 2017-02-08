@@ -133,10 +133,11 @@ func AddPayout(key AdStatisKey, count float64) {
 	addTrackEvent(key, f)
 }
 
-func addTrackEvent(key AdStatisKey, action func(d *adStatisValues)) {
-	currentMillisecond := time.Now().UnixNano() / int64(time.Millisecond)
-	key.Timestamp = currentMillisecond - (currentMillisecond % 3600000)
+// 统计信息的时间粒度
+// 以前是一个小时，现在改成15分钟
+const timestampGranularity = 3600000 / 4
 
+func addTrackEvent(key AdStatisKey, action func(d *adStatisValues)) {
 	gatherChan <- events{
 		keyMd5:    statisKeyMD5(&key),
 		keyFields: key,
@@ -147,5 +148,5 @@ func addTrackEvent(key AdStatisKey, action func(d *adStatisValues)) {
 // Timestamp 精确到毫秒的、以小时为单位的时间截
 func Timestamp() int64 {
 	currentMillisecond := time.Now().UnixNano() / int64(time.Millisecond)
-	return currentMillisecond - (currentMillisecond % 3600000)
+	return currentMillisecond - (currentMillisecond % timestampGranularity)
 }
