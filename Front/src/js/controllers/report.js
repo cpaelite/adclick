@@ -329,7 +329,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
+        controller = ['$scope', '$mdDialog','$timeout', 'Campaign', 'Flow', 'TrafficSource', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
         $scope.$state.go('app.flow');
@@ -440,7 +440,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog, Campaign, Flow, TrafficSource) {
+  function editCampaignCtrl($scope, $mdDialog, $timeout, Campaign, Flow, TrafficSource) {
     $scope.tags = [];
     if (this.item) {
       Campaign.get({id: this.item.data.campaignId}, function(campaign) {
@@ -480,6 +480,23 @@
       this.title = "add";
     }
     this.titleType = angular.copy(this.perfType);
+
+    $scope.btnWord1 = "Clipboard";
+    $scope.itemUrlClick = function(){
+      $scope.btnWord1 = "Copied";
+      $timeout(function() {
+        $scope.btnWord1 = "Clipboard";
+      }, 2000);
+    };
+    $scope.btnWord2 = "Clipboard";
+    $scope.impPixelUrlClick = function(){
+      $scope.btnWord2 = "Copied";
+      $timeout(function() {
+        $scope.btnWord2 = "Clipboard";
+      }, 2000);
+    };
+
+
 
     // TrafficSource
     TrafficSource.get(null, function (trafficSource) {
@@ -858,27 +875,35 @@
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trafficSource-template-dialog.html',
+      }).then(function(data){
+        console.log(data);
+        $scope.item.postbackUrl = data;
       });
     };
 
   }
 
-  function trafficSourceTemplateCtrl($scope, $mdDialog) {
+  function trafficSourceTemplateCtrl($scope, $mdDialog, $index) {
 
     $scope.trafficTemplateLists = [
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
+      "50onRed Intext1",
+      "50onRed Intext2",
+      "50onRed Intext3",
+      "50onRed Intext4",
+      "50onRed Intext5",
+      "50onRed Intext6",
+      "50onRed Intext7",
+      "50onRed Intext8",
+      "50onRed Intext9",
     ];
     $scope.selected = 0;
     $scope.templateListClick = function($index){
       $scope.selected = $index;
+    };
+
+    this.save = function () {
+      var name = $scope.trafficTemplateLists[$scope.selected];
+      $mdDialog.hide(name);
     };
 
     this.hide = function() {

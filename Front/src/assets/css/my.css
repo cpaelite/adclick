@@ -795,6 +795,25 @@ md-backdrop.md-dialog-backdrop:nth-of-type(even){
     float: left;
     margin-top: 15px;
 }
+.campaign-url{
+/*    width: 78%;
+    float: left;*/
+}
+.md-raised.copied-btn{
+    box-shadow: none !important;
+    background: #253c75;
+    margin: 0;
+    font-size: 12px;
+    /*float: right;*/
+    color: #fff;
+    display: block;    
+}
+.md-raised.copied-btn:hover{
+    background: #253c75 !important;
+}
+.md-raised.copied-btn .material-icons{
+    font-size: 18px;
+}
 .report .right-select{
     float: right;
 } 
