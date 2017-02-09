@@ -22,6 +22,9 @@ import requests
 import base64
 import re
 from urllib import unquote
+
+import sys
+
 from timer import Timer
 
 # http://chenxing.mymac.com:52500/campaign.1.hash
@@ -87,6 +90,9 @@ def parse_redirect_url(req):
     :param req: http request
     :return: redirect url, None if error
     """
+    if req is None:
+        return
+
     if req.status_code == 302:
         # 302直接跳转
         return req.headers["location"]
@@ -161,7 +167,12 @@ class ReqSerialStat(object):
 
 def send_request(url, stat, prefix, cookies=None):
     with Timer() as t:
-        impression = requests.get(url, cookies=cookies, allow_redirects=False)
+        try:
+            impression = requests.get(url, cookies=cookies, allow_redirects=False)
+        except requests.ConnectionError as ce:
+            print >>sys.stderr, ce
+            return
+
     stat.Time = t.interval
 
     logging.debug("%s: status_code: %s", prefix, impression.status_code)
@@ -182,7 +193,7 @@ def run_once(i):
     # impression模拟
     if args.impression:
         impression = send_request(impression_url, stat=stat.Imp, prefix="impression.%d" % i, cookies=jar)
-        if impression.status_code == 200:
+        if impression and impression.status_code == 200:
             logging.debug("impression: text: %s", impression.text)
             stat.Imp.Status = REQ_SUCCESS
         else:
@@ -192,7 +203,7 @@ def run_once(i):
 
     # campaign模拟
     req = send_request(campaign_url, stat=stat.Camp, prefix="campaign.%d" % i, cookies=jar)
-    if req.status_code == 200:
+    if req and req.status_code == 200:
         logging.debug("campaign.%d text: [%s]", i, req.text)
 
     # 三种情况：1. 302直接跳转   2. meta refresh跳转   3. double meta refresh
@@ -215,7 +226,7 @@ def run_once(i):
     if lander_or_offer(redirect_url) == "lander":
         click = send_request(click_url, stat=stat.Click, prefix="click.%d" % i, cookies=req.cookies)
 
-        if click.status_code == 200:
+        if click and click.status_code == 200:
             logging.debug("click text: %s", click.text)
         lander_redirect_url = parse_redirect_url(click)
         logging.debug("click.%d lander_redirect_url:%s", i, lander_redirect_url)
@@ -230,7 +241,7 @@ def run_once(i):
     postback = send_request(postback_url, stat=stat.Postback, prefix="postback.%d" % i)
 
     logging.debug('-' * 80)
-    if postback.status_code == 200:
+    if postback and postback.status_code == 200:
         stat.Postback.Status = REQ_SUCCESS
     else:
         stat.Postback.Status = REQ_FAILED
