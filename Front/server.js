@@ -115,7 +115,7 @@ app.get('/api/preferences', function (req, res) {
   var result = {
     "status": 1,
     "message": "",
-    data: {
+    data: JSON.stringify({
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
       "reportViewOrder": "-visits",
@@ -255,9 +255,8 @@ app.get('/api/preferences', function (req, res) {
           "visible": false
         }
       }
-    }
+    })
   };
-  result.data = JSON.stringify(result.data);
   delayResponse(res, result);
 });
 
@@ -870,6 +869,7 @@ app.get('/api/flows/:flowId/campaigns', function (req, res) {
  * shang@v1
  */
 app.post('/api/flows', function (req, res) {
+  console.log(JSON.stringify(req.body));
   var result = {
     status: 1,
     message: "",
@@ -963,6 +963,7 @@ app.post('/api/flows', function (req, res) {
  * shang@v1
  */
 app.post('/api/flows/:flowId', function (req, res) {
+  console.log(JSON.stringify(req.body));
   var result = {
     "id": 1,
     "name": "Global - yoshop-Android-benson",
@@ -1083,7 +1084,7 @@ app.get('/api/landers/:landerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/landers', function (req, res) {
-  var result = [{"id":46,"name":"Lander12"},{"id":47,"name":"Lander1"},{"id":49,"name":"Lander2"},{"id":50,"name":"Lander3"},{"id":54,"name":"Lander3"}];
+  var result = [{"id":46,"name":"Lander12","country":"us"},{"id":47,"name":"Lander1","country":"us"},{"id":49,"name":"Lander2","country":"cn"},{"id":50,"name":"Lander3","country":"us"},{"id":54,"name":"Lander3","country":"ca"}];
   delayResponse(res, result);
 });
 
@@ -1190,7 +1191,7 @@ app.get('/api/offers/:offerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/offers', function (req, res) {
-  var result = [{"id":22,"name":"Offer12"},{"id":23,"name":"Offer1"},{"id":41,"name":"Offer2"},{"id":42,"name":"Offer3"},{"id":43,"name":"Offer4"}];
+  var result = [{"id":22,"name":"Offer12","country":"us"},{"id":23,"name":"Offer1","country":"cn"},{"id":41,"name":"Offer2","country":"ca"},{"id":42,"name":"Offer3","country":"cn"},{"id":43,"name":"Offer4","country":"us"}];
   delayResponse(res, result);
 });
 
@@ -1518,6 +1519,7 @@ app.get('/api/conditions', function (req, res) {
   var result = [{
     "id": "1234",
     "display": "Day of week",
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
       "type": "checkbox", "name": "weekday", "options": [
         { "value": "mon", "display": "Monday" },
@@ -1540,6 +1542,7 @@ app.get('/api/conditions', function (req, res) {
   }, {
     "id": "2334",
     "display": "Country",
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
       "type": "select", "name": "value", "options": [
         { "value": "us", "display": "American" },
@@ -1552,6 +1555,7 @@ app.get('/api/conditions', function (req, res) {
   }, {
     "id": "3434",
     "display": "OS",
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
       "type": "l2select", "name": "value", "options": [{
         "value": "linux", "display": "Linux", "suboptions": [
@@ -1585,6 +1589,7 @@ app.get('/api/conditions', function (req, res) {
   }, {
     "id": "8334",
     "display": "Device type",
+    "operands": [{value: "ctn", display: "Must Contain"}, {value: "nctn", display: "Not Contain"}],
     "fields": [{
       "type": "chips", "name": "value", "options": [
         { "value": "mobile", "display": "Mobile Phones" },
@@ -1596,6 +1601,7 @@ app.get('/api/conditions', function (req, res) {
   }, {
     "id": "3534",
     "display": "IP and IP ranges",
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
       "type": "textarea", "name": "value",
       "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
@@ -1603,6 +1609,7 @@ app.get('/api/conditions', function (req, res) {
   }, {
     "id": "4934",
     "display": "Time of day",
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
       "type": "inputgroup",
       "inputs": [

@@ -9,6 +9,7 @@
   function FlowEditCtrl($scope, $mdDialog, $q, Flow, Lander, Offer, Condition, Country) {
     $scope.app.subtitle = 'Flow';
     var flowId = $scope.$stateParams.id;
+    var isDuplicate = $scope.$stateParams.dup == '1';
 
     var pathSkel = {
       name: 'Path 1',
@@ -48,19 +49,20 @@
 
       theFlow = {
         name: 'new flow',
+        country: 'global',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
     }
 
     var allLanders;
-    prms = Lander.query({columns:'id,name'}, function(result) {
+    prms = Lander.query({columns:'id,name,country'}, function(result) {
       allLanders = result;
     }).$promise;
     initPromises.push(prms);
 
     var allOffers;
-    prms = Offer.query({columns:'id,name'}, function(result) {
+    prms = Offer.query({columns:'id,name,country'}, function(result) {
       allOffers = result;
     }).$promise;
     initPromises.push(prms);
@@ -72,25 +74,26 @@
     }).$promise;
     initPromises.push(prms);
 
+    var allCountries;
     prms = Country.query({}, function(result) {
       //console.log(result);
-      $scope.allCountries = result;
+      allCountries = result;
     }).$promise;
     initPromises.push(prms);
 
     $scope.initState = 'init';
     function initSuccess() {
       var offerMap = {};
-      allOffers.forEach(function(offer, idx) {
-        offerMap[offer.id] = idx;
+      allOffers.forEach(function(offer) {
+        offerMap[offer.id] = offer;
       });
       var landerMap = {};
-      allLanders.forEach(function(lander, idx) {
-        landerMap[lander.id] = idx;
+      allLanders.forEach(function(lander) {
+        landerMap[lander.id] = lander;
       });
       var conditionMap = {};
-      allConditions.forEach(function(condition, idx) {
-        conditionMap[condition.id] = idx;
+      allConditions.forEach(function(condition) {
+        conditionMap[condition.id] = condition;
         condition.fields.forEach(function(field) {
           if (field.type == 'l2select') {
             var val2name = {};
@@ -101,21 +104,38 @@
                 val2name[subopt.value] = subopt.display;
               });
             });
-            if (!condition._fv2n) {
-              condition._fv2n = {};
-            }
-            condition._fv2n[field.name] = val2name;
+            field._v2n = val2name;
+
+          } else if (field.type == 'chips') {
+            var val2name = {};
+            field.options.forEach(function(opt) {
+              val2name[opt.value] = opt.display;
+            });
+            field._v2n = val2name;
           }
         });
       });
       
+      var country = theFlow.country;
+      allCountries.forEach(function(ctry) {
+        if (ctry.value == country) {
+          theFlow.country = ctry;
+        }
+      });
+
       // fulfill flow with lander/offer/condition
+      if (isDuplicate) {
+        delete theFlow.id;
+      }
       theFlow.rules.forEach(function(rule) {
+        if (isDuplicate) {
+          delete rule.id;
+        }
         if (!Array.isArray(rule.conditions)) {
           rule.conditions = [];
         }
         rule.conditions.forEach(function(condition) {
-          condition._def = allConditions[conditionMap[condition.id]];
+          condition._def = conditionMap[condition.id];
         });
 
         if (!Array.isArray(rule.paths)) {
@@ -124,13 +144,16 @@
 
         calculateRelativeWeight(rule.paths, function(item) { return !item.isDeleted; });
         rule.paths.forEach(function(path) {
+          if (isDuplicate) {
+            delete path.id;
+          }
           if (!Array.isArray(path.landers)) {
             path.landers = [];
           }
 
           calculateRelativeWeight(path.landers, function(item) { return !item.isDeleted; });
           path.landers.forEach(function(lander) {
-            lander.name = allLanders[landerMap[lander.id]].name;
+            lander._def = landerMap[lander.id];
           });
 
           if (!Array.isArray(path.offers)) {
@@ -139,7 +162,7 @@
 
           calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
           path.offers.forEach(function(offer) {
-            offer.name = allOffers[offerMap[offer.id]].name;
+            offer._def = offerMap[offer.id];
           });
         });
       });
@@ -193,7 +216,7 @@
     $scope.$watch('flow.country', function (newValue, oldValue) {
       // todo: update flow name
       //$scope.flow.name = $scope.flow.country + ' - ' + $scope.flow.name;
-    });
+    }, true);
 
     // operation on rule
     $scope.editRule = function(rule) {
@@ -271,14 +294,17 @@
       var lcQuery = angular.lowercase(query);
 
       return function(item) {
-        return (item[property].indexOf(lcQuery) >= 0);
+        return (item[property].toLowerCase().indexOf(lcQuery) >= 0);
       };
     }
 
-    $scope.searchTextChange = function(text) {
-      console.info('Text changed to ' + text);
+    $scope.queryCountries = function(query) {
+      if (allCountries) {
+        return query ? allCountries.filter(createFilterFor(query, "display")) : allCountries;
+      } else {
+        return [];
+      }
     };
-
 
     /*
     // demo code for async load autocomplete options
@@ -321,7 +347,10 @@
     };
     $scope.queryLanders = function(query) {
       if (allLanders) {
-        return query ? allLanders.filter(createFilterFor(query, "name")) : allLanders;
+        var countryFiltered = allLanders.filter(function(lander) {
+          return theFlow.country.value == 'global' || lander.country == theFlow.country.value ;
+        });
+        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
         return [];
       }
@@ -329,7 +358,7 @@
     $scope.selectedLanderChange = function(item, lander) {
       if (item) {
         lander.id = item.id;
-        lander.name = item.name;
+        lander._def = item;
       }
     };
     $scope.$watch(function() {
@@ -362,7 +391,10 @@
     };
     $scope.queryOffers = function(query) {
       if (allOffers) {
-        return query ? allOffers.filter(createFilterFor(query, "name")) : allOffers;
+        var countryFiltered = allOffers.filter(function(offer) {
+          return theFlow.country.value == 'global' || offer.country == theFlow.country.value ;
+        });
+        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
         return [];
       }
@@ -370,7 +402,7 @@
     $scope.selectedOfferChange = function(item, offer) {
       if (item) {
         offer.id = item.id;
-        offer.name = item.name;
+        offer._def = item;
       }
     };
     $scope.$watch(function() {
@@ -403,7 +435,7 @@
       var newCond = {
         id: condition.id,
         _def: condition,
-        operand: 'is'
+        operand: condition.operands[0].value
       };
       condition.fields.forEach(function(f) {
         if (f.type == "chips" || f.type == "checkbox" || f.type == 'l2select') {
@@ -419,9 +451,8 @@
       }
     };
     $scope.querySearchIn = function(query, options, selected) {
-      //console.log("st:", query);
       var matched = query ? options.filter(createFilterFor(query, "display")) : options;
-      return matched.filter(excludeIn(selected));
+      return matched.map(function(item) { return item.value; }).filter(excludeIn(selected));
     };
 
     function excludeIn(list) {
@@ -434,20 +465,92 @@
       $scope.curRule.conditions = [];
     };
 
-    $scope.exists = function(item, list) {
-      list.indexOf(item) >= 0;
-    };
-    $scope.toggle = function(item, list) {
+    function exists(item, list) {
+      return list.indexOf(item) >= 0;
+    }
+    $scope.exists = exists;
+    function toggle(item, list) {
       var idx = list.indexOf(item);
       if (idx >= 0) {
         list.splice(idx, 1);
       } else {
         list.push(item);
       }
-    };
+    }
+    $scope.toggle = toggle;
+
+    function l2containAny(selected, options) {
+      for (var i = 0; i < options.length; ++i) {
+        if (selected.indexOf(options[i].value) >= 0) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function l2containAll(selected, options) {
+      for (var i = 0; i < options.length; ++i) {
+        if (selected.indexOf(options[i].value) < 0) {
+          return false;
+        }
+      }
+      return true;
+    }
+    function l2removeAll(selected, options) {
+      options.forEach(function(opt) {
+        var idx = selected.indexOf(opt.value);
+        if (idx >= 0) {
+          selected.splice(idx, 1);
+        }
+      });
+    }
     $scope.toggleL2select = function(cdt, option, fname) {
-      cdt._suboptions = option.suboptions;
-      $scope.toggle(option.value, cdt[fname]);
+      cdt._l1selected = option;
+      var selected = cdt[fname];
+      if (!l2containAny(selected, option.suboptions)) {
+        toggle(option.value, selected);
+      }
+    };
+    $scope.l2allIsChecked = function(cdt, fname) {
+      return exists(cdt._l1selected.value, cdt[fname]);
+    };
+    $scope.l2IsIndeterminate = function(cdt, fname) {
+      return l2containAny(cdt[fname], cdt._l1selected.suboptions);
+    };
+    $scope.l2toggleAll = function(cdt, fname) {
+      var option = cdt._l1selected;
+      var selected = cdt[fname];
+      l2removeAll(selected, option.suboptions);
+      toggle(option.value, selected);
+    };
+    $scope.l2isChecked = function(value, cdt, fname) {
+      var option = cdt._l1selected;
+      var selected = cdt[fname];
+      if (exists(value, selected)) {
+        return true;
+      } else if (exists(option.value, selected)) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+    $scope.l2toggle = function(value, cdt, fname) {
+      var option = cdt._l1selected;
+      var selected = cdt[fname];
+      var checked = exists(value, selected);
+      if (exists(option.value, selected)) {
+        toggle(option.value, selected);
+        option.suboptions.forEach(function(opt) {
+          if (opt.value != value) {
+            selected.push(opt.value);
+          }
+        });
+      } else {
+        toggle(value, selected);
+        if (!checked && l2containAll(selected, option.suboptions)) {
+          selected.push(option.value);
+          l2removeAll(selected, option.suboptions);
+        }
+      }
     };
 
     // save
@@ -455,7 +558,7 @@
       // clean up before save
       var flowData = {
         name: theFlow.name,
-        country: theFlow.country,
+        country: theFlow.country.value,
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };

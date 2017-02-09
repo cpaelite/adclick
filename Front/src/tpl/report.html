@@ -136,8 +136,10 @@
                   <span ng-if="column.role=='name' && treeLevel==1" uib-dropdown>
                     <a uib-dropdown-toggle>{{row.data[column.key]}}</a>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                      <li role="menuitem" ng-show="canEdit"><a ng-click="editItem($event, row)">Edit</a></li>
-                      <li class="divider" ng-show="canEdit"></li>
+                      <li role="menuitem" ng-if="canEdit"><a ng-click="editItem($event, row)">Edit</a></li>
+                      <li role="menuitem" ng-if="canEdit"><a ng-click="editItem($event, row, true)">Duplicate</a></li>
+                      <li role="menuitem" ng-if="canEdit"><a ng-click="deleteItem($event, row)">Delete</a></li>
+                      <li class="divider" ng-if="canEdit"></li>
                       <li class="dropdown-submenu">
                         <a>Drilldown by...</a>
                         <ul class="dropdown-menu">

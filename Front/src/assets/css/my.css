@@ -1723,10 +1723,11 @@ p.cs-flow-offer-view{
     border-radius: 4px;
     background: rgba(18, 189, 206, 0.14);
 }
-.day-checkbox{
+.condition-checkbox{
     margin: 15px 0;
 }
-.day-checkbox label{
+.condition-checkbox div{
+    display: inline;
     font-size: 13px;
     line-height: 30px;
     margin-right: 10px;

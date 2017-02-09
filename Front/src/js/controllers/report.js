@@ -297,8 +297,7 @@
         $scope.menuStatus.isopen = true;
       }
     };
-    // fixme: are all types editable
-    $scope.canEdit = true;
+    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'affiliate'].indexOf(perfType) >= 0;
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
@@ -346,18 +345,19 @@
     if (perfType == 'affiliate')
       editTemplateUrl = 'tpl/affiliateNetwork-edit-dialog.html';
 
-    $scope.editItem = function (ev, item) {
+    $scope.editItem = function (ev, item, duplicate) {
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
         controller = ['$scope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
-        //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
-        var flowId = "";
+        var params = {};
         if (item) {
-          flowId = item.data.flowId;
+          params.id = item.id;
+          if (duplicate)
+            params.dup = 1;
         }
-        $scope.$state.go('app.flow', {id: flowId});
+        $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
@@ -374,7 +374,7 @@
         controller: controller,
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {item: item, perfType: perfType},
+        locals: {item: item, perfType: perfType, duplicate: !!duplicate},
         bindToController: true,
         targetEvent: ev,
         templateUrl: editTemplateUrl
@@ -384,13 +384,16 @@
     };
 
     $scope.deleteItem = function (ev, item) {
+      if (!$scope.canEdit) {
+        return;
+      }
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Campaign', 'Flow', 'Lander', 'Offer', 'AffiliateNetwork', deleteCtrl],
+        controller: ['$mdDialog', '$injector', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
-        locals: {type: perfType, item: item},
+        locals: {type: perfType, item: item.id},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
       }).then(function () {
@@ -507,6 +510,8 @@
     function initSuccess() {
       $scope.trafficSources = allTraffic;
       $scope.flows = allFlow;
+      var isDuplicate = this.duplicate;
+      if (isDuplicate) delete $scope.item.id;
       if (theCampaign) {
         $scope.item = theCampaign;
         if ($scope.item.costModel == 1) {
@@ -717,8 +722,10 @@
   function editLanderCtrl($scope, $mdDialog, Lander, urlParameter) {
     $scope.tags = [];
     if (this.item) {
+      var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
+        if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
         if ($scope.item['url'] == null) {
           $scope.item = {
@@ -810,6 +817,8 @@
 
     function initSuccess() {
       $scope.affiliates = allAffiliate;
+      var isDuplicate = this.duplicate;
+      if (isDuplicate) delete $scope.item.id;
       if (theOffer) {
         $scope.item = theOffer;
         $scope.affiliateId = theOffer.AffiliateNetworkId;
@@ -867,7 +876,7 @@
           return;
         }
       });
-      
+
       delete $scope.item.AffiliateNetworkId;
       delete $scope.item.AffiliateNetworkName;
       delete $scope.item.postbackUrl;
@@ -895,8 +904,10 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource, urlParameter) {
     if (this.item) {
+      var isDuplicate = this.duplicate;
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
+        if (isDuplicate) delete $scope.item.id;
         if($scope.item.cost) {
           $scope.cost = JSON.parse($scope.item.cost);
         } else {
@@ -1088,8 +1099,10 @@
 
   function editAffiliateCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
     if (this.item) {
+      var isDuplicate = this.duplicate;
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
+        if (isDuplicate) delete $scope.item.id;
         if ($scope.item.ipWhiteList) {
           var ips = JSON.parse($scope.item.ipWhiteList);
           if (ips.length) {
@@ -1135,7 +1148,7 @@
         AffiliateNetwork.save($scope.item, success);
       }
     };
-    
+
     $scope.checkIP = function () {
       var isValid = true;
       // 验证IP格式
@@ -1205,37 +1218,38 @@
     };
   }
 
-  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {
+  function deleteCtrl($mdDialog, $injector) {
     this.title = "delete";
     this.content = 'warnDelete';
 
     this.cancel = $mdDialog.cancel;
 
-    function deleteItem(item) {
-      var deferred;
-      if (type == 'campaign') {
-        deferred = Campaign.remove({id: item.id});
-      } else if (type == 'flow') {
-        deferred = Flow.remove({id: item.id});
-      } else if (type == 'lander') {
-        deferred = Lander.remove({id: item.id});
-      } else if (type == 'offer') {
-        deferred = Offer.remove({id: item.id});
-      } else if (type == 'affiliate') {
-        deferred = AffiliateNetwork.remove({id: item.id});
-      }
-      return deferred.$promise;
+    var type = this.type;
+    var resourceName;
+    if (type == 'affiliate') {
+      resourceName = 'AffiliateNetwork';
+    } else {
+      resourceName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     }
 
+    function deleteItem(item) {
+      return $injector.get(resourceName).remove({id: item}).$promise;
+    }
+
+    this.onprocess = false;
     this.ok = function () {
+      this.onprocess = true;
       deleteItem(this.item).then(success, error);
     };
 
     function success() {
+      console.log("success delete");
+      this.onprocess = false;
       $mdDialog.hide();
     }
 
     function error() {
+      this.onprocess = false;
       this.error = 'Error occured when delete.';
     }
   }
