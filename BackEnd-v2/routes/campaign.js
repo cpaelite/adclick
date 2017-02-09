@@ -4,7 +4,7 @@ var Joi = require('joi');
 var common = require('./common');
 var Pub = require('./redis_sub_pub');
 var setting = require('../config/setting');
-
+var uuidV4 = require('uuid/v4');
 
 //Request Example:
 //  {
@@ -356,7 +356,9 @@ const start = async(data, schema) => {
                  
                 await common.updateCampaign(value, connection);
             } else {
-                campResult = await common.insertCampaign(value, connection);
+                let hash = uuidV4();
+                campResult = await common.insertCampaign(value,hash, connection);
+                value.hash=hash;
             }
 
              

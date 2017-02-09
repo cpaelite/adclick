@@ -75,8 +75,7 @@ function validate(data, schema) {
 }
 
 // Campaign
-function insertCampaign(value, connection) {
-    var hash = uuidV4();
+function insertCampaign(value,hash, connection) {
     // //url
     // let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
     // let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash
