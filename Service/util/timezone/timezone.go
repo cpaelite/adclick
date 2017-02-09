@@ -9,10 +9,16 @@ import (
 	"AdClickTool/Service/log"
 )
 
-var reg = regexp.MustCompile(`^(\+|\-)((0[0-9]|10|11)\:[0-5][0-9]|12\:00)$`)
+var osreg = regexp.MustCompile(`^(\+|\-)((0[0-9]|10|11)\:[0-5][0-9]|12\:00)$`)
 
 func offsetValid(offset string) bool {
-	return reg.Match([]byte(offset))
+	return osreg.Match([]byte(offset))
+}
+
+var hmreg = regexp.MustCompile(`^((0[0-9]|1[0-9]|2[0-3])\:[0-5][0-9])$`)
+
+func hmValid(hm string) bool {
+	return hmreg.Match([]byte(hm))
 }
 
 // offset:+08:00/+05:45/-08:00
@@ -42,4 +48,14 @@ func TimeInZone(t time.Time, zoneName, offset string) (zt time.Time) {
 	}
 
 	return t.In(time.FixedZone(zoneName, zoneOffset(offset)))
+}
+
+func IsZoneTimeBetween(t time.Time, offset, lhm, rhm string) bool {
+	zt := TimeInZone(t, "", offset)
+	if !hmValid(lhm) || !hmValid(rhm) {
+		return false
+	}
+
+	zhm := zt.Format("15:04")
+	return zhm >= lhm && zhm <= rhm
 }

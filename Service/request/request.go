@@ -57,6 +57,8 @@ type Request interface {
 	SetCampaignId(id int64)
 	CampaignName() string
 	SetCampaignName(name string)
+	CampaignCountry() string
+	SetCampaignCountry(country string)
 	FlowId() int64
 	SetFlowId(id int64)
 	RuleId() int64

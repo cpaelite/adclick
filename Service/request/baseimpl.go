@@ -40,6 +40,7 @@ type reqbase struct {
 	campaignHash      string
 	campaignId        int64
 	campaignName      string
+	campaignCountry   string
 	flowId            int64
 	ruleId            int64
 	pathId            int64
@@ -286,6 +287,12 @@ func (r *reqbase) CampaignName() string {
 }
 func (r *reqbase) SetCampaignName(name string) {
 	r.campaignName = name
+}
+func (r *reqbase) CampaignCountry() string {
+	return r.campaignCountry
+}
+func (r *reqbase) SetCampaignCountry(country string) {
+	r.campaignCountry = country
 }
 func (r *reqbase) FlowId() int64 {
 	return r.flowId

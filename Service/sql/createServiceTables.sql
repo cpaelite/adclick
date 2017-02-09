@@ -69,7 +69,8 @@ CREATE TABLE AdClickTool.`Rule` (
   `name` varchar(256) NOT NULL,
   `hash` varchar(39) NOT NULL,
   `type` int(11) NOT NULL COMMENT '0:匿名;1:普通(标示是否是Flow里默认Path的Rule)',
-  `json` text NOT NULL COMMENT '按照既定规则生成的rule信息',
+  `json` text NOT NULL COMMENT '按照既定规则生成的rule信息，供Service使用',
+  `object` text NOT NULL COMMENT '按照既定规则生成的rule信息，供前端使用',
   `status` int(11) NOT NULL COMMENT '0:停止;1:运行;用来标记该Rule本身是否有效',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
@@ -227,7 +228,7 @@ CREATE TABLE AdClickTool.`Country` (
   UNIQUE KEY `numCode` (`numCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE AdClickTool.`TimeZones` (
+CREATE TABLE AdClickTool.`Timezones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(256) NOT NULL,
   `detail` varchar(256) NOT NULL,
