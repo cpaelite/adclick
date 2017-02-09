@@ -818,30 +818,32 @@
           };
         }
       }
+
+      //TODO 后台获取defaultPostbackUrl
+      var defaultPostbackUrl = "http://" + $scope.$parent.currentUser.idText + ".newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
+      $scope.$watch('affiliateId', function (newValue, oldValue) {
+        if (!newValue) {
+          $scope.item.postbackUrl = defaultPostbackUrl;
+          return;
+        }
+        if (newValue != oldValue) {
+          $scope.affiliates.forEach(function (affiliate) {
+            if (affiliate.id == newValue) {
+              if (affiliate.postbackUrl) {
+                $scope.item.postbackUrl = affiliate.postbackUrl;
+              } else {
+                $scope.item.postbackUrl = defaultPostbackUrl;
+              }
+              return;
+            }
+
+          });
+        }
+      });
+
     }
 
     $q.all(initPromises).then(initSuccess);
-
-    var defaultPostbackUrl = "http://" + $scope.$parent.currentUser.idText + ".newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
-    $scope.$watch('affiliateId', function (newValue, oldValue) {
-      if (!newValue) {
-        $scope.item.postbackUrl = defaultPostbackUrl;
-        return;
-      }
-      if (newValue != oldValue) {
-        $scope.affiliates.forEach(function (affiliate) {
-          if (affiliate.id == newValue) {
-            if (affiliate.postbackUrl) {
-              $scope.item.postbackUrl = affiliate.postbackUrl;
-            } else {
-              $scope.item.postbackUrl = defaultPostbackUrl;
-            }
-            return;
-          }
-
-        });
-      }
-    });
 
     this.titleType = angular.copy(this.perfType);
 
