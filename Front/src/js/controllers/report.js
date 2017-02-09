@@ -362,7 +362,7 @@
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', 'Offer', 'AffiliateNetwork', 'urlParameter', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
@@ -769,24 +769,19 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, Offer, AffiliateNetwork, urlParameter) {
+  function editOfferCtrl($scope, $mdDialog, $q, Offer, AffiliateNetwork, urlParameter) {
     $scope.tags = [];
+
+    // init load data
+    var initPromises = [], prms;
+
     if (this.item) {
-      Offer.get({id: this.item.data.offerId}, function (offer) {
-        $scope.item = angular.copy(offer.data);
-        $scope.affiliateId = $scope.item.AffiliateNetworkId;
-        if ($scope.item['payoutMode'] == null) {
-          $scope.item = {
-            payoutMode: 0,
-          };
-        }
-        if ($scope.item['url'] == null) {
-          $scope.item = {
-            url: 'http://',
-            numberOfOffers: 1,
-          };
-        }
-      });
+      var theOffer;
+      prms = Offer.get({id: this.item.data.offerId}, function(offer) {
+        theOffer = offer.data;
+      }).$promise;
+      initPromises.push(prms);
+
       this.title = "edit";
     } else {
       $scope.item = {
@@ -799,9 +794,54 @@
     // Country
     $scope.countries = $scope.$root.countries;
 
-    // AffiliateNetword
-    AffiliateNetwork.get(null, function (affiliates) {
-      $scope.affiliates = affiliates.data.affiliates;
+    var allAffiliate;
+    prms = AffiliateNetwork.get(null, function (affiliates) {
+      allAffiliate = affiliates.data.affiliates;
+    }).$promise;
+    initPromises.push(prms);
+
+    function initSuccess() {
+      $scope.affiliates = allAffiliate;
+      if (theOffer) {
+        $scope.item = theOffer;
+        $scope.affiliateId = theOffer.AffiliateNetworkId;
+        $scope.tags = $scope.item.tags;
+        if ($scope.item['payoutMode'] == null) {
+          $scope.item = {
+            payoutMode: 0,
+          };
+        }
+        if ($scope.item['url'] == null) {
+          $scope.item = {
+            url: 'http://',
+            numberOfOffers: 1,
+          };
+        }
+      }
+    }
+
+    $q.all(initPromises).then(initSuccess);
+
+    //var defaultPostbackUrl = "http://" + $scope.currentUser.idText + ".newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
+    var defaultPostbackUrl = "http://9cmzk.newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
+    $scope.$watch('affiliateId', function (newValue, oldValue) {
+      if (!newValue) {
+        $scope.item.postbackUrl = defaultPostbackUrl;
+        return;
+      }
+      if (newValue != oldValue) {
+        $scope.affiliates.forEach(function (affiliate) {
+          if (affiliate.id == newValue) {
+            if (affiliate.postbackUrl) {
+              $scope.item.postbackUrl = affiliate.postbackUrl;
+            } else {
+              $scope.item.postbackUrl = defaultPostbackUrl;
+            }
+            return;
+          }
+
+        });
+      }
     });
 
     this.titleType = angular.copy(this.perfType);
@@ -815,7 +855,7 @@
     this.save = function () {
       $scope.item.tags = $scope.tags;
 
-      // AffiliateNewwork
+      // fill item.affiliateNetwork
       $scope.affiliates.forEach(function (affiliate) {
         if (affiliate.id == $scope.affiliateId) {
           $scope.item.affiliateNetwork = JSON.stringify(affiliate);

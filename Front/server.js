@@ -1372,9 +1372,9 @@ app.get('/api/affiliates', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      networks: [
-        {id: 1, name: "affilate1", postbackUrl: ""},
-        {id: 2, name: "affilate2", postbackUrl: ""},
+      affiliates: [
+        {id: 1, name: "affilate1", postbackUrl: "affiliate1"},
+        {id: 2, name: "affilate2", postbackUrl: "affilate2"},
         {id: 3, name: "affilate3", postbackUrl: ""}
       ]
     }

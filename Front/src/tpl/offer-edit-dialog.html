@@ -51,21 +51,19 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Affiliate network<span class="star-icon">*</span>: </label>
+                <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-5">
-                    <md-select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId" required>
+                    <md-select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId">
+                        <md-option value=""></md-option>
                         <md-option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</md-option>
                     </md-select>
-                    <span style="color:red" ng-show="editForm.AffiliateNetworkId.$dirty && editForm.AffiliateNetworkId.$invalid">
-                    <span ng-show="editForm.AffiliateNetworkId.$error.required">AffiliateNetwork is required.</span>
-                    </span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Postback Url：</label>
                 <div class="col-sm-5">
                     <input type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-show="postbackUrl">
-                    <input type="text" class="form-control" ng-model="item.postbackUrl" ng-disabled="true">
+                    <input type="text" class="form-control" ng-model="item.postbackUrl" ng-readonly="true">
                 </div>
             </div>
             <div class="form-group">
