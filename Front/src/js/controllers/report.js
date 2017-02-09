@@ -389,7 +389,7 @@
       }
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', deleteCtrl],
+        controller: ['$mdDialog', '$injector', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
@@ -977,7 +977,7 @@
 
   }
 
-  function deleteCtrl($mdDialog, Campaign, Flow, Lander, Offer, AffiliateNetwork) {
+  function deleteCtrl($mdDialog, $injector) {
     this.title = "delete";
     this.content = 'warnDelete';
 
@@ -992,7 +992,7 @@
     }
 
     function deleteItem(item) {
-      return angular.injector().get(resourceName).remove({id: item}).$promise;
+      return $injector.get(resourceName).remove({id: item}).$promise;
     }
 
     this.onprocess = false;

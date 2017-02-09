@@ -84,16 +84,16 @@
     $scope.initState = 'init';
     function initSuccess() {
       var offerMap = {};
-      allOffers.forEach(function(offer, idx) {
-        offerMap[offer.id] = idx;
+      allOffers.forEach(function(offer) {
+        offerMap[offer.id] = offer;
       });
       var landerMap = {};
-      allLanders.forEach(function(lander, idx) {
-        landerMap[lander.id] = idx;
+      allLanders.forEach(function(lander) {
+        landerMap[lander.id] = lander;
       });
       var conditionMap = {};
-      allConditions.forEach(function(condition, idx) {
-        conditionMap[condition.id] = idx;
+      allConditions.forEach(function(condition) {
+        conditionMap[condition.id] = condition;
         condition.fields.forEach(function(field) {
           if (field.type == 'l2select') {
             var val2name = {};
@@ -104,10 +104,14 @@
                 val2name[subopt.value] = subopt.display;
               });
             });
-            if (!condition._fv2n) {
-              condition._fv2n = {};
-            }
-            condition._fv2n[field.name] = val2name;
+            field._v2n = val2name;
+
+          } else if (field.type == 'chips') {
+            var val2name = {};
+            field.options.forEach(function(opt) {
+              val2name[opt.value] = opt.display;
+            });
+            field._v2n = val2name;
           }
         });
       });
@@ -131,7 +135,7 @@
           rule.conditions = [];
         }
         rule.conditions.forEach(function(condition) {
-          condition._def = allConditions[conditionMap[condition.id]];
+          condition._def = conditionMap[condition.id];
         });
 
         if (!Array.isArray(rule.paths)) {
@@ -149,7 +153,7 @@
 
           calculateRelativeWeight(path.landers, function(item) { return !item.isDeleted; });
           path.landers.forEach(function(lander) {
-            lander._def = allLanders[landerMap[lander.id]];
+            lander._def = landerMap[lander.id];
           });
 
           if (!Array.isArray(path.offers)) {
@@ -158,7 +162,7 @@
 
           calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
           path.offers.forEach(function(offer) {
-            offer._def = allOffers[offerMap[offer.id]];
+            offer._def = offerMap[offer.id];
           });
         });
       });
@@ -431,7 +435,7 @@
       var newCond = {
         id: condition.id,
         _def: condition,
-        operand: 'is'
+        operand: condition.operands[0].value
       };
       condition.fields.forEach(function(f) {
         if (f.type == "chips" || f.type == "checkbox" || f.type == 'l2select') {
@@ -447,9 +451,8 @@
       }
     };
     $scope.querySearchIn = function(query, options, selected) {
-      //console.log("st:", query);
       var matched = query ? options.filter(createFilterFor(query, "display")) : options;
-      return matched.filter(excludeIn(selected));
+      return matched.map(function(item) { return item.value; }).filter(excludeIn(selected));
     };
 
     function excludeIn(list) {
