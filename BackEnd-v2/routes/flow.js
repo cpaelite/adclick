@@ -523,42 +523,49 @@ router.get('/api/conditions', async function (req, res) {
     var result = [{
         "id": "model",
         "display": "Brand and model",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "l2select", "name": "value", "options": []
         }]
     }, {
         "id": "browser",
         "display": "Browser and version",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "l2select", "name": "value", "options": []
         }]
     }, {
         "id": "connection",
         "display": "Connection Type",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "select", "name": "value", "options": []
         }]
     }, {
         "id": "country",
         "display": "Country",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "select", "name": "value", "options": []
         }]
     }, {
         "id": "region",
         "display": "State / Region",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "city",
         "display": "City",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "weekday",
         "display": "Day of week",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "checkbox", "name": "weekday", "options": [
                 {"value": "0", "display": "Monday"},
@@ -581,12 +588,14 @@ router.get('/api/conditions', async function (req, res) {
     }, {
         "id": "device",
         "display": "Device type",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "select", "name": "value", "options": []
         }]
     }, {
         "id": "iprange",
         "display": "IP and IP ranges",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
@@ -594,30 +603,35 @@ router.get('/api/conditions', async function (req, res) {
     }, {
         "id": "isp",
         "display": "ISP",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "language",
         "display": "Language",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "carrier",
         "display": "Mobile carrier",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "os",
         "display": "Operating system and version",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "l2select", "name": "value", "options": []
         }]
     }, {
         "id": "referrer",
         "display": "Referrer",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": ""
@@ -625,6 +639,7 @@ router.get('/api/conditions', async function (req, res) {
     }, {
         "id": "time",
         "display": "Time of day",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "inputgroup",
             "inputs": [
@@ -643,6 +658,7 @@ router.get('/api/conditions', async function (req, res) {
     }, {
         "id": "useragent",
         "display": "User Agent",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": ""
@@ -925,9 +941,9 @@ function conditionFormat(c) {
             } else if (v.id == 'country') {
                 r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'region') {
-                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'city') {
-                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'varN') {
                 // r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'weekday') {
@@ -937,11 +953,11 @@ function conditionFormat(c) {
             } else if (v.id == 'iprange') {
                 r.push(formatIPValue(v.id, v.operand, v.value))
             } else if (v.id == 'isp') {
-                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'language') {
-                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'carrier') {
-                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'os') {
                 r.push(formatThreeKeys(v.id, v.operand, v.value))
             } else if (v.id == 'referrer') {
