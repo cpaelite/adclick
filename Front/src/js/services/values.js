@@ -18,75 +18,11 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'impressions',
       name: 'Impressions'
-    }],
-  flow: [{
-    key: 'flowName',
-    name: 'Flow'
-  },
-    {
-      key: 'flowId',
-      name: 'Flow ID'
-    }],
-  lander: [{
-    key: 'landerName',
-    name: 'Lander'
-  },
-    {
-      key: 'landerId',
-      name: 'Lander ID'
     },
     {
-      key: 'landerUrl',
-      name: 'Lander URL'
+      key: 'visits',
+      name: 'Visits'
     },
-    {
-      key: 'landerCountry',
-      name: 'Lander country'
-    },
-    {
-      key: 'numberOfOffers',
-      name: 'Number of offers'
-    }],
-  offer: [{
-    key: 'offerName',
-    name: 'Offer'
-  },
-    {
-      key: 'offerId',
-      name: 'Offer ID'
-    },
-    {
-      key: 'offerUrl',
-      name: 'Offer URL'
-    },
-    {
-      key: 'offerCountry',
-      name: 'Offer country'
-    },
-    {
-      key: 'payout',
-      name: 'Payout'
-    }],
-  traffic: [{
-    key: 'trafficName',
-    name: 'Traffic source'
-  },
-    {
-      key: 'trafficId',
-      name: 'Traffic source ID'
-    }],
-  affiliate: [{
-    key: 'affiliateName',
-    name: 'Affiliate Network'
-  },
-    {
-      key: 'affiliateId',
-      name: 'Affiliate Network ID'
-    }],
-  common: [{
-    key: 'visits',
-    name: 'Visits'
-  },
     {
       key: 'clicks',
       name: 'Clicks'
@@ -114,6 +50,530 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'ictr',
       name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
+    },
+    {
+      key: 'postbackUrl',
+      name: 'Postback URL'
+    },
+    {
+      key: 'trafficSource',
+      name: 'Traffic source'
+    },
+    {
+      key: 'redirect',
+      name: 'Redirect'
+    },{
+      key: 'costModel',
+      name: 'Cost model'
+    },{
+      key: 'cpa',
+      name: 'CPA'
+    },{
+      key: 'cpc',
+      name: 'CPC'
+    },{
+      key: 'cpm',
+      name: 'CPM'
+    }],
+  flow: [{
+    key: 'flowName',
+    name: 'Flow'
+  },
+    {
+      key: 'flowId',
+      name: 'Flow ID'
+    },
+    {
+      key: 'impressions',
+      name: 'Impressions'
+    },
+    {
+      key: 'visits',
+      name: 'Visits'
+    },
+    {
+      key: 'clicks',
+      name: 'Clicks'
+    },
+    {
+      key: 'conversions',
+      name: 'Conversions'
+    },
+    {
+      key: 'revenue',
+      name: 'Revenue'
+    },
+    {
+      key: 'cost',
+      name: 'Cost'
+    },
+    {
+      key: 'profit',
+      name: 'Profit'
+    },
+    {
+      key: 'cpv',
+      name: 'CPV'
+    },
+    {
+      key: 'ictr',
+      name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
+    }],
+  lander: [{
+    key: 'landerName',
+    name: 'Lander'
+  },
+    {
+      key: 'landerId',
+      name: 'Lander ID'
+    },
+    {
+      key: 'landerUrl',
+      name: 'Lander URL'
+    },
+    {
+      key: 'landerCountry',
+      name: 'Lander country'
+    },
+    {
+      key: 'numberOfOffers',
+      name: 'Number of offers'
+    },
+    {
+      key: 'impressions',
+      name: 'Impressions'
+    },
+    {
+      key: 'visits',
+      name: 'Visits'
+    },
+    {
+      key: 'clicks',
+      name: 'Clicks'
+    },
+    {
+      key: 'conversions',
+      name: 'Conversions'
+    },
+    {
+      key: 'revenue',
+      name: 'Revenue'
+    },
+    {
+      key: 'cost',
+      name: 'Cost'
+    },
+    {
+      key: 'profit',
+      name: 'Profit'
+    },
+    {
+      key: 'cpv',
+      name: 'CPV'
+    },
+    {
+      key: 'ictr',
+      name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
+    }],
+  offer: [{
+    key: 'offerName',
+    name: 'Offer'
+  },
+    {
+      key: 'offerId',
+      name: 'Offer ID'
+    },
+    {
+      key: 'offerUrl',
+      name: 'Offer URL'
+    },
+    {
+      key: 'offerCountry',
+      name: 'Offer country'
+    },
+    {
+      key: 'payout',
+      name: 'Payout'
+    },
+    {
+      key: 'impressions',
+      name: 'Impressions'
+    },
+    {
+      key: 'visits',
+      name: 'Visits'
+    },
+    {
+      key: 'clicks',
+      name: 'Clicks'
+    },
+    {
+      key: 'conversions',
+      name: 'Conversions'
+    },
+    {
+      key: 'revenue',
+      name: 'Revenue'
+    },
+    {
+      key: 'cost',
+      name: 'Cost'
+    },
+    {
+      key: 'profit',
+      name: 'Profit'
+    },
+    {
+      key: 'cpv',
+      name: 'CPV'
+    },
+    {
+      key: 'ictr',
+      name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
+    },
+    {
+      key: 'affiliate',
+      name: 'Affiliate network'
+    }],
+  traffic: [{
+    key: 'trafficName',
+    name: 'Traffic source'
+  },
+    {
+      key: 'trafficId',
+      name: 'Traffic source ID'
+    },
+    {
+      key: 'impressions',
+      name: 'Impressions'
+    },
+    {
+      key: 'visits',
+      name: 'Visits'
+    },
+    {
+      key: 'clicks',
+      name: 'Clicks'
+    },
+    {
+      key: 'conversions',
+      name: 'Conversions'
+    },
+    {
+      key: 'revenue',
+      name: 'Revenue'
+    },
+    {
+      key: 'cost',
+      name: 'Cost'
+    },
+    {
+      key: 'profit',
+      name: 'Profit'
+    },
+    {
+      key: 'cpv',
+      name: 'CPV'
+    },
+    {
+      key: 'ictr',
+      name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
+    },
+    {
+      key: 'postbackUrl',
+      name: 'Postback URL'
+    },
+    {
+      key: 'clickId',
+      name: 'Click ID'
+    },
+    {
+      key: 'costArgument',
+      name: 'Cost argument'
+    },
+    {
+      key: 'variable1',
+      name: 'Variable 1'
+    },
+    {
+      key: 'variable2',
+      name: 'Variable 2'
+    },
+    {
+      key: 'variable3',
+      name: 'Variable 3'
+    },
+    {
+      key: 'variable4',
+      name: 'Variable 4'
+    },
+    {
+      key: 'variable5',
+      name: 'Variable 5'
+    },
+    {
+      key: 'variable6',
+      name: 'Variable 6'
+    },
+    {
+      key: 'variable7',
+      name: 'Variable 7'
+    },
+    {
+      key: 'variable8',
+      name: 'Variable 8'
+    },
+    {
+      key: 'variable9',
+      name: 'Variable 9'
+    },
+    {
+      key: 'variable10',
+      name: 'Variable 10'
+    }],
+  affiliate: [{
+    key: 'affiliateName',
+    name: 'Affiliate Network'
+  },
+    {
+      key: 'affiliateId',
+      name: 'Affiliate Network ID'
+    },
+    {
+      key: 'appendClickId',
+      name: 'Append click ID'
+    },
+    {
+      key: 'whitelistedIP',
+      name: 'Whitelisted IP'
+    },
+    {
+      key: 'impressions',
+      name: 'Impressions'
+    },
+    {
+      key: 'visits',
+      name: 'Visits'
+    },
+    {
+      key: 'clicks',
+      name: 'Clicks'
+    },
+    {
+      key: 'conversions',
+      name: 'Conversions'
+    },
+    {
+      key: 'revenue',
+      name: 'Revenue'
+    },
+    {
+      key: 'cost',
+      name: 'Cost'
+    },
+    {
+      key: 'profit',
+      name: 'Profit'
+    },
+    {
+      key: 'cpv',
+      name: 'CPV'
+    },
+    {
+      key: 'ictr',
+      name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
     }]
 });
 angular.module('app').value('groupByOptions', [
@@ -257,16 +717,16 @@ angular.module('app').value('userPreferences', {
       "visible": false
     },
     "cpa": {
-      "visible": true
+      "visible": false
     },
     "cpc": {
-      "visible": true
+      "visible": false
     },
     "cpm": {
-      "visible": true
+      "visible": false
     },
     "city": {
-      "visible": true
+      "visible": false
     },
     "flowName": {
       "visible": true
@@ -285,6 +745,9 @@ angular.module('app').value('userPreferences', {
     },
     "numberOfOffers": {
       "visible": false
+    },
+    "errors": {
+      "visible": true
     }
   }
 });

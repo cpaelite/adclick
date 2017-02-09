@@ -20,7 +20,8 @@
     'http-auth-interceptor',
     'monospaced.elastic',
     'angularFileUpload',
-    'chart.js'
+    'chart.js',
+    'angular-clipboard'
   ]);
 
 })();

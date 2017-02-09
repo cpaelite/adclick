@@ -13,7 +13,7 @@
         }">
         <span ng-click="toggleExpand(rule)">
           <!--           <i class="material-icons md-mini cs-arrow-right">keyboard_arrow_right</i>
-          -->         <i class="material-icons md-mini cs-arrow-down flow-arrow-down">keyboard_arrow_down</i>
+          -->         <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-click="stretchList(type)">keyboard_arrow_down</i>
         </span>
         <span class="cs-path-name">
           <i class="material-icons tree-icon">album</i>
@@ -36,7 +36,7 @@
         </li>
         <li ng-click="addPath(rule)" class="cs-flow-addpath tree-li">
           <i class="material-icons add-box">add_box</i>
-          <span class="add-flow-path">{{'add_flow_path' | translate}}</span>
+          <span class="add-flow-path">{{'add_new_path' | translate}}</span>
         </li>
       </ul>
     </div>
@@ -85,9 +85,22 @@
 
       <div class="form-group">
         <label class="label-name">Country:</label>
-        <md-select ng-model="flow.country">
-          <md-option ng-repeat="c in allCountries" value="{{c.value}}">{{c.display}}</md-option>
-        </md-select>
+        <md-autocomplete
+            md-selected-item="flow.country"
+            md-search-text="searchText"
+            md-items="item in queryCountries(searchText)"
+            md-no-cache="true"
+            md-select-on-focus="true"
+            md-item-text="item.display"
+            md-min-length="0"
+            placeholder="Select country...">
+          <md-item-template>
+            <span md-highlight-text="searchText">{{item.display}}</span>
+          </md-item-template>
+          <md-not-found>
+            No matching found.
+          </md-not-found>
+        </md-autocomplete>
       </div>
 
       <div class="form-group clearfix">
@@ -144,13 +157,14 @@
             <i class="material-icons tree-icon">album</i>
             <span class="label label-default condition-select-content">{{cdt._def.display}} <em ng-click="deleteCondition(cdt)" class="em-close">x</em></span>
             <div class="btn-group is-btn">
-              <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="'is'">is</label>
-              <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="'isnt'">is not</label>
+              <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="cdt._def.operands[0].value">{{cdt._def.operands[0].display}}</label>
+              <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="cdt._def.operands[1].value">{{cdt._def.operands[1].display}}</label>
             </div>
             <br/>
             <div class="cs-condition-field cs-condition-{{f.type}}" ng-repeat="f in cdt._def.fields">
               <p class="cs-condition-desc" ng-if="f.desc">{{f.desc}}</p>
               <div class="col-md-4 day-input-content" ng-if="f.label">{{f.label}}</div>
+
               <div ng-if="f.type=='textarea'" ng-class="{'col-md-10': f.label}" class="textarea-content">
                 <textarea ng-model="cdt[f.name]"></textarea>
               </div>
@@ -168,11 +182,12 @@
                 </label>
               </div>
 
-              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}" class="day-checkbox">
-                <label ng-repeat="o in f.options">
-                  <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
-                  {{o.display}} 
-                </label>
+              <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}" class="condition-checkbox">
+                <div ng-repeat="o in f.options">
+                  <md-checkbox ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
+                    {{o.display}}
+                  </md-checkbox>
+                </div>
               </div>
 
               <div ng-if="f.type=='l2select'" class="os-content clearfix" ng-class="{'col-md-10': f.label}">
@@ -200,16 +215,23 @@
                         <i class="material-icons select-search-icon">search</i>
                       </div>
                       <div class="options-list">
-                        <div ng-repeat="o in cdt._suboptions | filter:cdt._t2">
-                          <label ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
-                            <input type="checkbox" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
-                            {{o.display}} 
-                          </label>
+                        <div ng-hide="cdt._l1selected">
+                          <label>No items to select</label>
                         </div>
-                      </div>
-
-                      <div ng-hide="cdt._suboptions">
-                        <label>No items to select</label>
+                        <div ng-if="cdt._l1selected">
+                          <md-checkbox aria-label="Select All"
+                                       ng-checked="l2allIsChecked(cdt, f.name)"
+                                       md-indeterminate="l2IsIndeterminate(cdt, f.name)"
+                                       ng-click="l2toggleAll(cdt, f.name)">
+                            Select All
+                          </md-checkbox>
+                        </div>
+                        <div ng-repeat="o in cdt._l1selected.suboptions | filter:cdt._t2">
+                          <md-checkbox ng-checked="l2isChecked(o.value, cdt, f.name)"
+                                       ng-click="l2toggle(o.value, cdt, f.name)">
+                            {{o.display}}
+                          </md-checkbox>
+                        </div>
                       </div>
                     </div>
 
@@ -218,7 +240,7 @@
 
                 <div class="col-sm-12 col-md-4 cs-l2select-selected list-content">
                   <md-chips ng-model="cdt[f.name]" readonly="true" md-removable="true">
-                    <md-chip-template>{{cdt._def._fv2n[f.name][$chip]}}</md-chip-template>
+                    <md-chip-template>{{f._v2n[$chip]}}</md-chip-template>
                   </md-chips>
                 </div>
               </div>
@@ -234,11 +256,11 @@
                       md-no-cache="true"
                       md-min-length="0"
                       md-items="item in querySearchIn(searchText, f.options, cdt[f.name])"
-                      md-item-text="item.display"
+                      md-item-text="f._v2n[item]"
                       placeholder="{{f.placeholder}}">
-                    <span md-highlight-text="searchText">{{item.display}}</span>
+                    <span md-highlight-text="searchText">{{f._v2n[item]}}</span>
                   </md-autocomplete>
-                  <md-chip-template><span>{{$chip.display}}</span></md-chip-template>
+                  <md-chip-template><span>{{f._v2n[$chip]}}</span></md-chip-template>
                 </md-chips>
               </div>
             </div>
@@ -292,7 +314,7 @@
                ng-repeat="offer in curPath.offers" ng-click="setEdit($event, offer)"
                ng-class="{'cs-flow-offer-onedit':offer._onEdit}">
             <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-offer-view">{{offer.name || 'Select offer...'}}</p>
+              <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
               <div class="cs-flow-offer-edit clearfix">
                 <md-autocomplete
                     md-selected-item="selected"
@@ -302,7 +324,6 @@
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-search-text-change="searchTextChange(searchText)"
                     md-selected-item-change="selectedOfferChange(item, offer)"
                     placeholder="Select offer...">
                   <md-item-template>
@@ -348,7 +369,7 @@
                ng-repeat="lander in curPath.landers" ng-click="setEdit($event, lander)"
                ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
             <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-lander-view">{{lander.name || 'Select lander...'}}</p>
+              <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
               <div class="cs-flow-lander-edit clearfix">
                 <md-autocomplete
                     md-selected-item="selected"
@@ -358,7 +379,6 @@
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-search-text-change="searchTextChange(searchText)"
                     md-selected-item-change="selectedLanderChange(item, lander)"
                     placeholder="Select lander...">
                   <md-item-template>
