@@ -100,7 +100,7 @@ function insertCampaign(value, connection) {
     val += ",'" + hash + "'";
 
     col += ",`url`";
-    val += ",'" + urlValue + "'";
+    val += ",'" + value.url + "'";
 
     col += ",`trafficSourceId`";
     val += "," + value.trafficSource.id;
