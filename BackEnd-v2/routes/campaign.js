@@ -406,7 +406,7 @@ const start = async(data, schema) => {
                         //RULE
                         if (!value.flow.rules[i].id) {
                             ruleResult = await  common.insetRule(value.userId, value.flow.rules[i], connection);
-                            await common.insertRule2Flow(ruleResult.insertId, flowId, value.flow.rules[i].rule2flow, connection);
+                          
                         } else {
                             await  common.updateRule(value.userId, value.flow.rules[i], connection);
                             await  common.updateRule2Flow(value.flow.rules[i].rule2flow, value.flow.rules[i].id, flowId, connection);
@@ -415,6 +415,7 @@ const start = async(data, schema) => {
                         if (!ruleId) {
                             throw new Error('Rule ID Lost');
                         }
+                        await common.insertRule2Flow(ruleId, flowId, value.flow.rules[i].rule2flow, connection);
                         value.flow.rules[i].id = ruleId;
 
                         //PATH
@@ -423,7 +424,7 @@ const start = async(data, schema) => {
                                 let pathResult;
                                 if (!value.flow.rules[i].paths[j].id) {
                                     pathResult = await common.insertPath(value.userId, value.flow.rules[i].paths[j], connection);
-                                    await common.insertPath2Rule(pathResult.insertId, ruleId, value.flow.rules[i].paths[j].weight, value.flow.rules[i].paths[j].path2rule, connection);
+                                  
 
                                 } else {
                                     await common.updatePath(value.userId, value.flow.rules[i].paths[j], connection);
@@ -434,6 +435,7 @@ const start = async(data, schema) => {
                                 if (!pathId) {
                                     throw new Error('Path ID Lost');
                                 }
+                                await common.insertPath2Rule(pathId, ruleId, value.flow.rules[i].paths[j].weight, value.flow.rules[i].paths[j].path2rule, connection);
                                 value.flow.rules[i].paths[j].id = pathId;
 
                                 //Lander
@@ -442,7 +444,7 @@ const start = async(data, schema) => {
                                         let landerResult;
                                         if (!value.flow.rules[i].paths[j].landers[k].id) {
                                             landerResult = await common.insertLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
-                                            await common.insertLander2Path(landerResult.insertId, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
+                                          
                                         } else {
                                             await common.updateLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
                                             await common.updateLander2Path(value.flow.rules[i].paths[j].landers[k].id, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
@@ -452,6 +454,7 @@ const start = async(data, schema) => {
                                         if (!landerId) {
                                             throw new Error('Lander ID Lost');
                                         }
+                                          await common.insertLander2Path(landerId, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
                                         value.flow.rules[i].paths[j].landers[k].id = landerId;
                                         //Lander tags
                                         //删除所有tags
@@ -477,7 +480,7 @@ const start = async(data, schema) => {
                                             let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
                                             value.flow.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
                                             offerResult = await common.insertOffer(value.userId, value.idText, value.flow.rules[i].paths[j].offers[z], connection);
-                                            await common.insertOffer2Path(offerResult.insertId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
+                                            
                                         } else {
 
                                             await  common.updateOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
@@ -490,6 +493,7 @@ const start = async(data, schema) => {
                                         if (!offerId) {
                                             throw new Error('Offer ID Lost');
                                         }
+                                        await common.insertOffer2Path(offerId, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
                                         value.flow.rules[i].paths[j].offers[z].id = offerId;
                                         //删除所有offer tags
                                         await common.updateTags(value.userId, offerId, 3, connection);
@@ -582,21 +586,24 @@ router.get('/api/campaigns/:id', async function (req, res, next) {
  * @api {delete} /api/campaigns/:id   delete campaign
  * @apiName  delete campaign
  * @apiGroup campaign
+ * @apiParam hash 
+ * @apiParam name
+ * 
  */
 router.delete('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        hash:Joi.string().required(),
+        name:Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
     let connection;
-
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(value.id, value.userId, connection);
-        // connection.release();
+        let result = await common.deleteCampaign(value.id, value.userId,value.hash,value.name ,connection);
         res.json({
             status: 1,
             message: 'success'
