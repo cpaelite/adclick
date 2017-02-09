@@ -33,12 +33,12 @@ router.post('/api/traffics', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        postbackUrl: Joi.string().optional(),
-        pixelRedirectUrl: Joi.string().optional(),
+        postbackUrl: Joi.string().optional().empty(""),
+        pixelRedirectUrl: Joi.string().optional().empty(""),
         impTracking: Joi.number().optional(),
-        externalId: Joi.string().optional(),
-        cost: Joi.string().optional(),
-        params: Joi.string().optional()
+        externalId: Joi.string().optional().empty(""),
+        cost: Joi.string().optional().empty(""),
+        params: Joi.string().optional().empty("") 
     });
 
     req.body.userId = req.userId
@@ -99,7 +99,8 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         impTracking: Joi.number().optional(),
         externalId: Joi.string().optional().empty(""),
         cost: Joi.string().optional().empty(""),
-        params: Joi.string().optional().empty("")
+        params: Joi.string().optional().empty(""),
+        hash: Joi.string().required()
     });
 
     req.body.userId = req.userId
@@ -134,7 +135,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
 
 
 /**
- * @api {get} /api/traffic/:id  traffic detail
+ * @api {get} /api/traffics/:id  traffic detail
  * @apiName traffic
  * @apiGroup traffic
  *
@@ -229,11 +230,17 @@ router.get('/api/traffics', function (req, res, next) {
  * @api {delete} /api/traffic/:id 删除traffic
  * @apiName  删除traffic
  * @apiGroup traffic
+ * 
+ * @apiParam {String} name
+ * @apiParam {String} hash
+ * 
  */
 router.delete('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        name: Joi.string().required(),
+        hash: Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -241,8 +248,7 @@ router.delete('/api/traffics/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deletetraffic(value.id, value.userId, connection);
-        //connection.release();
+        let result = await common.deletetraffic(value.id, value.userId, value.name,value.hash,connection);
         res.json({
             status: 1,
             message: 'success'

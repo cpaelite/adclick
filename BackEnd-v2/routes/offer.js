@@ -200,7 +200,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  * @apiName offers
  * @apiGroup offer
  *
- *
+ * @apiParam [country]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -211,6 +211,11 @@ router.get('/api/offers/:id', async function (req, res, next) {
 router.get('/api/offers', function (req, res, next) {
     // userId from jwt, don't need validation
     var sql = "select id, name from Offer where userId = " + req.userId;
+
+    if(req.query.country){
+        sql += " and `country`=" + req.query.country;
+    }
+
     pool.getConnection(function (err, connection) {
         if (err) {
             err.status = 303
@@ -235,19 +240,25 @@ router.get('/api/offers', function (req, res, next) {
  * @api {delete} /api/offers/:id 删除offer
  * @apiName  删除offer
  * @apiGroup offer
+ * 
+ * @apiParam {String} name
+ * @apiParam {String} hash
+ * 
  */
 router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        name:Joi.string().required(),
+        hash:Joi.string().required(),
     });
-    req.body.userId = req.userId;
-    req.body.id = req.params.id;
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteOffer(value.id, value.userId, connection);
+        let result = await common.deleteOffer(value.id, value.userId,value.name,value.hash, connection);
         res.json({
             status: 1,
             message: 'success'

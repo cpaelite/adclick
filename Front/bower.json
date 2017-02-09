@@ -38,7 +38,8 @@
     "angular-toastr": "^1.7.0",
     "angular-chart.js": "~1.1.1",
     "animate.css": "^3.5.2",
-    "highcharts": "~5.0.6"
+    "highcharts": "~5.0.6",
+    "angular-clipboard": "^1.5.0"
   },
   "devDependencies": {},
   "resolutions": {

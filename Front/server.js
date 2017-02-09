@@ -16,7 +16,7 @@ app.get('/', function (req, res) {
 function createJWT() {
   var payload = 'eyJ1aWQiOiIxMjM0NTY3ODkwIiwibmlja25hbWUiOiJKb2huIFB1YiIsInJvbGUiOiJwdWJsaXNoZXIifQ';
   //return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + payload + '.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
-  return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjksImV4cCI6MTQ4NjgwNTE0ODA5MSwiZmlyc3RuYW1lIjoiQmluIn0.38dk75hihQAttgiRadRTerhFJhLXNsuW3jRG3gf7cSo';
+  return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjksImV4cCI6MTQ4NzIxMTI4MTkzMiwiZmlyc3RuYW1lIjoiQmluIiwiaWRUZXh0IjoiNnBnOHFjIn0.V8yR-8ytOm0Dqm900QBiaYImZ8MbgD7JlL-EoC7ubIs';
 }
 
 function delayResponse(res, data) {
@@ -539,7 +539,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
       "cpmValue": 1.3,
       "redirectMode": 0,
       "targetType": 1,
-      "targetFlowId": 0,
+      "targetFlowId": 1,
       "targetUrl": "",
       "status": 1,
       "tags": ['123', '234']
@@ -557,6 +557,7 @@ app.post('/api/campaigns', function (req, res) {
     status: 1,
     message: "",
     data: {
+      "id": 1,
       "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
       "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
       "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
@@ -1364,6 +1365,38 @@ app.delete('/api/traffics/:id', function (req, res) {
   res.send(result);
 });
 
+app.get('/api/traffic/tpl', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      lists: [
+        {
+          "id": 1,
+          "name": "TrafficSource1",
+          "postbackUrl": "",
+          "pixelRedirectUrl": "",
+          "impTracking": 1,
+          "externalId": "{\"Placeholder\":\"{1}\",\"Parameter\":\"1\"}",
+          "cost": "{\"Placeholder\":\"{2}\",\"Parameter\":\"2\"}",
+          "params": "[{\"Parameter\":\"3\",\"Placeholder\":\"{3}\",\"Name\":\"3\",\"Track\":\"\"},{\"Parameter\":\"4\",\"Placeholder\":\"{4}\",\"Name\":\"4\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"}]"
+        },
+        {
+          "id": 2,
+          "name": "TrafficSource2",
+          "postbackUrl": "",
+          "pixelRedirectUrl": "",
+          "impTracking": 1,
+          "externalId": "{\"Placeholder\":\"{1}\",\"Parameter\":\"1\"}",
+          "cost": "{\"Placeholder\":\"{2}\",\"Parameter\":\"2\"}",
+          "params": "[{\"Parameter\":\"3\",\"Placeholder\":\"{3}\",\"Name\":\"3\",\"Track\":\"\"},{\"Parameter\":\"4\",\"Placeholder\":\"{4}\",\"Name\":\"4\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"}]"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
 /**
  * Get list of affiliates
  */
@@ -1372,9 +1405,9 @@ app.get('/api/affiliates', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      networks: [
-        {id: 1, name: "affilate1", postbackUrl: ""},
-        {id: 2, name: "affilate2", postbackUrl: ""},
+      affiliates: [
+        {id: 1, name: "affilate1", postbackUrl: "affiliate1"},
+        {id: 2, name: "affilate2", postbackUrl: "affilate2"},
         {id: 3, name: "affilate3", postbackUrl: ""}
       ]
     }
@@ -1450,6 +1483,30 @@ app.delete('/api/affiliates/:id', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
+  };
+  res.send(result);
+});
+
+app.get('/api/affilate/tpl', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      lists: [
+        {
+          id: 1,
+          name: 'tpl1',
+          desc: '<div>tpl1</div>',
+          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=%SUBID1%&p=%AMOUNT%'
+        },
+        {
+          id: 2,
+          name: 'tpl2',
+          desc: '<div>tpl2</div>',
+          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=[dv1]&p=[conversion revenue]'
+        }
+      ]
+    }
   };
   res.send(result);
 });
@@ -1572,6 +1629,23 @@ app.get('/api/conditions', function (req, res) {
   delayResponse(res, result);
 });
 
+app.get('/api/set/user/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      firstname: 'test',
+      lastname:'test',
+      companyname: 'zheng',
+      tel: 13120663670,
+      timezone:'1',
+      homescreen:'Dashboard',
+      visitconversion:'Visit'
+    }
+  };
+  res.send(result);
+});
+
 /**
  * get list of countries
  * shang@v1 [warren, modified]
@@ -1583,6 +1657,17 @@ app.get('/api/countries', function (req, res) {
     { "value": "JPN", "display": "Japan" }
   ];
   delayResponse(res, result);
+});
+
+app.get('/api/postbackurl', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "defaultPostBackUrl": "http://12xhgo.nbtrk.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
+    }
+  };
+  res.send(result);
 });
 
 app.listen(5000, function () {

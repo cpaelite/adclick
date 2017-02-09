@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-
+var common = require('./common');
 
 /**
  * @api {get} /api/affiliates/:id  获取用户所有affilatenetworks
@@ -35,7 +35,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [
+                "select  `id`,`name`,`hash`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [
                     value.userId,value.id
                 ],
                 function (err, result) {
@@ -127,64 +127,39 @@ router.get('/api/affiliates', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/affiliates/:id', function (req, res, next) {
+router.post('/api/affiliates/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
-        postbackUrl: Joi.string().optional(),
+        postbackUrl: Joi.string().optional().empty(""),
         appendClickId: Joi.number().optional(),
         duplicatedPostback: Joi.number().optional(),
-        ipWhiteList: Joi.string().optional(),
-        deleted: Joi.number().optional()
+        ipWhiteList: Joi.string().optional().empty(""),
+        hash: Joi.string().optional().empty("")
     });
 
-    req.body.userId = req.userId
-    req.body.id = req.params.id
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var sql = "update AffiliateNetwork set `id`= " + value.id;
-            if (value.deleted == 1) {
-                sql += ",`deleted`=" + value.deleted
-            }
-            if (value.name) {
-                sql += ",`name`='" + value.name + "'"
-            }
-            if (value.postbackUrl) {
-                sql += ",`postbackUrl`='" + value.postbackUrl + "'"
-            }
-            if (value.appendClickId != undefined) {
-                sql += ",`appendClickId`=" + value.appendClickId
-            }
-            if (value.duplicatedPostback != undefined) {
-                sql += ",`duplicatedPostback`=" + value.duplicatedPostback
-            }
-            if (value.ipWhiteList) {
-                sql += ",`ipWhiteList`='" + value.ipWhiteList + "'"
-            }
-
-            sql += " where `userId`=" + value.userId + " and `id`=" +
-                value.id
-            connection.query(sql,
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: 'success'
-                    });
-                });
+    req.body.userId = req.userId;
+    req.body.id = req.params.id;
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        await common.updateAffiliates(value.userId, value, connection);
+        delete value.userId;
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
         });
-    });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -206,53 +181,80 @@ router.post('/api/affiliates/:id', function (req, res, next) {
  *   }
  *
  */
-router.post('/api/affiliates', function (req, res, next) {
+router.post('/api/affiliates', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        postbackUrl: Joi.string().required(),
+        postbackUrl: Joi.string().required().empty(""),
         appendClickId: Joi.number().optional(),
         duplicatedPostback: Joi.number().optional(),
-        ipWhiteList: Joi.string().optional()
+        ipWhiteList: Joi.string().optional().empty("")
     });
-    req.body.userId = req.userId
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            var sql = "insert into AffiliateNetwork set `userId`= " +
-                value.userId + ",`name`='" + value.name +
-                "',`postbackUrl`='" +
-                value.postbackUrl + "',`deleted`=0";
-            if (value.appendClickId != undefined) {
-                sql += ",`appendClickId`='" + value.appendClickId + "'"
-            }
-            if (value.duplicatedPostback != undefined) {
-                sql += ",`duplicatedPostback`='" + value.duplicatedPostback +
-                    "'"
-            }
-            if (value.ipWhiteList) {
-                sql += ",`ipWhiteList`='" + value.ipWhiteList + "'"
-            }
-            connection.query(sql, function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                delete value.userId;
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: value
-                });
-            });
+    req.body.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let affiliateResult = await common.insertAffiliates(value.userId, value, connection);
+        
+        delete value.userId;
+        value.id = affiliateResult.insertId;
+
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
         });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+/**
+ * @api {delete} /api/affiliates/:id 删除affiliates
+ * @apiName  删除affiliates
+ * @apiGroup network
+ * 
+ * @apiParam {String} name
+ * @apiParam {String} hash
+ * 
+ */
+router.delete('/api/affiliates/:id', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        id: Joi.number().required(),
+        userId: Joi.number().required(),
+        name: Joi.string().required(),
+        hash: Joi.string().required()
     });
+    req.query.userId = req.userId;
+    req.query.id = req.params.id;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.deleteAffiliate(value.id, value.userId,value.name,value.hash, connection);
+
+        res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+
+    }
+
+
 });
 
 

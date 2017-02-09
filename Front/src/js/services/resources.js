@@ -26,13 +26,25 @@ angular.module('app')
   .factory('TrafficSource', ['$resource', function ($resource) {
     return $resource('/api/traffics/:id', {id: '@id'});
   }])
+  .factory('TrafficTemplate', ['$resource', function ($resource) {
+    return $resource('/api/traffic/tpl');
+  }])
   .factory('AffiliateNetwork', ['$resource', function ($resource) {
     return $resource('/api/affiliates/:id', {id: '@id'});
+  }])
+  .factory('AffiliateTemplate', ['$resource', function ($resource) {
+    return $resource('/api/affilate/tpl');
   }])
   .factory('Condition', ['$resource', function ($resource) {
     return $resource('/api/conditions', {}, {'query':  {method:'GET', isArray:true}});
   }])
   .factory('Country', ['$resource', function ($resource) {
     return $resource('/api/countries', {}, {'query':  {method:'GET', isArray:true}});
+  }])
+  .factory('User', ['$resource', function($resource) {
+    return $resource('/api/set/user/:id', {id: '@id'})
+  }])
+  .factory('DefaultPostBackUrl', ['$resource', function($resource) {
+    return $resource('/api/postbackurl')
   }])
 ;

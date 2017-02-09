@@ -130,46 +130,46 @@ router.get('/api/flows/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
 
         let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
-        let ruleSql = "select  f.`id` as parentId, r.`id`,r.`name`,r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type` " +
+        let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId` " +
+            "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
-        "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight` " +
+            "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`  " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId`  " +
-            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
-            "left join `Path` p on p.`id` = r2.`pathId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  " +
-            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId`  " +
+            "inner join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
+            "inner join `Path` p on p.`id` = r2.`pathId` " +
+            "where f2.`deleted`= 0 and r.`deleted` = 0  " +
+            "and r2.`deleted`= 0 and p.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId`  " +
-            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
-            "left join `Path` p on p.`id` = r2.`pathId` " +
-            "left join `Lander2Path` p2 on p2.`pathId` = p.`id`  " +
-            "left join `Lander` l on l.`id`= p2.`landerId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  " +
-            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId`  " +
+            "inner join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
+            "inner join `Path` p on p.`id` = r2.`pathId` " +
+            "inner join `Lander2Path` p2 on p2.`pathId` = p.`id`  " +
+            "inner join `Lander` l on l.`id`= p2.`landerId` " +
+            "where    f2.`deleted`= 0 and r.`deleted` = 0  " +
+            "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
         let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
-            "left join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
-            "left join `Rule` r on r.`id` = f2.`ruleId`  " +
-            "left join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
-            "left join `Path` p on p.`id` = r2.`pathId` " +
-            "left join `Offer2Path` p2 on p2.`pathId` = p.`id`  " +
-            "left join `Offer` l on l.`id`= p2.`offerId` " +
-            "where  f2.`status` = 1 and f2.`deleted`= 0 and r.`deleted` = 0  " +
-            "and r2.`deleted`= 0 and p.`deleted` = 0 and r2.`status` = 1 " +
+            "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
+            "inner join `Rule` r on r.`id` = f2.`ruleId`  " +
+            "inner join `Path2Rule` r2 on r2.`ruleId`= r.`id` " +
+            "inner join `Path` p on p.`id` = r2.`pathId` " +
+            "inner join `Offer2Path` p2 on p2.`pathId` = p.`id`  " +
+            "inner join `Offer` l on l.`id`= p2.`offerId` " +
+            "where  f2.`deleted`= 0 and r.`deleted` = 0  " +
+            "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
             "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
 
@@ -177,48 +177,50 @@ router.get('/api/flows/:id', async function (req, res, next) {
         connection = await common.getConnection();
         let PromiseResult = await  Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);
 
+        let flowResult = PromiseResult[0];
+        let ruleResult = PromiseResult[1];
+        let pathResult = PromiseResult[2];
+        let landerResult = PromiseResult[3];
+        let offerResult = PromiseResult[4];
+
         if (PromiseResult.length) {
             //flow
-            if (PromiseResult[0].length) {
-                Object.assign(Result, PromiseResult[0][0]);
+            if (flowResult.length) {
+                Object.assign(Result, flowResult[0]);
             }
-            if (PromiseResult[1].length) {
-                for (let i = 0; i < PromiseResult[1].length; i++) {
+
+            if (ruleResult.length) {
+                for (let i = 0; i < ruleResult.length; i++) {
                     //Rule
-                    if (PromiseResult[1][i].parentId == Result.id) {
-                        Result.rules[i] = {};
-                        Result.rules[i].paths = [];
-                        delete PromiseResult[1][i].parentId;
-                        Object.assign(Result.rules[i], PromiseResult[1][i])
-                        for (let j = 0; j < PromiseResult[2].length; j++) {
+                    if (ruleResult[i].parentId == Result.id) {
+                        ruleResult[i].paths = [];
+                        delete ruleResult[i].parentId;
+                        Result.rules.push(ruleResult[i])
+
+                        for (let j = 0; j < pathResult.length; j++) {
                             //path
-                            if (PromiseResult[2][j].parentId == PromiseResult[1][i].id) {
-                                Result.rules[i].paths[j] = {};
-                                Result.rules[i].paths[j].offers = [];
-                                Result.rules[i].paths[j].landers = [];
-                                delete PromiseResult[2][j].parentId
-                                //Result.rules[i].paths.push(PromiseResult[2][j]);
-                                Object.assign(Result.rules[i].paths[j], PromiseResult[2][j]);
+                            if (pathResult[j].parentId == ruleResult[i].id) {
+                                pathResult[j].offers = [];
+                                pathResult[j].landers = [];
+                                delete pathResult[j].parentId;
 
                                 //lander
-                                for (let k = 0; k < PromiseResult[3].length; k++) {
-                                    if (PromiseResult[3][k].parentId == PromiseResult[2][j].id) {
-                                        Result.rules[i].paths[j].landers[k] = {};
-                                        delete PromiseResult[3][k].parentId;
-                                        //Result.rules[i].paths[j].landers.push(PromiseResult[3][k])
-                                        Object.assign(Result.rules[i].paths[j].landers[k], PromiseResult[3][k])
+                                for (let k = 0; k < landerResult.length; k++) {
+                                    if (landerResult[k].parentId == pathResult[j].id) {
+                                        delete landerResult[k].parentId;
+                                        pathResult[j].landers.push(landerResult[k])
                                     }
                                 }
 
                                 //offer
-                                for (let m = 0; m < PromiseResult[4].length; m++) {
-                                    if (PromiseResult[4][m].parentId == PromiseResult[2][j].id) {
-                                        Result.rules[i].paths[j].offers[m] = {};
-                                        delete PromiseResult[4][m].parentId;
-                                        //Result.rules[i].paths[j].offers.push(PromiseResult[4][m])
-                                        Object.assign(Result.rules[i].paths[j].offers[m], PromiseResult[4][m])
+                                for (let m = 0; m < offerResult.length; m++) {
+                                    if (offerResult[m].parentId == pathResult[j].id) {
+                                        delete offerResult[m].parentId;
+                                        pathResult[j].offers.push(offerResult[m])
                                     }
                                 }
+
+                                Result.rules[i].paths.push(pathResult[j]);
 
                             }
                         }
@@ -267,7 +269,7 @@ router.post('/api/flows', function (req, res, next) {
     }).optionalKeys('id', 'hash', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
-    req.body.type=1;
+    req.body.type = 1;
     start(req.body, schema).then(function (data) {
         res.json({
             status: 1,
@@ -299,7 +301,7 @@ router.post('/api/flows/:id', function (req, res, next) {
         redirectMode: Joi.number(),
         userId: Joi.number().required(),
         idText: Joi.string().required()
-    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode', 'deleted');
+    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.id = req.params.id;
@@ -382,15 +384,15 @@ const start = async(data, schema) => {
                         //RULE
                         if (!value.rules[i].id) {
                             ruleResult = await  common.insetRule(value.userId, value.rules[i], connection);
-                            await common.insertRule2Flow(ruleResult.insertId, flowId, value.rules[i].enabled?1:0, connection);
                         } else {
                             await  common.updateRule(value.userId, value.rules[i], connection);
-                            await  common.updateRule2Flow(value.rules[i].enabled?1:0, value.rules[i].id, flowId, connection);
+                            await  common.updateRule2Flow(value.rules[i].enabled ? 1 : 0, value.rules[i].id, flowId, connection);
                         }
                         let ruleId = value.rules[i].id ? value.rules[i].id : (ruleResult ? (ruleResult.insertId ? ruleResult.insertId : 0) : 0);
                         if (!ruleId) {
                             throw new Error('Rule ID Lost');
                         }
+                        await common.insertRule2Flow(ruleId, flowId, value.rules[i].enabled ? 1 : 0, connection);
                         value.rules[i].id = ruleId;
 
                         //PATH
@@ -399,17 +401,17 @@ const start = async(data, schema) => {
                                 let pathResult;
                                 if (!value.rules[i].paths[j].id) {
                                     pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
-                                    await common.insertPath2Rule(pathResult.insertId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
 
                                 } else {
                                     await common.updatePath(value.userId, value.rules[i].paths[j], connection);
-                                    await common.updatePath2Rule(value.rules[i].paths[j].id, value.rules[i].id, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled?1:0, connection);
+                                    await common.updatePath2Rule(value.rules[i].paths[j].id, value.rules[i].id, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled ? 1 : 0, connection);
                                 }
 
                                 let pathId = value.rules[i].paths[j].id ? value.rules[i].paths[j].id : (pathResult ? (pathResult.insertId ? pathResult.insertId : 0) : 0);
                                 if (!pathId) {
                                     throw new Error('Path ID Lost');
                                 }
+                                await common.insertPath2Rule(pathId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled ? 1 : 0, connection);
                                 value.rules[i].paths[j].id = pathId;
 
                                 //Lander
@@ -418,7 +420,7 @@ const start = async(data, schema) => {
                                         let landerResult;
                                         if (!value.rules[i].paths[j].landers[k].id) {
                                             landerResult = await common.insertLander(value.userId, value.rules[i].paths[j].landers[k], connection);
-                                            await common.insertLander2Path(landerResult.insertId, pathId, value.rules[i].paths[j].landers[k].weight, connection);
+
                                         } else {
                                             await common.updateLander(value.userId, value.rules[i].paths[j].landers[k], connection);
                                             await common.updateLander2Path(value.rules[i].paths[j].landers[k].id, pathId, value.rules[i].paths[j].landers[k].weight, connection);
@@ -428,6 +430,7 @@ const start = async(data, schema) => {
                                         if (!landerId) {
                                             throw new Error('Lander ID Lost');
                                         }
+                                        await common.insertLander2Path(landerId, pathId, value.rules[i].paths[j].landers[k].weight, connection);
                                         value.rules[i].paths[j].landers[k].id = landerId;
                                         //Lander tags
                                         //删除所有tags
@@ -453,19 +456,16 @@ const start = async(data, schema) => {
                                             let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
                                             value.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
                                             offerResult = await common.insertOffer(value.userId, value.idText, value.rules[i].paths[j].offers[z], connection);
-                                            await common.insertOffer2Path(offerResult.insertId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                         } else {
-
                                             await  common.updateOffer(value.userId, value.rules[i].paths[j].offers[z], connection);
-
                                             await  common.updateOffer2Path(value.rules[i].paths[j].offers[z].id, pathId, value.rules[i].paths[j].offers[z].weight, connection);
-
                                         }
 
                                         let offerId = value.rules[i].paths[j].offers[z].id ? value.rules[i].paths[j].offers[z].id : (offerResult ? (offerResult.insertId ? offerResult.insertId : 0) : 0);
                                         if (!offerId) {
                                             throw new Error('Offer ID Lost');
                                         }
+                                        await common.insertOffer2Path(offerId, pathId, value.rules[i].paths[j].offers[z].weight, connection);
                                         value.rules[i].paths[j].offers[z].id = offerId;
                                         //删除所有offer tags
                                         await common.updateTags(value.userId, offerId, 3, connection);
@@ -512,99 +512,111 @@ const start = async(data, schema) => {
     });
 };
 
-
-/**
- * get list of conditions
- * shang@v1 [Warren] TODO
- */
-router.get('/api/conditions', function (req, res) {
+router.get('/api/conditions', async function (req, res) {
     var result = [{
-        "id": "1234",
+        "id": "model",
+        "display": "Brand and model",
+        "fields": [{
+            "type": "l2select", "name": "value", "options": []
+        }]
+    }, {
+        "id": "browser",
+        "display": "Browser and version",
+        "fields": [{
+            "type": "l2select", "name": "value", "options": []
+        }]
+    }, {
+        "id": "connection",
+        "display": "Connection Type",
+        "fields": [{
+            "type": "select", "name": "value", "options": []
+        }]
+    }, {
+        "id": "country",
+        "display": "Country",
+        "fields": [{
+            "type": "select", "name": "value", "options": []
+        }]
+    }, {
+        "id": "region",
+        "display": "State / Region",
+        "fields": [{
+            "type": "chips", "name": "value", "options": []
+        }]
+    }, {
+        "id": "city",
+        "display": "City",
+        "fields": [{
+            "type": "chips", "name": "value", "options": []
+        }]
+    }, {
+        "id": "weekday",
         "display": "Day of week",
         "fields": [{
             "type": "checkbox", "name": "weekday", "options": [
-                {"value": "mon", "display": "Monday"},
-                {"value": "tue", "display": "Tuesday"},
-                {"value": "wed", "display": "Wednesday"},
-                {"value": "thu", "display": "Thursday"},
-                {"value": "fri", "display": "Friday"},
-                {"value": "sat", "display": "Saturday"},
-                {"value": "sun", "display": "Sunday"}
+                {"value": 0, "display": "Monday"},
+                {"value": 1, "display": "Tuesday"},
+                {"value": 2, "display": "Wednesday"},
+                {"value": 3, "display": "Thursday"},
+                {"value": 4, "display": "Friday"},
+                {"value": 5, "display": "Saturday"},
+                {"value": 6, "display": "Sunday"}
             ]
         }, {
             "type": "select", "label": "Time zone", "name": "tz", "options": [
-                {"value": "utc", "display": "UTC"},
-                {"value": "-8", "display": "-8 PDT"},
-                {"value": "+8", "display": "+8 Shanghai"},
-                {"value": "-7", "display": "+7 Soul"},
-                {"value": "+7", "display": "+7 Tokyo"}
+                {"value": "+05:45", "display": "(UTC+05:45) Kathmandu"},
+                {"value": "-03:30", "display": "(UTC-03:30) Newfoundland"},
+                {"value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi"},
+                {"value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)"},
+                {"value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta"}
             ]
         }]
     }, {
-        "id": "2334",
-        "display": "Country",
-        "fields": [{
-            "type": "select", "name": "value", "options": [
-                {"value": "us", "display": "American"},
-                {"value": "ca", "display": "Canada"},
-                {"value": "cn", "display": "China"},
-                {"value": "jp", "display": "Japan"},
-                {"value": "hk", "display": "Hongkong"}
-            ]
-        }]
-    }, {
-        "id": "3434",
-        "display": "OS",
-        "fields": [{
-            "type": "l2select", "name": "value", "options": [{
-                "value": "linux", "display": "Linux", "suboptions": [
-                    {"value": "ubuntu", "display": "Ubuntu"},
-                    {"value": "debian", "display": "Debian"},
-                    {"value": "centos", "display": "Centos"},
-                    {"value": "redhat", "display": "Redhat"},
-                    {"value": "gentoo", "display": "Gentoo"},
-                    {"value": "lfs", "display": "LFS"}
-                ]
-            }, {
-                "value": "windows", "display": "Windows", "suboptions": [
-                    {"value": "winxp", "display": "Windows XP"},
-                    {"value": "win7", "display": "Windows 7"},
-                    {"value": "win8", "display": "Windows 8"},
-                    {"value": "win10", "display": "Windows 10"}
-                ]
-            }, {
-                "value": "android", "display": "Android", "suboptions": [
-                    {"value": "android4.2", "display": "Android 4.2"},
-                    {"value": "android4.3", "display": "Android 4.3"},
-                    {"value": "android4.4", "display": "Android 4.4"},
-                    {"value": "android4.5", "display": "Android 4.5"},
-                    {"value": "android4.6", "display": "Android 4.6"},
-                    {"value": "android5.0", "display": "Android 5.0"},
-                    {"value": "android6.0", "display": "Android 6.0"},
-                    {"value": "android7.0", "display": "Android 7.0"}
-                ]
-            }]
-        }]
-    }, {
-        "id": "8334",
+        "id": "device",
         "display": "Device type",
         "fields": [{
-            "type": "chips", "name": "value", "options": [
-                {"value": "mobile", "display": "Mobile Phones"},
-                {"value": "tablet", "display": "Tablet"},
-                {"value": "pc", "display": "Desktops & Laptops"},
-                {"value": "tv", "display": "Smart TV"}
-            ]
+            "type": "select", "name": "value", "options": []
         }]
     }, {
-        "id": "3534",
+        "id": "iprange",
         "display": "IP and IP ranges",
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
         }]
     }, {
-        "id": "4934",
+        "id": "isp",
+        "display": "ISP",
+        "fields": [{
+            "type": "chips", "name": "value", "options": []
+        }]
+    }, {
+        "id": "language",
+        "display": "Language",
+        "fields": [{
+            "type": "chips", "name": "value", "options": []
+        }]
+    }, {
+        "id": "carrier",
+        "display": "Mobile carrier",
+        "fields": [{
+            "type": "chips", "name": "value", "options": []
+        }]
+    }, {
+        "id": "os",
+        "display": "Operating system and version",
+        "fields": [{
+            "type": "l2select", "name": "value", "options": []
+        }]
+    }, {
+        "id": "referrer",
+        "display": "Referrer",
+        "fields": [{
+            "type": "textarea", "name": "value",
+            "desc": ""
+        }]
+    }, {
+        "id": "time",
         "display": "Time of day",
         "fields": [{
             "type": "inputgroup",
@@ -621,19 +633,263 @@ router.get('/api/conditions', function (req, res) {
                 {"value": "+9", "display": "+7 Tokyo"}
             ]
         }]
+    }, {
+        "id": "useragent",
+        "display": "User Agent",
+        "fields": [{
+            "type": "textarea", "name": "value",
+            "desc": ""
+        }]
     }];
+    await fillConditions(result)
     res.json(result)
 });
 
+async function fillConditions(r) {
+    for (let i = 0; i < r.length; i++) {
+        if (r[i].id == 'model') {
+            r[i].fields[0].options = await loadBrandAndVersionFromDB()
+        } else if (r[i].id == 'browser') {
+            r[i].fields[0].options = await loadBowerAndVersionFromDB()
+        } else if (r[i].id == 'connection') {
+            r[i].fields[0].options = await loadConnectionType()
+        } else if (r[i].id == 'country') {
+            r[i].fields[0].options = await loadCountryFromDB()
+        } else if (r[i].id == 'region') {
+            r[i].fields[0].options = await loadStateRegionFromDB()
+        } else if (r[i].id == 'city') {
+            r[i].fields[0].options = await loadCityFromDB()
+        } else if (r[i].id == 'weekday') {
+            r[i].fields[1].options = await loadTimezoneFromDB()
+        } else if (r[i].id == 'device') {
+            r[i].fields[0].options = await loadDeviceType()
+        } else if (r[i].id == 'isp') {
+            r[i].fields[0].options = await loadIspFromDB()
+        } else if (r[i].id == 'language') {
+            r[i].fields[0].options = await loadLanguageFromDB()
+        } else if (r[i].id == 'carrier') {
+            r[i].fields[0].options = await loadMobileCarrierFromDB()
+        } else if (r[i].id == 'os') {
+            r[i].fields[0].options = await loadOsFromDB()
+        } else if (r[i].id == 'time') {
+            r[i].fields[1].options = await loadTimezoneFromDB()
+        }
+    }
+    return r
+}
 
 
-function query(sql,connection){
-    return new Promise(function(resolve,reject){
-       connection.query(sql,function(err,result){
-           if(err){
-               return reject(err);
-           }
-       resolve(result);
-       })
+// {
+//     "value": "linux", "display": "Linux", "suboptions": [
+//     {"value": "ubuntu", "display": "Ubuntu"},
+//     {"value": "debian", "display": "Debian"},
+//     {"value": "centos", "display": "Centos"},
+//     {"value": "redhat", "display": "Redhat"},
+//     {"value": "gentoo", "display": "Gentoo"},
+//     {"value": "lfs", "display": "LFS"}
+// ]
+// }
+
+async function loadBrandAndVersionFromDB() {
+    var sql = "select id, category, name from BrandWithVersions"
+    var connection = await common.getConnection();
+    let r = {}
+    var r2 = []
+    try {
+        let lines = await query(sql, connection);
+        for (let i = 0; i < lines.length; i++) {
+            var line = lines[i]
+            if (!r[line.category]) {
+                r[line.category] = {value: line.category, display: line.category, suboptions: []}
+            }
+            r[line.category].suboptions.push({value: line.name, display: line.name})
+        }
+        r2 = Object.values(r)
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r2
+}
+
+async function loadOsFromDB() {
+    var sql = "select id, category, name from OSWithVersions"
+    var connection = await common.getConnection();
+    let r = {}
+    var r2 = []
+    try {
+        let lines = await query(sql, connection);
+        for (let i = 0; i < lines.length; i++) {
+            var line = lines[i]
+            if (!r[line.category]) {
+                r[line.category] = {value: line.category, display: line.category, suboptions: []}
+            }
+            r[line.category].suboptions.push({value: line.name, display: line.name})
+        }
+        r2 = Object.values(r)
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    // console.info(r2)
+    return r2
+}
+
+async function loadBowerAndVersionFromDB() {
+    var sql = "select id, category, name from BrowserWithVersions"
+    var connection = await common.getConnection();
+    let r = {}
+    var r2 = []
+    try {
+        let lines = await query(sql, connection);
+        for (let i = 0; i < lines.length; i++) {
+            var line = lines[i]
+            if (!r[line.category]) {
+                r[line.category] = {value: line.category, display: line.category, suboptions: []}
+            }
+            r[line.category].suboptions.push({value: line.name, display: line.name})
+        }
+        r2 = Object.values(r)
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r2
+}
+
+async function loadCountryFromDB() {
+    var sql = "select id, name as display, alpha3Code as value from Country"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+
+// TODO: change sql to City table
+async function loadCityFromDB() {
+    var sql = "select id, name as display, alpha3Code as value from Country"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+// TODO: change sql to Region table
+async function loadStateRegionFromDB() {
+    var sql = "select id, name as display, alpha3Code as value from Country"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+
+// TODO: change sql to Region table
+async function loadIspFromDB() {
+    var sql = "select id, name as display, alpha3Code as value from Country"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+
+async function loadLanguageFromDB() {
+    var sql = "select id, name as display, code as value from Languages"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+
+//TODO: load mobile carrier table
+async function loadMobileCarrierFromDB() {
+    var sql = "select id, name as display, code as value from Languages"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+
+async function loadTimezoneFromDB() {
+    var sql = "select utcShift as value, detail as display from Timezones"
+    var connection = await common.getConnection();
+    var r = []
+    try {
+        r = await query(sql, connection);
+    } catch (err) {
+        throw err
+    } finally {
+        connection.release()
+    }
+    return r
+}
+
+//TODO: update the values
+async function loadConnectionType() {
+    var r = [{value: "Broadband", display: "Broadband"},
+        {value: "Cable", display: "Cable"},
+        {value: "Mobile", display: "Mobile"},
+        {value: "Satellite", display: "Satellite"},
+        {value: "Unknown", display: "Unknown"},
+        {value: "Wireless", display: "Wireless"},
+        {value: "XDSL", display: "XDSL"}
+    ]
+    return r
+}
+
+async function loadDeviceType() {
+    var r = [{value: "DesktopsLaptop", display: "Desktops & Laptops"},
+        {value: "Cable", display: "Mobile Phones"},
+        {value: "Mobile", display: "Smart TV"},
+        {value: "Satellite", display: "Tablet"}
+    ]
+    return r
+}
+
+function query(sql, connection) {
+    return new Promise(function (resolve, reject) {
+        connection.query(sql, function (err, result) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result);
+        })
     });
 }

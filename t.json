@@ -1,0 +1,76 @@
+{
+  "name": "new flow",
+  "redirectMode": 0,
+  "rules": [
+    {
+      "id": null,
+      "isDefault": true,
+      "paths": [
+        {
+          "name": "Path 1",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        },
+        {
+          "name": "Path 2",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        },
+        {
+          "name": "Path 3",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        }
+      ]
+    },
+    {
+      "id": null,
+      "name": "china",
+      "enabled": true,
+      "isDefault": false,
+      "conditions": [
+        {
+          "id": "2334",
+          "operand": "is",
+          "value": "cn"
+        }
+      ],
+      "paths": [
+        {
+          "name": "Path 1",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        },
+        {
+          "name": "Path 2",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        },
+        {
+          "name": "Path 3",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        },
+        {
+          "name": "Path 4",
+          "enabled": true,
+          "weight": 100,
+          "redirectMode": 0,
+          "directLinking": false
+        }
+      ]
+    }
+  ]
+}

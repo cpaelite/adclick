@@ -1,0 +1,90 @@
+{
+  "status": 1,
+  "message": "success",
+  "data": {
+    "name": "new flow",
+    "redirectMode": 0,
+    "rules": [
+      {
+        "id": 221,
+        "isDefault": true,
+        "paths": [
+          {
+            "name": "Path 1",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 455
+          },
+          {
+            "name": "Path 2",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 456
+          },
+          {
+            "name": "Path 3",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 457
+          }
+        ]
+      },
+      {
+        "id": 222,
+        "name": "china",
+        "enabled": true,
+        "isDefault": false,
+        "conditions": [
+          {
+            "id": "2334",
+            "operand": "is",
+            "value": "cn"
+          }
+        ],
+        "paths": [
+          {
+            "name": "Path 1",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 458
+          },
+          {
+            "name": "Path 2",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 459
+          },
+          {
+            "name": "Path 3",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 460
+          },
+          {
+            "name": "Path 4",
+            "enabled": true,
+            "weight": 100,
+            "redirectMode": 0,
+            "directLinking": false,
+            "id": 461
+          }
+        ]
+      }
+    ],
+    "idText": "q23qd8",
+    "type": 1,
+    "id": 6
+  }
+}
