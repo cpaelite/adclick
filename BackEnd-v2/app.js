@@ -32,6 +32,7 @@ var lander=require('./routes/lander');
 var traffic= require('./routes/traffic');
 var user_setting=require('./routes/user_setting');
 var event_log=require('./routes/event_log');
+var traffictpl= require('./routes/traffictpl');
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -60,9 +61,9 @@ app.get('/', function(req, res) {
 });
 
 app.all('/api/*', util.checkToken(), user, network, offer, flow, report,
-    campaign,lander,traffic,user_setting,event_log);
+    campaign,lander,traffic,user_setting,event_log,traffictpl,networktpl);
 
-app.use('/', routes, networktpl);
+app.use('/', routes);
 
 
 /// catch 404 and forward to error handler

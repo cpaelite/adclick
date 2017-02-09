@@ -56,7 +56,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
 });
 
 /**
- * @api {get} /affilate/tpl  networktpl list
+ * @api {get} /api/affilate/tpl  networktpl list
  * @apiName networktpl list
  * @apiGroup networktpl
  *
