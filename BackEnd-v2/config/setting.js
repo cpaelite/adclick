@@ -16,7 +16,8 @@ module.exports = {
     "httpPix":"http://",
     "mainDomain":"newbidder.com",
     "impRouter":"/impression",
-    "postBackRouter":"/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
+    "postBackRouter":"/postback",
+    "postBackRouterParam":"?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
   },
   domains:[{
     address:"nbtrk.com",

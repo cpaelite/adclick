@@ -201,7 +201,7 @@ router.get('/api/postbackurl', function (req, res, next) {
             status:1,
             message:'success',
             data:{
-                defaultPostBackUrl:setting.newbidder.httpPix+value.userId+"."+defaultDomain+setting.newbidder.postBackRouter
+                defaultPostBackUrl:setting.newbidder.httpPix+value.userId+"."+defaultDomain+setting.newbidder.postBackRouter+setting.newbidder.postBackRouterParam
             }
         })
         }catch(e){
