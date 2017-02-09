@@ -122,11 +122,20 @@ REQ_NO = 0
 REQ_SUCCESS = 1
 REQ_FAILED = 2
 
+statusToS = {
+    REQ_NO: "none",
+    REQ_SUCCESS: "success",
+    REQ_FAILED: "failed",
+}
+
 
 class OneReqStat(object):
     def __init__(self):
         self.Status = REQ_NO
         self.Time = 0.0
+
+    def __str__(self):
+        return "%s:%s" % (statusToS[self.Status], self.Time)
 
 
 class ReqSerialStat(object):
@@ -137,24 +146,30 @@ class ReqSerialStat(object):
         self.Postback = OneReqStat()
 
     def __repr__(self):
-        return "<Imp:%s,%s Camp:%s,%s Click:%s,%s Postback:%s,%s>" % (
-            self.Imp.Status,
-            self.Imp.Time,
-
-            self.Camp.Status,
-            self.Camp.Time,
-
-            self.Click.Status,
-            self.Click.Time,
-
-            self.Postback.Status,
-            self.Postback.Time,
+        return "<Imp:%s Camp:%s Click:%s Postback:%s>" % (
+            self.Imp,
+            self.Camp,
+            self.Click,
+            self.Postback,
         )
 
 
 # OneReqStat = namedtuple('OneReqStat', [
 #     'ImpressionCnt', 'ImpressionTime',
 #     'CampaignCnt',  'ClickCnt', 'PostbackCnt'], verbose=True)
+
+
+def send_request(url, stat, prefix, cookies=None):
+    with Timer() as t:
+        impression = requests.get(url, cookies=cookies, allow_redirects=False)
+    stat.Time = t.interval
+
+    logging.debug("%s: status_code: %s", prefix, impression.status_code)
+    logging.debug("%s: headers: %s", prefix, impression.headers)
+    logging.debug("%s: encoding: %s", prefix, impression.encoding)
+    logging.debug("%s: cookies: %s", prefix, impression.cookies)
+
+    return impression
 
 
 # run_once 模拟一次从impression 到 campaign 到 click 到 postback请求
@@ -166,14 +181,7 @@ def run_once(i):
     logging.debug("%s%s%s", '*' * 40, "%dth" % i, '*' * 40)
     # impression模拟
     if args.impression:
-        with Timer() as t:
-            impression = requests.get(impression_url, cookies=jar, allow_redirects=False)
-        stat.Imp.Time = t.interval
-
-        logging.debug("impression: status_code: %s", impression.status_code)
-        logging.debug("impression: headers: %s", impression.headers)
-        logging.debug("impression: encoding: %s", impression.encoding)
-        logging.debug("impression: cookies: %s", impression.cookies)
+        impression = send_request(impression_url, stat=stat.Imp, prefix="impression.%d" % i, cookies=jar)
         if impression.status_code == 200:
             logging.debug("impression: text: %s", impression.text)
             stat.Imp.Status = REQ_SUCCESS
@@ -183,28 +191,18 @@ def run_once(i):
     logging.debug('-' * 80)
 
     # campaign模拟
-    with Timer() as t:
-        req = requests.get(campaign_url, cookies=jar, allow_redirects=False)
-    stat.Camp.Time = t.interval
-
-    logging.debug("campaign status_code: %s", req.status_code)
-    logging.debug("campaign headers: %s", req.headers)
-    logging.debug("campaign encoding: %s", req.encoding)
-    logging.debug("campaign cookies: %s", req.cookies)
-    tstep = req.cookies.get('tstep')
-    decoded = base64.decodestring(tstep)
-    kv = parse_tstep(decoded)
-    logging.debug("campaign decoded: %s, %s", decoded, kv)
+    req = send_request(campaign_url, stat=stat.Camp, prefix="campaign.%d" % i, cookies=jar)
     if req.status_code == 200:
-        logging.debug("campaign text: %s", req.text)
+        logging.debug("campaign.%d text: [%s]", i, req.text)
 
     # 三种情况：1. 302直接跳转   2. meta refresh跳转   3. double meta refresh
     redirect_url = parse_redirect_url(req)
     if redirect_url is None:
         # 重定向链接错误，服务器逻辑有问题
-        logging.error("campaign request redirect url error")
+        logging.error("campaign.%d request redirect url error", i)
         stat.Camp.Status = REQ_FAILED
-        return
+        return stat
+
     stat.Camp.Status = REQ_SUCCESS
     logging.debug("redirect url: %s", redirect_url)
 
@@ -215,18 +213,12 @@ def run_once(i):
     # 如果直接走到offer，就没有click这一步了
     logging.debug('-' * 80)
     if lander_or_offer(redirect_url) == "lander":
-        with Timer() as t:
-            click = requests.get(click_url, cookies=req.cookies, allow_redirects=False)
-        stat.Click.Time = t.interval
+        click = send_request(click_url, stat=stat.Click, prefix="click.%d" % i, cookies=req.cookies)
 
-        logging.debug("click status_code: %s", click.status_code)
-        logging.debug("click headers: %s", click.headers)
-        logging.debug("click encoding: %s", click.encoding)
-        logging.debug("click cookies: %s", click.cookies)
         if click.status_code == 200:
             logging.debug("click text: %s", click.text)
         lander_redirect_url = parse_redirect_url(click)
-        logging.debug("lander_redirect_url:%s", lander_redirect_url)
+        logging.debug("click.%d lander_redirect_url:%s", i, lander_redirect_url)
         if lander_redirect_url is None:
             stat.Click.Status = REQ_FAILED
         else:
@@ -235,49 +227,19 @@ def run_once(i):
 
     # postback 模拟1
     postback_url = get_postback_url(clickid, 0.01, "this-is-transaction-id")
-    with Timer() as t:
-        postback = requests.get(postback_url, allow_redirects=False)
-    stat.Postback.Time = t.interval
-    logging.debug("postback.1 status_code: %s", postback.status_code)
-    logging.debug("postback.1 headers: %s", postback.headers)
-    logging.debug("postback.1 encoding: %s", postback.encoding)
-    logging.debug("postback.1 cookies: %s", postback.cookies)
-    logging.debug("postback.1 text: %s", postback.text)
+    postback = send_request(postback_url, stat=stat.Postback, prefix="postback.%d" % i)
+
     logging.debug('-' * 80)
     if postback.status_code == 200:
         stat.Postback.Status = REQ_SUCCESS
     else:
         stat.Postback.Status = REQ_FAILED
 
-    # # postback 模拟2
-    # postback_url = get_postback_url(clickid, 0.01, "this-is-transaction-id")
-    # postback = requests.get(postback_url, allow_redirects=False)
-    # logging.debug("postback.2 status_code: %s", postback.status_code)
-    # logging.debug("postback.2 headers: %s", postback.headers)
-    # logging.debug("postback.2 encoding: %s", postback.encoding)
-    # logging.debug("postback.2 cookies: %s", postback.cookies)
-    # logging.debug("postback.2 text: %s", postback.text)
-
     return stat
 
 
 pool = ThreadPool()
 results = pool.map(run_once, xrange(args.count))
-
-
-# imp_success = 0
-# imp_failed = 0
-# imp_total_time = 0.0
-# for s in results:
-#     if s.ImpStatus == REQ_SUCCESS:
-#         imp_success += 1
-#     elif s.ImpStatus == REQ_FAILED:
-#         imp_failed += 1
-#
-#     imp_total_time += s.ImpTime
-#
-#
-# print "imp_success", imp_success, "imp_failed", imp_failed, "imp_total_time", imp_total_time#, "imp_avg_time", imp_total_time/(imp_success+imp_failed)
 
 
 def output(name, stat_getter):
@@ -287,7 +249,6 @@ def output(name, stat_getter):
     min_time = 60.0
     max_time = 0.0
     avg_time = 0.0
-
 
     for req_serial in results:
         s = stat_getter(req_serial)
@@ -310,11 +271,12 @@ def output(name, stat_getter):
 
     print name, "success:", success, "failed:", failed, "avg time:", avg_time, "max_time:", max_time, "min_time:", min_time
 
+
 output("impression", lambda serial: serial.Imp)
 output("campaign", lambda serial: serial.Camp)
 output("click", lambda serial: serial.Click)
 output("postback", lambda serial: serial.Postback)
 
-
+# do clean up
 pool.close()
 pool.join()
