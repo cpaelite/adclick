@@ -41,6 +41,8 @@ exports.checkToken = function() {
     }
   }
 }
+
+
 exports.setToken = function(userid,expires,firstname,idtext) {
   return jwt.encode({
     iss: userid,

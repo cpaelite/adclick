@@ -554,16 +554,18 @@ const start = async(data, schema) => {
 router.get('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        idText:Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
+    req.query.idText=req.idText;
     let connection;
 
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.getCampaign(value.id, value.userId, connection);
+        let result = await common.getCampaign(value.id, value.userId,value.idText, connection);
         res.json({
             status: 1,
             message: 'success',

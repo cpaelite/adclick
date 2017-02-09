@@ -16,6 +16,20 @@ module.exports = {
     "httpPix":"http://",
     "mainDomain":"newbidder.com",
     "impRouter":"/impression",
-    "postBackRouter":"/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
-  }
+    "postBackRouter":"/postback",
+    "postBackRouterParam":"?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
+  },
+  domains:[{
+    address:"nbtrk.com",
+    mainDomain:false, //campaign mian domain
+    postBackDomain:true //offer postback default domain
+  },{
+    address:"nbtrk0.com",
+    mainDomain:true,
+    postBackDomain:false
+  },{
+    address:"nbtrk1.com",
+    mainDomain:false,
+    postBackDomain:false
+  }]
 }

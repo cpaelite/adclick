@@ -939,7 +939,7 @@
         {Parameter: '', Placeholder: '', Name: '', Track: ''},
         {Parameter: '', Placeholder: '', Name: '', Track: ''},
         {Parameter: '', Placeholder: '', Name: '', Track: ''}
-      ]
+      ];
       this.title = "add";
       $scope.urlToken = '';
     }
@@ -953,7 +953,6 @@
     }
 
     this.save = function () {
-      delete $scope.item.hash;
       $scope.item.params = JSON.stringify($scope.params);
       $scope.item.cost = JSON.stringify($scope.cost);
       $scope.item.externalId = JSON.stringify($scope.externalId);
@@ -1009,6 +1008,9 @@
     });
 
     $scope.$watch('params', function (newValue, oldValue) {
+      if (!newValue) {
+        return;
+      }
       newValue.forEach(function (value, index) {
         if (!value.Parameter) {
           $scope.params[index].Placeholder = "";
@@ -1022,11 +1024,11 @@
           placeholder = placeholder.substring(1, placeholder.length - 1);
         }
 
-        if (placeholder == oldValue[index].Parameter) {
+        if (!oldValue || placeholder == oldValue[index].Parameter) {
           $scope.params[index].Placeholder = '{' + newValue[index].Parameter + '}';
         }
 
-        if (name == oldValue[index].Parameter) {
+        if (!oldValue || name == oldValue[index].Parameter) {
           $scope.params[index].Name = newValue[index].Parameter;
         }
 
@@ -1047,7 +1049,7 @@
         templateUrl: 'tpl/trafficSource-template-dialog.html',
       }).then(function(data){
         $scope.item.name = data.name;
-        $scope.item.postbackUrl = data.postbackurl;
+        $scope.item.postbackUrl = data.postbackUrl;
         $scope.params = JSON.parse(data.params);
         $scope.cost = JSON.parse(data.cost);
         $scope.externalId = JSON.parse(data.externalId);
@@ -1086,24 +1088,18 @@
     if (this.item) {
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
-        if (!$scope.item['postbackUrl']) {
-          $scope.item['postbackUrl'] = 'http://';
-        }
-        var ips = JSON.parse($scope.item.ipWhiteList);
-        if (ips.length) {
-          $scope.ipWhiteCheck = true;
-          var ipList = "";
-          ips.forEach(function (ip) {
-            ipList = ipList + ip + "\n";
-          });
-          $scope.ipWhiteList = ipList;
+        if ($scope.item.ipWhiteList) {
+          var ips = JSON.parse($scope.item.ipWhiteList);
+          if (ips.length) {
+            $scope.ipWhiteCheck = true;
+            var ipList = ips.join('\n');
+            $scope.ipWhiteList = ipList;
+          }
         }
       });
       this.title = "edit";
     } else {
-      $scope.item = {
-        postbackUrl: 'http://'
-      };
+      $scope.item = {};
       $scope.ipWhiteCheck = false;
       this.title = "add";
     }
@@ -1170,7 +1166,7 @@
         targetEvent: ev,
         templateUrl: 'tpl/trusted-affiliate-networks-dialog.html',
       }).then(function(data){
-        $scope.item.postbackurl = data.postbackurl;
+        $scope.item.postbackUrl = data.postbackurl;
         $scope.item.name = data.name;
       });
     };
