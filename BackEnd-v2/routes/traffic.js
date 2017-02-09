@@ -135,7 +135,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
 
 
 /**
- * @api {get} /api/traffic/:id  traffic detail
+ * @api {get} /api/traffics/:id  traffic detail
  * @apiName traffic
  * @apiGroup traffic
  *

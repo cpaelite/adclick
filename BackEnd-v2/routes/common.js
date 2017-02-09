@@ -3,6 +3,19 @@ var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
 
+
+function query(sql, params, connection) {
+    return new Promise(function (resolve, reject) {
+        connection.query(sql, params, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+
 function getRedisClient() {
     return redis.createClient(setting.redis);
 }
@@ -64,12 +77,12 @@ function validate(data, schema) {
 // Campaign
 function insertCampaign(value, connection) {
     var hash = uuidV4();
-    //url
-    let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
-    let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash
+    // //url
+    // let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
+    // let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash
 
-    value.url = urlValue;
-    value.impPixelUrl = impPixelUrl;
+    // value.url = urlValue;
+    // value.impPixelUrl = impPixelUrl;
     //required
     var col = "`userId`";
     var val = value.userId;
@@ -150,12 +163,12 @@ function insertCampaign(value, connection) {
             if (err) {
                 return reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[value.userId,1,value.name,hash,1],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(result);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name, hash, 1], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     })
 }
@@ -220,8 +233,8 @@ function updateCampaign(value, connection) {
 
     //flow targetType=1 &&  flow.id
     if (value.flow && value.flow.id) {
-        sqlCampaign += ",`targetFlowId`="+value.flow.id ;
-       
+        sqlCampaign += ",`targetFlowId`=" + value.flow.id;
+
     }
 
     sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId
@@ -230,42 +243,52 @@ function updateCampaign(value, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[value.userId,1,value.name,value.hash,2],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(result);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name, value.hash, 2], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     })
 }
 
-function getCampaign(id, userId, connection) {
-    let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`,`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
+async function getCampaign(id, userId, idText, connection) {
+    
+    let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`," +
+        "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
     let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, [userId, id, 0], function (err, camResult) {
-            if (err) {
-                reject(err);
-            }
-            connection.query(sqltag, [userId, id, 1, 0], function (err, tagsResult) {
-                if (err) {
-                    reject(err);
-                }
-                let tags = [];
-                for (let index = 0; index < tagsResult.length; index++) {
-                    tags.push(tagsResult[index].name);
-                }
-                if (camResult[0]) {
-                    camResult[0].tags = tags;
-                }
-                resolve(camResult[0])
-            })
-        })
-    })
+
+    let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
+
+    let results = await Promise.all([query(sqlCampaign, [userId, id, 0],connection), query(sqltag, [userId, id, 1, 0],connection), query(mainDomainsql, [userId],connection)]);
+    let camResult = results[0];
+    let tagsResult = results[1];
+    let domainResult = results[2];
+
+    let tags = [];
+    for (let index = 0; index < tagsResult.length; index++) {
+        tags.push(tagsResult[index].name);
+    }
+
+    if (camResult.length) {
+        //重写 campaign URL  和 imimpPixelUrl
+        if(domainResult.length){
+           camResult[0].url = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + "/" + camResult[0].hash;
+           camResult[0].impPixelUrl = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + setting.newbidder.impRouter + "/" + camResult[0].hash;
+        }
+        camResult[0].tags = tags;
+    }
+
+
+    return camResult[0]
+
 }
 
-function deleteCampaign(id, userId, hash,name,connection) {
+
+
+
+function deleteCampaign(id, userId, hash, name, connection) {
     var sqlCampaign = "update TrackingCampaign set `deleted`= 1"
     sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
@@ -273,12 +296,12 @@ function deleteCampaign(id, userId, hash,name,connection) {
             if (err) {
                 reject(err);
             }
-           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,1,name,hash,3],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(1);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 1, name, hash, 3], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(1);
+            });
         });
     })
 }
@@ -321,7 +344,7 @@ function insertFlow(userId, flow, connection) {
 };
 
 function updateFlow(userId, flow, connection) {
-     
+
     var sqlFlow = "update Flow set `id`=" + flow.id
     if (flow.name) {
         sqlFlow += ",`name`='" + flow.name + "'"
@@ -434,7 +457,7 @@ function updateRule(userId, rule, connection) {
 function insertPath(userId, path, connection) {
     var sqlpath = "insert into `Path` (`userId`,`name`,`hash`,`redirectMode`,`directLink`,`status`) values (?,?,?,?,?,?)";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking?1:0, path.enabled?1:0], function (err, result) {
+        connection.query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking ? 1 : 0, path.enabled ? 1 : 0], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -478,7 +501,7 @@ function insertLander(userId, lander, connection) {
 
     var val = userId
 
-    var hash= uuidV4();
+    var hash = uuidV4();
 
     col += ",`name`";
     val += ",'" + lander.name + "'";
@@ -504,12 +527,12 @@ function insertLander(userId, lander, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,2,lander.name,hash,1],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(result);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name, hash, 1], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     })
 
@@ -538,12 +561,12 @@ function updateLander(userId, lander, connection) {
             if (err) {
                 reject(err);
             }
-           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,2,lander.name,lander.hash,2],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(result);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name, lander.hash, 2], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     })
 }
@@ -574,7 +597,7 @@ function getLanderDetail(id, userId, connection) {
     })
 }
 
-function deleteLander(id, userId, name,hash,connection) {
+function deleteLander(id, userId, name, hash, connection) {
     var sqlCampaign = "update Lander set `deleted`= 1"
     sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
@@ -582,12 +605,12 @@ function deleteLander(id, userId, name,hash,connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,2,name,hash,3],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(1);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, name, hash, 3], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(1);
+            });
         });
     })
 }
@@ -624,13 +647,13 @@ function insertOffer(userId, idText, offer, connection) {
     //required
     var col = "`userId`"
     var val = userId
-    var hash=uuidV4();
+    var hash = uuidV4();
 
     col += ",`name`";
     val += ",'" + offer.name + "'"
 
     col += ",`hash`";
-    val += ",'" +hash + "'"
+    val += ",'" + hash + "'"
 
     col += ",`url`";
     val += ",'" + offer.url + "'";
@@ -671,12 +694,12 @@ function insertOffer(userId, idText, offer, connection) {
             if (err) {
                 reject(err);
             }
-           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,3,offer.name,hash,1],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(result);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name, hash, 1], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     });
 }
@@ -719,12 +742,12 @@ function updateOffer(userId, offer, connection) {
             if (err) {
                 reject(err);
             }
-           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,3,offer.name,offer.hash,2],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(result);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name, offer.hash, 2], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     });
 
@@ -755,7 +778,7 @@ function getOfferDetail(id, userId, connection) {
     })
 }
 
-function deleteOffer(id, userId,name,hash, connection) {
+function deleteOffer(id, userId, name, hash, connection) {
     var sqlCampaign = "update Offer set `deleted`= 1"
     sqlCampaign += " where `id`=" + id + " and `userId`=" + userId;
     return new Promise(function (resolve, reject) {
@@ -763,12 +786,12 @@ function deleteOffer(id, userId,name,hash, connection) {
             if (err) {
                 reject(err);
             }
-           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,3,name,hash,3],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(1);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, name, hash, 3], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(1);
+            });
         });
     })
 }
@@ -853,7 +876,7 @@ function insertTrafficSource(userId, traffic, connection) {
         //required
         var col = "`userId`"
         var val = userId
-        var hash=uuidV4();
+        var hash = uuidV4();
 
         col += ",`name`";
         val += ",'" + traffic.name + "'"
@@ -893,12 +916,12 @@ function insertTrafficSource(userId, traffic, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,4,traffic.name,hash,1],function (err) {
-            if (err) {
-                return reject(err);
-            }
-               resolve(result);
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name, hash, 1], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     });
 }
@@ -927,17 +950,17 @@ function updatetraffic(userId, traffic, connection) {
         if (traffic.params) {
             sqlUpdateOffer += ",`params`='" + traffic.params + "'"
         }
-        sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
-        connection.query(sqlUpdateOffer, [userId, traffic.id], function (err, result) {
+        sqlUpdateOffer += " where `userId`="+ userId+" and `id`= "+ traffic.id ;
+        connection.query(sqlUpdateOffer, function (err, result) {
             if (err) {
                 reject(err);
             }
-           connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,4,traffic.name,traffic.hash,2],function (err) {
-            if (err) {
-                return reject(err);
-            }
-               resolve(result);
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name, traffic.hash, 2], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
         });
     })
 }
@@ -953,7 +976,7 @@ function gettrafficDetail(id, userId, connection) {
     });
 }
 
-function deletetraffic(id, userId, name,hash,connection) {
+function deletetraffic(id, userId, name, hash, connection) {
     var sqlCampaign = "update TrafficSource set `deleted`= 1"
     sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
@@ -961,20 +984,20 @@ function deletetraffic(id, userId, name,hash,connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,4,name,hash,3],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(1);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, name, hash, 3], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(1);
+            });
         });
     })
 }
 
-function saveEventLog(userId,entityType,entityName,entityId,actionType,connection){
- 
+function saveEventLog(userId, entityType, entityName, entityId, actionType, connection) {
+
     return new Promise(function (resolve, reject) {
-        connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,entityType,entityName,entityId,actionType],function (err, result) {
+        connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, entityType, entityName, entityId, actionType], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -983,75 +1006,75 @@ function saveEventLog(userId,entityType,entityName,entityId,actionType,connectio
     })
 }
 
-function insertAffiliates(userId, affiliate, connection){
-    return new Promise(function(resolve,reject){
+function insertAffiliates(userId, affiliate, connection) {
+    return new Promise(function (resolve, reject) {
         var hash = uuidV4();
         var sql = "insert into AffiliateNetwork set `userId`= " +
-                userId + ",`name`='" + affiliate.name +
-                "',`postbackUrl`='" +
-                affiliate.postbackUrl + "',`hash`= '"+hash +"'";
-            if (affiliate.appendClickId != undefined) {
-                sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
+            userId + ",`name`='" + affiliate.name +
+            "',`postbackUrl`='" +
+            affiliate.postbackUrl + "',`hash`= '" + hash + "'";
+        if (affiliate.appendClickId != undefined) {
+            sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
+        }
+        if (affiliate.duplicatedPostback != undefined) {
+            sql += ",`duplicatedPostback`='" + affiliate.duplicatedPostback +
+                "'"
+        }
+        if (affiliate.ipWhiteList) {
+            sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
+        }
+        connection.query(sql, function (err, result) {
+            if (err) {
+                reject(err);
             }
-            if (affiliate.duplicatedPostback != undefined) {
-                sql += ",`duplicatedPostback`='" + affiliate.duplicatedPostback +
-                    "'"
-            }
-            if (affiliate.ipWhiteList) {
-                sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
-            }
-            connection.query(sql, function (err, result) {
-                if(err){
-                    reject(err);
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name, hash, 1], function (err) {
+                if (err) {
+                    return reject(err);
                 }
-                connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,5,affiliate.name,hash,1],function (err) {
-                    if (err) {
-                        return reject(err);
-                    }
-                    resolve(result);
-                }); 
+                resolve(result);
             });
+        });
     });
 }
 
-function updateAffiliates(userId, affiliate, connection){
-    return new Promise(function(resolve,reject){
-          var sql = "update AffiliateNetwork set `id`= " + affiliate.id;
-             
-            if (affiliate.name) {
-                sql += ",`name`='" + affiliate.name + "'"
-            }
-            if (affiliate.postbackUrl) {
-                sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
-            }
-            if (affiliate.appendClickId != undefined) {
-                sql += ",`appendClickId`=" + affiliate.appendClickId
-            }
-            if (affiliate.duplicatedPostback != undefined) {
-                sql += ",`duplicatedPostback`=" + affiliate.duplicatedPostback
-            }
-            if (affiliate.ipWhiteList) {
-                sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
-            }
+function updateAffiliates(userId, affiliate, connection) {
+    return new Promise(function (resolve, reject) {
+        var sql = "update AffiliateNetwork set `id`= " + affiliate.id;
 
-            sql += " where `userId`=" + userId + " and `id`=" +
-                affiliate.id
-            connection.query(sql,function (err, result) {
-               if(err){
-                   reject(err);
-               }
-               connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,5,affiliate.name,affiliate.hash,2],function (err) {
-                    if (err) {
-                        return reject(err);
-                    }
-                    resolve(result);
-                }); 
+        if (affiliate.name) {
+            sql += ",`name`='" + affiliate.name + "'"
+        }
+        if (affiliate.postbackUrl) {
+            sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
+        }
+        if (affiliate.appendClickId != undefined) {
+            sql += ",`appendClickId`=" + affiliate.appendClickId
+        }
+        if (affiliate.duplicatedPostback != undefined) {
+            sql += ",`duplicatedPostback`=" + affiliate.duplicatedPostback
+        }
+        if (affiliate.ipWhiteList) {
+            sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
+        }
+
+        sql += " where `userId`=" + userId + " and `id`=" +
+            affiliate.id
+        connection.query(sql, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name, affiliate.hash, 2], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
             });
+        });
     });
 }
 
- 
-function deleteAffiliate(id, userId, name,hash,connection) {
+
+function deleteAffiliate(id, userId, name, hash, connection) {
     var sqlCampaign = "update AffiliateNetwork set `deleted`= 1"
     sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
     return new Promise(function (resolve, reject) {
@@ -1059,19 +1082,19 @@ function deleteAffiliate(id, userId, name,hash,connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))",[userId,5,name,hash,3],function (err) {
-            if (err) {
-                return reject(err);
-            }
-              resolve(1);  
-           });
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, name, hash, 3], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(1);
+            });
         });
     })
 }
 
-exports.deleteAffiliate=deleteAffiliate;
-exports.updateAffiliates=updateAffiliates;
-exports.insertAffiliates=insertAffiliates;
+exports.deleteAffiliate = deleteAffiliate;
+exports.updateAffiliates = updateAffiliates;
+exports.insertAffiliates = insertAffiliates;
 exports.updateRule2Flow = updateRule2Flow;
 exports.insertRule2Flow = insertRule2Flow;
 exports.updatePath2Rule = updatePath2Rule;
@@ -1111,4 +1134,4 @@ exports.deleteFlow = deleteFlow;
 exports.deleteLander = deleteLander;
 exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
-exports.saveEventLog=saveEventLog;
+exports.saveEventLog = saveEventLog;

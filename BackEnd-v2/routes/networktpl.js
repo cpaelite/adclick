@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-
+var setting = require('../config/setting');
+const querystring = require('querystring');
 
 /**
  * @api {post} /affilate/tpl  networktpl add
@@ -55,7 +56,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
 });
 
 /**
- * @api {get} /affilate/tpl  networktpl list
+ * @api {get} /api/affilate/tpl  networktpl list
  * @apiName networktpl list
  * @apiGroup networktpl
  *
@@ -69,7 +70,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
  *     }
  *
  */
-router.get('/affilate/tpl', function (req, res, next) {
+router.get('/api/affilate/tpl', function (req, res, next) {
     pool.getConnection(function (err, connection) {
         if (err) {
             err.status = 303
@@ -84,13 +85,43 @@ router.get('/affilate/tpl', function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: {
-                        lists: results
+                try {
+                    let result = [];
+
+                    if (results.length) {
+                        //获取默认postback domain 
+                        let defaultDomain;
+                        for (let index = 0; index < setting.domains.length; index++) {
+                            if (setting.domains[index].postBackDomain) {
+                                defaultDomain = setting.domains[index].address;
+                            }
+                        }
+
+                        for (let i = 0; i < results.length; i++) {
+                            if (results[i].postbackParams) {
+                                let value = {
+                                    id: results[i].id,
+                                    name: results[i].name,
+                                    desc: results[i].desc
+                                }
+                                let params = JSON.parse(results[i].postbackParams);
+                                let param = "?" + querystring.stringify(params);
+                                value.postbackurl = setting.newbidder.httpPix + req.idText + "." + defaultDomain + setting.newbidder.postBackRouter + param;
+                                result.push(value);
+                            }
+                        }
                     }
-                });
+
+                    res.json({
+                        status: 1,
+                        message: 'success',
+                        data: {
+                            lists: result
+                        }
+                    });
+                } catch (e) {
+                    next(e);
+                }
             });
     });
 });
