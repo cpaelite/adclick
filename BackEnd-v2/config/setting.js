@@ -20,12 +20,15 @@ module.exports = {
   },
   domains:[{
     address:"nbtrk.com",
-    mainDomain:false
+    mainDomain:false, //campaign mian domain
+    postBackDomain:true //offer postback default domain
   },{
     address:"nbtrk0.com",
-    mainDomain:true
+    mainDomain:true,
+    postBackDomain:false
   },{
     address:"nbtrk1.com",
-    mainDomain:false
+    mainDomain:false,
+    postBackDomain:false
   }]
 }
