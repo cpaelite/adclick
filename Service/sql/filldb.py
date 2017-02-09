@@ -94,7 +94,7 @@ print "affiliateId2", affiliateId2
 # 创建 Offer
 ################################################################################
 
-offer_url = "http://download.androidapp.baidu.com/public/uploads/store_0/static/mobisummer4_gl_bd_apk-com.duapps.cleaner-1220_mobisummer4_gl_bd_apk.apk"
+offer_url = "http://download.androidapp.baidu.com/public/uploads/store_0/static/mobisummer4_gl_bd_apk-com.duapps.cleaner-1220_mobisummer4_gl_bd_apk.apk?cid={click.id}"
 
 offerPostbackUrl = "http://zx1jg.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
 
@@ -116,11 +116,11 @@ print "offer2", offer2
 ################################################################################
 
 cursor.execute("INSERT INTO Lander (userId, name, hash, url, country, numberOfOffers) VALUES (%s,%s,%s,%s,%s,%s)",
-               (userId, "Lander 1", "lander.hash", "http://lander.com/my/lander/page/1/", "CHN", 1),)
+               (userId, "Lander 1", "lander.hash", "http://lander.com/my/lander/page/1/?cid={click.id}", "CHN", 1),)
 lander1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO Lander (userId, name, hash, url, country, numberOfOffers) VALUES (%s,%s,%s,%s,%s,%s)",
-               (userId, "Lander 2", "lander.hash", "http://lander.com/my/lander/page/2/", "CHN", 3),)
+               (userId, "Lander 2", "lander.hash", "http://lander.com/my/lander/page/2/?cid={click.id}", "CHN", 3),)
 lander2 = cursor.lastrowid
 
 
