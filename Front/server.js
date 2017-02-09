@@ -1364,6 +1364,38 @@ app.delete('/api/traffics/:id', function (req, res) {
   res.send(result);
 });
 
+app.get('/api/traffic/tpl', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      lists: [
+        {
+          "id": 1,
+          "name": "TrafficSource1",
+          "postbackUrl": "",
+          "pixelRedirectUrl": "",
+          "impTracking": 1,
+          "externalId": "{\"Placeholder\":\"{1}\",\"Parameter\":\"1\"}",
+          "cost": "{\"Placeholder\":\"{2}\",\"Parameter\":\"2\"}",
+          "params": "[{\"Parameter\":\"3\",\"Placeholder\":\"{3}\",\"Name\":\"3\",\"Track\":\"\"},{\"Parameter\":\"4\",\"Placeholder\":\"{4}\",\"Name\":\"4\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"}]"
+        },
+        {
+          "id": 2,
+          "name": "TrafficSource2",
+          "postbackUrl": "",
+          "pixelRedirectUrl": "",
+          "impTracking": 1,
+          "externalId": "{\"Placeholder\":\"{1}\",\"Parameter\":\"1\"}",
+          "cost": "{\"Placeholder\":\"{2}\",\"Parameter\":\"2\"}",
+          "params": "[{\"Parameter\":\"3\",\"Placeholder\":\"{3}\",\"Name\":\"3\",\"Track\":\"\"},{\"Parameter\":\"4\",\"Placeholder\":\"{4}\",\"Name\":\"4\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\"}]"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
 /**
  * Get list of affiliates
  */
@@ -1450,6 +1482,30 @@ app.delete('/api/affiliates/:id', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
+  };
+  res.send(result);
+});
+
+app.get('/api/affilate/tpl', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      lists: [
+        {
+          id: 1,
+          name: 'tpl1',
+          desc: '<div>tpl1</div>',
+          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=%SUBID1%&p=%AMOUNT%'
+        },
+        {
+          id: 2,
+          name: 'tpl2',
+          desc: '<div>tpl2</div>',
+          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=[dv1]&p=[conversion revenue]'
+        }
+      ]
+    }
   };
   res.send(result);
 });
@@ -1594,6 +1650,17 @@ app.get('/api/countries', function (req, res) {
     { "value": "JPN", "display": "Japan" }
   ];
   delayResponse(res, result);
+});
+
+app.get('/api/postbackurl', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "defaultPostBackUrl": "http://12xhgo.nbtrk.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
+    }
+  };
+  res.send(result);
 });
 
 app.listen(5000, function () {

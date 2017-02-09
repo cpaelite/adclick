@@ -7,10 +7,10 @@
   <md-dialog-content class="md-dialog-content second-dailog">
     <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
       <ul class="traffic-source-template-list">
-        <li ng-repeat="list in trafficTemplateLists track by $index" ng-click="templateListClick($index)">
+        <li ng-repeat="trafficTpl in trafficTemplateLists track by $index" ng-click="templateListClick($index)">
           <input type="radio" class="ng-pristine ng-untouched ng-valid ng-not-empty" name="radio" value={{$index}} 
           ng-checked="selected == $index" >
-          {{ list }}
+          {{ trafficTpl.name }}
         </li>
       </ul>
     </form>

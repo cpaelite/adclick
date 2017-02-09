@@ -7,14 +7,15 @@
   <md-dialog-content class="md-dialog-content second-dailog">
     <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
       <ul class="traffic-source-template-list">
-        <li ng-repeat="list in trafficTemplateLists track by $index" ng-click="templateListClick($index)">
+        <li ng-repeat="traffiliateTpl in trafficTemplateLists track by $index" ng-click="templateListClick($index)">
           <div class="panel-list">
             <input type="radio" class="ng-pristine ng-untouched ng-valid ng-not-empty" name="radio" value={{$index}}
             ng-checked="selected == $index" >
-            {{ list }}
+            {{ traffiliateTpl.name }}
             <i class="material-icons" ng-class="{'arrowDown':isDown == $index}">expand_less</i>
           </div>
-          <div class="panel-body" ng-show="panelIsShow == $index">
+          <div data-ng-bind-html="traffiliateTpl.desc"></div>
+          <!-- <div class="panel-body" ng-show="panelIsShow == $index">
             <div class="affiliate-network-description">
               <p><strong>MUNDOmedia</strong> is the worlds leading digital performance-based network, specializing in Mobile Content, Application Installs and Toolbars. Founded in 2009, the company has grown from start-up roots to become an internationally-renowned pioneer in the mobile marketing space. Headquartered in Toronto, MUNDOmedia employs a team of over 200 professionals in 5 countries, relying on unparalleled expertise, cutting edge proprietary technology and top-notch customer service to deliver ROI-driven solutions for over 2,000 advertisers and close to 30,000 publishers worldwide</p>
               <div class="lists pull-left full-width">
@@ -43,10 +44,10 @@
                 </div>
               </div>
               <p class="pull-left full-width">Don't have an account with MundoMedia?
-                <a href="http://mundomedia.com/publisher-signup" target="_blank" class="sign-up-btn orange">Sign up here</a>
+                <a href="{{traffiliateTpl.url}}" target="_blank" class="sign-up-btn orange">Sign up here</a>
               </p>
             </div>
-          </div>
+          </div> -->
         </li>
 
       </ul>

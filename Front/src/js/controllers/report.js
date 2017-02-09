@@ -362,7 +362,7 @@
       } else if (perfType == 'lander') {
         controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
@@ -769,7 +769,7 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, $q, Offer, AffiliateNetwork, urlParameter) {
+  function editOfferCtrl($scope, $mdDialog, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
     $scope.tags = [];
 
     // init load data
@@ -793,6 +793,12 @@
 
     // Country
     $scope.countries = $scope.$root.countries;
+
+    var defaultPostBackUrl;
+    prms = DefaultPostBackUrl.get(null, function (postbackUrl) {
+      defaultPostBackUrl = postbackUrl.data.defaultPostBackUrl;
+    });
+    initPromises.push(prms);
 
     var allAffiliate;
     prms = AffiliateNetwork.get(null, function (affiliates) {
@@ -819,26 +825,22 @@
         }
       }
 
-      //TODO 后台获取defaultPostbackUrl
-      var defaultPostbackUrl = "http://" + $scope.$parent.currentUser.idText + ".newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
       $scope.$watch('affiliateId', function (newValue, oldValue) {
         if (!newValue) {
-          $scope.item.postbackUrl = defaultPostbackUrl;
+          $scope.item.postbackUrl = defaultPostBackUrl;
           return;
         }
-        if (newValue != oldValue) {
-          $scope.affiliates.forEach(function (affiliate) {
-            if (affiliate.id == newValue) {
-              if (affiliate.postbackUrl) {
-                $scope.item.postbackUrl = affiliate.postbackUrl;
-              } else {
-                $scope.item.postbackUrl = defaultPostbackUrl;
-              }
-              return;
+        $scope.affiliates.forEach(function (affiliate) {
+          if (affiliate.id == newValue) {
+            if (affiliate.postbackUrl) {
+              $scope.item.postbackUrl = affiliate.postbackUrl;
+            } else {
+              $scope.item.postbackUrl = defaultPostBackUrl;
             }
+            return;
+          }
 
-          });
-        }
+        });
       });
 
     }
@@ -894,18 +896,18 @@
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
         if($scope.item.cost) {
-          $scope.item.cost = JSON.parse($scope.item.cost);
+          $scope.cost = JSON.parse($scope.item.cost);
         } else {
-          $scope.item.cost = {};
+          $scope.cost = {};
         }
 
         if ($scope.item.externalId) {
-          $scope.item.externalId = JSON.parse($scope.item.externalId);
+          $scope.externalId = JSON.parse($scope.item.externalId);
         } else {
-          $scope.item.externalId = {};
+          $scope.externalId = {};
         }
         if (!$scope.item.params) {
-          $scope.item.params = [
+          $scope.params = [
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
             {Parameter: '', Placeholder: '', Name: '', Track: ''},
@@ -918,27 +920,26 @@
             {Parameter: '', Placeholder: '', Name: '', Track: ''}
           ];
         } else {
-          $scope.item.params = JSON.parse($scope.item.params);
+          $scope.params = JSON.parse($scope.item.params);
         }
       });
       this.title = "edit";
     } else {
       $scope.item = {
         impTracking: 0,
-        params: [
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''},
-          {Parameter: '', Placeholder: '', Name: '', Track: ''}
-        ]
       };
-      $scope.params = [];
+      $scope.params = [
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''},
+        {Parameter: '', Placeholder: '', Name: '', Track: ''}
+      ]
       this.title = "add";
       $scope.urlToken = '';
     }
@@ -953,9 +954,9 @@
 
     this.save = function () {
       delete $scope.item.hash;
-      $scope.item.params = JSON.stringify($scope.item.params);
-      $scope.item.cost = JSON.stringify($scope.item.cost);
-      $scope.item.externalId = JSON.stringify($scope.item.externalId);
+      $scope.item.params = JSON.stringify($scope.params);
+      $scope.item.cost = JSON.stringify($scope.cost);
+      $scope.item.externalId = JSON.stringify($scope.externalId);
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
@@ -974,44 +975,44 @@
       $scope.visible = !$scope.visible;
     };
 
-    $scope.$watch('item.externalId.Parameter', function (newValue, oldValue) {
+    $scope.$watch('externalId.Parameter', function (newValue, oldValue) {
       if(!newValue) {
-        $scope.item.externalId = {
+        $scope.externalId = {
           Placeholder: null
         };
         return;
       }
-      var placeholder = $scope.item.externalId.Placeholder;
+      var placeholder = $scope.externalId.Placeholder;
       if (placeholder) {
         placeholder = placeholder.substring(1, placeholder.length - 1);
       }
       if (placeholder == oldValue) {
-        $scope.item.externalId.Placeholder = '{' + newValue + '}';
+        $scope.externalId.Placeholder = '{' + newValue + '}';
       }
     });
 
-    $scope.$watch('item.cost.Parameter', function (newValue, oldValue) {
+    $scope.$watch('cost.Parameter', function (newValue, oldValue) {
       if (!newValue){
-        $scope.item.cost = {
+        $scope.cost = {
           Placeholder: null
         };
         return;
       }
 
-      var placeholder = $scope.item.cost.Placeholder;
+      var placeholder = $scope.cost.Placeholder;
       if (placeholder) {
         placeholder = placeholder.substring(1, placeholder.length - 1);
       }
       if (placeholder == oldValue) {
-        $scope.item.cost.Placeholder = '{' + newValue + '}';
+        $scope.cost.Placeholder = '{' + newValue + '}';
       }
     });
 
-    $scope.$watch('item.params', function (newValue, oldValue) {
+    $scope.$watch('params', function (newValue, oldValue) {
       newValue.forEach(function (value, index) {
         if (!value.Parameter) {
-          $scope.item.params[index].Placeholder = "";
-          $scope.item.params[index].Name = "";
+          $scope.params[index].Placeholder = "";
+          $scope.params[index].Name = "";
           return;
         }
 
@@ -1022,11 +1023,11 @@
         }
 
         if (placeholder == oldValue[index].Parameter) {
-          $scope.item.params[index].Placeholder = '{' + newValue[index].Parameter + '}';
+          $scope.params[index].Placeholder = '{' + newValue[index].Parameter + '}';
         }
 
         if (name == oldValue[index].Parameter) {
-          $scope.item.params[index].Name = newValue[index].Parameter;
+          $scope.params[index].Name = newValue[index].Parameter;
         }
 
       });
@@ -1037,7 +1038,7 @@
         multiple: true,
         skipHide: true,
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', trafficSourceTemplateCtrl],
+        controller: ['$scope', '$mdDialog', 'TrafficTemplate', trafficSourceTemplateCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: { item: item, currentUser: $scope.currentUser },
@@ -1045,33 +1046,30 @@
         targetEvent: ev,
         templateUrl: 'tpl/trafficSource-template-dialog.html',
       }).then(function(data){
-        $scope.item.postbackUrl = data;
+        $scope.item.name = data.name;
+        $scope.item.postbackUrl = data.postbackurl;
+        $scope.params = JSON.parse(data.params);
+        $scope.cost = JSON.parse(data.cost);
+        $scope.externalId = JSON.parse(data.externalId);
+        $scope.visible = true;
       });
     };
 
   }
 
-  function trafficSourceTemplateCtrl($scope, $mdDialog, $index) {
+  function trafficSourceTemplateCtrl($scope, $mdDialog, TrafficTemplate) {
+    TrafficTemplate.get(null, function (trafficTpl) {
+      $scope.trafficTemplateLists = trafficTpl.data.lists;
+    });
 
-    $scope.trafficTemplateLists = [
-      "50onRed Intext1",
-      "50onRed Intext2",
-      "50onRed Intext3",
-      "50onRed Intext4",
-      "50onRed Intext5",
-      "50onRed Intext6",
-      "50onRed Intext7",
-      "50onRed Intext8",
-      "50onRed Intext9",
-    ];
     $scope.selected = 0;
     $scope.templateListClick = function($index){
       $scope.selected = $index;
     };
 
     this.save = function () {
-      var name = $scope.trafficTemplateLists[$scope.selected];
-      $mdDialog.hide(name);
+      var trafficTpl = $scope.trafficTemplateLists[$scope.selected];
+      $mdDialog.hide(trafficTpl);
     };
 
     this.hide = function() {
@@ -1082,9 +1080,6 @@
       $mdDialog.cancel();
     };
 
-    this.answer = function(answer) {
-      $mdDialog.hide(answer);
-    };
   }
 
   function editAffiliateCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
@@ -1167,7 +1162,7 @@
         multiple: true,
         skipHide: true,
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', '$timeout', affiliateNetworkCtrl],
+        controller: ['$scope', '$mdDialog', 'AffiliateTemplate', affiliateNetworkCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: { item: item, currentUser: $scope.currentUser },
@@ -1175,18 +1170,20 @@
         targetEvent: ev,
         templateUrl: 'tpl/trusted-affiliate-networks-dialog.html',
       }).then(function(data){
-        $scope.item.postbackurl = data;
+        $scope.item.postbackurl = data.postbackurl;
+        $scope.item.name = data.name;
       });
     };
 
   }
 
-  function affiliateNetworkCtrl($scope, $mdDialog) {
+  function affiliateNetworkCtrl($scope, $mdDialog, AffiliateTemplate) {
 
-    $scope.trafficTemplateLists = [
-      "50onRed Intext111",
-      "50onRed Intext222",
-    ];
+    AffiliateTemplate.get(null, function (affiliateTpl) {
+      $scope.trafficTemplateLists = affiliateTpl.data.lists;
+
+    });
+
     $scope.selected = 0;
     $scope.panelIsShow = 0;
     $scope.isDown = 0;
@@ -1201,16 +1198,12 @@
     };
 
     this.save = function(){
-      var postbackUrl = $scope.trafficTemplateLists[$scope.selected];
-      $mdDialog.hide(postbackUrl);
+      var traffiliateTpl = $scope.trafficTemplateLists[$scope.selected];
+      $mdDialog.hide(traffiliateTpl);
     };
 
     this.cancel = function() {
       $mdDialog.cancel();
-    };
-
-    this.answer = function(answer) {
-      $mdDialog.hide(answer);
     };
   }
 
