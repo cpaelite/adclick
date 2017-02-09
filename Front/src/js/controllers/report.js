@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$cacheFactory', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
+      '$scope', '$mdDialog', '$timeout', '$cacheFactory', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
       ReportCtrl
     ]);
 
-  function ReportCtrl($scope, $mdDialog, $cacheFactory, columnDefinition, groupByOptions, Report, Preference) {
+  function ReportCtrl($scope, $mdDialog, $timeout, $cacheFactory, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
@@ -350,7 +350,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         //controller = ['$scope', '$mdDialog', 'Flow', editFlowCtrl];
         var flowId = "";
@@ -366,7 +366,7 @@
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
-        controller = ['$scope', '$mdDialog', 'AffiliateNetwork', editAffiliateCtrl];
+        controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
 
       $mdDialog.show({
@@ -465,7 +465,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog, $q, Campaign, Flow, TrafficSource, urlParameter) {
+  function editCampaignCtrl($scope, $mdDialog , $timeout, $q, Campaign, Flow, TrafficSource, urlParameter) {
     $scope.tags = [];
 
     // init load data
@@ -557,6 +557,22 @@
         }
       });
     }
+
+    // campaign copy btn
+    $scope.btnWord1 = "Clipboard";
+    $scope.itemUrlClick = function(){
+      $scope.btnWord1 = "Copied";
+      $timeout(function() {
+        $scope.btnWord1 = "Clipboard";
+      }, 2000);
+    };
+    $scope.btnWord2 = "Clipboard";
+    $scope.impPixelUrlClick = function(){
+      $scope.btnWord2 = "Copied";
+      $timeout(function() {
+        $scope.btnWord2 = "Clipboard";
+      }, 2000);
+    };
 
     function showFlow() {
       $scope.ztreeShow = true;
@@ -678,22 +694,6 @@
         $scope.isActive1 = !$scope.isActive1;
       }
     };
-
-    /*$scope.treeLiIsShow = true;
-    $scope.offersIsShow = true;
-    $scope.offersConIsShow = true;
-    $scope.landersIsShow = true;
-    $scope.landersConIsShow = true;*/
-
-    /*$scope.firstTreeClick = function(){
-      $scope.treeLiIsShow = !$scope.treeLiIsShow;
-    };
-    $scope.secondTreeClick = function(){
-      $scope.offersIsShow = !$scope.offersIsShow;
-    };
-    $scope.thirdTreeClick = function(){
-      $scope.offersConIsShow = !$scope.offersConIsShow;
-    };*/
 
     $scope.radioSelect = function (type) {
       $scope.radioTitle = type;
@@ -1044,27 +1044,34 @@
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trafficSource-template-dialog.html',
+      }).then(function(data){
+        $scope.item.postbackUrl = data;
       });
     };
 
   }
 
-  function trafficSourceTemplateCtrl($scope, $mdDialog) {
+  function trafficSourceTemplateCtrl($scope, $mdDialog, $index) {
 
     $scope.trafficTemplateLists = [
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
-      "50onRed Intext",
+      "50onRed Intext1",
+      "50onRed Intext2",
+      "50onRed Intext3",
+      "50onRed Intext4",
+      "50onRed Intext5",
+      "50onRed Intext6",
+      "50onRed Intext7",
+      "50onRed Intext8",
+      "50onRed Intext9",
     ];
     $scope.selected = 0;
     $scope.templateListClick = function($index){
       $scope.selected = $index;
+    };
+
+    this.save = function () {
+      var name = $scope.trafficTemplateLists[$scope.selected];
+      $mdDialog.hide(name);
     };
 
     this.hide = function() {
@@ -1080,7 +1087,7 @@
     };
   }
 
-  function editAffiliateCtrl($scope, $mdDialog, AffiliateNetwork) {
+  function editAffiliateCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
     if (this.item) {
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
@@ -1105,6 +1112,15 @@
       $scope.ipWhiteCheck = false;
       this.title = "add";
     }
+
+    // affiliate copy btn
+    $scope.btnWord = "Clipboard";
+    $scope.itemUrlClick = function(){
+      $scope.btnWord = "Copied";
+      $timeout(function() {
+        $scope.btnWord = "Clipboard";
+      }, 2000);
+    };
 
     this.titleType = angular.copy(this.perfType);
 
@@ -1151,13 +1167,15 @@
         multiple: true,
         skipHide: true,
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', affiliateNetworkCtrl],
+        controller: ['$scope', '$mdDialog', '$timeout', affiliateNetworkCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: { item: item, currentUser: $scope.currentUser },
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trusted-affiliate-networks-dialog.html',
+      }).then(function(data){
+        $scope.item.postbackurl = data;
       });
     };
 
@@ -1166,8 +1184,8 @@
   function affiliateNetworkCtrl($scope, $mdDialog) {
 
     $scope.trafficTemplateLists = [
-      "50onRed Intext",
-      "50onRed Intext",
+      "50onRed Intext111",
+      "50onRed Intext222",
     ];
     $scope.selected = 0;
     $scope.panelIsShow = 0;
@@ -1180,6 +1198,11 @@
 
     this.hide = function() {
       $mdDialog.hide();
+    };
+
+    this.save = function(){
+      var postbackUrl = $scope.trafficTemplateLists[$scope.selected];
+      $mdDialog.hide(postbackUrl);
     };
 
     this.cancel = function() {
@@ -1218,7 +1241,6 @@
     };
 
     function success() {
-      console.log("success delete");
       $mdDialog.hide();
     }
 

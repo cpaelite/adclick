@@ -10,6 +10,7 @@
   "author": "Flatfull",
   "license": "Envato REGULAR LICENSE",
   "dependencies": {
+    "angular-clipboard-directive": "^1.0.0",
     "express": "^4.14.0",
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-watch": "^0.6.1",
