@@ -637,6 +637,7 @@
       var campaign = item.data;
       $scope.item.url = campaign.url;
       $scope.item.impPixelUrl = campaign.impPixelUrl;
+      $scope.item.hash = campaign.hash;
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
