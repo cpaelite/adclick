@@ -527,7 +527,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
     "data": {
       "id": 18,
       "name": "campaign.1",
-      "hash": "campaign.1.hash",
+      "hash": "23b0b9d2-4805-4950-8936-b96cff003c0a",
       "url": "http://zhanchenxing.newbidder.com/campaign.1/",
       "impPixelUrl": "http://zhanchenxing.newbidder.com/impression/campaign.1/",
       "trafficSourceId": 10,
@@ -558,6 +558,7 @@ app.post('/api/campaigns', function (req, res) {
     message: "",
     data: {
       "id": 1,
+      "hash": "23b0b9d2-4805-4950-8936-b96cff003c0a",
       "name": "PropellerAds - Canada - yoshop-benson-Android-0104",   //TODO Traffic source + country + name
       "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
       "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
