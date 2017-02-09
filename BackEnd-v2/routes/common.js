@@ -99,8 +99,8 @@ function insertCampaign(value, connection) {
     col += ",`hash`";
     val += ",'" + hash + "'";
 
-    col += ",`url`";
-    val += ",'" + value.url + "'";
+    // col += ",`url`";
+    // val += ",'" + value.url + "'";
 
     col += ",`trafficSourceId`";
     val += "," + value.trafficSource.id;
@@ -114,8 +114,8 @@ function insertCampaign(value, connection) {
     col += ",`status`";
     val += "," + value.status;
 
-    col += ",`impPixelUrl`";
-    val += ",'" + impPixelUrl + "'";
+    // col += ",`impPixelUrl`";
+    // val += ",'" + impPixelUrl + "'";
 
     //optional
     if (value.cpc != undefined) {
