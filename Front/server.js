@@ -16,7 +16,7 @@ app.get('/', function (req, res) {
 function createJWT() {
   var payload = 'eyJ1aWQiOiIxMjM0NTY3ODkwIiwibmlja25hbWUiOiJKb2huIFB1YiIsInJvbGUiOiJwdWJsaXNoZXIifQ';
   //return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + payload + '.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
-  return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjksImV4cCI6MTQ4NjgwNTE0ODA5MSwiZmlyc3RuYW1lIjoiQmluIn0.38dk75hihQAttgiRadRTerhFJhLXNsuW3jRG3gf7cSo';
+  return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjksImV4cCI6MTQ4NzIxMTI4MTkzMiwiZmlyc3RuYW1lIjoiQmluIiwiaWRUZXh0IjoiNnBnOHFjIn0.V8yR-8ytOm0Dqm900QBiaYImZ8MbgD7JlL-EoC7ubIs';
 }
 
 function delayResponse(res, data) {

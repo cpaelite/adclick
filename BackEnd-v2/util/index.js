@@ -41,11 +41,12 @@ exports.checkToken = function() {
     }
   }
 }
-exports.setToken = function(userid,expires,firstname) {
+exports.setToken = function(userid,expires,firstname,idtext) {
   return jwt.encode({
     iss: userid,
     exp:expires,
-    firstname:firstname
+    firstname:firstname,
+    idText:idtext
   }, setting['jwtTokenSrcret'])
 }
 exports.getRandomString = function(len) {

@@ -822,8 +822,7 @@
 
     $q.all(initPromises).then(initSuccess);
 
-    //var defaultPostbackUrl = "http://" + $scope.currentUser.idText + ".newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
-    var defaultPostbackUrl = "http://9cmzk.newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
+    var defaultPostbackUrl = "http://" + $scope.$parent.currentUser.idText + ".newbidder.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL";
     $scope.$watch('affiliateId', function (newValue, oldValue) {
       if (!newValue) {
         $scope.item.postbackUrl = defaultPostbackUrl;

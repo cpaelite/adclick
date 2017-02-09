@@ -1,0 +1,160 @@
+{
+  "status": 1,
+  "message": "success",
+  "data": {
+    "rules": [
+      {
+        "paths": [
+          {
+            "offers": [],
+            "landers": [],
+            "id": 455,
+            "name": "Path 1",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 456,
+            "name": "Path 2",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 457,
+            "name": "Path 3",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          }
+        ],
+        "id": 221,
+        "name": "Default Paths",
+        "conditions": "[]",
+        "enabled": "false",
+        "type": 0,
+        "isDefault": "true",
+        "isDeleted": "false"
+      },
+      {
+        "paths": [
+          null,
+          null,
+          null,
+          {
+            "offers": [],
+            "landers": [],
+            "id": 458,
+            "name": "Path 1",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 459,
+            "name": "Path 2",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 460,
+            "name": "Path 3",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 461,
+            "name": "Path 4",
+            "directLinking": "false",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 494,
+            "name": "Path 1",
+            "directLinking": "true",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 495,
+            "name": "Path 2",
+            "directLinking": "true",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 496,
+            "name": "Path 3",
+            "directLinking": "true",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          },
+          {
+            "offers": [],
+            "landers": [],
+            "id": 497,
+            "name": "Path 4",
+            "directLinking": "true",
+            "redirectMode": 0,
+            "enabled": "true",
+            "weight": 100,
+            "isDeleted": "false"
+          }
+        ],
+        "id": 222,
+        "name": "china",
+        "conditions": "[{\"id\":\"2334\",\"operand\":\"is\",\"value\":\"cn\"}]",
+        "enabled": "true",
+        "type": 1,
+        "isDefault": "false",
+        "isDeleted": "false"
+      }
+    ],
+    "id": 6,
+    "name": "show me",
+    "hash": "aa267576-7264-4c8f-9baf-7eea1ed32a0f",
+    "country": "ALB",
+    "type": 1,
+    "redirectMode": 0
+  }
+}
