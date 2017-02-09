@@ -17,5 +17,15 @@ module.exports = {
     "mainDomain":"newbidder.com",
     "impRouter":"/impression",
     "postBackRouter":"/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
-  }
+  },
+  domains:[{
+    address:"nbtrk.com",
+    mainDomain:false
+  },{
+    address:"nbtrk0.com",
+    mainDomain:true
+  },{
+    address:"nbtrk1.com",
+    mainDomain:false
+  }]
 }
