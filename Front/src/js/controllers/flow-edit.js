@@ -9,6 +9,7 @@
   function FlowEditCtrl($scope, $mdDialog, $q, Flow, Lander, Offer, Condition, Country) {
     $scope.app.subtitle = 'Flow';
     var flowId = $scope.$stateParams.id;
+    var isDuplicate = $scope.$stateParams.dup == '1';
 
     var pathSkel = {
       name: 'Path 1',
@@ -119,7 +120,13 @@
       });
 
       // fulfill flow with lander/offer/condition
+      if (isDuplicate) {
+        delete theFlow.id;
+      }
       theFlow.rules.forEach(function(rule) {
+        if (isDuplicate) {
+          delete rule.id;
+        }
         if (!Array.isArray(rule.conditions)) {
           rule.conditions = [];
         }
@@ -133,6 +140,9 @@
 
         calculateRelativeWeight(rule.paths, function(item) { return !item.isDeleted; });
         rule.paths.forEach(function(path) {
+          if (isDuplicate) {
+            delete path.id;
+          }
           if (!Array.isArray(path.landers)) {
             path.landers = [];
           }
