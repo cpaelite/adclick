@@ -341,7 +341,7 @@ router.post('/api/campaigns/:id', function (req, res, next) {
 });
 
 
-const start = async(data, schema) => {
+const start = async (data, schema) => {
     let Result;
     let ResultError;
     let connection;
@@ -353,22 +353,27 @@ const start = async(data, schema) => {
             //Campaign
             let campResult, flowResult;
             if (value.id) {
-                 
                 await common.updateCampaign(value, connection);
             } else {
                 let hash = uuidV4();
-                campResult = await common.insertCampaign(value,hash, connection);
-                value.hash=hash;
+                let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
+                campResult = await common.insertCampaign(value, hash, connection);
+                let domainResult=await common.query(mainDomainsql, [value.userId], connection);
+                value.hash = hash;
+                if (domainResult.length) {
+                    value.url = setting.newbidder.httpPix + value.idText + "." + domainResult[0].domain + "/" + value.hash;
+                    value.impPixelUrl = setting.newbidder.httpPix + value.idText + "." + domainResult[0].domain + setting.newbidder.impRouter + "/" + value.hash;
+                }
             }
 
-             
+
             //Flow
             if (value.flow && !value.flow.id) {
                 flowResult = await common.insertFlow(value.userId, value.flow, connection)
             } else if (value.flow && value.flow.id) {
                 await common.updateFlow(value.userId, value.flow, connection)
             }
-             
+
 
             let campaignId = value.id ? value.id : (campResult ? (campResult.insertId ? campResult.insertId : 0) : 0);
 
@@ -407,11 +412,11 @@ const start = async(data, schema) => {
                         let ruleResult;
                         //RULE
                         if (!value.flow.rules[i].id) {
-                            ruleResult = await  common.insetRule(value.userId, value.flow.rules[i], connection);
-                          
+                            ruleResult = await common.insetRule(value.userId, value.flow.rules[i], connection);
+
                         } else {
-                            await  common.updateRule(value.userId, value.flow.rules[i], connection);
-                            await  common.updateRule2Flow(value.flow.rules[i].rule2flow, value.flow.rules[i].id, flowId, connection);
+                            await common.updateRule(value.userId, value.flow.rules[i], connection);
+                            await common.updateRule2Flow(value.flow.rules[i].rule2flow, value.flow.rules[i].id, flowId, connection);
                         }
                         let ruleId = value.flow.rules[i].id ? value.flow.rules[i].id : (ruleResult ? (ruleResult.insertId ? ruleResult.insertId : 0) : 0);
                         if (!ruleId) {
@@ -426,7 +431,7 @@ const start = async(data, schema) => {
                                 let pathResult;
                                 if (!value.flow.rules[i].paths[j].id) {
                                     pathResult = await common.insertPath(value.userId, value.flow.rules[i].paths[j], connection);
-                                  
+
 
                                 } else {
                                     await common.updatePath(value.userId, value.flow.rules[i].paths[j], connection);
@@ -446,7 +451,7 @@ const start = async(data, schema) => {
                                         let landerResult;
                                         if (!value.flow.rules[i].paths[j].landers[k].id) {
                                             landerResult = await common.insertLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
-                                          
+
                                         } else {
                                             await common.updateLander(value.userId, value.flow.rules[i].paths[j].landers[k], connection);
                                             await common.updateLander2Path(value.flow.rules[i].paths[j].landers[k].id, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
@@ -456,7 +461,7 @@ const start = async(data, schema) => {
                                         if (!landerId) {
                                             throw new Error('Lander ID Lost');
                                         }
-                                          await common.insertLander2Path(landerId, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
+                                        await common.insertLander2Path(landerId, pathId, value.flow.rules[i].paths[j].landers[k].weight, connection);
                                         value.flow.rules[i].paths[j].landers[k].id = landerId;
                                         //Lander tags
                                         //删除所有tags
@@ -482,12 +487,12 @@ const start = async(data, schema) => {
                                             let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
                                             value.flow.rules[i].paths[j].offers[z].postbackUrl = postbackUrl;
                                             offerResult = await common.insertOffer(value.userId, value.idText, value.flow.rules[i].paths[j].offers[z], connection);
-                                            
+
                                         } else {
 
-                                            await  common.updateOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
+                                            await common.updateOffer(value.userId, value.flow.rules[i].paths[j].offers[z], connection);
 
-                                            await  common.updateOffer2Path(value.flow.rules[i].paths[j].offers[z].id, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
+                                            await common.updateOffer2Path(value.flow.rules[i].paths[j].offers[z].id, pathId, value.flow.rules[i].paths[j].offers[z].weight, connection);
 
                                         }
 
@@ -557,17 +562,17 @@ router.get('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        idText:Joi.string().required()
+        idText: Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
-    req.query.idText=req.idText;
+    req.query.idText = req.idText;
     let connection;
 
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.getCampaign(value.id, value.userId,value.idText, connection);
+        let result = await common.getCampaign(value.id, value.userId, value.idText, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -598,8 +603,8 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        hash:Joi.string().required(),
-        name:Joi.string().required()
+        hash: Joi.string().required(),
+        name: Joi.string().required()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -607,7 +612,7 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(value.id, value.userId,value.hash,value.name ,connection);
+        let result = await common.deleteCampaign(value.id, value.userId, value.hash, value.name, connection);
         res.json({
             status: 1,
             message: 'success'

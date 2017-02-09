@@ -1134,3 +1134,4 @@ exports.deleteLander = deleteLander;
 exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
 exports.saveEventLog = saveEventLog;
+exports.query=query;
