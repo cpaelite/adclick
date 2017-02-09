@@ -130,7 +130,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
 
         let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
-        let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`json` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
+        let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`object` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
             "from Flow f " +
             "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "inner join `Rule` r on r.`id` = f2.`ruleId` " +
@@ -379,6 +379,13 @@ const start = async(data, schema) => {
 
             if (value.rules && value.rules.length > 0) {
                 for (let i = 0; i < value.rules.length; i++) {
+                    // parse conditions array
+                    let rule = value.rules[i]
+                    // console.info("----------", JSON.stringify(rule))
+                    if (rule.conditions) {
+                        rule.json = rule.conditions
+                        rule.object = conditionFormat(rule.conditions)
+                    }
                     try {
                         let ruleResult;
                         //RULE
@@ -554,13 +561,13 @@ router.get('/api/conditions', async function (req, res) {
         "display": "Day of week",
         "fields": [{
             "type": "checkbox", "name": "weekday", "options": [
-                {"value": 0, "display": "Monday"},
-                {"value": 1, "display": "Tuesday"},
-                {"value": 2, "display": "Wednesday"},
-                {"value": 3, "display": "Thursday"},
-                {"value": 4, "display": "Friday"},
-                {"value": 5, "display": "Saturday"},
-                {"value": 6, "display": "Sunday"}
+                {"value": "0", "display": "Monday"},
+                {"value": "1", "display": "Tuesday"},
+                {"value": "2", "display": "Wednesday"},
+                {"value": "3", "display": "Thursday"},
+                {"value": "4", "display": "Friday"},
+                {"value": "5", "display": "Saturday"},
+                {"value": "6", "display": "Sunday"}
             ]
         }, {
             "type": "select", "label": "Time zone", "name": "tz", "options": [
@@ -659,10 +666,14 @@ async function fillConditions(r) {
             r[i].fields[0].options = await loadStateRegionFromDB()
         } else if (r[i].id == 'city') {
             r[i].fields[0].options = await loadCityFromDB()
+        } else if (r[i].id == 'varN') {
+            //TODO: varN
         } else if (r[i].id == 'weekday') {
             r[i].fields[1].options = await loadTimezoneFromDB()
         } else if (r[i].id == 'device') {
             r[i].fields[0].options = await loadDeviceType()
+        } else if (r[i].id == 'iprange') {
+            // do nothing
         } else if (r[i].id == 'isp') {
             r[i].fields[0].options = await loadIspFromDB()
         } else if (r[i].id == 'language') {
@@ -671,8 +682,14 @@ async function fillConditions(r) {
             r[i].fields[0].options = await loadMobileCarrierFromDB()
         } else if (r[i].id == 'os') {
             r[i].fields[0].options = await loadOsFromDB()
+        } else if (r[i].id == 'referrer') {
+            // do nothing
         } else if (r[i].id == 'time') {
             r[i].fields[1].options = await loadTimezoneFromDB()
+        } else if (r[i].id == 'useragent') {
+            //do nothing
+        } else {
+            console.error("unsupported id type ", r[i].id)
         }
     }
     return r
@@ -788,6 +805,7 @@ async function loadCityFromDB() {
     }
     return r
 }
+
 // TODO: change sql to Region table
 async function loadStateRegionFromDB() {
     var sql = "select id, name as display, alpha3Code as value from Country"
@@ -892,4 +910,145 @@ function query(sql, connection) {
             resolve(result);
         })
     });
+}
+
+function conditionFormat(c) {
+    // console.info(c)
+    var r = []
+    c.forEach(function (v) {
+            if (v.id == 'model') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'browser') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'connection') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'country') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'region') {
+                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+            } else if (v.id == 'city') {
+                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+            } else if (v.id == 'varN') {
+                // r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'weekday') {
+                r.push(formatWeekDay(v.id, v.operand, v.tz, v.weekday))
+            } else if (v.id == 'device') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'iprange') {
+                r.push(formatIPValue(v.id, v.operand, v.value))
+            } else if (v.id == 'isp') {
+                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+            } else if (v.id == 'language') {
+                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+            } else if (v.id == 'carrier') {
+                r.push(formatThreeKeysWithErrorFormat(v.id, v.operand, v.value))
+            } else if (v.id == 'os') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'referrer') {
+                r.push(formatTextValue(v.id, v.operand, v.value))
+            } else if (v.id == 'time') {
+                r.push(formatTime(v.id, v.operand, v.tz, v.starttime, v.endtime))
+            } else if (v.id == 'useragent') {
+                r.push(formatTextValue(v.id, v.operand, v.value))
+            } else {
+                console.error("unsupported id type ", v.id)
+            }
+        }
+    )
+    return [r]
+}
+
+function formatThreeKeys(id, operand, values) {
+    var r = []
+    r.push(id)
+    if (operand == 'is') {
+        r.push("in")
+    } else {
+        r.push("not in")
+    }
+    if (isArray(values))
+        values.forEach(function (v) {
+            r.push(v)
+        })
+    else
+        r.push(values)
+    return r
+}
+
+function formatThreeKeysWithErrorFormat(id, operand, values) {
+    var r = []
+    r.push(id)
+    if (operand == 'is') {
+        r.push("in")
+    } else {
+        r.push("not in")
+    }
+    if (isArray(values))
+        values.forEach(function (v) {
+            r.push(v.value)
+        })
+    else
+        r.push(values)
+    return r
+}
+
+
+function isArray(o) {
+    return Object.prototype.toString.call(o) == '[object Array]';
+}
+
+function formatWeekDay(id, operand, tz, weekday) {
+    var r = []
+    r.push(id)
+    if (operand == 'is') {
+        r.push("weekday in")
+    } else {
+        r.push("weekday not in")
+    }
+    r.push(tz)
+    if (isArray(weekday))
+        weekday.forEach(function (v) {
+            r.push(v)
+        })
+    else
+        console.error("weekday must be an array")
+    return r
+}
+
+function formatTime(id, operand, tz, startTime, endTime) {
+    var r = []
+    r.push(id)
+    if (operand == 'is') {
+        r.push("time between")
+    } else {
+        r.push("time not between")
+    }
+    r.push(tz)
+    r.push(startTime)
+    r.push(endTime)
+    return r
+}
+
+function formatTextValue(id, operand, value) {
+    let r = [id]
+    if (operand == 'is') {
+        r.push("contain")
+    } else {
+        r.push("not contain")
+    }
+    let m = value.split(/\r?\n/)
+    r = r.concat(m)
+    return r
+}
+
+function formatIPValue(id, operand, value) {
+    let r = [id]
+    if (operand == 'is') {
+        r.push("ip in")
+    } else {
+        r.push("ip not in ")
+    }
+    let m = value.split(/\r?\n/)
+    r = r.concat(m)
+    return r
 }
