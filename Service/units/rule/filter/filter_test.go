@@ -265,7 +265,7 @@ func (f fakeRequest) DelUrlParam(key string) {
 func (f fakeRequest) UrlParamString() string { // 不包括"?"和"/"部分
 	return ""
 }
-func (f fakeRequest) CacheSave(expire time.Time) bool {
+func (f fakeRequest) CacheSave(duration time.Duration) bool {
 	return true
 }
 func (f fakeRequest) CacheClear() bool {
