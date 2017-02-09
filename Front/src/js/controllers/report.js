@@ -656,6 +656,8 @@
       delete $scope.item.trafficSourceId;
       delete $scope.item.targetFlowId;
       delete $scope.item.trafficSourceName;
+      delete $scope.item.impPixelUrl;
+      delete $scope.item.url;
       delete $scope.item['cpcValue'];
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];

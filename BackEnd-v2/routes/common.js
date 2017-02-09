@@ -929,7 +929,7 @@ function updatetraffic(userId, traffic, connection) {
             sqlUpdateOffer += ",`name`='" + traffic.name + "'"
         }
         if (traffic.postbackUrl) {
-            sqlUpdateOffer += ",`postbackUrl`=`" + traffic.postbackUrl + "`"
+            sqlUpdateOffer += ",`postbackUrl`='" + traffic.postbackUrl + "'"
         }
         if (traffic.pixelRedirectUrl) {
             sqlUpdateOffer += ",`pixelRedirectUrl`='" + traffic.pixelRedirectUrl + "'"
@@ -946,8 +946,8 @@ function updatetraffic(userId, traffic, connection) {
         if (traffic.params) {
             sqlUpdateOffer += ",`params`='" + traffic.params + "'"
         }
-        sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
-        connection.query(sqlUpdateOffer, [userId, traffic.id], function (err, result) {
+        sqlUpdateOffer += " where `userId`="+ userId+" and `id`= "+ traffic.id ;
+        connection.query(sqlUpdateOffer, function (err, result) {
             if (err) {
                 reject(err);
             }
