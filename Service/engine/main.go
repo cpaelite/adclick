@@ -25,7 +25,7 @@ func main() {
 		log.Alert(string(debug.Stack()))
 	}()
 	help := flag.Bool("help", false, "show help")
-	blacklistPath := flag.String("blacklist", "", "global blacklist.txt path. If it's empty, disable global blacklist.")
+	blacklistPath := flag.String("blacklist", "", "global blacklist.txt path. If it's empty, disable global blacklist. You can download blacklist here: https://myip.ms/files/blacklist/general/full_blacklist_database.zip")
 	flag.Parse()
 	if *help {
 		flag.PrintDefaults()
