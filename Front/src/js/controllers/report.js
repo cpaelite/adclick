@@ -595,6 +595,15 @@
       });
     }
 
+    // Flow preview 
+    // $scope.secondIsShow = true ;
+    $scope.toggleClick = function(type){
+      type.isShow = !type.isShow;
+    };
+
+    $scope.offerItem = {};
+    $scope.landerItem = {};
+
     // campaign copy btn
     $scope.btnWord1 = "Clipboard";
     $scope.itemUrlClick = function(){

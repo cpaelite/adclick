@@ -268,13 +268,10 @@ md-datepicker {
 }
 .cs-radio-group {
     background: #f8f8f8 none repeat scroll 0 0;
-    /*min-width: 490px;*/
-    /*width: auto;*/
     overflow: hidden;
     padding: 10px;
     max-width: 404px;
     display: table;
-    /*margin-left: 15px;*/
 }
 .cs-radio-group > label {
     display: inline-block;
@@ -286,7 +283,6 @@ md-datepicker {
     width: 76px;
 }
 .cs-radio-group > label.active {
-    /*background-color: #12bdce;*/
     background-color: #6254b2;
 }
 .form-group md-checkbox {
@@ -333,7 +329,6 @@ md-datepicker {
     border: 1px solid #c7f2f6;
     border-radius: 0;
     padding: 8px 10px;
-    /*box-shadow: 0 6px 12px rgba(0,0,0,.175);*/
 }
 .tooltip.cs-tooltip .tooltip-inner p {
     color: #999;
@@ -341,7 +336,6 @@ md-datepicker {
     margin: 0;
 }
 .tooltip.cs-tooltip .tooltip-arrow {
-    /* Hide arrow */
     display: none;
 }
 .cs-progress-xxs {
@@ -372,7 +366,6 @@ md-datepicker {
 .cs-top-border-panel {
     background-color: #f8f8f8;
     border-top: 3px solid #dfdfdf;
-    /*margin-top: 20px; use this when can shoose dateType*/
     margin-top: 5px;
     padding-bottom: 30px;
     display: inline-block;
@@ -668,12 +661,22 @@ md-content.cs-main-content{
 }
 
 .material-icons.table-arrow-down.active,
-.material-icons.table-arrow-down.down{
+.material-icons.table-arrow-down.down,
+.material-icons.flow-arrow-down.rightAction{
     ransform:rotate(90deg);
     -ms-transform:rotate(90deg);     /* IE 9 */
     -moz-transform:rotate(90deg);    /* Firefox */
     -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
     -o-transform:rotate(90deg);  /* Opera */
+    padding-left: 0px;
+}
+
+.material-icons.flow-arrow-down.rightAction{
+    ransform:rotate(-90deg);
+    -ms-transform:rotate(-90deg);     /* IE 9 */
+    -moz-transform:rotate(-90deg);    /* Firefox */
+    -webkit-transform:rotate(-90deg); /* Safari 和 Chrome */
+    -o-transform:rotate(-90deg);  /* Opera */
     padding-left: 0px;
 }
 
@@ -1066,8 +1069,9 @@ h1.setting-title{
     margin: 0;
 }
 .account-form,
-.basic-form{
-    max-width: 940px;
+.basic-form,
+.data-table{
+    max-width: 1004px;
     margin: 0 auto;
 }
 .basic-form .campaign-radio{
@@ -1108,7 +1112,8 @@ h1.setting-title{
 .save-btn .material-icons{
     font-size:22px;
 }
-.referral-program{
+.referral-program,
+.setUp-page{
     max-width: 1030px;
     margin:0 auto;
 }
