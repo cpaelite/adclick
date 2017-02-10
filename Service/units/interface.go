@@ -128,6 +128,11 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		req.ParseTSParams(ca.TrafficSource.ExternalId, ca.TrafficSource.Cost, ca.TrafficSource.Vars, r.URL.Query())
 	}
 
+	theirCamp := r.FormValue("campaignid")
+	if len(theirCamp) != 0 {
+		tracking.InsertCampMap(ca.Id, theirCamp)
+	}
+
 	SetCookie(w, request.ReqLPOffer, req)
 
 	if err := u.OnLPOfferRequest(w, req); err != nil {

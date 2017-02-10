@@ -61,6 +61,11 @@ func main() {
 		tracking.Saving(db.GetDB("DB"), c)
 	})
 
+	// 启动CampaignMap保存协程
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		tracking.CampMapSaving(db.GetDB("DB"), c)
+	})
+
 	// 启动Conversion保存
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
 		tracking.SavingConversions(db.GetDB("DB"), c)
