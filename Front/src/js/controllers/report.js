@@ -297,7 +297,7 @@
         $scope.menuStatus.isopen = true;
       }
     };
-    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'affiliate'].indexOf(perfType) >= 0;
+    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
@@ -1228,6 +1228,8 @@
     var resourceName;
     if (type == 'affiliate') {
       resourceName = 'AffiliateNetwork';
+    } else if (type == 'traffic') {
+      resourceName = 'TrafficSource';
     } else {
       resourceName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     }

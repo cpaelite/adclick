@@ -301,7 +301,8 @@
             <div class="col-sm-3 col-md-3">Weight</div>
           </div>
           <div class="cs-flow-offer-row clearfix"
-               ng-repeat="offer in curPath.offers" ng-click="setEdit($event, offer)"
+               ng-repeat="offer in curPath.offers"
+               ng-click="setEdit($event, offer)"
                ng-class="{'cs-flow-offer-onedit':offer._onEdit}">
             <div class="col-sm-9 col-md-9">
               <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
@@ -408,9 +409,18 @@
     </form>
 
     <div class="cs-flow-bottom-actions clearfix">
+      <span class="cs-on-save" ng-show="onSave">Saving...</span>
+      <span class="cs-save-result" ng-hide="onSave">
+        <span class="cs-save-error" ng-show="saveError">{{saveError}}</span>
+        <span class="cs-save-time" ng-if="saveTime && !saveError">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+      </span>
       <button class="btn btn-primary save-btn" ng-click="save()">
         <i class="material-icons">check</i>
         Save
+      </button>
+      <button class="btn btn-primary save-btn" ng-click="saveClose()">
+        <i class="material-icons">check</i>
+        Save&amp;close
       </button>
       <button class="btn close-btn" ng-click="close()">
         <i class="material-icons">close</i>

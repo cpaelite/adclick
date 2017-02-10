@@ -421,6 +421,9 @@
       item._onEdit = true;
       evt.stopPropagation();
     };
+    $scope.stopEdit = function(item) {
+      item._onEdit = false;
+    };
     $scope.clearOnEdit = function() {
       if ($scope.curPath == null) return;
       $scope.curPath.landers.forEach(function(lander) {
@@ -640,9 +643,13 @@
       });
 
       $scope.onSave = true;
-      Flow.save(flowData, function(result) {
+      $scope.saveError = null;
+      return Flow.save(flowData, function(result) {
         $scope.onSave = false;
-        if (!theFlow.id) {
+        $scope.saveTime = new Date();
+        if (result.status != 1) {
+          $scope.saveError = result.message;
+        } else if (!theFlow.id) {
           theFlow.id = result.data.id;
           result.data.rules.forEach(function (rule, ruleIndex) {
             theFlow.rules[ruleIndex].id = rule.id;
@@ -652,11 +659,21 @@
           });
 
         }
-      });
+      }, function() {
+        $scope.onSave = false;
+        $scope.saveError = 'Network error when save flow';
+      }).$promise;
     };
 
     $scope.close = function() {
       $scope.$state.go('app.report.flow');
+    };
+
+    $scope.saveClose = function() {
+      $scope.save().then(function() {
+        if (!$scope.saveError)
+          $scope.close();
+      });
     };
   }
 })();

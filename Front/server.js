@@ -1059,7 +1059,7 @@ app.post('/api/flows', function (req, res) {
             }]
         }
     };
-    res.send(result);
+    delayResponse(res, result);
 });
 
 /**
