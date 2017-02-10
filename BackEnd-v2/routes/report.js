@@ -106,7 +106,8 @@ async function campaignReport(value) {
         page,
         from,
         to,
-        tz
+        tz,
+        filter
     } = value;
 
     let sqlWhere = {};
@@ -123,14 +124,14 @@ async function campaignReport(value) {
     })
     let isListPageRequest = Object.keys(sqlWhere).length === 0 && groupByMapping[groupBy]
     if (isListPageRequest) {
-        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit)
+        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit,filter)
     } else {
-        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit)
+        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit,filter)
     }
 
 }
 
-async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit) {
+async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit,filter) {
     let sql = buildSql()({
         sqlWhere,
         from,
@@ -139,7 +140,6 @@ async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit) {
         groupBy: mapping[groupBy]
     });
     sql += " limit " + offset + "," + limit;
-    console.log(sql)
     let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
     let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
         sql + ") as K)";
@@ -151,7 +151,7 @@ async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit) {
     });
 }
 
-async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit) {
+async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit,filter) {
     let listSql
     if (groupBy == 'campaign') {
         listSql = campaignListSql + ' where userId = ' + userId
@@ -169,6 +169,10 @@ async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, l
         console.error("some thing wrong!!!")
         return {}
     }
+    if(filter){
+        listSql += " and `name` like '%"+filter+"%'"
+    }
+    
     let countSql = "select COUNT(*) as `total` from ((" + listSql + ") as T)";
     listSql += " limit " + offset + "," + limit;
     let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +

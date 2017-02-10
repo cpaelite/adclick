@@ -34,7 +34,6 @@ router.get('/api/user/profile', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = await query("select `idText`,`firstname`,`lastname`,`status`,`json` from User where `deleted`= 0 and `id`= " + value.userId, connection);
-        //connection.release();
         res.json({
             status: 1,
             message: 'succes',
@@ -228,7 +227,11 @@ router.post('/api/user/emailChange', async function (req, res, next) {
  * @api {get} /api/user/referrals   用户推广收益
  * @apiName  用户推广收益
  * @apiGroup Setting
- *
+ * 
+ * @apiParam {Number} page
+ * @apiParam {Number} limit
+ * @apiParam {sort} string
+ * @
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -247,14 +250,72 @@ router.post('/api/user/emailChange', async function (req, res, next) {
  *
  */
 router.get('/api/user/referrals', function (req, res, next) {
-
+ 
 });
 
 
+/**
+ * {
+  "id" : "be0500b7-0786-4b23-80e8-bb4d03ca868c",
+  "planCode" : "PRO",
+  "status" : "READY",
+  "activeSubscription" : {
+    "startTime" : "2017-01-22T07:11:33.078",
+    "endTime" : "2017-02-22T07:11:33.078",
+    "plan" : {
+      "id" : "880c7aee-c661-4812-90d4-36b2c576a946",
+      "code" : "PRO",
+      "name" : "Pro",
+      "price" : 99,
+      "billingCycle" : "P1M",
+      "includedEvents" : 1000000,
+      "costPerEvent" : 0.00004,
+      "dataRetentionDays" : 190,
+      "maximumUserAccounts" : 0,
+      "customDomains" : 3
+    },
+    "discountedPrice" : 74,
+    "discount" : {
+      "code" : "5d1cd608-3e35-412b-899b-9e2de13c6c0a",
+      "percentOff" : 25,
+      "expirationInstant" : "2017-04-01T00:00:00Z"
+    },
+    "statistics" : {
+      "from" : "2017-01-22T07:00",
+      "to" : "2017-02-08T11:00",
+      "visits" : 1,
+      "clicks" : 0,
+      "conversions" : 0,
+      "freeVisits" : 0,
+      "freeClicks" : 0,
+      "freeConversions" : 0,
+      "totalEvents" : 1,
+      "freeEvents" : 0,
+      "billedEvents" : 1
+    }
+  }
+}
+ */
 router.get('/api/user/billing', function (req, res, next) {
 
 });
 
+// {
+//   "internalDomains" : [ {
+//     "address" : "9cmzk.voluumtrk2.com",
+//     "mainDomain" : false
+//   }, {
+//     "address" : "9cmzk.voluumtrk.com",
+//     "mainDomain" : false
+//   }, {
+//     "address" : "9cmzk.trackvoluum.com",
+//     "mainDomain" : false
+//   } ],
+//   "customDomains" : [ {
+//     "address" : "www.keepin.tv",
+//     "mainDomain" : true
+//   } ]
+// }
 router.get('/api/user/domains', function (req, res, next) {
 
 });
