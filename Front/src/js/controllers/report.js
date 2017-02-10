@@ -536,8 +536,40 @@
           $scope.item = defaultItem();
         }
       } else {
-        $scope.trafficSourceId = allTraffic[0].id;
+        $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id: null;
       }
+
+      $scope.$watch('trafficSourceId', function (newValue, oldValue) {
+        if (!newValue) {
+          return;
+        }
+        $scope.trafficSources.forEach(function (traffic) {
+          if (traffic.id == newValue) {
+            $scope.impTracking = traffic.impTracking;
+
+            if (!$scope.item.impPixelUrl) {
+              return;
+            }
+
+            var params = JSON.parse(traffic.params);
+            var impParam = "";
+            params.forEach(function (param) {
+              if (param.Placeholder) {
+                impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
+              }
+            });
+
+            if (!impParam)
+              return;
+
+            impParam = impParam.substring(0, impParam.length-1);
+            $scope.impPixelUrl = $scope.item.impPixelUrl + "?" + impParam;
+            return;
+          }
+
+        });
+      });
+
       if (!$scope.item.targetUrl) {
         $scope.item.targetUrl = "http://";
       }
@@ -595,16 +627,6 @@
         });
       });
     }
-
-    $scope.$watch('trafficSourceId', function (newValue, oldValue) {
-      if (newValue != oldValue) {
-        $scope.trafficSources.forEach(function (traffic) {
-          if (newValue == traffic.id) {
-            $scope.impPixelUrl = traffic.impTracking;
-          }
-        });
-      }
-    });
 
     $scope.$watch('item.flow.id', function (newValue, oldValue) {
       if (newValue != oldValue) {
