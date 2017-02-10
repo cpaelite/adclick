@@ -20,6 +20,7 @@ func CreateLPClickRequest(reqId string, r *http.Request) Request {
 	}
 
 	breq.t = ReqLPClick
+	breq.trackingPath = r.URL.Path
 
 	return &LPClickRequest{*breq}
 }

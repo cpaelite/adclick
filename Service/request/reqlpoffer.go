@@ -12,6 +12,7 @@ func CreateLPOfferRequest(reqId string, r *http.Request) (req *LPOfferRequest) {
 	breq, err := getReqCache(reqId)
 	if err == nil && breq != nil {
 		breq.t = ReqLPOffer
+		breq.trackingPath = r.URL.Path
 		return &LPOfferRequest{*breq}
 	}
 

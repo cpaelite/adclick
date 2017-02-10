@@ -20,6 +20,7 @@ func CreateS2SPostbackRequest(reqId string, r *http.Request) Request {
 	}
 
 	breq.t = ReqS2SPostback
+	breq.trackingPath = r.URL.Path
 
 	return &S2SPostbackRequest{*breq}
 }
