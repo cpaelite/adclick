@@ -236,7 +236,7 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 		i, err := strconv.ParseInt(pp[2], 10, 64)
 		if err != nil || i == 0 || i > int64(len(p.offers)) {
 			return fmt.Errorf("[Path][OnLandingPageClick]Target offer path(%s)(i:%d) parse failed err(%v) for request(%s) in path(%d)(offers:%d)",
-				req.TrackingPath(), i, req.Id(), p.Id, len(p.offers))
+				req.TrackingPath(), i, err, req.Id(), p.Id, len(p.offers))
 		}
 		//TODO 是否需要加上lander的NumberOfOffers的检查？
 		req.SetOfferId(p.offers[i-1].OfferId)
