@@ -1,129 +1,129 @@
 <h1 class="setting-title">Domains</h1>
-
-<div class="form-column profile-content referral-program">
-	<div class="domain-p">
-		<i class="material-icons">info_outline</i>
-		<p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
-		The default voluumtrk.com is meant for testing purposes only.</p>
-	</div>
-  <p>In order to add a domain you will need to CNAME one of following domains: <b>http://zx1jg.voluumtrk2.com, http://zx1jg.voluumtrk.com, http://zx1jg.trackvoluum.com. </b>The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>
-  <div class="add-another-button clearfix">
-  	<ul>
-  		<li>Set up domains: <b>3</b></li>
-  		<li>Available domains: <b>3</b></li>
-  	</ul>
-  	<md-button class="md-raised add-another-btn">Add another domain</md-button>
-  </div>
-  <div class="domains-container">
-  	<div class="internal-domains form-horizontal">
-  		<div class="item-domains clearfix">
-  			<label>Voluum domain 1</label>
-  			<div class="input-out">
-  				<input type="text" class="form-control">
-  			</div>
-  			<div class="domain-btn-list">
-  				<md-button class="md-raised copy-btn domain-btn">set as main domain</md-button>
-  			</div>
-  		</div>
-      <div class="item-domains clearfix">
-        <label>Voluum domain 2</label>
-        <div class="input-out">
-          <input type="text" class="form-control">
-        </div>
-        <div class="domain-btn-list">
-          <md-button class="md-raised copy-btn domain-btn">set as main domain</md-button>
-        </div>
-      </div>
-      <div class="item-domains clearfix">
-        <label>Voluum domain 3</label>
-        <div class="input-out">
-          <input type="text" class="form-control">
-        </div>
-        <div class="domain-btn-list">
-          <md-button class="md-raised copy-btn main-domain">Main domain</md-button>
-        </div>
-      </div>
-      
-<!--   		<div class="item-domains clearfix">
-  			<label class="col-sm-3 col-md-3 control-label">Voluum domain 2</label>
-  			<div class="col-sm-6 col-md-6">
-  				<input type="text" class="form-control">
-  			</div>
-  			<div class="col-sm-3 col-md-3 domain-btn-list">
-  				<md-button class="md-raised copy-btn domain-btn">set as main domain</md-button>
-  			</div>
-  		</div>
-  		<div class="item-domains clearfix">
-  			<label class="col-sm-3 col-md-3 control-label">Voluum domain 3</label>
-  			<div class="col-sm-6 col-md-6">
-  				<input type="text" class="form-control">
-  			</div>
-  			<div class="col-sm-3 col-md-3 domain-btn-list">
-  				<md-button class="md-raised copy-btn main-domain">Main domain</md-button>
-  			</div>
-  		</div> -->
-
-<!--       <div class="item-domians clearfix">
-        <label>Custom domain 1</label>
-        <div class="input-out">
-          <input type="text" class="form-control" ng-change="inputChange()" ng-model="myValue">
-        </div>
-        <div class="another-list-btn clearfix">
-          <md-button class="md-raised add-another-btn">Set as main domain</md-button>
-          <md-button class="md-raised add-another-btn">Verify DNS settings</md-button>
-          <i class="material-icons">delete</i>
-        </div>
-      </div> -->
-  	</div>
-  	<div class="item-domains domains  form-horizontal">
-  		<div class="item-domains clearfix" ng-class="{'btnColor':isBtnColor}">
-  			<label>Custom domain 1</label>
-  			<div class="input-out">
-  				<input type="text" class="form-control" ng-change="inputChange()" ng-model="myValue">
-  			</div>
-  			<div class="another-list-btn clearfix">
-  				<md-button class="md-raised add-another-btn">Set as main domain</md-button>
-  				<md-button class="md-raised add-another-btn">Verify DNS settings</md-button>
-  				<i class="material-icons">delete</i>
-  			</div>
-  		</div>
-  	</div>
-  </div>
-  <div class="domain-p">
-		<i class="material-icons">info_outline</i>
-		<p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
-		The default voluumtrk.com is meant for testing purposes only.</p>
-	</div>
-	<div class="domain-footer clearfix">
-		<div class="form-group clearfix">
-			<label class="col-sm-3 control-label">Cloaking domain</label>
-			<div class="col-sm-5 campaign-radio">
-				<label class="radio-inline">
-					<input type="radio" ng-model="item.costModel" checked value="redirectvoluum.com">redirectvoluum.com
-				</label>
-				<label class="radio-inline">
-					<input type="radio" ng-model="item.costModel" value="Custom">Custom
-				</label>
-			</div>
-		</div>
-		<div class="item-domains">
-			<label>Custom Domain</label>
-			<div class="input-out">
-				<input type="text" class="form-control">
-			</div>
-			<div class="domain-btn-list">
-			 	<md-button class="md-raised add-another-btn">Verify DNS settings</md-button>
-			</div>
-		</div>
-	</div>
-  <div class="profile-form-footer clearfix">
-    <div class="save-btn">
-      <i class="material-icons save-btn-icon">done</i>
-      save
+<div class="form-column profile-content ">
+  <div class="basic-form">
+    <div class="domain-p">
+      <i class="material-icons">info_outline</i>
+      <p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
+      The default voluumtrk.com is meant for testing purposes only.</p>
     </div>
-    <div class="close-btn">
-      <i class="material-icons close-btn-icon">close</i>
-      close
+    <p>In order to add a domain you will need to CNAME one of following domains: <b>http://zx1jg.voluumtrk2.com, http://zx1jg.voluumtrk.com, http://zx1jg.trackvoluum.com. </b>The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>
+    <div class="add-another-button clearfix">
+      <ul>
+        <li>Set up domains: <b>3</b></li>
+        <li>Available domains: <b>3</b></li>
+      </ul>
+      <md-button class="md-raised add-another-btn">Add another domain</md-button>
+    </div>
+    <div class="domains-container">
+      <div class="internal-domains form-horizontal">
+        <div class="item-domains clearfix">
+          <label>Voluum domain 1</label>
+          <div class="input-out">
+            <input type="text" class="form-control">
+          </div>
+          <div class="domain-btn-list">
+            <md-button class="md-raised copy-btn domain-btn">set as main domain</md-button>
+          </div>
+        </div>
+        <div class="item-domains clearfix">
+          <label>Voluum domain 2</label>
+          <div class="input-out">
+            <input type="text" class="form-control">
+          </div>
+          <div class="domain-btn-list">
+            <md-button class="md-raised copy-btn domain-btn">set as main domain</md-button>
+          </div>
+        </div>
+        <div class="item-domains clearfix">
+          <label>Voluum domain 3</label>
+          <div class="input-out">
+            <input type="text" class="form-control">
+          </div>
+          <div class="domain-btn-list">
+            <md-button class="md-raised copy-btn main-domain">Main domain</md-button>
+          </div>
+        </div>
+        
+        <!--      <div class="item-domains clearfix">
+            <label class="col-sm-3 col-md-3 control-label">Voluum domain 2</label>
+            <div class="col-sm-6 col-md-6">
+                <input type="text" class="form-control">
+            </div>
+            <div class="col-sm-3 col-md-3 domain-btn-list">
+                <md-button class="md-raised copy-btn domain-btn">set as main domain</md-button>
+            </div>
+        </div>
+        <div class="item-domains clearfix">
+            <label class="col-sm-3 col-md-3 control-label">Voluum domain 3</label>
+            <div class="col-sm-6 col-md-6">
+                <input type="text" class="form-control">
+            </div>
+            <div class="col-sm-3 col-md-3 domain-btn-list">
+                <md-button class="md-raised copy-btn main-domain">Main domain</md-button>
+            </div>
+        </div> -->
+        <!--       <div class="item-domians clearfix">
+          <label>Custom domain 1</label>
+          <div class="input-out">
+            <input type="text" class="form-control" ng-change="inputChange()" ng-model="myValue">
+          </div>
+          <div class="another-list-btn clearfix">
+            <md-button class="md-raised add-another-btn">Set as main domain</md-button>
+            <md-button class="md-raised add-another-btn">Verify DNS settings</md-button>
+            <i class="material-icons">delete</i>
+          </div>
+        </div> -->
+      </div>
+      <div class="item-domains domains  form-horizontal">
+        <div class="item-domains clearfix" ng-class="{'btnColor':isBtnColor}">
+          <label>Custom domain 1</label>
+          <div class="input-out">
+            <input type="text" class="form-control" ng-change="inputChange()" ng-model="myValue">
+          </div>
+          <div class="another-list-btn clearfix">
+            <md-button class="md-raised add-another-btn">Set as main domain</md-button>
+            <md-button class="md-raised add-another-btn">Verify DNS settings</md-button>
+            <i class="material-icons">delete</i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="domain-p">
+      <i class="material-icons">info_outline</i>
+      <p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
+      The default voluumtrk.com is meant for testing purposes only.</p>
+    </div>
+    <div class="domain-footer clearfix">
+      <div class="form-group clearfix">
+        <label class="col-sm-3 control-label">Cloaking domain</label>
+        <div class="col-sm-5 campaign-radio">
+          <label class="radio-inline">
+            <input type="radio" ng-model="item.costModel" checked value="redirectvoluum.com">redirectvoluum.com
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="item.costModel" value="Custom">Custom
+          </label>
+        </div>
+      </div>
+      <div class="item-domains">
+        <label>Custom Domain</label>
+        <div class="input-out">
+          <input type="text" class="form-control">
+        </div>
+        <div class="domain-btn-list">
+          <md-button class="md-raised add-another-btn">Verify DNS settings</md-button>
+        </div>
+      </div>
+    </div>
+    <div class="profile-form-footer clearfix">
+      <div class="save-btn">
+        <i class="material-icons save-btn-icon">done</i>
+        save
+      </div>
+      <div class="close-btn">
+        <i class="material-icons close-btn-icon">close</i>
+        close
+      </div>
     </div>
   </div>
 </div>

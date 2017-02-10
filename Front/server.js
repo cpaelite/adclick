@@ -1571,13 +1571,35 @@ app.get('/api/set/user/:id', function (req, res) {
     status: 1,
     message: 'success',
     data: {
+      id: 1,
       firstname: 'test',
       lastname:'test',
       companyname: 'zheng',
       tel: 13120663670,
       timezone:'1',
       homescreen:'Dashboard',
-      visitconversion:'Visit'
+      visitconversion:'Visit',
+      password:'',
+      email:'zhengshuo@qq.com',
+    }
+  };
+  res.send(result);
+});
+
+app.post('/api/set/user/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      firstname: 'test',
+      lastname:'test',
+      companyname: 'zheng',
+      tel: 13120663670,
+      timezone:'1',
+      homescreen:'Dashboard',
+      visitconversion:'Visit',
+      password:'',
+      email:'zhengshuo@qq.com',
     }
   };
   res.send(result);
