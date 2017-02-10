@@ -48,20 +48,20 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required>
+                    <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required>
                         <md-option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</md-option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
                         <span ng-show="editForm.trafficSource.$error.required">TrafficSource is required.</span>
                         </span>
-                    </md-select>
+                    </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
+                    <select class="cs-subform-select" name="country" ng-model="item.country" required>
                         <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
-                    </md-select>
+                    </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>
                     </span>
@@ -168,9 +168,9 @@
                 <div class="form-group flow-select">
                     <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
                     <div class="col-sm-5">
-                        <md-select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
+                        <select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
                             <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
-                        </md-select>
+                        </select>
                     </div>
                 </div>
 
@@ -193,7 +193,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl" ng-required="item.targetType==0">
+                        <input my-text="" type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl" ng-required="item.targetType==0">
                         <span style="color:red" ng-show="editForm.targetUrl.$dirty && editForm.targetUrl.$invalid">
                         <span ng-show="editForm.targetUrl.$error.required">Url is required.</span>
                         </span>

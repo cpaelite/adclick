@@ -6,6 +6,38 @@
       ReportCtrl
     ]);
 
+  angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
+    return {
+      link: function (scope, element) {
+        $rootScope.$on('add', function (e, val) {
+          var domElement = element[0];
+
+          if (document.selection) {
+            domElement.focus();
+            var sel = document.selection.createRange();
+            sel.text = val;
+            domElement.focus();
+          } else if (domElement.selectionStart || domElement.selectionStart === 0) {
+            var startPos = domElement.selectionStart;
+            var endPos = domElement.selectionEnd;
+            var scrollTop = domElement.scrollTop;
+            if (domElement.value.indexOf(val) == -1) {
+              domElement.value = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+              domElement.selectionStart = startPos + val.length;
+              domElement.selectionEnd = startPos + val.length;
+              domElement.scrollTop = scrollTop;
+            }
+            domElement.focus();
+          } else {
+            domElement.value += val;
+            domElement.focus();
+          }
+
+        });
+      }
+    }
+  }]);
+
   function ReportCtrl($scope, $mdDialog, $timeout, $cacheFactory, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
@@ -349,7 +381,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -360,11 +392,11 @@
         $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
       } else if (perfType == 'traffic') {
-        controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
         controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
@@ -468,7 +500,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog , $timeout, $q, Campaign, Flow, TrafficSource, urlParameter) {
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, Campaign, Flow, TrafficSource, urlParameter) {
     $scope.tags = [];
 
     // init load data
@@ -569,7 +601,6 @@
 
         });
       });
-
       if (!$scope.item.targetUrl) {
         $scope.item.targetUrl = "http://";
       }
@@ -739,18 +770,13 @@
 
     $scope.urlItem = urlParameter["campaign"];
     $scope.urlTokenClick = function (url) {
-      var targetUrl = $scope.item.targetUrl;
-      if (!targetUrl) {
-        targetUrl = 'http://';
-      }
-      if (targetUrl.indexOf(url) == -1) {
-        $scope.item.targetUrl = targetUrl + url;
-      }
+      $rootScope.$broadcast('add', url);
     };
+
     $scope.isDisabled = false;
   }
 
-  function editLanderCtrl($scope, $mdDialog, Lander, urlParameter) {
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter) {
     $scope.tags = [];
     if (this.item) {
       var isDuplicate = this.duplicate;
@@ -802,14 +828,11 @@
     };
     $scope.urlItem = urlParameter["lander"];
     $scope.urlTokenClick = function (url) {
-      var itemUrl = $scope.item.url;
-      if (itemUrl.indexOf(url) == -1) {
-        $scope.item.url = itemUrl + url;
-      }
+      $rootScope.$broadcast('add', url);
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
     $scope.tags = [];
 
     // init load data
@@ -926,14 +949,11 @@
     };
     $scope.urlItem = urlParameter["offer"];
     $scope.urlTokenClick = function (url) {
-      var itemUrl = $scope.item.url;
-      if (itemUrl.indexOf(url) == -1) {
-        $scope.item.url = itemUrl + url;
-      }
+      $rootScope.$broadcast('add', url);
     };
   }
 
-  function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource, urlParameter) {
+  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter) {
     if (this.item) {
       var isDuplicate = this.duplicate;
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
@@ -1009,7 +1029,7 @@
 
     $scope.urlItem = urlParameter["traffic"];
     $scope.urlTokenClick = function(url){
-      $scope.urlToken = $scope.urlToken + url;
+      $rootScope.$broadcast('add', url);
     };
 
     $scope.visible = false;
