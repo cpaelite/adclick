@@ -185,7 +185,7 @@ router.post('/api/affiliates', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        postbackUrl: Joi.string().required().empty(""),
+        postbackUrl: Joi.string().optional().empty(""),
         appendClickId: Joi.number().optional(),
         duplicatedPostback: Joi.number().optional(),
         ipWhiteList: Joi.string().optional().empty("")

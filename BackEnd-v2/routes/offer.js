@@ -35,7 +35,7 @@ router.post('/api/offers', async function (req, res, next) {
         url: Joi.string().required(),
         country: Joi.string().required(),
         payoutMode: Joi.number().required(),
-        affiliateNetwork: Joi.object().required().keys({
+        affiliateNetwork: Joi.object().optional().keys({
             id: Joi.number().required(),
             name: Joi.string().required(),
             postbackUrl: Joi.string().optional()
@@ -110,7 +110,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         url: Joi.string().required(),
         country: Joi.string().required(),
         payoutMode: Joi.number().required(),
-        affiliateNetwork: Joi.object().required().keys({
+        affiliateNetwork: Joi.object().optional().keys({
             id: Joi.number().required(),
             name: Joi.string().required()
         }),

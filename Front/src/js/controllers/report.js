@@ -506,9 +506,11 @@
     // init load data
     var initPromises = [], prms;
     if (this.item) {
+      var isDuplicate = this.duplicate;
       var theCampaign;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         theCampaign = campaign.data;
+        if (isDuplicate) delete theCampaign.id;
       }).$promise;
       initPromises.push(prms);
 
@@ -542,8 +544,6 @@
     function initSuccess() {
       $scope.trafficSources = allTraffic;
       $scope.flows = allFlow;
-      var isDuplicate = this.duplicate;
-      if (isDuplicate) delete $scope.item.id;
       if (theCampaign) {
         $scope.item = theCampaign;
         if ($scope.item.costModel == 1) {
@@ -699,6 +699,7 @@
       var campaign = item.data;
       $scope.item.url = campaign.url;
       $scope.item.impPixelUrl = campaign.impPixelUrl;
+      $scope.item.hash = campaign.hash;
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
@@ -839,9 +840,11 @@
     var initPromises = [], prms;
 
     if (this.item) {
+      var isDuplicate = this.duplicate;
       var theOffer;
       prms = Offer.get({id: this.item.data.offerId}, function(offer) {
         theOffer = offer.data;
+        if (isDuplicate) delete theOffer.id;
       }).$promise;
       initPromises.push(prms);
 
@@ -871,8 +874,6 @@
 
     function initSuccess() {
       $scope.affiliates = allAffiliate;
-      var isDuplicate = this.duplicate;
-      if (isDuplicate) delete $scope.item.id;
       if (theOffer) {
         $scope.item = theOffer;
         $scope.affiliateId = theOffer.AffiliateNetworkId.toString();

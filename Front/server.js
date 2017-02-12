@@ -241,7 +241,7 @@ app.get('/api/preferences', function (req, res) {
                 "offerName": {
                     "visible": true
                 },
-                "offerId": {
+                "offerHash": {
                     "visible": true
                 },
                 "offerUrl": {
@@ -307,7 +307,7 @@ app.get('/api/preferences', function (req, res) {
                 "campaignName": {
                     "visible": true
                 },
-                "campaignId": {
+                "campaignHash": {
                     "visible": true
                 },
                 "campaignUrl": {
@@ -556,6 +556,7 @@ app.get('/api/report', function (req, res) {
                 {
                     [groupBy + "Name"]: groupBy + " 1",
                     [groupBy + "Id"]: "1",
+                    [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
                     "ap": 0.0,
                     "bids": 0,
                     "clicks": 4368,
@@ -577,6 +578,7 @@ app.get('/api/report', function (req, res) {
                 }, {
                     [groupBy + "Name"]: groupBy + " 2",
                     [groupBy + "Id"]: "2",
+                    [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
                     "ap": 0.0,
                     "bids": 0,
                     "clicks": 4368,
@@ -598,6 +600,7 @@ app.get('/api/report', function (req, res) {
                 }, {
                     [groupBy + "Name"]: groupBy + " 3",
                     [groupBy + "Id"]: "3",
+                    [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
                     "ap": 0.0,
                     "bids": 0,
                     "clicks": 4368,

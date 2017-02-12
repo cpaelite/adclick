@@ -4,7 +4,7 @@ angular.module('app').value('columnDefinition', {
     name: 'Campaign'
   },
     {
-      key: 'campaignId',
+      key: 'campaignHash',
       name: 'Campaign ID'
     },
     {
@@ -112,7 +112,7 @@ angular.module('app').value('columnDefinition', {
     name: 'Flow'
   },
     {
-      key: 'flowId',
+      key: 'flowHash',
       name: 'Flow ID'
     },
     {
@@ -188,7 +188,7 @@ angular.module('app').value('columnDefinition', {
     name: 'Lander'
   },
     {
-      key: 'landerId',
+      key: 'landerHash',
       name: 'Lander ID'
     },
     {
@@ -276,7 +276,7 @@ angular.module('app').value('columnDefinition', {
     name: 'Offer'
   },
     {
-      key: 'offerId',
+      key: 'offerHash',
       name: 'Offer ID'
     },
     {
@@ -368,7 +368,7 @@ angular.module('app').value('columnDefinition', {
     name: 'Traffic source'
   },
     {
-      key: 'trafficId',
+      key: 'trafficHash',
       name: 'Traffic source ID'
     },
     {
@@ -496,7 +496,7 @@ angular.module('app').value('columnDefinition', {
     name: 'Affiliate Network'
   },
     {
-      key: 'affiliateId',
+      key: 'affiliateHash',
       name: 'Affiliate Network ID'
     },
     {
@@ -626,7 +626,7 @@ angular.module('app').value('userPreferences', {
     "offerName": {
       "visible": true
     },
-    "offerId": {
+    "offerHash": {
       "visible": true
     },
     "offerUrl": {
@@ -692,7 +692,7 @@ angular.module('app').value('userPreferences', {
     "campaignName": {
       "visible": true
     },
-    "campaignId": {
+    "campaignHash": {
       "visible": true
     },
     "campaignUrl": {
@@ -734,7 +734,7 @@ angular.module('app').value('userPreferences', {
     "landerName": {
       "visible": true
     },
-    "landerId": {
+    "landerHash": {
       "visible": false
     },
     "landerUrl": {
