@@ -88,7 +88,7 @@ angular.module('app').value('columnDefinition', {
       name: 'Postback URL'
     },
     {
-      key: 'trafficSource',
+      key: 'trafficName',
       name: 'Traffic source'
     },
     {
@@ -360,7 +360,7 @@ angular.module('app').value('columnDefinition', {
       name: 'ERRORS'
     },
     {
-      key: 'affiliate',
+      key: 'affiliateName',
       name: 'Affiliate network'
     }],
   traffic: [{
@@ -623,11 +623,44 @@ angular.module('app').value('userPreferences', {
   },
   "reportTimeZone": "+08:00",
   "reportViewColumns": {
+    "campaignName": {
+      "visible": true
+    },
+    "campaignHash": {
+      "visible": false
+    },
+    "campaignUrl": {
+      "visible": false
+    },
+    "campaignCountry": {
+      "visible": false
+    },
+    "flowName": {
+      "visible": true
+    },
+    "flowHash": {
+      "visible": false
+    },
+    "landerName": {
+      "visible": true
+    },
+    "landerHash": {
+      "visible": false
+    },
+    "landerUrl": {
+      "visible": false
+    },
+    "landerCountry": {
+      "visible": false
+    },
+    "numberOfOffers": {
+      "visible": false
+    },
     "offerName": {
       "visible": true
     },
     "offerHash": {
-      "visible": true
+      "visible": false
     },
     "offerUrl": {
       "visible": false
@@ -636,7 +669,28 @@ angular.module('app').value('userPreferences', {
       "visible": false
     },
     "payout": {
+      "visible": false
+    },
+    "trafficName": {
       "visible": true
+    },
+    "trafficHash": {
+      "visible": false
+    },
+    "costArgument": {
+      "visible": false
+    },
+    "affiliateName": {
+      "visible": true
+    },
+    "affiliateHash": {
+      "visible": false
+    },
+    "appendClickId": {
+      "visible": false
+    },
+    "whitelistedIP": {
+      "visible": false
     },
     "impressions": {
       "visible": true
@@ -686,31 +740,13 @@ angular.module('app').value('userPreferences', {
     "ap": {
       "visible": true
     },
-    "affiliateName": {
+    "errors": {
       "visible": true
-    },
-    "campaignName": {
-      "visible": true
-    },
-    "campaignHash": {
-      "visible": true
-    },
-    "campaignUrl": {
-      "visible": false
-    },
-    "campaignCountry": {
-      "visible": false
-    },
-    "pixelUrl": {
-      "visible": false
     },
     "postbackUrl": {
       "visible": false
     },
-    "trafficName": {
-      "visible": true
-    },
-    "clickRedirectType": {
+    "redirect": {
       "visible": false
     },
     "costModel": {
@@ -725,29 +761,38 @@ angular.module('app').value('userPreferences', {
     "cpm": {
       "visible": false
     },
-    "city": {
+    "clickId": {
       "visible": false
     },
-    "flowName": {
-      "visible": true
-    },
-    "landerName": {
-      "visible": true
-    },
-    "landerHash": {
+    "variable1": {
       "visible": false
     },
-    "landerUrl": {
+    "variable2": {
       "visible": false
     },
-    "landerCountry": {
+    "variable3": {
       "visible": false
     },
-    "numberOfOffers": {
+    "variable4": {
       "visible": false
     },
-    "errors": {
-      "visible": true
+    "variable5": {
+      "visible": false
+    },
+    "variable6": {
+      "visible": false
+    },
+    "variable7": {
+      "visible": false
+    },
+    "variable8": {
+      "visible": false
+    },
+    "variable9": {
+      "visible": false
+    },
+    "variable10": {
+      "visible": false
     }
   }
 });

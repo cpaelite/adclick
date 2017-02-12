@@ -235,8 +235,38 @@ app.get('/api/preferences', function (req, res) {
              ],
              */
             "reportViewColumns": {
-                "name": {
+                "campaignName": {
                     "visible": true
+                },
+                "campaignHash": {
+                    "visible": true
+                },
+                "campaignUrl": {
+                    "visible": false
+                },
+                "campaignCountry": {
+                    "visible": false
+                },
+                "flowName": {
+                    "visible": true
+                },
+                "flowHash": {
+                    "visible": true
+                },
+                "landerName": {
+                    "visible": true
+                },
+                "landerHash": {
+                    "visible": false
+                },
+                "landerUrl": {
+                    "visible": false
+                },
+                "landerCountry": {
+                    "visible": false
+                },
+                "numberOfOffers": {
+                    "visible": false
                 },
                 "offerName": {
                     "visible": true
@@ -252,6 +282,27 @@ app.get('/api/preferences', function (req, res) {
                 },
                 "payout": {
                     "visible": true
+                },
+                "trafficName": {
+                    "visible": true
+                },
+                "trafficHash": {
+                    "visible": true
+                },
+                "costArgument": {
+                    "visible": false
+                },
+                "affiliateName": {
+                    "visible": true
+                },
+                "affiliateHash": {
+                    "visible": true
+                },
+                "appendClickId": {
+                    "visible": false
+                },
+                "whitelistedIP": {
+                    "visible": false
                 },
                 "impressions": {
                     "visible": true
@@ -301,64 +352,58 @@ app.get('/api/preferences', function (req, res) {
                 "ap": {
                     "visible": true
                 },
-                "affiliateName": {
+                "errors": {
                     "visible": true
-                },
-                "campaignName": {
-                    "visible": true
-                },
-                "campaignHash": {
-                    "visible": true
-                },
-                "campaignUrl": {
-                    "visible": false
-                },
-                "campaignCountry": {
-                    "visible": false
-                },
-                "pixelUrl": {
-                    "visible": false
                 },
                 "postbackUrl": {
                     "visible": false
                 },
-                "trafficName": {
-                    "visible": true
-                },
-                "clickRedirectType": {
+                "redirect": {
                     "visible": false
                 },
                 "costModel": {
                     "visible": false
                 },
                 "cpa": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpc": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpm": {
-                    "visible": true
-                },
-                "city": {
-                    "visible": true
-                },
-                "flowName": {
-                    "visible": true
-                },
-                "landerName": {
-                    "visible": true
-                },
-                "landerId": {
                     "visible": false
                 },
-                "landerUrl": {
+                "clickId": {
                     "visible": false
                 },
-                "landerCountry": {
+                "variable1": {
                     "visible": false
                 },
-                "numberOfOffers": {
+                "variable2": {
+                    "visible": false
+                },
+                "variable3": {
+                    "visible": false
+                },
+                "variable4": {
+                    "visible": false
+                },
+                "variable5": {
+                    "visible": false
+                },
+                "variable6": {
+                    "visible": false
+                },
+                "variable7": {
+                    "visible": false
+                },
+                "variable8": {
+                    "visible": false
+                },
+                "variable9": {
+                    "visible": false
+                },
+                "variable10": {
                     "visible": false
                 }
             }
@@ -381,10 +426,43 @@ app.post('/api/preferences', function (req, res) {
             "reportViewOrder": "-visit",
             "reportTimeZone": "+08:00",
             "reportViewColumns": {
+                "campaignName": {
+                    "visible": true
+                },
+                "campaignHash": {
+                    "visible": true
+                },
+                "campaignUrl": {
+                    "visible": false
+                },
+                "campaignCountry": {
+                    "visible": false
+                },
+                "flowName": {
+                    "visible": true
+                },
+                "flowHash": {
+                    "visible": true
+                },
+                "landerName": {
+                    "visible": true
+                },
+                "landerHash": {
+                    "visible": false
+                },
+                "landerUrl": {
+                    "visible": false
+                },
+                "landerCountry": {
+                    "visible": false
+                },
+                "numberOfOffers": {
+                    "visible": false
+                },
                 "offerName": {
                     "visible": true
                 },
-                "offerId": {
+                "offerHash": {
                     "visible": true
                 },
                 "offerUrl": {
@@ -395,6 +473,27 @@ app.post('/api/preferences', function (req, res) {
                 },
                 "payout": {
                     "visible": true
+                },
+                "trafficName": {
+                    "visible": true
+                },
+                "trafficHash": {
+                    "visible": true
+                },
+                "costArgument": {
+                    "visible": false
+                },
+                "affiliateName": {
+                    "visible": true
+                },
+                "affiliateHash": {
+                    "visible": true
+                },
+                "appendClickId": {
+                    "visible": false
+                },
+                "whitelistedIP": {
+                    "visible": false
                 },
                 "impressions": {
                     "visible": true
@@ -444,64 +543,58 @@ app.post('/api/preferences', function (req, res) {
                 "ap": {
                     "visible": true
                 },
-                "affiliateNetworkName": {
+                "errors": {
                     "visible": true
-                },
-                "campaignName": {
-                    "visible": true
-                },
-                "campaignId": {
-                    "visible": true
-                },
-                "campaignUrl": {
-                    "visible": false
-                },
-                "campaignCountry": {
-                    "visible": false
-                },
-                "pixelUrl": {
-                    "visible": false
                 },
                 "postbackUrl": {
                     "visible": false
                 },
-                "trafficSourceName": {
-                    "visible": true
-                },
-                "clickRedirectType": {
+                "redirect": {
                     "visible": false
                 },
                 "costModel": {
                     "visible": false
                 },
                 "cpa": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpc": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpm": {
-                    "visible": true
-                },
-                "city": {
-                    "visible": true
-                },
-                "flowName": {
-                    "visible": true
-                },
-                "landerName": {
-                    "visible": true
-                },
-                "landerId": {
                     "visible": false
                 },
-                "landerUrl": {
+                "clickId": {
                     "visible": false
                 },
-                "landerCountry": {
+                "variable1": {
                     "visible": false
                 },
-                "numberOfOffers": {
+                "variable2": {
+                    "visible": false
+                },
+                "variable3": {
+                    "visible": false
+                },
+                "variable4": {
+                    "visible": false
+                },
+                "variable5": {
+                    "visible": false
+                },
+                "variable6": {
+                    "visible": false
+                },
+                "variable7": {
+                    "visible": false
+                },
+                "variable8": {
+                    "visible": false
+                },
+                "variable9": {
+                    "visible": false
+                },
+                "variable10": {
                     "visible": false
                 }
             }
