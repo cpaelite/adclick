@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="url" class="form-control" ng-model="item.url" required>
+                    <input my-text="" type="url" name="url" class="form-control" ng-model="item.url" required>
                     <span style="color:red" ng-show="editForm.url.$dirty && editForm.url.$invalid">
                     <span ng-show="editForm.url.$error.required">Url is required.</span>
                     <span ng-show="editForm.url.$error.url">URL must be a valid URL</span>
@@ -51,9 +51,9 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
-                    </md-select>
+                    <select class="cs-subform-select" name="country" ng-model="item.country" required>
+                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
+                    </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>
                     </span>

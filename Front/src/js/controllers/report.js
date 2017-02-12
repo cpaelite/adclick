@@ -6,6 +6,38 @@
       ReportCtrl
     ]);
 
+  angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
+    return {
+      link: function (scope, element) {
+        $rootScope.$on('add', function (e, val) {
+          var domElement = element[0];
+
+          if (document.selection) {
+            domElement.focus();
+            var sel = document.selection.createRange();
+            sel.text = val;
+            domElement.focus();
+          } else if (domElement.selectionStart || domElement.selectionStart === 0) {
+            var startPos = domElement.selectionStart;
+            var endPos = domElement.selectionEnd;
+            var scrollTop = domElement.scrollTop;
+            if (domElement.value.indexOf(val) == -1) {
+              domElement.value = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+              domElement.selectionStart = startPos + val.length;
+              domElement.selectionEnd = startPos + val.length;
+              domElement.scrollTop = scrollTop;
+            }
+            domElement.focus();
+          } else {
+            domElement.value += val;
+            domElement.focus();
+          }
+
+        });
+      }
+    }
+  }]);
+
   function ReportCtrl($scope, $mdDialog, $timeout, $cacheFactory, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
@@ -349,7 +381,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -360,11 +392,11 @@
         $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
       } else if (perfType == 'traffic') {
-        controller = ['$scope', '$mdDialog', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
         controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
@@ -393,7 +425,7 @@
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
-        locals: {type: perfType, item: item.id},
+        locals: {type: perfType, item: item.data},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
       }).then(function () {
@@ -468,15 +500,17 @@
     }
   }
 
-  function editCampaignCtrl($scope, $mdDialog , $timeout, $q, Campaign, Flow, TrafficSource, urlParameter) {
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, Campaign, Flow, TrafficSource, urlParameter) {
     $scope.tags = [];
 
     // init load data
     var initPromises = [], prms;
     if (this.item) {
+      var isDuplicate = this.duplicate;
       var theCampaign;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         theCampaign = campaign.data;
+        if (isDuplicate) delete theCampaign.id;
       }).$promise;
       initPromises.push(prms);
 
@@ -510,8 +544,6 @@
     function initSuccess() {
       $scope.trafficSources = allTraffic;
       $scope.flows = allFlow;
-      var isDuplicate = this.duplicate;
-      if (isDuplicate) delete $scope.item.id;
       if (theCampaign) {
         $scope.item = theCampaign;
         if ($scope.item.costModel == 1) {
@@ -525,10 +557,10 @@
           $scope.costModelValue = $scope.item.cpmValue;
         }
         $scope.tags = $scope.item.tags;
-        $scope.trafficSourceId = $scope.item.trafficSourceId;
+        $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
         if ($scope.item.targetFlowId) {
           $scope.item.flow = {
-            id: $scope.item.targetFlowId
+            id: $scope.item.targetFlowId.toString()
           };
           showFlow();
         }
@@ -536,8 +568,39 @@
           $scope.item = defaultItem();
         }
       } else {
-        $scope.trafficSourceId = allTraffic[0].id;
+        $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
       }
+
+      $scope.$watch('trafficSourceId', function (newValue, oldValue) {
+        if (!newValue) {
+          return;
+        }
+        $scope.trafficSources.forEach(function (traffic) {
+          if (traffic.id == newValue) {
+            $scope.impTracking = traffic.impTracking;
+
+            if (!$scope.item.impPixelUrl) {
+              return;
+            }
+
+            var params = JSON.parse(traffic.params);
+            var impParam = "";
+            params.forEach(function (param) {
+              if (param.Placeholder) {
+                impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
+              }
+            });
+
+            if (!impParam)
+              return;
+
+            impParam = impParam.substring(0, impParam.length-1);
+            $scope.impPixelUrl = $scope.item.impPixelUrl + "?" + impParam;
+            return;
+          }
+
+        });
+      });
       if (!$scope.item.targetUrl) {
         $scope.item.targetUrl = "http://";
       }
@@ -562,6 +625,15 @@
         }
       });
     }
+
+    // Flow preview 
+    // $scope.secondIsShow = true ;
+    $scope.toggleClick = function(type){
+      type.isShow = !type.isShow;
+    };
+
+    $scope.offerItem = {};
+    $scope.landerItem = {};
 
     // campaign copy btn
     $scope.btnWord1 = "Clipboard";
@@ -596,16 +668,6 @@
       });
     }
 
-    $scope.$watch('trafficSourceId', function (newValue, oldValue) {
-      if (newValue != oldValue) {
-        $scope.trafficSources.forEach(function (traffic) {
-          if (newValue == traffic.id) {
-            $scope.impPixelUrl = traffic.impTracking;
-          }
-        });
-      }
-    });
-
     $scope.$watch('item.flow.id', function (newValue, oldValue) {
       if (newValue != oldValue) {
         showFlow();
@@ -637,6 +699,7 @@
       var campaign = item.data;
       $scope.item.url = campaign.url;
       $scope.item.impPixelUrl = campaign.impPixelUrl;
+      $scope.item.hash = campaign.hash;
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
@@ -708,18 +771,13 @@
 
     $scope.urlItem = urlParameter["campaign"];
     $scope.urlTokenClick = function (url) {
-      var targetUrl = $scope.item.targetUrl;
-      if (!targetUrl) {
-        targetUrl = 'http://';
-      }
-      if (targetUrl.indexOf(url) == -1) {
-        $scope.item.targetUrl = targetUrl + url;
-      }
+      $rootScope.$broadcast('add', url);
     };
+
     $scope.isDisabled = false;
   }
 
-  function editLanderCtrl($scope, $mdDialog, Lander, urlParameter) {
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter) {
     $scope.tags = [];
     if (this.item) {
       var isDuplicate = this.duplicate;
@@ -771,23 +829,22 @@
     };
     $scope.urlItem = urlParameter["lander"];
     $scope.urlTokenClick = function (url) {
-      var itemUrl = $scope.item.url;
-      if (itemUrl.indexOf(url) == -1) {
-        $scope.item.url = itemUrl + url;
-      }
+      $rootScope.$broadcast('add', url);
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
     $scope.tags = [];
 
     // init load data
     var initPromises = [], prms;
 
     if (this.item) {
+      var isDuplicate = this.duplicate;
       var theOffer;
       prms = Offer.get({id: this.item.data.offerId}, function(offer) {
         theOffer = offer.data;
+        if (isDuplicate) delete theOffer.id;
       }).$promise;
       initPromises.push(prms);
 
@@ -817,11 +874,9 @@
 
     function initSuccess() {
       $scope.affiliates = allAffiliate;
-      var isDuplicate = this.duplicate;
-      if (isDuplicate) delete $scope.item.id;
       if (theOffer) {
         $scope.item = theOffer;
-        $scope.affiliateId = theOffer.AffiliateNetworkId;
+        $scope.affiliateId = theOffer.AffiliateNetworkId.toString();
         $scope.tags = $scope.item.tags;
         if ($scope.item['payoutMode'] == null) {
           $scope.item = {
@@ -895,14 +950,11 @@
     };
     $scope.urlItem = urlParameter["offer"];
     $scope.urlTokenClick = function (url) {
-      var itemUrl = $scope.item.url;
-      if (itemUrl.indexOf(url) == -1) {
-        $scope.item.url = itemUrl + url;
-      }
+      $rootScope.$broadcast('add', url);
     };
   }
 
-  function editTrafficSourceCtrl($scope, $mdDialog, TrafficSource, urlParameter) {
+  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter) {
     if (this.item) {
       var isDuplicate = this.duplicate;
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
@@ -978,7 +1030,7 @@
 
     $scope.urlItem = urlParameter["traffic"];
     $scope.urlTokenClick = function(url){
-      $scope.urlToken = $scope.urlToken + url;
+      $rootScope.$broadcast('add', url);
     };
 
     $scope.visible = false;
@@ -1235,7 +1287,7 @@
     }
 
     function deleteItem(item) {
-      return $injector.get(resourceName).remove({id: item}).$promise;
+      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"]}).$promise;
     }
 
     this.onprocess = false;

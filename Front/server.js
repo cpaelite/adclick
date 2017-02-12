@@ -235,13 +235,43 @@ app.get('/api/preferences', function (req, res) {
              ],
              */
             "reportViewColumns": {
-                "name": {
+                "campaignName": {
                     "visible": true
+                },
+                "campaignHash": {
+                    "visible": true
+                },
+                "campaignUrl": {
+                    "visible": false
+                },
+                "campaignCountry": {
+                    "visible": false
+                },
+                "flowName": {
+                    "visible": true
+                },
+                "flowHash": {
+                    "visible": true
+                },
+                "landerName": {
+                    "visible": true
+                },
+                "landerHash": {
+                    "visible": false
+                },
+                "landerUrl": {
+                    "visible": false
+                },
+                "landerCountry": {
+                    "visible": false
+                },
+                "numberOfOffers": {
+                    "visible": false
                 },
                 "offerName": {
                     "visible": true
                 },
-                "offerId": {
+                "offerHash": {
                     "visible": true
                 },
                 "offerUrl": {
@@ -252,6 +282,27 @@ app.get('/api/preferences', function (req, res) {
                 },
                 "payout": {
                     "visible": true
+                },
+                "trafficName": {
+                    "visible": true
+                },
+                "trafficHash": {
+                    "visible": true
+                },
+                "costArgument": {
+                    "visible": false
+                },
+                "affiliateName": {
+                    "visible": true
+                },
+                "affiliateHash": {
+                    "visible": true
+                },
+                "appendClickId": {
+                    "visible": false
+                },
+                "whitelistedIP": {
+                    "visible": false
                 },
                 "impressions": {
                     "visible": true
@@ -301,64 +352,58 @@ app.get('/api/preferences', function (req, res) {
                 "ap": {
                     "visible": true
                 },
-                "affiliateName": {
+                "errors": {
                     "visible": true
-                },
-                "campaignName": {
-                    "visible": true
-                },
-                "campaignId": {
-                    "visible": true
-                },
-                "campaignUrl": {
-                    "visible": false
-                },
-                "campaignCountry": {
-                    "visible": false
-                },
-                "pixelUrl": {
-                    "visible": false
                 },
                 "postbackUrl": {
                     "visible": false
                 },
-                "trafficName": {
-                    "visible": true
-                },
-                "clickRedirectType": {
+                "redirect": {
                     "visible": false
                 },
                 "costModel": {
                     "visible": false
                 },
                 "cpa": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpc": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpm": {
-                    "visible": true
-                },
-                "city": {
-                    "visible": true
-                },
-                "flowName": {
-                    "visible": true
-                },
-                "landerName": {
-                    "visible": true
-                },
-                "landerId": {
                     "visible": false
                 },
-                "landerUrl": {
+                "clickId": {
                     "visible": false
                 },
-                "landerCountry": {
+                "variable1": {
                     "visible": false
                 },
-                "numberOfOffers": {
+                "variable2": {
+                    "visible": false
+                },
+                "variable3": {
+                    "visible": false
+                },
+                "variable4": {
+                    "visible": false
+                },
+                "variable5": {
+                    "visible": false
+                },
+                "variable6": {
+                    "visible": false
+                },
+                "variable7": {
+                    "visible": false
+                },
+                "variable8": {
+                    "visible": false
+                },
+                "variable9": {
+                    "visible": false
+                },
+                "variable10": {
                     "visible": false
                 }
             }
@@ -381,10 +426,43 @@ app.post('/api/preferences', function (req, res) {
             "reportViewOrder": "-visit",
             "reportTimeZone": "+08:00",
             "reportViewColumns": {
+                "campaignName": {
+                    "visible": true
+                },
+                "campaignHash": {
+                    "visible": true
+                },
+                "campaignUrl": {
+                    "visible": false
+                },
+                "campaignCountry": {
+                    "visible": false
+                },
+                "flowName": {
+                    "visible": true
+                },
+                "flowHash": {
+                    "visible": true
+                },
+                "landerName": {
+                    "visible": true
+                },
+                "landerHash": {
+                    "visible": false
+                },
+                "landerUrl": {
+                    "visible": false
+                },
+                "landerCountry": {
+                    "visible": false
+                },
+                "numberOfOffers": {
+                    "visible": false
+                },
                 "offerName": {
                     "visible": true
                 },
-                "offerId": {
+                "offerHash": {
                     "visible": true
                 },
                 "offerUrl": {
@@ -395,6 +473,27 @@ app.post('/api/preferences', function (req, res) {
                 },
                 "payout": {
                     "visible": true
+                },
+                "trafficName": {
+                    "visible": true
+                },
+                "trafficHash": {
+                    "visible": true
+                },
+                "costArgument": {
+                    "visible": false
+                },
+                "affiliateName": {
+                    "visible": true
+                },
+                "affiliateHash": {
+                    "visible": true
+                },
+                "appendClickId": {
+                    "visible": false
+                },
+                "whitelistedIP": {
+                    "visible": false
                 },
                 "impressions": {
                     "visible": true
@@ -444,64 +543,58 @@ app.post('/api/preferences', function (req, res) {
                 "ap": {
                     "visible": true
                 },
-                "affiliateNetworkName": {
+                "errors": {
                     "visible": true
-                },
-                "campaignName": {
-                    "visible": true
-                },
-                "campaignId": {
-                    "visible": true
-                },
-                "campaignUrl": {
-                    "visible": false
-                },
-                "campaignCountry": {
-                    "visible": false
-                },
-                "pixelUrl": {
-                    "visible": false
                 },
                 "postbackUrl": {
                     "visible": false
                 },
-                "trafficSourceName": {
-                    "visible": true
-                },
-                "clickRedirectType": {
+                "redirect": {
                     "visible": false
                 },
                 "costModel": {
                     "visible": false
                 },
                 "cpa": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpc": {
-                    "visible": true
+                    "visible": false
                 },
                 "cpm": {
-                    "visible": true
-                },
-                "city": {
-                    "visible": true
-                },
-                "flowName": {
-                    "visible": true
-                },
-                "landerName": {
-                    "visible": true
-                },
-                "landerId": {
                     "visible": false
                 },
-                "landerUrl": {
+                "clickId": {
                     "visible": false
                 },
-                "landerCountry": {
+                "variable1": {
                     "visible": false
                 },
-                "numberOfOffers": {
+                "variable2": {
+                    "visible": false
+                },
+                "variable3": {
+                    "visible": false
+                },
+                "variable4": {
+                    "visible": false
+                },
+                "variable5": {
+                    "visible": false
+                },
+                "variable6": {
+                    "visible": false
+                },
+                "variable7": {
+                    "visible": false
+                },
+                "variable8": {
+                    "visible": false
+                },
+                "variable9": {
+                    "visible": false
+                },
+                "variable10": {
                     "visible": false
                 }
             }
@@ -556,6 +649,7 @@ app.get('/api/report', function (req, res) {
                 {
                     [groupBy + "Name"]: groupBy + " 1",
                     [groupBy + "Id"]: "1",
+                    [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
                     "ap": 0.0,
                     "bids": 0,
                     "clicks": 4368,
@@ -577,6 +671,7 @@ app.get('/api/report', function (req, res) {
                 }, {
                     [groupBy + "Name"]: groupBy + " 2",
                     [groupBy + "Id"]: "2",
+                    [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
                     "ap": 0.0,
                     "bids": 0,
                     "clicks": 4368,
@@ -598,6 +693,7 @@ app.get('/api/report', function (req, res) {
                 }, {
                     [groupBy + "Name"]: groupBy + " 3",
                     [groupBy + "Id"]: "3",
+                    [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
                     "ap": 0.0,
                     "bids": 0,
                     "clicks": 4368,
@@ -1752,22 +1848,6 @@ app.get('/api/conditions', function (req, res) {
     delayResponse(res, result);
 });
 
-app.get('/api/set/user/:id', function (req, res) {
-    var result = {
-        status: 1,
-        message: 'success',
-        data: {
-            firstname: 'test',
-            lastname: 'test',
-            companyname: 'zheng',
-            tel: 13120663670,
-            timezone: '1',
-            homescreen: 'Dashboard',
-            visitconversion: 'Visit'
-        }
-    };
-    res.send(result);
-});
 
 /**
  * get list of countries

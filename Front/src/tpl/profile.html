@@ -9,6 +9,7 @@
           <input type="text" name="firstname" class="form-control" ng-model="item.firstname" required>
           <span style="color:red" ng-show="form.firstname.$dirty && form.firstname.$invalid">
           <span ng-show="form.firstname.$error.required">FirstName is required.</span>
+          </span>
         </div>
         <div class="form-group">
           <label>Company name</label>
@@ -58,9 +59,10 @@
         </div>
         <div class="form-group">
           <label>Phone</label>
-          <input type="tel" name="tel" class="form-control" ng-model="item.tel" maxlength="11" minlength="11" required>
-          <span style="color:red" ng-show="form.lastname.$dirty && form.lastname.$invalid">
-          <span ng-show="form.lastname.$error.required">Tel is required.</span>
+          <input type="tel" name="tel" class="form-control" ng-model="item.tel" ng-pattern="phoneNumbr" maxlength="11" minlength="11" required>
+          <span style="color:red" ng-show="form.tel.$dirty && form.tel.$invalid">
+          <span ng-show="form.tel.$error.required">Tel is required.</span>
+          <span ng-show="form.tel.$error.pattern">Please enter phone number</span>
           </span>
         </div>
       </div>
@@ -82,18 +84,30 @@
 
 <div class="form-column profile-content password-change">
   <div class="basic-form clearfix">
+  <form name="passwordForm">
     <div class="col-md-6">
       <div class="form-group">
         <label>Old password</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
+        <input type="password" name="password" class="form-control" ng-model="item.password" required>
+        <span style="color:red" ng-show="passwordForm.password.$dirty && passwordForm.password.$invalid">
+          <span ng-show="passwordForm.password.$error.required">FirstName is required.</span>
+        </span>
       </div>
       <div class="form-group">
-        <label>New password</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
+        <label for="newPassword">New password</label>
+        <input type="password" name="newPassword" class="form-control" ng-model="item.newPassword" required>
+        <span style="color:red" ng-show="passwordForm.newPassword.$dirty && passwordForm.newPassword.$invalid">
+          <span ng-show="passwordForm.newPassword.$error.required">FirstName is required.</span>
+        </span>
       </div>
       <div class="form-group">
-        <label>Repeat new password</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
+        <label for="repeatNewPassword">Repeat new password</label>
+        <input type="password" name="repeatNewPassword" class="form-control" ng-model="item.repeatNewPassword" required>
+        <span style="color:red" ng-show="passwordForm.repeatNewPassword.$dirty && passwordForm.repeatNewPassword.$invalid">
+          <span ng-show="passwordForm.repeatNewPassword.$error.required">FirstName is required.</span>
+          
+        </span>
+        <span style="color: red;" ng-show="item.newPassword!=item.repeatNewPassword">*Password is not the same</span>
       </div>
       <div class="profile-form-footer clearfix">
         <div class="save-btn">
@@ -106,14 +120,19 @@
         </div> -->
       </div>
     </div>
+  </form>
+  <form name="emailForm">
     <div class="col-md-6">
       <div class="form-group">
         <label>Change e-mail address</label>
-        <input type="text" class="form-control" ng-model="item.name" required>
+        <input type="email" placeholder="Email" class="form-control no-border" ng-model="item.email" required>
       </div>
       <div class="form-group">
         <label>Confirm with your password</label>
-        <input type="number" class="form-control" ng-model="item.name" required>
+        <input type="password" name="password" class="form-control" ng-model="item.passwordNew" required>
+        <span style="color:red" ng-show="emailForm.password.$dirty && emailForm.password.$invalid">
+          <span ng-show="emailForm.password.$error.required">FirstName is required.</span>
+        </span>
       </div>
       <div class="profile-form-footer clearfix">
         <div class="save-btn">
@@ -126,5 +145,6 @@
         </div> -->
       </div>
     </div>
+  </form>
   </div>
 </div>

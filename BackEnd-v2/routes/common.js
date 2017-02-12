@@ -75,8 +75,7 @@ function validate(data, schema) {
 }
 
 // Campaign
-function insertCampaign(value, connection) {
-    var hash = uuidV4();
+function insertCampaign(value,hash, connection) {
     // //url
     // let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
     // let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash
@@ -99,8 +98,8 @@ function insertCampaign(value, connection) {
     col += ",`hash`";
     val += ",'" + hash + "'";
 
-    col += ",`url`";
-    val += ",'" + urlValue + "'";
+    // col += ",`url`";
+    // val += ",'" + value.url + "'";
 
     col += ",`trafficSourceId`";
     val += "," + value.trafficSource.id;
@@ -114,8 +113,8 @@ function insertCampaign(value, connection) {
     col += ",`status`";
     val += "," + value.status;
 
-    col += ",`impPixelUrl`";
-    val += ",'" + impPixelUrl + "'";
+    // col += ",`impPixelUrl`";
+    // val += ",'" + impPixelUrl + "'";
 
     //optional
     if (value.cpc != undefined) {
@@ -412,15 +411,16 @@ function updateTags(userId, targetId, type, connection) {
 
 //Rule
 function insetRule(userId, rule, connection) {
-    var sqlRule = "insert into `Rule` (`userId`,`name`,`hash`,`type`,`json`,`status`) values (?,?,?,?,?,?)";
+    var sqlRule = "insert into `Rule` (`userId`,`name`,`hash`,`type`,`object`,`json`,`status`) values (?,?,?,?,?,?,?)";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.conditions ?
-            JSON.stringify(rule.conditions) : JSON.stringify([]), rule.enabled ? 1 : 0], function (err, result) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
-            });
+        connection.query(sqlRule, [userId, rule.name?rule.name:"", uuidV4(), rule.isDefault?0:1, rule.json?
+JSON.stringify(rule.json):JSON.stringify([]),rule.object?
+JSON.stringify(rule.object):JSON.stringify([]), rule.enabled?1:0], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
     });
 }
 
@@ -433,7 +433,10 @@ function updateRule(userId, rule, connection) {
         sqlRule += ",`type`=" + rule.type
     }
     if (rule.json) {
-        sqlRule += ",`json`='" + JSON.stringify(rule.json) + "'"
+        sqlRule += ",`json`='" + JSON.stringify(rule.object) + "'"
+    }
+    if (rule.object) {
+        sqlRule += ",`object`='" + JSON.stringify(rule.json) + "'"
     }
     if (rule.status != undefined) {
         sqlRule += ",`status`=" + rule.status
@@ -1131,3 +1134,4 @@ exports.deleteLander = deleteLander;
 exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
 exports.saveEventLog = saveEventLog;
+exports.query=query;
