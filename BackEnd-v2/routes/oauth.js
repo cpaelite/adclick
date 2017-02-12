@@ -45,7 +45,7 @@ router.post('/auth/login', async function (req, res, next) {
 
         if (rows.length > 0) {
             if (rows[0].password == md5(value.password)) {
-                var expires = moment().add(7, 'days').valueOf();
+                var expires = moment().add(200, 'days').valueOf();
                 res.json({ token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText) });
 
                 //更新登录时间
