@@ -854,6 +854,7 @@
         payoutMode: 0,
         url: 'http://'
       };
+      $scope.affiliateId = "0";
       this.title = "add";
     }
 
@@ -892,7 +893,7 @@
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
-        if (!newValue) {
+        if (newValue == "0") {
           $scope.item.postbackUrl = defaultPostBackUrl;
           return;
         }
