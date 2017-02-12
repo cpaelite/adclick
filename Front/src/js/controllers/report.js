@@ -329,7 +329,7 @@
         $scope.menuStatus.isopen = true;
       }
     };
-    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'affiliate'].indexOf(perfType) >= 0;
+    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
@@ -557,10 +557,10 @@
           $scope.costModelValue = $scope.item.cpmValue;
         }
         $scope.tags = $scope.item.tags;
-        $scope.trafficSourceId = $scope.item.trafficSourceId;
+        $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
         if ($scope.item.targetFlowId) {
           $scope.item.flow = {
-            id: $scope.item.targetFlowId
+            id: $scope.item.targetFlowId.toString()
           };
           showFlow();
         }
@@ -875,7 +875,7 @@
       if (isDuplicate) delete $scope.item.id;
       if (theOffer) {
         $scope.item = theOffer;
-        $scope.affiliateId = theOffer.AffiliateNetworkId;
+        $scope.affiliateId = theOffer.AffiliateNetworkId.toString();
         $scope.tags = $scope.item.tags;
         if ($scope.item['payoutMode'] == null) {
           $scope.item = {

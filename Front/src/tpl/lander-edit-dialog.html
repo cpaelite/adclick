@@ -52,7 +52,7 @@
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <select class="cs-subform-select" name="country" ng-model="item.country" required>
-                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
+                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>

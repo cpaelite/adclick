@@ -43,7 +43,7 @@
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <select class="cs-subform-select" name="country" ng-model="item.country" required>
-                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
+                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>
@@ -54,8 +54,8 @@
                 <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-5">
                     <select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId">
-                        <md-option value=""></md-option>
-                        <md-option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</md-option>
+                        <option value=""></option>
+                        <option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</option>
                     </select>
                 </div>
             </div>

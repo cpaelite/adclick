@@ -49,7 +49,7 @@
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required>
-                        <md-option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</md-option>
+                        <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
                         <span ng-show="editForm.trafficSource.$error.required">TrafficSource is required.</span>
                         </span>
@@ -60,7 +60,7 @@
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <select class="cs-subform-select" name="country" ng-model="item.country" required>
-                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
+                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>
@@ -169,7 +169,7 @@
                     <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
                     <div class="col-sm-5">
                         <select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
-                            <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
+                            <option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</option>
                         </select>
                     </div>
                 </div>
