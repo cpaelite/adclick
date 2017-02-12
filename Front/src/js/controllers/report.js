@@ -425,7 +425,7 @@
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
-        locals: {type: perfType, item: item.id},
+        locals: {type: perfType, item: item.data},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
       }).then(function () {
@@ -1285,7 +1285,7 @@
     }
 
     function deleteItem(item) {
-      return $injector.get(resourceName).remove({id: item}).$promise;
+      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"]}).$promise;
     }
 
     this.onprocess = false;
