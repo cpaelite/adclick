@@ -568,7 +568,7 @@
           $scope.item = defaultItem();
         }
       } else {
-        $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id: null;
+        $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
       }
 
       $scope.$watch('trafficSourceId', function (newValue, oldValue) {
