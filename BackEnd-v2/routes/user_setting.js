@@ -57,7 +57,7 @@ router.get('/api/user/profile', async function (req, res, next) {
  *
  * @apiParam {String} firstname
  * @apiParam {String} lastname
- * @apiParam {String} json   按照既定规则生成的User信息(CompanyName,Phone,DefaultTimeZone,DefaultHomeScreen)
+ * @apiParam {String} json   按照既定规则生成的User信息(CompanyName,Phone,DefaultTimeZone,DefaultHomeScreen)  
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -316,6 +316,33 @@ router.get('/api/user/billing', function (req, res, next) {
 //     "mainDomain" : true
 //   } ]
 // }
+
+/**
+ * @api {get} /api/user/referrals   用户推广收益
+ * @apiName  用户推广收益
+ * @apiGroup Setting
+ * 
+ * @apiParam {Number} page
+ * @apiParam {Number} limit
+ * @apiParam {sort} string
+ * @
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{
+ *           referrals:[{"referredUserId":,
+ *           "acquired":"",
+ *           "status":,
+ *            "recentCommission":"",
+ *            "totalCommission":""}],
+ *          "totals":{count:2,"lastMonthCommissions":"","lifeTimeCommissions":""}
+ *        }
+ *     }
+ *
+ */
 router.get('/api/user/domains', function (req, res, next) {
 
 });
