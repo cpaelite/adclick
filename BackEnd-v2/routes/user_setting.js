@@ -3,7 +3,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var md5 = require('md5');
-
+var _ = require('lodash');
 
 /**
  * @api {get} /api/profile  
@@ -39,7 +39,7 @@ router.get('/api/profile', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?"  , [value.userId],connection);
+        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
 
         let responseData = {};
         if (result.length) {
@@ -119,8 +119,8 @@ router.post('/api/profile', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let valueCopy={};
-        Object.assign(valueCopy,value);
+        let valueCopy = {};
+        Object.assign(valueCopy, value);
         let sql = 'update User set ';
         if (valueCopy.firstname) {
             sql += "`firstname`='" + valueCopy.firstname + "'";
@@ -134,10 +134,10 @@ router.post('/api/profile', async function (req, res, next) {
 
         delete valueCopy.userId;
 
-        sql += ",`setting`='" + JSON.stringify(valueCopy) +"'";
+        sql += ",`setting`='" + JSON.stringify(valueCopy) + "'";
 
         sql += " where `id`= ? ";
-        await query(sql,[value.userId], connection);
+        await query(sql, [value.userId], connection);
 
         res.json({
             "status": 1,
@@ -192,11 +192,11 @@ router.post('/api/password', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let result = await query("select `password` from User where `id`= ? " , [value.userId], connection);
+        let result = await query("select `password` from User where `id`= ? ", [value.userId], connection);
         let message;
         if (result && result[0]) {
             if (md5(value.oldpassword) == result[0].password) {
-                await query("update User set `password`= ? where `id`= ? " ,[md5(value.newpassword),value.userId], connection);
+                await query("update User set `password`= ? where `id`= ? ", [md5(value.newpassword), value.userId], connection);
                 message = "success";
             } else {
                 message = "password error";
@@ -255,14 +255,14 @@ router.post('/api/email', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         //check email 是否存在
-        let UserResult=await query("select id from User where `email`= ? ",[value.email],connection);
-        if (UserResult.length >0 ) throw new Error("email exists");
+        let UserResult = await query("select id from User where `email`= ? ", [value.email], connection);
+        if (UserResult.length > 0) throw new Error("email exists");
 
-        let result = await query("select `password` from User where `id`= ? " ,[value.userId], connection);
+        let result = await query("select `password` from User where `id`= ? ", [value.userId], connection);
         let message;
         if (result && result[0]) {
             if (md5(value.password) == result[0].password) {
-                await query("update User set `email`= ?  where `id`= ? " ,[value.email,value.userId], connection);
+                await query("update User set `email`= ?  where `id`= ? ", [value.email, value.userId], connection);
                 message = "success";
             } else {
                 message = "password error";
@@ -304,9 +304,9 @@ router.post('/api/email', async function (req, res, next) {
  *       "data":{
  *           referrals:[
  *           {"referredUserId":,
- *           "acquired":"",
+ *           "acquired":"17-02-2017 00:00",
  *            "status":"New",
- *            "lastactivity":"2017-02-17 00:00",
+ *            "lastactivity":"17-02-2017 00:00",
  *            "recentCommission":"",
  *            "totalCommission":""}],
  *          "totals":{count:2,"lastMonthCommissions":"","lifeTimeCommissions":""}]
@@ -315,11 +315,11 @@ router.post('/api/email', async function (req, res, next) {
  *
  */
 router.get('/api/referrals', async function (req, res, next) {
-       var schema = Joi.object().keys({
+    var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        page:Joi.number().required().min(1),
-        limit:Joi.number().required().min(1),
-        sort:Joi.string().required()
+        page: Joi.number().required().min(1),
+        limit: Joi.number().required().min(1),
+        sort: Joi.string().required()
     });
     req.query.userId = req.userId;
     let connection;
@@ -332,19 +332,30 @@ router.get('/api/referrals', async function (req, res, next) {
             sort,
             userId
         } = value;
-        let dir ="asc";
+        let dir = "asc";
         limit = parseInt(limit);
         page = parseInt(page);
         let offset = (page - 1) * limit;
-        if(sort.indexOf('-')>=0){
-           dir="desc";
-           sort = sort.replace(new RegExp(/-/g), '');
+        if (sort.indexOf('-') >= 0) {
+            dir = "desc";
+            sort = sort.replace(new RegExp(/-/g), '');
         }
-        let sql = ""
+        let listSql = "select  user.`idText` as referredUserId ,FROM_UNIXTIME(log.`acquired`,'%d-%m-%Y %H:%i') as acquired," +
+            "(case log.`status` when 0 then \"New\" when 1 then \"Activated\"  END) as status," +
+            "FROM_UNIXTIME(log.`lastActivity`,'%d-%m-%Y %H:%i') as lastactivity," +
+            "log.`recentCommission` as recentCommission,log.`totalCommission` as totalCommission " +
+            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId + " order by " + sort + " " + dir;
+
+        let countsql = "select COUNT(*) as `count`,sum(recentCommission) as lastMonthCommissions,sum(totalCommission) as lifeTimeCommissions from ((" + listSql + ") as T)";
+
+        let result = await Promise.all([query(listSql, [], connection), query(countsql, [], connection)]);
         res.json({
             status: 1,
             message: 'succes',
-            data: responseData
+            data: {
+                referrals: result[0],
+                totals: result[1].length ? result[1][0] : { count: 0, lastMonthCommissions: "", lifeTimeCommissions: "" }
+            }
         });
     } catch (e) {
         next(e);
@@ -359,49 +370,103 @@ router.get('/api/referrals', async function (req, res, next) {
 
 
 /**
- * {
-  "id" : "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-  "planCode" : "PRO",
-  "status" : "READY",
-  "activeSubscription" : {
-    "startTime" : "2017-01-22T07:11:33.078",
-    "endTime" : "2017-02-22T07:11:33.078",
-    "plan" : {
-      "id" : "880c7aee-c661-4812-90d4-36b2c576a946",
-      "code" : "PRO",
-      "name" : "Pro",
-      "price" : 99,
-      "billingCycle" : "P1M",
-      "includedEvents" : 1000000,
-      "costPerEvent" : 0.00004,
-      "dataRetentionDays" : 190,
-      "maximumUserAccounts" : 0,
-      "customDomains" : 3
-    },
-    "discountedPrice" : 74,
-    "discount" : {
-      "code" : "5d1cd608-3e35-412b-899b-9e2de13c6c0a",
-      "percentOff" : 25,
-      "expirationInstant" : "2017-04-01T00:00:00Z"
-    },
-    "statistics" : {
-      "from" : "2017-01-22T07:00",
-      "to" : "2017-02-08T11:00",
-      "visits" : 1,
-      "clicks" : 0,
-      "conversions" : 0,
-      "freeVisits" : 0,
-      "freeClicks" : 0,
-      "freeConversions" : 0,
-      "totalEvents" : 1,
-      "freeEvents" : 0,
-      "billedEvents" : 1
-    }
-  }
-}
+ * @api {get} /api/billing   用户套餐使用状态
+ * @apiName  用户套餐使用状态
+ * @apiGroup User
+ * 
+ * @apiParam {String} timezone  "+08:00"
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{  
+            "activeSubscription" : {
+                "startTime" : "19-01-2017",
+                "endTime" : "19-02-2017",
+                "plan" : {
+                    "id" : 1,
+                    "name" : "Agency",
+                    "price" : 399,                      //normalPrice  
+                    "eventsLimit" : 10000000,
+                    "overageCPM" : 0.000036,
+                    "retentionLimit" : 370,
+                    "userLimit" : 2,
+                    "domainLimit" : 5                 
+                },
+                "statistics" : {     
+                    "overageEvents":1,
+                    "overageCost":0.999,
+                    "totalEvents" : 2,
+                    "billedEvents" : 2
+                }
+              }
+            } 
+ *     }
+ *
  */
-router.get('/api/user/billing', function (req, res, next) {
 
+router.get('/api/billing', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        timezone: Joi.string().required()
+    });
+    req.query.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let compled=_.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,   
+        DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planEnd\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')   as endTime,
+        plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
+        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,plan.\`overageCPM\` as overageCPM, bill.\`overageEvents\` as overageEvents,
+        (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents
+        from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0`);
+        let sql =compled({
+            tz:value.timezone
+        });
+        let results = await query(sql, [], connection);
+        let val = results.length ? results[0] : null;
+        let result = {
+            activeSubscription: {
+            }
+        };
+        if (val) {
+            result.activeSubscription = {
+                startTime: val.startTime,
+                endTime: val.endTime,
+                plan: {
+                    id: val.id,
+                    name: val.name,
+                    price: val.price,
+                    eventsLimit: val.eventsLimit,
+                    overageCPM: val.overageCPM,
+                    retentionLimit: val.retentionLimit,
+                    userLimit: val.userLimit,
+                    domainLimit: val.domainLimit
+                },
+                statistics: {
+                    overageEvents: val.overageEvents,
+                    overageCost: val.overageCost,
+                    totalEvents: val.totalEvents,
+                    billedEvents: val.billedEvents
+                }
+            }
+        }
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 // {
@@ -421,40 +486,15 @@ router.get('/api/user/billing', function (req, res, next) {
 //   } ]
 // }
 
-/**
- * @api {get} /api/user/referrals   用户推广收益
- * @apiName  用户推广收益
- * @apiGroup Setting
- * 
- * @apiParam {Number} page
- * @apiParam {Number} limit
- * @apiParam {sort} string
- * @
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success",
- *       "data":{
- *           referrals:[{"referredUserId":,
- *           "acquired":"",
- *           "status":,
- *            "recentCommission":"",
- *            "totalCommission":""}],
- *          "totals":{count:2,"lastMonthCommissions":"","lifeTimeCommissions":""}
- *        }
- *     }
- *
- */
-router.get('/api/user/domains', function (req, res, next) {
+ 
+// router.get('/api/user/domains', function (req, res, next) {
 
-});
+// });
 
 
-function query(sql,params, connection) {
+function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
-        connection.query(sql, params,function (err, result) {
+        connection.query(sql, params, function (err, result) {
             if (err) {
                 reject(err)
             }
