@@ -197,31 +197,6 @@ app.get('/api/preferences', function (req, res) {
     var result = {
         "status": 1,
         "message": "",
-        profile: {
-            "id": "cec53c33-d96e-499a-89ff-4a07effbeb15",
-            "created": "2016-12-13T08:12:50.000Z",
-            "state": "ACTIVATED",
-            "role": "ROLE_USER",
-            "email": "benson@mobisummer.com",
-            "firstName": "Benson",
-            "lastName": "Huang",
-            "memberships": [{
-                "role": "OWNER",
-                "client": {
-                    "id": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-                    "created": "2016-12-13T08:12:50.000Z",
-                    "name": "WHATECH MOBILE CO., LIMITED",
-                    "phoneNumber": "",
-                    "referrerToken": "ANXefPWujoBt+aOj1aYFI5pSU8udv9aNxxrr2L5MuEBooGic+rPzPu8mFCbVteW5",
-                    "toggles": [],
-                    "features": ["AFFILIATE_TRACKING"]
-                }
-            }],
-            "defaultClientId": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-            "timezone": "Asia/Shanghai",
-            "defaultHomeScreen": "DASHBOARD_CAMPAIGN",
-            "emailChangeInProgress": false
-        },
         data: JSON.stringify({
             "reportViewLimit": 500,
             "entityType": 1,    //0:停止;1:运行;2全部
@@ -505,6 +480,96 @@ app.post('/api/preferences', function (req, res) {
                     "visible": false
                 }
             }
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 获取profile account
+ *
+ */
+app.get('/api/set/profile/account', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: '13120663670',
+          timezone:'1',
+          homescreen:'Dashboard',
+          visitconversion:'Visit',
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 保存profile account
+ *
+ */
+app.post('/api/set/profile/account', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: '13120663670',
+          timezone:'1',
+          homescreen:'Dashboard',
+          visitconversion:'Visit',
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 保存profile password change
+ *
+ */
+app.post('/api/set/passwordChange', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          oldpassword: 'test',
+          newpassword:'111',
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 获取profile email
+ *
+ */
+app.get('/api/set/emailChange', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          emailaddress: '123@qq.com',
+          password:'',
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 保存profile email change
+ *
+ */
+app.post('/api/set/emailChange', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          emailaddress: '123@qq.com',
+          password:'111',
         }
     };
     res.send(result);
