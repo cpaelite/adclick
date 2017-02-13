@@ -578,6 +578,8 @@
         $scope.trafficSources.forEach(function (traffic) {
           if (traffic.id == newValue) {
             $scope.impTracking = traffic.impTracking;
+            $scope.trafficPostbackUrl = traffic.postbackUrl;
+            $scope.trafficPixelRedirectUrl = traffic.pixelRedirectUrl;
 
             if (!$scope.item.impPixelUrl) {
               return;
@@ -1100,7 +1102,7 @@
       });
     }, true);
 
-    $scope.selectTrafficSourceTemplate = function (ev, item) {
+    $scope.selectTrafficSourceTemplate = function (ev) {
       $mdDialog.show({
         multiple: true,
         skipHide: true,
@@ -1108,7 +1110,7 @@
         controller: ['$scope', '$mdDialog', 'TrafficTemplate', trafficSourceTemplateCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: { item: item, currentUser: $scope.currentUser },
+        locals: {},
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trafficSource-template-dialog.html',
