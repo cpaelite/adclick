@@ -51,6 +51,7 @@ exports.setToken = function(userid,expires,firstname,idtext) {
     idText:idtext
   }, setting['jwtTokenSrcret'])
 }
+
 exports.getRandomString = function(len) {
   var chars = ["a", "b", "c", "d", "e", "f",
     "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
@@ -75,4 +76,9 @@ exports.getRandomString = function(len) {
     result += chars[parseInt(stringToHex(str), 16) % 0x24]
   }
   return result
+}
+
+
+exports.getUUID=function(){
+  return   uuidV4().replace(new RegExp(/-/g), '')
 }

@@ -14,7 +14,7 @@ var setting = require('../config/setting');
 /**
  * @api {post} /auth/login  登陆
  * @apiName Login
- * @apiGroup Oauth
+ * @apiGroup auth
  *
  * @apiParam {String} email
  * @apiParam {String} password
@@ -77,7 +77,7 @@ router.post('/auth/login', async function (req, res, next) {
 /**
  * @api {post} /auth/signup  注册
  * @apiName register
- * @apiGroup Oauth
+ * @apiGroup auth
  * @apiDescription make sure request '/account/check' for checking account exists or not first
  *
  * @apiParam {String} email
@@ -85,6 +85,7 @@ router.post('/auth/login', async function (req, res, next) {
  * @apiParam {String} lastname
  * @apiParam {String} password
  * @apiParam {Object} json
+ * @apiParam {String} [refToken]
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -100,28 +101,40 @@ router.post('/auth/signup', async function (req, res, next) {
         password: Joi.string().required(),
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
-        json: Joi.object().optional()
+        json: Joi.object().optional(),
+        refToken:Joi.string().optional().empty("")
     });
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        //check email exists
+        let UserResult=await query("select id from User where `email`=?",[value.email]);
+        if (UserResult.length >0 ) throw new Error("account exists");
+        //事务开始
         await common.beginTransaction(connection);
         let idtext = util.getRandomString(6);
+        let reftoken = util.getUUID()+ "." + idtext;
         //User
-        let sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`) values (?,?,?,?,?)";
+        let sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (?,?,?,?,?,?)";
         let params = [
             value.firstname, value.lastname, value.email,
-            md5(value.password), idtext
-        ]
+            md5(value.password), idtext,reftoken
+        ];
         if (value.json) {
-            sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`json`) values (?,?,?,?,?,?)";
+            sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (?,?,?,?,?,?,?)";
             params.push(JSON.stringify(value.json))
         }
         let result = await query(sql, params);
         //系统默认domains
         for (let index = 0; index < setting.domains.length; index++) {
             await query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0]);
+        }
+        //如果refToken 不为"" 说明是从推广链接过来的
+        if(value.refToken){
+            let referredUserId = value.refToken.split('.').length== 2 ? value.refToken.split('.')[1] : 0;
+            if(referredUserId)
+            await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`) values (?,?,unix_timestamp(now()),0)",[result.insertId,referredUserId])
         }
         await common.commit(connection);
         res.json({
@@ -141,7 +154,7 @@ router.post('/auth/signup', async function (req, res, next) {
 /**
  * @api {post} /account/check  检查用户是否存在
  * @apiName account check
- * @apiGroup Oauth
+ * @apiGroup auth
  * @apiParam {String} email
  *
  * @apiSuccessExample {json} Success-Response:
@@ -191,7 +204,7 @@ router.post('/account/check', function (req, res, next) {
 /**
  * @api {get} /countries  获取所有国家
  * @apiName  get all countries
- * @apiGroup Oauth
+ * @apiGroup auth
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -224,7 +237,7 @@ router.get('/api/countries', function (req, res, next) {
 /**
  * @api {get} /timezones  获取所有timezones
  * @apiName  get all timezones
- * @apiGroup Oauth
+ * @apiGroup auth
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -262,7 +275,7 @@ router.get('/timezones', function (req, res, next) {
 /**
  * @api {post} /domains/validatecname   
  * @apiName  dns verify
- * @apiGroup Oauth
+ * @apiGroup auth
  * @apiParam address
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
