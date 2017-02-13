@@ -53,15 +53,15 @@ router.post('/auth/login', async function (req, res, next) {
                 await query(updateSql,[rows[0].id]);
 
             } else {
-                res.json({
+                res.status(401).json({
                     status: 1002,
-                    message: "password error"
+                    message: "account/password error"
                 });
             }
         } else {
-            res.json({
+            res.status(401).json({
                 status: 1001,
-                message: "account not exist"
+                message: "account/password error"
             });
         }
     } catch (e) {
