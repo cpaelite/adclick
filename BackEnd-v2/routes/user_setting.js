@@ -39,7 +39,7 @@ router.get('/api/profile', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= " + value.userId, connection);
+        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?"  , [value.userId],connection);
 
         let responseData = {};
         if (result.length) {
@@ -83,8 +83,8 @@ router.get('/api/profile', async function (req, res, next) {
  *
  * @apiParam {String} firstname
  * @apiParam {String} lastname
- * @apiParam {String} companyname
- * @apiParam {String} tel
+ * @apiParam {String} [companyname]
+ * @apiParam {String} [tel]
  * @apiParam {String} timezone
  * @apiParam {String} homescreen
  *
@@ -111,8 +111,8 @@ router.post('/api/profile', async function (req, res, next) {
         lastname: Joi.string().required(),
         companyname: Joi.string().optional(),
         tel: Joi.string().optional(),
-        timezone: Joi.string().optional(),
-        homescreen: Joi.string().optional()
+        timezone: Joi.string().required(),
+        homescreen: Joi.string().required()
     });
     req.body.userId = req.userId;
     let connection;
@@ -136,8 +136,8 @@ router.post('/api/profile', async function (req, res, next) {
 
         sql += ",`setting`='" + JSON.stringify(valueCopy) +"'";
 
-        sql += " where `id`=" + value.userId;
-        await query(sql, connection);
+        sql += " where `id`= ? ";
+        await query(sql,[value.userId], connection);
 
         res.json({
             "status": 1,
@@ -156,13 +156,14 @@ router.post('/api/profile', async function (req, res, next) {
 
 });
 
+
 /**
- * @api {post} /api/user/passwordChange   用户修改密码
+ * @api {post} /api/password   用户修改密码
  * @apiName  用户修改密码
- * @apiGroup Setting
+ * @apiGroup User
  *
- * @apiParam {String} oldpwd
- * @apiParam {String} pwd
+ * @apiParam {String} oldpassword   
+ * @apiParam {String} newpassword
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -170,13 +171,20 @@ router.post('/api/profile', async function (req, res, next) {
  *       "status": 1,
  *       "message": "success"
  *     }
+ * 
+ * @apiErrorExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 0,
+ *       "message": "old password error"
+ *     }
  *
  */
-router.post('/api/user/passwordChange', async function (req, res, next) {
+router.post('/api/password', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        oldpwd: Joi.string().required(),
-        pwd: Joi.string().required()
+        oldpassword: Joi.string().required().trim(),
+        newpassword: Joi.string().required().trim()
     });
     req.body.userId = req.userId;
     let connection;
@@ -184,19 +192,18 @@ router.post('/api/user/passwordChange', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let result = await query("select `password` from User where `id`= " + value.userId, connection);
+        let result = await query("select `password` from User where `id`= ? " , [value.userId], connection);
         let message;
         if (result && result[0]) {
-            if (md5(value.oldpwd) == result[0].password) {
-                await query("update User set `password`= '" + md5(value.pwd) + "' where `id`=" + value.userId, connection);
-                message = "success"
+            if (md5(value.oldpassword) == result[0].password) {
+                await query("update User set `password`= ? where `id`= ? " ,[md5(value.newpassword),value.userId], connection);
+                message = "success";
             } else {
-                message = "old password error"
+                message = "password error";
             }
         } else {
-            message = "no user"
+            message = "account error";
         }
-        //connection.release();
         res.json({
             status: 1,
             message: message
@@ -208,19 +215,18 @@ router.post('/api/user/passwordChange', async function (req, res, next) {
         if (connection) {
             connection.release();
         }
-
     }
 
 });
 
 
 /**
- * @api {post} /api/user/emailChange   用户修改email
- * @apiName  用户修改email
- * @apiGroup Setting
+ * @api {post} /api/email   用户修改邮箱
+ * @apiName   用户修改邮箱
+ * @apiGroup User
  *
- * @apiParam {String} email
  * @apiParam {String} password
+ * @apiParam {String} email
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -228,9 +234,16 @@ router.post('/api/user/passwordChange', async function (req, res, next) {
  *       "status": 1,
  *       "message": "success"
  *     }
+ * 
+ * @apiErrorExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 0,
+ *       "message": "password error" // email exists
+ *     }
  *
  */
-router.post('/api/user/emailChange', async function (req, res, next) {
+router.post('/api/email', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         email: Joi.string().required(),
@@ -241,19 +254,22 @@ router.post('/api/user/emailChange', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let result = await query("select `password` from User where `id`= " + value.userId, connection);
+        //check email 是否存在
+        let UserResult=await query("select id from User where `email`= ? ",[value.email],connection);
+        if (UserResult.length >0 ) throw new Error("email exists");
+
+        let result = await query("select `password` from User where `id`= ? " ,[value.userId], connection);
         let message;
         if (result && result[0]) {
             if (md5(value.password) == result[0].password) {
-                await query("update User set `email`= '" + value.email + "' where `id`=" + value.userId, connection);
-                message = "success"
+                await query("update User set `email`= ?  where `id`= ? " ,[value.email,value.userId], connection);
+                message = "success";
             } else {
-                message = "password error"
+                message = "password error";
             }
         } else {
-            message = "no user"
+            message = "account error";
         }
-        //connection.release();
         res.json({
             status: 1,
             message: message
@@ -272,14 +288,13 @@ router.post('/api/user/emailChange', async function (req, res, next) {
 
 
 /**
- * @api {get} /api/user/referrals   用户推广收益
+ * @api {get} /api/referrals   用户推广收益
  * @apiName  用户推广收益
- * @apiGroup Setting
+ * @apiGroup User
  * 
  * @apiParam {Number} page
  * @apiParam {Number} limit
- * @apiParam {sort} string
- * @
+ * @apiParam {String} sort  "-name"
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -287,17 +302,58 @@ router.post('/api/user/emailChange', async function (req, res, next) {
  *       "status": 1,
  *       "message": "success",
  *       "data":{
- *           referrals:[{"referredUserId":,
+ *           referrals:[
+ *           {"referredUserId":,
  *           "acquired":"",
- *           "status":,
+ *            "status":"New",
+ *            "lastactivity":"2017-02-17 00:00",
  *            "recentCommission":"",
  *            "totalCommission":""}],
- *          "totals":{count:2,"lastMonthCommissions":"","lifeTimeCommissions":""}
+ *          "totals":{count:2,"lastMonthCommissions":"","lifeTimeCommissions":""}]
  *        }
  *     }
  *
  */
-router.get('/api/user/referrals', function (req, res, next) {
+router.get('/api/referrals', async function (req, res, next) {
+       var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        page:Joi.number().required().min(1),
+        limit:Joi.number().required().min(1),
+        sort:Joi.string().required()
+    });
+    req.query.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let {
+            limit,
+            page,
+            sort,
+            userId
+        } = value;
+        let dir ="asc";
+        limit = parseInt(limit);
+        page = parseInt(page);
+        let offset = (page - 1) * limit;
+        if(sort.indexOf('-')>=0){
+           dir="desc";
+           sort = sort.replace(new RegExp(/-/g), '');
+        }
+        let sql = ""
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: responseData
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 
 });
 
@@ -396,9 +452,9 @@ router.get('/api/user/domains', function (req, res, next) {
 });
 
 
-function query(sql, connection) {
+function query(sql,params, connection) {
     return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
+        connection.query(sql, params,function (err, result) {
             if (err) {
                 reject(err)
             }
