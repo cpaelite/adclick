@@ -17,26 +17,26 @@ func randStr() string {
 func randConversion() *Conversion {
 	c := new(Conversion)
 
-	c.UserID = rand.Int()%10 + 1
-	c.PostbackTimestamp = int(time.Now().Unix())
-	c.VisitTimestamp = int(time.Now().Unix())
+	c.UserID = rand.Int63()%10 + 1
+	c.PostbackTimestamp = time.Now().Unix()
+	c.VisitTimestamp = time.Now().Unix()
 	c.ExternalID = randStr()
 	c.ClickID = randStr()
 	c.TransactionID = randStr()
-	c.Revenue = rand.Float64() * 1000
-	c.Cost = rand.Float64() * 1000
+	c.Revenue = rand.Float64() * 10
+	c.Cost = rand.Float64() * 10
 	c.CampaignName = "The Campaign Name"
-	c.CampaignID = rand.Int()%100 + 1
+	c.CampaignID = rand.Int63()%100 + 1
 	c.LanderName = "The Lander Name"
-	c.LanderID = rand.Int()%100 + 1
+	c.LanderID = rand.Int63()%100 + 1
 	c.OfferName = "The Offer Name"
-	c.OfferID = rand.Int()%100 + 1
+	c.OfferID = rand.Int63()%100 + 1
 	c.Country = randSelectString(countries)
 	c.CountryCode = randSelectString(countries)
 	c.TrafficSourceName = "The Traffic Source Name"
-	c.TrafficSourceID = rand.Int()%100 + 1
+	c.TrafficSourceID = rand.Int63()%100 + 1
 	c.AffiliateNetworkName = "The Affiliate Network Name"
-	c.AffiliateNetworkID = rand.Int()%100 + 1
+	c.AffiliateNetworkID = rand.Int63()%100 + 1
 	c.Device = "Device"
 	c.OS = randSelectString(oses)
 	c.OSVersion = randSelectString(osversions)

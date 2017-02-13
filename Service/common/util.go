@@ -20,7 +20,11 @@ func GetCampaignHash(r *http.Request) string {
 	if r == nil {
 		return ""
 	}
-	return strings.Split(r.URL.Path, "/")[1]
+	s := strings.Split(r.URL.Path, "/")
+	if len(s) == 0 {
+		return ""
+	}
+	return s[len(s)-1]
 }
 
 func HostPath(r *http.Request) string {

@@ -45,7 +45,8 @@ CREATE TABLE `AdConversionsStatis` (
   `V10` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `IndexPostbackTimestamp` (`PostbackTimestamp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=200001 DEFAULT CHARSET=utf8;
+
 
 
 CREATE TABLE `AdIPStatis` (
@@ -56,8 +57,8 @@ CREATE TABLE `AdIPStatis` (
   `Visits` int(11) DEFAULT '0' COMMENT '累计的展示次数',
   `Clicks` int(11) DEFAULT '0' COMMENT '累计的点击次数',
   `Conversions` int(11) DEFAULT '0' COMMENT '累计的成功转换次数',
-  `Cost` double DEFAULT '0' COMMENT '累计的开销',
-  `Revenue` double DEFAULT '0' COMMENT '累计的收益',
+  `Cost` bigint(20) DEFAULT '0' COMMENT '累计的开销(实际的值x1000000)',
+  `Revenue` bigint(20) DEFAULT '0' COMMENT '累计的收益(实际的值x1000000)',
   `Impressions` int(11) DEFAULT '0',
   UNIQUE KEY `unique_key` (`UserID`,`Timestamp`,`CampaignID`,`IP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -71,8 +72,8 @@ CREATE TABLE `AdReferrerStatis` (
   `Visits` int(11) DEFAULT '0' COMMENT '累计的展示次数',
   `Clicks` int(11) DEFAULT '0' COMMENT '累计的点击次数',
   `Conversions` int(11) DEFAULT '0' COMMENT '累计的成功转换次数',
-  `Cost` double DEFAULT '0' COMMENT '累计的开销',
-  `Revenue` double DEFAULT '0' COMMENT '累计的收益',
+  `Cost` bigint(20) DEFAULT '0' COMMENT '累计的开销(实际的值x1000000)',
+  `Revenue` bigint(20) DEFAULT '0' COMMENT '累计的收益(实际的值x1000000)',
   `Impressions` int(11) DEFAULT '0',
   UNIQUE KEY `unique_key` (`UserID`,`Timestamp`,`CampaignID`,`Referrer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -86,8 +87,8 @@ CREATE TABLE `AdReferrerDomainStatis` (
   `Visits` int(11) DEFAULT '0' COMMENT '累计的展示次数',
   `Clicks` int(11) DEFAULT '0' COMMENT '累计的点击次数',
   `Conversions` int(11) DEFAULT '0' COMMENT '累计的成功转换次数',
-  `Cost` double DEFAULT '0' COMMENT '累计的开销',
-  `Revenue` double DEFAULT '0' COMMENT '累计的收益',
+  `Cost` bigint(20) DEFAULT '0' COMMENT '累计的开销(实际的值x1000000)',
+  `Revenue` bigint(20) DEFAULT '0' COMMENT '累计的收益(实际的值x1000000)',
   `Impressions` int(11) DEFAULT '0',
   UNIQUE KEY `unique_key` (`UserID`,`Timestamp`,`CampaignID`,`ReferrerDomain`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -98,6 +99,7 @@ CREATE TABLE `AdStatis` (
   `FlowID` int(11) DEFAULT NULL COMMENT 'Flow的ID',
   `LanderID` int(11) DEFAULT NULL COMMENT 'Lander的ID',
   `OfferID` int(11) DEFAULT NULL COMMENT 'Offer的ID',
+  `AffiliateNetworkID` int(11) NOT NULL DEFAULT '0',
   `TrafficSourceID` int(11) DEFAULT NULL COMMENT 'TrafficSource的ID',
   `Language` varchar(20) DEFAULT NULL COMMENT '语言，如：English',
   `Model` varchar(45) DEFAULT NULL COMMENT '手机型号，如Samsung Galaxy S4',
@@ -118,10 +120,20 @@ CREATE TABLE `AdStatis` (
   `Visits` int(11) DEFAULT '0' COMMENT '累计的展示次数',
   `Clicks` int(11) DEFAULT '0' COMMENT '累计的点击次数',
   `Conversions` int(11) DEFAULT '0' COMMENT '累计的成功转换次数',
-  `Cost` double DEFAULT '0' COMMENT '累计的开销',
-  `Revenue` double DEFAULT '0' COMMENT '累计的收益',
+  `Cost` bigint(20) DEFAULT '0' COMMENT '累计的开销(实际的值x1000000)',
+  `Revenue` bigint(20) DEFAULT '0' COMMENT '累计的收益(实际的值x1000000)',
   `Impressions` int(11) DEFAULT '0',
   `KeysMD5` char(32) DEFAULT NULL COMMENT '`UserID`, `CampaignID`, `FlowID`, `LanderID`, `OfferID`, `TrafficSourceID`, `Language`, `Model`, `Country`, `City`, `Region`, `ISP`, `Domain`, `Brand`, `OS`, `OSVersion`, `Brower`, `BrowerVersion`, `ConnectionType`, `Timestamp` 这些字段用,拼接到一块儿之后算出来的MD5',
+  `V1` varchar(255) DEFAULT '0',
+  `V2` varchar(255) DEFAULT '0',
+  `V3` varchar(255) DEFAULT '0',
+  `V4` varchar(255) DEFAULT '0',
+  `V5` varchar(255) DEFAULT '0',
+  `V6` varchar(255) DEFAULT '0',
+  `V7` varchar(255) DEFAULT '0',
+  `V8` varchar(255) DEFAULT '0',
+  `V9` varchar(255) DEFAULT '0',
+  `V10` varchar(255) DEFAULT '0',
   UNIQUE KEY `md5_unique_key` (`KeysMD5`),
   KEY `index_for_select` (`UserID`,`Timestamp`,`CampaignID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

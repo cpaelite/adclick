@@ -9,16 +9,19 @@ import (
 
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
+	"AdClickTool/Service/units/affiliate"
 )
 
 type OfferConfig struct {
-	Id                 int64
-	UserId             int64
-	Url                string
-	AffiliateNetworkId int64
-	PostbackUrl        string
-	PayoutMode         int64
-	PayoutValue        float64
+	Id                   int64
+	Name                 string
+	UserId               int64
+	Url                  string
+	AffiliateNetworkId   int64
+	AffiliateNetworkName string
+	PostbackUrl          string
+	PayoutMode           int64
+	PayoutValue          float64
 }
 
 func (c OfferConfig) String() string {
@@ -34,10 +37,10 @@ var offers = make(map[int64]*Offer)
 
 func setOffer(o *Offer) error {
 	if o == nil {
-		return errors.New("setPath error:o is nil")
+		return errors.New("setOffer error:o is nil")
 	}
 	if o.Id <= 0 {
-		return fmt.Errorf("setPath error:o.Id(%d) is not positive", o.Id)
+		return fmt.Errorf("setOffer error:o.Id(%d) is not positive", o.Id)
 	}
 	cmu.Lock()
 	defer cmu.Unlock()
@@ -67,13 +70,17 @@ func InitOffer(offerId int64) error {
 }
 
 func GetOffer(offerId int64) (o *Offer) {
+	if offerId == 0 {
+		return nil
+	}
+
 	o = getOffer(offerId)
 	if o == nil {
 		o = newOffer(DBGetOffer(offerId))
-	}
-	if o != nil {
-		if err := setOffer(o); err != nil {
-			return nil
+		if o != nil {
+			if err := setOffer(o); err != nil {
+				return nil
+			}
 		}
 	}
 	return
@@ -85,7 +92,12 @@ func newOffer(c OfferConfig) (o *Offer) {
 	}
 	_, err := url.ParseRequestURI(c.Url)
 	if err != nil {
-		log.Errorf("[NewOffer]Invalid url for offer(%+v), err(%s)\n", c, err.Error())
+		log.Errorf("[newOffer]Invalid url for offer(%+v), err(%s)\n", c, err.Error())
+		return nil
+	}
+	err = affiliate.InitAffiliateNetwork(c.AffiliateNetworkId)
+	if err != nil {
+		log.Errorf("[newOffer]InitAffiliateNetwork failed with %+v, err(%s)\n", c, err.Error())
 		return nil
 	}
 	o = &Offer{
@@ -105,8 +117,11 @@ func (o *Offer) OnLPOfferRequest(w http.ResponseWriter, req request.Request) err
 	if o == nil {
 		return fmt.Errorf("[Offer][OnLPOfferRequest]Nil o for request(%s)", req.Id())
 	}
-	//TODO 替换clickid
-	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	req.SetOfferId(o.Id)
+	req.SetOfferName(o.Name)
+	req.SetAffiliateId(o.AffiliateNetworkId)
+	req.SetAffiliateName(o.AffiliateNetworkName)
+	req.Redirect(w, gr, req.ParseUrlTokens(o.Url))
 	return nil
 }
 
@@ -114,8 +129,16 @@ func (o *Offer) OnLandingPageClick(w http.ResponseWriter, req request.Request) e
 	if o == nil {
 		return fmt.Errorf("[Offer][OnLandingPageClick]Nil o for request(%s)", req.Id())
 	}
-	//TODO 替换clickid
-	http.Redirect(w, gr, req.ParseUrlTokens(o.Url), http.StatusFound)
+	req.SetOfferId(o.Id)
+	req.SetOfferName(o.Name)
+	req.SetAffiliateId(o.AffiliateNetworkId)
+	req.SetAffiliateName(o.AffiliateNetworkName)
+	// 加载AffiliateNetwork配置，如果Append click ID to offer URLs勾选，添加click ID(requestid)
+	appended := ""
+	if aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId); aff != nil && aff.AppendClickId == 1 {
+		appended = req.Id()
+	}
+	req.Redirect(w, gr, req.ParseUrlTokens(o.Url)+appended)
 	return nil
 }
 
@@ -127,7 +150,6 @@ func (o *Offer) OnS2SPostback(w http.ResponseWriter, req request.Request) error 
 	if o == nil {
 		return fmt.Errorf("[Offer][OnS2SPostback]Nil o for request(%s)", req.Id())
 	}
-	//TODO tracking记录
 	return nil
 }
 

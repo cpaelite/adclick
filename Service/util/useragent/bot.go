@@ -57,6 +57,10 @@ func (p *UserAgent) setSimple(name, version string, bot bool) {
 	p.bot = bot
 	if !bot {
 		p.mozilla = ""
+	} else {
+		p.devicetype = DeviceUnknown
+		p.mobilebrand = "Unknown"
+		p.mobilemodel = "Unknown"
 	}
 	p.browser.Name = name
 	p.browser.Version = version

@@ -98,7 +98,7 @@ func testTable(t *testing.T, table tableTest) {
 	if err != nil {
 		panic(err)
 	}
-	if v.Visits != 1 || v.Conversions != 2 || v.Cost != 3 || v.Revenue != 4 || v.Impressions != 5 || v.Clicks != 6 {
+	if v.Visits != 1 || v.Conversions != 2 || v.Cost != 3*MILLION || v.Revenue != 4*MILLION || v.Impressions != 5 || v.Clicks != 6 {
 		t.Errorf("expected:%+v actual:%+v", "1,2,3,4,5,6", v)
 	}
 

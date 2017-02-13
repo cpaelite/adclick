@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"AdClickTool/Service/log"
 	"errors"
 	"fmt"
 	"net/http"
@@ -76,10 +77,12 @@ func InitFlow(fId int64) error {
 func newFlow(c FlowConfig) (f *Flow) {
 	d, r := DBGetFlowRuleIds(c.Id)
 	if d.RuleId <= 0 {
+		log.Errorf("newFlow failed because default ruleId is 0 for flow(%d)\n", c.Id)
 		return nil
 	}
 	err := rule.InitRule(d.RuleId) // default始终有效
 	if err != nil {
+		log.Errorf("InitRule:%v failed:%v", d.RuleId, err)
 		return nil
 	}
 	for _, rc := range r {
@@ -88,6 +91,7 @@ func newFlow(c FlowConfig) (f *Flow) {
 		}
 		err = rule.InitRule(rc.RuleId)
 		if err != nil {
+			log.Errorf("InitRule:%v failed:%v", rc.RuleId, err)
 			return nil
 		}
 	}
@@ -100,13 +104,17 @@ func newFlow(c FlowConfig) (f *Flow) {
 }
 
 func GetFlow(flowId int64) (f *Flow) {
+	if flowId == 0 {
+		return nil
+	}
+
 	f = getFlow(flowId)
 	if f == nil {
 		f = newFlow(DBGetFlow(flowId))
-	}
-	if f != nil {
-		if err := setFlow(f); err != nil {
-			return nil
+		if f != nil {
+			if err := setFlow(f); err != nil {
+				return nil
+			}
 		}
 	}
 	return

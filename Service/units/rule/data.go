@@ -22,6 +22,7 @@ func DBGetAvailableRules() []RuleConfig {
 		log.Errorf("[rule][DBGetAvailableRules]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c RuleConfig
 	var arr []RuleConfig
@@ -43,6 +44,7 @@ func DBGetUserRules(userId int64) []RuleConfig {
 		log.Errorf("[rule][DBGetUserRules]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c RuleConfig
 	var arr []RuleConfig
@@ -58,7 +60,7 @@ func DBGetUserRules(userId int64) []RuleConfig {
 
 func DBGetRule(ruleId int64) (c RuleConfig) {
 	d := dbgetter()
-	sql := "SELECT id, userId, json, status, `type` FROM Rule WHERE ruleId=?"
+	sql := "SELECT id, userId, json, status, `type` FROM Rule WHERE id=?"
 	row := d.QueryRow(sql, ruleId)
 
 	if err := row.Scan(&c.Id, &c.UserId, &c.Json, &c.Status, &c.Type); err != nil {
@@ -76,6 +78,7 @@ func DBGetRulePaths(ruleId int64) (paths []RulePath) {
 		log.Errorf("[rule][DBGetRulePaths]Query sql:%v failed:%v", sql, err)
 		return
 	}
+	defer rows.Close()
 
 	var rp RulePath
 	for rows.Next() {
@@ -84,6 +87,7 @@ func DBGetRulePaths(ruleId int64) (paths []RulePath) {
 			log.Errorf("[rule][DBGetRulePaths]Scan RulePath failed:%v", err)
 			return nil
 		}
+		paths = append(paths, rp)
 	}
 	return paths
 }

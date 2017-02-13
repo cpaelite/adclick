@@ -1,14 +1,16 @@
 package filter
 
 import (
-	"regexp"
-	"strconv"
+	"fmt"
+	"net"
 	"strings"
+	"time"
 
 	"AdClickTool/Service/request"
+	"AdClickTool/Service/util/timezone"
 )
 
-type OperationFunction func(key interface{}, expr interface{}, req request.Request) bool
+type OperationFunction func(key string, expr []string, req request.Request) bool
 
 var logicOpFunctions map[string]OperationFunction
 
@@ -23,275 +25,146 @@ func AOF(op string) OperationFunction {
 }
 
 // 目前逻辑操作符支持以下几种
-// =,>,<,!=,>=,<=,in,not in,between,not between,has,any
+// in,not in,(不区分大小写)
+// time between,time not between,
+// weekday in,weekday not in,
+// contain,not contain,(不区分大小写)
 func init() {
 	logicOpFunctions = map[string]OperationFunction{
-		"=": func(value interface{}, expr interface{}, req request.Request) bool {
-			fv, _ := strconv.ParseFloat(value.(string), 64)
-			switch expr.(type) {
-			case string:
-				return value.(string) == expr.(string)
-			case float64:
-				return fv == expr.(float64)
-			default:
-				return false
-			}
-		},
-		">": func(value interface{}, expr interface{}, req request.Request) bool {
-			fv, _ := strconv.ParseFloat(value.(string), 64)
-			switch expr.(type) {
-			case float64:
-				return fv > expr.(float64)
-			case string:
-				fe, _ := strconv.ParseFloat(expr.(string), 64)
-				return fv > fe
-			default:
-				return false
-			}
-		},
-		"<": func(value interface{}, expr interface{}, req request.Request) bool {
-			fv, _ := strconv.ParseFloat(value.(string), 64)
-			switch expr.(type) {
-			case float64:
-				return fv < expr.(float64)
-			case string:
-				fe, _ := strconv.ParseFloat(expr.(string), 64)
-				return fv < fe
-			default:
-				return false
-			}
-		},
-		"!=": func(value interface{}, expr interface{}, req request.Request) bool {
-			fv, _ := strconv.ParseFloat(value.(string), 64)
-			switch expr.(type) {
-			case float64:
-				return fv != expr.(float64)
-			case string:
-				return value.(string) != expr.(string)
-			default:
-				return false
-			}
-		},
-		">=": func(value interface{}, expr interface{}, req request.Request) bool {
-			fv, _ := strconv.ParseFloat(value.(string), 64)
-			switch expr.(type) {
-			case float64:
-				return fv >= expr.(float64)
-			case string:
-				fe, _ := strconv.ParseFloat(expr.(string), 64)
-				return fv >= fe
-			default:
-				return false
-			}
-		},
-		"<=": func(value interface{}, expr interface{}, req request.Request) bool {
-			fv, _ := strconv.ParseFloat(value.(string), 64)
-			switch expr.(type) {
-			case float64:
-				return fv <= expr.(float64)
-			case string:
-				fe, _ := strconv.ParseFloat(expr.(string), 64)
-				return fv <= fe
-			default:
-				return false
-			}
-		},
-		"in": func(value interface{}, expr interface{}, req request.Request) bool {
-			//glog.V(5).Infof("v:%s, e:%s", value.(string), expr.(string))
-			_, fnd := expr.(string)
-			if !fnd {
-				return false
-			}
-
-			ss := strings.Split(expr.(string), ",")
-			for _, s := range ss {
-				if s == value.(string) {
+		"in": func(value string, expr []string, req request.Request) bool {
+			// #All,#SameAsCampaign指令也处理了
+			for _, s := range expr {
+				if s == "#SameAsCampaign" {
+					s = req.CampaignCountry()
+				}
+				if strings.HasPrefix(s, "#All ") {
+					ts := strings.TrimLeft(s, "#All ")
+					if ts == "" {
+						continue
+					}
+					if strings.HasPrefix(value, ts+" ") {
+						return true
+					}
+					continue
+				}
+				if value == strings.ToUpper(s) {
 					return true
 				}
-				if strings.Contains(s, "..") {
-					lh := strings.Split(s, "..")
-					low, _ := strconv.Atoi(lh[0])
-					high, _ := strconv.Atoi(lh[1])
-					v, _ := strconv.Atoi(value.(string))
-					if v >= low && v <= high {
-						return true
-					}
-				}
 			}
 			return false
 		},
-		"not in": func(value interface{}, expr interface{}, req request.Request) bool {
-			_, fnd := expr.(string)
-			if !fnd {
-				return false
-			}
-
-			ss := strings.Split(expr.(string), ",")
-			for _, s := range ss {
-				if s == value.(string) {
-					return false
+		"not in": func(value string, expr []string, req request.Request) bool {
+			// #All,#SameAsCampaign指令也处理了
+			for _, s := range expr {
+				if s == "#SameAsCampaign" {
+					s = req.CampaignCountry()
 				}
-				if strings.Contains(s, "..") {
-					lh := strings.Split(s, "..")
-					low, _ := strconv.Atoi(lh[0])
-					high, _ := strconv.Atoi(lh[1])
-					v, _ := strconv.Atoi(value.(string))
-					if v >= low && v <= high {
+				if strings.HasPrefix(s, "#All ") {
+					ts := strings.TrimLeft(s, "#All ")
+					if ts == "" {
+						continue
+					}
+					if strings.HasPrefix(value, ts+" ") {
 						return false
 					}
+					continue
 				}
-			}
-			return true
-		},
-		"~": func(value interface{}, expr interface{}, req request.Request) bool {
-			_, fnd := expr.(string)
-			if !fnd {
-				return false
-			}
-			matched, err := regexp.MatchString(expr.(string), value.(string))
-			return err == nil && matched
-		},
-		"between": func(value interface{}, expr interface{}, req request.Request) bool {
-			_, fnd := expr.(string)
-			if !fnd {
-				return false
-			}
-
-			m, e := regexp.MatchString("^[0-9]+,[0-9]+$", expr.(string))
-			if e == nil && m { // num
-				ss := strings.Split(expr.(string), ",")
-				low, _ := strconv.Atoi(ss[0])
-				high, _ := strconv.Atoi(ss[1])
-				v, _ := strconv.Atoi(value.(string))
-				return v >= low && v <= high
-			} else { // string
-				ss := strings.Split(expr.(string), ",")
-				if len(ss) != 2 {
-					return false
-				}
-				return value.(string) >= ss[0] && value.(string) <= ss[1]
-			}
-		},
-		"not between": func(value interface{}, expr interface{}, req request.Request) bool {
-			_, fnd := expr.(string)
-			if !fnd {
-				return false
-			}
-
-			m, e := regexp.MatchString("^[0-9]+,[0-9]+$", expr.(string))
-			if e == nil && m { // num
-				ss := strings.Split(expr.(string), ",")
-				low, _ := strconv.Atoi(ss[0])
-				high, _ := strconv.Atoi(ss[1])
-				v, _ := strconv.Atoi(value.(string))
-				return v < low || v > high
-			} else { // string
-				ss := strings.Split(expr.(string), ",")
-				if len(ss) != 2 {
-					return false
-				}
-				return value.(string) < ss[0] || value.(string) > ss[1]
-			}
-		},
-
-		"has": func(value interface{}, expr interface{}, req request.Request) bool {
-			//glog.V(5).Infof("v:%s, e:%s", value.(string), expr.(string))
-			_, fndList := value.(string)
-			if !fndList {
-				return false
-			}
-
-			_, fnd := expr.(string)
-			if !fnd {
-				return false
-			}
-
-			list := strings.Split(value.(string), ",")
-			ss := strings.Split(expr.(string), ",")
-
-			//  list has all items of ss
-			for _, s := range ss {
-				has := false
-				for _, item := range list {
-					if s == item {
-						has = true
-					}
-				}
-				if !has {
+				if value == strings.ToUpper(s) {
 					return false
 				}
 			}
 			return true
 		},
-		"any": func(value interface{}, expr interface{}, req request.Request) bool {
-			//glog.V(5).Infof("v:%s, e:%s", value.(string), expr.(string))
-			_, fndList := value.(string)
-			if !fndList {
+		"time between": func(value string, expr []string, req request.Request) bool {
+			if len(expr) < 3 {
 				return false
 			}
-
-			_, fnd := expr.(string)
-			if !fnd {
+			return timezone.IsZoneTimeBetween(time.Now(), expr[0], expr[1], expr[2])
+		},
+		"time not between": func(value string, expr []string, req request.Request) bool {
+			if len(expr) < 3 {
 				return false
 			}
-
-			list := strings.Split(value.(string), ",")
-			ss := strings.Split(expr.(string), ",")
-
-			//  list has one items of ss
-			for _, s := range ss {
-				for _, item := range list {
-					if s == item {
+			return !timezone.IsZoneTimeBetween(time.Now(), expr[0], expr[1], expr[2])
+		},
+		"weekday in": func(value string, expr []string, req request.Request) bool {
+			if len(expr) < 2 {
+				return false
+			}
+			value = fmt.Sprintf("%d", timezone.TimeInZone(time.Now(), "", expr[0]).Weekday())
+			for _, wday := range expr[1:] {
+				if value == wday {
+					return true
+				}
+			}
+			return false
+		},
+		"weekday not in": func(value string, expr []string, req request.Request) bool {
+			if len(expr) < 2 {
+				return true
+			}
+			value = fmt.Sprintf("%d", timezone.TimeInZone(time.Now(), "", expr[0]).Weekday())
+			for _, wday := range expr[1:] {
+				if value == wday {
+					return false
+				}
+			}
+			return true
+		},
+		"contain": func(value string, expr []string, req request.Request) bool {
+			for _, e := range expr {
+				if strings.Contains(value, strings.ToUpper(e)) {
+					return true
+				}
+			}
+			return false
+		},
+		"not contain": func(value string, expr []string, req request.Request) bool {
+			for _, e := range expr {
+				if strings.Contains(value, strings.ToUpper(e)) {
+					return false
+				}
+			}
+			return true
+		},
+		"ip in": func(value string, expr []string, req request.Request) bool {
+			//TODO expr传入ipNetwork的slice进来
+			ip := net.ParseIP(value)
+			for _, ipRange := range expr {
+				if !strings.Contains(ipRange, "/") {
+					if value == ipRange {
 						return true
 					}
+					continue
+				}
+				_, ipNetwork, _ := net.ParseCIDR(ipRange)
+				if ipNetwork == nil {
+					continue
+				}
+				if ipNetwork.Contains(ip) {
+					return true
 				}
 			}
 			return false
 		},
-	}
-
-	// AdClick中不需要action，所以注释掉
-	//TODO 重构时删除
-	actionOpFunctions = map[string]OperationFunction{
-	/*
-		"=": func(value interface{}, expr interface{}, req request.Request) bool {
-			if vs, ok := value.(string); ok {
-				if !req.Set(vs, expr) {
-					log.Errorf("assign %s to %+#v failed\n", vs, expr)
+		"ip not in": func(value string, expr []string, req request.Request) bool {
+			ip := net.ParseIP(value)
+			for _, ipRange := range expr {
+				if !strings.Contains(ipRange, "/") {
+					if value == ipRange {
+						return false
+					}
+					continue
+				}
+				_, ipNetwork, _ := net.ParseCIDR(ipRange)
+				if ipNetwork == nil {
+					continue
+				}
+				if ipNetwork.Contains(ip) {
 					return false
 				}
-				log.Debugf("assign %s to %+#v success\n", vs, expr)
-				return true
-			} else {
-				log.Errorf("assign failed because value(%+#v) is not string\n", value)
 			}
-			return false
+			return true
 		},
-		"+": func(value interface{}, expr interface{}, req request.Request) bool {
-			if vs, ok := value.(string); ok {
-				if !req.Set(vs, expr) {
-					log.Errorf("append %s to %+#v failed\n", vs, expr)
-					return false
-				}
-				return true
-			} else {
-				log.Errorf("append failed because value(%+#v) is not string\n", value)
-			}
-			return false
-		},
-		"-": func(value interface{}, expr interface{}, req request.Request) bool {
-			if vs, ok := expr.(string); ok {
-				keys := strings.Split(vs, ",")
-				if !req.Del(keys) {
-					log.Errorf("remove %+#v failed\n", vs, expr)
-					return false
-				}
-				return true
-			} else {
-				log.Errorf("remove failed because value(%+#v) is not string\n", expr)
-			}
-			return false
-		},
-	*/
 	}
 }

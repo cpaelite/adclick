@@ -7,4 +7,10 @@
 **/*.exe
 **/logs
 **/dist
+Service/engine/engine
+
+Service/postback/postback
+
+Doc/tags
+
 .DS_Store

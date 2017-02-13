@@ -2,15 +2,21 @@ package request
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
+	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
+	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/util/countrycode"
 	"AdClickTool/Service/util/ip"
 	"AdClickTool/Service/util/ip2location"
 	"AdClickTool/Service/util/useragent"
+
+	"strconv"
 
 	"golang.org/x/text/language"
 )
@@ -22,21 +28,33 @@ type reqbase struct {
 	ua string
 
 	externalId string
-	cost       string
+	cost       float64 // 从traffic source里面的Cost字段传过来的cost
 	vars       []string
+	payout     float64
+	txid       string
 
-	clickId           string
 	trafficSourceId   int64
 	trafficSourceName string
 	userId            int64
 	userIdText        string
 	campaignHash      string
 	campaignId        int64
+	campaignName      string
+	campaignCountry   string
 	flowId            int64
 	ruleId            int64
 	pathId            int64
 	landerId          int64
+	landerName        string
 	offerId           int64
+	offerName         string
+	affiliateId       int64
+	affiliateName     string
+
+	impTimeStamp      int64
+	visitTimeStamp    int64
+	clickTimeStamp    int64
+	postbackTimeStamp int64
 
 	deviceType     string
 	trackingDomain string
@@ -46,7 +64,8 @@ type reqbase struct {
 	language       string
 	model          string
 	brand          string
-	country        string
+	countryCode    string
+	countryName    string
 	region         string
 	city           string
 	carrier        string
@@ -61,6 +80,45 @@ type reqbase struct {
 	cookie map[string]string
 
 	urlParam map[string]string
+
+	tsExternalId *common.TrafficSourceParams // Traffic Source的一些配置
+	tsCost       *common.TrafficSourceParams
+	tsVars       []common.TrafficSourceParams
+	cpaValue     float64
+
+	redirectMode int64
+}
+
+func (r *reqbase) SetTSExternalID(e *common.TrafficSourceParams) {
+	r.tsExternalId = e
+}
+
+func (r *reqbase) SetTSCost(c *common.TrafficSourceParams) {
+	r.tsCost = c
+}
+
+func (r *reqbase) SetTSVars(vars []common.TrafficSourceParams) {
+	r.tsVars = vars
+}
+
+func (r *reqbase) SetCPAValue(v float64) {
+	r.cpaValue = v
+}
+
+func (r *reqbase) TSExternalID() *common.TrafficSourceParams {
+	return r.tsExternalId
+}
+
+func (r *reqbase) TSCost() *common.TrafficSourceParams {
+	return r.tsCost
+}
+
+func (r *reqbase) TSVars() []common.TrafficSourceParams {
+	return r.tsVars
+}
+
+func (r *reqbase) CPAValue() float64 {
+	return r.cpaValue
 }
 
 func newReqBase(id, t string, r *http.Request) (req *reqbase) {
@@ -75,32 +133,48 @@ func newReqBase(id, t string, r *http.Request) (req *reqbase) {
 		cookie:         make(map[string]string),
 		urlParam:       make(map[string]string),
 	}
-	//TODO connectiontype/brand/model/deviceType未采集到
+
+	// parse traffic source externalId/cost/vars
+	switch t {
+	case ReqLPOffer:
+		fallthrough
+	case ReqImpression:
+		// 从url参数中获取，由外部调用ParseTSParams处理
+	case ReqLPClick:
+		// 从user cookie中获取，由外部调用ParseTSParams处理
+	case ReqS2SPostback:
+		// 从Cache中获取，实际上不会运行到这里，由S2SPostbackRequest生成时处理掉了
+		panic("newReqBase actually does not run for ReqS2SPostback")
+	}
+
+	//TODO connectiontype未采集到
 	// chuck说connectiontype实际上用得少，可以先不做
 
 	// parse location from ip
 	location := ip2location.Get_all(req.ip)
-	req.country = location.Country_short
+	req.countryCode = countrycode.CountryCode2To3(location.Country_short) // alpha-2 => alpha-3
+	req.countryName = location.Country_long
 	req.region = location.Region
 	req.city = location.City
 	req.carrier = location.Mobilebrand
 	req.isp = location.Isp
 	req.connectionType = location.Netspeed
-	//req.connectionType = location.ConnectionType()
 
 	// parse mobile info from ua
 	ua := useragent.New(r.UserAgent())
-	log.Info(ua.UA())
+	log.Debug("User-Agent:", ua.UA())
 	req.os = ua.OS()
 	req.osVersion = ua.OSInfo().Version
 	req.browser, req.browserVersion = ua.Browser()
 	req.bot = ua.Bot()
 	if ua.Mobile() {
-		//req.brand = ua.MobileBrand()
-		//req.model = ua.Model()
+		req.brand = ua.MobileBrand()
+		req.model = ua.MobileModel()
+		req.deviceType = ua.DeviceType()
 	} else {
-		req.brand = "UNKNOWN"
-		req.model = "UNKNOWN"
+		req.brand = "Desktop"
+		req.model = "Desktop"
+		req.deviceType = "Desktop"
 	}
 
 	req.referrer = r.Referer()
@@ -133,34 +207,45 @@ func (r *reqbase) TrackingPath() string {
 func (r *reqbase) ExternalId() string {
 	return r.externalId
 }
-func (r *reqbase) SetExternalId(id string) {
-	r.externalId = id
-}
-func (r *reqbase) Cost() string {
+
+func (r *reqbase) Cost() float64 {
 	return r.cost
 }
-func (r *reqbase) SetCost(cost string) {
-	r.cost = cost
-}
+
 func (r *reqbase) Vars(n uint) string {
-	if n > VarsMaxNum {
+	if n >= VarsMaxNum {
 		return ""
 	}
-	return r.vars[n-1]
-}
-func (r *reqbase) SetVars(n uint, v string) {
-	if n > VarsMaxNum {
-		return
-	}
-	r.vars[n-1] = v
+	return r.vars[n]
 }
 
-func (r *reqbase) ClickId() string {
-	return r.clickId
+func (r *reqbase) ParseTSParams(
+	externalId common.TrafficSourceParams,
+	cost common.TrafficSourceParams,
+	params []common.TrafficSourceParams,
+	values QueryHolder) {
+	if r == nil {
+		return
+	}
+	r.externalId = values.Get(externalId.Parameter)
+
+	if len(cost.Parameter) != 0 {
+		costStr := values.Get(cost.Parameter)
+		var err error
+		r.cost, err = strconv.ParseFloat(costStr, 64)
+		if err != nil {
+			log.Errorf("Parse Cost from:%v failed:%v", costStr, err)
+		}
+	}
+
+	for i, p := range params {
+		if i >= VarsMaxNum {
+			break
+		}
+		r.vars[i] = values.Get(p.Parameter)
+	}
 }
-func (r *reqbase) SetClickId(id string) {
-	r.clickId = id
-}
+
 func (r *reqbase) TrafficSourceId() int64 {
 	return r.trafficSourceId
 }
@@ -197,6 +282,18 @@ func (r *reqbase) CampaignId() int64 {
 func (r *reqbase) SetCampaignId(id int64) {
 	r.campaignId = id
 }
+func (r *reqbase) CampaignName() string {
+	return r.campaignName
+}
+func (r *reqbase) SetCampaignName(name string) {
+	r.campaignName = name
+}
+func (r *reqbase) CampaignCountry() string {
+	return r.campaignCountry
+}
+func (r *reqbase) SetCampaignCountry(country string) {
+	r.campaignCountry = country
+}
 func (r *reqbase) FlowId() int64 {
 	return r.flowId
 }
@@ -221,11 +318,60 @@ func (r *reqbase) LanderId() int64 {
 func (r *reqbase) SetLanderId(id int64) {
 	r.landerId = id
 }
+func (r *reqbase) LanderName() string {
+	return r.landerName
+}
+func (r *reqbase) SetLanderName(name string) {
+	r.landerName = name
+}
 func (r *reqbase) OfferId() int64 {
 	return r.offerId
 }
 func (r *reqbase) SetOfferId(id int64) {
 	r.offerId = id
+}
+func (r *reqbase) OfferName() string {
+	return r.offerName
+}
+func (r *reqbase) SetOfferName(name string) {
+	r.offerName = name
+}
+func (r *reqbase) AffiliateId() int64 {
+	return r.affiliateId
+}
+func (r *reqbase) SetAffiliateId(id int64) {
+	r.affiliateId = id
+}
+func (r *reqbase) AffiliateName() string {
+	return r.affiliateName
+}
+func (r *reqbase) SetAffiliateName(name string) {
+	r.affiliateName = name
+}
+
+func (r *reqbase) ImpTimeStamp() int64 {
+	return r.impTimeStamp
+}
+func (r *reqbase) SetImpTimeStamp(timestamp int64) {
+	r.impTimeStamp = timestamp
+}
+func (r *reqbase) VisitTimeStamp() int64 {
+	return r.visitTimeStamp
+}
+func (r *reqbase) SetVisitTimeStamp(timestamp int64) {
+	r.visitTimeStamp = timestamp
+}
+func (r *reqbase) ClickTimeStamp() int64 {
+	return r.clickTimeStamp
+}
+func (r *reqbase) SetClickTimeStamp(timestamp int64) {
+	r.clickTimeStamp = timestamp
+}
+func (r *reqbase) PostBackTimeStamp() int64 {
+	return r.postbackTimeStamp
+}
+func (r *reqbase) SetPostbackTimeStamp(timestamp int64) {
+	r.postbackTimeStamp = timestamp
 }
 
 func (r *reqbase) DeviceType() string {
@@ -243,8 +389,11 @@ func (r *reqbase) Language() string {
 func (r *reqbase) Model() string {
 	return r.model
 }
-func (r *reqbase) Country() string {
-	return r.country
+func (r *reqbase) CountryCode() string { // ISO-ALPHA-3
+	return r.countryCode
+}
+func (r *reqbase) CountryName() string {
+	return r.countryName
 }
 func (r *reqbase) City() string {
 	return r.city
@@ -318,21 +467,220 @@ func (r *reqbase) UrlParamString() (encode string) {
 }
 
 func (r *reqbase) ParseUrlTokens(url string) string {
-	//TODO 替换UrlToken
+	url = strings.Replace(url, "{externalid}", r.ExternalId(), -1)
+	url = strings.Replace(url, "{payout}", fmt.Sprintf("%v", r.Payout()), -1)
+	url = strings.Replace(url, "{campaign.id}", fmt.Sprintf("%v", r.CampaignId()), -1)
+	url = strings.Replace(url, "{trafficsource.id}", fmt.Sprintf("%v", r.TrafficSourceId()), -1)
+	url = strings.Replace(url, "{lander.id}", fmt.Sprintf("%v", r.LanderId()), -1)
+	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", r.OfferId()), -1)
+	url = strings.Replace(url, "{offer.id}", fmt.Sprintf("%v", r.OfferId()), -1)
+	// url = strings.Replace(url, "{device}", r.Device(), -1)	// 目前Device还没有地方可以拿到
+	url = strings.Replace(url, "{brand}", r.Brand(), -1)
+	url = strings.Replace(url, "{model}", r.Model(), -1)
+	url = strings.Replace(url, "{browser}", r.Browser(), -1)
+	url = strings.Replace(url, "{browserversion}", r.BrowserVersion(), -1)
+	url = strings.Replace(url, "{os}", r.OS(), -1)
+	url = strings.Replace(url, "{osversion}", r.OSVersion(), -1)
+	url = strings.Replace(url, "{countrycode}", r.CountryCode(), -1)
+	url = strings.Replace(url, "{countryname}", r.CountryName(), -1)
+	url = strings.Replace(url, "{region}", r.Region(), -1)
+	url = strings.Replace(url, "{city}", r.City(), -1)
+	url = strings.Replace(url, "{isp}", r.ISP(), -1)
+	url = strings.Replace(url, "{connection.type}", r.ConnectionType(), -1)
+	url = strings.Replace(url, "{carrier}", r.Carrier(), -1)
+	url = strings.Replace(url, "{ip}", r.RemoteIp(), -1)
+	url = strings.Replace(url, "{referrerdomain}", r.ReferrerDomain(), -1)
+	url = strings.Replace(url, "{language}", r.Language(), -1)
+	url = strings.Replace(url, "{transaction.id}", r.TransactionId(), -1)
+	url = strings.Replace(url, "{click.id}", r.Id(), -1) // ClickId是我们自己的Visits的id
+
+	for i := 0; i < len(r.TSVars()); i++ {
+		vn := r.Vars(uint(i))
+		if len(vn) != 0 {
+			url = strings.Replace(url, fmt.Sprintf("{var%d}", i), vn, -1)
+		}
+	}
+
+	for i := 0; i < len(r.TSVars()); i++ {
+		vn := r.Vars(uint(i))
+		if len(vn) != 0 {
+			from := fmt.Sprintf("{var:%s}", r.TSVars()[i].Name)
+			url = strings.Replace(url, from, vn, -1)
+		}
+	}
+
+	url = strings.Replace(url, "{campaign.cpa}", fmt.Sprintf("%v", r.CPAValue()), -1)
 	return url
 }
 
-func (r *reqbase) CacheSave(expire time.Time) (token string) {
-	//TODO 加入expire支持
-	token, err := setReqCache(r)
-	if err != nil {
+func (r *reqbase) CacheSave(duration time.Duration) bool {
+	if err := setReqCache(r, duration); err != nil {
 		log.Errorf("[reqbase][CacheSave]setReqCache failed for expire(%s) with err(%s) for request(%s)\n",
-			expire.String(), err.Error(), r.String())
-		return ""
+			duration.String(), err.Error(), r.String())
+		return false
+	}
+	return true
+}
+func (r *reqbase) CacheClear() bool {
+	delReqCache(r.id)
+	return true
+}
+
+func (r *reqbase) AdStatisKey(timestamp int64) (key tracking.AdStatisKey) {
+	if r == nil {
+		return
+	}
+	key.UserID = r.UserId()
+	key.CampaignID = r.CampaignId()
+	key.FlowID = r.FlowId()
+	key.LanderID = r.LanderId()
+	key.OfferID = r.OfferId()
+	key.TrafficSourceID = r.TrafficSourceId()
+	key.Language = r.Language()
+	key.Model = r.Model()
+	key.Country = r.CountryCode()
+	key.City = r.City()
+	key.Region = r.Region()
+	key.ISP = r.ISP()
+	key.MobileCarrier = r.Carrier()
+	key.Domain = r.ReferrerDomain()
+	key.DeviceType = r.DeviceType()
+	key.Brand = r.Brand()
+	key.OS = r.OS()
+	key.OSVersion = r.OSVersion()
+	key.Browser = r.Browser()
+	key.BrowserVersion = r.BrowserVersion()
+	key.ConnectionType = r.ConnectionType()
+	key.Timestamp = timestamp
+
+	// 解析v1-v10
+	v := []*string{&key.V1, &key.V2, &key.V3, &key.V4, &key.V5, &key.V6, &key.V7, &key.V8, &key.V9, &key.V10}
+	for i := 0; i < len(v); i++ {
+		*v[i] = r.Vars(uint(i))
 	}
 	return
 }
-func (r *reqbase) CacheClear() bool {
-	delReqCache(r.clickId)
-	return true
+func (r *reqbase) IPKey(timestamp int64) tracking.IPStatisKey {
+	var ipKey tracking.IPStatisKey
+	if r == nil {
+		return ipKey
+	}
+	ipKey.UserID = r.UserId()
+	ipKey.Timestamp = timestamp
+	ipKey.CampaignID = r.CampaignId()
+	ipKey.IP = r.RemoteIp()
+	return ipKey
+}
+func (r *reqbase) ReferrerKey(timestamp int64) tracking.ReferrerStatisKey {
+	var referrerKey tracking.ReferrerStatisKey
+	if r == nil {
+		return referrerKey
+	}
+	referrerKey.UserID = r.UserId()
+	referrerKey.Timestamp = timestamp
+	referrerKey.CampaignID = r.CampaignId()
+	referrerKey.Referrer = r.Referrer()
+	return referrerKey
+}
+func (r *reqbase) DomainKey(timestamp int64) tracking.ReferrerDomainStatisKey {
+	var domain tracking.ReferrerDomainStatisKey
+	if r == nil {
+		return domain
+	}
+	domain.UserID = r.UserId()
+	domain.Timestamp = timestamp
+	domain.CampaignID = r.CampaignId()
+	domain.ReferrerDomain = r.ReferrerDomain()
+	return domain
+}
+func (r *reqbase) ConversionKey() tracking.Conversion {
+	var conv tracking.Conversion
+	if r == nil {
+		return conv
+	}
+	conv.UserID = r.UserId()
+	conv.PostbackTimestamp = r.PostBackTimeStamp() / int64(time.Millisecond)
+	conv.VisitTimestamp = r.VisitTimeStamp() / int64(time.Millisecond)
+	conv.ExternalID = r.ExternalId()
+	conv.ClickID = r.Id()
+	conv.TransactionID = r.TransactionId()
+	conv.Revenue = r.Payout()
+	conv.Cost = r.Cost()
+	conv.CampaignID = r.CampaignId()
+	conv.CampaignName = r.CampaignName()
+	conv.LanderID = r.LanderId()
+	conv.LanderName = r.LanderName()
+
+	conv.OfferID = r.OfferId()
+	conv.OfferName = r.OfferName()
+	conv.Country = r.CountryCode()
+	conv.CountryCode = r.CountryCode()
+	conv.TrafficSourceName = r.TrafficSourceName()
+	conv.TrafficSourceID = r.TrafficSourceId()
+	conv.AffiliateNetworkID = r.AffiliateId()
+	conv.AffiliateNetworkName = r.AffiliateName()
+	// conv.Device = r.Device	// 目前还没有
+	conv.OS = r.OS()
+	conv.OSVersion = r.OSVersion()
+	conv.Brand = r.Brand()
+	conv.Model = r.Model()
+	conv.Browser = r.Browser()
+	conv.BrowserVersion = r.BrowserVersion()
+	conv.ISP = r.ISP()
+	conv.MobileCarrier = r.Carrier()
+	conv.VisitorIP = r.RemoteIp()
+	conv.VisitorReferrer = r.Referrer()
+
+	// 解析v1-v10
+	v := []*string{&conv.V1, &conv.V2, &conv.V3, &conv.V4, &conv.V5, &conv.V6, &conv.V7, &conv.V8, &conv.V9, &conv.V10}
+	for i := 0; i < len(v); i++ {
+		*v[i] = r.Vars(uint(i))
+	}
+	return conv
+}
+
+func (r *reqbase) SetPayout(p float64) {
+	r.payout = p
+}
+
+func (r *reqbase) Payout() float64 {
+	return r.payout
+}
+
+func (r *reqbase) SetTransactionId(txid string) {
+	r.txid = txid
+}
+
+func (r *reqbase) TransactionId() string {
+	return r.txid
+}
+
+// SetRedirectMode 设置跳转模式（0:302;1:Meta refresh;2:Double meta refresh）
+func (r *reqbase) SetRedirectMode(m int64) {
+	r.redirectMode = m
+}
+
+// GetRedirectMode 获取跳转模式（0:302;1:Meta refresh;2:Double meta refresh）
+func (r *reqbase) GetRedirectMode() int64 {
+	return r.redirectMode
+}
+
+// Redirect 根据当前的跳转模式跳转
+func (r *reqbase) Redirect(w http.ResponseWriter, req *http.Request, dest string) {
+	switch r.redirectMode {
+	case 1:
+		// meta refresh
+		w.Header().Set("Content-Type", "text/html")
+		meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
+		fmt.Fprintln(w, meta)
+	case 2:
+		// double meta refresh
+		w.Header().Set("Content-Type", "text/html")
+		to := url.QueryEscape(dest)
+		first := fmt.Sprintf("/dmr?dest=%s", to)
+		meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(first) + `">`
+		fmt.Fprintln(w, meta)
+	default: // 0或者其它非法的值，都是302跳转
+		http.Redirect(w, req, dest, http.StatusFound)
+	}
 }
