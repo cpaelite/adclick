@@ -41,8 +41,14 @@ angular.module('app')
   .factory('Country', ['$resource', function ($resource) {
     return $resource('/api/countries', {}, {'query':  {method:'GET', isArray:true}});
   }])
-  .factory('User', ['$resource', function($resource) {
-    return $resource('/api/set/user/:id', {id: '@id'})
+  .factory('ProfileAccount', ['$resource', function($resource) {
+    return $resource('/api/set/profile/account')
+  }])
+  .factory('PasswordChange', ['$resource', function($resource) {
+    return $resource('/api/set/passwordChange')
+  }])
+  .factory('EmailChange', ['$resource', function($resource) {
+    return $resource('/api/set/emailChange')
   }])
   .factory('DefaultPostBackUrl', ['$resource', function($resource) {
     return $resource('/api/postbackurl')
