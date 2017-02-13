@@ -733,11 +733,11 @@ table .traficc-source-input input[type="checkbox"]{
 .tracking-checkbox input[type="checkbox"]{
     width: 16px;
 }
-md-backdrop.md-dialog-backdrop:nth-of-type(even){
+md-backdrop.md-dialog-backdrop:nth-child(2){
     z-index: 81;
 }
-.md-dialog-container:nth-of-type(even){
-    z-index: 82;
+.md-dialog-container:last-child{
+    z-index: 85;
 }
 .traffic-source-template-list{
     padding: 0;

@@ -653,6 +653,51 @@
       }, 2000);
     };
 
+    // campaign override url
+    $scope.btnOverride1 = "Override";
+    $scope.postbackurlOverride = function () {
+      if ($scope.btnOverride1 == "Override") {
+        $scope.btnOverride1 = "Restore";
+        $scope.trafficPostbackUrl = "";
+      } else if ($scope.btnOverride1 == "Restore") {
+        $scope.btnOverride1 = "Override";
+        getTraffic("postbackUrl");
+      }
+    };
+    $scope.btnOverride2 = "Override";
+    $scope.pixelredirecturlOverride = function () {
+      if ($scope.btnOverride2 == "Override") {
+        $scope.btnOverride2 = "Restore";
+        $scope.trafficPixelRedirectUrl = "";
+      } else if ($scope.btnOverride2 == "Restore") {
+        $scope.btnOverride2 = "Override";
+        getTraffic("pixelRedirectUrl");
+      }
+    };
+
+    function getTraffic(urlName) {
+      $scope.trafficSources.forEach(function (traffic, index) {
+        if (traffic.id == $scope.trafficSourceId) {
+          $scope.item.trafficSource = JSON.stringify(traffic);
+          var tra = {
+            id: traffic.id,
+            hash: traffic.hash,
+            name: traffic.name
+          };
+          if (urlName == "postbackUrl") {
+            tra.postbackUrl = $scope.trafficPostbackUrl
+          } else if (urlName == "pixelRedirectUrl") {
+            tra.pixelRedirectUrl = $scope.trafficPixelRedirectUrl
+          }
+          TrafficSource.save(tra, function (result) {
+            $scope.trafficSources[index].postbackUrl = $scope.trafficPostbackUrl;
+            $scope.trafficSources[index].pixelRedirectUrl = $scope.trafficPixelRedirectUrl;
+          });
+        }
+      });
+    }
+
+
     function showFlow() {
       $scope.ztreeShow = true;
       // Get Flow by Id
