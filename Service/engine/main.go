@@ -25,7 +25,7 @@ func main() {
 		log.Alert(string(debug.Stack()))
 	}()
 	help := flag.Bool("help", false, "show help")
-	blacklistPath := flag.String("blacklist", "", "global blacklist.txt path. If it's empty, disable global blacklist.")
+	blacklistPath := flag.String("blacklist", "", "global blacklist.txt path. If it's empty, disable global blacklist. You can download blacklist here: https://myip.ms/files/blacklist/general/full_blacklist_database.zip")
 	flag.Parse()
 	if *help {
 		flag.PrintDefaults()
@@ -59,6 +59,11 @@ func main() {
 	// 启动保存协程
 	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
 		tracking.Saving(db.GetDB("DB"), c)
+	})
+
+	// 启动CampaignMap保存协程
+	gracequit.StartGoroutine(func(c gracequit.StopSigChan) {
+		tracking.CampMapSaving(db.GetDB("DB"), c)
 	})
 
 	// 启动Conversion保存

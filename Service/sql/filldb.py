@@ -231,17 +231,37 @@ cursor.execute("INSERT INTO Rule2Flow (ruleId, flowId, status) VALUES (%s,%s,%s)
 
 
 traffic_postback = "http://freeapi.ipip.net/8.8.8.8"
+params="""[
+  {
+    "Parameter": "ADBLOCK",
+    "PlaceHolder": "[ADBLOCK]",
+    "Name": "ADBLOCK",
+    "Track": 0
+  },
+  {
+    "Parameter": "ISPNAME",
+    "PlaceHolder": "[ISPNAME]",
+    "Name": "ISPNAME",
+    "Track": 0
+  },
+  {
+    "Parameter": "SCREENRESOLUTION",
+    "PlaceHolder": "[SCREENRESOLUTION]",
+    "Name": "SCREENRESOLUTION",
+    "Track": 0
+  }
+]"""
 
 cursor.execute("INSERT INTO TrafficSource (userId, name, hash, postbackUrl, pixelRedirectUrl, impTracking, externalId,"
                " cost, params) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "TrafficSource.1", "TrafficSource.1.hash", traffic_postback,
-                "http://traffic.source.com/pixel/redirect/url/1/", 0, "{}", "{}", "[]"))
+                "http://traffic.source.com/pixel/redirect/url/1/", 0, "{}", "{}", params))
 traffic1 = cursor.lastrowid
 
 cursor.execute("INSERT INTO TrafficSource (userId, name, hash, postbackUrl, pixelRedirectUrl, impTracking, externalId,"
                " cost, params) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                (userId, "TrafficSource.2", "TrafficSource.2.hash", traffic_postback,
-                "http://traffic.source.com/pixel/redirect/url/2/", 0, "{}", "{}", "[]"))
+                "http://traffic.source.com/pixel/redirect/url/2/", 0, "{}", "{}", params))
 traffic2 = cursor.lastrowid
 
 

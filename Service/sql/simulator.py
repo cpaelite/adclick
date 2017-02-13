@@ -196,6 +196,7 @@ def run_once(i):
         if impression and impression.status_code == 200:
             logging.debug("impression: text: %s", impression.text)
             stat.Imp.Status = REQ_SUCCESS
+            jar = impression.cookies
         else:
             stat.Imp.Status = REQ_FAILED
 
