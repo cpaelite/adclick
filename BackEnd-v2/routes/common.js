@@ -753,10 +753,10 @@ function updateOffer(userId, offer, connection) {
 }
 
 function getOfferDetail(id, userId, connection) {
-    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `deleted`=? and `id`=?";
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `id`=?";
     let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlLander, [userId, 0, id], function (err, lander) {
+        connection.query(sqlLander, [userId, id], function (err, lander) {
             if (err) {
                 reject(err);
             }

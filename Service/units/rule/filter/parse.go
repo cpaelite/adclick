@@ -14,9 +14,9 @@ import (
 
 // 条件
 type condition struct {
-	Key  string      `json:"key"`
-	Op   string      `json:"op"`
-	Expr interface{} `json:"expr"`
+	Key  string   `json:"key"`
+	Op   string   `json:"op"`
+	Expr []string `json:"expr"`
 }
 
 type conditionlist struct { // combined conditions
@@ -26,9 +26,9 @@ type conditionlist struct { // combined conditions
 
 // 动作
 type action struct {
-	Key  string      `json:"key"`
-	Op   string      `json:"op"`
-	Expr interface{} `json:"expr"`
+	Key  string   `json:"key"`
+	Op   string   `json:"op"`
+	Expr []string `json:"expr"`
 }
 
 type optionalaction struct {
@@ -106,7 +106,7 @@ filter:[
 	]
 ]
 */
-func (f *filterImpl) Fill(raw []byte, ftype string) (err error) {
+func (f *filterImpl) Fill(raw []byte) (err error) {
 	js, err := simplejson.NewJson(raw)
 	if err != nil {
 		return
@@ -116,7 +116,7 @@ func (f *filterImpl) Fill(raw []byte, ftype string) (err error) {
 		return
 	}
 	for i := 0; i < len(fs); i++ {
-		if fb, err := parseSingleFilter(js.GetIndex(i), ftype); err != nil {
+		if fb, err := parseSingleFilter(js.GetIndex(i)); err != nil {
 			return err
 		} else {
 			f.Filters = append(f.Filters, fb)
@@ -125,7 +125,7 @@ func (f *filterImpl) Fill(raw []byte, ftype string) (err error) {
 	return nil
 }
 
-func parseSingleFilter(f *simplejson.Json, ftype string) (fb filterbody, err error) {
+func parseSingleFilter(f *simplejson.Json) (fb filterbody, err error) {
 	//fmt.Println("parseSingleFilter", SString(f))
 	if f == nil {
 		err = errors.New("parseSingleFilter with nil raw filter content.")
@@ -135,29 +135,14 @@ func parseSingleFilter(f *simplejson.Json, ftype string) (fb filterbody, err err
 	if err != nil {
 		return
 	}
-	if ftype == "slot" {
-		cs := make([]*simplejson.Json, len(fs)-1)
-		for i := 0; i < len(fs)-1; i++ {
-			cs[i] = f.GetIndex(i)
-		}
-		fb.Condtions, err = parseConditionList(cs)
-		if err != nil {
-			return
-		}
 
-		fb.Actions, err = parseActionList(f.GetIndex(len(fs) - 1))
-		if err != nil {
-			return
-		}
-	} else {
-		cs := make([]*simplejson.Json, len(fs))
-		for i := 0; i < len(fs); i++ {
-			cs[i] = f.GetIndex(i)
-		}
-		fb.Condtions, err = parseConditionList(cs)
-		if err != nil {
-			return
-		}
+	cs := make([]*simplejson.Json, len(fs))
+	for i := 0; i < len(fs); i++ {
+		cs[i] = f.GetIndex(i)
+	}
+	fb.Condtions, err = parseConditionList(cs)
+	if err != nil {
+		return
 	}
 
 	return
@@ -181,7 +166,7 @@ func parseConditionList(cs []*simplejson.Json) (cl conditionlist, err error) {
 				return cl, err
 			}
 			cl.Combination = VarLogicAnd
-			cl.Conditions = []condition{condition{Key: s[0], Op: s[1], Expr: s[2]}}
+			cl.Conditions = []condition{condition{Key: s[0], Op: s[1], Expr: s[2:]}}
 		} else { // ["or/and/not", [condtion], [condition], ...]
 			la, err := cs[0].Array()
 			if err != nil {
@@ -216,7 +201,7 @@ func parseConditionList(cs []*simplejson.Json) (cl conditionlist, err error) {
 					err = fmt.Errorf("5 parseConditionList with invalid raw filter content %+#v.", String(cs))
 					return cl, err
 				}
-				cl.Conditions = append(cl.Conditions, condition{Key: s[0], Op: s[1], Expr: s[2]})
+				cl.Conditions = append(cl.Conditions, condition{Key: s[0], Op: s[1], Expr: s[2:]})
 			}
 		}
 	default: // c = [condition], [condition], ...
@@ -233,7 +218,7 @@ func parseConditionList(cs []*simplejson.Json) (cl conditionlist, err error) {
 				err = fmt.Errorf("6 parseConditionList with invalid raw filter content %+#v.", String(cs))
 				return cl, err
 			}
-			cl.Conditions = append(cl.Conditions, condition{Key: s[0], Op: s[1], Expr: s[2]})
+			cl.Conditions = append(cl.Conditions, condition{Key: s[0], Op: s[1], Expr: s[2:]})
 		}
 		return
 	}
@@ -254,7 +239,7 @@ func parseActionList(a *simplejson.Json) (al actionlist, err error) {
 			err = fmt.Errorf("2 parseActionList with invalid raw filter content %+#v.", a)
 			return
 		}
-		al.Sactions = []action{action{Key: ls[0], Op: ls[1], Expr: ls[2]}}
+		al.Sactions = []action{action{Key: ls[0], Op: ls[1], Expr: ls[2:]}}
 	} else {
 		// [[action],[action]]
 		// [["80",[action],[action]],["20",[action],[action]]]
@@ -270,7 +255,7 @@ func parseActionList(a *simplejson.Json) (al actionlist, err error) {
 					err = fmt.Errorf("3 parseActionList with invalid raw filter content %+#v.", a)
 					return al, err
 				}
-				al.Sactions = append(al.Sactions, action{Key: ss[0], Op: ss[1], Expr: ss[2]})
+				al.Sactions = append(al.Sactions, action{Key: ss[0], Op: ss[1], Expr: ss[2:]})
 			} else {
 				if _, err := a.GetIndex(i).GetIndex(0).String(); err == nil { // ["80",[action],[action]]
 					oa, err := parseSingleOptionalAction(a.GetIndex(i))
@@ -341,7 +326,7 @@ func parseSingleOptionalAction(a *simplejson.Json) (oa optionalaction, err error
 		if err != nil {
 			return oa, err
 		}
-		oa.Actions = append(oa.Actions, action{Key: sa[0], Op: sa[1], Expr: sa[2]})
+		oa.Actions = append(oa.Actions, action{Key: sa[0], Op: sa[1], Expr: sa[2:]})
 	}
 
 	return
@@ -351,6 +336,7 @@ func conditionOK(req request.Request, cl conditionlist) bool {
 	result := false
 	for _, c := range cl.Conditions {
 		b := LOF(c.Op)(KF(c.Key)(req), c.Expr, req)
+		fmt.Println(b, KF(c.Key)(req), c)
 		switch cl.Combination {
 		case VarLogicAnd:
 			if !b {
@@ -418,7 +404,7 @@ func (f *filterImpl) Accept(req request.Request) bool {
 	// 其他过滤条件，所有Filter之间的关系是 or，任意一个满足即可通过
 	for _, fb := range f.Filters {
 		if !conditionOK(req, fb.Condtions) {
-			log.Infof("[adFilter][filter] not match %+v", fb.Condtions)
+			log.Infof("[adFilter][filter] not match %+#v", fb.Condtions)
 			continue
 		}
 		return true

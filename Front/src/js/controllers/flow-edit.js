@@ -176,16 +176,6 @@
     $q.all(initPromises).then(initSuccess, initError);
     // end init data
 
-    function deleteElement(list, item) {
-      var idx = list.indexOf(item);
-      if (idx >= 0) {
-        list.splice(idx, 1);
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     function calculateRelativeWeight(list, isValid) {
       var total = 0;
       list.forEach(function(item) {
@@ -232,19 +222,17 @@
       $scope.flow.rules.push(newRule);
       $scope.editRule(newRule);
     };
-    $scope.deleteRule = function() {
-      $scope.isDeleted = true;
-      $scope.curRule.isDeleted = true;
+    $scope.toggleExpand = function(rule) {
+      if (!rule.isDeleted) {
+        rule.unexpanded = !rule.unexpanded;
+      }
     };
-    $scope.duplicateRule = function() {
+    function duplicateRule() {
       var newRule = angular.copy($scope.curRule);
       newRule.name = 'Rule ' + $scope.flow.rules.length;
       $scope.flow.rules.push(newRule);
       $scope.editRule(newRule);
-    };
-    $scope.toggleExpand = function(rule) {
-      rule.unexpanded = !rule.unexpanded;
-    };
+    }
 
     // operation on path
     $scope.editPath = function(rule, path) {
@@ -259,21 +247,34 @@
       rule.paths.push(newPath);
       $scope.editPath(rule, newPath);
     };
-    $scope.deletePath = function() {
-      $scope.isDeleted = true;
-      $scope.curPath.isDeleted = true;
-    };
-    $scope.duplicatePath = function() {
+    function duplicatePath() {
       var newPath = angular.copy($scope.curPath);
       newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
       $scope.curRule.paths.push(newPath);
       $scope.editPath($scope.curRule, newPath);
-    };
+    }
 
-    $scope.restore = function() {
-      if ($scope.onEdit == 'rule') {
+    $scope.deleteCurrent = function(type) {
+      if (type == 'rule') {
+        $scope.curRule.isDeleted = true;
+        $scope.curRule.unexpanded = true;
+      } else if (type == 'path') {
+        $scope.curPath.isDeleted = true;
+      }
+      $scope.isDeleted = true;
+    };
+    $scope.duplicateCurrent = function(type) {
+      if (type == 'rule') {
+        duplicateRule();
+      } else if (type == 'path') {
+        duplicatePath();
+      }
+    };
+    $scope.restore = function(type) {
+      if (type == 'rule') {
         $scope.curRule.isDeleted = false;
-      } else if ($scope.onEdit == 'path') {
+        $scope.curRule.unexpanded = false;
+      } else if (type == 'path') {
         $scope.curPath.isDeleted = false;
       }
       $scope.isDeleted = false;
@@ -419,6 +420,9 @@
     $scope.setEdit = function(evt, item) {
       item._onEdit = true;
       evt.stopPropagation();
+    };
+    $scope.stopEdit = function(item) {
+      item._onEdit = false;
     };
     $scope.clearOnEdit = function() {
       if ($scope.curPath == null) return;
@@ -639,9 +643,13 @@
       });
 
       $scope.onSave = true;
-      Flow.save(flowData, function(result) {
+      $scope.saveError = null;
+      return Flow.save(flowData, function(result) {
         $scope.onSave = false;
-        if (!theFlow.id) {
+        $scope.saveTime = new Date();
+        if (result.status != 1) {
+          $scope.saveError = result.message;
+        } else if (!theFlow.id) {
           theFlow.id = result.data.id;
           result.data.rules.forEach(function (rule, ruleIndex) {
             theFlow.rules[ruleIndex].id = rule.id;
@@ -651,11 +659,21 @@
           });
 
         }
-      });
+      }, function() {
+        $scope.onSave = false;
+        $scope.saveError = 'Network error when save flow';
+      }).$promise;
     };
 
     $scope.close = function() {
       $scope.$state.go('app.report.flow');
+    };
+
+    $scope.saveClose = function() {
+      $scope.save().then(function() {
+        if (!$scope.saveError)
+          $scope.close();
+      });
     };
   }
 })();

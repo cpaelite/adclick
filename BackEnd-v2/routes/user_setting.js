@@ -6,25 +6,31 @@ var md5 = require('md5');
 
 
 /**
- * @api {get} /api/user/profile    用户信息
- * @apiName  用户信息
- * @apiGroup Setting
+ * @api {get} /api/profile  
+ * @apiName  
+ * @apiGroup User
+ *
  *
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success",
- *       "data":{
- *             "firstname":"",
- *             "lastname":"",
- *             "json":"",
- *             "status":1            
- *           }
- *     }
+ *   {
+ *    status: 1,
+ *    message: 'success',
+ *    data:{
+ *        idText:"",
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: '13120663670',
+          timezone:'+08:00',
+          homescreen:'dashboard',  // or campaignList
+          referralToken:"",
+          status:0  //0:New;1:运行中;2:已过期
+    }
+ *
+ *   }
  *
  */
-router.get('/api/user/profile', async function (req, res, next) {
+router.get('/api/profile', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
@@ -33,11 +39,31 @@ router.get('/api/user/profile', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`json` from User where `deleted`= 0 and `id`= " + value.userId, connection);
+        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= " + value.userId, connection);
+
+        let responseData = {};
+        if (result.length) {
+            responseData.idText = result[0].idText;
+            responseData.firstname = result[0].firstname;
+            responseData.lastname = result[0].lastname;
+            responseData.status = result[0].status;
+            responseData.timezone = result[0].timezone;
+            responseData.referralToken = result[0].referralToken;
+            if (result[0].setting) {
+                let settingJSON = JSON.parse(result[0].setting);
+                responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
+                responseData.tel = settingJSON.tel ? settingJSON.tel : "";
+                responseData.homescreen = settingJSON.homescreen ? settingJSON.homescreen : "";
+            } else {
+                responseData.companyname = "";
+                responseData.tel = "";
+                responseData.homescreen = "dashboard";
+            }
+        }
         res.json({
             status: 1,
             message: 'succes',
-            data: result.length ? result[0] : {}
+            data: responseData
         });
     } catch (e) {
         next(e);
@@ -51,50 +77,72 @@ router.get('/api/user/profile', async function (req, res, next) {
 });
 
 /**
- * @api {post} /api/user/profileChange   用户信息修改
- * @apiName  用户信息修改
- * @apiGroup Setting
+ * @api {post} /api/profile  
+ * @apiName  
+ * @apiGroup User
  *
  * @apiParam {String} firstname
  * @apiParam {String} lastname
- * @apiParam {String} json   按照既定规则生成的User信息(CompanyName,Phone,DefaultTimeZone,DefaultHomeScreen)  
+ * @apiParam {String} companyname
+ * @apiParam {String} tel
+ * @apiParam {String} timezone
+ * @apiParam {String} homescreen
  *
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *     }
+ *   {
+ *    status: 1,
+ *    message: 'success',
+ *    data:{
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: "13120663670",
+          timezone:'+08:00',
+          homescreen:'dashboard',  // or campaignList
+     }
+ *
+ *  }
  *
  */
-router.post('/api/user/profile', async function (req, res, next) {
+router.post('/api/profile', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        firstname: Joi.string().optional(),
-        lastname: Joi.string().optional(),
-        json: Joi.string().optional()
+        firstname: Joi.string().required(),
+        lastname: Joi.string().required(),
+        companyname: Joi.string().optional(),
+        tel: Joi.string().optional(),
+        timezone: Joi.string().optional(),
+        homescreen: Joi.string().optional()
     });
     req.body.userId = req.userId;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        let valueCopy={};
+        Object.assign(valueCopy,value);
         let sql = 'update User set ';
-        if (value.firstname) {
-            sql += "`firstname`='" + value.firstname + "'";
+        if (valueCopy.firstname) {
+            sql += "`firstname`='" + valueCopy.firstname + "'";
         }
-        if (value.lastname) {
-            sql += ",`lastname`='" + value.lastname + "'";
+        if (valueCopy.lastname) {
+            sql += ",`lastname`='" + valueCopy.lastname + "'";
         }
-        if (value.json) {
-            sql += ",`json`='" + value.json + "'";
+        if (valueCopy.timezone) {
+            sql += ",`timezone`='" + valueCopy.timezone + "'";
         }
-        sql += " where `id`=" + value.userId
+
+        delete valueCopy.userId;
+
+        sql += ",`setting`='" + JSON.stringify(valueCopy) +"'";
+
+        sql += " where `id`=" + value.userId;
         await query(sql, connection);
 
         res.json({
             "status": 1,
-            "message": "success"
+            "message": "success",
+            "data": valueCopy
         });
     } catch (e) {
         next(e);
@@ -250,7 +298,7 @@ router.post('/api/user/emailChange', async function (req, res, next) {
  *
  */
 router.get('/api/user/referrals', function (req, res, next) {
- 
+
 });
 
 

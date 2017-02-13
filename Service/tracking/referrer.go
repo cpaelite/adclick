@@ -3,6 +3,7 @@ package tracking
 import (
 	"AdClickTool/Service/gracequit"
 	"database/sql"
+	"time"
 )
 
 // AdReferrerStatis表的支持工作
@@ -10,9 +11,9 @@ import (
 
 // ReferrerStatisKey AdReferrerStatis表里面的Unique Key部分
 type ReferrerStatisKey struct {
-	UserID     int
-	Timestamp  int
-	CampaignID int
+	UserID     int64
+	Timestamp  int64
+	CampaignID int64
 	Referrer   string
 }
 
@@ -42,7 +43,7 @@ Impressions = Impressions+?`
 var Ref gatherSaver
 
 // InitRefGatherSaver 初始化tracking.Ref
-func InitRefGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	Ref := newGatherSaver(g, referrerStatisSQL)
+func InitRefGatherSaver(g *gracequit.GraceQuit, db *sql.DB, saveInterval time.Duration) {
+	Ref = newGatherSaver(g, referrerStatisSQL, saveInterval)
 	Ref.Start(db)
 }

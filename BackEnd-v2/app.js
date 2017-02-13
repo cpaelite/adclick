@@ -20,7 +20,7 @@ var app = express();
 var util = require('./util/index');
 
 //router
-var routes = require('./routes/oauth');
+var auth = require('./routes/auth');
 var networktpl = require('./routes/networktpl');
 var network = require('./routes/network');
 var offer = require('./routes/offer');
@@ -63,7 +63,7 @@ app.get('/', function(req, res) {
 app.all('/api/*', util.checkToken(), user, network, offer, flow, report,
     campaign,lander,traffic,user_setting,event_log,traffictpl,networktpl);
 
-app.use('/', routes);
+app.use('/', auth);
 
 
 /// catch 404 and forward to error handler

@@ -1,15 +1,24 @@
 package units
 
 import (
+	"AdClickTool/Service/config"
+	"AdClickTool/Service/db"
 	"fmt"
+	"html"
 	"net/http"
+	"strconv"
+	"time"
 
 	"AdClickTool/Service/common"
 	"AdClickTool/Service/log"
 	"AdClickTool/Service/request"
 	"AdClickTool/Service/tracking"
+	"AdClickTool/Service/units/affiliate"
+	"AdClickTool/Service/units/blacklist"
 	"AdClickTool/Service/units/campaign"
+	"AdClickTool/Service/units/offer"
 	"AdClickTool/Service/units/user"
+	"strings"
 )
 
 func Init() (err error) {
@@ -27,6 +36,12 @@ func Init() (err error) {
 var page404 = `<html><head><title>Error: Page not found. If you want to change the content of this page, go to your account Settings / Root domain.</title></head><body><h3>Error 404</h3><p>Page not found. If you want to change the content of this page, go to your account Settings / Root domain.</p></body></html>`
 
 func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
+	desc, in := blacklist.G.AddrIn(r.RemoteAddr)
+	if in {
+		log.Warnf("[units][OnLPOfferRequest] RemoteAddr:%v is blocked by:%v", r.RemoteAddr, desc)
+		return
+	}
+
 	requestId := common.GenRandId()
 	log.Infof("[Units][OnLPOfferRequest]Received request %s:%s\n", requestId, common.SchemeHostURI(r))
 	if !started {
@@ -43,10 +58,16 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 
 	u := user.GetUserByIdText(userIdText)
 	if u == nil {
-		log.Errorf("[Units][OnLPOfferRequest]Invalid userIdText for %s:%s\n", requestId, common.SchemeHostURI(r))
+		log.Errorf("[Units][OnLPOfferRequest]Invalid userIdText:%s for %s:%s\n", userIdText, requestId, common.SchemeHostURI(r))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	allowed := blacklist.UserReqAllowed(u.Id, r.RemoteAddr, r.UserAgent())
+	if !allowed {
+		return
+	}
+
 	campaignHash := common.GetCampaignHash(r)
 	if campaignHash == "" {
 		log.Errorf("[Units][OnLPOfferRequest]Invalid campaignHash for %s:%s\n", requestId, common.SchemeHostURI(r))
@@ -60,13 +81,59 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req, err := request.CreateRequest("", requestId, request.ReqLPOffer, r)
-	if req == nil || err != nil {
-		log.Errorf("[Units][OnLPOfferRequest]CreateRequest failed for %s;%s;%v\n", requestId, common.SchemeHostURI(r), err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	var req request.Request
+	var err error
+	if r.URL.Query().Encode() == "" { // 没有任何tracking token传递过来，就只能尝试从cookie中获取
+		req, err = ParseCookie(request.ReqLPOffer, r)
 	}
+
+	if req == nil || err != nil { // 从cookie解析并load request失败的话，再从url的方式获取
+		req, err = request.CreateRequest(requestId, request.ReqLPOffer, r)
+		if req == nil || err != nil {
+			log.Errorf("[Units][OnLPOfferRequest]CreateRequest failed for %s;%s;%v\n", requestId, common.SchemeHostURI(r), err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	req.SetUserId(u.Id)
+
 	req.SetCampaignHash(campaignHash)
+	var ca *campaign.Campaign
+	if req.CampaignId() > 0 { // 如果是从cache中获取campaignId的话，需要对比下campaignHash和campaignId是否匹配
+		ca = campaign.GetCampaignByHash(campaignHash)
+		if ca == nil {
+			log.Errorf("[Units][OnImpression]Invalid campaignHash for %s:%s:%s\n", requestId, common.SchemeHostURI(r), campaignHash)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if ca.Id != req.CampaignId() {
+			log.Errorf("[Units][OnImpression]CampaignHash(%s) does not match existing campaignId(%d) for %s:%s:%s\n",
+				campaignHash, req.CampaignId(), requestId, common.SchemeHostURI(r), campaignHash)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	if r.URL.Query().Encode() != "" { // 如果UrlToken非空的话，需要通过campaign拿到traffic source，然后拿到其参数配置格式
+		if ca == nil {
+			ca = campaign.GetCampaignByHash(campaignHash)
+			if ca == nil {
+				log.Errorf("[Units][OnImpression]Invalid campaignHash for %s:%s:%s\n", requestId, common.SchemeHostURI(r), campaignHash)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+		}
+		// 解析参数，传递到request中
+		req.ParseTSParams(ca.TrafficSource.ExternalId, ca.TrafficSource.Cost, ca.TrafficSource.Vars, r.URL.Query())
+	}
+
+	theirCamp := r.FormValue("campaignid")
+	if len(theirCamp) != 0 {
+		tracking.InsertCampMap(ca.Id, theirCamp)
+	}
+
+	SetCookie(w, request.ReqLPOffer, req)
 
 	if err := u.OnLPOfferRequest(w, req); err != nil {
 		log.Errorf("[Units][OnLPOfferRequest]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
@@ -74,7 +141,26 @@ func OnLPOfferRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SetCookie(w, request.ReqLPOffer, req)
+	if req.OfferId() > 0 {
+		// Clicks增加
+		timestamp := tracking.Timestamp()
+		tracking.AddClick(req.AdStatisKey(timestamp), 1)
+		tracking.IP.AddClick(req.IPKey(timestamp), 1)
+		tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
+		tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
+
+	} else {
+		// Visits增加
+		timestamp := tracking.Timestamp()
+		tracking.AddVisit(req.AdStatisKey(timestamp), 1)
+		tracking.IP.AddVisit(req.IPKey(timestamp), 1)
+		tracking.Domain.AddVisit(req.DomainKey(timestamp), 1)
+		tracking.Ref.AddVisit(req.ReferrerKey(timestamp), 1)
+	}
+
+	if !req.CacheSave(config.ReqCacheTime) {
+		log.Errorf("[Units][OnLPOfferRequest]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
 }
 
 func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
@@ -87,6 +173,7 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 	req, err := ParseCookie(request.ReqLPClick, r)
 	if err != nil || req == nil {
 		//TODO add error log
+		log.Errorf("ParseCookie failed Cookies:%+v err:%v", r.Cookies(), err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -118,17 +205,30 @@ func OnLandingPageClick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	req.SetUserId(u.Id)
+	req.SetUserIdText(u.IdText)
+
+	SetCookie(w, request.ReqLPClick, req)
+
 	if err := u.OnLandingPageClick(w, req); err != nil {
 		log.Errorf("[Units][OnLandingPageClick]user.OnLandingPageClick failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	SetCookie(w, request.ReqLPClick, req)
+	// 统计信息的添加
+	timestamp := tracking.Timestamp()
+	tracking.AddClick(req.AdStatisKey(timestamp), 1)
+	tracking.IP.AddClick(req.IPKey(timestamp), 1)
+	tracking.Domain.AddClick(req.DomainKey(timestamp), 1)
+	tracking.Ref.AddClick(req.ReferrerKey(timestamp), 1)
+
+	if !req.CacheSave(config.ReqCacheTime) {
+		log.Errorf("[Units][OnLandingPageClick]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
 }
 
 func OnImpression(w http.ResponseWriter, r *http.Request) {
-	// TODO: Impression Pixel Tracking
 	// URL格式：http://zx1jg.voluumtrk.com/impression/be8da5d9-7955-4400-95e3-05c9231a6e92?keyword={keyword}&keyword_id={keyword_id}&creative_id={creative_id}&campaign_id={campaign_id}&country={country}&bid={bid}&click_id={click_id}
 	// 1. 通过链接拿到user和campaign，以及trafficsource
 	// 2. 通过IP拿到其它信息，如Language, Model, Country, City, ....
@@ -162,13 +262,15 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := request.CreateImpressionRequest(requestId, r)
-	if req == nil {
-		log.Errorf("[Units][OnImpression]CreateRequest failed for %s;%s\n", requestId, common.SchemeHostURI(r))
+	req, err := request.CreateRequest(requestId, request.ReqImpression, r)
+	if req == nil || err != nil {
+		log.Errorf("[Units][OnImpression]CreateRequest failed for %s;%s with err(%v)\n", requestId, common.SchemeHostURI(r), err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	req.SetUserId(u.Id)
+	req.SetUserIdText(u.IdText)
 	req.SetCampaignHash(campaignHash)
 	// if err := u.OnImpression(w, req); err != nil {
 	// 	log.Errorf("[Units][OnImpression]user.OnImpression failed for %s;%s\n", req.String(), err.Error())
@@ -176,47 +278,45 @@ func OnImpression(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
-	// 能过campaign拿到traffic source，然后拿到其参数配置格式
+	// 通过campaign拿到traffic source，然后拿到其参数配置格式
 	ca := campaign.GetCampaignByHash(campaignHash)
 	if ca == nil {
 		log.Errorf("[Units][OnImpression]Invalid campaignHash for %s:%s:%s\n", requestId, common.SchemeHostURI(r), campaignHash)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	req.SetCampaignId(ca.Id)
+	req.SetCampaignName(ca.Name)
+	// 解析参数，传递到request中
+	req.ParseTSParams(ca.TrafficSource.ExternalId,
+		ca.TrafficSource.Cost,
+		ca.TrafficSource.Vars, r.URL.Query())
 
-	// 统计分析代码
-	var key tracking.AdStatisKey
-	key.UserID = u.UserConfig.Id
-	key.CampaignID = ca.Id
-	key.FlowID = ca.TargetFlowId
-	key.LanderID = 0
-	key.OfferID = 0
-	key.TrafficSourceID = ca.TrafficSourceId
-	key.Language = req.Language()
-	key.Model = req.Model()
-	key.Country = req.Country()
-	key.City = req.City()
-	key.Region = req.Region()
-	key.ISP = req.ISP()
-	key.MobileCarrier = req.Carrier()
-	key.Domain = req.TrackingDomain()
-	key.DeviceType = req.DeviceType()
-	key.Brand = req.Brand()
-	key.OS = req.OS()
-	key.OSVersion = req.OSVersion()
-	key.Browser = req.Browser()
-	key.BrowserVersion = req.BrowserVersion()
-	key.ConnectionType = req.ConnectionType()
+	// 统计信息的添加
+	timestamp := tracking.Timestamp()
+	tracking.AddImpression(req.AdStatisKey(timestamp), 1)
+	tracking.IP.AddImpression(req.IPKey(timestamp), 1)
+	tracking.Domain.AddImpression(req.DomainKey(timestamp), 1)
+	tracking.Ref.AddImpression(req.ReferrerKey(timestamp), 1)
 
-	tracking.AddImpression(key, 1)
-
-	// TODO: 以后AdStatis表里面增加v1-v10的group by的时候
-	// 就在这里解析这些参数
-	// params := ca.ParseVars(r.FormValue)
-	// 解析v1-v10
-	// r.ParseForm()
+	if ca.CostModel == 3 {
+		user.TrackingCost(req, ca.CPMValue/1000.0)
+	}
 
 	SetCookie(w, request.ReqImpression, req)
+
+	if !req.CacheSave(config.ReqCacheTime) {
+		log.Errorf("[Units][OnImpression]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
+	}
+}
+
+// parseIP 从192.168.0.155:61233解析出192.168.0.155
+func parseIP(remoteAddr string) string {
+	pos := strings.Index(remoteAddr, ":")
+	if pos == -1 {
+		return remoteAddr
+	}
+	return remoteAddr[:pos]
 }
 
 func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
@@ -239,21 +339,114 @@ func OnS2SPostback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	clickId := r.URL.Query().Get(common.UrlTokenClickId)
-	payout := r.URL.Query().Get(common.UrlTokenPayout)
+	payoutStr := r.URL.Query().Get(common.UrlTokenPayout)
 	txId := r.URL.Query().Get(common.UrlTokenTransactionId)
-	log.Infof("[Units][OnS2SPostback]Received postback with %s(%s;%s;%s)\n", common.SchemeHostURI(r), clickId, payout, txId)
+	log.Infof("[Units][OnS2SPostback]Received postback with %s(%s;%s;%s)\n", common.SchemeHostURI(r), clickId, payoutStr, txId)
 
-	req, err := request.CreateRequest(clickId, "", request.ReqS2SPostback, r)
+	req, err := request.CreateRequest(clickId, request.ReqS2SPostback, r)
 	if req == nil || err != nil {
 		log.Errorf("[Units][OnS2SPostback]CreateRequest failed for %s;%v\n", common.SchemeHostURI(r), err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	if req.OfferId() == 0 {
+		log.Errorf("[Units][OnS2SPostback] req:%v have no OfferId", req)
+		return
+	}
+
+	isFirstCallback := func() bool {
+		o := offer.GetOffer(req.OfferId())
+		if o == nil {
+			log.Errorf("GetOffer:%v failed clickId:%v", req.OfferId(), clickId)
+			return true
+		}
+
+		aff := affiliate.GetAffiliateNetwork(o.AffiliateNetworkId)
+		if aff == nil {
+			log.Errorf("GetAffiliateNetwork:%v failed clickId:%v", o.AffiliateNetworkId, clickId)
+			return true
+		}
+
+		if aff.DuplicatePostback != 0 {
+			// 允许多次callback
+			return true
+		}
+
+		ip := parseIP(r.RemoteAddr)
+		if !aff.Allow(ip) {
+			log.Warnf("AffiliateNetworkId:%v blocked postback from:%v by it's white-listed IPs clickId:%v",
+				o.AffiliateNetworkId, r.RemoteAddr, clickId)
+			return false
+		}
+
+		// 一天时间
+		svr := db.GetRedisClient(request.CacheSvrTitle)
+		k := fmt.Sprintf("postback:%s:tx:%s", clickId, txId)
+		v := time.Now().Unix()
+		cmd := svr.SetNX(k, v, config.ReqCacheTime)
+		if cmd.Err() != nil {
+			log.Errorf("[units][OnS2SPostback] SetNX k:%v v:%v failed:%v", k, v, cmd.Err())
+			return true
+		}
+
+		if cmd.Val() {
+			// 首次postback
+			log.Warnf("firsttime postback:k:%v v:%v", k, v)
+			return true
+		}
+
+		log.Warnf("Duplicate postback denied: clickId:%v txId:%v", clickId, txId)
+		return false
+	}()
+
+	if !isFirstCallback {
+		return
+	}
+
+	// 后面统计信息要使用
+	req.SetTransactionId(txId)
+
+	payout, err := strconv.ParseFloat(payoutStr, 64)
+	if err != nil {
+		log.Errorf("[Units][OnS2SPostback]ParseFloat with payoutStr:%v failed for %s;%v\n", payoutStr, common.SchemeHostURI(r), err)
+	}
+
+	// 统计payout
+	finalPayout := func() float64 {
+		o := offer.GetOffer(req.OfferId())
+		if o == nil {
+			log.Errorf("[Units][OnS2SPostback] offer.GetOffer(%v) failed: no offer found", req.OfferId())
+			return 0.0
+		}
+		switch o.PayoutMode {
+		case 0:
+			return payout
+		case 1:
+			return o.PayoutValue
+		}
+		return 0.0
+	}()
+
+	// 后面会用到payout，所以这里要提前设置好
+	req.SetPayout(finalPayout)
+	req.SetPostbackTimeStamp(time.Now().UnixNano())
+
 	if err := u.OnS2SPostback(w, req); err != nil {
 		log.Errorf("[Units][OnS2SPostback]user.OnLPOfferRequest failed for %s;%s\n", req.String(), err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	user.TrackingRevenue(req, finalPayout)
+	user.TrackingConversion(req, 1)
+
+	// 统计conversion
+	conv := req.ConversionKey()
+	tracking.SaveConversion(&conv)
+
+	if !req.CacheSave(config.ReqCacheTime) {
+		log.Errorf("[Units][OnS2SPostback]req.CacheSave() failed for %s:%s\n", req.String(), common.SchemeHostURI(r))
 	}
 }
 
@@ -281,4 +474,14 @@ func RegisterToMQ() error {
 }
 func OnNotifyDBChanged(w http.ResponseWriter, r *http.Request) {
 	//TODO 是否通过HTTP通信，有待确认
+}
+
+// OnDoubleMetaRefresh 处理double meta refresh 请求
+func OnDoubleMetaRefresh(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	dest := r.FormValue("dest") // 最终的跳转地址
+	log.Debugf("OnDoubleMetaRefresh dest:%s", dest)
+	w.Header().Set("Content-Type", "text/html")
+	meta := `<meta http-equiv="refresh" content="0;url=` + html.EscapeString(dest) + `">`
+	fmt.Fprintln(w, meta)
 }

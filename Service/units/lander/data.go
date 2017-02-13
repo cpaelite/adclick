@@ -18,17 +18,18 @@ func DBGetAllLanders() []LanderConfig {
 
 func DBGetAvailableLanders() []LanderConfig {
 	d := dbgetter()
-	sql := "SELECT id, userId, url, numberOfOffers FROM Lander WHERE deleted=0"
+	sql := "SELECT id, name, userId, url, numberOfOffers FROM Lander WHERE deleted=0"
 	rows, err := d.Query(sql)
 	if err != nil {
 		log.Errorf("[lander][DBGetAllLanders]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var l LanderConfig
 	var arr []LanderConfig
 	for rows.Next() {
-		if err := rows.Scan(&l.Id, &l.UserId, &l.Url, &l.NumberOfOffers); err != nil {
+		if err := rows.Scan(&l.Id, &l.Name, &l.UserId, &l.Url, &l.NumberOfOffers); err != nil {
 			log.Errorf("[lander][DBGetAllLanders] scan failed:%v", err)
 			return nil
 		}
@@ -40,17 +41,18 @@ func DBGetAvailableLanders() []LanderConfig {
 
 func DBGetUserLanders(userId int64) []LanderConfig {
 	d := dbgetter()
-	sql := "SELECT id, userId, url, numberOfOffers FROM Lander WHERE userId=? and deleted=0"
+	sql := "SELECT id, name, userId, url, numberOfOffers FROM Lander WHERE userId=? and deleted=0"
 	rows, err := d.Query(sql, userId)
 	if err != nil {
 		log.Errorf("[lander][DBGetAllLanders]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var l LanderConfig
 	var arr []LanderConfig
 	for rows.Next() {
-		if err := rows.Scan(&l.Id, &l.UserId, &l.Url, &l.NumberOfOffers); err != nil {
+		if err := rows.Scan(&l.Id, &l.Name, &l.UserId, &l.Url, &l.NumberOfOffers); err != nil {
 			log.Errorf("[lander][DBGetAllLanders] scan failed:%v", err)
 			return nil
 		}
@@ -61,10 +63,10 @@ func DBGetUserLanders(userId int64) []LanderConfig {
 
 func DBGetLander(landerId int64) (c LanderConfig) {
 	d := dbgetter()
-	sql := "SELECT id, userId, url, numberOfOffers FROM Lander WHERE id=? and deleted=0"
+	sql := "SELECT id, name, userId, url, numberOfOffers FROM Lander WHERE id=? and deleted=0"
 	row := d.QueryRow(sql, landerId)
-	if err := row.Scan(&c.Id, &c.UserId, &c.Url, &c.NumberOfOffers); err != nil {
-		log.Errorf("[lander][DBGetAllLanders] scan failed:%v", err)
+	if err := row.Scan(&c.Id, &c.Name, &c.UserId, &c.Url, &c.NumberOfOffers); err != nil {
+		log.Errorf("[lander][DBGetAllLanders] landerId:%v scan failed:%v", landerId, err)
 		return c
 	}
 	return c

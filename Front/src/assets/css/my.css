@@ -1544,7 +1544,7 @@ input[type="checkbox"].th-checkbox{
     overflow: hidden;
     float: left
 }
-.flow-arrow-down{
+.cs-flow-arrow{
     float: left;
     height: 35px;
     line-height: 35px;

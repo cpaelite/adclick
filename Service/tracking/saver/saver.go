@@ -30,8 +30,6 @@ func (s *Saver) Save(data map[interface{}]interface{}) error {
 }
 
 func (s *Saver) doSave(db *sql.DB, data map[interface{}]interface{}) error {
-	// TODO: 使用reflect进行数据库的存储
-
 	// 也就是想办法拼出来这样的语句
 	// INSERT INTO table (key1, key2, key3, field1, field2, field3) VALUES (key1, key2, key3, field1, field2, field3)
 	// ON DUPLICATE KEY UPDATE fields1+=fields1, fields2+=fields2, fields3+=fields3

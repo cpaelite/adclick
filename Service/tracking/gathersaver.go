@@ -15,8 +15,8 @@ type StatisValue struct {
 	Visits      int
 	Clicks      int
 	Conversions int
-	Cost        float64
-	Revenue     float64
+	Cost        int64
+	Revenue     int64
 	Impressions int
 }
 
@@ -31,7 +31,7 @@ type gatherSaver struct {
 	g      *gracequit.GraceQuit
 }
 
-func newGatherSaver(g *gracequit.GraceQuit, insertSQL string) gatherSaver {
+func newGatherSaver(g *gracequit.GraceQuit, insertSQL string, saveInterval time.Duration) gatherSaver {
 	// saver只负责汇总之后的数据的保存
 	// 所以其chan buffer不需要太大
 	s := saver.NewSaver(2, insertSQL)
@@ -39,7 +39,7 @@ func newGatherSaver(g *gracequit.GraceQuit, insertSQL string) gatherSaver {
 		saver: s,
 		// gather负责消息的汇总
 		// 其buffer需要大一些
-		gather: gather.NewGather(1024, valueNewer, s, 10*60*time.Second),
+		gather: gather.NewGather(1024, valueNewer, s, saveInterval),
 		g:      g,
 	}
 }
@@ -87,7 +87,7 @@ func (gs gatherSaver) AddConversion(key interface{}, count int) {
 func (gs gatherSaver) AddCost(key interface{}, count float64) {
 	action := func(i interface{}) {
 		v := i.(*StatisValue)
-		v.Cost += count
+		v.Cost += int64(count * MILLION)
 	}
 	gs.addEvent(key, action)
 }
@@ -96,7 +96,7 @@ func (gs gatherSaver) AddCost(key interface{}, count float64) {
 func (gs gatherSaver) AddRevenue(key interface{}, count float64) {
 	action := func(i interface{}) {
 		v := i.(*StatisValue)
-		v.Revenue += count
+		v.Revenue += int64(count * MILLION)
 	}
 	gs.addEvent(key, action)
 }

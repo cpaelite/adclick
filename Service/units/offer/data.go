@@ -12,19 +12,23 @@ func DBGetAllOffers() []OfferConfig {
 
 func DBGetAvailableOffers() []OfferConfig {
 	d := dbgetter()
-	sql := `SELECT id, userId, url, AffiliateNetworkId, postbackUrl, payoutMode, payoutValue FROM Offer WHERE deleted=0`
+	sql := `SELECT id, name, userId, url, AffiliateNetworkId,AffiliateNetworkName, postbackUrl, payoutMode, payoutValue FROM Offer WHERE deleted=0`
 	rows, err := d.Query(sql)
 	if err != nil {
 		log.Errorf("[offer][DBGetAvailableOffers]Query %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
+
 	var c OfferConfig
 	var arr []OfferConfig
 	for rows.Next() {
 		err := rows.Scan(&c.Id,
+			&c.Name,
 			&c.UserId,
 			&c.Url,
 			&c.AffiliateNetworkId,
+			&c.AffiliateNetworkName,
 			&c.PostbackUrl,
 			&c.PayoutMode,
 			&c.PayoutValue,
@@ -42,19 +46,23 @@ func DBGetAvailableOffers() []OfferConfig {
 
 func DBGetUserOffers(userId int64) []OfferConfig {
 	d := dbgetter()
-	sql := `SELECT id, userId, url, AffiliateNetworkId, postbackUrl, payoutMode, payoutValue FROM Offer WHERE userId=? and deleted=0`
+	sql := `SELECT id, name, userId, url, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue FROM Offer WHERE userId=? and deleted=0`
 	rows, err := d.Query(sql, userId)
 	if err != nil {
 		log.Errorf("[offer][DBGetAvailableOffers]Query %s with userId:%v failed:%v", sql, userId, err)
 		return nil
 	}
+	defer rows.Close()
+
 	var c OfferConfig
 	var arr []OfferConfig
 	for rows.Next() {
 		err := rows.Scan(&c.Id,
+			&c.Name,
 			&c.UserId,
 			&c.Url,
 			&c.AffiliateNetworkId,
+			&c.AffiliateNetworkName,
 			&c.PostbackUrl,
 			&c.PayoutMode,
 			&c.PayoutValue,
@@ -72,19 +80,21 @@ func DBGetUserOffers(userId int64) []OfferConfig {
 
 func DBGetOffer(offerId int64) (c OfferConfig) {
 	d := dbgetter()
-	sql := `SELECT id, userId, url, AffiliateNetworkId, postbackUrl, payoutMode, payoutValue FROM Offer WHERE id=? and deleted=0`
+	sql := `SELECT id, name, userId, url, AffiliateNetworkId, AffiliateNetworkName, postbackUrl, payoutMode, payoutValue FROM Offer WHERE id=? and deleted=0`
 	row := d.QueryRow(sql, offerId)
 	err := row.Scan(&c.Id,
+		&c.Name,
 		&c.UserId,
 		&c.Url,
 		&c.AffiliateNetworkId,
+		&c.AffiliateNetworkName,
 		&c.PostbackUrl,
 		&c.PayoutMode,
 		&c.PayoutValue,
 	)
 
 	if err != nil {
-		log.Errorf("[offer][DBGetOffer]Scan failed:%v", err)
+		log.Errorf("[offer][DBGetOffer] offerId:%d Scan failed:%v", offerId, err)
 		return c
 	}
 

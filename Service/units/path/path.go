@@ -49,6 +49,20 @@ type Path struct {
 	owSum   uint64 // offer总权重
 }
 
+func (p *Path) RandOwSum() int {
+	if p.owSum == 0 {
+		return 0
+	}
+	return rand.Intn(int(p.owSum))
+}
+
+func (p *Path) RandLwSum() int {
+	if p.lwSum == 0 {
+		return 0
+	}
+	return rand.Intn(int(p.lwSum))
+}
+
 var cmu sync.RWMutex // protects the following
 var paths = make(map[int64]*Path)
 
@@ -87,13 +101,17 @@ func InitPath(pathId int64) error {
 }
 
 func GetPath(pathId int64) (p *Path) {
+	if pathId == 0 {
+		return nil
+	}
+
 	p = getPath(pathId)
 	if p == nil {
 		p = newPath(DBGetPath(pathId))
-	}
-	if p != nil {
-		if err := setPath(p); err != nil {
-			return nil
+		if p != nil {
+			if err := setPath(p); err != nil {
+				return nil
+			}
 		}
 	}
 	return
@@ -120,6 +138,11 @@ func newPath(c PathConfig) (p *Path) {
 		}
 		owSum += c.Weight
 	}
+
+	if owSum == 0 {
+		log.Errorf("path:%v have %v offers and owSum=%v", c.Id, len(offers), owSum)
+	}
+
 	p = &Path{
 		PathConfig: c,
 		landers:    landers,
@@ -136,7 +159,9 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
 	}
 
-	x := rand.Intn(int(p.lwSum))
+	req.SetRedirectMode(p.RedirectMode)
+
+	x := p.RandLwSum() // rand.Intn(int(p.lwSum))
 	lx := 0
 	if p.DirectLink == 0 {
 		for _, l := range p.landers {
@@ -151,7 +176,7 @@ func (p *Path) OnLPOfferRequest(w http.ResponseWriter, req request.Request) erro
 		}
 	}
 
-	y := rand.Intn(int(p.owSum))
+	y := p.RandOwSum() // rand.Intn(int(p.owSum))
 	oy := 0
 	for _, o := range p.offers {
 		if o.OfferId <= 0 {
@@ -174,6 +199,8 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 		return fmt.Errorf("[Path][OnLPOfferRequest]Nil p for request(%s)", req.Id())
 	}
 
+	req.SetRedirectMode(p.RedirectMode)
+
 	// 不需要find，因为可能中途已被移除
 	/*
 		found := false
@@ -192,7 +219,7 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 
 	pp := strings.Split(req.TrackingPath(), "/")
 	switch len(pp) {
-	case 0: // path为/click，按照权重选择一个Offer
+	case 2: // path为/click，按照权重选择一个Offer
 		y := rand.Intn(int(p.owSum))
 		oy := 0
 		for _, o := range p.offers {
@@ -205,11 +232,11 @@ func (p *Path) OnLandingPageClick(w http.ResponseWriter, req request.Request) er
 				return offer.GetOffer(o.OfferId).OnLandingPageClick(w, req)
 			}
 		}
-	case 1: // path为/click/N，按照指定顺序(1~)选择一个Offer
-		i, err := strconv.ParseInt(pp[1], 10, 64)
+	case 3: // path为/click/N，按照指定顺序(1~)选择一个Offer
+		i, err := strconv.ParseInt(pp[2], 10, 64)
 		if err != nil || i == 0 || i > int64(len(p.offers)) {
 			return fmt.Errorf("[Path][OnLandingPageClick]Target offer path(%s)(i:%d) parse failed err(%v) for request(%s) in path(%d)(offers:%d)",
-				req.TrackingPath(), i, req.Id(), p.Id, len(p.offers))
+				req.TrackingPath(), i, err, req.Id(), p.Id, len(p.offers))
 		}
 		//TODO 是否需要加上lander的NumberOfOffers的检查？
 		req.SetOfferId(p.offers[i-1].OfferId)
@@ -230,10 +257,12 @@ func (p *Path) OnS2SPostback(w http.ResponseWriter, req request.Request) error {
 	}
 
 	// 不需要find，因为可能中途已被移除
-	l := lander.GetLander(req.LanderId())
-	if l != nil {
-		// 不一定肯定存在Lander
-		l.OnS2SPostback(w, req)
+	if req.LanderId() != 0 {
+		l := lander.GetLander(req.LanderId())
+		if l != nil {
+			// 不一定肯定存在Lander
+			l.OnS2SPostback(w, req)
+		}
 	}
 
 	o := offer.GetOffer(req.OfferId())

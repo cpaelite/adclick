@@ -20,6 +20,7 @@ func DBGetAvailablePaths() []PathConfig {
 		log.Errorf("[path][DBGetAvailablePaths]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c PathConfig
 	var arr []PathConfig
@@ -41,6 +42,7 @@ func DBGetUserPaths(userId int64) []PathConfig {
 		log.Errorf("[path][DBGetUserPaths]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c PathConfig
 	var arr []PathConfig
@@ -56,7 +58,7 @@ func DBGetUserPaths(userId int64) []PathConfig {
 
 func DBGetPath(pathId int64) (c PathConfig) {
 	d := dbgetter()
-	sql := "SELECT id, userId, redirectMode, directLink, status FROM Path WHERE pathId=?"
+	sql := "SELECT id, userId, redirectMode, directLink, status FROM Path WHERE id=?"
 	row := d.QueryRow(sql, pathId)
 
 	if err := row.Scan(&c.Id, &c.UserId, &c.RedirectMode, &c.DirectLink, &c.Status); err != nil {
@@ -74,6 +76,8 @@ func DBGetPathLanders(pathId int64) (landers []PathLander) {
 		log.Errorf("[path][DBGetPathLanders]Query sql:%v with pathId:%v failed:%v", sql, pathId, err)
 		return nil
 	}
+	defer rows.Close()
+
 	var pl PathLander
 	for rows.Next() {
 		err := rows.Scan(&pl.LanderId, &pl.Weight)
@@ -94,6 +98,8 @@ func DBGetPathOffers(pathId int64) (offers []PathOffer) {
 		log.Errorf("[path][DBGetPathOffers]Query sql:%v with pathId:%v failed:%v", sql, pathId, err)
 		return nil
 	}
+	defer rows.Close()
+
 	var po PathOffer
 	for rows.Next() {
 		err := rows.Scan(&po.OfferId, &po.Weight)

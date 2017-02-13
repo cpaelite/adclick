@@ -856,6 +856,7 @@
         payoutMode: 0,
         url: 'http://'
       };
+      $scope.affiliateId = "0";
       this.title = "add";
     }
 
@@ -894,7 +895,7 @@
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
-        if (!newValue) {
+        if (newValue == "0") {
           $scope.item.postbackUrl = defaultPostBackUrl;
           return;
         }
@@ -1282,6 +1283,8 @@
     var resourceName;
     if (type == 'affiliate') {
       resourceName = 'AffiliateNetwork';
+    } else if (type == 'traffic') {
+      resourceName = 'TrafficSource';
     } else {
       resourceName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     }
