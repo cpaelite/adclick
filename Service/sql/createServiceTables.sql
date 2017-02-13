@@ -7,6 +7,7 @@ CREATE TABLE AdClickTool.`User` (
   `lastname` varchar(256) NOT NULL,
   `status` int(11) NOT NULL DEFAULT 0 COMMENT '0:New;1:运行中;2:已过期',
   `lastLogon` int(11) COMMENT '上次登录时间的时间戳',
+  `timezone` varchar(6) COMMENT '默认的时区，格式:+08:00'
   `rootdomainredirect` varchar(512) NOT NULL DEFAULT '' COMMENT '当访问用户的rootdomain时的跳转页面，如果为空则显示默认的404页面',
   `json` text NOT NULL COMMENT '按照既定规则生成的User信息(CompanyName,Phone,DefaultTimeZone,DefaultHomeScreen)',
   `referralToken` varchar(128) NOT NULL COMMENT '用户推荐链接中的token，链接中其他部分现拼',
@@ -241,8 +242,9 @@ CREATE TABLE AdClickTool.`UserReferralLog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `referredUserId` int(11) NOT NULL,
-  `acquired` varchar(64) NOT NULL,
-  `status` int(11) NOT NULL COMMENT '0:New;1:Activated',
+  `acquired` int(11) NOT NULL COMMENT '用户注册的时间，时间戳',
+  `status` int(11) NOT NULL COMMENT '0:New刚注册;1:Activated已充值',
+  `lastActivity` int(11) NOT NULL COMMENT '最近一次充值时间戳 ',
   `recentCommission` int(11) NOT NULL,
   `totalCommission` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -253,7 +255,7 @@ CREATE TABLE AdClickTool.`TemplatePlan` (
   `name` varchar(64) NOT NULL,
   `desc` text NOT NULL,
   `normalPrice` int(11) NOT NULL,
-  `onSalePrice` int(11) NOT NULL,
+  `onSalePrice` int(11) NOT NULL COMMENT '暂时保留，不用',
   `eventsLimit` int(11) NOT NULL,
   `supportType` int(11) NOT NULL COMMENT '0:Pro;1:Premium;2:Dedicated',
   `retentionLimit` int(11) NOT NULL COMMENT '报表最长时间月份数',
