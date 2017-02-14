@@ -639,7 +639,18 @@ function updateLander2Path(landerId, pathId, weight, connection) {
             resolve(result);
         });
     })
+}
 
+function deleteLander2Path(pathId, connection) {
+    var sqllander2path = "delete from   Lander2Path   where `pathId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqllander2path, [pathId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    })
 }
 
 //Offer
@@ -812,7 +823,6 @@ function insertOffer2Path(offerid, pathid, pathweight, connection) {
 
 function updateOffer2Path(offerId, pathId, weight, connection) {
     var sqloffer2path = "delete from   Offer2Path  where `offerId`=? and `pathId`=?";
-
     return new Promise(function (resolve, reject) {
         connection.query(sqloffer2path, [offerId, pathId], function (err, result) {
             if (err) {
@@ -821,8 +831,20 @@ function updateOffer2Path(offerId, pathId, weight, connection) {
             resolve(result);
         });
     })
-
 }
+
+function deleteOffer2Path( pathId, connection) {
+    var sqloffer2path = "delete from   Offer2Path  where  `pathId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqloffer2path, [pathId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    })
+}
+
 //Path2Rule 
 function insertPath2Rule(pathId, ruleId, weight, status, connection) {
     return new Promise(function (resolve, reject) {
@@ -845,7 +867,17 @@ function updatePath2Rule(pathId, ruleId, weight, status, connection) {
             resolve(result);
         });
     });
-
+}
+function deletePath2Rule(ruleId, connection) {
+    var sqlpath2rule = "delete  from Path2Rule  where  `ruleId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlpath2rule, [ruleId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
 }
 
 //Rule2Flow
@@ -865,6 +897,18 @@ function updateRule2Flow(status, ruleId, flowId, connection) {
     var sqlrule2flow = "delete from   Rule2Flow   where  `ruleId`=?  and `flowId`=?";
     return new Promise(function (resolve, reject) {
         connection.query(sqlrule2flow, [ruleId, flowId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function deleteRule2Flow( flowId, connection) {
+    var sqlrule2flow = "delete from  Rule2Flow   where  `flowId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlrule2flow, [flowId], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -1140,3 +1184,7 @@ exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
 exports.saveEventLog = saveEventLog;
 exports.query = query;
+exports.deletePath2Rule=deletePath2Rule;
+exports.deleteRule2Flow=deleteRule2Flow;
+exports.deleteLander2Path=deleteLander2Path;
+exports.deleteOffer2Path=deleteOffer2Path;
