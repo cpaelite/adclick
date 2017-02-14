@@ -7,7 +7,7 @@ module.exports = {
     connectionLimit:10
   },
   "redis":{
-    host:"newbidderredis0001.augmjh.0001.usw1.cache.amazonaws.com",
+    host:"adclick-jp.082pif.ng.0001.apne1.cache.amazonaws.com",
     port:"6379",
     channel:"channel_campaign_changed_users"
   },

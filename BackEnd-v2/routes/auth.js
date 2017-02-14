@@ -49,8 +49,8 @@ router.post('/auth/login', async function (req, res, next) {
                 res.json({ token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText) });
 
                 //更新登录时间
-                let updateSql="update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
-                await query(updateSql,[rows[0].id]);
+                let updateSql = "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
+                await query(updateSql, [rows[0].id]);
 
             } else {
                 res.status(401).json({
@@ -102,27 +102,27 @@ router.post('/auth/signup', async function (req, res, next) {
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
         json: Joi.object().optional(),
-        refToken:Joi.string().optional().empty("")
+        refToken: Joi.string().optional().empty("")
     });
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         //check email exists
-        let UserResult=await query("select id from User where `email`=?",[value.email]);
-        if (UserResult.length >0 ) throw new Error("account exists");
+        let UserResult = await query("select id from User where `email`=?", [value.email]);
+        if (UserResult.length > 0) throw new Error("account exists");
         //事务开始
         await common.beginTransaction(connection);
         let idtext = util.getRandomString(6);
-        let reftoken = util.getUUID()+ "." + idtext;
+        let reftoken = util.getUUID() + "." + idtext;
         //User
-        let sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (?,?,?,?,?,?)";
+        let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (unix_timestamp(now()),?,?,?,?,?,?)";
         let params = [
             value.firstname, value.lastname, value.email,
-            md5(value.password), idtext,reftoken
+            md5(value.password), idtext, reftoken
         ];
         if (value.json) {
-            sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (?,?,?,?,?,?,?)";
+            sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
             params.push(JSON.stringify(value.json))
         }
         let result = await query(sql, params);
@@ -131,11 +131,19 @@ router.post('/auth/signup', async function (req, res, next) {
             await query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0]);
         }
         //如果refToken 不为"" 说明是从推广链接过来的
-        if(value.refToken){
-            let referredUserId = value.refToken.split('.').length== 2 ? value.refToken.split('.')[1] : 0;
-            if(referredUserId)
-            await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`) values (?,?,unix_timestamp(now()),0)",[result.insertId,referredUserId])
+        if (value.refToken) {
+            let slice = value.refToken.split('.');
+            let referreUserId = slice.length == 2 ? slice[1] : 0;
+            
+            if (referreUserId) {
+                let USER=await query("select `id` from User where `idText` = ?",[referreUserId]);
+                if(USER.length == 0){
+                    throw new Error("refToken error");
+                }
+                await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`) values (?,?,unix_timestamp(now()),0)", [USER[0].id, result.insertId]);
+            }
         }
+        
         await common.commit(connection);
         res.json({
             status: 1,
