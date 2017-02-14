@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', '$cacheFactory', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
       ReportCtrl
     ]);
 
@@ -40,16 +40,11 @@
     }
   }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, $cacheFactory, columnDefinition, groupByOptions, Report, Preference) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     $scope.app.subtitle = perfType;
 
     $scope.groupByOptions = groupByOptions;
-
-    var cache = $cacheFactory.get('report-page');
-    if (!cache) {
-      cache = $cacheFactory('report-page', {capacity:100});
-    }
 
     // status, from, to, datetype, groupBy
     var pageStatus = {};
@@ -73,14 +68,18 @@
       if ($scope.datetype == '0') {
         var fromDate = (stateParams.from||'').split('T');
         var toDate = (stateParams.to||'').split('T');
-        $scope.fromDate = fromDate[0] || moment().format('YYYY-MM-DD');
-        $scope.fromTime = fromDate[1] || '00:00';
-        $scope.toDate = toDate[0] || moment().add(1, 'days').format('YYYY-MM-DD');
-        $scope.toTime = toDate[1] || '00:00';
+        $scope.fromDate = fromDate[0];
+        $scope.fromTime = fromDate[1];
+        $scope.toDate = toDate[0];
+        $scope.toTime = toDate[1];
       }
     } else {
       $scope.datetype = '1';
     }
+    $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
+    $scope.fromTime = $scope.fromTime || '00:00';
+    $scope.toDate = $scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
+    $scope.toTime = $scope.toTime || '00:00';
     pageStatus.datetype = $scope.datetype;
     getDateRange($scope.datetype);
 
@@ -90,7 +89,7 @@
       if (val) {
         var cacheKey = gb.value + ':' + val;
         // todo: get name from server if not in cache
-        var cacheName = cache.get(cacheKey) || val;
+        var cacheName = reportCache.get(cacheKey) || val;
         $scope.filters.push({ key: gb.value, val: val, name: cacheName });
       }
     });
@@ -347,7 +346,7 @@
       var group = pageStatus.groupBy[0];
 
       var cacheKey = group + ':' + row.id;
-      cache.put(cacheKey, row.name);
+      reportCache.put(cacheKey, row.name);
 
       $scope.filters.push({ key: group, val: row.id });
 
@@ -379,11 +378,11 @@
     if (perfType == 'affiliate')
       editTemplateUrl = 'tpl/affiliateNetwork-edit-dialog.html';
 
-    $scope.editItem = function (ev, item, duplicate) {
+    $scope.editItem = function (ev, item, duplicate, cache) {
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -408,7 +407,7 @@
         controller: controller,
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {item: item, perfType: perfType, duplicate: !!duplicate},
+        locals: {item: item, perfType: perfType, duplicate: !!duplicate, cache: cache},
         bindToController: true,
         targetEvent: ev,
         templateUrl: editTemplateUrl
@@ -500,16 +499,27 @@
         pageStatus.to = toDate + 'T23:59';
       }
     }
+
+    if (perfType == 'campaign') {
+      var cache = reportCache.get('campaign-cache');
+      if (cache) {
+        reportCache.remove('campaign-cache');
+        $scope.editItem(null, {}, false, cache);
+      }
+    }
   }
 
-  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, Campaign, Flow, TrafficSource, urlParameter) {
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter) {
     $scope.tags = [];
 
     // init load data
     var initPromises = [], prms;
-    if (this.item) {
+    var theCampaign;
+    if (this.cache) {
+      theCampaign = this.cache;
+      this.title = theCampaign.id ? 'edit' : 'add';
+    } else if (this.item) {
       var isDuplicate = this.duplicate;
-      var theCampaign;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         theCampaign = campaign.data;
         if (isDuplicate) delete theCampaign.id;
@@ -558,7 +568,8 @@
           $scope.costModelValue = $scope.item.cpmValue;
         }
         $scope.tags = $scope.item.tags;
-        $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
+        if ($scope.item.trafficSourceId)
+          $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
         if ($scope.item.targetFlowId) {
           $scope.item.flow = {
             id: $scope.item.targetFlowId.toString()
@@ -723,14 +734,28 @@
       }
     });
 
+    function saveCacheData() {
+      var cacheData = angular.copy($scope.item);
+      delete cacheData.flow;
+      cacheData.trafficSourceId = $scope.trafficSourceId;
+      cacheData.targetFlowId = $scope.item.flow.id;
+      if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
+        cacheData[$scope.radioTitle.toLowerCase() + 'Value'] = $scope.costModelValue;
+      }
+      cacheData.tags = $scope.tags;
+      reportCache.put('campaign-cache', cacheData);
+    }
+
     $scope.toAddFlow = function () {
       $mdDialog.hide();
-      $scope.$parent.$state.go('app.flow');
+      saveCacheData();
+      $scope.$parent.$state.go('app.flow', {frcpn: 1});
     };
 
     $scope.toEditFlow = function () {
       $mdDialog.hide();
-      $scope.$parent.$state.go('app.flow', {id: $scope.item.flow.id});
+      saveCacheData();
+      $scope.$parent.$state.go('app.flow', {id: $scope.item.flow.id, frcpn: 1});
     };
 
     this.cancel = $mdDialog.cancel;
