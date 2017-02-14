@@ -340,7 +340,7 @@ router.delete('/api/flows/:id', async function (req, res, next) {
         if (campaignResults.length){
              res.json({
                 status:0,
-                message:"flow bind in some campaigns",
+                message:"flow used by campaign!",
                 data:{
                     campaigns:campaignResults
                 }
