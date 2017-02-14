@@ -327,7 +327,9 @@ router.post('/api/flows/:id', function (req, res, next) {
 router.delete('/api/flows/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        name:Joi.string().optional().empty(""),
+        hash:Joi.string().optional().empty("")
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
