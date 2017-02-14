@@ -492,6 +492,12 @@ router.get('/api/billing', async function (req, res, next) {
 // });
 
 
+//cname 
+router.post('/api/cname',function(req,res,next){
+
+});
+
+
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
         connection.query(sql, params, function (err, result) {

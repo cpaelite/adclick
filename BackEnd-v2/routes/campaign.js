@@ -445,6 +445,9 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
             status: 1,
             message: 'success'
         });
+        //redis pub
+        new Pub(true).publish(setting.redis.channel, value.userId);
+        
     } catch (e) {
         next(e);
     }

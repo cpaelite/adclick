@@ -3,6 +3,8 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
+var Pub = require('./redis_sub_pub');
+ 
 
 /**
  * @api {get} /api/flows  获取用户所有flows
@@ -338,6 +340,8 @@ router.delete('/api/flows/:id', async function (req, res, next) {
             status: 1,
             message: 'success'
         });
+         //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId);
     } catch (e) {
         next(e);
     } finally {
@@ -500,6 +504,9 @@ const start = async(data, schema) => {
             throw err;
         }
         await common.commit(connection);
+
+        //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId);
 
         delete value.userId;
         Result = value;
