@@ -116,13 +116,13 @@ router.post('/auth/signup', async function (req, res, next) {
         let idtext = util.getRandomString(6);
         let reftoken = util.getUUID() + "." + idtext;
         //User
-        let sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (?,?,?,?,?,?)";
+        let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (unix_timestamp(now()),?,?,?,?,?,?)";
         let params = [
             value.firstname, value.lastname, value.email,
             md5(value.password), idtext, reftoken
         ];
         if (value.json) {
-            sql = "insert into User(`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (?,?,?,?,?,?,?)";
+            sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
             params.push(JSON.stringify(value.json))
         }
         let result = await query(sql, params);
@@ -134,7 +134,7 @@ router.post('/auth/signup', async function (req, res, next) {
         if (value.refToken) {
             let slice = value.refToken.split('.');
             let referreUserId = slice.length == 2 ? slice[1] : 0;
-             
+            
             if (referreUserId) {
                 let USER=await query("select `id` from User where `idText` = ?",[referreUserId]);
                 if(USER.length == 0){
