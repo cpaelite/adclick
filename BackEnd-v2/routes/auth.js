@@ -134,7 +134,6 @@ router.post('/auth/signup', async function (req, res, next) {
         if (value.refToken) {
             let slice = value.refToken.split('.');
             let referreUserId = slice.length == 2 ? slice[1] : 0;
-            
             if (referreUserId) {
                 let USER=await query("select `id` from User where `idText` = ?",[referreUserId]);
                 if(USER.length == 0){
