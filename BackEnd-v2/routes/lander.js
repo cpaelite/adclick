@@ -162,7 +162,6 @@ router.get('/api/landers/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = await common.getLanderDetail(value.id, value.userId, connection);
-        //connection.release();
         res.json({
             status: 1,
             message: 'success',
