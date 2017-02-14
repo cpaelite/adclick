@@ -6,7 +6,8 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
-
+var setting = require('../config/setting');
+var Pub = require('./redis_sub_pub');
 
 /**
  * @api {post} /api/landers  新增lander
@@ -46,6 +47,10 @@ router.post('/api/landers', async function (req, res, next) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 2, connection);
             }
         }
+
+         //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId,"landerAdd");
+
         delete value.userId;
         value.id = landerResult.insertId;
 
@@ -108,6 +113,9 @@ router.post('/api/landers/:id', async function (req, res, next) {
                 await common.insertTags(value.userId, value.id, value.tags[index], 2, connection);
             }
         }
+         //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId,"landerUpdate");
+
         delete value.userId;
 
         res.json({
@@ -234,11 +242,12 @@ router.delete('/api/landers/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = await common.deleteLander(value.id, value.userId,value.name,value.hash, connection);
-
         res.json({
             status: 1,
             message: 'success'
         });
+         //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId,"landerDelete");
     } catch (e) {
         next(e);
     }
