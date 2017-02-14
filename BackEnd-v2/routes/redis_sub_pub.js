@@ -4,7 +4,7 @@ var log4js = require('log4js');
 var log = log4js.getLogger('redis');
 
 function initClient(param) {
-    var option = {host: setting.redis.host, port: setting.redis.port};
+    var option = { host: setting.redis.host, port: setting.redis.port };
     if (param) {
         option = Object.assign(option, param);
     }
@@ -22,7 +22,7 @@ class PubSub {
     constructor(subConnected) {
         this.sub = initClient();
         this.handlers = new Map();
-        this.subAction = (channle, message)=> {
+        this.subAction = (channle, message) => {
             let actions = this.handlers.get(channle) || new Set();
             for (let action of actions) {
                 action(message);
@@ -32,11 +32,11 @@ class PubSub {
         this.subConnected = subConnected ? subConnected : false;
     }
 
-    publish(channel, message) {
-        let action = ()=> {
+    publish(channel, message, method) {
+        let action = () => {
             let pub = initClient();
             pub.publish(channel, message);
-            log.info("[redis][push]", channel, message);
+            log.info("[redis][push]", channel, message, method);
         };
         if (this.subConnected === false) {
             this.alredyPublishs.push(action);

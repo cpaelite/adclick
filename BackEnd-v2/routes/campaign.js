@@ -6,7 +6,7 @@ var Pub = require('./redis_sub_pub');
 var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
 
- 
+
 /**
  * @api {post} /api/campaigns/ 新增campaign
  * @apiName 新增campaign
@@ -174,6 +174,7 @@ const start = async (data, schema) => {
     let ResultError;
     let connection;
     try {
+        let updateMethod = false;
         let value = await common.validate(data, schema);
         connection = await common.getConnection();
         await common.beginTransaction(connection);
@@ -181,12 +182,13 @@ const start = async (data, schema) => {
             //Campaign
             let campResult, flowResult;
             if (value.id) {
+                updateMethod = true;
                 await common.updateCampaign(value, connection);
             } else {
                 let hash = uuidV4();
                 let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
                 campResult = await common.insertCampaign(value, hash, connection);
-                let domainResult=await common.query(mainDomainsql, [value.userId], connection);
+                let domainResult = await common.query(mainDomainsql, [value.userId], connection);
                 value.hash = hash;
                 if (domainResult.length) {
                     value.url = setting.newbidder.httpPix + value.idText + "." + domainResult[0].domain + "/" + value.hash;
@@ -362,7 +364,7 @@ const start = async (data, schema) => {
 
 
         //redis pub
-        new Pub(true).publish(setting.redis.channel, value.userId);
+        new Pub(true).publish(setting.redis.channel, value.userId, updateMethod ? "campaignUpdate" : "campaignAdd");
         delete value.userId;
         delete value.idText;
         Result = value;
@@ -446,8 +448,8 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
             message: 'success'
         });
         //redis pub
-        new Pub(true).publish(setting.redis.channel, value.userId);
-        
+        new Pub(true).publish(setting.redis.channel, value.userId,"campaignDelete");
+
     } catch (e) {
         next(e);
     }
