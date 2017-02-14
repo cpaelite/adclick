@@ -45,30 +45,30 @@
     <div class="cs-subform-group" ng-show="filter.datetype==0">
       <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
       <div class="cs-subform-control">
-        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.fromDate"
+        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
                 ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
                 ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-          {{filter.fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+          {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
         </button>
-        <select class="cs-subform-select" ng-model="filter.fromTime">
+        <select class="cs-subform-select" ng-model="fromTime">
           <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
         </select>
       </div>
       <label class="cs-subform-label">{{'toDate' | translate}}：</label>
       <div class="cs-subform-control">
-        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.toDate"
+        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
                 ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
                 ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-          {{filter.toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+          {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
         </button>
-        <select class="cs-subform-select" ng-model="filter.toTime">
+        <select class="cs-subform-select" ng-model="toTime">
           <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
         </select>
       </div>
     </div>
 
     <div class="btn-right">
-      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event)"><i class="material-icons">refresh</i>Refresh</md-button>
+      <md-button class="md-raised copy-btn main-domain" ng-click="refreshDate()"><i class="material-icons">refresh</i>Refresh</md-button>
       <md-button class="md-raised add-another-btn" ng-show="false"><i class="material-icons">list</i>Details</md-button>
     </div>
     <div class="data-table">
@@ -84,7 +84,7 @@
           </tr>
         </thead>
         <tbody >
-          <tr ng-repeat="item in item.eventLogs">
+          <tr ng-repeat="item in items.rows">
             <td>{{item.user}}</td>
             <td>{{item.entityType}}</td>
             <td>{{item.entityName}}</td>
@@ -96,9 +96,7 @@
       </table>
     </div>
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
-    md-total="{{item.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+    md-total="{{items.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
   </div>
-  <i class="material-icons search-icon">search</i>
-  <span class="search-word">No search results have been found in response to your search criteria.</span>
 
 </div>
