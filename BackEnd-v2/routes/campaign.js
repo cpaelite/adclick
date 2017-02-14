@@ -5,8 +5,7 @@ var common = require('./common');
 var Pub = require('./redis_sub_pub');
 var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
-var saveOrUpdateFlow= require("./flow").saveOrUpdateFlow;
-
+ 
  
 
 
@@ -224,17 +223,6 @@ const start = async (value, connection) => {
         }
     }
     
-    //兼容处理
-    value.flow.userId=value.userId;
-    value.flow.idText=value.idText;
-    let flowResult = await saveOrUpdateFlow(value.flow, connection);
-    if(flowResult){
-        delete flowResult.userId;
-        delete flowResult.idText;
-    }
-
-    value.flow = flowResult;
-
     //redis pub
     new Pub(true).publish(setting.redis.channel, value.userId, updateMethod ? "campaignUpdate" : "campaignAdd");
     delete value.userId;
