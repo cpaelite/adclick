@@ -257,7 +257,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flows', function (req, res, next) {
+router.post('/api/flows', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -272,15 +272,23 @@ router.post('/api/flows', function (req, res, next) {
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.type = 1;
-    start(req.body, schema).then(function (data) {
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let data=await saveOrUpdateFlow(value,connection);
         res.json({
             status: 1,
             message: 'success',
             data: data
-        })
-    }).catch(function (err) {
-        next(err);
-    });
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -292,7 +300,7 @@ router.post('/api/flows', function (req, res, next) {
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flows/:id', function (req, res, next) {
+router.post('/api/flows/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         rules: Joi.array().required(),
         hash: Joi.string(),
@@ -307,15 +315,23 @@ router.post('/api/flows/:id', function (req, res, next) {
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.id = req.params.id;
-    start(req.body, schema).then(function (data) {
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let data=await saveOrUpdateFlow(value,connection);
         res.json({
             status: 1,
             message: 'success',
             data: data
-        })
-    }).catch(function (err) {
-        next(err);
-    });
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -365,136 +381,116 @@ router.delete('/api/flows/:id', async function (req, res, next) {
     }
 });
 
-module.exports = router;
 
 
-const start = async (data, schema) => {
-    let Result;
-    let ResultError;
-    let connection;
+
+async  function saveOrUpdateFlow (value, connection)  {
+    
+    let updateMethod = false;
     try {
-        let updateMethod = false;
-        let value = await common.validate(data, schema);
-        connection = await common.getConnection();
+        let flowResult;
         await common.beginTransaction(connection);
-        try {
+        //Flow
+        if (!value.id) {
+            flowResult = await common.insertFlow(value.userId, value, connection)
+        } else if (value && value.id) {
+            updateMethod = true;
+            await common.updateFlow(value.userId, value, connection)
+        }
 
-            let flowResult;
-            //Flow
-            if (!value.id) {
-                flowResult = await common.insertFlow(value.userId, value, connection)
-            } else if (value && value.id) {
-                updateMethod = true;
-                await common.updateFlow(value.userId, value, connection)
-            }
+        let flowId = value.id ? value.id : (flowResult ? (flowResult.insertId ? flowResult.insertId : 0) : 0);
+        if (!flowId) {
+            throw new Error('Flow ID Lost');
+        }
+        //flowId
+        value.id = flowId;
 
-            let flowId = value.id ? value.id : (flowResult ? (flowResult.insertId ? flowResult.insertId : 0) : 0);
-            if (!flowId) {
-                throw new Error('Flow ID Lost');
-            }
-            //flowId
-            value.id = flowId;
+        //解除flow下的所有rules 
+        await common.deleteRule2Flow(flowId, connection);
 
-            //解除flow下的所有rules 
-            await common.deleteRule2Flow(flowId, connection);
-
-            if (value.rules && value.rules.length > 0) {
-                for (let i = 0; i < value.rules.length; i++) {
-                    // parse conditions array
-                    let rule = value.rules[i]
-                    if (rule.conditions) {
-                        rule.json = rule.conditions
-                        rule.object = conditionFormat(rule.conditions)
+        if (value.rules && value.rules.length > 0) {
+            for (let i = 0; i < value.rules.length; i++) {
+                // parse conditions array
+                let rule = value.rules[i]
+                if (rule.conditions) {
+                    rule.json = rule.conditions
+                    rule.object = conditionFormat(rule.conditions)
+                }
+                try {
+                    let ruleResult;
+                    //RULE
+                    if (!value.rules[i].id) {
+                        ruleResult = await common.insetRule(value.userId, value.rules[i], connection);
+                    } else {
+                        await common.updateRule(value.userId, value.rules[i], connection);
                     }
-                    try {
-                        let ruleResult;
-                        //RULE
-                        if (!value.rules[i].id) {
-                            ruleResult = await common.insetRule(value.userId, value.rules[i], connection);
-                        } else {
-                            await common.updateRule(value.userId, value.rules[i], connection);
-                        }
-                        let ruleId = value.rules[i].id ? value.rules[i].id : (ruleResult ? (ruleResult.insertId ? ruleResult.insertId : 0) : 0);
-                        if (!ruleId) {
-                            throw new Error('Rule ID Lost');
-                        }
-                        //新建rule 和 flow 关系
-                        let c1 = common.insertRule2Flow(ruleId, flowId, value.rules[i].enabled ? 1 : 0, connection);
+                    let ruleId = value.rules[i].id ? value.rules[i].id : (ruleResult ? (ruleResult.insertId ? ruleResult.insertId : 0) : 0);
+                    if (!ruleId) {
+                        throw new Error('Rule ID Lost');
+                    }
+                    //新建rule 和 flow 关系
+                    let c1 = common.insertRule2Flow(ruleId, flowId, value.rules[i].enabled ? 1 : 0, connection);
 
-                        //解除rule下的所有path
-                        let c2 = common.deletePath2Rule(ruleId, connection);
+                    //解除rule下的所有path
+                    let c2 = common.deletePath2Rule(ruleId, connection);
 
-                        await Promise.all([c1, c2]);
+                    await Promise.all([c1, c2]);
 
-                        value.rules[i].id = ruleId;
+                    value.rules[i].id = ruleId;
 
-                        //PATH
-                        if (value.rules[i].paths && value.rules[i].paths.length > 0) {
-                            for (let j = 0; j < value.rules[i].paths.length; j++) {
-                                let pathResult;
-                                if (!value.rules[i].paths[j].id) {
-                                    pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
-                                } else {
-                                    await common.updatePath(value.userId, value.rules[i].paths[j], connection);
-                                }
-                                let pathId = value.rules[i].paths[j].id ? value.rules[i].paths[j].id : (pathResult ? (pathResult.insertId ? pathResult.insertId : 0) : 0);
-                                if (!pathId) {
-                                    throw new Error('Path ID Lost');
-                                }
-                                await common.insertPath2Rule(pathId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled ? 1 : 0, connection);
-                                value.rules[i].paths[j].id = pathId;
-
-                                //解除path下的所有landers
-                                let d1 = common.deleteLander2Path(pathId, connection);
-
-                                //解除path下的所有offers
-                                let d2 = common.deleteOffer2Path(pathId, connection);
-
-                                await Promise.all([d1, d2]);
-
-                                //Lander
-                                let landersSlice = value.rules[i].paths[j].landers;
-                                let offersSlice = value.rules[i].paths[j].offers;
-
-                                let p1 = insertOrUpdateLanderAndLanderTags(value.userId, pathId, landersSlice, connection);
-                                let p2 = insertOrUpdateOfferAndOfferTags(value.userId, value.idText, pathId, offersSlice, connection);
-
-                                await Promise.all([p1, p2]);
-
+                    //PATH
+                    if (value.rules[i].paths && value.rules[i].paths.length > 0) {
+                        for (let j = 0; j < value.rules[i].paths.length; j++) {
+                            let pathResult;
+                            if (!value.rules[i].paths[j].id) {
+                                pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
+                            } else {
+                                await common.updatePath(value.userId, value.rules[i].paths[j], connection);
                             }
-                        }
+                            let pathId = value.rules[i].paths[j].id ? value.rules[i].paths[j].id : (pathResult ? (pathResult.insertId ? pathResult.insertId : 0) : 0);
+                            if (!pathId) {
+                                throw new Error('Path ID Lost');
+                            }
+                            await common.insertPath2Rule(pathId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled ? 1 : 0, connection);
+                            value.rules[i].paths[j].id = pathId;
 
-                    } catch (e) {
-                        throw e;
+                            //解除path下的所有landers
+                            let d1 = common.deleteLander2Path(pathId, connection);
+
+                            //解除path下的所有offers
+                            let d2 = common.deleteOffer2Path(pathId, connection);
+
+                            await Promise.all([d1, d2]);
+
+                            //Lander
+                            let landersSlice = value.rules[i].paths[j].landers;
+                            let offersSlice = value.rules[i].paths[j].offers;
+
+                            let p1 = insertOrUpdateLanderAndLanderTags(value.userId, pathId, landersSlice, connection);
+                            let p2 = insertOrUpdateOfferAndOfferTags(value.userId, value.idText, pathId, offersSlice, connection);
+
+                            await Promise.all([p1, p2]);
+
+                        }
                     }
+
+                } catch (e) {
+                    throw e;
                 }
             }
-
-        } catch (err) {
-            await common.rollback(connection);
-            throw err;
         }
-        await common.commit(connection);
 
-        //reids pub
-        new Pub(true).publish(setting.redis.channel, value.userId, updateMethod ? "flowUpdate" : "flowAdd");
-
-        delete value.userId;
-        Result = value;
-    } catch (e) {
-        ResultError = e;
-    } finally {
-        if (connection) {
-            connection.release();
-        }
+    } catch (err) {
+        await common.rollback(connection);
+        throw err;
     }
+    await common.commit(connection);
 
-    return new Promise(function (resolve, reject) {
-        if (ResultError) {
-            reject(ResultError);
-        }
-        resolve(Result);
-    });
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, value.userId, updateMethod ? "flowUpdate" : "flowAdd");
+
+    delete value.userId;
+    return value;
 };
 
 async function insertOrUpdateLanderAndLanderTags(userId, pathId, landersSlice, connection) {
@@ -1109,3 +1105,9 @@ function formatIPValue(id, operand, value) {
     r = r.concat(m)
     return r
 }
+
+
+
+ 
+exports.router=router;
+exports.saveOrUpdateFlow=saveOrUpdateFlow;
