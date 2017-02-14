@@ -335,6 +335,18 @@ router.delete('/api/flows/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
+        //检查flow 是否绑定在某些 active campaign上
+        let campaignResults=await common.query("select `id`,`name` from TrackingCampaign where deleted = ? and targetFlowId = ? ",[0,value.id],connection);
+        if (campaignResults.length){
+             res.json({
+                status:0,
+                message:"flow bind in some campaigns",
+                data:{
+                    campaigns:campaignResults
+                }
+            });
+            return;
+        }
         let result = await common.deleteFlow(value.id, value.userId, connection);
         res.json({
             status: 1,
