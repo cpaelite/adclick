@@ -1288,7 +1288,56 @@ h1.setting-title{
     padding: 20px 50px;
     background: #f1f5fa;
 }
-.user-mangement span{
+.user-mangement-content{
+    max-width: 600px;
+    margin:0 auto;
+}
+.user-mangement-content input[type="email"]{
+    width: 80%;
+}
+.user-mangement-content button{
+    float: right;
+}
+.user-mangement-content label{
+    font-weight: 700;
+}
+.user-mangement-content .small-word{
+    font-weight: normal;
+    font-style: italic;
+}
+.user-mangement-content .user-list{
+    border: 1px solid #c9c9c9;
+    background: #f1f5fa;
+    padding:20px;
+}
+.user-mangement-content .user-list span{
+    display: inline-block;
+    font-weight: normal;
+}
+.user-mangement-content .user-list button{
+    float: none;
+    margin-left: 88px;
+}
+.user-mangement-content .user-list span.nothing-word{
+    display: block;
+    text-align: center;
+}
+.user-mangement-content .user-list .email-con{
+    margin: 0 88px;
+}
+.user-mangement-content .user-list .delete-user{
+    float: right;
+    background: #949db5;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.user-mangement span,
+.user-mangement-content span{
     display: block;
     font-weight: 700;
     text-align: center;
@@ -1402,6 +1451,26 @@ input[type="checkbox"].th-checkbox{
 .invoices .data-table .download{
     color: #12bdce;
 }
+.PayPal-dialog p{
+    text-align: center;
+}
+.PayPal-form{
+    max-width: 720px;
+    margin:20px auto;
+}
+.paypal-btn{
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(201, 201, 201, 0.52);
+}
+.PayPal-dialog .layout-row .flex-100{
+    margin: 25px 0;
+}
+.PayPal-dialog .layout-row .flex-50{
+    margin: -20px 0;
+}
+.footer-p{
+    margin: 50px 0;
+}
 .event-log .md-table-pagination{
     border-top: none;
 }
@@ -1460,6 +1529,8 @@ input[type="checkbox"].th-checkbox{
     max-height: 300px;
     overflow-y: auto;
 }
+
+
 @media screen and (max-width:998px){
     .another-list-btn .add-another-btn{
         margin-right: 1px;

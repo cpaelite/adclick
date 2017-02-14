@@ -1,0 +1,50 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
+    </div>
+  </md-toolbar>
+  <md-dialog-content class="md-dialog-content PayPal-dialog">
+    <p class="payment-info-note">Please choose a payment method and fill in your payment details</p>
+    <p class="accepted-payment-methods">
+      For payments we accept MasterCard, Maestro and Visa cards.<br>
+      Alternatively, you can also pay via Paypal.
+    </p>
+    <form name="editPayPal" ng-submit="" class="form-horizontal PayPal-form">
+      <div class="paypal-btn">
+        <button type="button" class="btn btn-primary">PayPal</button>
+      </div>
+      <div layout="row">
+        <md-input-container flex="100">
+          <label>Card Number</label>
+          <input required="" name="cardNumber" ng-model="project.cardNumber">
+          <div ng-messages="projectForm.cardNumber.$error">
+            <div ng-message="required">This is required.</div>
+          </div>
+        </md-input-container>
+      </div>
+      <div layout="row">
+        <md-input-container flex="50">
+          <label>MM / YY</label>
+          <input required name="expiration" ng-model="project.expiration" type="tel">
+          <div ng-messages="projectForm.expiration.$error">
+            <div ng-message="required">This is required.</div>
+          </div>
+        </md-input-container>
+        <md-input-container flex="50">
+          <label>CVV (3 digits)</label>
+          <input required name="cvv" ng-model="project.cvv" type="tel">
+          <div ng-messages="projectForm.cvv.$error">
+            <div ng-message="required">This is required.</div>
+          </div>
+        </md-input-container>
+      </div>
+      <p class="footer-p">Voluum takes credit card data security very seriously. For that reason, we use Braintree to securely handle credit card information. Braintree is a Validated Level 1 PCI DSS Compliant Service Provider.</p>
+    </form>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+    </md-button>
+    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+  </md-dialog-actions>
+</md-dialog>
