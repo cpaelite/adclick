@@ -1861,7 +1861,7 @@ app.get('/api/postbackurl', function (req, res) {
  * @apiName 获取profile account
  *
  */
-app.get('/api/set/profile/account', function (req, res) {
+app.get('/api/profile', function (req, res) {
     var result = {
         status: 1,
         message: 'success',
@@ -1882,7 +1882,7 @@ app.get('/api/set/profile/account', function (req, res) {
  * @apiName 保存profile account
  *
  */
-app.post('/api/set/profile/account', function (req, res) {
+app.post('/api/profile', function (req, res) {
     var result = {
         status: 1,
         message: 'success',
@@ -1907,7 +1907,7 @@ app.post('/api/set/profile/account', function (req, res) {
  * @apiParam {String} newpassword
  *
  */
-app.post('/api/set/passwordChange', function (req, res) {
+app.post('/api/password', function (req, res) {
     var result = {
         status: 1,
         message: 'success'
@@ -1919,7 +1919,7 @@ app.post('/api/set/passwordChange', function (req, res) {
  * @apiName 获取profile email   进入页面后把所有的数据一次性取出来
  *
  */
-app.get('/api/set/emailChange', function (req, res) {
+app.get('/api/email', function (req, res) {
     var result = {
         status: 1,
         message: 'success',
@@ -1935,7 +1935,7 @@ app.get('/api/set/emailChange', function (req, res) {
  * @apiParam {String} email   (同注册一样，输入邮箱以后验证邮箱是否已存在)
  *
  */
-app.post('/api/set/emailChange', function (req, res) {
+app.post('/api/email', function (req, res) {
     var result = {
         status: 1,
         message: 'success'
@@ -2298,20 +2298,20 @@ app.put('/api/blacklist', function (req, res) {
  * @apiParam {String} category: CAMPAIGN {option}
  *
  */
-app.get('/api/referrals', function (req, res) {
+app.get('/api/eventlog', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
     data: {
       totalRows: 37,
-      eventLogs: [
+      rows: [
         {
-          user: 1,
-          entityType: "",
-          entityName: "",
-          entityId: "",
-          action: "",
-          changeAt: ""
+          user: "zhengshuo@qq.com",
+          entityType: "Offer",
+          entityName: "Offer1",
+          entityId: "c05cad45-fbe4-405c-9da4-cb3b5de1ca",
+          action: "Create",
+          changeAt: "2017-02-10"
         }
       ]
     }
