@@ -2,6 +2,7 @@ var Joi = require('joi');
 var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
+const querystring = require('querystring');
 
 
 function query(sql, params, connection) {
@@ -509,7 +510,7 @@ function insertLander(userId, lander, connection) {
     val += ",'" + hash + "'"
 
     col += ",`url`";
-    val += ",'" + lander.url + "'";
+    val += ",'" + querystring.escape(lander.url) + "'";
 
     col += ",`numberOfOffers`";
     val += "," + lander.numberOfOffers;
@@ -547,7 +548,7 @@ function updateLander(userId, lander, connection) {
         sqlUpdateLander += ",`name`='" + lander.name + "'"
     }
     if (lander.url) {
-        sqlUpdateLander += ",`url`='" + lander.url + "'"
+        sqlUpdateLander += ",`url`='" + querystring.escape(lander.url) + "'"
     }
     if (lander.numberOfOffers) {
         sqlUpdateLander += ",`numberOfOffers`=" + lander.numberOfOffers
@@ -587,6 +588,7 @@ function getLanderDetail(id, userId, connection) {
                     tags.push(tagsResult[index].name);
                 }
                 if (lander[0]) {
+                    lander[0].url=querystring.unescape(lander[0].url);
                     lander[0].tags = tags;
                 }
 
@@ -655,7 +657,7 @@ function insertOffer(userId, idText, offer, connection) {
     val += ",'" + hash + "'"
 
     col += ",`url`";
-    val += ",'" + offer.url + "'";
+    val += ",'" + querystring.escape(offer.url) + "'";
 
     col += ",`payoutMode`";
     val += "," + offer.payoutMode
@@ -727,7 +729,7 @@ function updateOffer(userId, offer, connection) {
         sqlUpdateOffer += ",`name`='" + offer.name + "'"
     }
     if (offer.url) {
-        sqlUpdateOffer += ",`url`='" + offer.url + "'"
+        sqlUpdateOffer += ",`url`='" + querystring.escape(offer.url) + "'"
 
     }
     if (offer.payoutMode != undefined) {
@@ -769,6 +771,7 @@ function getOfferDetail(id, userId, connection) {
                     tags.push(tagsResult[index].name);
                 }
                 if (lander[0]) {
+                    lander[0].url=querystring.unescape(lander[0].url);
                     lander[0].tags = tags;
                 }
                 resolve(lander[0])
@@ -1009,9 +1012,11 @@ function insertAffiliates(userId, affiliate, connection) {
     return new Promise(function (resolve, reject) {
         var hash = uuidV4();
         var sql = "insert into AffiliateNetwork set `userId`= " +
-            userId + ",`name`='" + affiliate.name +
-            "',`postbackUrl`='" +
-            affiliate.postbackUrl + "',`hash`= '" + hash + "'";
+            userId + ",`name`='" + affiliate.name + "',`hash`= '" + hash + "'";
+
+        if (affiliate.postbackUrl) {
+            sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
+        }    
         if (affiliate.appendClickId != undefined) {
             sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
         }

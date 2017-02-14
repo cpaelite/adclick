@@ -9,7 +9,7 @@
   angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
     return {
       link: function (scope, element) {
-        $rootScope.$on('add', function (e, val) {
+        $rootScope.$on('add', function (e, val, attriName) {
           var domElement = element[0];
 
           if (document.selection) {
@@ -22,14 +22,16 @@
             var endPos = domElement.selectionEnd;
             var scrollTop = domElement.scrollTop;
             if (domElement.value.indexOf(val) == -1) {
-              domElement.value = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+              //domElement.value = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+              scope.item[attriName] = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
               domElement.selectionStart = startPos + val.length;
               domElement.selectionEnd = startPos + val.length;
               domElement.scrollTop = scrollTop;
             }
             domElement.focus();
           } else {
-            domElement.value += val;
+            //domElement.value += val;
+            scope.item[attriName] += val;
             domElement.focus();
           }
 
@@ -525,7 +527,6 @@
     // TrafficSource
     var allTraffic;
     prms = TrafficSource.get(null, function (trafficSource) {
-      //$scope.trafficSources = trafficSource.data.trafficsources;
       allTraffic = trafficSource.data.trafficsources;
     }).$promise;
     initPromises.push(prms);
@@ -578,10 +579,8 @@
         $scope.trafficSources.forEach(function (traffic) {
           if (traffic.id == newValue) {
             $scope.impTracking = traffic.impTracking;
-
-            if (!$scope.item.impPixelUrl) {
-              return;
-            }
+            $scope.trafficPostbackUrl = traffic.postbackUrl;
+            $scope.trafficPixelRedirectUrl = traffic.pixelRedirectUrl;
 
             var params = JSON.parse(traffic.params);
             var impParam = "";
@@ -595,7 +594,12 @@
               return;
 
             impParam = impParam.substring(0, impParam.length-1);
-            $scope.impPixelUrl = $scope.item.impPixelUrl + "?" + impParam;
+
+            if (traffic.impTracking) {
+              $scope.impPixelUrl = $scope.item.impPixelUrl + "?" + impParam;
+            } else {
+              $scope.item.url = $scope.item.url + "?" + impParam;
+            }
             return;
           }
 
@@ -650,6 +654,51 @@
         $scope.btnWord2 = "Clipboard";
       }, 2000);
     };
+
+    // campaign override url
+    $scope.btnOverride1 = "Override";
+    $scope.postbackurlOverride = function () {
+      if ($scope.btnOverride1 == "Override") {
+        $scope.btnOverride1 = "Restore";
+        $scope.trafficPostbackUrl = "";
+      } else if ($scope.btnOverride1 == "Restore") {
+        $scope.btnOverride1 = "Override";
+        getTraffic("postbackUrl");
+      }
+    };
+    $scope.btnOverride2 = "Override";
+    $scope.pixelredirecturlOverride = function () {
+      if ($scope.btnOverride2 == "Override") {
+        $scope.btnOverride2 = "Restore";
+        $scope.trafficPixelRedirectUrl = "";
+      } else if ($scope.btnOverride2 == "Restore") {
+        $scope.btnOverride2 = "Override";
+        getTraffic("pixelRedirectUrl");
+      }
+    };
+
+    function getTraffic(urlName) {
+      $scope.trafficSources.forEach(function (traffic, index) {
+        if (traffic.id == $scope.trafficSourceId) {
+          $scope.item.trafficSource = JSON.stringify(traffic);
+          var tra = {
+            id: traffic.id,
+            hash: traffic.hash,
+            name: traffic.name
+          };
+          if (urlName == "postbackUrl") {
+            tra.postbackUrl = $scope.trafficPostbackUrl
+          } else if (urlName == "pixelRedirectUrl") {
+            tra.pixelRedirectUrl = $scope.trafficPixelRedirectUrl
+          }
+          TrafficSource.save(tra, function (result) {
+            $scope.trafficSources[index].postbackUrl = $scope.trafficPostbackUrl;
+            $scope.trafficSources[index].pixelRedirectUrl = $scope.trafficPixelRedirectUrl;
+          });
+        }
+      });
+    }
+
 
     function showFlow() {
       $scope.ztreeShow = true;
@@ -771,7 +820,7 @@
 
     $scope.urlItem = urlParameter["campaign"];
     $scope.urlTokenClick = function (url) {
-      $rootScope.$broadcast('add', url);
+      $rootScope.$broadcast('add', url, "targetUrl");
     };
 
     $scope.isDisabled = false;
@@ -829,7 +878,7 @@
     };
     $scope.urlItem = urlParameter["lander"];
     $scope.urlTokenClick = function (url) {
-      $rootScope.$broadcast('add', url);
+      $rootScope.$broadcast('add', url, "url");
     };
   }
 
@@ -951,7 +1000,7 @@
     };
     $scope.urlItem = urlParameter["offer"];
     $scope.urlTokenClick = function (url) {
-      $rootScope.$broadcast('add', url);
+      $rootScope.$broadcast('add', url, "url");
     };
   }
 
@@ -974,16 +1023,16 @@
         }
         if (!$scope.item.params) {
           $scope.params = [
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''},
-            {Parameter: '', Placeholder: '', Name: '', Track: ''}
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0},
+            {Parameter: '', Placeholder: '', Name: '', Track: 0}
           ];
         } else {
           $scope.params = JSON.parse($scope.item.params);
@@ -994,17 +1043,19 @@
       $scope.item = {
         impTracking: 0,
       };
+      $scope.externalId = {};
+      $scope.cost = {};
       $scope.params = [
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''},
-        {Parameter: '', Placeholder: '', Name: '', Track: ''}
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0},
+        {Parameter: '', Placeholder: '', Name: '', Track: 0}
       ];
       this.title = "add";
       $scope.urlToken = '';
@@ -1031,7 +1082,7 @@
 
     $scope.urlItem = urlParameter["traffic"];
     $scope.urlTokenClick = function(url){
-      $rootScope.$broadcast('add', url);
+      $rootScope.$broadcast('add', url, "postbackUrl");
     };
 
     $scope.visible = false;
@@ -1042,9 +1093,9 @@
 
     $scope.$watch('externalId.Parameter', function (newValue, oldValue) {
       if(!newValue) {
-        $scope.externalId = {
-          Placeholder: null
-        };
+        if ($scope.externalId) {
+          delete $scope.externalId.Placeholder;
+        }
         return;
       }
       var placeholder = $scope.externalId.Placeholder;
@@ -1058,9 +1109,9 @@
 
     $scope.$watch('cost.Parameter', function (newValue, oldValue) {
       if (!newValue){
-        $scope.cost = {
-          Placeholder: null
-        };
+        if ($scope.externalId) {
+          delete $scope.externalId.Placeholder;
+        }
         return;
       }
 
@@ -1101,7 +1152,7 @@
       });
     }, true);
 
-    $scope.selectTrafficSourceTemplate = function (ev, item) {
+    $scope.selectTrafficSourceTemplate = function (ev) {
       $mdDialog.show({
         multiple: true,
         skipHide: true,
@@ -1109,7 +1160,7 @@
         controller: ['$scope', '$mdDialog', 'TrafficTemplate', trafficSourceTemplateCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: { item: item, currentUser: $scope.currentUser },
+        locals: {},
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/trafficSource-template-dialog.html',

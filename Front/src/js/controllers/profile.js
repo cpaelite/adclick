@@ -3,22 +3,35 @@
 
     angular.module('app')
         .controller('ProfileCtrl', [
-            '$scope', 'User','toastr',
+            '$scope', 'toastr', 'ProfileAccount', 'PasswordChange', 'EmailChange',
             ProfileCtrl
         ]);
 
-    function ProfileCtrl($scope, User, toastr) {
+    function ProfileCtrl($scope,toastr, ProfileAccount, PasswordChange, EmailChange) {
         $scope.app.subtitle = 'Setting';
-        User.get({id: '1'}, function(user) {
-        	$scope.item = user.data;
+
+        ProfileAccount.get({id: '1'}, function(user) {
+        	$scope.accountItem = user.data;
         });
-
         $scope.phoneNumbr = /^[0-9]*$/ ;
-
         $scope.accountSave = function() {
-        	User.save($scope.item,function(){
-                // console.log('111');
-                toastr.success('Login success!');
+        	ProfileAccount.save($scope.accountItem,function(){
+                toastr.success('Your account data save success!');
+            });
+        };
+
+        $scope.passwordUpdateSave = function(){
+            PasswordChange.save($scope.passwordItem,function(){
+                toastr.success('Password reset success!');
+            });
+        };
+
+        EmailChange.get(function(user){
+            $scope.emailItem = user.data;
+        });
+        $scope.emailUpdateSave = function(){
+            EmailChange.save($scope.emailItem,function(){
+                toastr.success('Email reset success!');
             });
         };
     }

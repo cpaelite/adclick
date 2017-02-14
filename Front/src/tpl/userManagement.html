@@ -1,12 +1,45 @@
-<h1 class="setting-title">Your account data</h1>
-
+<h1 class="setting-title">User management</h1>
 <div class="form-column profile-content">
-  <div class="user-mangement">
-    <span>he user management tool is not available for Pro accounts. Upgrade to an Agency or Enterprise plan to gain access to this feature. </span>
-    <span><i class="material-icons">supervisor_account</i>Agency plan has 2 additional users.</span>
-    <span><i class="material-icons">supervisor_account</i>Enterprise plan has 5 additional users.</span>
-    <div class="plan-btn">
-      <md-button class="md-raised copy-btn">Upgrade plan</md-button>
-    </div>
-  </div>
+	<div class="user-mangement" style="display: none;">
+		<span>he user management tool is not available for Pro accounts. Upgrade to an Agency or Enterprise plan to gain access to this feature. </span>
+		<span><i class="material-icons">supervisor_account</i>Agency plan has 2 additional users.</span>
+		<span><i class="material-icons">supervisor_account</i>Enterprise plan has 5 additional users.</span>
+		<div class="plan-btn">
+			<md-button class="md-raised copy-btn">Upgrade plan</md-button>
+		</div>
+	</div>
+	
+	<div class="user-mangement-content">
+		<span>Your plan has limitation of 2 user invitations</span>
+		<span class="small-word">You can invite 2 more users to your account</span>
+		<form name="emailForm">
+		  <div class="form-group">
+		    <label for="exampleInputEmail2">Invite users:</label>
+		    <div class="form-inline">
+		   		<input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">
+		    	<button type="submit" class="btn btn-primary">Send invitation</button>
+		    </div>
+		  </div>	
+		</form>
+		<div class="form-group">
+			<label for="exampleInputEmail2">List of users:</label>
+			<div class="form-inline user-list">
+				<span><i class="material-icons">account_box</i> zheng shuo</span>
+				<button type="submit" class="btn btn-primary">owner</button>
+				<span>zhengshuo@qq.com</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="exampleInputEmail2">Pending invitations:</label>
+			<div class="form-inline user-list">
+				<span class="nothing-word">
+					You have no pending invitations
+				</span>
+				<span><i class="material-icons">account_box</i> 13-02-2017</span>
+				<span class="email-con">zhengshuo@qq.com</span>
+				<i class="material-icons delete-user">close</i>
+			</div>
+		</div>
+	</div>
 </div>
+
