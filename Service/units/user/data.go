@@ -26,6 +26,7 @@ func DBGetAvailableUsers() []UserConfig {
 		log.Errorf("[flow][DBGetAvailableUsers]Query: %s failed:%v", sql, err)
 		return nil
 	}
+	defer rows.Close()
 
 	var c UserConfig
 	var arr []UserConfig

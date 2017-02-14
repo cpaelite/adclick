@@ -197,31 +197,6 @@ app.get('/api/preferences', function (req, res) {
     var result = {
         "status": 1,
         "message": "",
-        profile: {
-            "id": "cec53c33-d96e-499a-89ff-4a07effbeb15",
-            "created": "2016-12-13T08:12:50.000Z",
-            "state": "ACTIVATED",
-            "role": "ROLE_USER",
-            "email": "benson@mobisummer.com",
-            "firstName": "Benson",
-            "lastName": "Huang",
-            "memberships": [{
-                "role": "OWNER",
-                "client": {
-                    "id": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-                    "created": "2016-12-13T08:12:50.000Z",
-                    "name": "WHATECH MOBILE CO., LIMITED",
-                    "phoneNumber": "",
-                    "referrerToken": "ANXefPWujoBt+aOj1aYFI5pSU8udv9aNxxrr2L5MuEBooGic+rPzPu8mFCbVteW5",
-                    "toggles": [],
-                    "features": ["AFFILIATE_TRACKING"]
-                }
-            }],
-            "defaultClientId": "be0500b7-0786-4b23-80e8-bb4d03ca868c",
-            "timezone": "Asia/Shanghai",
-            "defaultHomeScreen": "DASHBOARD_CAMPAIGN",
-            "emailChangeInProgress": false
-        },
         data: JSON.stringify({
             "reportViewLimit": 500,
             "entityType": 1,    //0:停止;1:运行;2全部
@@ -1488,25 +1463,33 @@ app.get('/api/traffics', function (req, res) {
                 "name": "TrafficSource1",
                 "cost": "",
                 "impTracking": 0,
-                "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:438\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:439\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:440\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:441\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:442\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:443\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:444\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:445\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:446\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:447\"}]"
+                "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:438\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:439\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:440\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:441\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:442\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:443\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:444\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:445\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:446\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:447\"}]",
+                "pixelRedirectUrl": "",
+                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
             }, {
                 "id": 15,
                 "name": "TrafficSource2",
                 "cost": "",
                 "impTracking": 1,
-                "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]"
+                "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]",
+                "pixelRedirectUrl": "",
+                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
             }, {
                 "id": 17,
                 "name": "TrafficSource1",
                 "cost": "",
                 "impTracking": 1,
-                "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]"
+                "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]",
+                "pixelRedirectUrl": "",
+                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
             }, {
                 "id": 18,
                 "name": "123",
                 "cost": "",
                 "impTracking": 0,
-                "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1671\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1672\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1673\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1674\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1675\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1676\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1677\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1678\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1679\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1680\"}]"
+                "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]",
+                "pixelRedirectUrl": "",
+                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
             }]
         }
     };
@@ -1871,6 +1854,469 @@ app.get('/api/postbackurl', function (req, res) {
         }
     };
     res.send(result);
+});
+
+// Setting API
+/**
+ * @apiName 获取profile account
+ *
+ */
+app.get('/api/profile', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: '13120663670',
+          timezone:'+08:00',
+          homescreen: 'dashboard', // or campaignList
+          referralToken: ""
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 保存profile account
+ *
+ */
+app.post('/api/profile', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+            firstname: 'test',
+            lastname:'test',
+            companyname: 'zheng',
+            tel: '13120663670',
+            timezone:'+08:00',
+            homescreen: 'dashboard', // or campaignList
+            referralToken: ""
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 保存profile password change
+ *
+ *
+ * @apiParam {String} oldpassword
+ * @apiParam {String} newpassword
+ *
+ */
+app.post('/api/password', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success'
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 获取profile email   进入页面后把所有的数据一次性取出来
+ *
+ */
+app.get('/api/email', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 保存profile email change
+ *
+ *
+ * @apiParam {String} password
+ * @apiParam {String} email   (同注册一样，输入邮箱以后验证邮箱是否已存在)
+ *
+ */
+app.post('/api/email', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success'
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 获取referral信息
+ *
+ *
+ * @apiParam {String} sort:acquired(-acquired)
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ *
+ */
+app.get('/api/referrals', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+            totalRows: 37,
+            totals: {
+                count: "",
+                recentCommission: "",
+                totalCommission: ""
+            },
+            referrals: [
+                {
+                    userId: 1,
+                    acquired: "",
+                    status: "",
+                    lastActivity: "",
+                    recentCommission: "",
+                    totalCommission: ""
+                }
+            ]
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 获取Subscription信息
+ *
+ *
+ * @apiParam {String} timezone "+08:00"
+ *
+ */
+app.get('/api/billing', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+            plan: {
+                id: 1,
+                name: "Agency",
+                price: 399
+            },
+            statistic: {
+                planCode: "NO PLAN",
+                from: "19-01-2017",
+                to: "19-02-2017",
+                billedEvents: 1000,
+                totalEvents: 1000,
+                overageEvents:1,
+                overageCost:0.999,
+                includedEvents: 100000,
+                remainEvents: 9999,
+                freeEvents: 0,
+            }
+        }
+    };
+    res.send(result);
+});
+
+/**
+ * @apiName 获取Domains信息
+ *
+ */
+app.get('/api/domains', function (req, res) {
+    var result = {
+        status: 1,
+        message: 'success',
+        data: {
+          internal: [
+            {
+              address: "www.newbidder1.com",
+              main: false
+            },
+            {
+              address: "www.newbidder2.com",
+              main: true
+            },
+            {
+              address: "www.newbidder1.com",
+              main: false
+            }],
+          custom: [
+            {
+              address: "www.adbund.com",
+              main: false
+            }
+          ]
+        }
+    };
+    res.send(result)
+});
+
+/**
+ * @apiName 验证Domain Adress
+ *
+ * @apiParam {String} adress {adress: 'www.adbund.com'}
+ *
+ */
+app.get('/api/domains/validatecname', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      domain: 'www.adbund.com',
+      validateResult: "NOT_FOUND"
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 保存Domains信息
+ *
+ */
+app.post('/api/domains', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      internal: [
+        {
+          address: "www.newbidder1.com",
+          main: false
+        },
+        {
+          address: "www.newbidder2.com",
+          main: true
+        },
+        {
+          address: "www.newbidder1.com",
+          main: false
+        }],
+      custom: [
+        {
+          address: "www.adbund.com",
+          main: false
+        }
+      ]
+    }
+  };
+  res.send(result)
+});
+
+/**
+ * @apiName 获取Setup信息 TODO
+ *
+ */
+app.get('/api/setup', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {}
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Member信息
+ *
+ */
+app.get('/api/member', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      email: "test@qq.com",
+      firstName: "test",
+      lastName: "test",
+      owner: true
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Invitation信息
+ *
+ */
+app.get('/api/invitation', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      invitations: [
+        {
+          email: "111@qq.com",
+          lastDate: "13-02-2017"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 保存Invitation信息
+ *
+ * @apiParam [String] invitationEmail ["111@qq.com","222.qq.com"]
+ *
+ */
+app.post('/api/invitation', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      invitations: [
+        {
+          email: "222@qq.com",
+          lastDate: "13-02-2017"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 删除Invitation信息
+ *
+ */
+app.delete('/api/invitation/:email', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取BlackList
+ *
+ */
+app.get('/api/blacklist', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      blacklist: [
+        {
+          id: 1,
+          name: "test1",
+          ipRules: [
+            {
+              ipRangeStart: "1.1.1.1",
+              ipRangeEnd: "1.1.1.1"
+            }
+          ],
+          userAgentRules: [
+            {
+              userAgent: "test1"
+            }
+          ]
+        },
+        {
+          id: 2,
+          name: "test2",
+          ipRules: [
+            {
+              ipRangeStart: "1.1.1.1",
+              ipRangeEnd: "1.1.1.1"
+            }
+          ],
+          userAgentRules: [
+            {
+              userAgent: "test2"
+            }
+          ]
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 保存BlackList
+ *
+ */
+app.post('/api/blacklist', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      blacklist: [
+        {
+          id: 1,
+          name: "test1",
+          ipRules: [
+            {
+              ipRangeStart: "1.1.1.1",
+              ipRangeEnd: "1.1.1.1"
+            }
+          ],
+          userAgentRules: [
+            {
+              userAgent: "test1"
+            }
+          ]
+        },
+        {
+          id: 2,
+          name: "test2",
+          ipRules: [
+            {
+              ipRangeStart: "1.1.1.1",
+              ipRangeEnd: "1.1.1.1"
+            }
+          ],
+          userAgentRules: [
+            {
+              userAgent: "test2"
+            }
+          ]
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 更新BlackList状态
+ *
+ */
+app.put('/api/blacklist', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取EventLog信息
+ *
+ *
+ * @apiParam {String} from: 2017-02-01
+ * @apiParam {String} to: 2017-02-10
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ * @apiParam {String} userId:1  {option}
+ * @apiParam {String} actionType: CREATE {option}
+ * @apiParam {String} category: CAMPAIGN {option}
+ *
+ */
+app.get('/api/eventlog', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      totalRows: 37,
+      rows: [
+        {
+          user: "zhengshuo@qq.com",
+          entityType: "Offer",
+          entityName: "Offer1",
+          entityId: "c05cad45-fbe4-405c-9da4-cb3b5de1ca",
+          action: "Create",
+          changeAt: "2017-02-10"
+        }
+      ]
+    }
+  };
+  res.send(result);
 });
 
 app.listen(5000, function () {

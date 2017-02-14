@@ -13,6 +13,7 @@ import (
 
 type LanderConfig struct {
 	Id             int64
+	Name           string
 	UserId         int64
 	Url            string
 	NumberOfOffers int64
@@ -31,10 +32,10 @@ var landers = make(map[int64]*Lander)
 
 func setLander(l *Lander) error {
 	if l == nil {
-		return errors.New("setPath error:l is nil")
+		return errors.New("setLander error:l is nil")
 	}
 	if l.Id <= 0 {
-		return fmt.Errorf("setPath error:l.Id(%d) is not positive", l.Id)
+		return fmt.Errorf("setLander error:l.Id(%d) is not positive", l.Id)
 	}
 	cmu.Lock()
 	defer cmu.Unlock()
@@ -64,13 +65,17 @@ func InitLander(landerId int64) error {
 }
 
 func GetLander(landerId int64) (l *Lander) {
+	if landerId == 0 {
+		return nil
+	}
+
 	l = getLander(landerId)
 	if l == nil {
 		l = newLander(DBGetLander(landerId))
-	}
-	if l != nil {
-		if err := setLander(l); err != nil {
-			return nil
+		if l != nil {
+			if err := setLander(l); err != nil {
+				return nil
+			}
 		}
 	}
 	return
@@ -102,7 +107,9 @@ func (l *Lander) OnLPOfferRequest(w http.ResponseWriter, req request.Request) er
 	if l == nil {
 		return fmt.Errorf("[Lander][OnLPOfferRequest]Nil l for request(%s)", req.Id())
 	}
-	http.Redirect(w, gr, req.ParseUrlTokens(l.Url), http.StatusFound)
+	req.SetLanderId(l.Id)
+	req.SetLanderName(l.Name)
+	req.Redirect(w, gr, req.ParseUrlTokens(l.Url))
 	return nil
 }
 

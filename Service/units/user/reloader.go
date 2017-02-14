@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"AdClickTool/Service/units/blacklist"
+
 	"gopkg.in/redis.v5"
 )
 
@@ -19,11 +21,13 @@ import (
 // 目前试下来，redis客户端是能够支持断线重新连接的
 
 var subscribe = "channel_campaign_changed_users"
+var botblacklist = "channel_blacklist_changed_users"
 
 // CollectorCampChangedUsers 收集服务器启动期间改变了Campaign的用户
 type CollectorCampChangedUsers struct {
-	Users  []int64 // 收集到的需要修改campaign的用户
-	pubsub *redis.PubSub
+	Users          []int64 // 收集到的需要修改campaign的用户
+	BlacklistUsers []int64 // 所有blacklist有改变的用户
+	pubsub         *redis.PubSub
 }
 
 // Stop 停止收集
@@ -31,12 +35,12 @@ func (c *CollectorCampChangedUsers) Stop() {
 	c.pubsub.Close()
 }
 
-// Run 启动收集协程
+// Start 启动收集协程
 func (c *CollectorCampChangedUsers) Start() {
 	go func() {
 		redis := db.GetRedisClient("MSGQUEUE")
 		var err error
-		c.pubsub, err = redis.PSubscribe(subscribe)
+		c.pubsub, err = redis.Subscribe(subscribe, botblacklist)
 		if err != nil {
 			log.Errorf("collector: PSubscribe %v failed:%v", subscribe, err)
 			return
@@ -54,7 +58,11 @@ func (c *CollectorCampChangedUsers) Start() {
 			if err != nil {
 				log.Errorf("user:%v is not an integer", received.Payload)
 			} else {
-				c.Users = append(c.Users, user)
+				if received.Channel == botblacklist {
+					c.BlacklistUsers = append(c.BlacklistUsers, user)
+				} else {
+					c.Users = append(c.Users, user)
+				}
 			}
 		}
 	}()
@@ -67,12 +75,13 @@ type Reloader struct {
 // Running 在后台持续更新用户数据
 // 应该在加载所有的用户信息之后，启动这个
 // 防止加载过程中有更新
+// 此协程不进行存盘操作，所以不需要gracestop
 func (r Reloader) Running() {
 	redis := db.GetRedisClient("MSGQUEUE")
 	log.Infof("reloader: running with redis:%v...", redis)
 
 	// redis.S
-	pubsub, err := redis.PSubscribe(subscribe)
+	pubsub, err := redis.Subscribe(subscribe, botblacklist)
 	if err != nil {
 		log.Errorf("reloader: PSubscribe %v failed:%v", subscribe, err)
 		return
@@ -91,7 +100,11 @@ func (r Reloader) Running() {
 		if err != nil {
 			log.Errorf("reloader: user:%v is not an integer", received.Payload)
 		} else {
-			ReloadUser(user)
+			if received.Channel == botblacklist {
+				blacklist.ReloadUserBlacklist(user)
+			} else {
+				ReloadUser(user)
+			}
 		}
 	}
 }

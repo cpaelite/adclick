@@ -55,7 +55,6 @@ router.get('/api/eventlog',async function(req,res,next){
             userId:userId
         });
 
-        console.log(sql)
         connection = await common.getConnection();
         let result = await query(sql, connection);
         res.json({

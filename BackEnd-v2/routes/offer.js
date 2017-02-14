@@ -6,6 +6,8 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
+var setting = require('../config/setting');
+var Pub = require('./redis_sub_pub');
 
 
 /**
@@ -58,6 +60,9 @@ router.post('/api/offers', async function (req, res, next) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
             }
         }
+        //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId, "offerAdd");
+
         delete value.userId;
         delete value.idText;
         value.id = landerResult.insertId;
@@ -133,6 +138,9 @@ router.post('/api/offers/:id', async function (req, res, next) {
                 await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
             }
         }
+        //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId, "offerUpdate");
+
         delete value.userId;
         delete value.idText;
         res.json({
@@ -212,7 +220,7 @@ router.get('/api/offers', function (req, res, next) {
     // userId from jwt, don't need validation
     var sql = "select id, name from Offer where userId = " + req.userId;
 
-    if(req.query.country){
+    if (req.query.country) {
         sql += " and `country`=" + req.query.country;
     }
 
@@ -249,8 +257,8 @@ router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name:Joi.string().required(),
-        hash:Joi.string().required(),
+        name: Joi.string().required(),
+        hash: Joi.string().required(),
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -258,7 +266,10 @@ router.delete('/api/offers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteOffer(value.id, value.userId,value.name,value.hash, connection);
+        let result = await common.deleteOffer(value.id, value.userId, value.name, value.hash, connection);
+        //reids pub
+        new Pub(true).publish(setting.redis.channel, value.userId, "offerDelete");
+
         res.json({
             status: 1,
             message: 'success'

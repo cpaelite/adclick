@@ -7,26 +7,26 @@ import (
 
 // Conversion 对应数据库里面的AdConversionsStatis字段
 type Conversion struct {
-	UserID               int
-	PostbackTimestamp    int
-	VisitTimestamp       int
+	UserID               int64
+	PostbackTimestamp    int64
+	VisitTimestamp       int64
 	ExternalID           string
 	ClickID              string
 	TransactionID        string
 	Revenue              float64
 	Cost                 float64
 	CampaignName         string
-	CampaignID           int
+	CampaignID           int64
 	LanderName           string
-	LanderID             int
+	LanderID             int64
 	OfferName            string
-	OfferID              int
+	OfferID              int64
 	Country              string
 	CountryCode          string
 	TrafficSourceName    string
-	TrafficSourceID      int
+	TrafficSourceID      int64
 	AffiliateNetworkName string
-	AffiliateNetworkID   int
+	AffiliateNetworkID   int64
 	Device               string
 	OS                   string
 	OSVersion            string
@@ -54,7 +54,6 @@ type Conversion struct {
 var conversionsChan chan *Conversion
 
 func init() {
-	// TODO: 这里可以根据实际情况配置其chan大小
 	// 理论上讲Conversion的数据量会比较小，用不了那么大
 	conversionsChan = make(chan *Conversion, 1024)
 }

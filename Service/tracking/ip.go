@@ -3,6 +3,7 @@ package tracking
 import (
 	"AdClickTool/Service/gracequit"
 	"database/sql"
+	"time"
 )
 
 // AdIPStatis表的支持工作
@@ -10,9 +11,9 @@ import (
 
 // IPStatisKey AdIPStatis表里面的Unique Key部分
 type IPStatisKey struct {
-	UserID     int
-	Timestamp  int
-	CampaignID int
+	UserID     int64
+	Timestamp  int64
+	CampaignID int64
 	IP         string
 }
 
@@ -42,7 +43,7 @@ Impressions = Impressions+?`
 var IP gatherSaver
 
 // InitIPGatherSaver 初始化tracking.IP
-func InitIPGatherSaver(g *gracequit.GraceQuit, db *sql.DB) {
-	ip := newGatherSaver(g, ipStatisSQL)
-	ip.Start(db)
+func InitIPGatherSaver(g *gracequit.GraceQuit, db *sql.DB, saveInterval time.Duration) {
+	IP = newGatherSaver(g, ipStatisSQL, saveInterval)
+	IP.Start(db)
 }

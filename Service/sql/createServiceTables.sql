@@ -5,22 +5,35 @@ CREATE TABLE AdClickTool.`User` (
   `password` varchar(256) NOT NULL,
   `firstname` varchar(256) NOT NULL,
   `lastname` varchar(256) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '0:New;1:运行中;2:已过期',
+  `lastLogon` int(11) COMMENT '上次登录时间的时间戳',
+  `timezone` varchar(6) COMMENT '默认的时区，格式:+08:00'
   `rootdomainredirect` varchar(512) NOT NULL DEFAULT '' COMMENT '当访问用户的rootdomain时的跳转页面，如果为空则显示默认的404页面',
-  `json` text NOT NULL COMMENT '按照既定规则生成的User信息',
+  `json` text NOT NULL COMMENT '按照既定规则生成的User信息(CompanyName,Phone,DefaultTimeZone,DefaultHomeScreen)',
+  `referralToken` varchar(128) NOT NULL COMMENT '用户推荐链接中的token，链接中其他部分现拼',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idText` (`idtext`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
+CREATE TABLE AdClickTool.`UserDomain` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `domain` varchar(512) NOT NULL DEFAULT '' COMMENT '用于生成campaignurl和clickurl时用到的域名',
+  `main` int(11) NOT NULL DEFAULT 0 COMMENT '0:非主域名;1:主域名',
+  `customize` int(11) NOT NULL DEFAULT 0 COMMENT '0:系统默认的域名;1:用户添加的域名',
+  `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 CREATE TABLE AdClickTool.`TrackingCampaign` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `name` varchar(256) NOT NULL,
   `hash` varchar(39) NOT NULL,
-  `url` varchar(512) NOT NULL COMMENT '根据campaign内容生成的tracking url',
-  `impPixelUrl` varchar(512) NOT NULL DEFAULT '',
+  `url` varchar(512) NOT NULL COMMENT '根据campaign内容生成的tracking url(不包含参数部分)',
+  `impPixelUrl` varchar(512) NOT NULL COMMENT '根据campaign内容生成的tracking url(不包含参数部分)',
   `trafficSourceId` int(11) NOT NULL,
   `trafficSourceName` varchar(256) NOT NULL DEFAULT '',
   `country` varchar(3) NOT NULL DEFAULT '' COMMENT 'ISO-ALPHA-3',
@@ -28,6 +41,8 @@ CREATE TABLE AdClickTool.`TrackingCampaign` (
   `cpcValue` decimal(10,5) NOT NULL DEFAULT 0,
   `cpaValue` decimal(10,5) NOT NULL DEFAULT 0,
   `cpmValue` decimal(10,5) NOT NULL DEFAULT 0,
+  `postbackUrl` varchar(512) NOT NULL DEFAULT '' COMMENT 'campaign自定义的postback url，为空则使用traffic source的设置',
+  `pixelRedirectUrl` varchar(512) NOT NULL DEFAULT '' COMMENT 'campaign自定义的pixel redirect url，为空则使用traffic source的设置',
   `redirectMode` int(11) NOT NULL COMMENT '0:302;1:Meta refresh;2:Double meta refresh',
   `targetType` int(11) NOT NULL DEFAULT 0 COMMENT '跳转类型,0:URL;1:Flow;2:Rule;3:Path;4:Lander;5:Offer',
   `targetFlowId` int(11) NOT NULL,
@@ -55,7 +70,8 @@ CREATE TABLE AdClickTool.`Rule` (
   `name` varchar(256) NOT NULL,
   `hash` varchar(39) NOT NULL,
   `type` int(11) NOT NULL COMMENT '0:匿名;1:普通(标示是否是Flow里默认Path的Rule)',
-  `json` text NOT NULL COMMENT '按照既定规则生成的rule信息',
+  `json` text NOT NULL COMMENT '按照既定规则生成的rule信息，供Service使用',
+  `object` text NOT NULL COMMENT '按照既定规则生成的rule信息，供前端使用',
   `status` int(11) NOT NULL COMMENT '0:停止;1:运行;用来标记该Rule本身是否有效',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
   PRIMARY KEY (`id`)
@@ -118,6 +134,7 @@ CREATE TABLE AdClickTool.`Offer` (
   `url` varchar(512) NOT NULL,
   `country` varchar(3) NOT NULL DEFAULT '' COMMENT 'ISO-ALPHA-3',
   `AffiliateNetworkId` int(11) NOT NULL COMMENT '标记属于哪家AffiliateNetwork',
+  `AffiliateNetworkName` varchar(256) NOT NULL,
   `postbackUrl` varchar(512) NOT NULL,
   `payoutMode` int(11) NOT NULL COMMENT '0:Auto;1:Manual',
   `payoutValue` decimal(10,5) NOT NULL DEFAULT 0,
@@ -195,6 +212,7 @@ CREATE TABLE AdClickTool.`TemplateAffiliateNetwork` (
 CREATE TABLE AdClickTool.`UrlTokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(64) NOT NULL,
+  `desc` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -211,11 +229,115 @@ CREATE TABLE AdClickTool.`Country` (
   UNIQUE KEY `numCode` (`numCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE AdClickTool.`TimeZones` (
+CREATE TABLE AdClickTool.`Timezones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(256) NOT NULL,
   `detail` varchar(256) NOT NULL,
   `region` varchar(256) NOT NULL,
   `utcShift` varchar(6) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserReferralLog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `referredUserId` int(11) NOT NULL,
+  `acquired` int(11) NOT NULL COMMENT '用户注册的时间，时间戳',
+  `status` int(11) NOT NULL COMMENT '0:New刚注册;1:Activated已充值',
+  `lastActivity` int(11) NOT NULL COMMENT '最近一次充值时间戳 ',
+  `recentCommission` int(11) NOT NULL,
+  `totalCommission` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`TemplatePlan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `desc` text NOT NULL,
+  `normalPrice` int(11) NOT NULL,
+  `onSalePrice` int(11) NOT NULL COMMENT '暂时保留，不用',
+  `eventsLimit` int(11) NOT NULL,
+  `supportType` int(11) NOT NULL COMMENT '0:Pro;1:Premium;2:Dedicated',
+  `retentionLimit` int(11) NOT NULL COMMENT '报表最长时间月份数',
+  `domainLimit` int(11) NOT NULL COMMENT '可支持Domain的个数',
+  `userLimit` int(11) NOT NULL COMMENT '可支持的user的个数，包括自己',
+  `volumeDiscount` int(11) NOT NULL COMMENT '百分比',
+  `overageCPM` int(11) NOT NULL COMMENT '超出流量每千次的价格',
+  `totalCommission` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserBilling` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `planId` int(11) NOT NULL,
+  `planStart` int(11) COMMENT 'plan开始时间的时间戳',
+  `planEnd` int(11) COMMENT 'plan结束时间的时间戳',
+  `billedEvents` int(11) NOT NULL,
+  `totalEvents` int(11) NOT NULL,
+  `includedEvents` int(11) NOT NULL COMMENT '套餐包含的Events数',
+  `overageEvents` int(11) NOT NULL,
+  `expired` int(11) NOT NULL COMMENT '0:本期账单;1:以往账单',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserBotBlacklist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `ipRange` text NOT NULL COMMENT 'IpRange字符串数组的json',
+  `userAgent` text COMMENT 'UserAgent字符串数组的json',
+  `enabled` int(11) NOT NULL DEFAULT 1 COMMENT '0:disabled;1:enabled',
+  `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '0:未删除;1:已删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`UserEventLog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `entityType` int(11) NOT NULL COMMENT '1:Campaign;2:Lander;3:Offer;4:TrafficSource;5:AffiliateNetwork',
+  `entityName` text NOT NULL,
+  `entityId` varchar(256) NOT NULL,
+  `actionType` int(11) NOT NULL COMMENT '1:Create;2:Change;3:Archive;4:Restore',
+  `changedAt` int(11) NOT NULL COMMENT '创建的时间戳',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`Languages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) NOT NULL,
+  `code` varchar(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`OSWithVersions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(16) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`BrowserWithVersions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(16) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`BrandWithVersions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(16) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE AdClickTool.`MobileCarriers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `country` varchar(3) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

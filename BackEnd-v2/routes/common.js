@@ -2,6 +2,7 @@ var Joi = require('joi');
 var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
+const querystring = require('querystring');
 
 
 function query(sql, params, connection) {
@@ -75,7 +76,7 @@ function validate(data, schema) {
 }
 
 // Campaign
-function insertCampaign(value,hash, connection) {
+function insertCampaign(value, hash, connection) {
     // //url
     // let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
     // let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash
@@ -162,7 +163,7 @@ function insertCampaign(value,hash, connection) {
             if (err) {
                 return reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name, hash, 1], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name ? value.name : "", hash, 1], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -242,7 +243,7 @@ function updateCampaign(value, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name, value.hash, 2], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name ? value.name : "", value.hash ? value.hash : "", 2], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -253,14 +254,14 @@ function updateCampaign(value, connection) {
 }
 
 async function getCampaign(id, userId, idText, connection) {
-    
+
     let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`," +
         "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
     let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
     let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
 
-    let results = await Promise.all([query(sqlCampaign, [userId, id, 0],connection), query(sqltag, [userId, id, 1, 0],connection), query(mainDomainsql, [userId],connection)]);
+    let results = await Promise.all([query(sqlCampaign, [userId, id, 0], connection), query(sqltag, [userId, id, 1, 0], connection), query(mainDomainsql, [userId], connection)]);
     let camResult = results[0];
     let tagsResult = results[1];
     let domainResult = results[2];
@@ -272,9 +273,9 @@ async function getCampaign(id, userId, idText, connection) {
 
     if (camResult.length) {
         //重写 campaign URL  和 imimpPixelUrl
-        if(domainResult.length){
-           camResult[0].url = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + "/" + camResult[0].hash;
-           camResult[0].impPixelUrl = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + setting.newbidder.impRouter + "/" + camResult[0].hash;
+        if (domainResult.length) {
+            camResult[0].url = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + "/" + camResult[0].hash;
+            camResult[0].impPixelUrl = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + setting.newbidder.impRouter + "/" + camResult[0].hash;
         }
         camResult[0].tags = tags;
     }
@@ -295,7 +296,7 @@ function deleteCampaign(id, userId, hash, name, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 1, name, hash, 3], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 1, name ? name : "", hash ? hash : "", 3], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -413,14 +414,14 @@ function updateTags(userId, targetId, type, connection) {
 function insetRule(userId, rule, connection) {
     var sqlRule = "insert into `Rule` (`userId`,`name`,`hash`,`type`,`object`,`json`,`status`) values (?,?,?,?,?,?,?)";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlRule, [userId, rule.name?rule.name:"", uuidV4(), rule.isDefault?0:1, rule.json?
-JSON.stringify(rule.json):JSON.stringify([]),rule.object?
-JSON.stringify(rule.object):JSON.stringify([]), rule.enabled?1:0], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
+        connection.query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.json ?
+            JSON.stringify(rule.json) : JSON.stringify([]), rule.object ?
+                JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0], function (err, result) {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(result);
+                });
     });
 }
 
@@ -509,7 +510,7 @@ function insertLander(userId, lander, connection) {
     val += ",'" + hash + "'"
 
     col += ",`url`";
-    val += ",'" + lander.url + "'";
+    val += ",'" + querystring.escape(lander.url) + "'";
 
     col += ",`numberOfOffers`";
     val += "," + lander.numberOfOffers;
@@ -526,7 +527,7 @@ function insertLander(userId, lander, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name, hash, 1], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name ? lander.name : "", hash, 1], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -547,7 +548,7 @@ function updateLander(userId, lander, connection) {
         sqlUpdateLander += ",`name`='" + lander.name + "'"
     }
     if (lander.url) {
-        sqlUpdateLander += ",`url`='" + lander.url + "'"
+        sqlUpdateLander += ",`url`='" + querystring.escape(lander.url) + "'"
     }
     if (lander.numberOfOffers) {
         sqlUpdateLander += ",`numberOfOffers`=" + lander.numberOfOffers
@@ -560,7 +561,7 @@ function updateLander(userId, lander, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name, lander.hash, 2], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name ? lander.name : "", lander.hash ? lander.hash : "", 2], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -587,6 +588,7 @@ function getLanderDetail(id, userId, connection) {
                     tags.push(tagsResult[index].name);
                 }
                 if (lander[0]) {
+                    lander[0].url=querystring.unescape(lander[0].url);
                     lander[0].tags = tags;
                 }
 
@@ -604,7 +606,7 @@ function deleteLander(id, userId, name, hash, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, name, hash, 3], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, name ? name : "", hash ? hash : "", 3], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -655,7 +657,7 @@ function insertOffer(userId, idText, offer, connection) {
     val += ",'" + hash + "'"
 
     col += ",`url`";
-    val += ",'" + offer.url + "'";
+    val += ",'" + querystring.escape(offer.url) + "'";
 
     col += ",`payoutMode`";
     val += "," + offer.payoutMode
@@ -693,7 +695,7 @@ function insertOffer(userId, idText, offer, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name, hash, 1], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name ? offer.name : "", hash, 1], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -727,7 +729,7 @@ function updateOffer(userId, offer, connection) {
         sqlUpdateOffer += ",`name`='" + offer.name + "'"
     }
     if (offer.url) {
-        sqlUpdateOffer += ",`url`='" + offer.url + "'"
+        sqlUpdateOffer += ",`url`='" + querystring.escape(offer.url) + "'"
 
     }
     if (offer.payoutMode != undefined) {
@@ -741,7 +743,7 @@ function updateOffer(userId, offer, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name, offer.hash, 2], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name ? offer.name : "", offer.hash ? offer.hash : "", 2], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -753,10 +755,10 @@ function updateOffer(userId, offer, connection) {
 }
 
 function getOfferDetail(id, userId, connection) {
-    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `deleted`=? and `id`=?";
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `id`=?";
     let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
     return new Promise(function (resolve, reject) {
-        connection.query(sqlLander, [userId, 0, id], function (err, lander) {
+        connection.query(sqlLander, [userId, id], function (err, lander) {
             if (err) {
                 reject(err);
             }
@@ -769,6 +771,7 @@ function getOfferDetail(id, userId, connection) {
                     tags.push(tagsResult[index].name);
                 }
                 if (lander[0]) {
+                    lander[0].url=querystring.unescape(lander[0].url);
                     lander[0].tags = tags;
                 }
                 resolve(lander[0])
@@ -785,7 +788,7 @@ function deleteOffer(id, userId, name, hash, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, name, hash, 3], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, name ? name : "", hash ? hash : "", 3], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -915,7 +918,7 @@ function insertTrafficSource(userId, traffic, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name, hash, 1], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name ? traffic.name : "", hash, 1], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -949,12 +952,12 @@ function updatetraffic(userId, traffic, connection) {
         if (traffic.params) {
             sqlUpdateOffer += ",`params`='" + traffic.params + "'"
         }
-        sqlUpdateOffer += " where `userId`="+ userId+" and `id`= "+ traffic.id ;
+        sqlUpdateOffer += " where `userId`=" + userId + " and `id`= " + traffic.id;
         connection.query(sqlUpdateOffer, function (err, result) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name, traffic.hash, 2], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name ? traffic.name : "", traffic.hash ? traffic.hash : "", 2], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -983,7 +986,7 @@ function deletetraffic(id, userId, name, hash, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, name, hash, 3], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, name ? name : "", hash ? hash : "", 3], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -1009,9 +1012,11 @@ function insertAffiliates(userId, affiliate, connection) {
     return new Promise(function (resolve, reject) {
         var hash = uuidV4();
         var sql = "insert into AffiliateNetwork set `userId`= " +
-            userId + ",`name`='" + affiliate.name +
-            "',`postbackUrl`='" +
-            affiliate.postbackUrl + "',`hash`= '" + hash + "'";
+            userId + ",`name`='" + affiliate.name + "',`hash`= '" + hash + "'";
+
+        if (affiliate.postbackUrl) {
+            sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
+        }    
         if (affiliate.appendClickId != undefined) {
             sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
         }
@@ -1026,7 +1031,7 @@ function insertAffiliates(userId, affiliate, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name, hash, 1], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name ? affiliate.name : "", hash ? hash : "", 1], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -1062,7 +1067,7 @@ function updateAffiliates(userId, affiliate, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name, affiliate.hash, 2], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name ? affiliate.name : "", affiliate.hash ? affiliate.hash : "", 2], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -1081,7 +1086,7 @@ function deleteAffiliate(id, userId, name, hash, connection) {
             if (err) {
                 reject(err);
             }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, name, hash, 3], function (err) {
+            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, name ? name : "", hash ? hash : "", 3], function (err) {
                 if (err) {
                     return reject(err);
                 }
@@ -1134,4 +1139,4 @@ exports.deleteLander = deleteLander;
 exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
 exports.saveEventLog = saveEventLog;
-exports.query=query;
+exports.query = query;

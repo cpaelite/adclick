@@ -14,7 +14,7 @@ const (
 	VarLogicNot = "not"
 )
 
-type KeyFunction func(req request.Request) interface{}
+type KeyFunction func(req request.Request) string
 
 var keyFuncMap map[string]KeyFunction
 
@@ -72,71 +72,101 @@ var keyFuncMap map[string]KeyFunction
 // ip.xx           基于ip的行为频次
 func init() {
 	keyFuncMap = map[string]KeyFunction{
-		"brand": func(req request.Request) interface{} {
+		"brand": func(req request.Request) string {
 			return strings.ToUpper(req.Brand())
 		},
-		"browser": func(req request.Request) interface{} {
-			return strings.ToUpper(req.Browser())
+		"model": func(req request.Request) string {
+			return strings.ToUpper(req.Brand() + " " + req.Model())
 		},
-		"connectiontype": func(req request.Request) interface{} {
+		"browser": func(req request.Request) string {
+			return strings.ToUpper(req.Browser() + " " + req.BrowserVersion())
+		},
+		"connection": func(req request.Request) string {
 			return strings.ToUpper(req.ConnectionType())
 		},
-		"country": func(req request.Request) interface{} {
-			return strings.ToUpper(req.Country())
+		"country": func(req request.Request) string {
+			return strings.ToUpper(req.CountryCode())
 		},
-		"region": func(req request.Request) interface{} {
+		"region": func(req request.Request) string {
 			return strings.ToUpper(req.Region())
 		},
-		"city": func(req request.Request) interface{} {
+		"city": func(req request.Request) string {
 			return strings.ToUpper(req.City())
 		},
-		"timeOfDay": func(req request.Request) interface{} {
-			return fmt.Sprintf("%d", time.Now().UTC().Format("15:04"))
+		"timeOfDay": func(req request.Request) string { // 实际上并不会被使用
+			return time.Now().UTC().Format("15:04")
 		},
-		"weekdays": func(req request.Request) interface{} {
+		"weekday": func(req request.Request) string { // 实际上并不会被使用
 			return fmt.Sprintf("%d", time.Now().UTC().Weekday())
 		},
-		"day": func(req request.Request) interface{} {
+		"day": func(req request.Request) string {
 			return fmt.Sprintf("%d", time.Now().UTC().Day())
 		},
-		"month": func(req request.Request) interface{} {
+		"month": func(req request.Request) string {
 			return fmt.Sprintf("%d", time.Now().UTC().Month())
 		},
-		"year": func(req request.Request) interface{} {
+		"year": func(req request.Request) string {
 			return fmt.Sprintf("%d", time.Now().UTC().Year())
 		},
-		"time": func(req request.Request) interface{} {
+		"time": func(req request.Request) string {
 			return time.Now().UTC().Format("2006-01-02 15:04:05")
 		},
-		"date": func(req request.Request) interface{} {
+		"date": func(req request.Request) string {
 			return time.Now().UTC().Format("2006-01-02")
 		},
-		"devicetype": func(req request.Request) interface{} {
-			return req.DeviceType()
+		"device": func(req request.Request) string {
+			return strings.ToUpper(req.DeviceType())
 		},
-		"ip": func(req request.Request) interface{} {
+		"iprange": func(req request.Request) string {
 			return req.RemoteIp()
 		},
-		"isp": func(req request.Request) interface{} {
+		"isp": func(req request.Request) string {
 			return strings.ToUpper(req.ISP())
 		},
-		"os": func(req request.Request) interface{} {
-			return strings.ToUpper(req.OS())
+		"os": func(req request.Request) string {
+			return strings.ToUpper(req.OS() + " " + req.OSVersion())
 		},
-		"osversion": func(req request.Request) interface{} {
-			return strings.ToUpper(req.OSVersion())
-		},
-		"language": func(req request.Request) interface{} {
+		"language": func(req request.Request) string {
 			return strings.ToUpper(req.Language())
 		},
-		"carrier": func(req request.Request) interface{} {
+		"carrier": func(req request.Request) string {
 			return strings.ToUpper(req.Carrier())
 		},
-		"referrer": func(req request.Request) interface{} {
+		"referrer": func(req request.Request) string {
 			return strings.ToUpper(req.Referrer())
 		},
-		"useragent": func(req request.Request) interface{} {
+		"useragent": func(req request.Request) string {
 			return strings.ToUpper(req.UserAgent())
+		},
+		"var1": func(req request.Request) string {
+			return req.Vars(1)
+		},
+		"var2": func(req request.Request) string {
+			return req.Vars(2)
+		},
+		"var3": func(req request.Request) string {
+			return req.Vars(3)
+		},
+		"var4": func(req request.Request) string {
+			return req.Vars(4)
+		},
+		"var5": func(req request.Request) string {
+			return req.Vars(5)
+		},
+		"var6": func(req request.Request) string {
+			return req.Vars(6)
+		},
+		"var7": func(req request.Request) string {
+			return req.Vars(7)
+		},
+		"var8": func(req request.Request) string {
+			return req.Vars(8)
+		},
+		"var9": func(req request.Request) string {
+			return req.Vars(9)
+		},
+		"var10": func(req request.Request) string {
+			return req.Vars(10)
 		},
 	}
 }

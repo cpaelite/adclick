@@ -6,8 +6,8 @@ type adStatisValues struct {
 	Visits      int
 	Clicks      int
 	Conversions int
-	Cost        float64
-	Revenue     float64
+	Cost        int64
+	Revenue     int64
 	Impressions int
 }
 
@@ -52,8 +52,8 @@ func flush() {
 }
 
 // Gathering 统计信息汇总
-func Gathering(stop chan struct{}) {
-	ticker := time.NewTicker(60 * time.Second)
+func Gathering(stop chan struct{}, interval time.Duration) {
+	ticker := time.NewTicker(interval)
 	for {
 		select {
 		case a := <-gatherChan:
@@ -61,7 +61,6 @@ func Gathering(stop chan struct{}) {
 			a.action(&d.adStatisValues)
 
 		case <-ticker.C:
-			// TODO: 配置多长时间写一次数据库
 			flush()
 
 		case <-flushEvent:
