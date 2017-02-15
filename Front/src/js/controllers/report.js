@@ -492,8 +492,8 @@
           break;
       }
       if (value == '0') {
-        pageStatus.from = $scope.fromDate + 'T' + $scope.fromTime;
-        pageStatus.to = $scope.toDate + 'T' + $scope.toTime;
+        pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
+        pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
       } else {
         pageStatus.from = fromDate + 'T00:00';
         pageStatus.to = toDate + 'T23:59';
@@ -557,6 +557,8 @@
       $scope.flows = allFlow;
       if (theCampaign) {
         $scope.item = theCampaign;
+        $scope.impPixelUrl = $scope.item.impPixelUrl;
+        $scope.campaignUrl = $scope.item.url;
         if ($scope.item.costModel == 1) {
           $scope.radioTitle = 'CPC';
           $scope.costModelValue = $scope.item.cpcValue;
@@ -601,15 +603,16 @@
               }
             });
 
-            if (!impParam)
-              return;
+            if (impParam) {
+              impParam = "?" + impParam;
+            }
 
             impParam = impParam.substring(0, impParam.length-1);
 
             if (traffic.impTracking) {
-              $scope.impPixelUrl = $scope.item.impPixelUrl + "?" + impParam;
+              $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
             } else {
-              $scope.item.url = $scope.item.url + "?" + impParam;
+              $scope.campaignUrl = $scope.item.url + impParam;
             }
             return;
           }
