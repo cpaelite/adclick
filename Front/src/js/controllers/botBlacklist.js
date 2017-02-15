@@ -25,12 +25,26 @@
           templateUrl: 'tpl/botBlacklist-edit-dialog.html'
         });
       };
+
+      $scope.deleteItem = function () {
+
+      };
+
     }
 
   function editItemCtrl($scope, $mdDialog) {
     this.cancel = $mdDialog.cancel;
-    function success(item) {
-      $mdDialog.hide(item);
+    if (this.item) {
+      $scope.item = this.item;
+
+      $scope.ips = [
+        {
+          value: '1.1.1.1'
+        }, {
+          value: '2.2.2.2'
+        }
+      ]
+
     }
   }
 

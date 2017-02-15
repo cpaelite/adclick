@@ -20,12 +20,8 @@
             <div class="bot-blacklist-add-content">
               <div class="form-group">
                   <label>IP or IP range</label>
-                  <div class="ip-range clearfix">
-                    <input type="text" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="item.name" required>
-                    <i class="material-icons">delete</i>
-                  </div>
-                  <div class="ip-range clearfix">
-                    <input type="text" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="item.name" required>
+                  <div class="ip-range clearfix" ng-repeat="ip in ips">
+                    <input type="text" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="ip.value" required>
                     <i class="material-icons">delete</i>
                   </div>
               </div>

@@ -23,14 +23,22 @@ The maximum amount of the bot rules that can be created is 20. You can still add
       <table md-table class="table">
         <thead>
           <tr>
-            <th>Bot</span></th>
+            <th>Bot</th>
             <th>IP / IP range</th>
             <th>User agent</th>
           </tr>
         </thead>
         <tbody>
         <tr ng-repeat="item in items">
-          <td>{{item.name}}</td>
+          <td>
+            <span uib-dropdown>
+                <a uib-dropdown-toggle>{{item.name}}</a>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                    <li role="menuitem"><a ng-click="editItem($event, item)">Edit</a></li>
+                    <li role="menuitem"><a ng-click="deleteItem($event, item)">Delete</a></li>
+                </ul>
+              </span>
+          </td>
           <td>{{item.ipRules[0].ipRangeStart}} {{item.ipRules.length}}</td>
           <td>{{item.userAgentRules[0].userAgent}} {{item.userAgentRules.length}}</td>
         </tr>
