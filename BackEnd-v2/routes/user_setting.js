@@ -639,8 +639,25 @@ router.post('/api/domains', async function (req, res, next) {
 
 
 
-//cname 
-router.post('/api/cname', function (req, res, next) {
+/**
+ * @api /api/domains/validatecname 
+ * @apiName 验证Domain Adress
+ * @apiGroup User
+ * 
+ * @apiParam {String} adress {adress: 'www.adbund.com'}
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+         {
+            status: 1,
+            message: 'success',
+            data: {
+                domain: 'www.adbund.com',
+                validateResult: "NOT_FOUND"
+            }
+        }
+ */
+router.get('/api/domains/validatecname', function (req, res, next) {
 
 });
 

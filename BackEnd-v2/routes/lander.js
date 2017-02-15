@@ -185,7 +185,8 @@ router.get('/api/landers/:id', async function (req, res, next) {
  * @api {get} /api/landers  user landers
  * @apiName user landers
  * @apiGroup lander
- *
+ * 
+ * @apiParam columns
  * @apiParam [country]
  *
  * @apiSuccessExample {json} Success-Response:
@@ -196,7 +197,7 @@ router.get('/api/landers/:id', async function (req, res, next) {
  */
 router.get('/api/landers', function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name from Lander where userId = " + req.userId;
+    var sql = "select id, name, country from Lander where userId = " + req.userId;
 
     if(req.query.country){
         sql += " and `country`=" + req.query.country;
