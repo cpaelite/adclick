@@ -1262,14 +1262,14 @@ app.get('/api/landers/:landerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/landers', function (req, res) {
-    var result = [{"id": 46, "name": "Lander12", "country": "us"}, {
+    var result = [{"id": 46, "name": "Lander12", "country": "Canada"}, {
         "id": 47,
         "name": "Lander1",
-        "country": "us"
+        "country": "Canada"
     }, {"id": 49, "name": "Lander2", "country": "cn"}, {"id": 50, "name": "Lander3", "country": "us"}, {
         "id": 54,
         "name": "Lander3",
-        "country": "ca"
+        "country": "CHN"
     }];
     delayResponse(res, result);
 });
@@ -1380,11 +1380,11 @@ app.get('/api/offers', function (req, res) {
     var result = [{"id": 22, "name": "Offer12", "country": "us"}, {
         "id": 23,
         "name": "Offer1",
-        "country": "cn"
+        "country": "Canada"
     }, {"id": 41, "name": "Offer2", "country": "ca"}, {"id": 42, "name": "Offer3", "country": "cn"}, {
         "id": 43,
         "name": "Offer4",
-        "country": "us"
+        "country": "CHN"
     }];
     delayResponse(res, result);
 });
