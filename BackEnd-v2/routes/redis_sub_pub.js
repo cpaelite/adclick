@@ -11,6 +11,7 @@ function initClient(param) {
     let client = redis.createClient(option);
 
     client.on("error", function (err) {
+        console.error(err.message);
         log.error("[initClient]error:", err);
     });
 
@@ -66,6 +67,14 @@ class PubSub {
         this.sub.on("message", function (channel, message) {
             self.subAction(channel, message);
         });
+    }
+
+    set(key,value){
+        this.sub.set(key,value);
+    }
+
+    get(key,callback){
+        this.sub.get(key,callback);
     }
 
     tearDown() {
