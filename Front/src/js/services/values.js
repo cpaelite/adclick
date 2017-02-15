@@ -920,3 +920,11 @@ angular.module('app').value('urlParameter', {
     "{transaction.id}"
   ]
 });
+
+angular.module('app').factory('reportCache', ['$cacheFactory', function($cacheFactory) {
+  var cache = $cacheFactory.get('report-cache');
+  if (!cache) {
+    cache = $cacheFactory('report-cache', {capacity:100});
+  }
+  return cache;
+}]);

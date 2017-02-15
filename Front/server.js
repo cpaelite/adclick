@@ -2307,11 +2307,58 @@ app.get('/api/eventlog', function (req, res) {
       rows: [
         {
           user: "zhengshuo@qq.com",
-          entityType: "Offer",
-          entityName: "Offer1",
+          entityType: "Campaign",
+          entityName: "Campaign1",
           entityId: "c05cad45-fbe4-405c-9da4-cb3b5de1ca",
           action: "Create",
-          changeAt: "2017-02-10"
+          changeAt: "2017-02-10",
+          changes: {
+            "fieldName": "Campaign",
+            "simpleChanges": [{
+              "fieldName": "Traffic source",
+              "newEntityId": "05e5c2fa-83b6-4e21-89c1-ddcac6fbe6b4",
+              "newValue": "AirPush",
+              "category": "TRAFFIC_SOURCE"
+            }, {
+              "fieldName": "Cost model",
+              "newValue": "Do not track costs"
+            }, {
+              "fieldName": "Destination",
+              "newValue": "Flow"
+            }, {
+              "fieldName": "Flow",
+              "newEntityId": "3964f3f9-bcbb-44d6-8030-94e1d9f11013",
+              "newValue": "Global - New Flow-aedan22",
+              "category": "FLOW"
+            }, {
+              "fieldName": "Name",
+              "newValue": "AirPush - Global - aedan22222"
+            }]
+          }
+        },
+        {
+          "changeAt" : "2017-02-10",
+          "entityType" : "Campaign",
+          "user" : "zhengshuo@qq.com",
+          "entityName" : "Zeropark - Afghanistan - Campaign3",
+          "entityId" : "03cc35d9-2f48-4d48-9f2a-1b1f7764a411",
+          "action" : "Change",
+          "changes" : {
+            "fieldName" : "Campaign",
+            "simpleChanges" : [ {
+              "fieldName" : "Traffic source",
+              "oldEntityId" : "4ff3746a-226a-4b77-a816-ce37675c55b7",
+              "newEntityId" : "983e371a-59ef-4eb9-a773-da2053d6fad1",
+              "oldValue" : "TrafficSource1",
+              "newValue" : "Zeropark",
+              "category" : "TRAFFIC_SOURCE"
+            }, {
+              "fieldName" : "Name",
+              "oldValue" : "TrafficSource1 - Afghanistan - Campaign1",
+              "newValue" : "Zeropark - Afghanistan - Campaign3"
+            } ],
+            "nestedChanges" : [ ]
+          }
         }
       ]
     }
