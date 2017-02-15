@@ -9,7 +9,23 @@ global.pool = mysql.createPool({
     debug: process.env.DEBUG === 'true',
     waitForConnections:false
 });
+//router
+var auth = require('./routes/auth');
+var networktpl = require('./routes/networktpl');
+var network = require('./routes/network');
+var offer = require('./routes/offer');
+var flowCtrl = require('./routes/flow');
+var flow=flowCtrl.router;
  
+var report = require('./routes/report');
+var user = require('./routes/user');
+var campaign = require('./routes/campaign');
+var lander=require('./routes/lander');
+var traffic= require('./routes/traffic');
+var user_setting=require('./routes/user_setting');
+var event_log=require('./routes/event_log');
+var traffictpl= require('./routes/traffictpl');
+
 var express = require('express');
 var favicon = require('serve-favicon');
 var log4js = require('log4js');
@@ -19,20 +35,7 @@ var bodyParser = require('body-parser');
 var app = express();
 var util = require('./util/index');
 
-//router
-var auth = require('./routes/auth');
-var networktpl = require('./routes/networktpl');
-var network = require('./routes/network');
-var offer = require('./routes/offer');
-var flow = require('./routes/flow');
-var report = require('./routes/report');
-var user = require('./routes/user');
-var campaign = require('./routes/campaign');
-var lander=require('./routes/lander');
-var traffic= require('./routes/traffic');
-var user_setting=require('./routes/user_setting');
-var event_log=require('./routes/event_log');
-var traffictpl= require('./routes/traffictpl');
+
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));

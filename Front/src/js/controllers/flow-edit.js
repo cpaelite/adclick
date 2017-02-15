@@ -50,7 +50,7 @@
 
       theFlow = {
         name: 'new flow',
-        country: 'global',
+        country: 'ZZZ',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
@@ -196,6 +196,8 @@
     $scope.isDeleted = false;
     $scope.curRule = null;
     $scope.curPath = null;
+
+    $scope.searchText = {};
 
     // operation on flow
     $scope.editFlow = function() {
@@ -348,14 +350,11 @@
       }
     };
     $scope.queryLanders = function(query) {
-      if (theFlow.country == 'global') {
-        return allLanders;
-      }
       if (allLanders) {
         var countryFiltered = allLanders.filter(function(lander) {
-          return lander.country == theFlow.country.value ;
+          return theFlow.country.value == 'ZZZ' || lander.country == theFlow.country.value ;
         });
-        return query ? countryFiltered.filter(createFilterFor(query, "country")) : countryFiltered;
+        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
         return [];
       }
@@ -395,14 +394,11 @@
       }
     };
     $scope.queryOffers = function(query) {
-      if (theFlow.country == 'global') {
-        return allOffers;
-      }
       if (allOffers) {
         var countryFiltered = allOffers.filter(function(offer) {
-          return offer.country == theFlow.country.value ;
+          return theFlow.country.value == 'ZZZ' || offer.country == theFlow.country.value ;
         });
-        return query ? countryFiltered.filter(createFilterFor(query, "country")) : countryFiltered;
+        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
         return [];
       }
@@ -567,13 +563,9 @@
     // save
     $scope.save = function() {
       // clean up before save
-      var country = theFlow.country.value;
-      if (!country) {
-        country = theFlow.country;
-      }
       var flowData = {
         name: theFlow.name,
-        country: country,
+        country: theFlow.country.value,
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };

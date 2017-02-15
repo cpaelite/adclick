@@ -8,7 +8,7 @@ var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
-
+var _ = require('lodash');
 
 /**
  * @api {post} /api/offers  新增offer
@@ -207,7 +207,8 @@ router.get('/api/offers/:id', async function (req, res, next) {
  * @api {get} /api/offers get offer list
  * @apiName offers
  * @apiGroup offer
- *
+ * 
+ * @apiParam columns
  * @apiParam [country]
  *
  * @apiSuccessExample {json} Success-Response:
@@ -218,7 +219,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  */
 router.get('/api/offers', function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name from Offer where userId = " + req.userId;
+    var sql = "select id, name,country from Offer where userId = " + req.userId;
 
     if (req.query.country) {
         sql += " and `country`=" + req.query.country;
@@ -266,6 +267,34 @@ router.delete('/api/offers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
+        
+        //check offer used by flow ?   
+        let templeSql=`select  f.\`id\`as flowId,f.\`name\` as flowName from  Offer offer  
+            inner join Offer2Path p2 on offer.\`id\` = p2.\`offerId\` 
+            inner join Path p on p.\`id\` = p2.\`pathId\` 
+            inner join Path2Rule r2 on r2.\`pathId\` = p.\`id\`
+            inner join Rule r on r.\`id\`= r2.\`ruleId\`
+            inner join Rule2Flow f2 on f2.\`ruleId\`= r.\`id\`
+            inner join Flow f on f.\`id\` = f2.\`flowId\` 
+            where  offer.\`deleted\` = 0  and p2.\`deleted\` = 0  and p.\`deleted\` = 0  and r2.\`deleted\` = 0  and r.\`deleted\`= 0 and f2.\`deleted\`= 0 and f.\`deleted\` = 0   
+            and offer.\`id\`= <%=offerId%> and offer.\`userId\`= <%=userId%> and p.\`userId\`=<%=userId%> and r.\`userId\`= <%=userId%> and f.\`userId\` = <%=userId%>`;
+         let buildFuc=_.template(templeSql);
+         let sql = buildFuc({
+             offerId:value.id,
+             userId:value.userId
+         });
+        let flowResult=await common.query(sql,[],connection);
+        if(flowResult.length){
+            res.json({
+            status: 0,
+            message: 'offer used by flow!',
+            data:{
+                flows:flowResult
+            }
+          });
+          return ;
+        }
+
         let result = await common.deleteOffer(value.id, value.userId, value.name, value.hash, connection);
         //reids pub
         new Pub(true).publish(setting.redis.channel, value.userId, "offerDelete");

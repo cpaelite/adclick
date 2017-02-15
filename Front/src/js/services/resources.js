@@ -42,13 +42,13 @@ angular.module('app')
     return $resource('/api/countries', {}, {'query':  {method:'GET', isArray:true}});
   }])
   .factory('ProfileAccount', ['$resource', function($resource) {
-    return $resource('/api/set/profile/account')
+    return $resource('/api/profile')
   }])
   .factory('PasswordChange', ['$resource', function($resource) {
-    return $resource('/api/set/passwordChange')
+    return $resource('/api/password')
   }])
   .factory('EmailChange', ['$resource', function($resource) {
-    return $resource('/api/set/emailChange')
+    return $resource('/api/email')
   }])
   .factory('DefaultPostBackUrl', ['$resource', function($resource) {
     return $resource('/api/postbackurl')

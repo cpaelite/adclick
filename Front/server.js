@@ -2297,7 +2297,7 @@ app.get('/api/eventlog', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      totalRows: 37,
+      totalRows: 100,
       rows: [
         {
           user: "zhengshuo@qq.com",
