@@ -3,35 +3,56 @@
 
     angular.module('app')
         .controller('ProfileCtrl', [
-            '$scope', 'toastr', 'ProfileAccount', 'PasswordChange', 'EmailChange',
+            '$scope', 'toastr', 'Profile', 'Password', 'Email',
             ProfileCtrl
         ]);
 
-    function ProfileCtrl($scope,toastr, ProfileAccount, PasswordChange, EmailChange) {
+    function ProfileCtrl($scope,toastr, Profile, Password, Email) {
         $scope.app.subtitle = 'Setting';
 
-        ProfileAccount.get({id: '1'}, function(user) {
+        Profile.get({id: ''}, function(user) {
         	$scope.accountItem = user.data;
         });
         $scope.phoneNumbr = /^[0-9]*$/ ;
         $scope.accountSave = function() {
-        	ProfileAccount.save($scope.accountItem,function(){
+        	Profile.save($scope.accountItem,function(){
                 toastr.success('Your account data save success!');
             });
         };
 
         $scope.passwordUpdateSave = function(){
-            PasswordChange.save($scope.passwordItem,function(){
-                toastr.success('Password reset success!');
+            Password.save($scope.passwordItem,function(result){
+                if(result.status){
+                    toastr.success('Password reset success!');
+                }else{
+                    toastr.error('old password error!');
+                }
+                
             });
         };
 
-        EmailChange.get(function(user){
+        Email.get(function(user){
             $scope.emailItem = user.data;
         });
+
+        $scope.checkEmail = function () {
+            function success(response) {
+                if (response.data.exists) {
+                    $scope.emailForm.email.$setValidity('check', false);
+                } else {
+                    $scope.emailForm.email.$setValidity('check', true);
+                }
+            }
+        };
+
         $scope.emailUpdateSave = function(){
-            EmailChange.save($scope.emailItem,function(){
-                toastr.success('Email reset success!');
+            Email.save($scope.emailItem,function(result){
+                if(result.status){
+                    toastr.success('Email reset success!');
+                }else{
+                    toastr.error('old password error!');
+                }
+                
             });
         };
     }

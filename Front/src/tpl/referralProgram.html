@@ -7,10 +7,10 @@
     <div class="form-group clearfix">
       <label class="col-sm-2 control-label">Link to sign up page</label>
       <div class="col-sm-7">
-        <input type="text" class="form-control" ng-model="item.name" required>
+        <input type="text" class="form-control" ng-model="item.linkurl" required>
       </div>
       <div class="col-md-3">
-        <md-button class="md-raised copy-btn">Copy to clipboard</md-button>
+        <md-button clipboard class="md-raised copy-btn" text="item.linkurl" ng-click="itemUrlClick()">{{btnWord}}</md-button>
       </div>
     </div>
     <div class="data-table">
@@ -27,40 +27,32 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>2a7670c7</td>
-            <td>06-01-2017, 00:00</td>
-            <td>New</td>
-            <td>No Plan</td>
-            <td>05-01-2017, 00:00</td>
-            <td>0.00$</td>
-            <td>0.00$</td>
-          </tr>
-          <tr>
-            <td>2a7670c7</td>
-            <td>06-01-2017, 00:00</td>
-            <td>New</td>
-            <td>No Plan</td>
-            <td>05-01-2017, 00:00</td>
-            <td>0.00$</td>
-            <td>0.00$</td>
+          <tr ng-repeat="referral in item.referrals">
+            <td>{{referral.userId}}</td>
+            <td>{{referral.acquired}}</td>
+            <td>{{referral.status}}</td>
+            <td>{{referral.plan}}</td>
+            <td>{{referral.lastActivity}}</td>
+            <td>{{referral.recentCommission}}</td>
+            <td>{{referral.totalCommission}}</td>
+
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td>TOTAL</td>
-            <td>Referrals:2</td>
+            <td>Referrals:{{item.totals.count}}</td>
             <td></td>
             <td></td>
             <td></td>
-            <td>0.00$</td>
-            <td>0.00$</td>
+            <td>{{item.totals.recentCommission}}</td>
+            <td>{{item.totals.totalCommission}}</td>
           </tr>
         </tfoot>
       </table>
     </div>
 
-    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.offset"
-    md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
+                         md-total="{{item.totalRows}}" md-page-select></md-table-pagination>
   </div>
 </div>

@@ -1,0 +1,27 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+  <!-- <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
+    </div>
+  </md-toolbar> -->
+  <md-dialog-content class="md-dialog-content domain-verify">
+    <h2>CNAME validation error</h2>
+    <p class="dns-propagation-note">
+      <i class="material-icons">info_outline</i>
+      Note that it may take some time for new settings to propagate across the DNS servers before we can pick up changed values.
+    </p>
+    <div class="dns-data">
+      <h3>Your DNS configuration should contain one of records:</h3>
+      <div class="dns-records">
+        <ul>
+          <li>9cmzk.voluumtrk2.com. IN CNAME <br>9cmzk.voluumtrk2.com..</li>
+          <li>9cmzk.voluumtrk2.com. IN CNAME <br>9cmzk.voluumtrk.com..</li>
+          <li>9cmzk.voluumtrk2.com. IN CNAME <br>9cmzk.trackvoluum.com..</li>
+        </ul>
+      </div>
+    </div>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+  </md-dialog-actions>
+</md-dialog>

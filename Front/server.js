@@ -599,7 +599,7 @@ app.get('/api/report', function (req, res) {
         "status": 1,
         "messages": "",
         data: {
-            "totalRows": 37,
+            "totalRows": 3700,
             "totals": {
                 "ap": 0.0,
                 "bids": 0,
@@ -1856,12 +1856,32 @@ app.get('/api/postbackurl', function (req, res) {
     res.send(result);
 });
 
-// Setting API
 /**
- * @apiName 获取profile account
+ * @api {get} /api/profile  
+ * @apiName  
+ * @apiGroup User
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',
+ *    data:{
+          idText:"",
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: '13120663670',
+          timezone:'+08:00',
+          homescreen:'dashboard',  // or campaignList
+          referralToken:"",
+          status:0  //0:New;1:运行中;2:已过期
+    }
+ *
+ *   }
  *
  */
-app.get('/api/set/profile/account', function (req, res) {
+app.get('/api/profile', function (req, res) {
     var result = {
         status: 1,
         message: 'success',
@@ -1872,70 +1892,128 @@ app.get('/api/set/profile/account', function (req, res) {
           tel: '13120663670',
           timezone:'+08:00',
           homescreen: 'dashboard', // or campaignList
-          referralToken: ""
+          referralToken: "wkllehZbEjXRk7nJfatdCWjjhKRKyo+jqdyL8ZHuIAZYrDTZ+0kW1A3BiAWGBrDZ",
         }
     };
     res.send(result);
 });
 
 /**
- * @apiName 保存profile account
+ * @api {post} /api/profile  
+ * @apiName  
+ * @apiGroup User
+ *
+ * @apiParam {String} firstname
+ * @apiParam {String} lastname
+ * @apiParam {String} companyname
+ * @apiParam {String} tel
+ * @apiParam {String} timezone
+ * @apiParam {String} homescreen
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *    status: 1,
+ *    message: 'success',
+ *    data:{
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: "13120663670",
+          timezone:'+08:00',
+          homescreen:'dashboard',  // or campaignList
+     }
+ *
+ *  }
  *
  */
-app.post('/api/set/profile/account', function (req, res) {
+app.post('/api/profile', function (req, res) {
     var result = {
         status: 1,
         message: 'success',
         data: {
-            firstname: 'test',
-            lastname:'test',
-            companyname: 'zheng',
-            tel: '13120663670',
-            timezone:'+08:00',
-            homescreen: 'dashboard', // or campaignList
-            referralToken: ""
+          firstname: 'test',
+          lastname:'test',
+          companyname: 'zheng',
+          tel: '13120663670',
+          timezone:'+08:00',
+          homescreen: 'dashboard', // or campaignList
         }
     };
     res.send(result);
 });
 
 /**
- * @apiName 保存profile password change
+ * @api {post} /api/password   用户修改密码
+ * @apiName  用户修改密码
+ * @apiGroup User
  *
- *
- * @apiParam {String} oldpassword
+ * @apiParam {String} oldpassword   
  * @apiParam {String} newpassword
  *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *     }
+ * 
+ * @apiErrorExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 0,
+ *       "message": "old password error"
+ *     }
+ *
  */
-app.post('/api/set/passwordChange', function (req, res) {
+app.post('/api/password', function (req, res) {
     var result = {
-        status: 1,
+        status: 0,
         message: 'success'
     };
     res.send(result);
 });
 
 /**
- * @apiName 获取profile email   进入页面后把所有的数据一次性取出来
+ * @api {get} /api/email   用户修改邮箱
+ * @apiName   用户修改邮箱
+ * @apiGroup User
  *
  */
-app.get('/api/set/emailChange', function (req, res) {
+app.get('/api/email', function (req, res) {
     var result = {
         status: 1,
         message: 'success',
+        data:{
+            email:'zhengshou@qq.com'
+        }
     };
     res.send(result);
 });
 
 /**
- * @apiName 保存profile email change
- *
+ * @api {post} /api/email   用户修改邮箱
+ * @apiName   用户修改邮箱
+ * @apiGroup User
  *
  * @apiParam {String} password
- * @apiParam {String} email   (同注册一样，输入邮箱以后验证邮箱是否已存在)
+ * @apiParam {String} email
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *     }
+ * 
+ * @apiErrorExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 0,
+ *       "message": "password error" // email exists
+ *     }
  *
  */
-app.post('/api/set/emailChange', function (req, res) {
+app.post('/api/email', function (req, res) {
     var result = {
         status: 1,
         message: 'success'
@@ -1958,19 +2036,30 @@ app.get('/api/referrals', function (req, res) {
         message: 'success',
         data: {
             totalRows: 37,
+            linkurl:"https://panel.voluum.com/link/?t=wkllehZbEjXRk7nJfatdCWjjhKRKyo+jqdyL8ZHuIAZYrDTZ+0kW1A3BiAWGBrDZ",
             totals: {
-                count: "",
-                recentCommission: "",
-                totalCommission: ""
+                count: "2",
+                recentCommission: "$4.00",
+                totalCommission: "$99.00"
             },
             referrals: [
                 {
                     userId: 1,
-                    acquired: "",
-                    status: "",
-                    lastActivity: "",
-                    recentCommission: "",
-                    totalCommission: ""
+                    acquired: "acquired",
+                    status: "0",
+                    plan:"plan",
+                    lastActivity: "lastActivity",
+                    recentCommission: "recentCommission",
+                    totalCommission: "totalCommission"
+                },
+                {
+                    userId: 2,
+                    acquired: "acquired",
+                    status: "0",
+                    plan:"plan",
+                    lastActivity: "lastActivity",
+                    recentCommission: "recentCommission",
+                    totalCommission: "totalCommission"
                 }
             ]
         }
@@ -2057,7 +2146,7 @@ app.get('/api/domains/validatecname', function (req, res) {
     message: 'success',
     data: {
       domain: 'www.adbund.com',
-      validateResult: "NOT_FOUND"
+      validateResult: "NOT_FOUND" //SUCCESS or NOT_FOUND
     }
   };
   res.send(result);
@@ -2104,7 +2193,15 @@ app.get('/api/setup', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
-    data: {}
+    data: {
+        clickurl:"http://9cmzk.voluumtrk.com/click",
+        multiofferclickurl:"http://9cmzk.voluumtrk.com/click/1",
+        postbackurl:"http://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
+        securepostbackurl:"https://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
+        trackingpixelurl:"https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL",
+        trackingpixel:'<img src="https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL" width="1" height="1"/>',
+        trackingscript:'<script type="text/javascript" src="https://9cmzk.voluumtrk.com/conversion.js?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL"/>'
+    }
   };
   res.send(result);
 });
@@ -2161,6 +2258,10 @@ app.post('/api/invitation', function (req, res) {
       invitations: [
         {
           email: "222@qq.com",
+          lastDate: "13-02-2017"
+        },
+        {
+          email: "111@qq.com",
           lastDate: "13-02-2017"
         }
       ]
