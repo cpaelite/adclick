@@ -197,6 +197,8 @@
     $scope.curRule = null;
     $scope.curPath = null;
 
+    $scope.searchText = {};
+
     // operation on flow
     $scope.editFlow = function() {
       $scope.onEdit = 'flow';
