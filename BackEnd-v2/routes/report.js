@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var _ = require('lodash');
 var common = require('./common');
+import _ from 'lodash';
 
 var mapping = {
     UserID: "UserID",
@@ -54,7 +54,6 @@ var mapping = {
     V10: "V10"
 }
 
-
 var groupByMapping = {
     campaign: 'campaignId',
     flow: 'flowId',
@@ -72,19 +71,17 @@ var groupByMapping = {
  *
  */
 
-
 //from   to tz  sort  direction columns=[]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 
-router.get('/api/report', async function (req, res, next) {
+router.get('/api/report', async function(req, res, next) {
     req.query.userId = req.userId;
     try {
         let result;
         result = await campaignReport(req.query);
-        return res.json({
-            status: 1,
-            message: 'success',
-            data: result
-        });
+        if (req.query.groupBy === 'campaign') {
+            result = await decorate(result, req.query)
+        }
+        return res.json({status: 1, message: 'success', data: result});
     } catch (e) {
         return next(e);
     }
@@ -98,6 +95,42 @@ router.get('/api/report', async function (req, res, next) {
 // status:1
 // to:2017-01-24T23:59
 // tz:+08:00
+
+async function decorate(statistics, query) {
+    let {tz, from, to} = query;
+    let Ps = statistics.rows.map(async statistic => {
+        let campaignMap =  await models.CampaignMap.findOne({
+            where: {
+                OurCampId: statistic.campaignId
+            }
+        });
+        if (!campaignMap) return statistic;
+
+        let timezone = await models.Timezone.findOne({where: {value: parseInt(tz.split(':')[0])}})
+        let campaign = await models.Campaign.findOne({where: {campaign_identity: campaignMap.TheirCampId}});
+
+        let r = await campaign.getStatistics({
+          where: {
+            date: {
+              $gte: '2016-10-01',
+              $lte: '2016-11-01'
+            },
+            timezone_id: timezone.id
+          }
+        })
+        let cost = r.reduce((sum , e) => sum + parseFloat(e.cost), 0);
+        let impression = r.reduce((sum, e) => sum + parseInt(e.impression), 0);
+        let click = r.reduce((sum, e) => sum + parseInt(e.click), 0);
+        statistic.cost = cost;
+        statistic.impressions = impression;
+        statistic.clicks = click;
+        return statistic;
+    })
+
+    let rows = await(Promise.all(Ps));
+    statistics.rows = rows;
+    return statistics
+}
 
 async function campaignReport(value) {
     let {
@@ -117,41 +150,33 @@ async function campaignReport(value) {
     page = parseInt(page)
     let offset = (page - 1) * limit;
     let attrs = Object.keys(value);
-    _.forEach(attrs, (attr)=> {
+    _.forEach(attrs, (attr) => {
         if (mapping[attr]) {
             sqlWhere[mapping[attr]] = value[attr];
         }
     })
     let isListPageRequest = Object.keys(sqlWhere).length === 0 && groupByMapping[groupBy]
     if (isListPageRequest) {
-        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit,filter)
+        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit, filter)
     } else {
-        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit,filter)
+        return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit, filter)
     }
 
 }
 
-async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit,filter) {
-    let sql = buildSql()({
-        sqlWhere,
-        from,
-        to,
-        tz,
-        groupBy: mapping[groupBy]
-    });
+async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit, filter) {
+    let sql = buildSql()({sqlWhere, from, to, tz, groupBy: mapping[groupBy]});
     sql += " limit " + offset + "," + limit;
     let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-    let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
-        sql + ") as K)";
+    let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" + sql + ") as K)";
     let result = await Promise.all([query(sql), query(countSql), query(sumSql)]);
-    return ({
-        totalRows: result[1][0].total,
+    return ({totalRows: result[1][0].total,
         totals: result[2][0],
         rows: result[0]
     });
 }
 
-async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit,filter) {
+async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit, filter) {
     let listSql
     if (groupBy == 'campaign') {
         listSql = campaignListSql + ' where userId = ' + userId
@@ -166,24 +191,16 @@ async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, l
     } else if (groupBy == 'affiliate') {
         listSql = affiliateListSql + ' where userId = ' + userId
     } else {
-        console.error("some thing wrong!!!")
         return {}
     }
-    if(filter){
-        listSql += " and `name` like '%"+filter+"%'"
+    if (filter) {
+        listSql += " and `name` like '%" + filter + "%'"
     }
-    
+
     let countSql = "select COUNT(*) as `total` from ((" + listSql + ") as T)";
     listSql += " limit " + offset + "," + limit;
-    let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" +
-        listSql + ") as K)";
-    let dataSql = buildSql()({
-        sqlWhere,
-        from,
-        to,
-        tz,
-        groupBy: mapping[groupBy]
-    });
+    let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" + listSql + ") as K)";
+    let dataSql = buildSql()({sqlWhere, from, to, tz, groupBy: mapping[groupBy]});
     let sqlResult = await Promise.all([query(listSql), query(countSql), query(sumSql), query(dataSql)]);
     let r = {
         totalRows: sqlResult[1][0].total,
@@ -202,14 +219,13 @@ async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, l
     return r;
 }
 
-
 function query(sql) {
-    return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
+    return new Promise(function(resolve, reject) {
+        pool.getConnection(function(err, connection) {
             if (err) {
                 return reject(err)
             }
-            connection.query(sql, function (err, result) {
+            connection.query(sql, function(err, result) {
                 connection.release();
                 if (err) {
                     reject(err)
@@ -220,9 +236,7 @@ function query(sql) {
     })
 }
 
-
 module.exports = router;
-
 
 function buildSql() {
     let template = `
@@ -263,7 +277,6 @@ order by CampaignId `
 
     return _.template(template);
 }
-
 
 var campaignListSql = `
 select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as

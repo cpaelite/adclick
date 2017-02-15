@@ -1,14 +1,27 @@
 global.setting = require('./config/setting');
-var mysql = require('mysql');
+import mysql from 'mysql';
+const env = process.env.NODE_ENV || 'staging'
+const mysqlSetting = setting.mysql[env]
+
 global.pool = mysql.createPool({
-    host: setting.mysql.host,
-    user: setting.mysql.user,
-    password: setting.mysql.password,
-    database: setting.mysql.database,
-    connectionLimit:setting.mysql.connectionLimit,
+    host: mysqlSetting.host,
+    user: mysqlSetting.user,
+    password: mysqlSetting.password,
+    database: mysqlSetting.database,
+    connectionLimit: mysqlSetting.connectionLimit,
     debug: process.env.DEBUG === 'true',
-    waitForConnections:false
+    waitForConnections: false
 });
+
+var express = require('express');
+var favicon = require('serve-favicon');
+var log4js = require('log4js');
+var logger = log4js.getLogger("app");
+var bodyParser = require('body-parser');
+
+var app = express();
+var util = require('./util/index');
+
 //router
 var auth = require('./routes/auth');
 var networktpl = require('./routes/networktpl');
@@ -20,11 +33,11 @@ var flow=flowCtrl.router;
 var report = require('./routes/report');
 var user = require('./routes/user');
 var campaign = require('./routes/campaign');
-var lander=require('./routes/lander');
-var traffic= require('./routes/traffic');
-var user_setting=require('./routes/user_setting');
-var event_log=require('./routes/event_log');
-var traffictpl= require('./routes/traffictpl');
+var lander = require('./routes/lander');
+var traffic = require('./routes/traffic');
+var user_setting = require('./routes/user_setting');
+var event_log = require('./routes/event_log');
+var traffictpl = require('./routes/traffictpl');
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -45,14 +58,10 @@ app.use("/assets", express.static(__dirname + '/../Front/dist/assets'));
 app.use("/tpl", express.static(__dirname + '/../Front/dist/tpl'));
 
 //log4js
-app.use(log4js.connectLogger(log4js.getLogger("http"), {
-    level: 'auto'
-}));
+app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({
-    extended: false
-}))
+app.use(bodyParser.urlencoded({extended: false}))
 
 // parse application/json
 app.use(bodyParser.json())
@@ -63,11 +72,9 @@ app.get('/', function(req, res) {
     });
 });
 
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report,
-    campaign,lander,traffic,user_setting,event_log,traffictpl,networktpl);
+app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl);
 
 app.use('/', auth);
-
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -79,18 +86,14 @@ app.use(function(req, res, next) {
 /// error handlers
 app.use(function(err, req, res, next) {
     logger.error("Something went wrong:", err);
+    console.error(err, err.stack);
     res.status(err.status || 500);
 
     //TODO
     if (err.status == 303) { //mysql 出错
 
     }
-    res.json({
-        status: 0,
-        message: err.message,
-        data: {}
-    });
+    res.json({status: 0, message: err.message, data: {}});
 });
-
 
 module.exports = app;

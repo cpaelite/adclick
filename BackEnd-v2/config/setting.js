@@ -1,11 +1,20 @@
 module.exports = {
   "env":"development",
   "mysql": {
-    host: 'dev02.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
-    user: 'root',
-    password: 'R%LKsIJF412',
-    database: 'AdClickTool',
-    connectionLimit:10
+    'development': {
+      host: 'localhost',
+      user: 'monty',
+      password: 'monty',
+      database: 'AdClickTool',
+      connectionLimit:10
+    },
+    staging: {
+      host: 'dev02.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
+      user: 'root',
+      password: 'R%LKsIJF412',
+      database: 'AdClickTool',
+      connectionLimit:10
+    }
   },
   "redis":{
     host:"adclick-jp.082pif.ng.0001.apne1.cache.amazonaws.com",
