@@ -2,7 +2,7 @@ var Joi = require('joi');
 var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
-const querystring = require('querystring');
+
 
 
 function query(sql, params, connection) {
@@ -510,7 +510,7 @@ function insertLander(userId, lander, connection) {
     val += ",'" + hash + "'"
 
     col += ",`url`";
-    val += ",'" + querystring.escape(lander.url) + "'";
+    val += ",'" + lander.url + "'";
 
     col += ",`numberOfOffers`";
     val += "," + lander.numberOfOffers;
@@ -539,25 +539,33 @@ function insertLander(userId, lander, connection) {
 }
 
 function updateLander(userId, lander, connection) {
-    var sqlUpdateLander = "update Lander set `id`=" + lander.id;
+    let params = [];
+    var sqlUpdateLander = "update Lander set `id`= ?";
+    params.push(lander.id);
     if (lander.country) {
         // var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
-        sqlUpdateLander += ",`country`='" + lander.country + "'"
+        sqlUpdateLander += ",`country`=?";
+        params.push(lander.country);
     }
     if (lander.name) {
-        sqlUpdateLander += ",`name`='" + lander.name + "'"
+        sqlUpdateLander += ",`name`=?";
+        params.push(lander.name);
     }
     if (lander.url) {
-        sqlUpdateLander += ",`url`='" + querystring.escape(lander.url) + "'"
+        sqlUpdateLander += ",`url`=? ";
+        params.push(lander.url);
     }
     if (lander.numberOfOffers) {
-        sqlUpdateLander += ",`numberOfOffers`=" + lander.numberOfOffers
+        sqlUpdateLander += ",`numberOfOffers`= ?";
+        params.push(lander.numberOfOffers);
     }
 
-    sqlUpdateLander += " where `id`= ?  and `userId`= ? "
+    sqlUpdateLander += " where `id`= ?  and `userId`= ? ";
+    params.push(lander.id);
+    params.push(userId);
 
     return new Promise(function (resolve, reject) {
-        connection.query(sqlUpdateLander, [lander.id, userId], function (err, result) {
+        connection.query(sqlUpdateLander, params, function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -588,7 +596,6 @@ function getLanderDetail(id, userId, connection) {
                     tags.push(tagsResult[index].name);
                 }
                 if (lander[0]) {
-                    lander[0].url=querystring.unescape(lander[0].url);
                     lander[0].tags = tags;
                 }
 
@@ -639,7 +646,18 @@ function updateLander2Path(landerId, pathId, weight, connection) {
             resolve(result);
         });
     })
+}
 
+function deleteLander2Path(pathId, connection) {
+    var sqllander2path = "delete from   Lander2Path   where `pathId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqllander2path, [pathId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    })
 }
 
 //Offer
@@ -657,7 +675,7 @@ function insertOffer(userId, idText, offer, connection) {
     val += ",'" + hash + "'"
 
     col += ",`url`";
-    val += ",'" + querystring.escape(offer.url) + "'";
+    val += ",'" + offer.url + "'";
 
     col += ",`payoutMode`";
     val += "," + offer.payoutMode
@@ -706,40 +724,50 @@ function insertOffer(userId, idText, offer, connection) {
 }
 
 function updateOffer(userId, offer, connection) {
-    var sqlUpdateOffer = "update  Offer  set `id`=" + offer.id;
+    let params = [];
+    var sqlUpdateOffer = "update  Offer  set `id`= ? ";
+    params.push(offer.id);
     if (offer.country) {
         // var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
-        sqlUpdateOffer += ",`country`='" + offer.country + "'"
+        sqlUpdateOffer += ",`country`= ? ";
+        params.push(offer.country);
     }
     if (offer.postbackUrl) {
-        sqlUpdateOffer += ",`postbackUrl`='" + offer.postbackUrl + "'"
+        sqlUpdateOffer += ",`postbackUrl`=?";
+        params.push(offer.postbackUrl);
     }
     if (offer.payoutValue != undefined) {
-        sqlUpdateOffer += ",`payoutValue`=" + offer.payoutValue
-
+        sqlUpdateOffer += ",`payoutValue`= ? ";
+        params.push(offer.payoutValue);
     }
     if (offer.affiliateNetwork && offer.affiliateNetwork.id) {
-        sqlUpdateOffer += ",`AffiliateNetworkId`=" + offer.affiliateNetwork.id
+        sqlUpdateOffer += ",`AffiliateNetworkId`= ? ";
+        params.push(offer.affiliateNetwork.id);
     }
     if (offer.affiliateNetwork && offer.affiliateNetwork.name) {
-        sqlUpdateOffer += ",`AffiliateNetworkName`='" + offer.affiliateNetwork.name + "'"
+        sqlUpdateOffer += ",`AffiliateNetworkName`=?";
+        params.push(offer.affiliateNetwork.name);
     }
 
     if (offer.name) {
-        sqlUpdateOffer += ",`name`='" + offer.name + "'"
+        sqlUpdateOffer += ",`name`=? ";
+        params.push(offer.name);
     }
     if (offer.url) {
-        sqlUpdateOffer += ",`url`='" + querystring.escape(offer.url) + "'"
+        sqlUpdateOffer += ",`url`=? ";
+        params.push(offer.url);
 
     }
     if (offer.payoutMode != undefined) {
-        sqlUpdateOffer += ",`payoutMode`=" + offer.payoutMode
-
+        sqlUpdateOffer += ",`payoutMode`= ? ";
+        params.push(offer.payoutMode);
     }
     sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
+    params.push(userId);
+    params.push(offer.id);
 
     return new Promise(function (resolve, reject) {
-        connection.query(sqlUpdateOffer, [userId, offer.id], function (err, result) {
+        connection.query(sqlUpdateOffer, params, function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -771,7 +799,6 @@ function getOfferDetail(id, userId, connection) {
                     tags.push(tagsResult[index].name);
                 }
                 if (lander[0]) {
-                    lander[0].url=querystring.unescape(lander[0].url);
                     lander[0].tags = tags;
                 }
                 resolve(lander[0])
@@ -812,7 +839,6 @@ function insertOffer2Path(offerid, pathid, pathweight, connection) {
 
 function updateOffer2Path(offerId, pathId, weight, connection) {
     var sqloffer2path = "delete from   Offer2Path  where `offerId`=? and `pathId`=?";
-
     return new Promise(function (resolve, reject) {
         connection.query(sqloffer2path, [offerId, pathId], function (err, result) {
             if (err) {
@@ -821,8 +847,20 @@ function updateOffer2Path(offerId, pathId, weight, connection) {
             resolve(result);
         });
     })
-
 }
+
+function deleteOffer2Path(pathId, connection) {
+    var sqloffer2path = "delete from   Offer2Path  where  `pathId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqloffer2path, [pathId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    })
+}
+
 //Path2Rule 
 function insertPath2Rule(pathId, ruleId, weight, status, connection) {
     return new Promise(function (resolve, reject) {
@@ -845,7 +883,17 @@ function updatePath2Rule(pathId, ruleId, weight, status, connection) {
             resolve(result);
         });
     });
-
+}
+function deletePath2Rule(ruleId, connection) {
+    var sqlpath2rule = "delete  from Path2Rule  where  `ruleId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlpath2rule, [ruleId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
 }
 
 //Rule2Flow
@@ -865,6 +913,18 @@ function updateRule2Flow(status, ruleId, flowId, connection) {
     var sqlrule2flow = "delete from   Rule2Flow   where  `ruleId`=?  and `flowId`=?";
     return new Promise(function (resolve, reject) {
         connection.query(sqlrule2flow, [ruleId, flowId], function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
+    });
+}
+
+function deleteRule2Flow(flowId, connection) {
+    var sqlrule2flow = "delete from  Rule2Flow   where  `flowId`=?";
+    return new Promise(function (resolve, reject) {
+        connection.query(sqlrule2flow, [flowId], function (err, result) {
             if (err) {
                 reject(err);
             }
@@ -1016,7 +1076,7 @@ function insertAffiliates(userId, affiliate, connection) {
 
         if (affiliate.postbackUrl) {
             sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
-        }    
+        }
         if (affiliate.appendClickId != undefined) {
             sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
         }
@@ -1140,3 +1200,7 @@ exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
 exports.saveEventLog = saveEventLog;
 exports.query = query;
+exports.deletePath2Rule = deletePath2Rule;
+exports.deleteRule2Flow = deleteRule2Flow;
+exports.deleteLander2Path = deleteLander2Path;
+exports.deleteOffer2Path = deleteOffer2Path;
