@@ -20,11 +20,11 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="url" class="form-control campaign-url" ng-model="campaignUrl" ng-show="item.url" ng-readonly="true">
-                    <label ng-show="!item.url">ID will be available after saving the campaign.</label>
+                    <input type="text" name="url" class="form-control campaign-url" ng-model="campaignUrl" ng-show="campaignUrl" ng-readonly="true">
+                    <label ng-show="!campaignUrl">ID will be available after saving the campaign.</label>
                 </div>
                 <div class="col-sm-4">
-                    <md-button clipboard class="md-raised copied-btn" ng-show="item.url" text="item.url" ng-click="itemUrlClick()">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="campaignUrl" text="campaignUrl" ng-click="itemUrlClick()">
                         <i class="material-icons">content_copy</i>
                         {{btnWord1}}
                         <!-- Clipboard -->
@@ -34,11 +34,11 @@
             <div class="form-group" ng-show="impTracking==1">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="impPixelUrl" class="form-control" ng-model="impPixelUrl" ng-show="item.impPixelUrl" ng-readonly="true">
-                    <label ng-show="!item.impPixelUrl">ID will be available after saving the campaign.</label>
+                    <input type="text" name="impPixelUrl" class="form-control" ng-model="impPixelUrl" ng-show="impPixelUrl" ng-readonly="true">
+                    <label ng-show="!impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
                 <div class="col-sm-4">
-                    <md-button clipboard class="md-raised copied-btn" ng-show="item.impPixelUrl" text="impPixelUrl" ng-click="impPixelUrlClick()">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="impPixelUrl" text="impPixelUrl" ng-click="impPixelUrlClick()">
                         <i class="material-icons">content_copy</i>
                         {{btnWord2}}
                         <!-- Clipboard -->
