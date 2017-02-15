@@ -181,6 +181,14 @@ app.get('/api/tags', function (req, res) {
                 {
                     id: 1,
                     name: "tag1"
+                },
+                {
+                    id: 1,
+                    name: "123"
+                },
+                {
+                    id: 1,
+                    name: "234"
                 }
             ]
         }

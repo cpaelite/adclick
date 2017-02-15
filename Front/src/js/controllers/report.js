@@ -42,8 +42,8 @@
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
+    
     $scope.app.subtitle = perfType;
-
     $scope.groupByOptions = groupByOptions;
 
     // status, from, to, datetype, groupBy
@@ -382,7 +382,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', 'Tag', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -393,9 +393,9 @@
         $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
@@ -458,6 +458,11 @@
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };
 
+    var params = $scope.$state.params[perfType];
+    if(params && params.isShowAdd) {
+      $scope.editItem();
+    }
+
     function getDateRange(value) {
       var fromDate;
       var toDate;
@@ -509,9 +514,8 @@
     }
   }
 
-  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter) {
-    $scope.tags = [];
-
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag) {
+    initTags($scope, Tag);
     // init load data
     var initPromises = [], prms;
     var theCampaign;
@@ -860,16 +864,31 @@
     };
 
     $scope.isDisabled = false;
+    $scope.addTrafficSource = function() {
+      $mdDialog.cancel();
+      $scope.$parent.$state.go('app.report.traffic', {
+        'traffic': {
+          'isShowAdd': true
+        }
+      });
+    };
+
   }
 
-  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter) {
-    $scope.tags = [];
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag) {
+    var prefix = 'Global - ';
+    initTags($scope, Tag);
     if (this.item) {
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
+        $scope.prefixName = $scope.item.name;
+        $scope.tags = $scope.item.tags;
+        if($scope.country) {
+          prefix = $scope.country.name;
+        }
         if ($scope.item['url'] == null) {
           $scope.item = {
             url: 'http://',
@@ -884,9 +903,43 @@
         numberOfOffers: 1,
       };
       this.title = "add";
+      $scope.prefixName = prefix;
     }
+    
     this.titleType = angular.copy(this.perfType);
-
+    
+    $scope.oldName = prefix;
+    $scope.nameChanged = function() {
+      if($scope.prefixName == undefined || $scope.prefixName.length < prefix.length) {
+        $scope.prefixName = prefix;
+        return;
+      }
+      if($scope.prefixName.indexOf(prefix) != 0) {
+        var sub = $scope.prefixName.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if($scope.prefixName.length < $scope.oldName.length) {
+          $scope.prefixName = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.prefixName = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.prefixName;
+    };
+    $scope.countryChanged = function(country) {
+      var preStr = country + ' - ';
+      $scope.prefixName = preStr + $scope.prefixName.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    }
+    
     // Country
     $scope.countries = $scope.$root.countries;
 
@@ -898,6 +951,8 @@
 
     this.save = function () {
       $scope.item.tags = $scope.tags;
+      $scope.item.country = $scope.country.value;
+      $scope.item.name = $scope.prefixName.substr(prefix.length);
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Lander.save($scope.item, success);
@@ -918,9 +973,8 @@
     };
   }
 
-  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
-    $scope.tags = [];
-
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag) {
+    initTags($scope, Tag);
     // init load data
     var initPromises = [], prms;
 
@@ -1038,6 +1092,11 @@
     $scope.urlTokenClick = function (url) {
       $rootScope.$broadcast('add', url, "url");
     };
+
+    $scope.addAffiliateNetwork = function() {
+      $mdDialog.cancel();
+      $scope.$parent.$state.go('app.report.affiliate', {'affiliate': {'isShowAdd': true}});
+    }
   }
 
   function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter) {
@@ -1394,6 +1453,23 @@
       this.onprocess = false;
       this.error = 'Error occured when delete.';
     }
+  }
+
+  function initTags($scope, Tag) {
+    $scope.tags = [];
+    $scope.tagsFilter = {
+        config: {
+            plugins: ['remove_button'],
+            create: true,
+            valueField: 'name',
+            labelField: 'name',
+            searchField: ['name']
+        },
+        options: []
+    };
+    Tag.get(null, function(oData) {
+      $scope.tagsFilter.options = oData.data.tags;
+    });
   }
 
 })();

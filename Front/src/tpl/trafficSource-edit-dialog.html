@@ -37,7 +37,11 @@
                 <div class="col-sm-5">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
-                        <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
+                        <div class="url-token"
+                            ng-repeat="url in urlItem"
+                            ng-click="urlTokenClick(url)"
+                            ng-class="{'selected': item.postbackUrl.indexOf(url) > -1}"
+                        >
                             <span class="url-token-icon">+</span>
                             <span class="url-token-caption">{{url}}</span>
                         </div>

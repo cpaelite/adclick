@@ -32,7 +32,11 @@
                 <div class="col-sm-5">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
-                        <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
+                        <div class="url-token"
+                            ng-repeat="url in urlItem"
+                            ng-click="urlTokenClick(url)"
+                            ng-class="{'selected': item.url.indexOf(url) > -1}"
+                        >
                             <span class="url-token-icon">+</span>
                             <span class="url-token-caption">{{url}}</span>
                         </div>
@@ -57,6 +61,7 @@
                         <option value="0"></option>
                         <option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</option>
                     </select>
+                    <span class="btn btn-primary" ng-click="addAffiliateNetwork()">Add affilaite network</span>
                 </div>
             </div>
             <div class="form-group">
@@ -87,10 +92,11 @@
                     <input type="text" class="form-control dollar-input" ng-model="item.payoutValue" ng-value="$">
                 </div>
             </div>
-            <div class="form-group tag-items">
+            <div class="form-group">
                 <label class="col-sm-3 control-label">Tags：</label>
-                <div class="col-sm-5 selectize-input form-group">
-                    <md-chips
+                <div class="col-sm-5">
+                    <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
+                    <!-- <md-chips
                             ng-model="tags"
                             readonly="ctrl.readonly"
                             md-removable="ctrl.removable"
@@ -99,7 +105,7 @@
                             delete-hint="Press delete to remove tag"
                             secondary-placeholder="+Tag"
                             md-max-chips="10">
-                    </md-chips>
+                    </md-chips> -->
                 </div>
             </div>
         </form>

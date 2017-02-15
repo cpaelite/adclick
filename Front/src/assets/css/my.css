@@ -539,6 +539,10 @@ md-content.cs-main-content{
     color: #fff;
     padding: 5px;
 }
+.url-tokens-row .url-token.selected {
+    background-color: #c2c2c2;
+    cursor: default;
+}
 .url-tokens-row .url-token.urlBg{
     background: #c2c2c2;
 }

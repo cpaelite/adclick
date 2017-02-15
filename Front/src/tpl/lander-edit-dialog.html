@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <input type="text" name="name" class="form-control" ng-model="prefixName" required ng-change="nameChanged()">
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
                     </span>
@@ -32,7 +32,11 @@
                 <div class="col-sm-5">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
-                        <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
+                        <div class="url-token"
+                            ng-repeat="url in urlItem"
+                            ng-click="urlTokenClick(url)"
+                            ng-class="{'selected': item.url.indexOf(url) > -1}"
+                        >
                             <span class="url-token-icon">+</span>
                             <span class="url-token-caption">{{url}}</span>
                         </div>
@@ -51,18 +55,23 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <select class="cs-subform-select" name="country" ng-model="item.country" required>
-                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
+                    <select class="cs-subform-select" name="country"
+                        ng-model="country"
+                        ng-options="country as country.display for country in countries"
+                        required
+                        ng-change="countryChanged(country.display)"
+                    >
                     </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>
                     </span>
                 </div>
             </div>
-            <div class="form-group tag-items">
+            <div class="form-group">
                 <label class="col-sm-3 control-label">Tags：</label>
-                <div class="col-sm-5 selectize-input form-group">
-                    <md-chips
+                <div class="col-sm-5">
+                    <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
+                    <!-- <md-chips
                             ng-model="tags"
                             readonly="ctrl.readonly"
                             md-removable="ctrl.removable"
@@ -71,7 +80,7 @@
                             delete-hint="Press delete to remove tag"
                             secondary-placeholder="+Tag"
                             md-max-chips="10">
-                    </md-chips>
+                    </md-chips> -->
                 </div>
             </div>
         </form>
