@@ -594,32 +594,7 @@
             $scope.impTracking = traffic.impTracking;
             $scope.trafficPostbackUrl = traffic.postbackUrl;
             $scope.trafficPixelRedirectUrl = traffic.pixelRedirectUrl;
-
-            var params = JSON.parse(traffic.params);
-            var impParam = "";
-            params.forEach(function (param) {
-              if (param.Placeholder) {
-                impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
-              }
-            });
-
-            if (impParam) {
-              impParam = "?" + impParam;
-            }
-
-            impParam = impParam.substring(0, impParam.length-1);
-
-            if (traffic.impTracking) {
-              $scope.campaignUrl = $scope.item.url;
-              if ($scope.impPixelUrl) {
-                $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
-              }
-            } else {
-              $scope.impPixelUrl = $scope.item.impPixelUrl;
-              if ($scope.campaignUrl) {
-                $scope.campaignUrl = $scope.item.url + impParam;
-              }
-            }
+            spliceUrlParams(traffic);
             return;
           }
 
@@ -627,6 +602,49 @@
       });
       if (!$scope.item.targetUrl) {
         $scope.item.targetUrl = "http://";
+      }
+    }
+
+    function spliceUrlParams(traffic) {
+      var params = JSON.parse(traffic.params);
+      var impParam = "";
+      params.forEach(function (param) {
+        if (param.Placeholder) {
+          impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
+        }
+      });
+
+      var cost = "";
+      if (traffic.cost) {
+        cost = JSON.parse(traffic.cost);
+      }
+      if (cost) {
+        impParam = impParam + cost.Parameter + "=" + cost.Placeholder + "&";
+      }
+      var external = "";
+      if (traffic.externalId) {
+        external = JSON.parse(traffic.externalId);
+      }
+      if (external) {
+        impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
+      }
+
+      if (impParam) {
+        impParam = "?" + impParam;
+      }
+
+      impParam = impParam.substring(0, impParam.length-1);
+
+      if (traffic.impTracking) {
+        $scope.campaignUrl = $scope.item.url;
+        if ($scope.impPixelUrl) {
+          $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
+        }
+      } else {
+        $scope.impPixelUrl = $scope.item.impPixelUrl;
+        if ($scope.campaignUrl) {
+          $scope.campaignUrl = $scope.item.url + impParam;
+        }
       }
     }
 
@@ -785,6 +803,10 @@
       $scope.item.hash = campaign.hash;
       $scope.impPixelUrl = campaign.impPixelUrl;
       $scope.campaignUrl = campaign.url;
+
+      var traffic = JSON.parse($scope.item.trafficSource);
+      spliceUrlParams(traffic);
+
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
