@@ -417,14 +417,14 @@ router.get('/api/billing', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let compled=_.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,   
+        let compled = _.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,   
         DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planEnd\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')   as endTime,
         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,plan.\`overageCPM\` as overageCPM, bill.\`overageEvents\` as overageEvents,
         (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents
         from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0`);
-        let sql =compled({
-            tz:value.timezone
+        let sql = compled({
+            tz: value.timezone
         });
         let results = await query(sql, [], connection);
         let val = results.length ? results[0] : null;
@@ -469,31 +469,178 @@ router.get('/api/billing', async function (req, res, next) {
     }
 });
 
-// {
-//   "internalDomains" : [ {
-//     "address" : "9cmzk.voluumtrk2.com",
-//     "mainDomain" : false
-//   }, {
-//     "address" : "9cmzk.voluumtrk.com",
-//     "mainDomain" : false
-//   }, {
-//     "address" : "9cmzk.trackvoluum.com",
-//     "mainDomain" : false
-//   } ],
-//   "customDomains" : [ {
-//     "address" : "www.keepin.tv",
-//     "mainDomain" : true
-//   } ]
-// }
 
- 
-// router.get('/api/user/domains', function (req, res, next) {
+/**
+ * @api {get} /api/domains 获取用户domdomains
+ * @apiName 获取用户domdomains
+ * @apiGroup User
+ *   @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+       // {
+       //     status: 1,
+       //     message: 'success',
+       //     data: {
+       //         internal: [
+       //             {
+       //                 address: "www.newbidder1.com",
+       //                 main: false
+       //             },
+       //             {
+       //                 address: "www.newbidder2.com",
+       //                 main: true
+       //             },
+       //             {
+       //                 address: "www.newbidder1.com",
+       //                 main: false
+       //             }
+       //         ],
+       //         custom: [
+       //             {
+       //                 address: "www.adbund.com",
+       //                 main: false
+       //             }
+       //         ]
+       //     }
+       // }
+ *
+ */
+router.get('/api/domains', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = {
+            internal: [],
+            custom: []
+        }
+        let sql = "select `domain` as address,`main`,`customize` from UserDomain where `userId`= ? and `deleted`=0 ";
+        let userDomians = await common.query(sql, [value.userId], connection);
+        for (let index = 0; index < userDomians.length; index++) {
+            if (userDomians[index].customize == 0) {
+                result.internal.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
+            } else {
+                result.custom.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
+            }
+        }
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 
-// });
+});
+
+
+/**
+ * @api {post} /api/domains 用户修改domdomains
+ * @apiName 用户修改domdomains
+ * @apiGroup User
+ * apiParam {Array} internal 
+ * apiParam {Array} custom 
+   {
+       //         internal: [
+       //             {
+       //                 address: "www.newbidder1.com",
+       //                 main: false
+       //             },
+       //             {
+       //                 address: "www.newbidder2.com",
+       //                 main: true
+       //             },
+       //             {
+       //                 address: "www.newbidder1.com",
+       //                 main: false
+       //             }
+       //         ],
+       //         custom: [
+       //             {
+       //                 address: "www.adbund.com",
+       //                 main: false
+       //             }
+       //         ]
+       //     }
+
+ *
+ */
+router.post('/api/domains', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        internal:Joi.array().items({
+            address:Joi.string().required(),
+            main:Joi.boolean().required()
+        }).required().length(3),
+        custom:Joi.array().items({
+            address:Joi.string().required(),
+            main:Joi.boolean().required()
+        }).required()
+    });
+    req.body.userId = req.userId;
+    let connection;
+    try {
+        let insertData=[];
+        let value = await common.validate(req.body, schema);
+        //check params
+        let passCheck= false;
+        let mainDomianNumber = 0;
+        for(let index= 0 ;index<value.internal.length;index++){
+            if(value.internal[index].main){
+                mainDomianNumber++;
+            }
+            insertData.push({domain:value.internal[index].address,main:value.internal[index].main ? 1 : 0,customize:0});
+
+        }
+        for(let index= 0 ;index<value.custom.length;index++){
+            if(value.custom[index].main){
+                mainDomianNumber++;
+            }
+            insertData.push({domain:value.custom[index].address,main:value.custom[index].main ? 1 : 0,customize:1});
+        }
+        if(mainDomianNumber !== 1){
+            throw new Error("please reset mian domian correctly");
+        }
+       
+        connection = await common.getConnection();
+        await common.query("update UserDomain set `deleted` = 1 where `userId`= ? ",[value.userId],connection);
+        
+        for (let index = 0; index < insertData.length; index++) {
+             let sql = "insert into UserDomain (`domain`,`main`,`customize`,`userId`) values (?,?,?,?)";
+             await common.query(sql, [insertData[index].domain,insertData[index].main,insertData[index].customize,value.userId], connection);
+        }
+        delete value.userId;
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: value
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
+});
+
+
+
 
 
 //cname 
-router.post('/api/cname',function(req,res,next){
+router.post('/api/cname', function (req, res, next) {
 
 });
 
