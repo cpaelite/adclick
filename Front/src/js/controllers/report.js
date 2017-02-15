@@ -492,8 +492,8 @@
           break;
       }
       if (value == '0') {
-        pageStatus.from = $scope.fromDate + 'T' + $scope.fromTime;
-        pageStatus.to = $scope.toDate + 'T' + $scope.toTime;
+        pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
+        pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
       } else {
         pageStatus.from = fromDate + 'T00:00';
         pageStatus.to = toDate + 'T23:59';
