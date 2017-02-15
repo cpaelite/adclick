@@ -610,9 +610,15 @@
             impParam = impParam.substring(0, impParam.length-1);
 
             if (traffic.impTracking) {
-              $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
+              $scope.campaignUrl = $scope.item.url;
+              if ($scope.impPixelUrl) {
+                $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
+              }
             } else {
-              $scope.campaignUrl = $scope.item.url + impParam;
+              $scope.impPixelUrl = $scope.item.impPixelUrl;
+              if ($scope.campaignUrl) {
+                $scope.campaignUrl = $scope.item.url + impParam;
+              }
             }
             return;
           }
@@ -777,6 +783,8 @@
       $scope.item.url = campaign.url;
       $scope.item.impPixelUrl = campaign.impPixelUrl;
       $scope.item.hash = campaign.hash;
+      $scope.impPixelUrl = campaign.impPixelUrl;
+      $scope.campaignUrl = campaign.url;
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
