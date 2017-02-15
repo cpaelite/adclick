@@ -565,15 +565,6 @@ async function insertOrUpdateOfferAndOfferTags(userId, idText, pathId, offersSli
 
 router.get('/api/conditions', async function (req, res) {
     //production
-    if (setting.env !== "development") {
-        new Pub(true).get(setting.redis.conditionKey, function (err, data) {
-            if (err) {
-                return next(err);
-            }
-            res.json(JSON.parse(data));
-        });
-        return
-    }
     var result = [{
         "id": "model",
         "display": "Brand and model",
@@ -719,7 +710,7 @@ router.get('/api/conditions', async function (req, res) {
         }]
     }];
     await fillConditions(result)
-    res.json(JSON.parse(data));
+    res.json(result);
 
 });
 
