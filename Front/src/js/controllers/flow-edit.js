@@ -10,6 +10,7 @@
     $scope.app.subtitle = 'Flow';
     var flowId = $scope.$stateParams.id;
     var isDuplicate = $scope.$stateParams.dup == '1';
+    var fromCampaign = $scope.$stateParams.frcpn == '1';
 
     var pathSkel = {
       name: 'Path 1',
@@ -666,7 +667,10 @@
     };
 
     $scope.close = function() {
-      $scope.$state.go('app.report.flow');
+      if (fromCampaign)
+        $scope.$state.go('app.report.campaign');
+      else
+        $scope.$state.go('app.report.flow');
     };
 
     $scope.saveClose = function() {

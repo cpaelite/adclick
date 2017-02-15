@@ -1487,7 +1487,7 @@ app.get('/api/traffics', function (req, res) {
                 "name": "123",
                 "cost": "",
                 "impTracking": 0,
-                "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1671\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1672\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1673\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1674\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1675\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1676\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1677\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1678\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1679\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:1680\"}]",
+                "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]",
                 "pixelRedirectUrl": "",
                 "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
             }]
@@ -2399,20 +2399,67 @@ app.put('/api/blacklist', function (req, res) {
  * @apiParam {String} category: CAMPAIGN {option}
  *
  */
-app.get('/api/referrals', function (req, res) {
+app.get('/api/eventlog', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
     data: {
-      totalRows: 37,
-      eventLogs: [
+      totalRows: 100,
+      rows: [
         {
-          user: 1,
-          entityType: "",
-          entityName: "",
-          entityId: "",
-          action: "",
-          changeAt: ""
+          user: "zhengshuo@qq.com",
+          entityType: "Campaign",
+          entityName: "Campaign1",
+          entityId: "c05cad45-fbe4-405c-9da4-cb3b5de1ca",
+          action: "Create",
+          changeAt: "2017-02-10",
+          changes: {
+            "fieldName": "Campaign",
+            "simpleChanges": [{
+              "fieldName": "Traffic source",
+              "newEntityId": "05e5c2fa-83b6-4e21-89c1-ddcac6fbe6b4",
+              "newValue": "AirPush",
+              "category": "TRAFFIC_SOURCE"
+            }, {
+              "fieldName": "Cost model",
+              "newValue": "Do not track costs"
+            }, {
+              "fieldName": "Destination",
+              "newValue": "Flow"
+            }, {
+              "fieldName": "Flow",
+              "newEntityId": "3964f3f9-bcbb-44d6-8030-94e1d9f11013",
+              "newValue": "Global - New Flow-aedan22",
+              "category": "FLOW"
+            }, {
+              "fieldName": "Name",
+              "newValue": "AirPush - Global - aedan22222"
+            }]
+          }
+        },
+        {
+          "changeAt" : "2017-02-10",
+          "entityType" : "Campaign",
+          "user" : "zhengshuo@qq.com",
+          "entityName" : "Zeropark - Afghanistan - Campaign3",
+          "entityId" : "03cc35d9-2f48-4d48-9f2a-1b1f7764a411",
+          "action" : "Change",
+          "changes" : {
+            "fieldName" : "Campaign",
+            "simpleChanges" : [ {
+              "fieldName" : "Traffic source",
+              "oldEntityId" : "4ff3746a-226a-4b77-a816-ce37675c55b7",
+              "newEntityId" : "983e371a-59ef-4eb9-a773-da2053d6fad1",
+              "oldValue" : "TrafficSource1",
+              "newValue" : "Zeropark",
+              "category" : "TRAFFIC_SOURCE"
+            }, {
+              "fieldName" : "Name",
+              "oldValue" : "TrafficSource1 - Afghanistan - Campaign1",
+              "newValue" : "Zeropark - Afghanistan - Campaign3"
+            } ],
+            "nestedChanges" : [ ]
+          }
         }
       ]
     }

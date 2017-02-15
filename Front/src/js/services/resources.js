@@ -74,4 +74,7 @@ angular.module('app')
   .factory('DefaultPostBackUrl', ['$resource', function($resource) {
     return $resource('/api/postbackurl')
   }])
+  .factory('EventLog', ['$resource', function ($resource) {
+    return $resource('/api/eventlog');
+  }])
 ;

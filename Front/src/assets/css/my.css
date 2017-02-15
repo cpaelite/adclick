@@ -881,7 +881,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     cursor: pointer;
     margin-top: 15px;
 } 
-md-table-container{
+.md-table-container{
     margin-top: 15px;
 }
 .view_column .material-icons{

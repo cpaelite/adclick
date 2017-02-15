@@ -92,7 +92,7 @@
         controller: 'RuleCtrl',
       })
       .state('app.flow', {
-        url: '/flow?id&dup',
+        url: '/flow?id&dup&frcpn',
         templateUrl: 'tpl/flow-edit.html',
         controller: 'FlowEditCtrl',
       })

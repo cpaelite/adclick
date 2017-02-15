@@ -67,7 +67,7 @@
 
     <div class="cs-deleted-mask" ng-if="isDeleted"></div>
 
-    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-if="onEdit=='flow'">
+    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
       <div class="form-group">
         <label class="label-name">Name:</label>
         <input type="text" class="form-control" ng-model="flow.name" required>

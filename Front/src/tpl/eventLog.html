@@ -6,38 +6,70 @@
 <div class="form-column bot-blacklist">
   <div class="bot-blacklist-content event-log clearfix">
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-        <md-option value="benson@mobisummer.com" selected>benson@mobisummer.com</md-option>
-        <md-option value="All users">All users</md-option>
+      <md-select class="cs-subform-select" ng-model="filter.user" required>
+        <md-option value="0">All users</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-        <md-option value="Create" selected>Create</md-option>
-        <md-option value="All actions">All actions</md-option>
+      <md-select class="cs-subform-select" ng-model="filter.action" required>
+        <md-option value="0" selected>All actions</md-option>
+        <md-option value="1">Create</md-option>
+        <md-option value="2">Change</md-option>
+        <md-option value="3">Archive</md-option>
+        <md-option value="4">Restore</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-        <md-option value="Traffic source" selected>Traffic source</md-option>
-        <md-option value="Campaign">Campaign</md-option>
+      <md-select class="cs-subform-select" ng-model="filter.entityType" required>
+        <md-option value="0" selected>All entity types</md-option>
+        <md-option value="1">Campaign</md-option>
+        <md-option value="2">Lander</md-option>
+        <md-option value="3">Offer</md-option>
+        <md-option value="4">TrafficSource</md-option>
+        <md-option value="5">AffiliateNetwork</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-        <md-option value="All entities" selected>All entities</md-option>
-        <md-option value="Adcash test">Adcash test</md-option>
+      <md-select class="cs-subform-select" ng-model="filter.datetype" required>
+        <md-option value="1">Today</md-option>
+        <md-option value="2">Yesterday</md-option>
+        <md-option value="3">Last 7 days</md-option>
+        <md-option value="4">Last 14 days</md-option>
+        <md-option value="5">This Week</md-option>
+        <md-option value="6">Last Week</md-option>
+        <md-option value="7">This Month</md-option>
+        <md-option value="8">Last Month</md-option>
+        <md-option value="0">Custom</md-option>
       </md-select>
     </div>
-    <div class="form-group bot-select">
-      <md-select class="cs-subform-select" name="country" ng-model="item.country" required>
-        <md-option value="Yesterday" selected>Yesterday</md-option>
-        <md-option value="Today">Today</md-option>
-      </md-select>
+    <div class="cs-subform-group" ng-show="filter.datetype==0">
+      <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
+      <div class="cs-subform-control">
+        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filterDate.fromDate"
+                ng-max="filterDate.toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+          {{filterDate.fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+        </button>
+        <select class="cs-subform-select" ng-model="filterDate.fromTime">
+          <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+        </select>
+      </div>
+      <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+      <div class="cs-subform-control">
+        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filterDate.toDate"
+                ng-min="filterDate.fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+          {{filterDate.toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+        </button>
+        <select class="cs-subform-select" ng-model="filterDate.toTime">
+          <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+        </select>
+      </div>
     </div>
+
     <div class="btn-right">
-      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event)"><i class="material-icons">refresh</i>Refresh</md-button>
-      <md-button class="md-raised add-another-btn"><i class="material-icons">list</i>Details</md-button>
+      <md-button class="md-raised copy-btn main-domain" ng-click="refreshDate()"><i class="material-icons">refresh</i>Refresh</md-button>
+      <md-button class="md-raised add-another-btn" ng-show="false"><i class="material-icons">list</i>Details</md-button>
     </div>
     <div class="data-table">
       <table md-table class="table">
@@ -51,22 +83,27 @@
             <th>Changed at</th>
           </tr>
         </thead>
-        <tbody  ng-show="eventLogTbodyIsShow">
-          <tr>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
+        <tbody >
+          <tr ng-repeat="item in items.rows">
+            <td>
+                <span uib-dropdown>
+                    <a uib-dropdown-toggle>{{item.user}}</a>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                        <li role="menuitem"><a ng-click="detailItem($event, item)">Detail</a></li>
+                    </ul>
+                  </span>
+            </td>
+            <td>{{item.entityType}}</td>
+            <td>{{item.entityName}}</td>
+            <td>{{item.entityId}}</td>
+            <td>{{item.action}}</td>
+            <td>{{item.changeAt}}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <md-table-pagination ng-show="eventLogTbodyIsShow" md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.offset"
-    md-total="{{report.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
+    md-total="{{items.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
   </div>
-  <i class="material-icons search-icon">search</i>
-  <span class="search-word">No search results have been found in response to your search criteria.</span>
 
 </div>
