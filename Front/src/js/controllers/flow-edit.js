@@ -10,7 +10,6 @@
     $scope.app.subtitle = 'Flow';
     var flowId = $scope.$stateParams.id;
     var isDuplicate = $scope.$stateParams.dup == '1';
-    var fromCampaign = $scope.$stateParams.frcpn == '1';
 
     var pathSkel = {
       name: 'Path 1',
@@ -196,8 +195,6 @@
     $scope.isDeleted = false;
     $scope.curRule = null;
     $scope.curPath = null;
-
-    $scope.searchText = {};
 
     // operation on flow
     $scope.editFlow = function() {
@@ -669,10 +666,7 @@
     };
 
     $scope.close = function() {
-      if (fromCampaign)
-        $scope.$state.go('app.report.campaign');
-      else
-        $scope.$state.go('app.report.flow');
+      $scope.$state.go('app.report.flow');
     };
 
     $scope.saveClose = function() {
