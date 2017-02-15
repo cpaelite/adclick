@@ -23,21 +23,16 @@ The maximum amount of the bot rules that can be created is 20. You can still add
       <table md-table class="table">
         <thead>
           <tr>
-            <th><input type="checkbox" class="th-checkbox"><span class="bot-th">Bot</span></th>
+            <th>Bot</span></th>
             <th>IP / IP range</th>
             <th>User agent</th>
           </tr>
         </thead>
         <tbody>
-        <tr>
-          <td><input type="checkbox" class="th-checkbox"><span class="bot-th">1</span></td>
-          <td>1.1.1.1</td>
-          <td>hahahah</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="th-checkbox"><span class="bot-th">2</span></td>
-          <td>1.1.1.1</td>
-          <td>hahahah</td>
+        <tr ng-repeat="item in items">
+          <td>{{item.name}}</td>
+          <td>{{item.ipRules[0].ipRangeStart}} {{item.ipRules.length}}</td>
+          <td>{{item.userAgentRules[0].userAgent}} {{item.userAgentRules.length}}</td>
         </tr>
         </tbody>
       </table>

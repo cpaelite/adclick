@@ -53,6 +53,9 @@ angular.module('app')
   .factory('DefaultPostBackUrl', ['$resource', function($resource) {
     return $resource('/api/postbackurl')
   }])
+  .factory('BlackList', ['$resource', function ($resource) {
+    return $resource('/api/blacklist/:id', {id: '@id'});
+  }])
   .factory('EventLog', ['$resource', function ($resource) {
     return $resource('/api/eventlog');
   }])
