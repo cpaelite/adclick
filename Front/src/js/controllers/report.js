@@ -557,6 +557,8 @@
       $scope.flows = allFlow;
       if (theCampaign) {
         $scope.item = theCampaign;
+        $scope.impPixelUrl = $scope.item.impPixelUrl;
+        $scope.campaignUrl = $scope.item.url;
         if ($scope.item.costModel == 1) {
           $scope.radioTitle = 'CPC';
           $scope.costModelValue = $scope.item.cpcValue;
@@ -601,15 +603,16 @@
               }
             });
 
-            if (!impParam)
-              return;
+            if (impParam) {
+              impParam = "?" + impParam;
+            }
 
             impParam = impParam.substring(0, impParam.length-1);
 
             if (traffic.impTracking) {
-              $scope.impPixelUrl = $scope.item.impPixelUrl + "?" + impParam;
+              $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
             } else {
-              $scope.item.url = $scope.item.url + "?" + impParam;
+              $scope.campaignUrl = $scope.item.url + impParam;
             }
             return;
           }
