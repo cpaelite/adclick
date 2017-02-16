@@ -132,8 +132,16 @@
               Add condition <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-              <li role="menuitem" ng-repeat="cdt in allConditions">
+              <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'!custom'}">
                 <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
+              </li>
+              <li class="dropdown-submenu">
+                <a>Custom variables...</a>
+                <ul class="dropdown-menu">
+                  <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'custom'}">
+                    <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
+                  </li>
+                </ul>
               </li>
             </ul>
           </div>
@@ -163,6 +171,10 @@
                 <md-select ng-model="cdt[f.name]" class="select-bg">
                   <md-option ng-repeat="o in f.options" value="{{o.value}}">{{o.display}}</md-option>
                 </md-select>
+              </div>
+
+              <div ng-if="f.type=='input'" ng-class="{'col-md-8': f.label}">
+                <input ng-model="cdt[f.name]" placeholder="{{f.placeholder}}">
               </div>
 
               <div ng-if="f.type=='inputgroup'" ng-class="{'col-md-10': f.label}">

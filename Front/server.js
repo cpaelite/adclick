@@ -1831,6 +1831,27 @@ app.get('/api/conditions', function (req, res) {
                 {"value": "+9", "display": "+7 Tokyo"}
             ]
         }]
+    }, {
+        "id": "custom1",
+        "display": "Custom variable 1",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+        "fields": [{
+            "type": "input", "name": "value", "placeholder": ""
+        }]
+    }, {
+        "id": "custom2",
+        "display": "Custom variable 2",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+        "fields": [{
+            "type": "input", "name": "value", "placeholder": ""
+        }]
+    }, {
+        "id": "custom3",
+        "display": "Custom variable 3",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+        "fields": [{
+            "type": "input", "name": "value", "placeholder": ""
+        }]
     }];
     delayResponse(res, result);
 });
