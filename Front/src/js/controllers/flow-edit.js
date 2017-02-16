@@ -230,7 +230,7 @@
     };
     function duplicateRule() {
       var newRule = angular.copy($scope.curRule);
-      newRule.name = 'Rule ' + $scope.flow.rules.length;
+      //newRule.name = 'Rule ' + $scope.flow.rules.length;
       $scope.flow.rules.push(newRule);
       $scope.editRule(newRule);
     }
@@ -250,7 +250,7 @@
     };
     function duplicatePath() {
       var newPath = angular.copy($scope.curPath);
-      newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
+      //newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
       $scope.curRule.paths.push(newPath);
       $scope.editPath($scope.curRule, newPath);
     }
