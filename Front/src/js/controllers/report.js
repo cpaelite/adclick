@@ -838,7 +838,14 @@
       $scope.$parent.$state.go('app.flow', {id: $scope.item.flow.id, frcpn: 1});
     };
 
-    this.cancel = $mdDialog.cancel;
+    this.cancel = function() {
+      if (!$scope.editForm.$dirty) {
+        $mdDialog.cancel();
+      } else {
+        closeConfirmDialog($mdDialog);
+      }
+    };
+
 
     function defaultItem() {
       return {
@@ -1608,6 +1615,33 @@
     Tag.get(null, function(oData) {
       $scope.tagsFilter.options = oData.data.tags;
     });
+  }
+
+  function closeConfirmDialog($mdDialog) {
+    $mdDialog.show({
+      multiple: true,
+      skipHide: true,
+      clickOutsideToClose: false,
+      controller: ['$scope', '$mdDialog', closeConfirmCtrl],
+      controllerAs: 'ctrl',
+      focusOnOpen: false,
+      bindToController: true,
+      templateUrl: 'tpl/close-confirm-dialog.html',
+    }).then(function(){
+      $mdDialog.cancel();
+    });
+    function closeConfirmCtrl($scope, $mdDialog) {
+      this.title = "warnCloseTitle";
+      this.content = 'warnClose';
+      
+      this.ok = function() {
+        $mdDialog.hide();
+      };
+
+      this.cancel = function() {
+        $mdDialog.cancel();
+      };
+    }
   }
 
 })();
