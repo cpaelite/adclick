@@ -804,8 +804,8 @@ router.post('/api/blacklist', async function (req, res, next) {
         connection = await common.getConnection();
         await common.query("delete from UserBotBlacklist  where `userId`= ? ", [value.userId], connection);
         for (let index = 0; index < value.blacklist.length; index++) {
-            let result = await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`,`enabled`) values (?,?,?,?,?)", [value.userId, value.blacklist[index].name, JSON.stringify(value.blacklist[index].ipRules), JSON.stringify(value.blacklist[index].userAgentRules), value.enabled ? 1 : 0], connection);
-            value.blacklist[index].id = result.insertId;
+            await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`,`enabled`) values (?,?,?,?,?)", [value.userId, value.blacklist[index].name, JSON.stringify(value.blacklist[index].ipRules), JSON.stringify(value.blacklist[index].userAgentRules), value.enabled ? 1 : 0], connection);
+           // value.blacklist[index].id = result.insertId;
         }
 
         delete value.userId;
@@ -843,7 +843,7 @@ router.get('/api/blacklist', async function (req, res, next) {
         };
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let result = await common.query("select `id`, `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [value.userId,0], connection);
+        let result = await common.query("select  `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [value.userId,0], connection);
         for(let index=0;index<result.length;index++){
                responseData.blacklist.push({
                    name:result[index].name,
