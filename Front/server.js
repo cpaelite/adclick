@@ -181,6 +181,14 @@ app.get('/api/tags', function (req, res) {
                 {
                     id: 1,
                     name: "tag1"
+                },
+                {
+                    id: 1,
+                    name: "123"
+                },
+                {
+                    id: 1,
+                    name: "234"
                 }
             ]
         }
@@ -704,7 +712,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
         "message": "success",
         "data": {
             "id": 18,
-            "name": "campaign.1",
+            "name": "TrafficSource1 - China - campaign.1",
             "hash": "campaign.1.hash",
             "url": "http://zhanchenxing.newbidder.com/campaign.1/",
             "impPixelUrl": "http://zhanchenxing.newbidder.com/impression/campaign.1/",
@@ -930,7 +938,7 @@ app.get('/api/flows/:flowId', function (req, res) {
         data: {
             "id": 1,
             "name": "Global - yoshop-Android-benson",
-            "country": "us",
+            "country": "CHN",
             "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
             "rules": [{
                 "id": 3,
@@ -1252,10 +1260,10 @@ app.get('/api/landers/:landerId', function (req, res) {
         message: "",
         data: {
             "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
-            "name": "Global - SecurityAlert-en",
+            "name": "Japan - SecurityAlert-en",
             "hash": "",
             "url": "http://s.ktrack.net/w/SecurityAlert.php",
-            "country": "",
+            "country": "JPN",
             "numberOfOffers": 1,
             "tags": []
         }
@@ -1363,7 +1371,7 @@ app.get('/api/offers/:offerId', function (req, res) {
         "message": "success",
         "data": {
             "id": 22,
-            "name": "Offer1",
+            "name": "affilate1 - China - Offer1",
             "hash": "03f1d070-9089-4502-842d-28101d83f474",
             "url": "http://adbund.com",
             "country": "CHN",

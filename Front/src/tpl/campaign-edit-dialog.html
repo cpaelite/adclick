@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required ng-change="nameChanged(item.name)">
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
                     </span>
@@ -48,18 +48,19 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required>
+                    <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
                         <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
                         <span ng-show="editForm.trafficSource.$error.required">TrafficSource is required.</span>
                         </span>
                     </select>
+                    <span class="btn btn-primary" ng-click="addTrafficSource()">Add traffic source</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-5">
-                    <select class="cs-subform-select" name="country" ng-model="item.country">
+                    <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                 </div>
@@ -111,8 +112,9 @@
             </div>
             <div class="form-group tag-items">
                 <label class="col-sm-3 control-label">Tags：</label>
-                <div class="col-sm-5 selectize-input form-group">
-                    <md-chips
+                <div class="col-sm-5">
+                    <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
+                    <!-- <md-chips
                             ng-model="tags"
                             readonly="ctrl.readonly"
                             md-removable="ctrl.removable"
@@ -121,7 +123,7 @@
                             delete-hint="Press delete to remove tag"
                             secondary-placeholder="+Tag"
                             md-max-chips="10">
-                    </md-chips>
+                    </md-chips> -->
                 </div>
             </div>
 
@@ -214,7 +216,11 @@
                     <div class="col-sm-5">
                         <i>Available URL tokens:</i>
                         <div class="url-tokens">
-                            <div class="url-token" ng-repeat="url in urlItem" ng-click="urlTokenClick(url)">
+                            <div class="url-token"
+                                ng-class="{'selected': item.targetUrl.indexOf(url) > -1}"
+                                ng-repeat="url in urlItem"
+                                ng-click="urlTokenClick(url)"
+                            >
                                 <span class="url-token-icon">+</span>
                                 <span class="url-token-caption">{{url}}</span>
                             </div>

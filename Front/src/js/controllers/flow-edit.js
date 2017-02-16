@@ -36,10 +36,11 @@
     var initPromises = [],
         prms;
 
-    var theFlow;
+    var theFlow, prefix = '';
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
         theFlow = result.data;
+        $scope.oldName = theFlow.name;
       }).$promise;
       initPromises.push(prms);
 
@@ -49,11 +50,15 @@
       defaultRule.isDefault = true;
 
       theFlow = {
-        name: 'new flow',
-        country: 'ZZZ',
+        name: 'Global - ',
+        country: {
+          display: 'Global',
+          value: 'global'
+        },
         redirectMode: '0',
         rules: [ defaultRule ]
       };
+      prefix = $scope.oldName = 'Global - ';
     }
 
     var allLanders;
@@ -121,9 +126,9 @@
       allCountries.forEach(function(ctry) {
         if (ctry.value == country) {
           theFlow.country = ctry;
+          prefix = ctry.display + ' - ';
         }
       });
-
       // fulfill flow with lander/offer/condition
       if (isDuplicate) {
         delete theFlow.id;
@@ -205,8 +210,12 @@
       $scope.isDeleted = false;
     };
     $scope.$watch('flow.country', function (newValue, oldValue) {
-      // todo: update flow name
-      //$scope.flow.name = $scope.flow.country + ' - ' + $scope.flow.name;
+      var preStr = newValue ? newValue.display + ' - ' : 'Global - ';
+      if(newValue) {
+        $scope.flow.name = preStr + $scope.flow.name.substr(prefix.length);
+        $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+        prefix = preStr;
+      }
     }, true);
 
     // operation on rule
@@ -302,6 +311,33 @@
         return (item[property].toLowerCase().indexOf(lcQuery) >= 0);
       };
     }
+
+    $scope.nameChanged = function(name) {
+      if(name == undefined || name.length < prefix.length) {
+        $scope.flow.name = prefix;
+      } else if(name.indexOf(prefix) != 0) {
+        var sub = name.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if(name.length < $scope.oldName.length) {
+          $scope.flow.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.flow.name = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.flow.name;
+    };
+
+    $scope.countryChanged = function() {
+      console.log(123);
+    };
 
     $scope.queryCountries = function(query) {
       if (allCountries) {

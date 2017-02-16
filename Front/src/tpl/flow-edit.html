@@ -78,7 +78,7 @@
     <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
       <div class="form-group">
         <label class="label-name">Name:</label>
-        <input type="text" class="form-control" ng-model="flow.name" required>
+        <input type="text" class="form-control" ng-model="flow.name" required ng-change="nameChanged(flow.name)">
       </div>
 
       <div class="form-group">

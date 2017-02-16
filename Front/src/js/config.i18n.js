@@ -10,6 +10,8 @@
     edit: 'Edit',
     delete: 'Confirm Delete',
     warnDelete: 'Are you sure you want to delete this item? Note that this operation can not be undone!',
+    warnClose: 'Form has unsaved changes. Do you want to proceed?',
+    warnCloseTitle: 'Confirm Close',
     picture: 'Picture',
     signin: 'Login',
     goBackHomePage: 'Home Page',
@@ -57,6 +59,8 @@
     edit: '编辑',
     delete: '删除所选信息',
     warnDelete: '您确定要删除？请注意，此操作无法撤销！',
+    warnClose: 'Form has unsaved changes. Do you want to proceed?',
+    warnCloseTitle: 'Confirm Close',
     signup: '注册',
     signin: '登录',
     goBackHomePage: '返回首页'

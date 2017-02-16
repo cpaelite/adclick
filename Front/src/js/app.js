@@ -21,6 +21,7 @@
     'monospaced.elastic',
     'angularFileUpload',
     'chart.js',
+    'selectize',
     'angular-clipboard'
   ]);
 
