@@ -57,10 +57,9 @@
                 <div class="col-sm-5">
                     <select class="cs-subform-select" name="country"
                         ng-model="country"
-                        ng-options="country as country.display for country in countries"
-                        required
-                        ng-change="countryChanged(country.display)"
+                        ng-change="countryChanged(country)"
                     >
+                        <option value="{{country.value}}" ng-repeat="country in countries">{{country.display}}</option>
                     </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
                     <span ng-show="editForm.country.$error.required">Country is required.</span>

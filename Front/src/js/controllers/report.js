@@ -884,11 +884,12 @@
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
-        $scope.prefixName = $scope.item.name;
         $scope.tags = $scope.item.tags;
-        if($scope.country) {
-          prefix = $scope.country.name;
+        $scope.country = $scope.item.country.value;
+        if($scope.item.country) {
+          prefix = $scope.item.country.display + ' - ';
         }
+        $scope.prefixName = prefix + $scope.item.name;
         if ($scope.item['url'] == null) {
           $scope.item = {
             url: 'http://',
@@ -934,7 +935,14 @@
       $scope.oldName = $scope.prefixName;
     };
     $scope.countryChanged = function(country) {
-      var preStr = country + ' - ';
+      var countryName = '';
+      $scope.countries.forEach(function(v) {
+        if(v.value == country) {
+          countryName = v.display;
+          return;
+        }
+      })
+      var preStr = countryName + ' - ';
       $scope.prefixName = preStr + $scope.prefixName.substr(prefix.length);
       $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
       prefix = preStr;

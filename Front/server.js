@@ -1255,7 +1255,10 @@ app.get('/api/landers/:landerId', function (req, res) {
             "name": "Global - SecurityAlert-en",
             "hash": "",
             "url": "http://s.ktrack.net/w/SecurityAlert.php",
-            "country": "",
+            "country": {
+                display: "Japan",
+                value: "JPN"
+            },
             "numberOfOffers": 1,
             "tags": []
         }
