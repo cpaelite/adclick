@@ -884,10 +884,14 @@
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
-        $scope.tags = $scope.item.tags;
-        $scope.country = $scope.item.country.value;
+        $scope.country = $scope.item.country;
         if($scope.item.country) {
-          prefix = $scope.item.country.display + ' - ';
+          $scope.countries.forEach(function(v) {
+            if(v.value == $scope.country) {
+              prefix = v.display + ' - ';
+              return;
+            }
+          });
         }
         $scope.prefixName = prefix + $scope.item.name;
         if ($scope.item['url'] == null) {
@@ -941,7 +945,7 @@
           countryName = v.display;
           return;
         }
-      })
+      });
       var preStr = countryName + ' - ';
       $scope.prefixName = preStr + $scope.prefixName.substr(prefix.length);
       $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
