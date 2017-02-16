@@ -3,18 +3,19 @@
 
     angular.module('app')
         .controller('BotBlacklistCtrl', [
-            '$scope','$mdDialog', 'BlackList',
+            '$scope','$mdDialog', 'toastr', 'BlackList',
             BotBlacklistCtrl
         ]);
 
-    function BotBlacklistCtrl($scope,$mdDialog, BlackList) {
+    function BotBlacklistCtrl($scope,$mdDialog, toastr, BlackList) {
       this.titleType = "BotBlack";
       $scope.blacklistCount = 20;
 
       $scope.getList = function () {
         BlackList.get(null, function (blacklist) {
-          $scope.items = blacklist.data.blacklist;
-          $scope.status = blacklist.data.enabled;
+          $scope.data = blacklist.data;
+          /*$scope.items = blacklist.data.blacklist;
+          $scope.status = blacklist.data.enabled;*/
         });
       };
 
@@ -24,12 +25,13 @@
         if (!oldValue || angular.equals(newValue, oldValue)) {
           return;
         }
-        var blackList = {
-          enabled: newValue,
-          blacklist: $scope.items
-        };
-        BlackList.save({date: blackList}, function (result) {
+        BlackList.save($scope.data, function (result) {
           console.log(result);
+          if (result.status) {
+            toastr.success('Update Success!');
+          } else {
+            toastr.error(result.message, { timeOut: 7000, positionClass: 'toast-top-center' });
+          }
         });
       });
 
@@ -39,7 +41,7 @@
           controller: ['$scope', '$mdDialog', 'BlackList', editItemCtrl],
           controllerAs: 'ctrl',
           focusOnOpen: false,
-          locals: { index: index, items: $scope.items },
+          locals: { index: index, data: $scope.data },
           bindToController: true,
           targetEvent: ev,
           templateUrl: 'tpl/botBlacklist-edit-dialog.html'
@@ -48,21 +50,23 @@
       };
 
       $scope.deleteItem = function (ev, index) {
-        delete $scope.items[index];
-        var blackList = {
-          enabled: newValue,
-          blacklist: $scope.items
-        };
-        BlackList.save({date: blackList}, function (result) {
-          console.log(result);
+        $mdDialog.show({
+          clickOutsideToClose: true,
+          controller: ['$scope', '$mdDialog', 'BlackList', deleteCtrl],
+          controllerAs: 'ctrl',
+          focusOnOpen: false,
+          targetEvent: ev,
+          locals: { index: index, data: $scope.data  },
+          bindToController: true,
+          templateUrl: 'tpl/delete-confirm-dialog.html',
         });
       };
 
     }
 
   function editItemCtrl($scope, $mdDialog, BlackList) {
-    if (this.items && this.index >= 0) {
-      $scope.item = this.items[this.index];
+    if (this.data.blacklist && this.index >= 0) {
+      $scope.item = this.data.blacklist[this.index];
 
       var ips = [];
       var ip = "";
@@ -146,7 +150,7 @@
 
       $scope.item.ipRules = ipRules;
       if (this.index < 0) {
-        this.items.push($scope.item);
+        this.data.blacklist.push($scope.item);
       }
 
       $scope.editForm.$setSubmitted();
@@ -154,6 +158,27 @@
         BlackList.save(this.items, success);
       }
     };
+  }
+
+  function deleteCtrl($scope, $mdDialog, BlackList) {
+    this.title = "delete";
+    this.content = 'warnDelete';
+
+    this.cancel = $mdDialog.cancel;
+
+    this.ok = function() {
+      delete this.data.blacklist[this.index];
+      BlackList.save(this.data, success, error);
+    };
+
+    function success() {
+      console.log("success delete");
+      $mdDialog.hide();
+    }
+
+    function error() {
+      this.error = 'Error occured when delete.';
+    }
   }
 
 })();
