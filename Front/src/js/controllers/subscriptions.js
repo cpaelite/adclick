@@ -3,11 +3,15 @@
 
     angular.module('app')
         .controller('SubscriptionsCtrl', [
-            '$scope', 
+            '$scope', 'Billing',
             SubscriptionsCtrl
         ]);
 
-    function SubscriptionsCtrl($scope) {
+    function SubscriptionsCtrl($scope, Billing) {
         $scope.app.subtitle = 'Subscriptions';
+
+		Billing.get({id: ''}, function(user) {
+			$scope.item = user.data;
+		});
     }
 })();

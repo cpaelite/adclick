@@ -10,34 +10,48 @@
 	</div>
 	
 	<div class="user-mangement-content">
-		<span>Your plan has limitation of 2 user invitations</span>
-		<span class="small-word">You can invite 2 more users to your account</span>
-		<form name="emailForm">
-		  <div class="form-group">
-		    <label for="exampleInputEmail2">Invite users:</label>
-		    <div class="form-inline">
-		   		<input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">
-		    	<button type="submit" class="btn btn-primary">Send invitation</button>
-		    </div>
-		  </div>	
-		</form>
+		<div ng-show="iItem.invitations.length==2">
+			<span>Your plan has limitation of 2 user invitations</span>
+			<span>
+				You have reached the limit of users for your chosen plan.<br>
+				To have additional users, you can upgrade to higher plan. 
+			</span>
+			<div class="plan-btn">
+				<md-button class="md-raised copy-btn">Upgrade plan</md-button>
+			</div>
+		</div>
+		<div ng-show="iItem.invitations.length<2">
+			<span>Your plan has limitation of 2 user invitations</span>
+			<span class="small-word">You can invite 2 more users to your account</span>
+			<form name="emailForm">
+			  <div class="form-group">
+			    <label for="exampleInputEmail2">Invite users:</label>
+			    <div class="form-inline">
+			   		<input type="email" class="form-control" id="exampleInputEmail2" ng-model="email" placeholder="jane.doe@example.com">
+			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(email)">Send invitation</button>
+			    </div>
+			  </div>	
+			</form>
+		</div>
 		<div class="form-group">
 			<label for="exampleInputEmail2">List of users:</label>
 			<div class="form-inline user-list">
-				<span><i class="material-icons">account_box</i> zheng shuo</span>
+				<span><i class="material-icons">account_box</i> {{item.firstName}} {{item.lastName}}</span>
 				<button type="submit" class="btn btn-primary">owner</button>
-				<span>zhengshuo@qq.com</span>
+				<span>{{item.email}}</span>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="exampleInputEmail2">Pending invitations:</label>
-			<div class="form-inline user-list">
-				<span class="nothing-word">
+			<div class="form-inline user-list" >
+				<span class="nothing-word" ng-show="iItem.invitations.length==0">
 					You have no pending invitations
 				</span>
-				<span><i class="material-icons">account_box</i> 13-02-2017</span>
-				<span class="email-con">zhengshuo@qq.com</span>
-				<i class="material-icons delete-user">close</i>
+				<div ng-repeat="i in iItem.invitations track by $index" class="itemList">
+					<span><i class="material-icons">account_box</i>{{i.lastDate}}</span>
+					<span class="email-con">{{i.email}}</span>
+					<i class="material-icons delete-user" ng-click="deleteInvitation(i)">close</i>
+				</div>
 			</div>
 		</div>
 	</div>

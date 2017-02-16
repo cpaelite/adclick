@@ -41,14 +41,35 @@ angular.module('app')
   .factory('Country', ['$resource', function ($resource) {
     return $resource('/api/countries', {}, {'query':  {method:'GET', isArray:true}});
   }])
-  .factory('ProfileAccount', ['$resource', function($resource) {
+  .factory('Profile', ['$resource', function($resource) {
     return $resource('/api/profile')
   }])
-  .factory('PasswordChange', ['$resource', function($resource) {
+  .factory('Password', ['$resource', function($resource) {
     return $resource('/api/password')
   }])
-  .factory('EmailChange', ['$resource', function($resource) {
+  .factory('Email', ['$resource', function($resource) {
     return $resource('/api/email')
+  }])
+  .factory('Referrals', ['$resource', function($resource) {
+    return $resource('/api/referrals')
+  }])
+  .factory('Billing', ['$resource', function($resource) {
+    return $resource('/api/billing')
+  }])
+  .factory('Setup', ['$resource', function($resource) {
+    return $resource('/api/setup')
+  }])
+  .factory('Domains', ['$resource', function($resource) {
+    return $resource('/api/domains')
+  }])
+  .factory('DomainsValidatecname', ['$resource', function($resource) {
+    return $resource('/api/domains/validatecname')
+  }])
+  .factory('Member', ['$resource', function($resource) {
+    return $resource('/api/member')
+  }])
+  .factory('Invitation', ['$resource', function($resource) {
+    return $resource('/api/invitation/:id', {id: '@id'})
   }])
   .factory('DefaultPostBackUrl', ['$resource', function($resource) {
     return $resource('/api/postbackurl')
