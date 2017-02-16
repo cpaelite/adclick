@@ -92,7 +92,17 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'TrackingCampaign',
-    timestamps: false
+    timestamps: false,
+    classMethods: {
+      associate(models) {
+        model.belongsTo(models.TrafficSource, {
+          foreignKey: 'trafficSourceId'
+        })
+        model.hasMany(models.AdStatis, {
+          foreignKey: 'CampaignID'
+        })
+      }
+    }
   })
   return model
 }

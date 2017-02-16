@@ -1,12 +1,14 @@
 export default function(sequelize, DataTypes) {
   let model = sequelize.define('AdStatis', {
-    UserId: {
+    UserID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true
     },
     CampaignID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true
     },
     CampaignName: {
       type: DataTypes.STRING(256),
@@ -21,7 +23,7 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.STRING(256),
       defaultValue: ''
     },
-    LanderId: {
+    LanderID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -30,7 +32,7 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.STRING(256),
       defaultValue: ''
     },
-    OfferId: {
+    OfferID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -51,7 +53,7 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    AffiliateNetworkName: {
+    AffilliateNetworkName: {
       type: DataTypes.STRING(256),
       defaultValue: ''
     },
@@ -66,7 +68,9 @@ export default function(sequelize, DataTypes) {
     Language: {
       type: DataTypes.STRING(20)
     },
-    // Model:  DataTypes.STRING(45),
+    model:  {
+      type: DataTypes.STRING(45)
+    },
     Country: {
       type: DataTypes.STRING(40)
     },
@@ -108,7 +112,8 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.STRING(16)
     },
     Timestamp: {
-      type: DataTypes.BIGINT(22)
+      type: DataTypes.BIGINT(22),
+      primaryKey: true
     },
     Visits: {
       type: DataTypes.INTEGER,
@@ -184,7 +189,30 @@ export default function(sequelize, DataTypes) {
     },
   }, {
     tableName: 'AdStatis',
-    timestamps: false
+    timestamps: false,
+
+    classMethods: {
+      associate(models) {
+        model.belongsTo(models.Lander, {
+          foreignKey: 'LanderID'
+        })
+        model.belongsTo(models.TrackingCampaign, {
+          foreignKey: 'CampaignID'
+        })
+        model.belongsTo(models.Flow, {
+          foreignKey: 'FlowID'
+        })
+        model.belongsTo(models.Offer, {
+          foreignKey: 'OfferID'
+        })
+        model.belongsTo(models.AffiliateNetwork, {
+          foreignKey: 'AffiliateNetworkID'
+        })
+        model.belongsTo(models.TrafficSource, {
+          foreignKey: 'TrafficSourceID'
+        })
+      }
+    }
   })
   return model
 }

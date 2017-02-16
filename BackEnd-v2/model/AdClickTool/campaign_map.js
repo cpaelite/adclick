@@ -17,7 +17,7 @@ export default function(sequelize, DataTypes) {
         }
     }, {
       timestamps: false,
-      tableName: 'CampaignMap'
+      tableName: 'CampaignMap'  
     })
     return model;
 }

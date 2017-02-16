@@ -1,7 +1,9 @@
-var express = require('express');
+import express from 'express';
 var router = express.Router();
 var common = require('./common');
+import moment from 'moment-timezone';
 import _ from 'lodash';
+import sequelize from 'sequelize';
 
 var mapping = {
     UserID: "UserID",
@@ -78,59 +80,12 @@ router.get('/api/report', async function(req, res, next) {
     try {
         let result;
         result = await campaignReport(req.query);
-        if (req.query.groupBy === 'campaign') {
-            result = await decorate(result, req.query)
-        }
         return res.json({status: 1, message: 'success', data: result});
     } catch (e) {
         return next(e);
     }
 
 });
-// from:2017-01-23T00:00
-// groupBy:lander
-// limit:500
-// order:-visits
-// page:1
-// status:1
-// to:2017-01-24T23:59
-// tz:+08:00
-
-async function decorate(statistics, query) {
-    let {tz, from, to} = query;
-    let Ps = statistics.rows.map(async statistic => {
-        let campaignMap =  await models.CampaignMap.findOne({
-            where: {
-                OurCampId: statistic.campaignId
-            }
-        });
-        if (!campaignMap) return statistic;
-
-        let timezone = await models.Timezone.findOne({where: {value: parseInt(tz.split(':')[0])}})
-        let campaign = await models.Campaign.findOne({where: {campaign_identity: campaignMap.TheirCampId}});
-
-        let r = await campaign.getStatistics({
-          where: {
-            date: {
-              $gte: '2016-10-01',
-              $lte: '2016-11-01'
-            },
-            timezone_id: timezone.id
-          }
-        })
-        let cost = r.reduce((sum , e) => sum + parseFloat(e.cost), 0);
-        let impression = r.reduce((sum, e) => sum + parseInt(e.impression), 0);
-        let click = r.reduce((sum, e) => sum + parseInt(e.click), 0);
-        statistic.cost = cost;
-        statistic.impressions = impression;
-        statistic.clicks = click;
-        return statistic;
-    })
-
-    let rows = await(Promise.all(Ps));
-    statistics.rows = rows;
-    return statistics
-}
 
 async function campaignReport(value) {
     let {
@@ -140,7 +95,9 @@ async function campaignReport(value) {
         from,
         to,
         tz,
-        filter
+        filter,
+        order,
+        status
     } = value;
 
     let sqlWhere = {};
@@ -157,7 +114,7 @@ async function campaignReport(value) {
     })
     let isListPageRequest = Object.keys(sqlWhere).length === 0 && groupByMapping[groupBy]
     if (isListPageRequest) {
-        return listPageReport(value.userId, sqlWhere, from, to, tz, groupBy, offset, limit, filter)
+        return listPageReport({userId: value.userId, where: sqlWhere, from, to, tz, groupBy, offset, limit, filter, order, status})
     } else {
         return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit, filter)
     }
@@ -176,236 +133,108 @@ async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit, filt
     });
 }
 
-async function listPageReport(userId, sqlWhere, from, to, tz, groupBy, offset, limit, filter) {
-    let listSql
-    if (groupBy == 'campaign') {
-        listSql = campaignListSql + ' where userId = ' + userId
-    } else if (groupBy == 'flow') {
-        listSql = flowListSql + ' where userId = ' + userId
-    } else if (groupBy == 'lander') {
-        listSql = landerListSql + ' where userId = ' + userId
-    } else if (groupBy == 'offer') {
-        listSql = offerListSql + ' where userId = ' + userId
-    } else if (groupBy == 'traffic') {
-        listSql = trafficListSql + ' where userId = ' + userId
-    } else if (groupBy == 'affiliate') {
-        listSql = affiliateListSql + ' where userId = ' + userId
-    } else {
-        return {}
-    }
+async function listPageReport({userId, where, from, to, tz, groupBy, offset, limit, filter, order, status}) {
     if (filter) {
-        listSql += " and `name` like '%" + filter + "%'"
+        where.name = {$like: `%${filter}%`}
     }
-
-    let countSql = "select COUNT(*) as `total` from ((" + listSql + ") as T)";
-    listSql += " limit " + offset + "," + limit;
-    let sumSql = "select sum(`Impressions`) as `impressions`, sum(`Visits`) as `visits`,sum(`Clicks`) as `clicks`,sum(`Conversions`) as `conversions`,sum(`Revenue`) as `revenue`,sum(`Cost`) as `cost`,sum(`Profit`) as `profit`,sum(`Cpv`) as `cpv`,sum(`Ictr`) as `ictr`,sum(`Ctr`) as `ctr`,sum(`Cr`) as `cr`,sum(`Cv`) as `cv`,sum(`Roi`) as `roi`,sum(`Epv`) as `epv`,sum(`Epc`) as `epc`,sum(`Ap`) as `ap` from ((" + listSql + ") as K)";
-    let dataSql = buildSql()({sqlWhere, from, to, tz, groupBy: mapping[groupBy]});
-    let sqlResult = await Promise.all([query(listSql), query(countSql), query(sumSql), query(dataSql)]);
-    let r = {
-        totalRows: sqlResult[1][0].total,
-        totals: sqlResult[2][0],
-        rows: sqlResult[0]
+    where.UserID = userId
+    where.Timestamp = {
+      $gte: moment(from).unix() * 1000,
+      $lte: moment(to).unix() * 1000
     }
-    let dataMatchKey = groupByMapping[groupBy]
-    let dataResult = sqlResult[3]
-    for (let i = 0; i < r.rows.length; i++) {
-        for (let j = 0; j < dataResult.length; j++) {
-            if (r.rows[i][dataMatchKey] == dataResult[j][dataMatchKey]) {
-                r.rows[i] = dataResult[j]
-            }
+    let include = ['AffiliateNetwork', 'Flow', 'Lander', 'Offer', 'TrackingCampaign', 'TrafficSource'].map(e => {
+      let _r = {
+        model: models[e]
+      }
+      if (e === 'TrackingCampaign' && status) {
+        _r.where = {
+          status
         }
-    }
-    return r;
-}
-
-function query(sql) {
-    return new Promise(function(resolve, reject) {
-        pool.getConnection(function(err, connection) {
-            if (err) {
-                return reject(err)
-            }
-            connection.query(sql, function(err, result) {
-                connection.release();
-                if (err) {
-                    reject(err)
-                }
-                resolve(result);
-            });
-        });
+      }
+      return _r;
     })
+
+    let sumShorts = {
+      visits: [sequelize.fn('SUM', sequelize.col('Visits')), 'visits'],
+      impressions: [sequelize.fn('SUM', sequelize.col('Impressions')), 'impressions'],
+      revenue: [sequelize.fn('SUM', sequelize.col('Revenue')), 'revenue'],
+      clicks: [sequelize.fn('SUM', sequelize.col('Clicks')), 'clicks'],
+      conversions: [sequelize.fn('SUM', sequelize.col('Conversions')), 'conversions'],
+      cost: [sequelize.fn('SUM', sequelize.col('AdStatis.Cost')), 'cost'],
+      profit: [sequelize.fn('SUM', sequelize.literal('AdStatis.Revenue / 1000000 - AdStatis.Cost / 1000000')), 'profit'],
+      cpv: [sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.impressions)'), 'cpv'],
+      ictr: [sequelize.literal('sum(AdStatis.Visits)/sum(AdStatis.Impressions)'), 'ictr'],
+      ctr:  [sequelize.literal('sum(AdStatis.Clicks)/sum(AdStatis.Visits)'), 'ctr'],
+      cr:   [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Clicks)'), 'cr'],
+      cv:   [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Visits)'), 'cv'],
+      roi:  [sequelize.literal('sum(AdStatis.Revenue)/sum(AdStatis.Cost)'), 'roi'],
+      epv:  [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Visits)'), 'epv'],
+      epc:  [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Clicks)'), 'epc'],
+      ap:   [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Conversions)'), 'ap'],
+    }
+
+    let orderBy = ['campaignId', 'ASC']
+
+    if(order) {
+      if(order[0] === '-1') {
+        orderBy[1] = 'DESC'
+        order = order.slice(1)
+      }
+      if (sumShorts[order]){
+        orderBy[0] = sumShorts[order][0]
+      } else {
+        orderBy[0] = order
+      }
+    }
+    
+    let attributes = [
+      'UserID',
+      'Language',
+      ['model', 'Model'],
+      ['CampaignID', 'campaignId'],
+      ['CampaignName', 'campaignName'],
+      'Country',
+      'City',
+      'Region',
+      'ISP',
+      'MobileCarrier',
+      'Domain',
+      'DeviceType',
+      'Brand',
+      'OS',
+      'OSVersion',
+      'Browser',
+      'BrowserVersion',
+      'ConnectionType',
+      ...(_.values(sumShorts))
+    ]
+    let rows = await models.AdStatis.findAll({
+      where,
+      limit,
+      offset,
+      include,
+      attributes,
+      group: mapping[groupBy],
+      order: [orderBy]
+    })
+
+    let totalsRows = await models.AdStatis.count({
+      where,
+      include,
+      group: mapping[groupBy]
+    })
+
+    let totals = {
+      impressions: rows.reduce((sum, row) => sum + row.dataValues.impressions, 0),
+      clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
+      visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0),
+    }
+
+    return {
+      totals,
+      totalsRows: totalsRows.length === 0 ? 0 : totalsRows[0].count,
+      rows
+    }
 }
 
 module.exports = router;
-
-function buildSql() {
-    let template = `
-select ads.UserID,ads.Language,ads.Model,ads.Country,ads.City,ads.Region,ads.ISP,ads.MobileCarrier,ads.Domain,ads.DeviceType,ads.Brand,ads.OS,ads.OSVersion,ads.Browser,ads.BrowserVersion,ads.ConnectionType,ads.Timestamp,sum(ads.Visits) as visits,sum(ads.Clicks) as
-clicks, sum(ads.Conversions) as conversions, sum(ads.Cost)/1000000 as cost, sum(ads.Revenue)/1000000 as revenue,sum(ads.Impressions) as impressions,ads.KeysMD5,ads.V1,ads.V2,ads.V3,ads.V4,ads.V5,ads.V6,ads.V7,ads.V8,ads.V9,ads.V10,
-c.id as campaignId, c.name as campaignName, c.url as campaignUrl, c.country as campaignCountry,
-f.id as flowId, f.name as flowName,
-l.id as landerId, l.name as landerName, l.url as landerUrl, l.country as landerCountry,
-o.id as offerId, o.name as offerName, o.url as offerUrl, o.country as offerCountry,
-t.id as TrafficSourceId, t.name as trafficName,
-a.id as affiliateId, a.name as affiliateName,
-sum(ads.\`Revenue\`/1000000)-sum(ads.\`Cost\`/1000000) as \`profit\`,
-sum(ads.\`Cost\`/1000000)/sum(ads.\`Impressions\`) as \`cpv\`,
-sum(ads.\`Visits\`)/sum(ads.\`Impressions\`) as \`ictr\`,
-sum(ads.\`Clicks\`)/sum(ads.\`Visits\`) as \`ctr\`,
-sum(ads.\`Conversions\`)/sum(ads.\`Clicks\`) as \`cr\`,
-sum(ads.\`Conversions\`)/sum(ads.\`Visits\`) as \`cv\`,
-sum(ads.\`Revenue\`/1000000)/sum(ads.\`Cost\`/1000000) as \`roi\`,
-sum(ads.\`Revenue\`/1000000)/sum(ads.\`Visits\`) as \`epv\`,
-sum(ads.\`Revenue\`/1000000)/sum(ads.\`Clicks\`) as \`epc\`,
-sum(ads.\`Revenue\`/1000000)/sum(ads.\`Conversions\`) as \`ap\`
-from AdStatis ads
-inner join TrackingCampaign c on c.id = ads.CampaignId
-inner join Flow f on f.id = ads.FlowId
-inner join Lander l on l.id = ads.LanderId
-inner join Offer o on o.id = ads.OfferId
-inner join TrafficSource t on t.id = ads.TrafficSourceId
-inner join AffiliateNetwork a on a.id = ads.AffiliateNetworkId
-where
-1=1
-and ads.\`Timestamp\` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')) * 1000)
-<% _.forEach(Object.keys(sqlWhere), function(key){ %>
-and ads.\`<%- key %>\`=<%= sqlWhere[key]%>
-<% }) %>
-and ads.\`Timestamp\` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>')) * 1000)
-group by ads.\`<%= groupBy %>\`
-order by CampaignId `
-
-    return _.template(template);
-}
-
-var campaignListSql = `
-select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
-clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
-id as campaignId, hash as campaignHash,name as campaignName, url as campaignUrl, country as campaignCountry,
-0 as flowId, 0 as flowName,
-0 as landerId, 0 as landerName, 0 as landerUrl, 0 as landerCountry,
-0 as offerId, 0 as offerName, 0 as offerUrl, 0 as offerCountry,
-0 as trafficId, 0 as trafficName,
-0 as affiliateId, 0 as affiliateName,
-0 as profit,
-0 as cpv,
-0 as ictr,
-0 as ctr,
-0 as cr,
-0 as cv,
-0 as roi,
-0 as epv,
-0 as epc,
-0 as ap
-from TrackingCampaign
-`
-
-var flowListSql = `
-select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
-clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
-0 as campaignId, 0 as campaignName, 0 as campaignUrl, 0 as campaignCountry,
-id as flowId, hash as flowHash,Name as flowName,
-0 as landerId, 0 as landerName, 0 as landerUrl, 0 as landerCountry,
-0 as offerId, 0 as offerName, 0 as offerUrl, 0 as offerCountry,
-0 as trafficId, 0 as trafficName,
-0 as affiliateId, 0 as affiliateName,
-0 as profit,
-0 as cpv,
-0 as ictr,
-0 as ctr,
-0 as cr,
-0 as cv,
-0 as roi,
-0 as epv,
-0 as epc,
-0 as ap
-from Flow
-`
-
-var landerListSql = `
-select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
-clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
-0 as campaignId, 0 as campaignName, 0 as campaignUrl, 0 as campaignCountry,
-0 as flowId, 0 as flowName,
-id as landerId,hash as landerHash, name as landerName, url as landerUrl, country as landerCountry,
-0 as offerId, 0 as offerName, 0 as offerUrl, 0 as offerCountry,
-0 as trafficId, 0 as trafficName,
-0 as affiliateId, 0 as affiliateName,
-0 as profit,
-0 as cpv,
-0 as ictr,
-0 as ctr,
-0 as cr,
-0 as cv,
-0 as roi,
-0 as epv,
-0 as epc,
-0 as ap
-from Lander
-`
-
-var offerListSql = `
-select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
-clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
-0 as campaignId, 0 as campaignName, 0 as campaignUrl, 0 as campaignCountry,
-0 as flowId, 0 as flowName,
-0 as landerId, 0 as landerName, 0 as landerUrl, 0 as landerCountry,
-id as offerId,hash as offerHash, name as offerName, url as offerUrl, country as offerCountry,
-0 as trafficId, 0 as trafficName,
-0 as affiliateId, 0 as affiliateName,
-0 as profit,
-0 as cpv,
-0 as ictr,
-0 as ctr,
-0 as cr,
-0 as cv,
-0 as roi,
-0 as epv,
-0 as epc,
-0 as ap
-from Offer
-`
-
-var trafficListSql = `
-select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
-clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
-0 as campaignId, 0 as campaignName, 0 as campaignUrl, 0 as campaignCountry,
-0 as flowId, 0 as flowName,
-0 as landerId, 0 as landerName, 0 as landerUrl, 0 as landerCountry,
-0 as offerId, 0 as offerName, 0 as offerUrl, 0 as offerCountry,
-id as trafficId,hash as trafficHash, name as trafficName,
-0 as affiliateId, 0 as affiliateName,
-0 as profit,
-0 as cpv,
-0 as ictr,
-0 as ctr,
-0 as cr,
-0 as cv,
-0 as roi,
-0 as epv,
-0 as epc,
-0 as ap
-from TrafficSource
-`
-
-var affiliateListSql = `
-select 0 as UserID, 0 as Language, 0 as Model, 0 as Country, 0 as City, 0 as Region, 0 as ISP, 0 as MobileCarrier, 0 as Domain, 0 as DeviceType, 0 as Brand, 0 as OS, 0 as OSVersion, 0 as Browser, 0 as BrowserVersion, 0 as ConnectionType, 0 as Timestamp, 0 as visits, 0  as
-clicks,  0  as conversions, 0  as cost, 0 as revenue, 0 as impressions, 0 as KeysMD5, 0 as V1, 0 as V2, 0 as V3, 0 as V4, 0 as V5, 0 as V6, 0 as V7, 0 as V8, 0 as V9, 0 as V10,
-0 as campaignId, 0 as campaignName, 0 as campaignUrl, 0 as campaignCountry,
-0 as flowId, 0 as flowName,
-0 as landerId, 0 as landerName, 0 as landerUrl, 0 as landerCountry,
-0 as offerId, 0 as offerName, 0 as offerUrl, 0 as offerCountry,
-0 as trafficId, 0 as trafficName,
-id as affiliateId,hash as affiliateHash, name as affiliateName,
-0 as profit,
-0 as cpv,
-0 as ictr,
-0 as ctr,
-0 as cr,
-0 as cv,
-0 as roi,
-0 as epv,
-0 as epc,
-0 as ap
-from AffiliateNetwork
-`

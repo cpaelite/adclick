@@ -49,7 +49,17 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     timestamps: false,
-    tableName: 'Offer'
+    tableName: 'Offer',
+    classMethods: {
+      associate(models) {
+        model.belongsTo(models.AffiliateNetwork, {
+          foreignKey: 'AffiliateNetworkId'
+        })
+        model.hasMany(models.AdStatis, {
+          foreignKey: 'OfferID'
+        })
+      }
+    }
   })
   return model
 }

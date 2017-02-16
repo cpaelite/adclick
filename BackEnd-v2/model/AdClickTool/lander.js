@@ -32,7 +32,14 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'Lander',
-    timestamps: false
+    timestamps: false,
+    classMethods: {
+      associate(models) {
+        model.hasMany(models.AdStatis, {
+          foreignKey: 'LanderID'
+        })
+      }
+    }
   })
   return model
 }

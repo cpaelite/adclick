@@ -12,10 +12,6 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.STRING(39),
       allowNull: false
     },
-    url: {
-      type: DataTypes.STRING(512),
-      allowNull: false
-    },
     country: {
       type: DataTypes.STRING(3),
       allowNull: false,
@@ -37,7 +33,14 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'Flow',
-    timestamps: false
+    timestamps: false,
+    classMethods: {
+      associate(models) {
+        model.hasMany(models.AdStatis, {
+          foreignKey: 'FlowID'
+        })
+      }
+    }
   })
   return model
 }
