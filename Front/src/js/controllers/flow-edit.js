@@ -543,6 +543,7 @@
     };
 
     // save
+    $scope.saveErrors = [];
     $scope.save = function() {
       // clean up before save
       var flowData = {
@@ -555,6 +556,8 @@
         flowData.id = theFlow.id;
       }
 
+      $scope.saveErrors.length = 0;
+      $scope.saveTime = null;
       theFlow.rules.forEach(function(rule) {
         if (rule.isDeleted)
           return;
@@ -618,6 +621,7 @@
             });
             if (pathData.offers.length == 0) {
               delete pathData.offers;
+              $scope.saveErrors.push('Path ' + path.name + ' must contain at least 1 offer');
             }
           }
 
@@ -627,13 +631,16 @@
         flowData.rules.push(ruleData);
       });
 
+      if ($scope.saveErrors.length > 0) {
+        return $q.reject('error occurs');
+      }
+
       $scope.onSave = true;
-      $scope.saveError = null;
       return Flow.save(flowData, function(result) {
         $scope.onSave = false;
         $scope.saveTime = new Date();
         if (result.status != 1) {
-          $scope.saveError = result.message;
+          $scope.saveErrors.push(result.message);
         } else if (!theFlow.id) {
           theFlow.id = result.data.id;
           result.data.rules.forEach(function (rule, ruleIndex) {
@@ -646,7 +653,7 @@
         }
       }, function() {
         $scope.onSave = false;
-        $scope.saveError = 'Network error when save flow';
+        $scope.saveErrors.push('Network error when save flow');
       }).$promise;
     };
 
@@ -659,7 +666,7 @@
 
     $scope.saveClose = function() {
       $scope.save().then(function() {
-        if (!$scope.saveError)
+        if ($scope.saveErrors.length == 0)
           $scope.close();
       });
     };

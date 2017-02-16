@@ -1143,81 +1143,85 @@ app.post('/api/flows', function (req, res) {
 app.post('/api/flows/:flowId', function (req, res) {
     console.log(JSON.stringify(req.body));
     var result = {
-        "id": 1,
-        "name": "Global - yoshop-Android-benson",
-        "country": "us",
-        "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-        "rules": [{
-            "id": 3,
-            "isDefault": true,
-            "paths": [{
-                "id": 1,
-                "name": "path name 1",
-                "redirecMode": 0,
-                "directLinking": false,
-                "enabled": true,
-                "weight": 100,
-                "landers": [{
-                    "id": "2343",  // lander id
-                    "weight": 100
-                }],
-                "offers": [{
-                    "id": "3432",  // offer id
-                    "weight": 100
-                }]
-            }]
-        }, {
-            "id": 4,
-            "name": "the rule name",
-            "isDefault": false,
-            "enabled": true,   // is this rule enabled/disabled
-            "conditions": [{
-                "id": "3434",    // condition id, refer to /api/conditions
-                "operand": "is", // is/isnt
-                "value": ["windows", "android4.5", "android7"]
-            }, {
-                "id": "1234",
-                "operand": "isnt",
-                "tz": "+0800",
-                "weekday": ["tue", "fri"]
-            }],
-            "paths": [{
-                "id": 1,
-                "name": "path name 1",
-                "redirecMode": 0,
-                "directLinking": false,
-                "enabled": true,
-                "weight": 100,
-                "landers": [{
-                    "id": "2343",
-                    "weight": 100
-                }, {
-                    "id": "3943",
-                    "weight": 50
-                }],
-                "offers": [{
-                    "id": "3432",
-                    "weight": 100
-                }, {
-                    "id": "8923",
-                    "weight": 200
-                }]
-            }, {
-                "id": 2,
-                "name": "path name 2",
-                "redirecMode": 0,
-                "directLinking": true,
-                "enabled": true,
-                "weight": 100,
-                "landers": [{
-                    "id": "4842",
-                    "weight": 100
-                }, {
-                    "id": "7265",
-                    "weight": 50
-                }]
-            }]
-        }]
+        status: 1,
+        message: "",
+        data: {
+          "id": 1,
+          "name": "Global - yoshop-Android-benson",
+          "country": "us",
+          "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
+          "rules": [{
+              "id": 3,
+              "isDefault": true,
+              "paths": [{
+                  "id": 1,
+                  "name": "path name 1",
+                  "redirecMode": 0,
+                  "directLinking": false,
+                  "enabled": true,
+                  "weight": 100,
+                  "landers": [{
+                      "id": "2343",  // lander id
+                      "weight": 100
+                  }],
+                  "offers": [{
+                      "id": "3432",  // offer id
+                      "weight": 100
+                  }]
+              }]
+          }, {
+              "id": 4,
+              "name": "the rule name",
+              "isDefault": false,
+              "enabled": true,   // is this rule enabled/disabled
+              "conditions": [{
+                  "id": "3434",    // condition id, refer to /api/conditions
+                  "operand": "is", // is/isnt
+                  "value": ["windows", "android4.5", "android7"]
+              }, {
+                  "id": "1234",
+                  "operand": "isnt",
+                  "tz": "+0800",
+                  "weekday": ["tue", "fri"]
+              }],
+              "paths": [{
+                  "id": 1,
+                  "name": "path name 1",
+                  "redirecMode": 0,
+                  "directLinking": false,
+                  "enabled": true,
+                  "weight": 100,
+                  "landers": [{
+                      "id": "2343",
+                      "weight": 100
+                  }, {
+                      "id": "3943",
+                      "weight": 50
+                  }],
+                  "offers": [{
+                      "id": "3432",
+                      "weight": 100
+                  }, {
+                      "id": "8923",
+                      "weight": 200
+                  }]
+              }, {
+                  "id": 2,
+                  "name": "path name 2",
+                  "redirecMode": 0,
+                  "directLinking": true,
+                  "enabled": true,
+                  "weight": 100,
+                  "landers": [{
+                      "id": "4842",
+                      "weight": 100
+                  }, {
+                      "id": "7265",
+                      "weight": 50
+                  }]
+              }]
+          }]
+        }
     };
     res.send(result);
 });

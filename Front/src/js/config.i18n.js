@@ -44,7 +44,9 @@
     botBlacklist:'BotBlacklist',
     invoices:'Invoices',
     eventLog:'EventLog',
-    affiliate: 'AffiliateNetwork'
+    affiliate: 'AffiliateNetwork',
+    addFlowPath: 'Add new path',
+    addFlowRule: 'Add new rule'
   };
   var i18n_zh = {
     ok: '确定',

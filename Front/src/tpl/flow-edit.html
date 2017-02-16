@@ -36,13 +36,13 @@
         </li>
         <li ng-click="addPath(rule)" class="cs-flow-addpath tree-li">
           <i class="material-icons add-box">add_box</i>
-          <span class="add-flow-path">{{'add_new_path' | translate}}</span>
+          <span class="add-flow-path" translate>addFlowPath</span>
         </li>
       </ul>
     </div>
     <div ng-click="addRule()" class="cs-flow-addrule tree-li">
       <i class="material-icons add-box">add_box</i>
-      <span class="add-flow-rule">{{'add_flow_rule' | translate}}</span>
+      <span class="add-flow-rule" translate>addFlowRule</span>
     </div>
   </div>
   <div class="col-sm-8 col-md-8 cs-flow-content">
@@ -408,8 +408,10 @@
     <div class="cs-flow-bottom-actions clearfix">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-result" ng-hide="onSave">
-        <span class="cs-save-error" ng-show="saveError">{{saveError}}</span>
-        <span class="cs-save-time" ng-if="saveTime && !saveError">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        <span class="cs-save-error" ng-show="saveErrors.length">
+          <em ng-repeat="err in saveErrors">{{err}}</em>
+        </span>
+        <span class="cs-save-time" ng-show="saveTime && saveErrors.length==0">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       </span>
       <button class="btn btn-primary save-btn" ng-click="save()">
         <i class="material-icons">check</i>
