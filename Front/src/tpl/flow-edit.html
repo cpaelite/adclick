@@ -9,7 +9,8 @@
         'cs-flow-active': onEdit=='rule' && curRule==rule,
         'cs-rule-default': rule.isDefault,
         'cs-rule-unexpanded': rule.unexpanded,
-        'cs-is-deleted': rule.isDeleted
+        'cs-is-deleted': rule.isDeleted,
+        'cs-is-disabled': !rule.enabled
         }">
         <span ng-click="toggleExpand(rule)">
           <i class="material-icons md-mini cs-flow-arrow" ng-show="rule.unexpanded">keyboard_arrow_right</i>
@@ -24,7 +25,8 @@
       <ul ng-hide="rule.unexpanded">
         <li ng-repeat="path in rule.paths" class="tree-li" ng-click="editPath(rule, path)" ng-class="{
           'cs-flow-active': onEdit=='path' && curPath==path,
-          'cs-is-deleted': path.isDeleted
+          'cs-is-deleted': path.isDeleted,
+          'cs-is-disabled': !path.enabled
         }">
           <i class="material-icons tree-icon">album</i>
           <span class="cs-path-name clearfix">
