@@ -65,6 +65,33 @@ var groupByMapping = {
     affiliate: 'affiliateId'
 }
 
+const groupByModel = {
+    campaign: 'TrackingCampaign',
+    flow: 'Flow',
+    lander: 'Lander',
+    offer: 'Offer',
+    traffic: 'TrafficSource',
+    affiliate: 'AffiliateNetwork'
+}
+
+const groupByTag = {
+    campaign: [
+        'campaignId', 'campaignName'
+    ],
+    flow: [
+        'flowId', 'flowName'
+    ],
+    lander: [
+        'landerId', 'landerName'
+    ],
+    offer: [
+        'offerId', 'offerName'
+    ],
+    traffic: [
+        'trafficId', 'trafficName'
+    ],
+    affiliate: ['affiliateId', 'affiliateName']
+}
 /**
  * @api {get} /api/report  报表
  * @apiName  报表
@@ -114,7 +141,19 @@ async function campaignReport(value) {
     })
     let isListPageRequest = Object.keys(sqlWhere).length === 0 && groupByMapping[groupBy]
     if (isListPageRequest) {
-        return listPageReport({userId: value.userId, where: sqlWhere, from, to, tz, groupBy, offset, limit, filter, order, status})
+        return listPageReport({
+            userId: value.userId,
+            where: sqlWhere,
+            from,
+            to,
+            tz,
+            groupBy,
+            offset,
+            limit,
+            filter,
+            order,
+            status
+        })
     } else {
         return normalReport(sqlWhere, from, to, tz, groupBy, offset, limit, filter)
     }
@@ -133,108 +172,251 @@ async function normalReport(sqlWhere, from, to, tz, groupBy, offset, limit, filt
     });
 }
 
-async function listPageReport({userId, where, from, to, tz, groupBy, offset, limit, filter, order, status}) {
+async function listPageReport({
+    userId,
+    where,
+    from,
+    to,
+    tz,
+    groupBy,
+    offset,
+    limit,
+    filter,
+    order,
+    status
+}) {
     if (filter) {
-        where.name = {$like: `%${filter}%`}
+        where.name = {
+            $like: `%${filter}%`
+        }
     }
     where.UserID = userId
     where.Timestamp = {
-      $gte: moment(from).unix() * 1000,
-      $lte: moment(to).unix() * 1000
+        $gte: moment(from).unix() * 1000,
+        $lte: moment(to).unix() * 1000
     }
-    let include = ['AffiliateNetwork', 'Flow', 'Lander', 'Offer', 'TrackingCampaign', 'TrafficSource'].map(e => {
-      let _r = {
-        model: models[e]
-      }
-      if (e === 'TrackingCampaign' && status) {
-        _r.where = {
-          status
+    let include = ['TrackingCampaign'].map(e => {
+        let _r = {
+            model: models[e],
+            required: false
         }
-      }
-      return _r;
+        if (e === 'TrackingCampaign' && (status === "0" || status === "1")) {
+            _r.where = {
+                status
+            }
+        }
+        return _r;
     })
 
     let sumShorts = {
-      visits: [sequelize.fn('SUM', sequelize.col('Visits')), 'visits'],
-      impressions: [sequelize.fn('SUM', sequelize.col('Impressions')), 'impressions'],
-      revenue: [sequelize.fn('SUM', sequelize.col('Revenue')), 'revenue'],
-      clicks: [sequelize.fn('SUM', sequelize.col('Clicks')), 'clicks'],
-      conversions: [sequelize.fn('SUM', sequelize.col('Conversions')), 'conversions'],
-      cost: [sequelize.fn('SUM', sequelize.col('AdStatis.Cost')), 'cost'],
-      profit: [sequelize.fn('SUM', sequelize.literal('AdStatis.Revenue / 1000000 - AdStatis.Cost / 1000000')), 'profit'],
-      cpv: [sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.impressions)'), 'cpv'],
-      ictr: [sequelize.literal('sum(AdStatis.Visits)/sum(AdStatis.Impressions)'), 'ictr'],
-      ctr:  [sequelize.literal('sum(AdStatis.Clicks)/sum(AdStatis.Visits)'), 'ctr'],
-      cr:   [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Clicks)'), 'cr'],
-      cv:   [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Visits)'), 'cv'],
-      roi:  [sequelize.literal('sum(AdStatis.Revenue)/sum(AdStatis.Cost)'), 'roi'],
-      epv:  [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Visits)'), 'epv'],
-      epc:  [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Clicks)'), 'epc'],
-      ap:   [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Conversions)'), 'ap'],
+        visits: [
+            sequelize.fn('SUM', sequelize.col('Visits')),
+            'visits'
+        ],
+        impressions: [
+            sequelize.fn('SUM', sequelize.col('Impressions')),
+            'impressions'
+        ],
+        revenue: [
+            sequelize.fn('SUM', sequelize.col('Revenue')),
+            'revenue'
+        ],
+        clicks: [
+            sequelize.fn('SUM', sequelize.col('Clicks')),
+            'clicks'
+        ],
+        conversions: [
+            sequelize.fn('SUM', sequelize.col('Conversions')),
+            'conversions'
+        ],
+        cost: [
+            sequelize.fn('SUM', sequelize.col('AdStatis.Cost')),
+            'cost'
+        ],
+        profit: [
+            sequelize.fn('SUM', sequelize.literal('AdStatis.Revenue / 1000000 - AdStatis.Cost / 1000000')),
+            'profit'
+        ],
+        cpv: [
+            sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.impressions)'), 'cpv'
+        ],
+        ictr: [
+            sequelize.literal('sum(AdStatis.Visits)/sum(AdStatis.Impressions)'), 'ictr'
+        ],
+        ctr: [
+            sequelize.literal('sum(AdStatis.Clicks)/sum(AdStatis.Visits)'), 'ctr'
+        ],
+        cr: [
+            sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Clicks)'), 'cr'
+        ],
+        cv: [
+            sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Visits)'), 'cv'
+        ],
+        roi: [
+            sequelize.literal('sum(AdStatis.Revenue)/sum(AdStatis.Cost)'), 'roi'
+        ],
+        epv: [
+            sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Visits)'), 'epv'
+        ],
+        epc: [
+            sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Clicks)'), 'epc'
+        ],
+        ap: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Conversions)'), 'ap']
     }
 
     let orderBy = ['campaignId', 'ASC']
 
-    if(order) {
-      if(order[0] === '-1') {
-        orderBy[1] = 'DESC'
-        order = order.slice(1)
-      }
-      if (sumShorts[order]){
-        orderBy[0] = sumShorts[order][0]
-      } else {
-        orderBy[0] = order
-      }
+    if (order) {
+        if (order[0] === '-1') {
+            orderBy[1] = 'DESC'
+            order = order.slice(1)
+        }
+        if (sumShorts[order]) {
+            orderBy[0] = sumShorts[order][0]
+        } else {
+            orderBy[0] = order
+        }
     }
-    
+
     let attributes = [
-      'UserID',
-      'Language',
-      ['model', 'Model'],
-      ['CampaignID', 'campaignId'],
-      ['CampaignName', 'campaignName'],
-      'Country',
-      'City',
-      'Region',
-      'ISP',
-      'MobileCarrier',
-      'Domain',
-      'DeviceType',
-      'Brand',
-      'OS',
-      'OSVersion',
-      'Browser',
-      'BrowserVersion',
-      'ConnectionType',
-      ...(_.values(sumShorts))
+        'UserID',
+        'Language',
+        [
+            'model', 'Model'
+        ],
+        [
+            'CampaignID', 'campaignId'
+        ],
+        [
+            'CampaignName', 'campaignName'
+        ],
+        [
+            'FlowID', 'flowId'
+        ],
+        [
+            'FlowName', 'flowName'
+        ],
+        [
+            'LanderID', 'landerId'
+        ],
+        [
+            'LanderName', 'landerName'
+        ],
+        [
+            'OfferID', 'offerId'
+        ],
+        [
+            'OfferName', 'offerName'
+        ],
+        [
+            'AffiliateNetworkID', 'affiliateId'
+        ],
+        [
+            'AffilliateNetworkName', 'affiliateName'
+        ],
+        [
+            'TrafficSourceID', 'trafficId'
+        ],
+        [
+            'TrafficSourceName', 'trafficName'
+        ],
+        'Country',
+        'City',
+        'Region',
+        'ISP',
+        'MobileCarrier',
+        'Domain',
+        'DeviceType',
+        'Brand',
+        'OS',
+        'OSVersion',
+        'Browser',
+        'BrowserVersion',
+        'ConnectionType',
+        ...(_.values(sumShorts))
     ]
     let rows = await models.AdStatis.findAll({
-      where,
-      limit,
-      offset,
-      include,
-      attributes,
-      group: mapping[groupBy],
-      order: [orderBy]
+        where,
+        limit,
+        offset,
+        include,
+        attributes,
+        group: `AdStatis.${mapping[groupBy]}`,
+        order: [orderBy]
     })
 
-    let totalsRows = await models.AdStatis.count({
-      where,
-      include,
-      group: mapping[groupBy]
-    })
+    let totalsRows = await models[groupByModel[groupBy]].count()
+
+    var placeholders = []
+
+    if (limit > rows.length) {
+        let keys = [
+          'visits',
+          'impressions',
+          'revenue',
+          'clicks',
+          'conversions',
+          'cost',
+          'profit',
+          'cpv',
+          'ictr',
+          'ctr',
+          'cr',
+          'cv',
+          'roi',
+          'epv',
+          'epc',
+          'ap',
+          'campaignId',
+          'campaignName',
+          'flowId',
+          'flowName',
+          'landerId',
+          'landerName',
+          'offerId',
+          'offerName',
+          'affiliateId',
+          'affiliateName',
+          'trafficId',
+          'trafficName'
+      ]
+
+        let Tag = groupByTag[groupBy][0]
+        let Name = groupByTag[groupBy][1]
+        placeholders = await models[groupByModel[groupBy]].findAll({
+            attributes: [
+                [
+                    'id', Tag
+                ],
+                ['name', Name]
+            ],
+            limit: (limit - rows.length),
+            where: {
+                id: {
+                    $notIn: rows.length === 0
+                        ? [-1]
+                        : rows.map((e) => e.dataValues[Tag])
+                },
+                userId
+            }
+        })
+        placeholders = placeholders.map((e) => {
+          let obj = e.dataValues;
+          keys.forEach(key => {
+            if (key !== Tag && key !== Name) obj[key] = 0;
+          });
+          return obj;
+        })
+
+    }
 
     let totals = {
-      impressions: rows.reduce((sum, row) => sum + row.dataValues.impressions, 0),
-      clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
-      visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0),
+        impressions: rows.reduce((sum, row) => sum + row.dataValues.impressions, 0),
+        clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
+        visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0)
     }
 
-    return {
-      totals,
-      totalsRows: totalsRows.length === 0 ? 0 : totalsRows[0].count,
-      rows
-    }
+    return {totals, totalsRows, rows: [...rows, ...placeholders]}
 }
 
 module.exports = router;
