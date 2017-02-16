@@ -708,7 +708,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
             "hash": "campaign.1.hash",
             "url": "http://zhanchenxing.newbidder.com/campaign.1/",
             "impPixelUrl": "http://zhanchenxing.newbidder.com/impression/campaign.1/",
-            "trafficSourceId": 10,
+            "trafficSourceId": 19,
             "trafficSourceName": "TrafficSource.1",
             "country": "CHN",
             "costModel": 1,
@@ -740,11 +740,15 @@ app.post('/api/campaigns', function (req, res) {
             "url": "http://zx1jg.voluumtrk.com/fcb78739-e306-466a-86a5-792481e1cf48?bannerid={bannerid}&campaignid={campaignid}&zoneid={zoneid}",
             "impPixelUrl": "http://zx1jg.voluumtrk.com/impression/fcb78739-e306-466a-86a5-792481e1cf48",
             "trafficSource": {
-                "id": 1,
-                "name": "PropellerAds",
-                "cost": 0.1,
-                "impTracking": "",
-                "params": ""
+              "id": 19,
+              "name": "TrafficSource1",
+              "cost": "{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\"}",
+              "externalId": "{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\"}",
+              "hash": "dba9cb56-8e0b-4935-9b69-b1ae049128c4",
+              "postbackUrl": "http://www.traffic.com",
+              "pixelRedirectUrl": "",
+              "impTracking": 1,
+              "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
             },
             "country": "CHN",
             "status": 1,
@@ -1262,14 +1266,14 @@ app.get('/api/landers/:landerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/landers', function (req, res) {
-    var result = [{"id": 46, "name": "Lander12", "country": "us"}, {
+    var result = [{"id": 46, "name": "Lander12", "country": "Canada"}, {
         "id": 47,
         "name": "Lander1",
-        "country": "us"
+        "country": "Canada"
     }, {"id": 49, "name": "Lander2", "country": "cn"}, {"id": 50, "name": "Lander3", "country": "us"}, {
         "id": 54,
         "name": "Lander3",
-        "country": "ca"
+        "country": "CHN"
     }];
     delayResponse(res, result);
 });
@@ -1380,11 +1384,11 @@ app.get('/api/offers', function (req, res) {
     var result = [{"id": 22, "name": "Offer12", "country": "us"}, {
         "id": 23,
         "name": "Offer1",
-        "country": "cn"
+        "country": "Canada"
     }, {"id": 41, "name": "Offer2", "country": "ca"}, {"id": 42, "name": "Offer3", "country": "cn"}, {
         "id": 43,
         "name": "Offer4",
-        "country": "us"
+        "country": "CHN"
     }];
     delayResponse(res, result);
 });
@@ -1455,43 +1459,33 @@ app.delete('/api/offers/:offerId', function (req, res) {
  */
 app.get('/api/traffics', function (req, res) {
     var result = {
-        "status": 1,
-        "message": "success",
-        "data": {
-            "trafficsources": [{
-                "id": 10,
-                "name": "TrafficSource1",
-                "cost": "",
-                "impTracking": 0,
-                "params": "[{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:438\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:439\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:440\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:441\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:442\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:443\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:444\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:445\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:446\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:447\"}]",
-                "pixelRedirectUrl": "",
-                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
-            }, {
-                "id": 15,
-                "name": "TrafficSource2",
-                "cost": "",
-                "impTracking": 1,
-                "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]",
-                "pixelRedirectUrl": "",
-                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
-            }, {
-                "id": 17,
-                "name": "TrafficSource1",
-                "cost": "",
-                "impTracking": 1,
-                "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]",
-                "pixelRedirectUrl": "",
-                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
-            }, {
-                "id": 18,
-                "name": "123",
-                "cost": "",
-                "impTracking": 0,
-                "params": "[{\"Parameter\":\"1\",\"Placeholder\":\"1\",\"Name\":\"1\",\"Track\":1,\"$$hashKey\":\"object:805\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:806\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:807\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:808\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:809\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:810\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:811\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:812\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:813\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:814\"}]",
-                "pixelRedirectUrl": "",
-                "postbackUrl": "http://api.airpush.com/track/?guid={clickid}"
-            }]
-        }
+      "status": 1,
+      "message": "success",
+      "data": {
+        "trafficsources": [
+          {
+            "id": 19,
+            "name": "TrafficSource1",
+            "cost": "{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\"}",
+            "externalId": "{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\"}",
+            "hash": "dba9cb56-8e0b-4935-9b69-b1ae049128c4",
+            "postbackUrl": "http://www.traffic.com",
+            "pixelRedirectUrl": "",
+            "impTracking": 1,
+            "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
+          },
+          {
+            "id": 20,
+            "name": "TrafficSource2",
+            "cost": "{}",
+            "hash": "b247e517-4811-4c4a-801c-2d86b3a7a0cb",
+            "postbackUrl": "www.traffic.com",
+            "pixelRedirectUrl": "",
+            "impTracking": 0,
+            "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
+          }
+        ]
+      }
     };
     res.send(result);
 });

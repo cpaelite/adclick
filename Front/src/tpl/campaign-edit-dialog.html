@@ -20,11 +20,11 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="url" class="form-control campaign-url" ng-model="item.url" ng-show="item.url" ng-readonly="true">
-                    <label ng-show="!item.url">ID will be available after saving the campaign.</label>
+                    <input type="text" name="url" class="form-control campaign-url" ng-model="campaignUrl" ng-show="campaignUrl" ng-readonly="true">
+                    <label ng-show="!campaignUrl">ID will be available after saving the campaign.</label>
                 </div>
                 <div class="col-sm-4">
-                    <md-button clipboard class="md-raised copied-btn" ng-show="item.url" text="item.url" ng-click="itemUrlClick()">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="campaignUrl" text="campaignUrl" ng-click="itemUrlClick()">
                         <i class="material-icons">content_copy</i>
                         {{btnWord1}}
                         <!-- Clipboard -->
@@ -34,7 +34,7 @@
             <div class="form-group" ng-show="impTracking==1">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
                 <div class="col-sm-5">
-                    <input type="url" name="impPixelUrl" class="form-control" ng-model="impPixelUrl" ng-show="impPixelUrl" ng-readonly="true">
+                    <input type="text" name="impPixelUrl" class="form-control" ng-model="impPixelUrl" ng-show="impPixelUrl" ng-readonly="true">
                     <label ng-show="!impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
                 <div class="col-sm-4">
@@ -202,9 +202,10 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
                     <div class="col-sm-5">
-                        <input my-text="" type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl" ng-required="item.targetType==0">
+                        <input my-text="" type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl" ng-blur="validateUrl()" ng-required="item.targetType==0">
                         <span style="color:red" ng-show="editForm.targetUrl.$dirty && editForm.targetUrl.$invalid">
                         <span ng-show="editForm.targetUrl.$error.required">Url is required.</span>
+                            <span ng-show="editForm.targetUrl.$error.urlformat">URL must be a valid URL.</span>
                         </span>
                     </div>
                 </div>

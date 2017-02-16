@@ -50,7 +50,7 @@
 
       theFlow = {
         name: 'new flow',
-        country: 'global',
+        country: 'ZZZ',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
@@ -196,6 +196,8 @@
     $scope.isDeleted = false;
     $scope.curRule = null;
     $scope.curPath = null;
+
+    $scope.searchText = {};
 
     // operation on flow
     $scope.editFlow = function() {
@@ -350,7 +352,7 @@
     $scope.queryLanders = function(query) {
       if (allLanders) {
         var countryFiltered = allLanders.filter(function(lander) {
-          return theFlow.country.value == 'global' || lander.country == theFlow.country.value ;
+          return theFlow.country.value == 'ZZZ' || lander.country == theFlow.country.value ;
         });
         return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {
@@ -394,7 +396,7 @@
     $scope.queryOffers = function(query) {
       if (allOffers) {
         var countryFiltered = allOffers.filter(function(offer) {
-          return theFlow.country.value == 'global' || offer.country == theFlow.country.value ;
+          return theFlow.country.value == 'ZZZ' || offer.country == theFlow.country.value ;
         });
         return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
       } else {

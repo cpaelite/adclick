@@ -204,7 +204,7 @@ router.get('/api/traffics', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name`,`cost`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
+                "select  `id`,`name`,`externalId`,`cost`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
                     value.userId
                 ],
                 function (err, result) {

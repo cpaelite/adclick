@@ -6,6 +6,7 @@ var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
 
 
+
 /**
  * @api {get} /api/flows  获取用户所有flows
  * @apiName  get  user  flows
@@ -276,7 +277,7 @@ router.post('/api/flows', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data=await saveOrUpdateFlow(value,connection);
+        let data = await saveOrUpdateFlow(value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -319,7 +320,7 @@ router.post('/api/flows/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data=await saveOrUpdateFlow(value,connection);
+        let data = await saveOrUpdateFlow(value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -384,8 +385,8 @@ router.delete('/api/flows/:id', async function (req, res, next) {
 
 
 
-async  function saveOrUpdateFlow (value, connection)  {
-    
+async function saveOrUpdateFlow(value, connection) {
+
     let updateMethod = false;
     try {
         let flowResult;
@@ -465,6 +466,12 @@ async  function saveOrUpdateFlow (value, connection)  {
                             //Lander
                             let landersSlice = value.rules[i].paths[j].landers;
                             let offersSlice = value.rules[i].paths[j].offers;
+
+                            if (!offersSlice || (offersSlice && offersSlice.length < 1)) {
+                                let err = new Error("Path must contain an offer");
+                                err.status = 200;
+                                throw err;
+                            }
 
                             let p1 = insertOrUpdateLanderAndLanderTags(value.userId, pathId, landersSlice, connection);
                             let p2 = insertOrUpdateOfferAndOfferTags(value.userId, value.idText, pathId, offersSlice, connection);
@@ -557,6 +564,7 @@ async function insertOrUpdateOfferAndOfferTags(userId, idText, pathId, offersSli
 }
 
 router.get('/api/conditions', async function (req, res) {
+    //production
     var result = [{
         "id": "model",
         "display": "Brand and model",
@@ -702,8 +710,29 @@ router.get('/api/conditions', async function (req, res) {
         }]
     }];
     await fillConditions(result)
-    res.json(result)
+    res.json(result);
+
 });
+
+
+let loadCondition = async function (result) {
+    let results = await fillConditions(result);
+    return results;
+}
+
+//loadCondition
+let init = function () {
+    if (setting.env !== "development") {
+        console.log(111)
+        loadCondition(setting.conditionResult).then(function (data) {
+            new Pub(true).set(setting.redis.conditionKey, JSON.stringify(data));
+        });
+    }
+}
+
+init();
+
+
 
 async function fillConditions(r) {
     for (let i = 0; i < r.length; i++) {
@@ -1108,6 +1137,6 @@ function formatIPValue(id, operand, value) {
 
 
 
- 
-exports.router=router;
-exports.saveOrUpdateFlow=saveOrUpdateFlow;
+
+exports.router = router;
+exports.saveOrUpdateFlow = saveOrUpdateFlow;
