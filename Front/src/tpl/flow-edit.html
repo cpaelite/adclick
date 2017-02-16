@@ -11,7 +11,7 @@
         'cs-rule-unexpanded': rule.unexpanded,
         'cs-is-deleted': rule.isDeleted,
         'cs-is-disabled': !rule.enabled
-        }">
+      }">
         <span ng-click="toggleExpand(rule)">
           <i class="material-icons md-mini cs-flow-arrow" ng-show="rule.unexpanded">keyboard_arrow_right</i>
           <i class="material-icons md-mini cs-flow-arrow" ng-hide="rule.unexpanded">keyboard_arrow_down</i>
@@ -19,6 +19,9 @@
         <span class="cs-path-name">
           <i class="material-icons tree-icon">album</i>
           <span class="cs-rule-name">{{rule.name}}</span>
+        </span>
+        <span class="cs-flow-restore" ng-show="rule.isDeleted" ng-click="restore('rule', rule)">
+          <i class="material-icons">restore</i>
         </span>
 
       </div>
@@ -34,6 +37,9 @@
             <span class="weight-num">
               {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>)
             </span>
+          </span>
+          <span class="cs-flow-restore" ng-show="path.isDeleted" ng-click="restore('path', path)">
+            <i class="material-icons">restore</i>
           </span>
         </li>
         <li ng-click="addPath(rule)" class="cs-flow-addpath tree-li">

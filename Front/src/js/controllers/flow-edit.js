@@ -271,14 +271,17 @@
         duplicatePath();
       }
     };
-    $scope.restore = function(type) {
+    $scope.restore = function(type, item) {
+      var isCurrent = !item;
       if (type == 'rule') {
-        $scope.curRule.isDeleted = false;
-        $scope.curRule.unexpanded = false;
+        item = item || $scope.curRule;
+        item.unexpanded = false;
       } else if (type == 'path') {
-        $scope.curPath.isDeleted = false;
+        item = item || $scope.curPath;
       }
-      $scope.isDeleted = false;
+      item.isDeleted = false;
+      if (isCurrent)
+        $scope.isDeleted = false;
     };
 
     $scope.$watch(function() {
