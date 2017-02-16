@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="name" class="form-control" ng-model="prefixName" required ng-change="nameChanged()">
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required ng-change="nameChanged()">
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
                     </span>
@@ -56,8 +56,8 @@
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
                     <select class="cs-subform-select" name="country"
-                        ng-model="country"
-                        ng-change="countryChanged(country)"
+                        ng-model="item.country"
+                        ng-change="countryChanged(item.country)"
                     >
                         <option value="{{country.value}}" ng-repeat="country in countries">{{country.display}}</option>
                     </select>

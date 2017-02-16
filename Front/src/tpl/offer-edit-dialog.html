@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required ng-change="nameChanged(item.name)">
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
                     </span>
@@ -46,7 +46,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <select class="cs-subform-select" name="country" ng-model="item.country" required>
+                    <select class="cs-subform-select" name="country" ng-model="item.country" required ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                     <span style="color:red" ng-show="editForm.country.$dirty && editForm.country.$invalid">
@@ -57,7 +57,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-5">
-                    <select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId">
+                    <select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
                         <option value="0"></option>
                         <option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</option>
                     </select>

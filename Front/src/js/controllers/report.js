@@ -515,6 +515,7 @@
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag) {
+    var prefix = '', prefixCountry = '', prefixTraffic = '';
     initTags($scope, Tag);
     // init load data
     var initPromises = [], prms;
@@ -585,7 +586,24 @@
         if ($scope.item['costModel'] == null) {
           $scope.item = defaultItem();
         }
+        $scope.countries.forEach(function(v) {
+          if(v.value == $scope.item.country) {
+            prefixCountry = v.display + ' - ';
+            return;
+          }
+        });
+        $scope.trafficSources.forEach(function(v) {
+          if(v.id == $scope.item.trafficSourceId) {
+            prefixTraffic = v.name + ' - ';
+            return;
+          }
+        });
+        $scope.oldName = $scope.item.name;
+        prefix = prefixTraffic + prefixCountry;
       } else {
+        prefixCountry = 'Global - ';
+        prefixTraffic = allTraffic.length > 0 ? allTraffic[0].name + ' - ' : '';
+        prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
         $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
       }
 
@@ -635,6 +653,55 @@
     }
 
     $q.all(initPromises).then(initSuccess);
+
+    $scope.nameChanged = function(name) {
+      if(name == undefined || name.length < prefix.length) {
+        $scope.item.name = prefix;
+      } else if(name.indexOf(prefix) != 0) {
+        var sub = name.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if(name.length < $scope.oldName.length) {
+          $scope.item.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.item.name = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.item.name;
+    };
+
+    $scope.countryChanged = function(country) {
+      $scope.countries.forEach(function(v) {
+        if(v.value == country) {
+          prefixCountry = v.display + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixTraffic + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    }
+
+    $scope.trafficSourceChanged = function(id) {
+      $scope.trafficSources.forEach(function(v) {
+        if(v.id == id) {
+          prefixTraffic = v.name + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixTraffic + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    };
 
     function calculateRelativeWeight(list, isValid) {
       var total = 0;
@@ -884,16 +951,15 @@
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
-        $scope.country = $scope.item.country;
         if($scope.item.country) {
           $scope.countries.forEach(function(v) {
-            if(v.value == $scope.country) {
+            if(v.value == $scope.item.country) {
               prefix = v.display + ' - ';
               return;
             }
           });
         }
-        $scope.prefixName = prefix + $scope.item.name;
+        $scope.oldName = $scope.item.name;
         if ($scope.item['url'] == null) {
           $scope.item = {
             url: 'http://',
@@ -908,19 +974,16 @@
         numberOfOffers: 1,
       };
       this.title = "add";
-      $scope.prefixName = prefix;
+      $scope.item.name = prefix;
+      $scope.oldName = $scope.item.name;
     }
     
     this.titleType = angular.copy(this.perfType);
-    
-    $scope.oldName = prefix;
     $scope.nameChanged = function() {
-      if($scope.prefixName == undefined || $scope.prefixName.length < prefix.length) {
-        $scope.prefixName = prefix;
-        return;
-      }
-      if($scope.prefixName.indexOf(prefix) != 0) {
-        var sub = $scope.prefixName.substr(0, prefix.length);
+      if($scope.item.name == undefined || $scope.item.name.length < prefix.length) {
+        $scope.item.name = prefix;
+      } else if ($scope.item.name.indexOf(prefix) != 0) {
+        var sub = $scope.item.name.substr(0, prefix.length);
         var arr1 = prefix.split('');
         var arr2 = sub.split('');
         var inputText = '';
@@ -930,13 +993,13 @@
             break;
           }
         }
-        if($scope.prefixName.length < $scope.oldName.length) {
-          $scope.prefixName = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        if($scope.item.name.length < $scope.oldName.length) {
+          $scope.item.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
         } else {
-          $scope.prefixName = $scope.oldName + inputText;
+          $scope.item.name = $scope.oldName + inputText;
         }
       }
-      $scope.oldName = $scope.prefixName;
+      $scope.oldName = $scope.item.name;
     };
     $scope.countryChanged = function(country) {
       var countryName = '';
@@ -947,7 +1010,7 @@
         }
       });
       var preStr = countryName + ' - ';
-      $scope.prefixName = preStr + $scope.prefixName.substr(prefix.length);
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
       $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
       prefix = preStr;
     }
@@ -963,8 +1026,6 @@
 
     this.save = function () {
       $scope.item.tags = $scope.tags;
-      $scope.item.country = $scope.country;
-      $scope.item.name = $scope.prefixName.substr(prefix.length);
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         Lander.save($scope.item, success);
@@ -986,6 +1047,7 @@
   }
 
   function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag) {
+    var prefix = '', prefixCountry = '', prefixAffiliate = '';
     initTags($scope, Tag);
     // init load data
     var initPromises = [], prms;
@@ -1007,6 +1069,8 @@
       };
       $scope.affiliateId = "0";
       this.title = "add";
+      prefixCountry = 'Global - ';
+      prefix = $scope.item.name = $scope.oldName = prefixCountry;
     }
 
     // Country
@@ -1041,6 +1105,20 @@
             numberOfOffers: 1,
           };
         }
+        $scope.countries.forEach(function(v) {
+          if(v.value == $scope.item.country) {
+            prefixCountry = v.display + ' - ';
+            return;
+          }
+        });
+        $scope.affiliates.forEach(function(v) {
+          if(v.id == $scope.item.AffiliateNetworkId) {
+            prefixAffiliate = v.name + ' - ';
+            return;
+          }
+        });
+        $scope.oldName = $scope.item.name;
+        prefix = prefixAffiliate + prefixCountry;
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
@@ -1060,8 +1138,56 @@
 
         });
       });
-
     }
+
+    $scope.nameChanged = function(name) {
+      if(name == undefined || name.length < prefix.length) {
+        $scope.item.name = prefix;
+      } else if(name.indexOf(prefix) != 0) {
+        var sub = name.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if(name.length < $scope.oldName.length) {
+          $scope.item.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.item.name = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.item.name;
+    };
+
+    $scope.countryChanged = function(country) {
+      $scope.countries.forEach(function(v) {
+        if(v.value == country) {
+          prefixCountry = v.display + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixAffiliate + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    }
+
+    $scope.affiliateChanged = function(id) {
+      $scope.affiliates.forEach(function(v) {
+        if(v.id == id) {
+          prefixAffiliate = v.name + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixAffiliate + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    };
 
     $q.all(initPromises).then(initSuccess);
 

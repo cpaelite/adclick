@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
                 <div class="col-sm-5">
-                    <input type="text" name="name" class="form-control" ng-model="prefixName" required>
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required ng-change="nameChanged(item.name)">
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
                     </span>
@@ -48,7 +48,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-5">
-                    <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required>
+                    <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
                         <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
                         <span ng-show="editForm.trafficSource.$error.required">TrafficSource is required.</span>
@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-5">
-                    <select class="cs-subform-select" name="country" ng-model="item.country">
+                    <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                 </div>
