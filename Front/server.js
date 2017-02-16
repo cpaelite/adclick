@@ -2279,35 +2279,48 @@ app.delete('/api/invitation/:email', function (req, res) {
 /**
  * @apiName 获取BlackList
  *
+ *
+ * @apiParam
+ * data: {
+ *    enabled: true,
+ *    blacklist: []
+ * }
+ *
  */
 app.get('/api/blacklist', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
     data: {
+      enabled: true,
       blacklist: [
         {
-          id: 1,
           name: "test1",
           ipRules: [
             {
               ipRangeStart: "1.1.1.1",
               ipRangeEnd: "1.1.1.1"
+            },
+            {
+              ipRangeStart: "2.2.2.2",
+              ipRangeEnd: "2.2.2.2"
             }
           ],
           userAgentRules: [
             {
               userAgent: "test1"
+            },
+            {
+              userAgent: "test2"
             }
           ]
         },
         {
-          id: 2,
           name: "test2",
           ipRules: [
             {
-              ipRangeStart: "1.1.1.1",
-              ipRangeEnd: "1.1.1.1"
+              ipRangeStart: "192.168.0.1",
+              ipRangeEnd: "192.168.0.100"
             }
           ],
           userAgentRules: [
@@ -2323,7 +2336,7 @@ app.get('/api/blacklist', function (req, res) {
 });
 
 /**
- * @apiName 保存BlackList
+ * @apiName 更改BlackList
  *
  */
 app.post('/api/blacklist', function (req, res) {
@@ -2331,29 +2344,35 @@ app.post('/api/blacklist', function (req, res) {
     status: 1,
     message: 'success',
     data: {
+      enabled: true,
       blacklist: [
         {
-          id: 1,
           name: "test1",
           ipRules: [
             {
               ipRangeStart: "1.1.1.1",
               ipRangeEnd: "1.1.1.1"
+            },
+            {
+              ipRangeStart: "2.2.2.2",
+              ipRangeEnd: "2.2.2.2"
             }
           ],
           userAgentRules: [
             {
               userAgent: "test1"
+            },
+            {
+              userAgent: "test2"
             }
           ]
         },
         {
-          id: 2,
           name: "test2",
           ipRules: [
             {
-              ipRangeStart: "1.1.1.1",
-              ipRangeEnd: "1.1.1.1"
+              ipRangeStart: "192.168.0.1",
+              ipRangeEnd: "192.168.0.100"
             }
           ],
           userAgentRules: [
@@ -2371,11 +2390,53 @@ app.post('/api/blacklist', function (req, res) {
 /**
  * @apiName 更新BlackList状态
  *
+ * @apiParam {String} enabled:0   //0:disabled;1:enabled
+ *
  */
 app.put('/api/blacklist', function (req, res) {
   var result = {
     status: 1,
-    message: 'success'
+    message: 'success',
+    data: {
+      enabled: true,
+      blacklist: [
+        {
+          name: "test1",
+          ipRules: [
+            {
+              ipRangeStart: "1.1.1.1",
+              ipRangeEnd: "1.1.1.1"
+            },
+            {
+              ipRangeStart: "2.2.2.2",
+              ipRangeEnd: "2.2.2.2"
+            }
+          ],
+          userAgentRules: [
+            {
+              userAgent: "test1"
+            },
+            {
+              userAgent: "test2"
+            }
+          ]
+        },
+        {
+          name: "test2",
+          ipRules: [
+            {
+              ipRangeStart: "192.168.0.1",
+              ipRangeEnd: "192.168.0.100"
+            }
+          ],
+          userAgentRules: [
+            {
+              userAgent: "test2"
+            }
+          ]
+        }
+      ]
+    }
   };
   res.send(result);
 });
