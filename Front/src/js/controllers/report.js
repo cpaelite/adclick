@@ -594,39 +594,54 @@
             $scope.impTracking = traffic.impTracking;
             $scope.trafficPostbackUrl = traffic.postbackUrl;
             $scope.trafficPixelRedirectUrl = traffic.pixelRedirectUrl;
-
-            var params = JSON.parse(traffic.params);
-            var impParam = "";
-            params.forEach(function (param) {
-              if (param.Placeholder) {
-                impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
-              }
-            });
-
-            if (impParam) {
-              impParam = "?" + impParam;
-            }
-
-            impParam = impParam.substring(0, impParam.length-1);
-
-            if (traffic.impTracking) {
-              $scope.campaignUrl = $scope.item.url;
-              if ($scope.impPixelUrl) {
-                $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
-              }
-            } else {
-              $scope.impPixelUrl = $scope.item.impPixelUrl;
-              if ($scope.campaignUrl) {
-                $scope.campaignUrl = $scope.item.url + impParam;
-              }
-            }
+            spliceUrlParams(traffic);
             return;
           }
 
         });
       });
-      if (!$scope.item.targetUrl) {
-        $scope.item.targetUrl = "http://";
+    }
+
+    function spliceUrlParams(traffic) {
+      var params = JSON.parse(traffic.params);
+      var impParam = "";
+      params.forEach(function (param) {
+        if (param.Placeholder) {
+          impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
+        }
+      });
+
+      var cost = "";
+      if (traffic.cost) {
+        cost = JSON.parse(traffic.cost);
+      }
+      if (cost) {
+        impParam = impParam + cost.Parameter + "=" + cost.Placeholder + "&";
+      }
+      var external = "";
+      if (traffic.externalId) {
+        external = JSON.parse(traffic.externalId);
+      }
+      if (external) {
+        impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
+      }
+
+      if (impParam) {
+        impParam = "?" + impParam;
+      }
+
+      impParam = impParam.substring(0, impParam.length-1);
+
+      if (traffic.impTracking) {
+        $scope.campaignUrl = $scope.item.url;
+        if ($scope.impPixelUrl) {
+          $scope.impPixelUrl = $scope.item.impPixelUrl + impParam;
+        }
+      } else {
+        $scope.impPixelUrl = $scope.item.impPixelUrl;
+        if ($scope.campaignUrl) {
+          $scope.campaignUrl = $scope.item.url + impParam;
+        }
       }
     }
 
@@ -778,6 +793,22 @@
       };
     }
 
+    $scope.validateUrl = function () {
+      var isValid = true;
+      if (!$scope.item.targetUrl) {
+        return;
+      }
+      if ($scope.item.targetUrl.indexOf('http://') == -1) {
+        $scope.item.targetUrl = "http://" + $scope.item.targetUrl;
+      }
+      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
+      var re=new RegExp(strRegex);
+      if (!re.test($scope.item.targetUrl)) {
+        isValid = false;
+      }
+      $scope.editForm.targetUrl.$setValidity('urlformat', isValid);
+    };
+
     function success(item) {
       var campaign = item.data;
       $scope.item.url = campaign.url;
@@ -785,6 +816,10 @@
       $scope.item.hash = campaign.hash;
       $scope.impPixelUrl = campaign.impPixelUrl;
       $scope.campaignUrl = campaign.url;
+
+      var traffic = JSON.parse($scope.item.trafficSource);
+      spliceUrlParams(traffic);
+
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
@@ -870,18 +905,11 @@
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
-        if ($scope.item['url'] == null) {
-          $scope.item = {
-            url: 'http://',
-            numberOfOffers: 1,
-          };
-        }
       });
       this.title = "edit";
     } else {
       $scope.item = {
-        url: 'http://',
-        numberOfOffers: 1,
+        numberOfOffers: 1
       };
       this.title = "add";
     }
@@ -916,6 +944,23 @@
     $scope.urlTokenClick = function (url) {
       $rootScope.$broadcast('add', url, "url");
     };
+
+    $scope.validateUrl = function () {
+      var isValid = true;
+      if (!$scope.item.url) {
+        return;
+      }
+      if ($scope.item.url.indexOf('http://') == -1) {
+        $scope.item.url = "http://" + $scope.item.url;
+      }
+      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
+      var re=new RegExp(strRegex);
+      if (!re.test($scope.item.url)) {
+        isValid = false;
+      }
+      $scope.editForm.url.$setValidity('urlformat', isValid);
+    };
+
   }
 
   function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
@@ -936,8 +981,7 @@
       this.title = "edit";
     } else {
       $scope.item = {
-        payoutMode: 0,
-        url: 'http://'
+        payoutMode: 0
       };
       $scope.affiliateId = "0";
       this.title = "add";
@@ -969,12 +1013,6 @@
             payoutMode: 0,
           };
         }
-        if ($scope.item['url'] == null) {
-          $scope.item = {
-            url: 'http://',
-            numberOfOffers: 1,
-          };
-        }
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
@@ -1002,6 +1040,22 @@
     this.titleType = angular.copy(this.perfType);
 
     this.cancel = $mdDialog.cancel;
+
+    $scope.validateUrl = function () {
+      var isValid = true;
+      if (!$scope.item.url) {
+        return;
+      }
+      if ($scope.item.url.indexOf('http://') == -1) {
+        $scope.item.url = "http://" + $scope.item.url;
+      }
+      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
+      var re=new RegExp(strRegex);
+      if (!re.test($scope.item.url)) {
+        isValid = false;
+      }
+      $scope.editForm.url.$setValidity('urlformat', isValid);
+    };
 
     function success(item) {
       $mdDialog.hide(item);
@@ -1114,6 +1168,22 @@
       if ($scope.editForm.$valid) {
         TrafficSource.save($scope.item, success);
       }
+    };
+
+    $scope.validateUrl = function () {
+      var isValid = true;
+      if (!$scope.item.postbackUrl) {
+        return;
+      }
+      if ($scope.item.postbackUrl.indexOf('http://') == -1) {
+        $scope.item.postbackUrl = "http://" + $scope.item.postbackUrl;
+      }
+      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
+      var re=new RegExp(strRegex);
+      if (!re.test($scope.item.postbackUrl)) {
+        isValid = false;
+      }
+      $scope.editForm.postbackUrl.$setValidity('urlformat', isValid);
     };
 
     $scope.urlItem = urlParameter["traffic"];
@@ -1306,7 +1376,7 @@
       } else {
         $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
       }
-    }
+    };
 
     $scope.trustedAffiliateNetworks = function (ev, item) {
       $mdDialog.show({
