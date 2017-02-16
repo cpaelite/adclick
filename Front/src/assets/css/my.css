@@ -17,6 +17,10 @@ header.navbar {
 header .md-toolbar-tools {
     height: auto;
 }
+.home a.home-link,
+.setting a.setting-link{
+    display: block;
+}
 header .setting,
 header .home{
     width: 60px;

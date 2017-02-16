@@ -14,16 +14,16 @@
       </div>
     </div>
     <div class="data-table">
-      <table md-table class="table">
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Acquired</th>
-            <th>Status</th>
-            <th>Plan</th>
-            <th>Last activity</th>
-            <th>Commission from last 30 days</th>
-            <th>Total commissions</th>
+      <table md-table multiple class="table">
+        <thead md-head md-order="query.order">
+          <tr md-row>
+            <th md-column md-order-by="userId">User ID</th>
+            <th md-column md-order-by="acquired">Acquired</th>
+            <th md-column md-order-by="status">Status</th>
+            <th md-column md-order-by="plan">Plan</th>
+            <th md-column md-order-by="lastActivity">Last activity</th>
+            <th md-column md-order-by="totalCommission">Commission from last 30 days</th>
+            <th md-column>Total commissions</th>
           </tr>
         </thead>
         <tbody>
