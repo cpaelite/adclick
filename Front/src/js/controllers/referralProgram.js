@@ -21,5 +21,28 @@
 				$scope.btnWord = "Copy to clipboard";
 			}, 2000);
 		};
+
+        $scope.query = {
+            page: 1,
+            limit: 100,
+            order:'userId'
+        };
+
+        $scope.$watch('query', function(newVal, oldVal) {
+            if (!newVal || !newVal.limit) {
+                return;
+            }
+            if (angular.equals(newVal, oldVal)) {
+                return;
+            }
+            if (oldVal && (newVal.order != oldVal.order || newVal.limit != oldVal.limit) && newVal.page > 1) {
+                $scope.query.page = 1;
+                return;
+            }
+
+            Referrals.get($scope.query, function(user) {
+                $scope.item = user.data;
+            });
+        }, true);
     }
 })();

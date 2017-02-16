@@ -2029,7 +2029,7 @@ app.get('/api/referrals', function (req, res) {
         status: 1,
         message: 'success',
         data: {
-            totalRows: 37,
+            totalRows: 3700,
             linkurl:"https://panel.voluum.com/link/?t=wkllehZbEjXRk7nJfatdCWjjhKRKyo+jqdyL8ZHuIAZYrDTZ+0kW1A3BiAWGBrDZ",
             totals: {
                 count: "2",
@@ -2272,6 +2272,111 @@ app.delete('/api/invitation/:email', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName Invoices
+ *
+ */
+app.get('/api/invoices', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+        email:'286005051@qq.com',
+        accountbalance:'99.00'
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName Payments
+ *
+ */
+app.get('/api/payments', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      payments:[
+          {        
+            date: '286005051@qq.com',
+            amount: '$99.00',
+            tax: '$0.00',
+            totals: '$99.00'
+          },
+          {        
+            date: '286005051@qq.com',
+            amount: '$99.00',
+            tax: '$0.00',
+            totals: '$99.00'
+          }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName billing/info
+ *
+ */
+app.get('/api/billing/info', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+        billingname:'zhengshuo',
+        addressline1:'pudong hangtou road 1027#6201',
+        addressline2:'',
+        city:'哈哈哈哈',
+        postalcode:'200000',
+        stateregion:'shanghai',
+        country:'China',
+        ssntaxvatid:''
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName billing/info
+ *
+ */
+app.post('/api/billing/info', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+        billingname:'zhengshuo',
+        addressline1:'pudong hangtou road 1027#6201',
+        addressline2:'',
+        city:'哈哈哈哈',
+        postalcode:'200000',
+        stateregion:'shanghai',
+        country:'China',
+        ssntaxvatid:''
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName paypal
+ *
+ */
+app.post('/api/paypal', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+        cardnumber:'123456789',
+        data:'2017-2-16',
+        cvv:'cvv'
+    }
   };
   res.send(result);
 });

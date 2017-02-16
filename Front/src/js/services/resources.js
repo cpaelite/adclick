@@ -71,6 +71,18 @@ angular.module('app')
   .factory('Invitation', ['$resource', function($resource) {
     return $resource('/api/invitation/:id', {id: '@id'})
   }])
+  .factory('Invoices', ['$resource', function($resource) {
+    return $resource('/api/invoices')
+  }])
+  .factory('Payments', ['$resource', function($resource) {
+    return $resource('/api/payments')
+  }])
+  .factory('BillingInfo', ['$resource', function($resource) {
+    return $resource('/api/billing/info')
+  }])
+  .factory('Paypal', ['$resource', function($resource) {
+    return $resource('/api/paypal')
+  }])
   .factory('DefaultPostBackUrl', ['$resource', function($resource) {
     return $resource('/api/postbackurl')
   }])
