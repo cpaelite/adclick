@@ -230,7 +230,7 @@
     };
     function duplicateRule() {
       var newRule = angular.copy($scope.curRule);
-      newRule.name = 'Rule ' + $scope.flow.rules.length;
+      //newRule.name = 'Rule ' + $scope.flow.rules.length;
       $scope.flow.rules.push(newRule);
       $scope.editRule(newRule);
     }
@@ -250,7 +250,7 @@
     };
     function duplicatePath() {
       var newPath = angular.copy($scope.curPath);
-      newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
+      //newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
       $scope.curRule.paths.push(newPath);
       $scope.editPath($scope.curRule, newPath);
     }
@@ -271,14 +271,17 @@
         duplicatePath();
       }
     };
-    $scope.restore = function(type) {
+    $scope.restore = function(type, item) {
+      var isCurrent = !item;
       if (type == 'rule') {
-        $scope.curRule.isDeleted = false;
-        $scope.curRule.unexpanded = false;
+        item = item || $scope.curRule;
+        item.unexpanded = false;
       } else if (type == 'path') {
-        $scope.curPath.isDeleted = false;
+        item = item || $scope.curPath;
       }
-      $scope.isDeleted = false;
+      item.isDeleted = false;
+      if (isCurrent)
+        $scope.isDeleted = false;
     };
 
     $scope.$watch(function() {

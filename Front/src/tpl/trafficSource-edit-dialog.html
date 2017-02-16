@@ -29,7 +29,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Postback Url：</label>
                 <div class="col-sm-5">
-                    <input my-text="" type="text" class="form-control" ng-model="item.postbackUrl">
+                    <input my-text="" type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-blur="validateUrl()">
+                    <span style="color:red" ng-show="editForm.postbackUrl.$dirty && editForm.postbackUrl.$invalid">
+                            <span ng-show="editForm.postbackUrl.$error.urlformat">URL must be a valid URL.</span>
+                        </span>
                 </div>
             </div>
             <div class="url-tokens-row form-group">
