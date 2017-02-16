@@ -719,7 +719,7 @@ router.get('/api/conditions', async function (req, res) {
         }]
     }];
     await fillConditions(result)
-    res.json(JSON.parse(data));
+    res.json(result);
 
 });
 
@@ -732,7 +732,6 @@ let loadCondition = async function (result) {
 //loadCondition
 let init = function () {
     if (setting.env !== "development") {
-        console.log(111)
         loadCondition(setting.conditionResult).then(function (data) {
             new Pub(true).set(setting.redis.conditionKey, JSON.stringify(data));
         });
