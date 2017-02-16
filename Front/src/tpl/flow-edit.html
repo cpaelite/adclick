@@ -77,15 +77,15 @@
         <label class="label-name">Country:</label>
         <md-autocomplete
             md-selected-item="flow.country"
-            md-search-text="searchText.country"
-            md-items="item in queryCountries(searchText.country)"
+            md-search-text="searchText"
+            md-items="item in queryCountries(searchText)"
             md-no-cache="true"
             md-select-on-focus="true"
             md-item-text="item.display"
             md-min-length="0"
             placeholder="Select country...">
           <md-item-template>
-            <span md-highlight-text="searchText.country">{{item.display}}</span>
+            <span md-highlight-text="searchText">{{item.display}}</span>
           </md-item-template>
           <md-not-found>
             No matching found.
@@ -241,13 +241,13 @@
                     md-autocomplete-snap
                     md-require-match="true" class="chips-content">
                   <md-autocomplete
-                      md-search-text="searchText[f.name]"
+                      md-search-text="cdt['_st'+f.name]"
                       md-no-cache="true"
                       md-min-length="0"
-                      md-items="item in querySearchIn(searchText[f.name], f.options, cdt[f.name])"
+                      md-items="item in querySearchIn(cdt['_st'+f.name], f.options, cdt[f.name])"
                       md-item-text="f._v2n[item]"
                       placeholder="{{f.placeholder}}">
-                    <span md-highlight-text="searchText[f.name]">{{f._v2n[item]}}</span>
+                    <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>
                   </md-autocomplete>
                   <md-chip-template><span>{{f._v2n[$chip]}}</span></md-chip-template>
                 </md-chips>
@@ -307,16 +307,16 @@
               <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
               <div class="cs-flow-offer-edit clearfix">
                 <md-autocomplete
-                    md-search-text="searchText['offer'+$index]"
-                    md-items="item in queryOffers(searchText['offer'+$index])"
+                    md-selected-item="offer._def"
+                    md-search-text="offer._searchText"
+                    md-items="item in queryOffers(offer._searchText)"
                     md-no-cache="true"
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-selected-item-change="selectedOfferChange(item, offer)"
                     placeholder="Select offer...">
                   <md-item-template>
-                    <span md-highlight-text="searchText['offer'+$index]">{{item.name}}</span>
+                    <span md-highlight-text="offer._searchText">{{item.name}}</span>
                   </md-item-template>
                   <md-not-found>
                     No matching found.
@@ -361,16 +361,16 @@
               <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
               <div class="cs-flow-lander-edit clearfix">
                 <md-autocomplete
-                    md-search-text="searchText['lander'+$index]"
-                    md-items="item in queryLanders(searchText['lander'+$index])"
+                    md-selected-item="lander._def"
+                    md-search-text="lander._searchText"
+                    md-items="item in queryLanders(lander._searchText)"
                     md-no-cache="true"
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-selected-item-change="selectedLanderChange(item, lander)"
                     placeholder="Select lander...">
                   <md-item-template>
-                    <span md-highlight-text="searchText['lander'+$index]">{{item.name}}</span>
+                    <span md-highlight-text="lander._searchText">{{item.name}}</span>
                   </md-item-template>
                   <md-not-found>
                     No matching found.

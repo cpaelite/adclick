@@ -197,8 +197,6 @@
     $scope.curRule = null;
     $scope.curPath = null;
 
-    $scope.searchText = {};
-
     // operation on flow
     $scope.editFlow = function() {
       $scope.onEdit = 'flow';
@@ -335,8 +333,6 @@
     // operations on path lander
     $scope.addLander = function(evt) {
       $scope.curPath.landers.push({
-        id: null,
-        name: null,
         weight: 100,
         relativeWeight: -1,
         _onEdit: true
@@ -351,36 +347,28 @@
     };
     $scope.queryLanders = function(query) {
       if (allLanders) {
-        var countryFiltered = allLanders.filter(function(lander) {
-          return theFlow.country.value == 'ZZZ' || lander.country == theFlow.country.value ;
-        });
-        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
+        var filtered = allLanders.filter(function(lander) {
+          return theFlow.country.value == 'ZZZ' || lander.country == theFlow.country.value;
+        }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
+        return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
       } else {
         return [];
-      }
-    };
-    $scope.selectedLanderChange = function(item, lander) {
-      if (item) {
-        lander.id = item.id;
-        lander._def = item;
       }
     };
     $scope.$watch(function() {
       if ($scope.curPath == null) return [];
       return $scope.curPath.landers.map(function(item) {
-        return item.id == null ? -1 : item.weight | 0;
+        return item._def ? item.weight | 0 : -1;
       });
     }, function(newVal, oldVal) {
       if (!angular.equals(newVal, oldVal) && $scope.curPath != null) {
-        calculateRelativeWeight($scope.curPath.landers, function(item) { return item.id != null; });
+        calculateRelativeWeight($scope.curPath.landers, function(item) { return !!item._def; });
       }
     }, true);
 
     // operations on path offer
     $scope.addOffer = function(evt) {
       $scope.curPath.offers.push({
-        id: null,
-        name: null,
         weight: 100,
         relativeWeight: -1,
         _onEdit: true
@@ -395,28 +383,22 @@
     };
     $scope.queryOffers = function(query) {
       if (allOffers) {
-        var countryFiltered = allOffers.filter(function(offer) {
-          return theFlow.country.value == 'ZZZ' || offer.country == theFlow.country.value ;
-        });
-        return query ? countryFiltered.filter(createFilterFor(query, "name")) : countryFiltered;
+        var filtered = allOffers.filter(function(offer) {
+          return theFlow.country.value == 'ZZZ' || offer.country == theFlow.country.value;
+        }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
+        return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
       } else {
         return [];
-      }
-    };
-    $scope.selectedOfferChange = function(item, offer) {
-      if (item) {
-        offer.id = item.id;
-        offer._def = item;
       }
     };
     $scope.$watch(function() {
       if ($scope.curPath == null) return [];
       return $scope.curPath.offers.map(function(item) {
-        return item.id == null ? -1 : item.weight | 0;
+        return item._def ? item.weight | 0 : -1;
       });
     }, function(newVal, oldVal) {
       if (!angular.equals(newVal, oldVal) && $scope.curPath != null) {
-        calculateRelativeWeight($scope.curPath.offers, function(item) { return item.id != null; });
+        calculateRelativeWeight($scope.curPath.offers, function(item) { return !!item._def; });
       }
     }, true);
 
@@ -621,8 +603,8 @@
 
           if (path.landers) {
             path.landers.forEach(function(lander) {
-              if (lander.id !== null)
-                pathData.landers.push({id: lander.id, weight: lander.weight});
+              if (lander._def)
+                pathData.landers.push({id: lander._def.id, weight: lander.weight});
             });
             if (pathData.landers.length == 0) {
               delete pathData.landers;
@@ -631,8 +613,8 @@
 
           if (path.offers) {
             path.offers.forEach(function(offer) {
-              if (offer.id !== null)
-                pathData.offers.push({id: offer.id, weight: offer.weight});
+              if (offer._def)
+                pathData.offers.push({id: offer._def.id, weight: offer.weight});
             });
             if (pathData.offers.length == 0) {
               delete pathData.offers;
