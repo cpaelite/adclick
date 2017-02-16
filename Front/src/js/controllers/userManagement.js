@@ -40,7 +40,6 @@
 				locals: {
 					iItem: iItem
 				},
-				bindToController: true,
 				templateUrl: 'tpl/user-delete-dialog.html'
 			}).then(function(){
 				Invitation.delete({

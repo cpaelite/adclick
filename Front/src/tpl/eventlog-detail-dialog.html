@@ -1,0 +1,39 @@
+<md-dialog class="cs-edit-dialog bot-blacklist-dialog" ng-cloak>
+    <div class="form-group flow-preview">
+        <div class="col-md-7" ng-repeat="change in item.changes.simpleChanges">
+            <div class="cs-flow-rule">
+                <div class="tree-li">
+                    <i class="material-icons tree-icon">album</i>
+                    <span class="cs-flow-name ng-binding">{{change.fieldName}}</span>
+                </div>
+            </div>
+            <div class="cs-flow-rule">
+                <ul>
+                    <li class="tree-li ng-scope">
+                      <span>
+                        <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': true}">keyboard_arrow_down</i>
+                      </span>
+                        <i class="material-icons tree-icon">album</i>
+                      <span class="cs-path-name clearfix">
+                        <span class="path-name ng-binding">Old value: </span>
+                        <span class="weight-num ng-binding">
+                          {{change.oldValue}}
+                        </span>
+                      </span>
+                        <span class="cs-path-name clearfix">
+                        <span class="path-name ng-binding">New value: </span>
+                        <span class="weight-num ng-binding">
+                          {{change.newValue}}
+                        </span>
+                      </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <md-dialog-actions>
+        <md-button class="md-primary md-raised" ng-click="ctrl.ok()">{{'ok' | translate}}</md-button>
+    </md-dialog-actions>
+
+</md-dialog>
