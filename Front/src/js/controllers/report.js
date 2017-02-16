@@ -959,7 +959,7 @@
 
     this.save = function () {
       $scope.item.tags = $scope.tags;
-      $scope.item.country = $scope.country.value;
+      $scope.item.country = $scope.country;
       $scope.item.name = $scope.prefixName.substr(prefix.length);
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
