@@ -4,6 +4,9 @@ var Joi = require('joi');
 var common = require('./common');
 var md5 = require('md5');
 var _ = require('lodash');
+var dns=require("dns");
+var setting = require('../config/setting');
+var _ = require('lodash');
 
 /**
  * @api {get} /api/profile  
@@ -657,8 +660,70 @@ router.post('/api/domains', async function (req, res, next) {
             }
         }
  */
-router.get('/api/domains/validatecname', function (req, res, next) {
+router.get('/api/domains/validatecname', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText:Joi.string().required(),
+        address:Joi.string().required()
+    });
+    req.query.userId=req.userId;
+    req.query.idText=req.idText;
+    try{
+       let cnames=[];
+       let value = await common.validate(req.query, schema);
+       cnames=await ((address)=>{
+                return new Promise(function(resolve,reject){
+                    dns.resolveCname(address, function(err,result){
+                            if(err){
+                                    reject(err);
+                            }
+                            resolve(result);
+                            
+                        });
+            });
+        })(value.address);
 
+        //获取该用户系统默认domians
+       let userDefaultDomains=[];
+       for(let index=0;index< setting.domains.length;index++){
+           userDefaultDomains.push(value.idText+"."+setting.domains[index].address);
+       }
+
+       let checked=false;
+      
+       for(let index= 0;index<cnames.length;index++){
+            if(_.includes(userDefaultDomains,cnames[index])){
+                checked = true;
+            }
+       }
+
+       let validateResult="NOT_FOUND";
+
+       if(checked){
+           validateResult="Matched"
+           res.json({
+                status:1,
+                message:"success",
+                data: {
+                        domain: value.address,
+                        validateResult: validateResult
+                    }
+            });
+            return;
+       }
+
+       res.json({
+                status:0,
+                message:validateResult,
+                data: {
+                        domain: value.address,
+                        validateResult: validateResult
+                    }
+        });
+    }catch(e){
+        next(e);
+    }
+   
 });
 
 
