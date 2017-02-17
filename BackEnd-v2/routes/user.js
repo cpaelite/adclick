@@ -140,7 +140,7 @@ router.get('/api/tags', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name` from User where `userId` = ? and `type`= ? and `deleted` =0", [
+                "select  `id`,`name` from Tags where `userId` = ? and `type`= ? and `deleted` =0", [
                     value.userId, value.type
                 ],
                 function (err, result) {
