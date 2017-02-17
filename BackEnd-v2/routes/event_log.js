@@ -13,18 +13,18 @@ var _ = require('lodash');
  * @apiParam {String} to 
  * @apiParam {Number} limit
  * @apiParam {Number} page
- * @apiParam {Number} userId
+ * @apiParam {String} userId
  * @apiParam {String} tz
  * 
  */
-router.get('/api/eventlog',async function(req,res,next){
+router.get('/api/eventlog', async function (req, res, next) {
     var schema = Joi.object().keys({
         from: Joi.string().required(),
         to: Joi.string().required(),
         limit: Joi.number().required().min(0),
         page: Joi.number().required(),
-        userId: Joi.number().required(),
-        tz:Joi.string().required()
+        userId: Joi.string().required(),
+        tz: Joi.string().required()
     });
     let connection;
 
@@ -41,26 +41,29 @@ router.get('/api/eventlog',async function(req,res,next){
         limit = parseInt(limit)
         page = parseInt(page)
         let offset = (page - 1) * limit;
-        
 
-        let compiled =_.template("select user.`email`,log.`entityType`,log.`entityName`,log.`entityId`,log.`actionType`,log.`changedAt` from `UserEventLog` log  inner join `User` user on user.id=log.`userId`  where log.`changedAt` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')))  " +
-        " and log.`changedAt` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>'))) and log.`userId`=<%= userId %> limit <%= offset %>,<%= limit %>");
 
-        let sql =compiled({
-            from:from,
-            tz:tz,
-            to:to,
-            offset:offset,
-            limit:limit,
-            userId:userId
+        let compiled = _.template("select user.`email` as user ,case log.`entityType` when 1 then \"Campaign\" when 2 then \"Lander\" when 3 then \"Offer\" when 4 then \"TrafficSource\" when 5 then \"AffiliateNetwork\" end as entityType,log.`entityName`,log.`entityId`,case log.`actionType` when 1 then \"Create\" when 2 then \"Change\" when 3 then \"Archive\" when 4 then \"Restore\" end as  action ,DATE_FORMAT(convert_tz(FROM_UNIXTIME(log.`changedAt`, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') as changedAt  from `UserEventLog` log  inner join `User` user on user.id=log.`userId`  where log.`changedAt` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')))  " +
+            " and log.`changedAt` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>'))) and log.`userId`= user.id and user.`idText`= '<%= userId %>' ");
+
+        let sql = compiled({
+            from: from,
+            tz: tz,
+            to: to,
+            userId: userId
         });
+        let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
+        sql += "limit " + offset + "," + limit;
         connection = await common.getConnection();
-        let result = await query(sql, connection);
+        let result = await Promise.all([query(sql, connection), query(countSql, connection)]);
         res.json({
             status: 1,
             message: 'success',
-            data: result.length ? result : []
+            data: {
+                totalRows: result[1][0] ? result[1][0].total : 0,
+                rows: result[0]
+            }
         });
     } catch (e) {
         next(e);
@@ -73,15 +76,15 @@ router.get('/api/eventlog',async function(req,res,next){
     }
 });
 
-function query(sql,connection){
-    return new Promise(function(resolve,reject){
-       connection.query(sql,function(err,result){
-           if(err){
-               return reject(err);
-           }
-       resolve(result);
-       })
+function query(sql, connection) {
+    return new Promise(function (resolve, reject) {
+        connection.query(sql, function (err, result) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result);
+        })
     });
 }
 
-module.exports=router;
+module.exports = router;

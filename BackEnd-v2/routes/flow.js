@@ -720,7 +720,6 @@ let loadCondition = async function (result) {
 //loadCondition
 let init = function () {
     if (setting.env !== "development") {
-        console.log(111)
         loadCondition(setting.conditionResult).then(function (data) {
             new Pub(true).set(setting.redis.conditionKey, JSON.stringify(data));
         });

@@ -4,6 +4,9 @@ var Joi = require('joi');
 var common = require('./common');
 var md5 = require('md5');
 var _ = require('lodash');
+var dns = require("dns");
+var setting = require('../config/setting');
+var _ = require('lodash');
 
 /**
  * @api {get} /api/profile  
@@ -577,46 +580,46 @@ router.get('/api/domains', async function (req, res, next) {
 router.post('/api/domains', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        internal:Joi.array().items({
-            address:Joi.string().required(),
-            main:Joi.boolean().required()
+        internal: Joi.array().items({
+            address: Joi.string().required(),
+            main: Joi.boolean().required()
         }).required().length(3),
-        custom:Joi.array().items({
-            address:Joi.string().required(),
-            main:Joi.boolean().required()
+        custom: Joi.array().items({
+            address: Joi.string().required(),
+            main: Joi.boolean().required()
         }).required()
     });
     req.body.userId = req.userId;
     let connection;
     try {
-        let insertData=[];
+        let insertData = [];
         let value = await common.validate(req.body, schema);
         //check params
-        let passCheck= false;
+        let passCheck = false;
         let mainDomianNumber = 0;
-        for(let index= 0 ;index<value.internal.length;index++){
-            if(value.internal[index].main){
+        for (let index = 0; index < value.internal.length; index++) {
+            if (value.internal[index].main) {
                 mainDomianNumber++;
             }
-            insertData.push({domain:value.internal[index].address,main:value.internal[index].main ? 1 : 0,customize:0});
+            insertData.push({ domain: value.internal[index].address, main: value.internal[index].main ? 1 : 0, customize: 0 });
 
         }
-        for(let index= 0 ;index<value.custom.length;index++){
-            if(value.custom[index].main){
+        for (let index = 0; index < value.custom.length; index++) {
+            if (value.custom[index].main) {
                 mainDomianNumber++;
             }
-            insertData.push({domain:value.custom[index].address,main:value.custom[index].main ? 1 : 0,customize:1});
+            insertData.push({ domain: value.custom[index].address, main: value.custom[index].main ? 1 : 0, customize: 1 });
         }
-        if(mainDomianNumber !== 1){
+        if (mainDomianNumber !== 1) {
             throw new Error("please reset mian domian correctly");
         }
-       
+
         connection = await common.getConnection();
-        await common.query("update UserDomain set `deleted` = 1 where `userId`= ? ",[value.userId],connection);
-        
+        await common.query("update UserDomain set `deleted` = 1 where `userId`= ? ", [value.userId], connection);
+
         for (let index = 0; index < insertData.length; index++) {
-             let sql = "insert into UserDomain (`domain`,`main`,`customize`,`userId`) values (?,?,?,?)";
-             await common.query(sql, [insertData[index].domain,insertData[index].main,insertData[index].customize,value.userId], connection);
+            let sql = "insert into UserDomain (`domain`,`main`,`customize`,`userId`) values (?,?,?,?)";
+            await common.query(sql, [insertData[index].domain, insertData[index].main, insertData[index].customize, value.userId], connection);
         }
         delete value.userId;
         res.json({
@@ -657,10 +660,213 @@ router.post('/api/domains', async function (req, res, next) {
             }
         }
  */
-router.get('/api/domains/validatecname', function (req, res, next) {
+router.get('/api/domains/validatecname', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        address: Joi.string().required()
+    });
+    req.query.userId = req.userId;
+    req.query.idText = req.idText;
+    try {
+        let cnames = [];
+        let value = await common.validate(req.query, schema);
+        cnames = await ((address) => {
+            return new Promise(function (resolve, reject) {
+                dns.resolveCname(address, function (err, result) {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(result);
+
+                });
+            });
+        })(value.address);
+
+        //获取该用户系统默认domians
+        let userDefaultDomains = [];
+        for (let index = 0; index < setting.domains.length; index++) {
+            userDefaultDomains.push(value.idText + "." + setting.domains[index].address);
+        }
+
+        let checked = false;
+
+        for (let index = 0; index < cnames.length; index++) {
+            if (_.includes(userDefaultDomains, cnames[index])) {
+                checked = true;
+            }
+        }
+
+        let validateResult = "NOT_FOUND";
+
+        if (checked) {
+            validateResult = "Matched"
+            res.json({
+                status: 1,
+                message: "success",
+                data: {
+                    domain: value.address,
+                    validateResult: validateResult
+                }
+            });
+            return;
+        }
+
+        res.json({
+            status: 0,
+            message: validateResult,
+            data: {
+                domain: value.address,
+                validateResult: validateResult
+            }
+        });
+    } catch (e) {
+        next(e);
+    }
 
 });
 
+
+
+/**
+ * @api {post} /api/blacklist   新增黑名单策略 
+ * 
+ * @apiGroup User 
+ * @apiName 新增黑名单策略 
+ * 
+ * @apiParam blacklist 
+ * @apapiParam enabled   
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+    "status": 1, 
+    "message": "success", 
+    "data": {
+
+        "blacklist": [
+            {
+                "id": 1, 
+                "name": "test1", 
+                "ipRules": [
+                    {
+                        "ipRangeStart": "1.1.1.1", 
+                        "ipRangeEnd": "1.1.1.1"
+                    }
+                ], 
+                "userAgentRules": [
+                    {
+                        "userAgent": "test1"
+                    }
+                ]
+            }, 
+            {
+                "id": 2, 
+                "name": "test2", 
+                "ipRules": [
+                    {
+                        "ipRangeStart": "1.1.1.1", 
+                        "ipRangeEnd": "1.1.1.1"
+                    }
+                ], 
+                "userAgentRules": [
+                    {
+                        "userAgent": "test2"
+                    }
+                ]
+            }
+        ]
+    }
+}
+ */
+
+router.post('/api/blacklist', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        enabled: Joi.boolean().required(),
+        blacklist: Joi.array().required().items({
+            name: Joi.string().required(),
+            ipRules: Joi.array().required().items({
+                ipRangeStart: Joi.string().required(),
+                ipRangeEnd: Joi.string().required()
+            }),
+            userAgentRules: Joi.array().required().items({
+                userAgent: Joi.string().required()
+            })
+        })
+    });
+    req.body.userId = req.userId;
+    req.body.idText = req.idText;
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        await common.query("delete from UserBotBlacklist  where `userId`= ? ", [value.userId], connection);
+        for (let index = 0; index < value.blacklist.length; index++) {
+            await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`,`enabled`) values (?,?,?,?,?)", [value.userId, value.blacklist[index].name, JSON.stringify(value.blacklist[index].ipRules), JSON.stringify(value.blacklist[index].userAgentRules), value.enabled ? 1 : 0], connection);
+           // value.blacklist[index].id = result.insertId;
+        }
+
+        delete value.userId;
+        delete value.idText;
+
+        res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
+});
+
+
+router.get('/api/blacklist', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required()
+    });
+    req.body.userId = req.userId;
+    req.body.idText = req.idText;
+    let connection;
+    try {
+        let responseData ={
+             enabled: false,
+             blacklist: []
+        };
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let result = await common.query("select  `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [value.userId,0], connection);
+        for(let index=0;index<result.length;index++){
+               responseData.blacklist.push({
+                   name:result[index].name,
+                   ipRules:JSON.parse(result[index].ipRange),
+                   userAgentRules:JSON.parse(result[index].userAgent)
+               });
+               responseData.enabled=result[index].enabled == 1 ? true : false;
+        } 
+        res.json({
+            status: 1,
+            message: 'success',
+            data: responseData
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
+})
 
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
