@@ -516,7 +516,7 @@
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag) {
     var prefix = '', prefixCountry = '', prefixTraffic = '';
-    initTags($scope, Tag);
+    initTags($scope, Tag, 1);
     // init load data
     var initPromises = [], prms;
     var theCampaign;
@@ -986,16 +986,16 @@
 
   function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag) {
     var prefix = 'Global - ';
-    initTags($scope, Tag);
+    initTags($scope, Tag, 2);
     if (this.item) {
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
-        $scope.item = {
-          numberOfOffers: 1,
-        };
+        // $scope.item = {
+        //   numberOfOffers: 1,
+        // };
         if($scope.item.country) {
           $scope.countries.forEach(function(v) {
             if(v.value == $scope.item.country) {
@@ -1103,7 +1103,7 @@
 
   function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag) {
     var prefix = '', prefixCountry = '', prefixAffiliate = '';
-    initTags($scope, Tag);
+    initTags($scope, Tag, 3);
     // init load data
     var initPromises = [], prms;
 
@@ -1148,14 +1148,14 @@
         $scope.item = theOffer;
         $scope.affiliateId = theOffer.AffiliateNetworkId.toString();
         $scope.tags = $scope.item.tags;
-        if ($scope.item['payoutMode'] == null) {
-          $scope.item = {
-            payoutMode: 0,
-          };
-        }
-        $scope.item = {
-          numberOfOffers: 1,
-        };
+        // if ($scope.item['payoutMode'] == null) {
+        //   $scope.item = {
+        //     payoutMode: 0,
+        //   };
+        // }
+        // $scope.item = {
+        //   numberOfOffers: 1,
+        // };
         $scope.countries.forEach(function(v) {
           if(v.value == $scope.item.country) {
             prefixCountry = v.display + ' - ';
@@ -1676,7 +1676,7 @@
     }
   }
 
-  function initTags($scope, Tag) {
+  function initTags($scope, Tag, type) {
     $scope.tags = [];
     $scope.tagsFilter = {
         config: {
@@ -1688,7 +1688,7 @@
         },
         options: []
     };
-    Tag.get(null, function(oData) {
+    Tag.get({type: type}, function(oData) {
       $scope.tagsFilter.options = oData.data.tags;
     });
   }

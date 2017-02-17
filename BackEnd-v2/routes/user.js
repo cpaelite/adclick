@@ -124,13 +124,13 @@ router.get('/api/preferences', function (req, res, next) {
  *
  */
 
-router.post('/api/tags', function (req, res, next) {
+router.get('/api/tags', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        type: Joi.number.required()
+        type: Joi.number().required()
     });
-    req.body.userId = req.userId;
-    Joi.validate(req.body, schema, function (err, value) {
+    req.query.userId = req.userId;
+    Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
         }
@@ -140,7 +140,7 @@ router.post('/api/tags', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name` from User where `userId` = ? and `type`= ? and `deleted` =0", [
+                "select  `id`,`name` from Tags where `userId` = ? and `type`= ? and `deleted` =0", [
                     value.userId, value.type
                 ],
                 function (err, result) {
