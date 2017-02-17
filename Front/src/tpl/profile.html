@@ -5,14 +5,14 @@
     <div class="basic-form clearfix">
       <div class="col-md-6">
         <div class="form-group">
-          <label>First name</label>
+          <label>First name<span class="star-icon">*</span></label>
           <input type="text" name="firstname" class="form-control" ng-model="accountItem.firstname" required>
           <span style="color:red" ng-show="form.firstname.$dirty && form.firstname.$invalid">
           <span ng-show="form.firstname.$error.required">FirstName is required.</span>
           </span>
         </div>
         <div class="form-group">
-          <label>Company name</label>
+          <label>Company name<span class="star-icon">*</span></label>
           <input type="text" name="companyname" class="form-control" ng-model="accountItem.companyname" required>
           <span style="color:red" ng-show="form.companyname.$dirty && form.companyname.$invalid">
           <span ng-show="form.companyname.$error.required">CompanyName is required.</span>
@@ -20,11 +20,9 @@
         </div>
         <div class="form-group">
           <label>Default time zone</label>
-          <md-select class="cs-subform-select" ng-model="accountItem.timezone" required>
-            <md-option value="+08:00">(UTC-12:00) International Date Line West</md-option>
-            <md-option value="2">(UTC-11:00) Coordinated Universal Time-11</md-option>
-            <md-option value="3">(UTC-10:00) Hawaii</md-option>
-          </md-select>
+          <select class="cs-subform-select" ng-model="accountItem.timezone" required>
+            <option ng-repeat="tz in timezone" value="{{tz.utcShift}}">{{tz.detail}}</option>
+          </select>
         </div>
         <div class="form-group clearfix">
           <label>Default home screen</label>
@@ -40,7 +38,7 @@
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <label>Last name</label>
+          <label>Last name<span class="star-icon">*</span></label>
           <input type="text" name="lastname" class="form-control" ng-model="accountItem.lastname" required>
           <span style="color:red" ng-show="form.lastname.$dirty && form.lastname.$invalid">
           <span ng-show="form.lastname.$error.required">LastName is required.</span>
@@ -48,11 +46,7 @@
         </div>
         <div class="form-group">
           <label>Phone</label>
-          <input type="tel" name="tel" class="form-control" ng-model="accountItem.tel" ng-pattern="phoneNumbr" maxlength="11" minlength="11" required>
-          <span style="color:red" ng-show="form.tel.$dirty && form.tel.$invalid">
-          <span ng-show="form.tel.$error.required">Tel is required.</span>
-          <span ng-show="form.tel.$error.pattern">Please enter phone number</span>
-          </span>
+          <input type="tel" name="tel" class="form-control" ng-model="accountItem.tel" ng-pattern="phoneNumbr" maxlength="11" minlength="11">
         </div>
       </div>
     </div>
@@ -73,28 +67,28 @@
     <div class="col-md-6">
       <div class="form-group">
         <label>Old password</label>
-        <input type="password" name="password" class="form-control" ng-model="passwordItem.password" required>
-        <span style="color:red" ng-show="passwordForm.password.$dirty && passwordForm.password.$invalid">
-          <span ng-show="passwordForm.password.$error.required">FirstName is required.</span>
+        <input type="password" name="oldpassword" class="form-control" ng-model="passwordItem.oldpassword">
+        <span style="color:red" ng-show="passwordForm.oldpassword.$invalid">
+          <span ng-show="passwordForm.oldpassword.$error.required">Old password is required.</span>
         </span>
       </div>
       <div class="form-group">
-        <label for="newPassword">New password</label>
-        <input type="password" name="newPassword" class="form-control" ng-model="passwordItem.newPassword" required>
-        <span style="color:red" ng-show="passwordForm.newPassword.$dirty && passwordForm.newPassword.$invalid">
-          <span ng-show="passwordForm.newPassword.$error.required">FirstName is required.</span>
+        <label>New password</label>
+        <input type="password" name="newpassword" class="form-control" ng-model="passwordItem.newpassword">
+        <span style="color:red" ng-show="passwordForm.newpassword.$invalid">
+          <span ng-show="passwordForm.newpassword.$error.required">New password is required.</span>
         </span>
       </div>
       <div class="form-group">
-        <label for="repeatNewPassword">Repeat new password</label>
-        <input type="password" name="repeatNewPassword" class="form-control" ng-model="passwordItem.repeatNewPassword" required>
-        <span style="color:red" ng-show="passwordForm.repeatNewPassword.$dirty && passwordForm.repeatNewPassword.$invalid">
-          <span ng-show="passwordForm.repeatNewPassword.$error.required">FirstName is required.</span>
+        <label>Repeat new password</label>
+        <input type="password" name="repeatNewPassword" class="form-control" ng-model="passwordItem.repeatNewPassword">
+        <span style="color:red" ng-show="passwordForm.repeatNewPassword.$invalid">
+          <span ng-show="passwordForm.repeatNewPassword.$error.required">Repeat password is required.</span>
         </span>
-        <span style="color: red;" ng-show="passwordItem.newPassword!=passwordItem.repeatNewPassword">*Password is not the same</span>
+        <span style="color: red;" ng-show="passwordItem.newpassword!=passwordItem.repeatNewPassword">*Password is not the same</span>
       </div>
       <div class="profile-form-footer clearfix">
-        <md-button class="save-btn" ng-click="passwordUpdateSave()" ng-disabled="passwordForm.$invalid">
+        <md-button class="save-btn" ng-click="passwordUpdateSave()">
           <i class="material-icons save-btn-icon">done</i>
           save
         </md-button>
@@ -105,17 +99,17 @@
     <div class="col-md-6">
       <div class="form-group">
         <label>Change e-mail address</label>
-        <input type="email" placeholder="Email" class="form-control no-border" ng-model="emailItem.email" ng-blur="checkEmail()" required>
-        <span style="color:red" ng-show="form.email.$dirty && form.email.$invalid">
-          <span ng-show="form.email.$error.email">Email must be a valid Email</span>
-          <span ng-show="form.email.$error.check">Email is exist</span>
+        <input type="email" name="email" placeholder="Email" class="form-control no-border" ng-model="emailItem.email" ng-blur="checkEmail()" required>
+        <span style="color:red" ng-show="emailForm.email.$dirty && emailForm.email.$invalid">
+          <span ng-show="emailForm.email.$error.email">Email must be a valid Email</span>
+          <span ng-show="emailForm.email.$error.check">Email is exist</span>
         </span>
       </div>
       <div class="form-group">
         <label>Confirm with your password</label>
         <input type="password" name="password" class="form-control" ng-model="emailItem.password" required>
         <span style="color:red" ng-show="emailForm.password.$dirty && emailForm.password.$invalid">
-          <span ng-show="emailForm.password.$error.required">FirstName is required.</span>
+          <span ng-show="emailForm.password.$error.required">password is required.</span>
         </span>
       </div>
       <div class="profile-form-footer clearfix">

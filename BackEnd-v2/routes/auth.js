@@ -262,7 +262,7 @@ router.get('/timezones', function (req, res, next) {
             return next(err);
         }
         connection.query(
-            "select `id`,`name`,`detail`,`region`,`utcShift` from `TimeZones`",
+            "select `id`,`name`,`detail`,`region`,`utcShift` from `Timezones`",
             function (err, result) {
                 connection.release();
                 if (err) {

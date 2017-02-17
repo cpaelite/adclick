@@ -95,4 +95,7 @@ angular.module('app')
   .factory('Tag', ['$resource', function ($resource) {
     return $resource('/api/tags');
   }])
+  .factory('Timezone', ['$resource', function ($resource) {
+    return $resource('/timezones');
+  }])
 ;

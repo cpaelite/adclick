@@ -1884,6 +1884,57 @@ app.get('/api/postbackurl', function (req, res) {
 });
 
 /**
+ * @apiName 获取所有Timezone信息
+ *
+ */
+app.get('/timezones', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "timezones": [
+        {
+          "id": 1,
+          "name": "Dateline Standard Time",
+          "detail": "(UTC-12:00) International Date Line West",
+          "region": "Etc/GMT+12",
+          "utcShift": "-12:00"
+        },
+        {
+          "id": 2,
+          "name": "UTC-11",
+          "detail": "(UTC-11:00) Coordinated Universal Time-11",
+          "region": "Etc/GMT+11",
+          "utcShift": "-11:00"
+        },
+        {
+          "id": 3,
+          "name": "Hawaiian Standard Time",
+          "detail": "(UTC-10:00) Hawaii",
+          "region": "Pacific/Honolulu",
+          "utcShift": "-10:00"
+        },
+        {
+          "id": 4,
+          "name": "Alaskan Standard Time",
+          "detail": "(UTC-09:00) Alaska",
+          "region": "America/Anchorage",
+          "utcShift": "-09:00"
+        },
+        {
+          "id": 5,
+          "name": "Pacific Standard Time (Mexico)",
+          "detail": "(UTC-08:00) Baja California",
+          "region": "America/Santa_Isabel",
+          "utcShift": "-08:00"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
  * @api {get} /api/profile  
  * @apiName  
  * @apiGroup User
@@ -1916,8 +1967,9 @@ app.get('/api/profile', function (req, res) {
           firstname: 'test',
           lastname:'test',
           companyname: 'zheng',
+          email: 'zhengshuo@qq.com',
           tel: '13120663670',
-          timezone:'+08:00',
+          timezone:'-08:00',
           homescreen: 'dashboard', // or campaignList
           referralToken: "wkllehZbEjXRk7nJfatdCWjjhKRKyo+jqdyL8ZHuIAZYrDTZ+0kW1A3BiAWGBrDZ",
         }
@@ -1994,17 +2046,19 @@ app.post('/api/profile', function (req, res) {
  */
 app.post('/api/password', function (req, res) {
     var result = {
-        status: 0,
+        status: 1,
         message: 'success'
     };
     res.send(result);
 });
 
 /**
- * @api {get} /api/email   用户修改邮箱
- * @apiName   用户修改邮箱
+ * @api {get} /api/email   获取用户邮箱
+ * @apiName   获取用户邮箱
  * @apiGroup User
  *
+ *
+ * 直接从Profile接口里获取数据,此接口不需要了
  */
 app.get('/api/email', function (req, res) {
     var result = {
@@ -2041,10 +2095,7 @@ app.get('/api/email', function (req, res) {
  *
  */
 app.post('/api/email', function (req, res) {
-    var result = {
-        status: 1,
-        message: 'success'
-    };
+    var result = {"status":0,"message":"email exists","data":{}};
     res.send(result);
 });
 
