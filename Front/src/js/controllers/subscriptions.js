@@ -1,17 +1,22 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular.module('app')
-        .controller('SubscriptionsCtrl', [
-            '$scope', 'Billing',
-            SubscriptionsCtrl
-        ]);
+  angular.module('app')
+    .controller('SubscriptionsCtrl', [
+      '$scope', 'Profile', 'Billing',
+      SubscriptionsCtrl
+    ]);
 
-    function SubscriptionsCtrl($scope, Billing) {
-        $scope.app.subtitle = 'Subscriptions';
+  function SubscriptionsCtrl($scope, Profile, Billing) {
+    $scope.app.subtitle = 'Subscriptions';
 
-		Billing.get({id: ''}, function(user) {
-			$scope.item = user.data;
-		});
-    }
+    Profile.get(null, function (profile) {
+      if (profile.data) {
+        Billing.get({timezone: profile.data.timezone}, function (bill) {
+          $scope.item = bill.data.activeSubscription;
+        });
+      }
+    });
+
+  }
 })();

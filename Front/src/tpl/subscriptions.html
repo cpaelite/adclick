@@ -7,40 +7,36 @@
 		<div class="table-out">
 			<table>
 				<tr>
-					<td>Next issued plan:</td>
-					<td>{{item.statistic.planCode}}</td>
+					<td>Plan:</td>
+					<td>{{item.plan.name}}</td>
 				</tr>
 				<tr>
 					<td>Current period:</td>
-					<td>{{item.statistic.from}} - {{item.statistic.to}}</td>
-				</tr>
-				<tr>
-					<td>Free Zeropark events:</td>
-					<td>{{item.statistic.freeEvents}}</td>
+					<td>{{item.startTime}} - {{item.endTime}}</td>
 				</tr>
 				<tr>
 					<td>Billed events:</td>
-					<td>{{item.statistic.billedEvents}}</td>
+					<td>{{item.statistics.billedEvents}}</td>
 				</tr>
 				<tr>
 					<td>Total events:</td>
-					<td>{{item.statistic.totalEvents}}</td>
+					<td>{{item.statistics.totalEvents}}</td>
 				</tr>
 				<tr>
 					<td>Included events:</td>
-					<td>{{item.statistic.includedEvents}}</td>
+					<td>{{item.plan.eventsLimit}}</td>
 				</tr>
 				<tr>
 					<td>Remaining events:</td>
-					<td>{{item.statistic.remainEvents}}</td>
+					<td>{{item.statistics.remainEvents}}</td>
 				</tr>
 				<tr>
 					<td>Overage events:</td>
-					<td>{{item.statistic.overageEvents}}</td>
+					<td>{{item.statistics.overageEvents}}</td>
 				</tr>
 				<tr>
 					<td>Overage cost:</td>
-					<td>{{item.statistic.overageCost}}</td>
+					<td>{{item.statistics.overageCost}}</td>
 				</tr>
 			</table>
 		</div>
