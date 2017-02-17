@@ -858,13 +858,8 @@ router.post('/api/blacklist', async function (req, res, next) {
         enabled: Joi.boolean().required(),
         blacklist: Joi.array().required().items({
             name: Joi.string().required(),
-            ipRules: Joi.array().required().items({
-                ipRangeStart: Joi.string().required(),
-                ipRangeEnd: Joi.string().required()
-            }),
-            userAgentRules: Joi.array().required().items({
-                userAgent: Joi.string().required()
-            })
+            ipRules: Joi.array().required(),
+            userAgentRules: Joi.array().required()
         })
     });
     req.body.userId = req.userId;
@@ -876,7 +871,6 @@ router.post('/api/blacklist', async function (req, res, next) {
         await common.query("delete from UserBotBlacklist  where `userId`= ? ", [value.userId], connection);
         for (let index = 0; index < value.blacklist.length; index++) {
             await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`,`enabled`) values (?,?,?,?,?)", [value.userId, value.blacklist[index].name, JSON.stringify(value.blacklist[index].ipRules), JSON.stringify(value.blacklist[index].userAgentRules), value.enabled ? 1 : 0], connection);
-            // value.blacklist[index].id = result.insertId;
         }
 
         delete value.userId;

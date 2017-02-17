@@ -227,7 +227,7 @@ function updateCampaign(value, connection) {
         sqlCampaign += ",`targetType`=" + value.targetType
     }
 
-    if (value.targetUrl) {
+    if (value.targetUrl !=undefined) {
         sqlCampaign += ",`targetUrl`='" + value.targetUrl + "'"
     }
 

@@ -5,6 +5,7 @@ var common = require('./common');
 var Pub = require('./redis_sub_pub');
 var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
+var util =require('../util');
  
  
 
@@ -68,7 +69,7 @@ router.post('/api/campaigns', async function (req, res, next) {
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional(),
-        targetUrl: Joi.string().optional().empty(""),
+        targetUrl: Joi.string().regex(util.regWebURL,'targetUrl').optional().allow(""),
         targetFlowId: Joi.number().optional(),
         postbackUrl: Joi.string().optional().empty(""),
         pixelRedirectUrl: Joi.string().optional().empty(""),
@@ -155,7 +156,7 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         cpm: Joi.number().optional(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional().empty(""),
-        targetUrl: Joi.string().optional().empty(""),
+        targetUrl: Joi.string().regex(util.regWebURL,'targetUrl').optional().allow(""),
         targetFlowId: Joi.number().optional(),
         postbackUrl: Joi.string().optional().empty(""),
         pixelRedirectUrl: Joi.string().optional().empty(""),
