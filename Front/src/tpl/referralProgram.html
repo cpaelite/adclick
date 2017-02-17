@@ -7,32 +7,30 @@
     <div class="form-group clearfix">
       <label class="col-sm-2 control-label">Link to sign up page</label>
       <div class="col-sm-7">
-        <input type="text" class="form-control" ng-model="item.linkurl" required>
+        <input type="text" class="form-control" ng-model="linkurl" readonly>
       </div>
       <div class="col-md-3">
-        <md-button clipboard class="md-raised copy-btn" text="item.linkurl" ng-click="itemUrlClick()">{{btnWord}}</md-button>
+        <md-button clipboard class="md-raised copy-btn" text="linkurl" ng-click="itemUrlClick()">{{btnWord}}</md-button>
       </div>
     </div>
     <div class="data-table">
       <table md-table multiple class="table">
         <thead md-head md-order="query.order">
           <tr md-row>
-            <th md-column md-order-by="userId">User ID</th>
+            <th md-column md-order-by="referredUserId">User ID</th>
             <th md-column md-order-by="acquired">Acquired</th>
             <th md-column md-order-by="status">Status</th>
-            <th md-column md-order-by="plan">Plan</th>
-            <th md-column md-order-by="lastActivity">Last activity</th>
-            <th md-column md-order-by="totalCommission">Commission from last 30 days</th>
-            <th md-column>Total commissions</th>
+            <th md-column md-order-by="lastactivity">Last activity</th>
+            <th md-column md-order-by="recentCommission">Commission from last 30 days</th>
+            <th md-column md-order-by="totalCommission">Total commissions</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="referral in item.referrals">
-            <td>{{referral.userId}}</td>
+            <td>{{referral.referredUserId}}</td>
             <td>{{referral.acquired}}</td>
             <td>{{referral.status}}</td>
-            <td>{{referral.plan}}</td>
-            <td>{{referral.lastActivity}}</td>
+            <td>{{referral.lastactivity}}</td>
             <td>{{referral.recentCommission}}</td>
             <td>{{referral.totalCommission}}</td>
 
@@ -44,15 +42,14 @@
             <td>Referrals:{{item.totals.count}}</td>
             <td></td>
             <td></td>
-            <td></td>
-            <td>{{item.totals.recentCommission}}</td>
-            <td>{{item.totals.totalCommission}}</td>
+            <td><em ng-show="item.totals.recentCommission">{{item.totals.recentCommission}}</em><em ng-show="!item.totals.recentCommission">0.00</em>$</td>
+            <td><em ng-show="item.totals.totalCommission">{{item.totals.totalCommission}}</em><em ng-show="!item.totals.totalCommission">0.00</em>$</td>
           </tr>
         </tfoot>
       </table>
     </div>
 
-    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
-                         md-total="{{item.totalRows}}" md-page-select></md-table-pagination>
+      <md-table-pagination md-limit="query.limit" md-page="query.page"
+                           md-total="{{item.totals.count}}" md-on-paginate="getList" md-page-select></md-table-pagination>
   </div>
 </div>

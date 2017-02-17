@@ -300,7 +300,7 @@ router.post('/api/email', async function (req, res, next) {
  * 
  * @apiParam {Number} page
  * @apiParam {Number} limit
- * @apiParam {String} sort  "-name"
+ * @apiParam {String} order  "-name"
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -325,7 +325,7 @@ router.get('/api/referrals', async function (req, res, next) {
         userId: Joi.number().required(),
         page: Joi.number().required().min(1),
         limit: Joi.number().required().min(1),
-        sort: Joi.string().required()
+        order: Joi.string().required()
     });
     req.query.userId = req.userId;
     let connection;
@@ -335,24 +335,26 @@ router.get('/api/referrals', async function (req, res, next) {
         let {
             limit,
             page,
-            sort,
+            order,
             userId
         } = value;
         let dir = "asc";
         limit = parseInt(limit);
         page = parseInt(page);
         let offset = (page - 1) * limit;
-        if (sort.indexOf('-') >= 0) {
+        if (order.indexOf('-') >= 0) {
             dir = "desc";
-            sort = sort.replace(new RegExp(/-/g), '');
+            order = order.replace(new RegExp(/-/g), '');
         }
         let listSql = "select  user.`idText` as referredUserId ,FROM_UNIXTIME(log.`acquired`,'%d-%m-%Y %H:%i') as acquired," +
             "(case log.`status` when 0 then \"New\" when 1 then \"Activated\"  END) as status," +
             "FROM_UNIXTIME(log.`lastActivity`,'%d-%m-%Y %H:%i') as lastactivity," +
             "log.`recentCommission` as recentCommission,log.`totalCommission` as totalCommission " +
-            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId + " order by " + sort + " " + dir;
+            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId ;
 
         let countsql = "select COUNT(*) as `count`,sum(recentCommission) as lastMonthCommissions,sum(totalCommission) as lifeTimeCommissions from ((" + listSql + ") as T)";
+
+      listSql += " order by " + order + " " + dir + " limit " + offset +"," + limit;
 
         let result = await Promise.all([query(listSql, [], connection), query(countsql, [], connection)]);
         res.json({
@@ -360,7 +362,7 @@ router.get('/api/referrals', async function (req, res, next) {
             message: 'succes',
             data: {
                 referrals: result[0],
-                totals: result[1].length ? result[1][0] : { count: 0, lastMonthCommissions: "", lifeTimeCommissions: "" }
+                totals: result[1].length ? result[1][0] : { count: 0, lastMonthCommissions: 0, lifeTimeCommissions: 0 }
             }
         });
     } catch (e) {
