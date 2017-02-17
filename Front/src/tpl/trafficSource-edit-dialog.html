@@ -6,7 +6,6 @@
     </md-toolbar>
 
     <md-dialog-content class="md-dialog-content">
-
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group traffic-source">
                 <label class="col-sm-3 control-label"></label>
@@ -55,7 +54,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Pixel redirect URL：</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="pixelRedirectUrl" ng-model="item.pixelRedirectUrl">
+                    <input type="url" class="form-control" name="pixelRedirectUrl" ng-model="item.pixelRedirectUrl" ng-pattern="urlPattern">
+                    <span style="color:red" ng-show="editForm.pixelRedirectUrl.$dirty && editForm.pixelRedirectUrl.$invalid">
+                        <span ng-show="editForm.pixelRedirectUrl.$error.pattern">URL must be a valid URL.</span>
+                    </span>
                 </div>
             </div>
             <div class="form-group">

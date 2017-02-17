@@ -42,7 +42,6 @@
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
-    
     $scope.app.subtitle = perfType;
     $scope.groupByOptions = groupByOptions;
 
@@ -382,7 +381,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', 'Tag', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', 'Tag', 'AppConstant', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -393,11 +392,11 @@
         $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', editLanderCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', editOfferCtrl];
       } else if (perfType == 'traffic') {
-        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', 'AppConstant', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
         controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
@@ -514,7 +513,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag) {
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant) {
     var prefix = '', prefixCountry = '', prefixTraffic = '';
     initTags($scope, Tag, 1);
     // init load data
@@ -882,8 +881,8 @@
       if ($scope.item.targetUrl.indexOf('http://') == -1) {
         $scope.item.targetUrl = "http://" + $scope.item.targetUrl;
       }
-      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
-      var re=new RegExp(strRegex);
+      var strRegex = AppConstant.URLREG; // '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
+      var re=new RegExp(strRegex, 'i');
       if (!re.test($scope.item.targetUrl)) {
         isValid = false;
       }
@@ -987,7 +986,7 @@
 
   }
 
-  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag) {
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant) {
     var prefix = 'Global - ';
     initTags($scope, Tag, 2);
     if (this.item) {
@@ -1097,8 +1096,8 @@
       if ($scope.item.url.indexOf('http://') == -1) {
         $scope.item.url = "http://" + $scope.item.url;
       }
-      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
-      var re=new RegExp(strRegex);
+      var strRegex = AppConstant.URLREG;
+      var re=new RegExp(strRegex, 'i');
       if (!re.test($scope.item.url)) {
         isValid = false;
       }
@@ -1107,7 +1106,7 @@
 
   }
 
-  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag) {
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant) {
     var prefix = '', prefixCountry = '', prefixAffiliate = '';
     initTags($scope, Tag, 3);
     // init load data
@@ -1263,8 +1262,8 @@
       if ($scope.item.url.indexOf('http://') == -1) {
         $scope.item.url = "http://" + $scope.item.url;
       }
-      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
-      var re=new RegExp(strRegex);
+      var strRegex = AppConstant.URLREG;
+      var re=new RegExp(strRegex, 'i');
       if (!re.test($scope.item.url)) {
         isValid = false;
       }
@@ -1313,7 +1312,8 @@
     }
   }
 
-  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter) {
+  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant) {
+    $scope.urlPattern = new RegExp(AppConstant.URLREG, 'i');
     if (this.item) {
       var isDuplicate = this.duplicate;
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
@@ -1397,8 +1397,8 @@
       if ($scope.item.postbackUrl.indexOf('http://') == -1) {
         $scope.item.postbackUrl = "http://" + $scope.item.postbackUrl;
       }
-      var strRegex = '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
-      var re=new RegExp(strRegex);
+      var strRegex = AppConstant.URLREG;//'^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
+      var re=new RegExp(strRegex, 'i');
       if (!re.test($scope.item.postbackUrl)) {
         isValid = false;
       }
