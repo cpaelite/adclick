@@ -53,7 +53,7 @@ router.get('/api/profile', async function (req, res, next) {
             responseData.status = result[0].status;
             responseData.timezone = result[0].timezone;
             responseData.referralToken = result[0].referralToken;
-            responseData.email=result[0].email;
+            responseData.email = result[0].email;
             if (result[0].setting) {
                 let settingJSON = JSON.parse(result[0].setting);
                 responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
@@ -265,16 +265,16 @@ router.post('/api/email', async function (req, res, next) {
 
         let result = await query("select `password` from User where `id`= ? ", [value.userId], connection);
 
-        
+
         if (result && result[0]) {
             if (md5(value.password) == result[0].password) {
                 await query("update User set `email`= ?  where `id`= ? ", [value.email, value.userId], connection);
-               
+
             } else {
-                 throw new Error("password error") ;
+                throw new Error("password error");
             }
         } else {
-             throw new Error("account error") ;
+            throw new Error("account error");
         }
         res.json({
             status: 1,
@@ -429,9 +429,10 @@ router.get('/api/billing', async function (req, res, next) {
         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM, bill.\`overageEvents\` as overageEvents,
         (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents,(plan.\`eventsLimit\` - bill.\`billedEvents\` ) as remainingEvents  
-        from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0`);
+        from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
         let sql = compled({
-            tz: value.timezone
+            tz: value.timezone,
+            userId: value.userId
         });
         let results = await query(sql, [], connection);
         let val = results.length ? results[0] : null;
@@ -476,6 +477,72 @@ router.get('/api/billing', async function (req, res, next) {
     }
 });
 
+
+/**
+ * @api {get} /api/billing   用户当前套餐 
+ * @apiName  用户当前套餐 
+ * @apiGroup User
+ * 
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+   {status:1,message:'success', "plan" : {
+                    "id" : 1,
+                    "name" : "Agency",
+                    "price" : 399,                      //normalPrice  
+                    "eventsLimit" : 10000000,
+                    "overageCPM" : 0.000036,
+                    "retentionLimit" : 370,
+                    "userLimit" : 2,
+                    "domainLimit" : 5                 
+                }}
+ *
+ */
+router.get('/api/plan', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let compled = _.template(`select   
+        plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
+        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
+        let sql = compled({
+            userId: value.userId
+        });
+        let results = await query(sql, [], connection);
+        let val = results.length ? results[0] : null;
+        let responseData = { plan: {} };
+        if (val) {
+            responseData.plan = {
+                id: val.id,
+                name: val.name,
+                price: val.price,
+                eventsLimit: val.eventsLimit,
+                overageCPM: val.overageCPM,
+                retentionLimit: val.retentionLimit,
+                userLimit: val.userLimit,
+                domainLimit: val.domainLimit
+
+            }
+        }
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: responseData
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+})
 
 /**
  * @api {get} /api/domains 获取用户domdomains
@@ -809,7 +876,7 @@ router.post('/api/blacklist', async function (req, res, next) {
         await common.query("delete from UserBotBlacklist  where `userId`= ? ", [value.userId], connection);
         for (let index = 0; index < value.blacklist.length; index++) {
             await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`,`enabled`) values (?,?,?,?,?)", [value.userId, value.blacklist[index].name, JSON.stringify(value.blacklist[index].ipRules), JSON.stringify(value.blacklist[index].userAgentRules), value.enabled ? 1 : 0], connection);
-           // value.blacklist[index].id = result.insertId;
+            // value.blacklist[index].id = result.insertId;
         }
 
         delete value.userId;
@@ -841,21 +908,21 @@ router.get('/api/blacklist', async function (req, res, next) {
     req.body.idText = req.idText;
     let connection;
     try {
-        let responseData ={
-             enabled: false,
-             blacklist: []
+        let responseData = {
+            enabled: false,
+            blacklist: []
         };
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let result = await common.query("select  `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [value.userId,0], connection);
-        for(let index=0;index<result.length;index++){
-               responseData.blacklist.push({
-                   name:result[index].name,
-                   ipRules:JSON.parse(result[index].ipRange),
-                   userAgentRules:JSON.parse(result[index].userAgent)
-               });
-               responseData.enabled=result[index].enabled == 1 ? true : false;
-        } 
+        let result = await common.query("select  `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [value.userId, 0], connection);
+        for (let index = 0; index < result.length; index++) {
+            responseData.blacklist.push({
+                name: result[index].name,
+                ipRules: JSON.parse(result[index].ipRange),
+                userAgentRules: JSON.parse(result[index].userAgent)
+            });
+            responseData.enabled = result[index].enabled == 1 ? true : false;
+        }
         res.json({
             status: 1,
             message: 'success',
