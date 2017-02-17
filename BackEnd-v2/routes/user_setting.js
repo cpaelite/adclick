@@ -24,6 +24,7 @@ var _ = require('lodash');
           lastname:'test',
           companyname: 'zheng',
           tel: '13120663670',
+          email:"",
           timezone:'+08:00',
           homescreen:'dashboard',  // or campaignList
           referralToken:"",
@@ -42,7 +43,7 @@ router.get('/api/profile', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
+        let result = await query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
 
         let responseData = {};
         if (result.length) {
@@ -52,6 +53,7 @@ router.get('/api/profile', async function (req, res, next) {
             responseData.status = result[0].status;
             responseData.timezone = result[0].timezone;
             responseData.referralToken = result[0].referralToken;
+            responseData.email=result[0].email;
             if (result[0].setting) {
                 let settingJSON = JSON.parse(result[0].setting);
                 responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
