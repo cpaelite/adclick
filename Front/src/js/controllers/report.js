@@ -993,9 +993,9 @@
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
-        $scope.item = {
-          numberOfOffers: 1,
-        };
+        // $scope.item = {
+        //   numberOfOffers: 1,
+        // };
         if($scope.item.country) {
           $scope.countries.forEach(function(v) {
             if(v.value == $scope.item.country) {
@@ -1148,14 +1148,14 @@
         $scope.item = theOffer;
         $scope.affiliateId = theOffer.AffiliateNetworkId.toString();
         $scope.tags = $scope.item.tags;
-        if ($scope.item['payoutMode'] == null) {
-          $scope.item = {
-            payoutMode: 0,
-          };
-        }
-        $scope.item = {
-          numberOfOffers: 1,
-        };
+        // if ($scope.item['payoutMode'] == null) {
+        //   $scope.item = {
+        //     payoutMode: 0,
+        //   };
+        // }
+        // $scope.item = {
+        //   numberOfOffers: 1,
+        // };
         $scope.countries.forEach(function(v) {
           if(v.value == $scope.item.country) {
             prefixCountry = v.display + ' - ';
