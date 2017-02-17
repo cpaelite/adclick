@@ -257,7 +257,7 @@ async function getCampaign(id, userId, idText, connection) {
 
     let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`," +
         "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
-    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
     let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
 
@@ -268,7 +268,7 @@ async function getCampaign(id, userId, idText, connection) {
 
     let tags = [];
     for (let index = 0; index < tagsResult.length; index++) {
-        tags.push(tagsResult[index].name);
+        tags.push(tagsResult[index]);
     }
 
     if (camResult.length) {
@@ -581,7 +581,7 @@ function updateLander(userId, lander, connection) {
 
 function getLanderDetail(id, userId, connection) {
     let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`numberOfOffers` from `Lander` where `userId`=? and `deleted`=? and `id`=?";
-    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
     return new Promise(function (resolve, reject) {
         connection.query(sqlLander, [userId, 0, id], function (err, lander) {
             if (err) {
@@ -593,7 +593,7 @@ function getLanderDetail(id, userId, connection) {
                 }
                 let tags = [];
                 for (let index = 0; index < tagsResult.length; index++) {
-                    tags.push(tagsResult[index].name);
+                    tags.push(tagsResult[index]);
                 }
                 if (lander[0]) {
                     lander[0].tags = tags;
@@ -784,7 +784,7 @@ function updateOffer(userId, offer, connection) {
 
 function getOfferDetail(id, userId, connection) {
     let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `id`=?";
-    let sqltag = "select `name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
+    let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
     return new Promise(function (resolve, reject) {
         connection.query(sqlLander, [userId, id], function (err, lander) {
             if (err) {
@@ -796,7 +796,7 @@ function getOfferDetail(id, userId, connection) {
                 }
                 let tags = [];
                 for (let index = 0; index < tagsResult.length; index++) {
-                    tags.push(tagsResult[index].name);
+                    tags.push(tagsResult[index]);
                 }
                 if (lander[0]) {
                     lander[0].tags = tags;
