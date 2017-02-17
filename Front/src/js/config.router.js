@@ -52,6 +52,7 @@
         offer: null,
         lander: null,
         traffic: null,
+        affiliate: null,
         extgrpby: null,
         datetype: null,
         status: null,

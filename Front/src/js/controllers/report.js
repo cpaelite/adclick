@@ -42,8 +42,8 @@
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference) {
     var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
+    
     $scope.app.subtitle = perfType;
-
     $scope.groupByOptions = groupByOptions;
 
     // status, from, to, datetype, groupBy
@@ -382,7 +382,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', 'Tag', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -393,9 +393,9 @@
         $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', editLanderCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', editLanderCtrl];
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', editOfferCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', editOfferCtrl];
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
@@ -458,6 +458,11 @@
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
     };
 
+    var params = $scope.$state.params[perfType];
+    if(params && params.isShowAdd) {
+      $scope.editItem();
+    }
+
     function getDateRange(value) {
       var fromDate;
       var toDate;
@@ -509,9 +514,9 @@
     }
   }
 
-  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter) {
-    $scope.tags = [];
-
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag) {
+    var prefix = '', prefixCountry = '', prefixTraffic = '';
+    initTags($scope, Tag);
     // init load data
     var initPromises = [], prms;
     var theCampaign;
@@ -581,7 +586,24 @@
         if ($scope.item['costModel'] == null) {
           $scope.item = defaultItem();
         }
+        $scope.countries.forEach(function(v) {
+          if(v.value == $scope.item.country) {
+            prefixCountry = v.display + ' - ';
+            return;
+          }
+        });
+        $scope.trafficSources.forEach(function(v) {
+          if(v.id == $scope.item.trafficSourceId) {
+            prefixTraffic = v.name + ' - ';
+            return;
+          }
+        });
+        $scope.oldName = $scope.item.name;
+        prefix = prefixTraffic + prefixCountry;
       } else {
+        prefixCountry = 'Global - ';
+        prefixTraffic = allTraffic.length > 0 ? allTraffic[0].name + ' - ' : '';
+        prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
         $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
       }
 
@@ -611,18 +633,12 @@
         }
       });
 
-      var cost = "";
-      if (traffic.cost) {
-        cost = JSON.parse(traffic.cost);
-      }
-      if (cost) {
+      var cost = JSON.parse(traffic.cost);
+      if (cost.Placeholder) {
         impParam = impParam + cost.Parameter + "=" + cost.Placeholder + "&";
       }
-      var external = "";
-      if (traffic.externalId) {
-        external = JSON.parse(traffic.externalId);
-      }
-      if (external) {
+      var external = JSON.parse(traffic.externalId);
+      if (external.Placeholder) {
         impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
       }
 
@@ -646,6 +662,55 @@
     }
 
     $q.all(initPromises).then(initSuccess);
+
+    $scope.nameChanged = function(name) {
+      if(name == undefined || name.length < prefix.length) {
+        $scope.item.name = prefix;
+      } else if(name.indexOf(prefix) != 0) {
+        var sub = name.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if(name.length < $scope.oldName.length) {
+          $scope.item.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.item.name = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.item.name;
+    };
+
+    $scope.countryChanged = function(country) {
+      $scope.countries.forEach(function(v) {
+        if(v.value == country) {
+          prefixCountry = v.display + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixTraffic + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    }
+
+    $scope.trafficSourceChanged = function(id) {
+      $scope.trafficSources.forEach(function(v) {
+        if(v.id == id) {
+          prefixTraffic = v.name + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixTraffic + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    };
 
     function calculateRelativeWeight(list, isValid) {
       var total = 0;
@@ -782,7 +847,14 @@
       $scope.$parent.$state.go('app.flow', {id: $scope.item.flow.id, frcpn: 1});
     };
 
-    this.cancel = $mdDialog.cancel;
+    this.cancel = function() {
+      if (!$scope.editForm.$dirty) {
+        $mdDialog.cancel();
+      } else {
+        closeConfirmDialog($mdDialog);
+      }
+    };
+
 
     function defaultItem() {
       return {
@@ -895,16 +967,38 @@
     };
 
     $scope.isDisabled = false;
+    $scope.addTrafficSource = function() {
+      $mdDialog.cancel();
+      $scope.$parent.$state.go('app.report.traffic', {
+        'traffic': {
+          'isShowAdd': true
+        }
+      });
+    };
+
   }
 
-  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter) {
-    $scope.tags = [];
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag) {
+    var prefix = 'Global - ';
+    initTags($scope, Tag);
     if (this.item) {
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
         $scope.tags = $scope.item.tags;
+        $scope.item = {
+          numberOfOffers: 1,
+        };
+        if($scope.item.country) {
+          $scope.countries.forEach(function(v) {
+            if(v.value == $scope.item.country) {
+              prefix = v.display + ' - ';
+              return;
+            }
+          });
+        }
+        $scope.oldName = $scope.item.name;
       });
       this.title = "edit";
     } else {
@@ -912,9 +1006,47 @@
         numberOfOffers: 1
       };
       this.title = "add";
+      $scope.item.name = prefix;
+      $scope.oldName = $scope.item.name;
     }
+    
     this.titleType = angular.copy(this.perfType);
-
+    $scope.nameChanged = function() {
+      if($scope.item.name == undefined || $scope.item.name.length < prefix.length) {
+        $scope.item.name = prefix;
+      } else if ($scope.item.name.indexOf(prefix) != 0) {
+        var sub = $scope.item.name.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if($scope.item.name.length < $scope.oldName.length) {
+          $scope.item.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.item.name = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.item.name;
+    };
+    $scope.countryChanged = function(country) {
+      var countryName = '';
+      $scope.countries.forEach(function(v) {
+        if(v.value == country) {
+          countryName = v.display;
+          return;
+        }
+      });
+      var preStr = countryName + ' - ';
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    }
+    
     // Country
     $scope.countries = $scope.$root.countries;
 
@@ -963,9 +1095,9 @@
 
   }
 
-  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl) {
-    $scope.tags = [];
-
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag) {
+    var prefix = '', prefixCountry = '', prefixAffiliate = '';
+    initTags($scope, Tag);
     // init load data
     var initPromises = [], prms;
 
@@ -985,6 +1117,8 @@
       };
       $scope.affiliateId = "0";
       this.title = "add";
+      prefixCountry = 'Global - ';
+      prefix = $scope.item.name = $scope.oldName = prefixCountry;
     }
 
     // Country
@@ -1013,6 +1147,23 @@
             payoutMode: 0,
           };
         }
+        $scope.item = {
+          numberOfOffers: 1,
+        };
+        $scope.countries.forEach(function(v) {
+          if(v.value == $scope.item.country) {
+            prefixCountry = v.display + ' - ';
+            return;
+          }
+        });
+        $scope.affiliates.forEach(function(v) {
+          if(v.id == $scope.item.AffiliateNetworkId) {
+            prefixAffiliate = v.name + ' - ';
+            return;
+          }
+        });
+        $scope.oldName = $scope.item.name;
+        prefix = prefixAffiliate + prefixCountry;
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
@@ -1032,8 +1183,56 @@
 
         });
       });
-
     }
+
+    $scope.nameChanged = function(name) {
+      if(name == undefined || name.length < prefix.length) {
+        $scope.item.name = prefix;
+      } else if(name.indexOf(prefix) != 0) {
+        var sub = name.substr(0, prefix.length);
+        var arr1 = prefix.split('');
+        var arr2 = sub.split('');
+        var inputText = '';
+        for(var i = 0, l = prefix.length; i < l; i++) {
+          if(arr1[i] !== arr2[i]) {
+            inputText = arr2[i];
+            break;
+          }
+        }
+        if(name.length < $scope.oldName.length) {
+          $scope.item.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+        } else {
+          $scope.item.name = $scope.oldName + inputText;
+        }
+      }
+      $scope.oldName = $scope.item.name;
+    };
+
+    $scope.countryChanged = function(country) {
+      $scope.countries.forEach(function(v) {
+        if(v.value == country) {
+          prefixCountry = v.display + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixAffiliate + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    }
+
+    $scope.affiliateChanged = function(id) {
+      $scope.affiliates.forEach(function(v) {
+        if(v.id == id) {
+          prefixAffiliate = v.name + ' - ';
+          return;
+        }
+      });
+      var preStr = prefixAffiliate + prefixCountry;
+      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
+      prefix = preStr;
+    };
 
     $q.all(initPromises).then(initSuccess);
 
@@ -1092,6 +1291,11 @@
     $scope.urlTokenClick = function (url) {
       $rootScope.$broadcast('add', url, "url");
     };
+
+    $scope.addAffiliateNetwork = function() {
+      $mdDialog.cancel();
+      $scope.$parent.$state.go('app.report.affiliate', {'affiliate': {'isShowAdd': true}});
+    }
   }
 
   function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter) {
@@ -1103,7 +1307,9 @@
         if($scope.item.cost) {
           $scope.cost = JSON.parse($scope.item.cost);
         } else {
-          $scope.cost = {};
+          $scope.cost = {
+            Parameter: '', Placeholder: '', Name: ''
+          };
         }
 
         if ($scope.item.externalId) {
@@ -1133,8 +1339,12 @@
       $scope.item = {
         impTracking: 0,
       };
-      $scope.externalId = {};
-      $scope.cost = {};
+      $scope.externalId = {
+        Parameter: '', Placeholder: '', Name: ''
+      };
+      $scope.cost = {
+        Parameter: '', Placeholder: '', Name: ''
+      };
       $scope.params = [
         {Parameter: '', Placeholder: '', Name: '', Track: 0},
         {Parameter: '', Placeholder: '', Name: '', Track: 0},
@@ -1463,6 +1673,50 @@
     function error() {
       this.onprocess = false;
       this.error = 'Error occured when delete.';
+    }
+  }
+
+  function initTags($scope, Tag) {
+    $scope.tags = [];
+    $scope.tagsFilter = {
+        config: {
+            plugins: ['remove_button'],
+            create: true,
+            valueField: 'name',
+            labelField: 'name',
+            searchField: ['name']
+        },
+        options: []
+    };
+    Tag.get(null, function(oData) {
+      $scope.tagsFilter.options = oData.data.tags;
+    });
+  }
+
+  function closeConfirmDialog($mdDialog) {
+    $mdDialog.show({
+      multiple: true,
+      skipHide: true,
+      clickOutsideToClose: false,
+      controller: ['$scope', '$mdDialog', closeConfirmCtrl],
+      controllerAs: 'ctrl',
+      focusOnOpen: false,
+      bindToController: true,
+      templateUrl: 'tpl/close-confirm-dialog.html',
+    }).then(function(){
+      $mdDialog.cancel();
+    });
+    function closeConfirmCtrl($scope, $mdDialog) {
+      this.title = "warnCloseTitle";
+      this.content = 'warnClose';
+      
+      this.ok = function() {
+        $mdDialog.hide();
+      };
+
+      this.cancel = function() {
+        $mdDialog.cancel();
+      };
     }
   }
 

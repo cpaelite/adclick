@@ -6,7 +6,6 @@ var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
 
 
-
 /**
  * @api {get} /api/flows  获取用户所有flows
  * @apiName  get  user  flows
@@ -383,8 +382,6 @@ router.delete('/api/flows/:id', async function (req, res, next) {
 });
 
 
-
-
 async function saveOrUpdateFlow(value, connection) {
 
     let updateMethod = false;
@@ -568,79 +565,79 @@ router.get('/api/conditions', async function (req, res) {
     var result = [{
         "id": "model",
         "display": "Brand and model",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "l2select", "name": "value", "options": []
         }]
     }, {
         "id": "browser",
         "display": "Browser and version",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "l2select", "name": "value", "options": []
         }]
     }, {
         "id": "connection",
         "display": "Connection Type",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "select", "name": "value", "options": []
         }]
     }, {
         "id": "country",
         "display": "Country",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "select", "name": "value", "options": []
         }]
     }, {
         "id": "region",
         "display": "State / Region",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "city",
         "display": "City",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "weekday",
         "display": "Day of week",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "checkbox", "name": "weekday", "options": [
-                { "value": "0", "display": "Monday" },
-                { "value": "1", "display": "Tuesday" },
-                { "value": "2", "display": "Wednesday" },
-                { "value": "3", "display": "Thursday" },
-                { "value": "4", "display": "Friday" },
-                { "value": "5", "display": "Saturday" },
-                { "value": "6", "display": "Sunday" }
+                {"value": "0", "display": "Monday"},
+                {"value": "1", "display": "Tuesday"},
+                {"value": "2", "display": "Wednesday"},
+                {"value": "3", "display": "Thursday"},
+                {"value": "4", "display": "Friday"},
+                {"value": "5", "display": "Saturday"},
+                {"value": "6", "display": "Sunday"}
             ]
         }, {
             "type": "select", "label": "Time zone", "name": "tz", "options": [
-                { "value": "+05:45", "display": "(UTC+05:45) Kathmandu" },
-                { "value": "-03:30", "display": "(UTC-03:30) Newfoundland" },
-                { "value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi" },
-                { "value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)" },
-                { "value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta" }
+                {"value": "+05:45", "display": "(UTC+05:45) Kathmandu"},
+                {"value": "-03:30", "display": "(UTC-03:30) Newfoundland"},
+                {"value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi"},
+                {"value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)"},
+                {"value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta"}
             ]
         }]
     }, {
         "id": "device",
         "display": "Device type",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "select", "name": "value", "options": []
         }]
     }, {
         "id": "iprange",
         "display": "IP and IP ranges",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
@@ -648,35 +645,35 @@ router.get('/api/conditions', async function (req, res) {
     }, {
         "id": "isp",
         "display": "ISP",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "language",
         "display": "Language",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "carrier",
         "display": "Mobile carrier",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "chips", "name": "value", "options": []
         }]
     }, {
         "id": "os",
         "display": "Operating system and version",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "l2select", "name": "value", "options": []
         }]
     }, {
         "id": "referrer",
         "display": "Referrer",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": ""
@@ -684,26 +681,26 @@ router.get('/api/conditions', async function (req, res) {
     }, {
         "id": "time",
         "display": "Time of day",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "inputgroup",
             "inputs": [
-                { "label": "Between", "name": "starttime", "placeholder": "00:00" },
-                { "label": "and", "name": "endtime", "placeholder": "00:00" },
+                {"label": "Between", "name": "starttime", "placeholder": "00:00"},
+                {"label": "and", "name": "endtime", "placeholder": "00:00"},
             ]
         }, {
             "type": "select", "label": "Time zone", "name": "tz", "options": [
-                { "value": "utc", "display": "UTC" },
-                { "value": "-8", "display": "-8 PDT" },
-                { "value": "+8", "display": "+8 Shanghai" },
-                { "value": "+7", "display": "+7 Soul" },
-                { "value": "+9", "display": "+7 Tokyo" }
+                {"value": "utc", "display": "UTC"},
+                {"value": "-8", "display": "-8 PDT"},
+                {"value": "+8", "display": "+8 Shanghai"},
+                {"value": "+7", "display": "+7 Soul"},
+                {"value": "+9", "display": "+7 Tokyo"}
             ]
         }]
     }, {
         "id": "useragent",
         "display": "User Agent",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
         "fields": [{
             "type": "textarea", "name": "value",
             "desc": ""
@@ -731,7 +728,6 @@ let init = function () {
 }
 
 init();
-
 
 
 async function fillConditions(r) {
@@ -799,9 +795,9 @@ async function loadBrandAndVersionFromDB() {
         for (let i = 0; i < lines.length; i++) {
             var line = lines[i]
             if (!r[line.category]) {
-                r[line.category] = { value: line.category, display: line.category, suboptions: [] }
+                r[line.category] = {value: line.category, display: line.category, suboptions: []}
             }
-            r[line.category].suboptions.push({ value: line.name, display: line.name })
+            r[line.category].suboptions.push({value: line.name, display: line.name})
         }
         r2 = Object.values(r)
     } catch (err) {
@@ -822,9 +818,9 @@ async function loadOsFromDB() {
         for (let i = 0; i < lines.length; i++) {
             var line = lines[i]
             if (!r[line.category]) {
-                r[line.category] = { value: line.category, display: line.category, suboptions: [] }
+                r[line.category] = {value: line.category, display: line.category, suboptions: []}
             }
-            r[line.category].suboptions.push({ value: line.name, display: line.name })
+            r[line.category].suboptions.push({value: line.name, display: line.name})
         }
         r2 = Object.values(r)
     } catch (err) {
@@ -846,9 +842,9 @@ async function loadBowerAndVersionFromDB() {
         for (let i = 0; i < lines.length; i++) {
             var line = lines[i]
             if (!r[line.category]) {
-                r[line.category] = { value: line.category, display: line.category, suboptions: [] }
+                r[line.category] = {value: line.category, display: line.category, suboptions: []}
             }
-            r[line.category].suboptions.push({ value: line.name, display: line.name })
+            r[line.category].suboptions.push({value: line.name, display: line.name})
         }
         r2 = Object.values(r)
     } catch (err) {
@@ -963,22 +959,22 @@ async function loadTimezoneFromDB() {
 
 //TODO: update the values
 async function loadConnectionType() {
-    var r = [{ value: "Broadband", display: "Broadband" },
-    { value: "Cable", display: "Cable" },
-    { value: "Mobile", display: "Mobile" },
-    { value: "Satellite", display: "Satellite" },
-    { value: "Unknown", display: "Unknown" },
-    { value: "Wireless", display: "Wireless" },
-    { value: "XDSL", display: "XDSL" }
+    var r = [{value: "Broadband", display: "Broadband"},
+        {value: "Cable", display: "Cable"},
+        {value: "Mobile", display: "Mobile"},
+        {value: "Satellite", display: "Satellite"},
+        {value: "Unknown", display: "Unknown"},
+        {value: "Wireless", display: "Wireless"},
+        {value: "XDSL", display: "XDSL"}
     ]
     return r
 }
 
 async function loadDeviceType() {
-    var r = [{ value: "DesktopsLaptop", display: "Desktops & Laptops" },
-    { value: "Cable", display: "Mobile Phones" },
-    { value: "Mobile", display: "Smart TV" },
-    { value: "Satellite", display: "Tablet" }
+    var r = [{value: "DesktopsLaptop", display: "Desktops & Laptops"},
+        {value: "Cable", display: "Mobile Phones"},
+        {value: "Mobile", display: "Smart TV"},
+        {value: "Satellite", display: "Tablet"}
     ]
     return r
 }
@@ -989,6 +985,16 @@ function query(sql, connection) {
             if (err) {
                 return reject(err);
             }
+            //turn true false string to boolean
+            result.forEach(function (r) {
+                for (let key in r) {
+                    if (r[key] == "true") {
+                        r[key] = true
+                    } else if (r[key] == "false") {
+                        r[key] = false
+                    }
+                }
+            });
             resolve(result);
         })
     });
@@ -998,44 +1004,44 @@ function conditionFormat(c) {
     // console.info(c)
     var r = []
     c.forEach(function (v) {
-        if (v.id == 'model') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'browser') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'connection') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'country') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'region') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'city') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'varN') {
-            // r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'weekday') {
-            r.push(formatWeekDay(v.id, v.operand, v.tz, v.weekday))
-        } else if (v.id == 'device') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'iprange') {
-            r.push(formatIPValue(v.id, v.operand, v.value))
-        } else if (v.id == 'isp') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'language') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'carrier') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'os') {
-            r.push(formatThreeKeys(v.id, v.operand, v.value))
-        } else if (v.id == 'referrer') {
-            r.push(formatTextValue(v.id, v.operand, v.value))
-        } else if (v.id == 'time') {
-            r.push(formatTime(v.id, v.operand, v.tz, v.starttime, v.endtime))
-        } else if (v.id == 'useragent') {
-            r.push(formatTextValue(v.id, v.operand, v.value))
-        } else {
-            console.error("unsupported id type ", v.id)
+            if (v.id == 'model') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'browser') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'connection') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'country') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'region') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'city') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'varN') {
+                // r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'weekday') {
+                r.push(formatWeekDay(v.id, v.operand, v.tz, v.weekday))
+            } else if (v.id == 'device') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'iprange') {
+                r.push(formatIPValue(v.id, v.operand, v.value))
+            } else if (v.id == 'isp') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'language') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'carrier') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'os') {
+                r.push(formatThreeKeys(v.id, v.operand, v.value))
+            } else if (v.id == 'referrer') {
+                r.push(formatTextValue(v.id, v.operand, v.value))
+            } else if (v.id == 'time') {
+                r.push(formatTime(v.id, v.operand, v.tz, v.starttime, v.endtime))
+            } else if (v.id == 'useragent') {
+                r.push(formatTextValue(v.id, v.operand, v.value))
+            } else {
+                console.error("unsupported id type ", v.id)
+            }
         }
-    }
     )
     return [r]
 }
@@ -1134,8 +1140,6 @@ function formatIPValue(id, operand, value) {
     r = r.concat(m)
     return r
 }
-
-
 
 
 exports.router = router;

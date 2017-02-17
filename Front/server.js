@@ -181,6 +181,14 @@ app.get('/api/tags', function (req, res) {
                 {
                     id: 1,
                     name: "tag1"
+                },
+                {
+                    id: 1,
+                    name: "123"
+                },
+                {
+                    id: 1,
+                    name: "234"
                 }
             ]
         }
@@ -704,7 +712,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
         "message": "success",
         "data": {
             "id": 18,
-            "name": "campaign.1",
+            "name": "TrafficSource1 - China - campaign.1",
             "hash": "campaign.1.hash",
             "url": "http://zhanchenxing.newbidder.com/campaign.1/",
             "impPixelUrl": "http://zhanchenxing.newbidder.com/impression/campaign.1/",
@@ -930,7 +938,7 @@ app.get('/api/flows/:flowId', function (req, res) {
         data: {
             "id": 1,
             "name": "Global - yoshop-Android-benson",
-            "country": "us",
+            "country": "CHN",
             "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
             "rules": [{
                 "id": 3,
@@ -1147,81 +1155,85 @@ app.post('/api/flows', function (req, res) {
 app.post('/api/flows/:flowId', function (req, res) {
     console.log(JSON.stringify(req.body));
     var result = {
-        "id": 1,
-        "name": "Global - yoshop-Android-benson",
-        "country": "us",
-        "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-        "rules": [{
-            "id": 3,
-            "isDefault": true,
-            "paths": [{
-                "id": 1,
-                "name": "path name 1",
-                "redirecMode": 0,
-                "directLinking": false,
-                "enabled": true,
-                "weight": 100,
-                "landers": [{
-                    "id": "2343",  // lander id
-                    "weight": 100
-                }],
-                "offers": [{
-                    "id": "3432",  // offer id
-                    "weight": 100
-                }]
-            }]
-        }, {
-            "id": 4,
-            "name": "the rule name",
-            "isDefault": false,
-            "enabled": true,   // is this rule enabled/disabled
-            "conditions": [{
-                "id": "3434",    // condition id, refer to /api/conditions
-                "operand": "is", // is/isnt
-                "value": ["windows", "android4.5", "android7"]
-            }, {
-                "id": "1234",
-                "operand": "isnt",
-                "tz": "+0800",
-                "weekday": ["tue", "fri"]
-            }],
-            "paths": [{
-                "id": 1,
-                "name": "path name 1",
-                "redirecMode": 0,
-                "directLinking": false,
-                "enabled": true,
-                "weight": 100,
-                "landers": [{
-                    "id": "2343",
-                    "weight": 100
-                }, {
-                    "id": "3943",
-                    "weight": 50
-                }],
-                "offers": [{
-                    "id": "3432",
-                    "weight": 100
-                }, {
-                    "id": "8923",
-                    "weight": 200
-                }]
-            }, {
-                "id": 2,
-                "name": "path name 2",
-                "redirecMode": 0,
-                "directLinking": true,
-                "enabled": true,
-                "weight": 100,
-                "landers": [{
-                    "id": "4842",
-                    "weight": 100
-                }, {
-                    "id": "7265",
-                    "weight": 50
-                }]
-            }]
-        }]
+        status: 1,
+        message: "",
+        data: {
+          "id": 1,
+          "name": "Global - yoshop-Android-benson",
+          "country": "us",
+          "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
+          "rules": [{
+              "id": 3,
+              "isDefault": true,
+              "paths": [{
+                  "id": 1,
+                  "name": "path name 1",
+                  "redirecMode": 0,
+                  "directLinking": false,
+                  "enabled": true,
+                  "weight": 100,
+                  "landers": [{
+                      "id": "2343",  // lander id
+                      "weight": 100
+                  }],
+                  "offers": [{
+                      "id": "3432",  // offer id
+                      "weight": 100
+                  }]
+              }]
+          }, {
+              "id": 4,
+              "name": "the rule name",
+              "isDefault": false,
+              "enabled": true,   // is this rule enabled/disabled
+              "conditions": [{
+                  "id": "3434",    // condition id, refer to /api/conditions
+                  "operand": "is", // is/isnt
+                  "value": ["windows", "android4.5", "android7"]
+              }, {
+                  "id": "1234",
+                  "operand": "isnt",
+                  "tz": "+0800",
+                  "weekday": ["tue", "fri"]
+              }],
+              "paths": [{
+                  "id": 1,
+                  "name": "path name 1",
+                  "redirecMode": 0,
+                  "directLinking": false,
+                  "enabled": true,
+                  "weight": 100,
+                  "landers": [{
+                      "id": "2343",
+                      "weight": 100
+                  }, {
+                      "id": "3943",
+                      "weight": 50
+                  }],
+                  "offers": [{
+                      "id": "3432",
+                      "weight": 100
+                  }, {
+                      "id": "8923",
+                      "weight": 200
+                  }]
+              }, {
+                  "id": 2,
+                  "name": "path name 2",
+                  "redirecMode": 0,
+                  "directLinking": true,
+                  "enabled": true,
+                  "weight": 100,
+                  "landers": [{
+                      "id": "4842",
+                      "weight": 100
+                  }, {
+                      "id": "7265",
+                      "weight": 50
+                  }]
+              }]
+          }]
+        }
     };
     res.send(result);
 });
@@ -1248,10 +1260,10 @@ app.get('/api/landers/:landerId', function (req, res) {
         message: "",
         data: {
             "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
-            "name": "Global - SecurityAlert-en",
+            "name": "Japan - SecurityAlert-en",
             "hash": "",
             "url": "http://s.ktrack.net/w/SecurityAlert.php",
-            "country": "",
+            "country": "JPN",
             "numberOfOffers": 1,
             "tags": []
         }
@@ -1359,7 +1371,7 @@ app.get('/api/offers/:offerId', function (req, res) {
         "message": "success",
         "data": {
             "id": 22,
-            "name": "Offer1",
+            "name": "affilate1 - China - Offer1",
             "hash": "03f1d070-9089-4502-842d-28101d83f474",
             "url": "http://adbund.com",
             "country": "CHN",
@@ -1820,6 +1832,27 @@ app.get('/api/conditions', function (req, res) {
                 {"value": "+7", "display": "+7 Soul"},
                 {"value": "+9", "display": "+7 Tokyo"}
             ]
+        }]
+    }, {
+        "id": "custom1",
+        "display": "Custom variable 1",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+        "fields": [{
+            "type": "input", "name": "value", "placeholder": ""
+        }]
+    }, {
+        "id": "custom2",
+        "display": "Custom variable 2",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+        "fields": [{
+            "type": "input", "name": "value", "placeholder": ""
+        }]
+    }, {
+        "id": "custom3",
+        "display": "Custom variable 3",
+        "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+        "fields": [{
+            "type": "input", "name": "value", "placeholder": ""
         }]
     }];
     delayResponse(res, result);

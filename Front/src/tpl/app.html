@@ -48,7 +48,7 @@
                     <span>{{'campaign' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}">
                 <a ui-sref="app.report.flow" md-ink-ripple>
                     <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
                     <span>{{'flow' | translate}}</span>

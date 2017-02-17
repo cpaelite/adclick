@@ -9,8 +9,9 @@
         'cs-flow-active': onEdit=='rule' && curRule==rule,
         'cs-rule-default': rule.isDefault,
         'cs-rule-unexpanded': rule.unexpanded,
-        'cs-is-deleted': rule.isDeleted
-        }">
+        'cs-is-deleted': rule.isDeleted,
+        'cs-is-disabled': !rule.enabled
+      }">
         <span ng-click="toggleExpand(rule)">
           <i class="material-icons md-mini cs-flow-arrow" ng-show="rule.unexpanded">keyboard_arrow_right</i>
           <i class="material-icons md-mini cs-flow-arrow" ng-hide="rule.unexpanded">keyboard_arrow_down</i>
@@ -19,12 +20,16 @@
           <i class="material-icons tree-icon">album</i>
           <span class="cs-rule-name">{{rule.name}}</span>
         </span>
+        <span class="cs-flow-restore" ng-show="rule.isDeleted" ng-click="restore('rule', rule)">
+          <i class="material-icons">restore</i>
+        </span>
 
       </div>
       <ul ng-hide="rule.unexpanded">
         <li ng-repeat="path in rule.paths" class="tree-li" ng-click="editPath(rule, path)" ng-class="{
           'cs-flow-active': onEdit=='path' && curPath==path,
-          'cs-is-deleted': path.isDeleted
+          'cs-is-deleted': path.isDeleted,
+          'cs-is-disabled': !path.enabled
         }">
           <i class="material-icons tree-icon">album</i>
           <span class="cs-path-name clearfix">
@@ -33,16 +38,19 @@
               {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>)
             </span>
           </span>
+          <span class="cs-flow-restore" ng-show="path.isDeleted" ng-click="restore('path', path)">
+            <i class="material-icons">restore</i>
+          </span>
         </li>
         <li ng-click="addPath(rule)" class="cs-flow-addpath tree-li">
           <i class="material-icons add-box">add_box</i>
-          <span class="add-flow-path">{{'add_new_path' | translate}}</span>
+          <span class="add-flow-path" translate>addFlowPath</span>
         </li>
       </ul>
     </div>
     <div ng-click="addRule()" class="cs-flow-addrule tree-li">
       <i class="material-icons add-box">add_box</i>
-      <span class="add-flow-rule">{{'add_flow_rule' | translate}}</span>
+      <span class="add-flow-rule" translate>addFlowRule</span>
     </div>
   </div>
   <div class="col-sm-8 col-md-8 cs-flow-content">
@@ -70,22 +78,22 @@
     <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
       <div class="form-group">
         <label class="label-name">Name:</label>
-        <input type="text" class="form-control" ng-model="flow.name" required>
+        <input type="text" class="form-control" ng-model="flow.name" required ng-change="nameChanged(flow.name)">
       </div>
 
       <div class="form-group">
         <label class="label-name">Country:</label>
         <md-autocomplete
             md-selected-item="flow.country"
-            md-search-text="searchText.country"
-            md-items="item in queryCountries(searchText.country)"
+            md-search-text="searchText"
+            md-items="item in queryCountries(searchText)"
             md-no-cache="true"
             md-select-on-focus="true"
             md-item-text="item.display"
             md-min-length="0"
             placeholder="Select country...">
           <md-item-template>
-            <span md-highlight-text="searchText.country">{{item.display}}</span>
+            <span md-highlight-text="searchText">{{item.display}}</span>
           </md-item-template>
           <md-not-found>
             No matching found.
@@ -132,8 +140,16 @@
               Add condition <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-              <li role="menuitem" ng-repeat="cdt in allConditions">
+              <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'!custom'}">
                 <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
+              </li>
+              <li class="dropdown-submenu">
+                <a>Custom variables...</a>
+                <ul class="dropdown-menu">
+                  <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'custom'}">
+                    <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
+                  </li>
+                </ul>
               </li>
             </ul>
           </div>
@@ -163,6 +179,10 @@
                 <md-select ng-model="cdt[f.name]" class="select-bg">
                   <md-option ng-repeat="o in f.options" value="{{o.value}}">{{o.display}}</md-option>
                 </md-select>
+              </div>
+
+              <div ng-if="f.type=='input'" ng-class="{'col-md-8': f.label}">
+                <input ng-model="cdt[f.name]" placeholder="{{f.placeholder}}">
               </div>
 
               <div ng-if="f.type=='inputgroup'" ng-class="{'col-md-10': f.label}">
@@ -241,13 +261,13 @@
                     md-autocomplete-snap
                     md-require-match="true" class="chips-content">
                   <md-autocomplete
-                      md-search-text="searchText[f.name]"
+                      md-search-text="cdt['_st'+f.name]"
                       md-no-cache="true"
                       md-min-length="0"
-                      md-items="item in querySearchIn(searchText[f.name], f.options, cdt[f.name])"
+                      md-items="item in querySearchIn(cdt['_st'+f.name], f.options, cdt[f.name])"
                       md-item-text="f._v2n[item]"
                       placeholder="{{f.placeholder}}">
-                    <span md-highlight-text="searchText[f.name]">{{f._v2n[item]}}</span>
+                    <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>
                   </md-autocomplete>
                   <md-chip-template><span>{{f._v2n[$chip]}}</span></md-chip-template>
                 </md-chips>
@@ -294,6 +314,61 @@
       </div>
 
       <div class="form-group direct-content clearfix">
+        <div class="col-sm-12 col-md-6 lander-content" ng-hide="curPath.directLinking">
+          <div class="cs-flow-lander-header clearfix">
+            <div class="col-sm-9 col-md-9">Lander</div>
+            <div class="col-sm-3 col-md-3">Weight</div>
+          </div>
+          <div class="cs-flow-lander-row clearfix"
+               ng-repeat="lander in curPath.landers"
+               ng-click="setEdit($event, lander)"
+               ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
+            <div class="col-sm-9 col-md-9">
+              <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
+              <div class="cs-flow-lander-edit clearfix">
+                <md-autocomplete
+                    md-selected-item="lander._def"
+                    md-search-text="lander._searchText"
+                    md-items="item in queryLanders(lander._searchText)"
+                    md-no-cache="true"
+                    md-select-on-focus="true"
+                    md-item-text="item.name"
+                    md-min-length="0"
+                    placeholder="Select lander...">
+                  <md-item-template>
+                    <span md-highlight-text="lander._searchText">{{item.name}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No matching found.
+                  </md-not-found>
+                </md-autocomplete>
+                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
+              </div>
+            </div>
+            <div class="col-sm-3 col-md-3 input-content">
+              <div class="cs-flow-lander-view">
+                {{lander.weight}}
+                <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
+                <em ng-show="lander.relativeWeight<=0">(N/A)</em>
+              </div>
+              <div class="cs-flow-lander-edit clearfix">
+                <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
+                <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
+              </div>
+            </div>
+          </div>
+          <div class="cs-flow-lander-action clearfix">
+            <button ng-click="addLander($event)" type="button" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
+              Add New Lander
+            </button>
+            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
+              Add Lander
+            </button-->
+          </div>
+        </div>
+
         <div class="col-sm-12 col-md-6 offer-content">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Offer</div>
@@ -307,16 +382,16 @@
               <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
               <div class="cs-flow-offer-edit clearfix">
                 <md-autocomplete
-                    md-search-text="searchText['offer'+$index]"
-                    md-items="item in queryOffers(searchText['offer'+$index])"
+                    md-selected-item="offer._def"
+                    md-search-text="offer._searchText"
+                    md-items="item in queryOffers(offer._searchText)"
                     md-no-cache="true"
                     md-select-on-focus="true"
                     md-item-text="item.name"
                     md-min-length="0"
-                    md-selected-item-change="selectedOfferChange(item, offer)"
                     placeholder="Select offer...">
                   <md-item-template>
-                    <span md-highlight-text="searchText['offer'+$index]">{{item.name}}</span>
+                    <span md-highlight-text="offer._searchText">{{item.name}}</span>
                   </md-item-template>
                   <md-not-found>
                     No matching found.
@@ -349,67 +424,16 @@
           </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 lander-content" ng-hide="curPath.directLinking">
-          <div class="cs-flow-lander-header clearfix">
-            <div class="col-sm-9 col-md-9">Lander</div>
-            <div class="col-sm-3 col-md-3">Weight</div>
-          </div>
-          <div class="cs-flow-lander-row clearfix"
-               ng-repeat="lander in curPath.landers" ng-click="setEdit($event, lander)"
-               ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
-            <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
-              <div class="cs-flow-lander-edit clearfix">
-                <md-autocomplete
-                    md-search-text="searchText['lander'+$index]"
-                    md-items="item in queryLanders(searchText['lander'+$index])"
-                    md-no-cache="true"
-                    md-select-on-focus="true"
-                    md-item-text="item.name"
-                    md-min-length="0"
-                    md-selected-item-change="selectedLanderChange(item, lander)"
-                    placeholder="Select lander...">
-                  <md-item-template>
-                    <span md-highlight-text="searchText['lander'+$index]">{{item.name}}</span>
-                  </md-item-template>
-                  <md-not-found>
-                    No matching found.
-                  </md-not-found>
-                </md-autocomplete>
-                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
-              </div>
-            </div>
-            <div class="col-sm-3 col-md-3 input-content">
-              <div class="cs-flow-lander-view">
-                {{lander.weight}}
-                <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
-                <em ng-show="lander.relativeWeight<=0">(N/A)</em>
-              </div>
-              <div class="cs-flow-lander-edit clearfix">
-                <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
-                <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
-              </div>
-            </div>
-          </div>
-          <div class="cs-flow-lander-action clearfix">
-            <button ng-click="addLander($event)" type="button" class="btn btn-default add-lander-btn">
-              <i class="material-icons add-box">add_box</i>
-              Add New Lander
-            </button>
-            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
-              <i class="material-icons add-box">add_box</i>
-              Add Lander
-            </button-->
-          </div>
-        </div>
       </div>
     </form>
 
     <div class="cs-flow-bottom-actions clearfix">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-result" ng-hide="onSave">
-        <span class="cs-save-error" ng-show="saveError">{{saveError}}</span>
-        <span class="cs-save-time" ng-if="saveTime && !saveError">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        <span class="cs-save-error" ng-show="saveErrors.length">
+          <em ng-repeat="err in saveErrors">{{err}}</em>
+        </span>
+        <span class="cs-save-time" ng-show="saveTime && saveErrors.length==0">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       </span>
       <button class="btn btn-primary save-btn" ng-click="save()">
         <i class="material-icons">check</i>

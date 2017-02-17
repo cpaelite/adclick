@@ -92,4 +92,7 @@ angular.module('app')
   .factory('EventLog', ['$resource', function ($resource) {
     return $resource('/api/eventlog');
   }])
+  .factory('Tag', ['$resource', function ($resource) {
+    return $resource('/api/tags');
+  }])
 ;
