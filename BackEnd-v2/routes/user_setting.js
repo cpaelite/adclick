@@ -24,6 +24,7 @@ var _ = require('lodash');
           lastname:'test',
           companyname: 'zheng',
           tel: '13120663670',
+          email:"",
           timezone:'+08:00',
           homescreen:'dashboard',  // or campaignList
           referralToken:"",
@@ -42,7 +43,7 @@ router.get('/api/profile', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `idText`,`firstname`,`lastname`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
+        let result = await query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
 
         let responseData = {};
         if (result.length) {
@@ -52,6 +53,7 @@ router.get('/api/profile', async function (req, res, next) {
             responseData.status = result[0].status;
             responseData.timezone = result[0].timezone;
             responseData.referralToken = result[0].referralToken;
+            responseData.email=result[0].email;
             if (result[0].setting) {
                 let settingJSON = JSON.parse(result[0].setting);
                 responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
@@ -113,7 +115,7 @@ router.post('/api/profile', async function (req, res, next) {
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
         companyname: Joi.string().optional(),
-        tel: Joi.string().optional(),
+        tel: Joi.string().optional().empty(""),
         timezone: Joi.string().required(),
         homescreen: Joi.string().required()
     });
@@ -262,20 +264,21 @@ router.post('/api/email', async function (req, res, next) {
         if (UserResult.length > 0) throw new Error("email exists");
 
         let result = await query("select `password` from User where `id`= ? ", [value.userId], connection);
-        let message;
+
+        
         if (result && result[0]) {
             if (md5(value.password) == result[0].password) {
                 await query("update User set `email`= ?  where `id`= ? ", [value.email, value.userId], connection);
-                message = "success";
+               
             } else {
-                message = "password error";
+                 throw new Error("password error") ;
             }
         } else {
-            message = "account error";
+             throw new Error("account error") ;
         }
         res.json({
             status: 1,
-            message: message
+            message: "success"
         });
     } catch (e) {
         next(e);
