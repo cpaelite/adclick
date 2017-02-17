@@ -574,7 +574,9 @@
           $scope.radioTitle = 'CPM';
           $scope.costModelValue = $scope.item.cpmValue;
         }
-        $scope.tags = $scope.item.tags;
+        $scope.item.tags.forEach(function(v) {
+          $scope.tags.push(v.name);
+        });
         $scope.tagsFilter.options = $scope.item.tags;
         if ($scope.item.trafficSourceId)
           $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
@@ -993,7 +995,9 @@
       Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
         if (isDuplicate) delete $scope.item.id;
-        $scope.tags = $scope.item.tags;
+        $scope.item.tags.forEach(function(v) {
+          $scope.tags.push(v.name);
+        });
         $scope.tagsFilter.options = $scope.item.tags;
         // $scope.item = {
         //   numberOfOffers: 1,
@@ -1149,7 +1153,9 @@
       if (theOffer) {
         $scope.item = theOffer;
         $scope.affiliateId = theOffer.AffiliateNetworkId.toString();
-        $scope.tags = $scope.item.tags;
+        $scope.item.tags.forEach(function(v) {
+          $scope.tags.push(v.name);
+        });
         $scope.tagsFilter.options = $scope.item.tags;
         // if ($scope.item['payoutMode'] == null) {
         //   $scope.item = {
