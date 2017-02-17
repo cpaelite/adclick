@@ -403,6 +403,7 @@ router.get('/api/referrals', async function (req, res, next) {
                 },
                 "statistics" : {     
                     "overageEvents":1,
+                    "remainingEvents":1,
                     "overageCost":0.999,
                     "totalEvents" : 2,
                     "billedEvents" : 2
@@ -426,8 +427,8 @@ router.get('/api/billing', async function (req, res, next) {
         let compled = _.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,   
         DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planEnd\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')   as endTime,
         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,plan.\`overageCPM\` as overageCPM, bill.\`overageEvents\` as overageEvents,
-        (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents
+        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM, bill.\`overageEvents\` as overageEvents,
+        (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents,(plan.\`eventsLimit\` - bill.\`billedEvents\` ) as remainingEvents  
         from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0`);
         let sql = compled({
             tz: value.timezone

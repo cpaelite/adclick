@@ -68,7 +68,15 @@ function validate(data, schema) {
     return new Promise(function (resolve, reject) {
         Joi.validate(data, schema, function (err, value) {
             if (err) {
-                reject(err);
+                let validateJSON={
+                    code:8,
+                    message:"validate error",
+                    data:{}
+                }
+                for(let index=0;index<err.details.length;index++){
+                    validateJSON.data[err.details[index].path]=err.details[index].message;
+                }
+                reject(validateJSON);
             }
             resolve(value);
         })
@@ -991,28 +999,30 @@ function insertTrafficSource(userId, traffic, connection) {
 function updatetraffic(userId, traffic, connection) {
     return new Promise(function (resolve, reject) {
         var sqlUpdateOffer = "update  TrafficSource  set `id`=" + traffic.id;
-        if (traffic.name) {
+        if (traffic.name != undefined) {
             sqlUpdateOffer += ",`name`='" + traffic.name + "'"
         }
-        if (traffic.postbackUrl) {
+        if (traffic.postbackUrl != undefined) {
             sqlUpdateOffer += ",`postbackUrl`='" + traffic.postbackUrl + "'"
         }
-        if (traffic.pixelRedirectUrl) {
+
+        if (traffic.pixelRedirectUrl != undefined) {
             sqlUpdateOffer += ",`pixelRedirectUrl`='" + traffic.pixelRedirectUrl + "'"
         }
         if (traffic.impTracking != undefined) {
             sqlUpdateOffer += ",`impTracking`=" + traffic.impTracking
         }
-        if (traffic.externalId) {
+        if (traffic.externalId != undefined) {
             sqlUpdateOffer += ",`externalId`='" + traffic.externalId + "'"
         }
-        if (traffic.cost) {
+        if (traffic.cost != undefined) {
             sqlUpdateOffer += ",`cost`='" + traffic.cost + "'"
         }
-        if (traffic.params) {
+        if (traffic.params != undefined) {
             sqlUpdateOffer += ",`params`='" + traffic.params + "'"
         }
         sqlUpdateOffer += " where `userId`=" + userId + " and `id`= " + traffic.id;
+
         connection.query(sqlUpdateOffer, function (err, result) {
             if (err) {
                 reject(err);
