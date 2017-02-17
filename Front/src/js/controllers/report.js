@@ -516,7 +516,7 @@
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag) {
     var prefix = '', prefixCountry = '', prefixTraffic = '';
-    initTags($scope, Tag);
+    initTags($scope, Tag, 1);
     // init load data
     var initPromises = [], prms;
     var theCampaign;
@@ -986,7 +986,7 @@
 
   function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag) {
     var prefix = 'Global - ';
-    initTags($scope, Tag);
+    initTags($scope, Tag, 2);
     if (this.item) {
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
@@ -1103,7 +1103,7 @@
 
   function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag) {
     var prefix = '', prefixCountry = '', prefixAffiliate = '';
-    initTags($scope, Tag);
+    initTags($scope, Tag, 3);
     // init load data
     var initPromises = [], prms;
 
@@ -1676,7 +1676,7 @@
     }
   }
 
-  function initTags($scope, Tag) {
+  function initTags($scope, Tag, type) {
     $scope.tags = [];
     $scope.tagsFilter = {
         config: {
@@ -1688,7 +1688,7 @@
         },
         options: []
     };
-    Tag.get(null, function(oData) {
+    Tag.get({type: type}, function(oData) {
       $scope.tagsFilter.options = oData.data.tags;
     });
   }
