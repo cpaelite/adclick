@@ -1099,7 +1099,7 @@
     var defaultPostBackUrl;
     prms = DefaultPostBackUrl.get(null, function (postbackUrl) {
       defaultPostBackUrl = postbackUrl.data.defaultPostBackUrl;
-    });
+    }).$promise;
     initPromises.push(prms);
 
     var allAffiliate;
