@@ -371,8 +371,7 @@ router.delete('/api/flows/:id', async function (req, res, next) {
             status: 1,
             message: 'success'
         });
-        //reids pub
-        new Pub(true).publish(setting.redis.channel, value.userId, "flowDelete");
+        
     } catch (e) {
         next(e);
     } finally {
@@ -385,7 +384,7 @@ router.delete('/api/flows/:id', async function (req, res, next) {
 
 async function saveOrUpdateFlow(value, connection) {
 
-    let updateMethod = false;
+     
     try {
         let flowResult;
         await common.beginTransaction(connection);
@@ -393,7 +392,7 @@ async function saveOrUpdateFlow(value, connection) {
         if (!value.id) {
             flowResult = await common.insertFlow(value.userId, value, connection)
         } else if (value && value.id) {
-            updateMethod = true;
+           
             await common.updateFlow(value.userId, value, connection)
         }
 
@@ -491,8 +490,7 @@ async function saveOrUpdateFlow(value, connection) {
     }
     await common.commit(connection);
 
-    //reids pub
-    new Pub(true).publish(setting.redis.channel, value.userId, updateMethod ? "flowUpdate" : "flowAdd");
+   
 
     delete value.userId;
     return value;
