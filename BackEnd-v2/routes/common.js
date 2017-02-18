@@ -69,12 +69,11 @@ function validate(data, schema) {
         Joi.validate(data, schema, function (err, value) {
             if (err) {
                 let validateJSON={
-                    code:8,
-                    message:"validate error",
-                    data:{}
+                    code :8,
+                    message:{}
                 }
                 for(let index=0;index<err.details.length;index++){
-                    validateJSON.data[err.details[index].path]=err.details[index].message;
+                    validateJSON.message[err.details[index].path]=err.details[index].message;
                 }
                 reject(validateJSON);
             }
@@ -1166,6 +1165,32 @@ function deleteAffiliate(id, userId, name, hash, connection) {
     })
 }
 
+
+async function checkNameExists(userId,name,type,connection){
+    let results=[];
+    switch (type){
+        case 1 :
+           results= await query("select `id` from TrackingCampaign where `userId`= ? and `name`= ?",[userId,name],connection);
+           break;
+        case 2:
+           results= await query("select `id` from Lander where `userId`= ? and `name`= ?",[userId,name],connection);  
+           break;  
+        case 3:
+           results= await query("select `id` from Offer where `userId`= ? and `name`= ?",[userId,name],connection);  
+           break;
+        case 4:
+           results= await query("select `id` from Flow where `userId`= ? and `name`= ?",[userId,name],connection);  
+           break;
+        default:
+           throw new Error("Paramter type error");         
+    }
+    if(results.length){
+        return true;
+    } 
+    return false;
+}
+
+
 exports.deleteAffiliate = deleteAffiliate;
 exports.updateAffiliates = updateAffiliates;
 exports.insertAffiliates = insertAffiliates;
@@ -1214,3 +1239,4 @@ exports.deletePath2Rule = deletePath2Rule;
 exports.deleteRule2Flow = deleteRule2Flow;
 exports.deleteLander2Path = deleteLander2Path;
 exports.deleteOffer2Path = deleteOffer2Path;
+exports.checkNameExists=checkNameExists;
