@@ -197,6 +197,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
                     if (ruleResult[i].parentId == Result.id) {
                         ruleResult[i].paths = [];
                         delete ruleResult[i].parentId;
+                        ruleResult[i].conditions= JSON.parse(ruleResult[i].conditions);
                         Result.rules.push(ruleResult[i])
 
                         for (let j = 0; j < pathResult.length; j++) {
@@ -720,7 +721,6 @@ let loadCondition = async function (result) {
 //loadCondition
 let init = function () {
     if (setting.env !== "development") {
-        console.log(111)
         loadCondition(setting.conditionResult).then(function (data) {
             new Pub(true).set(setting.redis.conditionKey, JSON.stringify(data));
         });
