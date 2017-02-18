@@ -14,9 +14,7 @@
       <h3>Your DNS configuration should contain one of records:</h3>
       <div class="dns-records">
         <ul>
-          <li>9cmzk.voluumtrk2.com. IN CNAME <br>9cmzk.voluumtrk2.com..</li>
-          <li>9cmzk.voluumtrk2.com. IN CNAME <br>9cmzk.voluumtrk.com..</li>
-          <li>9cmzk.voluumtrk2.com. IN CNAME <br>9cmzk.trackvoluum.com..</li>
+          <li ng-repeat="internal in internals">{{address}} IN CNAME <br>{{internal.address}}..</li>
         </ul>
       </div>
     </div>

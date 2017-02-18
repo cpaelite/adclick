@@ -1,89 +1,107 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular.module('app')
-        .controller('DomainCtrl', [
-            '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname',
-            DomainCtrl
-        ]);
+  angular.module('app')
+    .controller('DomainCtrl', [
+      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', 'Plan',
+      DomainCtrl
+    ]);
 
-    function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname) {
-        $scope.app.subtitle = 'Domain';
+  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, Plan) {
+    $scope.app.subtitle = 'Domain';
 
-        $scope.isBtnColor = false;
-        $scope.inputChange = function(){
-        	$scope.isBtnColor = !$scope.isBtnColor;
-        };
+    $scope.isBtnColor = false;
+    $scope.inputChange = function () {
+      $scope.isBtnColor = !$scope.isBtnColor;
+    };
 
-        Domains.get({id:''},function(user){
-            $scope.item = user.data;
+    Plan.get(null, function (plan) {
+      $scope.plan = plan.data;
+    });
+
+    Domains.get(null, function (domain) {
+      var domains = domain.data;
+      if (domains.custom) {
+        domains.custom.forEach(function (domain) {
+            domain.btnName = "Verify DNS settings";
         });
+      }
+      $scope.item = domains;
+    });
 
-        $scope.mainClick = function(l){
-            $scope.item['internal'].forEach(function(v) {
-                v.main = false;
+    $scope.mainClick = function (l) {
+      $scope.item['internal'].forEach(function (v) {
+        v.main = false;
 
-            });
-            $scope.item['custom'].forEach(function(v) {
-                v.main = false;
+      });
+      $scope.item['custom'].forEach(function (v) {
+        v.main = false;
 
-            });
-            l.main = true;
-        };  
+      });
+      l.main = true;
+    };
 
-        $scope.isGray = false;
-        $scope.addCustom = function(){
-            if ($scope.item['custom'].length < 5) {
-                $scope.item['custom'].push({
-                    address: '',
-                    main: false
-                });
-            }else if($scope.item['custom'].length == 5){
-                $scope.isGray = true;
-            }
-        };
+    $scope.isGray = false;
+    $scope.addCustom = function () {
+      if ($scope.item['custom'].length < $scope.plan.domainLimit) {
+        $scope.item['custom'].push({
+          address: '',
+          main: false,
+          btnName: "Verify DNS settings"
+        });
+      }
+      if ($scope.item['custom'].length == $scope.plan.domainLimit) {
+        $scope.isGray = true;
+      }
+    };
 
-        $scope.deleteCustom = function($index){
-            $scope.item['custom'].splice($index,1);
-            $scope.isGray = false;
-        };
+    $scope.deleteCustom = function ($index) {
+      $scope.item['custom'].splice($index, 1);
+      $scope.isGray = false;
+    };
 
-        $scope.domainSava = function(){
-            Domains.save($scope.item,function(result){
-                if(result.status){
-                    toastr.success('domain success!');
-                }else{
-                    toastr.error('domain error!');
-                }
-            });
-        };
+    $scope.domainSava = function () {
+      var saveItem = angular.copy($scope.item);
+      if (saveItem.custom) {
+        saveItem.custom.forEach(function (domain) {
+          delete domain.btnName;
+        });
+      }
+      Domains.save(saveItem, function (result) {
+        if (result.status) {
+          toastr.success('domain success!');
+        } else {
+          toastr.error(result.message);
+        }
+      });
+    };
 
-        $scope.domianVerifyBtn = "Verify DNS settings";
-        $scope.isError = false;
-        $scope.domainsVerify = function(ev, item){
-            DomainsValidatecname.get({id:''},function(user){
-                if(user.data.validateResult == 'NOT_FOUND'){
-                    $scope.isError = true;
-                    $scope.domianVerifyBtn = "Domain setup error";
-                    $mdDialog.show({
-                        bindToController: true,
-                        targetEvent: ev,
-                        clickOutsideToClose: false,
-                        controllerAs: 'ctrl',
-                        controller: ['$scope', '$mdDialog', 'toastr',domainVerifyCtrl],
-                        focusOnOpen: false,
-                        locals: {
-                            item: item
-                        },
-                        bindToController: true,
-                        templateUrl: 'tpl/domains-verify-dialog.html'
-                    });
-                }
-            });
-        };
-    }
+    $scope.domainsVerify = function (domain) {
+      DomainsValidatecname.get({address: domain.address}, function (result) {
+        if (result.status) {
+          domain.btnName = "Domain setup is OK";
+        } else {
+          domain.btnName = "Domain setup error";
+          $mdDialog.show({
+            bindToController: true,
+            clickOutsideToClose: false,
+            controllerAs: 'ctrl',
+            controller: ['$scope', '$mdDialog', domainVerifyCtrl],
+            focusOnOpen: false,
+            locals: {
+              internal: $scope.item.internal,
+              domainAddress: domain.address
+            },
+            templateUrl: 'tpl/domains-verify-dialog.html'
+          });
+        }
+      });
+    };
+  }
 
-    function domainVerifyCtrl($scope, $mdDialog){
-        this.cancel = $mdDialog.cancel;
-    }
+  function domainVerifyCtrl($scope, $mdDialog) {
+    this.cancel = $mdDialog.cancel;
+    $scope.internals = this.internal;
+    $scope.address = this.domainAddress;
+  }
 })();

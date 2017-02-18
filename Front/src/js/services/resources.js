@@ -98,4 +98,7 @@ angular.module('app')
   .factory('Timezone', ['$resource', function ($resource) {
     return $resource('/timezones');
   }])
+  .factory('Plan', ['$resource', function ($resource) {
+    return $resource('/api/plan');
+  }])
 ;

@@ -2219,8 +2219,8 @@ app.get('/api/domains', function (req, res) {
  */
 app.get('/api/domains/validatecname', function (req, res) {
   var result = {
-    status: 1,
-    message: 'success',
+    status: 0,
+    message: '',
     data: {
       domain: 'www.adbund.com',
       validateResult: "NOT_FOUND" //SUCCESS or NOT_FOUND
@@ -2705,6 +2705,24 @@ app.get('/api/eventlog', function (req, res) {
           }
         }
       ]
+    }
+  };
+  res.send(result);
+});
+
+app.get('/api/plan', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      id: 1,
+      name: 'plan1',
+      price: 399,
+      eventsLimit: 100,
+      overageCPM: 0.5,
+      retentionLimit: 12,
+      userLimit: 3,
+      domainLimit: 5
     }
   };
   res.send(result);

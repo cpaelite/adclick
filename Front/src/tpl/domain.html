@@ -6,19 +6,21 @@
       <p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
       The default voluumtrk.com is meant for testing purposes only.</p>
     </div>
-    <p>In order to add a domain you will need to CNAME one of following domains: <b>http://zx1jg.voluumtrk2.com, http://zx1jg.voluumtrk.com, http://zx1jg.trackvoluum.com. </b>The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>
+    <p>In order to add a domain you will need to CNAME one of following domains:
+        <b><em ng-repeat="internal in item.internal track by $index">{{internal.address}}<em ng-if="$index < item.internal.length-1">, </em><em ng-if="$index == item.internal.length-1">.</em></em></b>
+        The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>
     <form name="form" ng-submit="domainSava()">
       <div class="add-another-button clearfix">
         <ul>
           <li>Set up domains: <b>{{item.custom.length}}</b></li>
-          <li>Available domains: <b>3</b></li>
+          <li>Available domains: <b>{{plan.domainLimit}}</b></li>
         </ul>
         <md-button class="md-raised add-another-btn" ng-click="addCustom()" ng-class="{'gray-btn': isGray}">Add another domain</md-button>
       </div>
       <div class="domains-container">
         <div class="internal-domains form-horizontal">
           <div class="item-domains clearfix" ng-repeat="l in item.internal track by $index" >
-            <label>Voluum domain {{$index}}</label>
+            <label>Voluum domain {{$index+1}}</label>
             <div class="input-out">
               <input type="text" class="form-control" ng-model="l.address">
             </div>
@@ -29,7 +31,7 @@
         </div>
         <div class="item-domains domains  form-horizontal">
           <div class="item-domains clearfix" ng-repeat="c in item.custom track by $index" ng-class="{'btnColor':isBtnColor}">
-            <label>Custom domain {{$index}}</label>
+            <label>Custom domain {{$index+1}}</label>
             <div class="input-out">
               <input type="text" name="address{{$index}}" class="form-control" ng-change="inputChange()" ng-model="c.address" required>
               <span style="color:red" ng-show="form.address{{$index}}.$dirty && form.address{{$index}}.$invalid">
@@ -38,7 +40,7 @@
             </div>
             <div class="another-list-btn clearfix">
               <input type="button" class="md-raised copy-btn domain-btn" value="{{ c.main ? 'Main domain' : 'Set as main domain'}}" ng-class="{'main-domain': c.main, 'gray-btn':!c.address}" ng-click="mainClick(c)"></input>
-              <md-button class="md-raised copy-btn verify-btn" ng-class="{'gray-btn':!c.address,'domain-error':isError}" ng-click="domainsVerify()">{{domianVerifyBtn}}</md-button>
+              <md-button class="md-raised copy-btn verify-btn" ng-class="{'gray-btn':!c.address,'domain-error':c.btnName=='Domain setup error'}" ng-click="domainsVerify(c)">{{c.btnName}}</md-button>
               <i class="material-icons" ng-click="deleteCustom($index)">delete</i>
             </div>
           </div>
