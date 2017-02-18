@@ -616,6 +616,7 @@
         prefixTraffic = allTraffic.length > 0 ? allTraffic[0].name + ' - ' : '';
         prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
         $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
+        $scope.item.country = 'ZZZ';
       }
 
       $scope.$watch('trafficSourceId', function (newValue, oldValue) {
@@ -1032,6 +1033,7 @@
       this.title = "add";
       $scope.item.name = prefix;
       $scope.oldName = $scope.item.name;
+      $scope.item.country = 'ZZZ';
     }
     
     this.titleType = angular.copy(this.perfType);
@@ -1150,6 +1152,7 @@
       prefixCountry = 'Global - ';
       prefix = $scope.item.name = $scope.oldName = prefixCountry;
       $scope.tagsFilter.options = $scope.item.tags = [];
+      $scope.item.country = 'ZZZ';
     }
 
     // Country

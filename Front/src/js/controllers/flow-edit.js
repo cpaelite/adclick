@@ -53,7 +53,7 @@
         name: 'Global - ',
         country: {
           display: 'Global',
-          value: 'global'
+          value: 'ZZZ'
         },
         redirectMode: '0',
         rules: [ defaultRule ]
