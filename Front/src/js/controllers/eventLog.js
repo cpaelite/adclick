@@ -18,7 +18,8 @@
       }
     }
     $scope.filter = {
-      user: 0,
+      userId: "ALL",
+      actionType: 0,
       entityType: 0,
       datetype: "1"
     };
@@ -38,8 +39,8 @@
       limit: 50,
       from: $scope.fromDate + "T" + $scope.fromTime,
       to: $scope.toDate + "T" + $scope.toTime,
-      userId: $scope.filter.user,
-      actionType: $scope.filter.action,
+      userId: $scope.filter.userId,
+      actionType: $scope.filter.actionType,
       entityType: $scope.filter.entityType
     };
 
@@ -71,8 +72,8 @@
       getDateRange($scope.filter.datetype);
       $scope.query.from = $scope.fromDate + "T" + $scope.fromTime;
       $scope.query.to = $scope.toDate + "T" + $scope.toTime;
-      $scope.query.userId = $scope.filter.user;
-      $scope.query.actionType = $scope.filter.action;
+      $scope.query.userId = $scope.filter.userId;
+      $scope.query.actionType = $scope.filter.actionType;
       $scope.query.entityType = $scope.filter.entityType;
 
       $scope.getList();
@@ -87,8 +88,8 @@
 
       $scope.query.from = moment($scope.filterDate.fromDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.fromTime;
       $scope.query.to = moment($scope.filterDate.toDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.toTime;
-      $scope.query.userId = $scope.filter.user;
-      $scope.query.actionType = $scope.filter.action;
+      $scope.query.userId = $scope.filter.userId;
+      $scope.query.actionType = $scope.filter.actionType;
       $scope.query.entityType = $scope.filter.entityType;
 
       $scope.getList();

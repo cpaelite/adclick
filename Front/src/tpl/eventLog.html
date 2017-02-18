@@ -6,12 +6,12 @@
 <div class="form-column bot-blacklist">
   <div class="bot-blacklist-content event-log clearfix">
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.user">
-        <md-option value="0">All users</md-option>
+      <md-select class="cs-subform-select" ng-model="filter.userId">
+        <md-option value="ALL">All users</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.action">
+      <md-select class="cs-subform-select" ng-model="filter.actionType">
         <md-option value="0" selected>All actions</md-option>
         <md-option value="1">Create</md-option>
         <md-option value="2">Change</md-option>
