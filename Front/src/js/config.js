@@ -5,15 +5,18 @@
     .factory('myInterceptor', ['$q', '$rootScope', function($q, $rootScope) {
       var interceptor = {
         request: function(config){
+          if (config.params && config.params.errorFn) {
+            config.errorFn = config.params.errorFn;
+            delete config.params.errorFn;
+          }
           return config;
         },
-        response: function(response){
+        response: function(response) {
           var data = response.data;
           var toStr = Object.prototype.toString;
           
-          // state 8: form validate
-          if(toStr.apply(data) == '[object Object]' && data.state == 0) {
-            // 
+          if(response.config.errorFn && response.data.status == 0) {
+            // error handle
           }
 
           return response;
