@@ -213,7 +213,7 @@ router.get('/api/postbackurl', function (req, res, next) {
 
 
 /**
- * @api {get} /api/names  check name exists
+ * @api {get} /api/names  check name exists                              
  * @apiName    check name exists
  * @apiGroup User
  * @apiParam {String} name  
