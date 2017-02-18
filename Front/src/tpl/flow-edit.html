@@ -342,7 +342,7 @@
                     No matching found.
                   </md-not-found>
                 </md-autocomplete>
-                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
+                <i class="material-icons md-mini edit-btn" ng-show="lander._def" ng-click="editLander($event, lander._def)">edit</i>
               </div>
             </div>
             <div class="col-sm-3 col-md-3 input-content">
@@ -362,10 +362,10 @@
               <i class="material-icons add-box">add_box</i>
               Add New Lander
             </button>
-            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
+            <button ng-click="editLander($event)" class="btn btn-default add-lander-btn">
               <i class="material-icons add-box">add_box</i>
               Add Lander
-            </button-->
+            </button>
           </div>
         </div>
 
@@ -397,7 +397,7 @@
                     No matching found.
                   </md-not-found>
                 </md-autocomplete>
-                <!--i class="material-icons md-mini edit-btn" ng-show="offer.id">edit</i-->
+                <i class="material-icons md-mini edit-btn" ng-show="offer._def" ng-click="editOffer($event, offer._def)">edit</i>
               </div>
             </div>
             <div class="col-sm-3 col-md-3 input-content">
@@ -417,10 +417,10 @@
               <i class="material-icons add-box">add_box</i>
               Add New Offer
             </button>
-            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
+            <button ng-click="editOffer($event)" class="btn btn-default add-lander-btn">
               <i class="material-icons add-box">add_box</i>
-              Add Lander
-            </button-->
+              Add Offer
+            </button>
           </div>
         </div>
 

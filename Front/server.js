@@ -1865,6 +1865,7 @@ app.get('/api/conditions', function (req, res) {
  */
 app.get('/api/countries', function (req, res) {
   var result = [
+    {"value": "ZZZ", "display": "Global"},
     {"value": "Canada", "display": "Canada"},
     {"value": "CHN", "display": "China"},
     {"value": "JPN", "display": "Japan"}

@@ -51,10 +51,7 @@
 
       theFlow = {
         name: 'Global - ',
-        country: {
-          display: 'Global',
-          value: 'ZZZ'
-        },
+        country: 'ZZZ',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
@@ -404,6 +401,26 @@
         calculateRelativeWeight($scope.curPath.landers, function(item) { return !!item._def; });
       }
     }, true);
+    $scope.editLander = function(evt, lander) {
+      var locals = { perfType: 'lander' };
+      if (lander) {
+        locals.item = {data: {landerId: lander.id}};
+      } else {
+        locals.item = null;
+      }
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: 'editLanderCtrl',
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: locals,
+        bindToController: true,
+        targetEvent: evt,
+        templateUrl: 'tpl/lander-edit-dialog.html'
+      }).then(function () {
+        //getList();
+      });
+    };
 
     // operations on path offer
     $scope.addOffer = function(evt) {
@@ -440,6 +457,26 @@
         calculateRelativeWeight($scope.curPath.offers, function(item) { return !!item._def; });
       }
     }, true);
+    $scope.editOffer = function(evt, offer) {
+      var locals = { perfType: 'offer' };
+      if (lander) {
+        locals.item = {data: {offerId: offer.id}};
+      } else {
+        locals.item = null;
+      }
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: 'editOfferCtrl',
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: locals,
+        bindToController: true,
+        targetEvent: evt,
+        templateUrl: 'tpl/lander-edit-dialog.html'
+      }).then(function () {
+        //getList();
+      });
+    };
 
     $scope.setEdit = function(evt, item) {
       item._onEdit = true;
