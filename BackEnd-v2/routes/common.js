@@ -169,7 +169,7 @@ async function insertCampaign(value, hash, connection) {
 
     let result = await Promise.all([query("insert into TrackingCampaign (" + col + ") values (" + val + ")", params, connection), insertEventLog(value.userId, 1, value.name, hash, 1, connection)]);
     //redis pub
-    new Pub(true).publish(setting.redis.channel, value.userId + ".add." + "campaign." + result[0].insertId, "campaignAdd");
+    new Pub(true).publish(setting.redis.channel, value.userId + ".add.campaign." + result[0].insertId, "campaignAdd");
     return result[0];
 }
 

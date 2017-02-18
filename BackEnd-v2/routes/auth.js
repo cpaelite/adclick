@@ -9,7 +9,7 @@ var moment = require('moment');
 const dns = require('dns');
 var common = require('./common');
 var setting = require('../config/setting');
-
+var Pub = require('./redis_sub_pub');
 
 /**
  * @api {post} /auth/login  登陆
@@ -144,6 +144,7 @@ router.post('/auth/signup', async function (req, res, next) {
         }
         
         await common.commit(connection);
+        new Pub(true).publish(setting.redis.channel,result.insertId + ".add.user." + result.insertId, "userAdd");
         res.json({
             status: 1,
             message: 'success'
