@@ -3,16 +3,11 @@
 
   angular.module('app')
     .controller('EventLogCtrl', [
-      '$scope', '$mdDialog', 'EventLog',
+      '$scope', '$mdDialog', 'Profile', 'EventLog',
       EventLogCtrl
     ]);
 
-  function EventLogCtrl($scope, $mdDialog, EventLog) {
-    $scope.query = {
-      page: 1,
-      limit: 50
-    };
-
+  function EventLogCtrl($scope, $mdDialog, Profile, EventLog) {
     $scope.hours = [];
     for (var i = 0; i < 24; ++i) {
       if (i < 10) {
@@ -21,13 +16,44 @@
         $scope.hours.push('' + i + ':00');
       }
     }
+    $scope.filter = {
+      user: 0,
+      entityType: 0,
+      datetype: "1"
+    };
+    getDateRange($scope.filter.datetype);
+    $scope.fromTime = "00:00";
+    $scope.toTime = "23:59";
+
+    $scope.filterDate = {
+      fromDate: moment().format('YYYY-MM-DD'),
+      toDate: moment().format('YYYY-MM-DD'),
+      fromTime: "00:00",
+      toTime: "00:00"
+    };
+
+    $scope.query = {
+      page: 1,
+      limit: 50,
+      from: $scope.fromDate + "T" + $scope.fromTime,
+      to: $scope.toDate + "T" + $scope.toTime,
+      userId: $scope.filter.user,
+      actionType: $scope.filter.action,
+      entityType: $scope.filter.entityType
+    };
+
+    var profilePromise = Profile.get(null).$promise;
+    profilePromise.then(function (profile) {
+      $scope.query.tz = profile.data.timezone;
+      $scope.getList();
+    });
 
     function success(items) {
       $scope.items = items.data;
     }
 
     $scope.getList = function () {
-      $scope.promise = EventLog.get($scope.query, success).$promise;
+      EventLog.get($scope.query, success);
     };
 
     $scope.refreshDate = function () {
@@ -35,18 +61,6 @@
     };
 
     $scope.$watch('filter', function (newValue, oldValue) {
-      if (!newValue) {
-        $scope.filter = {
-          user: 0,
-          action: 0,
-          entityType: 0,
-          datetype: "1"
-        };
-        $scope.fromTime = "00:00";
-        $scope.toTime = "23:59";
-        return;
-      }
-
       if (angular.equals(newValue, oldValue)) {
         return;
       } else {
@@ -58,30 +72,23 @@
       $scope.query.to = $scope.toDate + "T" + $scope.toTime;
       $scope.query.userId = $scope.filter.user;
       $scope.query.actionType = $scope.filter.action;
-      $scope.query.category = $scope.filter.entityType;
+      $scope.query.entityType = $scope.filter.entityType;
 
       $scope.getList();
     }, true);
 
     $scope.$watch('filterDate', function (newValue, oldValue) {
-      if (!newValue) {
-        $scope.filterDate = {
-          fromDate: moment().format('YYYY-MM-DD'),
-          toDate: moment().format('YYYY-MM-DD'),
-          fromTime: "00:00",
-          toTime: "00:00"
-        }
-      }
-
-      if (!oldValue) {
+      if (angular.equals(newValue, oldValue)) {
         return;
+      } else {
+        $scope.query.page = 1;
       }
 
       $scope.query.from = moment($scope.filterDate.fromDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.fromTime;
       $scope.query.to = moment($scope.filterDate.toDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.toTime;
       $scope.query.userId = $scope.filter.user;
       $scope.query.actionType = $scope.filter.action;
-      $scope.query.category = $scope.filter.entityType;
+      $scope.query.entityType = $scope.filter.entityType;
 
       $scope.getList();
     }, true);

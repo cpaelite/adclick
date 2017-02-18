@@ -2564,7 +2564,7 @@ app.put('/api/blacklist', function (req, res) {
  * @apiParam {Number} limit:500
  * @apiParam {String} userId:1  {option}
  * @apiParam {String} actionType: CREATE {option}
- * @apiParam {String} category: CAMPAIGN {option}
+ * @apiParam {String} entityType: CAMPAIGN {option}
  *
  */
 app.get('/api/eventlog', function (req, res) {
