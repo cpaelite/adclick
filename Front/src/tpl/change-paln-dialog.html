@@ -8,61 +8,70 @@
     </div>
     <div class="pricing-box clearfix">
         <div class="container">
-            <ul>
-            <li class="w-md w-md3 h-line">
-                <div class="p-header-box">
-                    <h2>ENTERPRISE</h2>
-                    <div class="p-header">
-                        <small class="money-icon">$</small>
-                        <span class="money-size">39</span>
-                        <small class="money-small">/ Mon</small>
-                    </div>
-                    <div class="pricedesc">
-                        <p>0.045/1000 overage<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>charge</p>
-                        <p>450000 included events</p>
-                    </div>
-                    <ol class="pricedesc-list">
-                        <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
-                        <li>3 Traffic <b>Source RAW Report</b> (in the list)<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
-                        <li>Email <b>Support</b> 24/7</li>
-                        <li>3 month data <b>retention</b></li>
-                        <li>1 custom tracking <b>domains</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="RRAPI allows overriding lander/offers and redirect mode defined for given campaign path on a per-visit basis."></i></li>
-                        <li>Newbidder DSP (event not included)</li>
-                        <li class="hg"><em>&times;</em></li>
-                        <li class="hg"><em>&times;</em></li>
-                        <li class="hg"><em>&times;</em></li>
-                    </ol>
-                    <button class="btn p-btn btn-three p-btn-01" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-
-                </div></li>
-            <li class="w-md w-md3 h-line2">
-                <div class="p-header-box">
-                    <h2>ENTERPRISE</h2>
-                    <div class="p-header">
-                        <small class="money-icon">$</small>
-                        <span class="money-size">89</span>
-                        <small class="money-small">/ Mon</small>
-                    </div>
-                    <div class="pricedesc">
-                        <p>1000000 included<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>events</p>
-                        <p>0.035/1000 overage charge</p>
-                    </div>
-                    <ol class="pricedesc-list">
-                        <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
-                        <li>5 Traffic Source <b>RAW Report</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
-                        <li>Email <b>Support</b> 24/7</li>
-                        <li>6 month data <b>retention</b></li>
-                        <li>5 custom tracking <b>domains</b></li>
-                        <li>Newbidder DSP (event not included)</li>
-                        <li>Affiliate Network Offer Management</li>
-                        <li>1 additional users</li>
-                        <li>10% volume discount</li>
-                    </ol>
-                    <button class="btn p-btn btn-three p-btn-02" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-
-                </div></li>
-            <li class="w-md w-md3 h-line3">
-                <div class="p-header-box">
+          <ul>
+          <div class="li-con">
+            <div class="plan-select">
+              <i class="material-icons">done</i>
+              <span>You are currently subscribed to this plan</span>
+            </div>
+            <li class=" w-md3 h-line">
+              <div class="p-header-box">
+                <h2>ENTERPRISE</h2>
+                <div class="p-header">
+                  <small class="money-icon">$</small>
+                  <span class="money-size">39</span>
+                  <small class="money-small">/ Mon</small>
+                </div>
+                <div class="pricedesc">
+                  <p>0.045/1000 overage<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>charge</p>
+                  <p>450000 included events</p>
+                </div>
+                <ol class="pricedesc-list">
+                  <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
+                  <li>3 Traffic <b>Source RAW Report</b> (in the list)<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
+                  <li>Email <b>Support</b> 24/7</li>
+                  <li>3 month data <b>retention</b></li>
+                  <li>1 custom tracking <b>domains</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="RRAPI allows overriding lander/offers and redirect mode defined for given campaign path on a per-visit basis."></i></li>
+                  <li>Newbidder DSP (event not included)</li>
+                  <li class="hg"><em>&times;</em></li>
+                  <li class="hg"><em>&times;</em></li>
+                  <li class="hg"><em>&times;</em></li>
+                </ol>
+                <button class="btn p-btn btn-three p-btn-01" type="button" ng-click="editChangePlan()"><p>SELECT PLAN----222<i class="icon-angle-right"></i></p></button>
+              </div>
+            </li>
+            </div>
+            <div class="li-con">
+            <li class=" w-md3 h-line2">
+              <div class="p-header-box">
+                <h2>ENTERPRISE</h2>
+                <div class="p-header">
+                  <small class="money-icon">$</small>
+                  <span class="money-size">89</span>
+                  <small class="money-small">/ Mon</small>
+                </div>
+                <div class="pricedesc">
+                  <p>1000000 included<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>events</p>
+                  <p>0.035/1000 overage charge</p>
+                </div>
+                <ol class="pricedesc-list">
+                  <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
+                  <li>5 Traffic Source <b>RAW Report</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
+                  <li>Email <b>Support</b> 24/7</li>
+                  <li>6 month data <b>retention</b></li>
+                  <li>5 custom tracking <b>domains</b></li>
+                  <li>Newbidder DSP (event not included)</li>
+                  <li>Affiliate Network Offer Management</li>
+                  <li>1 additional users</li>
+                  <li>10% volume discount</li>
+                </ol>
+                <button class="btn p-btn btn-three p-btn-02" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
+              </div>
+            </li>
+            </div>
+            <div class="li-con">
+            <li class=" w-md3 h-line3">
+              <div class="p-header-box">
                 <h2>PRO</h2>
                 <div class="p-header">
                     <small class="money-icon">$</small>
@@ -85,35 +94,38 @@
                     <li>15% volume discount</li>
                 </ol>
                     <button class="btn p-btn btn-three p-btn-03" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-
-            </div></li>
-            <li class="w-md w-md3 h-line4">
-                <div class="p-header-box">
-                    <h2>AGENCY</h2>
-                    <div class="p-header">
-                        <small class="money-icon">$</small>
-                        <span class="money-size">899</span>
-                        <small class="money-small">/ MO</small>
-                    </div>
-                    <div class="pricedesc">
-                        <p>30000000 included<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>events</p>
-                    <p>0.025/1000 overage charge</p>
-                    </div>
-                    <ol class="pricedesc-list">
-                        <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
-                        <li>20+ Traffic Source RAW Report (in the list,5 can be custom)<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
-                        <li>Skype Support 24/7<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
-                        <li>2 year data retention</li>
-                        <li>30 custom tracking domains</li>
-                        <li>Newbidder DSP (event not included)</li>
-                        <li>Affiliate Network Offer Management</li>
-                        <li>5 additional users</li>
-                        <li>20% volume discount</li>
-                    </ol>
-                    <button class="btn p-btn btn-three p-btn-04" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-                </div>
+              </div>
             </li>
-        </ul>
+            </div>
+            <div class="li-con">
+            <li class=" w-md3 h-line4">
+              <div class="p-header-box">
+                <h2>AGENCY</h2>
+                <div class="p-header">
+                  <small class="money-icon">$</small>
+                  <span class="money-size">899</span>
+                  <small class="money-small">/ MO</small>
+                </div>
+                <div class="pricedesc">
+                  <p>30000000 included<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>events</p>
+                  <p>0.025/1000 overage charge</p>
+                </div>
+                <ol class="pricedesc-list">
+                  <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
+                  <li>20+ Traffic Source RAW Report (in the list,5 can be custom)<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
+                  <li>Skype Support 24/7<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
+                  <li>2 year data retention</li>
+                  <li>30 custom tracking domains</li>
+                  <li>Newbidder DSP (event not included)</li>
+                  <li>Affiliate Network Offer Management</li>
+                  <li>5 additional users</li>
+                  <li>20% volume discount</li>
+                </ol>
+                <button class="btn p-btn btn-three p-btn-04" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
+              </div>
+            </li>
+            </div>
+          </ul>
         </div>
     </div>
     <!-- <section id="sliderPricing">

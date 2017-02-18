@@ -37,5 +37,27 @@
 
   function changePlanCtrl($scope, $mdDialog, Profile, Billing){
     this.cancel = $mdDialog.cancel;
+
+    $scope.editChangePlan = function(ev,item){
+      $mdDialog.show({
+        multiple: true,
+        skipHide: true,
+        bindToController: true,
+        targetEvent: ev,
+        clickOutsideToClose: false,
+        controllerAs: 'ctrl',
+        controller: ['$scope', '$mdDialog', 'Profile', 'Billing', editChangePlanCtrl],
+        focusOnOpen: false,
+        locals: {
+          item: item
+        },
+        bindToController: true,
+        templateUrl: 'tpl/edit-change-paln-dialog.html'
+      });
+    };
+  }
+
+  function editChangePlanCtrl($scope, $mdDialog, Profile, Billing){
+    this.cancel = $mdDialog.cancel;
   }
 })();
