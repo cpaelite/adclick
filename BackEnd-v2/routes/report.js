@@ -158,8 +158,10 @@ async function listPageReport(query) {
       _where.name = { $like: `%${filter}%`}
     }
 
-    if (status === "0" || status === "1") {
-      _where.deleted = status;
+    if (status === "0") {
+      _where.deleted = "1";
+    } else if (status === "1") {
+        _where.deleted = "0";
     }
 
     let totalRows = await models[groupByModel[groupBy]].count({where: _where});
