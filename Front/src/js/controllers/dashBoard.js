@@ -2,39 +2,49 @@
 
   angular.module('app')
     .controller('DashCtrl', [
-        '$scope', '$mdDialog', '$timeout',
+        '$scope', '$timeout', 'Report',
         DashCtrl
     ]);
 
-function DashCtrl($scope, $mdDialog, $timeout) {
+function DashCtrl($scope, $timeout, Report) {
     $scope.app.subtitle = 'DashBoard';
 
-    $scope.tableData = [
-        {
-            num:'',
-            campaigns:'Campaigns',
-            profit:'Profit',
-            tbCon:[
-                {id:1,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:2,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:3,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:4,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:5,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'}
-            ]
-        },
-        {
-            num:'',
-            campaigns:'Countries',
-            profit:'Profit',
-            tbCon:[
-                {id:1,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:2,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:3,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:4,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'},
-                {id:5,content:'Popads - Viet Nam - mobisummer4-Cleaner-benson-0113',dollar:'$0.00'}
-            ]
-        }
-    ];
+    var params = {
+      groupBy: "",
+      from: moment().subtract(6, 'days').format('YYYY-MM-DD'),
+      to: moment().format('YYYY-MM-DD')
+    };
+    $scope.summary = {};
+    Report.get(angular.copy(params), function(result) {
+      $scope.summary = result.data.totals;
+    });
+
+    $scope.order = 'desc';
+    $scope.sortby = 'profit';
+
+    $scope.$watch(function() { return [$scope.order, $scope.sortby]; }, getTableData, true);
+
+    $scope.tableData = {};
+
+    $scope.tables = ['campaign', 'country'];
+
+    params.limit = 5;
+    params.page = 1;
+    function getTableData() {
+      if ($scope.order == 'desc') {
+        params.order = '-' + $scope.sortby;
+      } else {
+        params.order = $scope.sortby;
+      }
+
+      $scope.tables.forEach(function(tbl) {
+        var p = angular.copy(params);
+        p.groupBy = tbl;
+        Report.get(p, function(result) {
+          $scope.tableData[tbl] = result.data.rows;
+        });
+      });
+    }
 
     function initChart() {
         // highcharts
