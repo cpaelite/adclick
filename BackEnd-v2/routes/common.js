@@ -69,7 +69,6 @@ function validate(data, schema) {
         Joi.validate(data, schema, function (err, value) {
             if (err) {
                 let validateJSON={
-                    code :8,
                     message:{}
                 }
                 for(let index=0;index<err.details.length;index++){

@@ -73,7 +73,7 @@ router.get('/api/eventlog', async function (req, res, next) {
         });
         let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
-        sql += "limit " + offset + "," + limit;
+        sql += "  limit " + offset + "," + limit;
         connection = await common.getConnection();
         let result = await Promise.all([query(sql, connection), query(countSql, connection)]);
         res.json({
