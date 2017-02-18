@@ -43,7 +43,7 @@
 
   function configReport(groupby) {
     return {
-      url: '/' + groupby,
+      url: '/' + groupby + '?frcpn',
       templateUrl: 'tpl/report.html',
       controller: 'ReportCtrl',
       params: {
