@@ -1182,6 +1182,12 @@ h1.setting-title{
     padding: 0 10px;
     background: #12bdce;
 }
+.plan-select{
+    background: #2dcc70;
+    font-size: 12px;
+    padding: 5px 0;
+    text-align: center;
+}
 .table-out{
     padding: 10px 35px;
     background: #fff;
