@@ -466,13 +466,13 @@ async function updatePath(userId, path, connection, callback) {
         sqlUpdatePath += ",`redirectMode`= ?";
         params.push(path.redirectMode);
     }
-    if (path.directLink != undefined) {
+    if (path.directLinking != undefined) {
         sqlUpdatePath += ",`directLink`=?";
-        params.push(path.directLink);
+        params.push(path.directLinking);
     }
-    if (path.status != undefined) {
+    if (path.enabled != undefined) {
         sqlUpdatePath += ",`status`=?";
-        params.push(path.status);
+        params.push(path.enabled);
     }
 
     sqlUpdatePath += " where `id`=? and `userId`= ? ";
@@ -958,7 +958,7 @@ async function insertAffiliates(userId, affiliate, connection) {
         params.push(affiliate.ipWhiteList);
     }
     let result = await Promise.all([query(sql, params, connection), insertEventLog(userId, 5, affiliate.name, hash, 1, connection)]);
-
+   
     return result[0];
 
 }
