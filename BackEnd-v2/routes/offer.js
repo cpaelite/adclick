@@ -258,8 +258,8 @@ router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name: Joi.string().required(),
-        hash: Joi.string().required(),
+        name: Joi.string().optional(),
+        hash: Joi.string().optional(),
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;

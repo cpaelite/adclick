@@ -76,181 +76,202 @@ function validate(data, schema) {
 }
 
 // Campaign
-function insertCampaign(value, hash, connection) {
-    // //url
-    // let urlValue = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + "/" + hash;
-    // let impPixelUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.impRouter + "/" + hash
-
-    // value.url = urlValue;
-    // value.impPixelUrl = impPixelUrl;
+async function insertCampaign(value, hash, connection) {
+    let params = [];
     //required
-    var col = "`userId`";
-    var val = value.userId;
+    let  col = "`userId`";
+    let val = "?";
+    params.push(value.userId);
 
     col += ",`costModel`";
-    val += "," + value.costModel;
+    val += ",?";
+    params.push(value.costModel);
 
     col += ",`targetType`";
-    val += "," + value.targetType
+    val += ",?";
+    params.push(value.targetType);
 
     col += ",`name`";
-    val += ",'" + value.name + "'";
+    val += ",?";
+    params.push(value.name);
 
     col += ",`hash`";
-    val += ",'" + hash + "'";
+    val += ",?";
+    params.push(hash);
 
-    // col += ",`url`";
-    // val += ",'" + value.url + "'";
+
 
     col += ",`trafficSourceId`";
-    val += "," + value.trafficSource.id;
+    val += ",?";
+    params.push(value.trafficSource.id);
 
     col += ",`trafficSourceName`";
-    val += ",'" + value.trafficSource.name + "'";
+    val += ",?";
+    params.push(value.trafficSource.name);
 
     col += ",`redirectMode`";
-    val += "," + value.redirectMode;
+    val += ",?";
+    params.push(value.redirectMode);
 
     col += ",`status`";
-    val += "," + value.status;
+    val += ",?";
+    params.push(value.status);
 
-    // col += ",`impPixelUrl`";
-    // val += ",'" + impPixelUrl + "'";
 
     //optional
     if (value.cpc != undefined) {
         col += ",`cpcValue`";
-        val += "," + value.cpc;
+        val += ",?";
+        params.push(value.cpc);
     }
     if (value.cpa != undefined) {
         col += ",`cpaValue`";
-        val += "," + value.cpa;
+        val += ",?";
+        params.push(value.cpa);
     }
     if (value.cpm != undefined) {
         col += ",`cpmValue`";
-        val += "," + value.cpm;
+        val += ",?";
+        params.push(value.cpm);
     }
 
-    if (value.postbackUrl) {
+    if (value.postbackUrl != undefined) {
         col += ",`postbackUrl`";
-        val += ",'" + value.postbackUrl + "'";
+        val += ",?";
+        params.push(value.postbackUrl);
     }
 
     if (value.pixelRedirectUrl) {
         col += ",`postbackUrl`";
-        val += ",'" + value.pixelRedirectUrl + "'";
+        val += ",?";
+        params.push(value.pixelRedirectUrl);
     }
 
     if (value.country) {
         // var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + value.country + "'";
+        val += ",?";
+        params.push(value.country);
     }
 
-    if (value.targetUrl) {
+    if (value.targetUrl != undefined) {
         col += ",`targetUrl`";
-        val += ",'" + value.targetUrl + "'";
+        val += ",?";
+        params.push(value.targetUrl);
     }
 
     //flow targetType=1 &&  flow.id
     if (value.flow && value.flow.id) {
         col += ",`targetFlowId`";
-        val += "," + value.flow.id;
+        val += ",?";
+        params.push(value.flow.id);
     }
 
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into TrackingCampaign (" + col + ") values (" + val + ")", function (err, result) {
-            if (err) {
-                return reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name ? value.name : "", hash, 1], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    })
+    let result = await Promise.all([query("insert into TrackingCampaign (" + col + ") values (" + val + ")", params, connection), insertEventLog(value.userId, 1, value.name, hash, 1, connection)]);
+    return result[0];
 }
 
-function updateCampaign(value, connection) {
-    var sqlCampaign = "update TrackingCampaign set `id`=" + value.id;
+
+async function insertEventLog(userId, entityType, entityName, entityId, actionType, connection) {
+    await query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, entityType, entityName, entityId, actionType], connection);
+    return true;
+}
+
+
+async function updateCampaign(value, connection) {
+    let params = [];
+    var sqlCampaign = "update TrackingCampaign set `id`= ?";
+    params.push(value.id);
     if (value.name) {
-        sqlCampaign += ",`name`='" + value.name + "'"
+        sqlCampaign += ",`name`=?";
     }
+    params.push(value.name);
     if (value.url) {
-        sqlCampaign += ",`url`='" + value.url + "'"
+        sqlCampaign += ",`url`=?";
+        params.push(value.url);
     }
     if (value.trafficSource && value.trafficSource.id) {
-        sqlCampaign += ",`trafficSourceId`='" + value.trafficSource.id + "'"
+        sqlCampaign += ",`trafficSourceId`=?";
+        params.push(value.trafficSource.id);
     }
     if (value.trafficSource && value.trafficSource.name) {
-        sqlCampaign += ",`trafficSourceName`='" + value.trafficSource.name + "'"
+        sqlCampaign += ",`trafficSourceName`=?";
+        params.push(value.trafficSource.name);
     }
 
     if (value.impPixelUrl) {
-        sqlCampaign += ",`impPixelUrl`='" + value.impPixelUrl + "'"
+        sqlCampaign += ",`impPixelUrl`=?";
+        params.push(value.impPixelUrl);
     }
     if (value.cpc != undefined) {
-        sqlCampaign += ",`cpcValue`=" + value.cpc
+        sqlCampaign += ",`cpcValue`=?";
+        params.push(value.cpc);
     }
     if (value.cpa != undefined) {
-        sqlCampaign += ",`cpaValue`=" + value.cpa
+        sqlCampaign += ",`cpaValue`=?";
+        params.push(value.cpa);
     }
     if (value.cpm != undefined) {
-        sqlCampaign += ",`cpmValue`=" + value.cpm
+        sqlCampaign += ",`cpmValue`=?";
+        params.push(value.cpm);
     }
 
     if (value.country) {
         //var countryCode = value.country.alpha3Code ? value.country.alpha3Code: "";
-        sqlCampaign += ",`country`='" + value.country + "'"
+        sqlCampaign += ",`country`=?";
+        params.push(value.country);
     }
 
     if (value.costModel != undefined) {
-        sqlCampaign += ",`costModel`=" + value.costModel
+        sqlCampaign += ",`costModel`=?";
+        params.push(value.costModel);
     }
     if (value.redirectMode != undefined) {
-        sqlCampaign += ",`redirectMode`=" + value.redirectMode
+        sqlCampaign += ",`redirectMode`=?";
+        params.push(value.redirectMode);
     }
     if (value.status != undefined) {
-        sqlCampaign += ",`status`=" + value.status
+        sqlCampaign += ",`status`=?";
+        params.push(value.status);
     }
     if (value.targetType != undefined) {
-        sqlCampaign += ",`targetType`=" + value.targetType
+        sqlCampaign += ",`targetType`=?";
+        params.push(value.targetType);
     }
 
-    if (value.targetUrl) {
-        sqlCampaign += ",`targetUrl`='" + value.targetUrl + "'"
+    if (value.targetUrl != undefined) {
+        sqlCampaign += ",`targetUrl`=?";
+        params.push(value.targetUrl);
     }
 
-    if (value.postbackUrl) {
-        sqlCampaign += ",`postbackUrl`='" + value.postbackUrl + "'"
+    if (value.postbackUrl != undefined) {
+        sqlCampaign += ",`postbackUrl`=?";
+        params.push(value.postbackUrl);
     }
 
     if (value.pixelRedirectUrl) {
-        sqlCampaign += ",`pixelRedirectUrl`='" + value.pixelRedirectUrl + "'"
+        sqlCampaign += ",`pixelRedirectUrl`=?";
+        params.push(value.pixelRedirectUrl);
     }
 
     //flow targetType=1 &&  flow.id
     if (value.flow && value.flow.id) {
-        sqlCampaign += ",`targetFlowId`=" + value.flow.id;
+        sqlCampaign += ",`targetFlowId`=?";
+        params.push(value.flow.id);
 
     }
 
-    sqlCampaign += " where `id`=" + value.id + " and `userId`=" + value.userId
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [value.userId, 1, value.name ? value.name : "", value.hash ? value.hash : "", 2], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    })
+    sqlCampaign += " where `id`= ? and `userId`= ?";
+
+    params.push(value.id);
+    params.push(value.userId);
+    let result = await query(sqlCampaign, params, connection);
+    let campaign = await query("select `name`,`hash` from TrackingCampaign where `id`=? and `userId` = ?", [value.id,value.userId], connection);
+    if (campaign.length) {
+        await insertEventLog(value.userId, 1, campaign[0].name, campaign[0].hash, 2, connection);
+    }
+
+    return result;
 }
 
 async function getCampaign(id, userId, idText, connection) {
@@ -288,257 +309,222 @@ async function getCampaign(id, userId, idText, connection) {
 
 
 
-function deleteCampaign(id, userId, hash, name, connection) {
-    var sqlCampaign = "update TrackingCampaign set `deleted`= 1"
-    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 1, name ? name : "", hash ? hash : "", 3], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(1);
-            });
-        });
-    })
+async function deleteCampaign(id, userId, connection) {
+
+    var sqlCampaign = "update TrackingCampaign set `deleted`= 1  where `id`= ? and `userId`= ? ";
+
+    await query(sqlCampaign, [id, userId],connection);
+    let campaign = await query("select `name`,`hash` from TrackingCampaign where `id`=? and `userId`= ?", [id,userId], connection);
+    if (campaign.length) {
+        await insertEventLog(userId, 1, campaign[0].name, campaign[0].hash, 3, connection);
+    }
+    return true;
 }
 
 //Flow
-function insertFlow(userId, flow, connection) {
+async function insertFlow(userId, flow, connection) {
+    let params = [];
+
     //required
     var col = "`userId`";
-    var val = userId;
+    var val = "?";
+    params.push(userId)
 
     col += ",`name`";
-    val += ",'" + flow.name + "'";
+    val += ",?";
+    params.push(flow.name)
 
     col += ",`hash`";
-    val += ",'" + uuidV4() + "'";
+    val += ",?";
+    params.push(uuidV4())
 
     col += ",`type`";
-    val += "," + flow.type;
+    val += ",?";
+    params.push(flow.type)
 
     col += ",`redirectMode`";
-    val += "," + flow.redirectMode;
+    val += ",?";
+    params.push(flow.redirectMode)
 
     //optional
     if (flow.country) {
         //var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + flow.country + "'";
+        val += ",?";
+        params.push(flow.country);
     }
-    ;
 
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into Flow (" + col + ") values (" + val + ")", function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        })
-    });
+    let result = await query("insert into Flow (" + col + ") values (" + val + ")", params, connection);
+
+    return result;
+
 
 };
 
-function updateFlow(userId, flow, connection) {
-
-    var sqlFlow = "update Flow set `id`=" + flow.id
+async function updateFlow(userId, flow, connection) {
+    let params = [];
+    var sqlFlow = "update Flow set `id`= ? ";
+    params.push(flow.id);
     if (flow.name) {
-        sqlFlow += ",`name`='" + flow.name + "'"
+        sqlFlow += ",`name`=?";
+        params.push(flow.name);
     }
     if (flow.country) {
         //var countryCode = flow.country.alpha3Code ? flow.country.alpha3Code: "";
-        sqlFlow += ",`country`='" + flow.country + "'";
+        sqlFlow += ",`country`=?";
+        params.push(flow.country);
     }
     if (flow.redirectMode != undefined) {
-        sqlFlow += ",`redirectMode`=" + flow.redirectMode;
-    }
-    if (flow.deleted != undefined) {
-        sqlFlow += ",`deleted`=" + flow.deleted
+        sqlFlow += ",`redirectMode`= ?";
+        params.push(flow.redirectMode);
     }
 
-    sqlFlow += " where `id`=" + flow.id + " and `userId`=" + userId
 
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlFlow, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+    sqlFlow += " where `id`= ? and `userId`= ?";
+    params.push(flow.id);
+    params.push(userId);
+
+    let result = await query(sqlFlow, params, connection);
+    return result;
 
 }
 
-function deleteFlow(id, userId, connection) {
-    var sqlCampaign = "update Flow set `deleted`= 1"
-    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(1);
-        });
-    })
+async function deleteFlow(id, userId, connection) {
+    let sql = "update Flow set `deleted`= 1  where `id`= ? and `userId`= ?";
+    await query(sql, [id, userId], connection);
+    return true;
 }
 
 //Tags
-function insertTags(userId, targetId, name, type, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into `Tags` (`userId`,`name`,`type`,`targetId`) values (?,?,?,?)", [userId, name, type, targetId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+async function insertTags(userId, targetId, name, type, connection) {
+    let result = await query("insert into `Tags` (`userId`,`name`,`type`,`targetId`) values (?,?,?,?)", [userId, name, type, targetId], connection);
+    return result;
 }
 
 //删除所有tags 
-function updateTags(userId, targetId, type, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query("update `Tags` set `deleted`=1 where `userId`= ?  and `targetId`=? and `type`= ? ", [userId, targetId, type], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+async function updateTags(userId, targetId, type, connection) {
+    let result = await query("update `Tags` set `deleted`=1 where `userId`= ?  and `targetId`=? and `type`= ? ", [userId, targetId, type], connection);
+    return result;
 }
 
 //Rule
-function insetRule(userId, rule, connection) {
+async function insetRule(userId, rule, connection) {
     var sqlRule = "insert into `Rule` (`userId`,`name`,`hash`,`type`,`object`,`json`,`status`) values (?,?,?,?,?,?,?)";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.json ?
-            JSON.stringify(rule.json) : JSON.stringify([]), rule.object ?
-                JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0], function (err, result) {
-                    if (err) {
-                        reject(err);
-                    }
-                    resolve(result);
-                });
-    });
+    let result = await query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.json ?
+        JSON.stringify(rule.json) : JSON.stringify([]), rule.object ?
+            JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0], connection);
+    return result;
 }
 
-function updateRule(userId, rule, connection) {
-    var sqlRule = "update `Rule` set `id`=" + rule.id;
+async function updateRule(userId, rule, connection) {
+    let params = [];
+    var sqlRule = "update `Rule` set `id`= ?";
+    params.push(rule.id);
     if (rule.name) {
-        sqlRule += ",`name`='" + rule.name + "'"
+        sqlRule += ",`name`=?";
+        params.push(rule.name);
     }
     if (rule.type != undefined) {
-        sqlRule += ",`type`=" + rule.type
+        sqlRule += ",`type`= ?";
+        params.push(rule.type);
     }
     if (rule.json) {
-        sqlRule += ",`json`='" + JSON.stringify(rule.object) + "'"
+        sqlRule += ",`json`=?";
+        params.push(JSON.stringify(rule.object));
     }
     if (rule.object) {
-        sqlRule += ",`object`='" + JSON.stringify(rule.json) + "'"
+        sqlRule += ",`object`=?";
+        params.push(JSON.stringify(rule.json));
     }
     if (rule.status != undefined) {
-        sqlRule += ",`status`=" + rule.status
+        sqlRule += ",`status`=?";
+        params.push(rule.status);
     }
+    params.push(userId);
+    params.push(rule.id);
     sqlRule += " where `userId`= ? and `id`= ? ";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlRule, [userId, rule.id], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+    let result = await query(sqlRule, params, connection);
+    return result;
 }
 
 //Path
-function insertPath(userId, path, connection) {
+async function insertPath(userId, path, connection) {
     var sqlpath = "insert into `Path` (`userId`,`name`,`hash`,`redirectMode`,`directLink`,`status`) values (?,?,?,?,?,?)";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking ? 1 : 0, path.enabled ? 1 : 0], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+    let result = await query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking ? 1 : 0, path.enabled ? 1 : 0], connection);
+    return result;
 }
 
-function updatePath(userId, path, connection, callback) {
-    var sqlUpdatePath = "update `Path` set `id`=" + path.id;
+async function updatePath(userId, path, connection, callback) {
+    let params = [];
+    var sqlUpdatePath = "update `Path` set `id`= ?";
+    params.push(path.id);
     if (path.name) {
-        sqlUpdatePath += ",`name`='" + path.name + "'"
+        sqlUpdatePath += ",`name`=?";
+        params.push(path.name);
     }
     if (path.redirectMode != undefined) {
-        sqlUpdatePath += ",`redirectMode`=" + path.redirectMode
+        sqlUpdatePath += ",`redirectMode`= ?";
+        params.push(path.redirectMode);
     }
     if (path.directLink != undefined) {
-        sqlUpdatePath += ",`directLink`=" + path.directLink
+        sqlUpdatePath += ",`directLink`=?";
+        params.push(path.directLink);
     }
     if (path.status != undefined) {
-        sqlUpdatePath += ",`status`=" + path.status
+        sqlUpdatePath += ",`status`=?";
+        params.push(path.status);
     }
 
     sqlUpdatePath += " where `id`=? and `userId`= ? ";
 
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlUpdatePath, [path.id, userId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+    params.push(path.id);
+    params.push(userId);
+
+    let result = await query(sqlUpdatePath, params, connection);
+    return result;
 
 }
 
 //Lander
-function insertLander(userId, lander, connection) {
+async function insertLander(userId, lander, connection) {
+    let params = [];
     //required
-    var col = "`userId`"
+    var col = "`userId`";
 
-    var val = userId
+    var val = "?";
+    params.push(userId);
 
     var hash = uuidV4();
 
     col += ",`name`";
-    val += ",'" + lander.name + "'";
+    val += ",?";
+    params.push(lander.name);
 
     col += ",`hash`";
-    val += ",'" + hash + "'"
+    val += ",?";
+    params.push(hash);
 
     col += ",`url`";
-    val += ",'" + lander.url + "'";
+    val += ",?";
+    params.push(lander.url);
 
     col += ",`numberOfOffers`";
-    val += "," + lander.numberOfOffers;
+    val += ",?";
+    params.push(lander.numberOfOffers);
 
     //optional
     if (lander.country) {
         //var countryCode = lander.country.alpha3Code ? lander.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + lander.country + "'";
+        val += ",?";
+        params.push(lander.country);
     }
-
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into Lander (" + col + ") values (" + val + ") ", function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name ? lander.name : "", hash, 1], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    })
+    let result = await  Promise.all([query("insert into Lander (" + col + ") values (" + val + ") ", params, connection),insertEventLog(userId, 2, lander.name, hash, 1, connection)]);
+    return result[0];
 
 }
 
-function updateLander(userId, lander, connection) {
+async function updateLander(userId, lander, connection) {
     let params = [];
     var sqlUpdateLander = "update Lander set `id`= ?";
     params.push(lander.id);
@@ -564,166 +550,133 @@ function updateLander(userId, lander, connection) {
     params.push(lander.id);
     params.push(userId);
 
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlUpdateLander, params, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, lander.name ? lander.name : "", lander.hash ? lander.hash : "", 2], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    })
+    let result = await query(sqlUpdateLander, params, connection);
+    let landerResult = await query("select `name`,`hash` from Lander where `id`= ? and `userId`= ?", [lander.id,userId], connection);
+    if (lander.length) {
+        await insertEventLog(userId, 2, landerResult[0].name, landerResult[0].hash, 2, connection);
+    }
+    return result;
 }
 
-function getLanderDetail(id, userId, connection) {
+async function getLanderDetail(id, userId, connection) {
     let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`numberOfOffers` from `Lander` where `userId`=? and `deleted`=? and `id`=?";
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlLander, [userId, 0, id], function (err, lander) {
-            if (err) {
-                reject(err);
-            }
-            connection.query(sqltag, [userId, id, 2, 0], function (err, tagsResult) {
-                if (err) {
-                    reject(err);
-                }
-                let tags = [];
-                for (let index = 0; index < tagsResult.length; index++) {
-                    tags.push(tagsResult[index]);
-                }
-                if (lander[0]) {
-                    lander[0].tags = tags;
-                }
 
-                resolve(lander[0])
-            })
-        })
-    })
+    let result = await Promise.all([query(sqlLander, [userId, 0, id], connection), query(sqltag, [userId, id, 2, 0], connection)]);
+    let lander = result[0];
+    let tagsResult = result[1];
+    let tags = [];
+    for (let index = 0; index < tagsResult.length; index++) {
+        tags.push(tagsResult[index]);
+    }
+    if (lander[0]) {
+        lander[0].tags = tags;
+    }
+
+    return lander[0];
+
+
 }
 
-function deleteLander(id, userId, name, hash, connection) {
-    var sqlCampaign = "update Lander set `deleted`= 1"
-    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 2, name ? name : "", hash ? hash : "", 3], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(1);
-            });
-        });
-    })
+async function deleteLander(id, userId, connection) {
+    let sqlCampaign = "update Lander set `deleted`= 1  where `id`= ? and `userId`= ? ";
+
+    await query(sqlCampaign, [id, userId], connection);
+
+    let lander = await query("select `name`,`hash` from Lander where `id`=? and `userId`= ?", [id,userId], connection);
+    if (lander.length) {
+        await insertEventLog(userId, 2, lander[0].name, lander[0].hash, 3, connection);
+    }
+    return true;
 }
 
 //Lander2Path
-function insertLander2Path(landerid, pathid, pathweight, connection) {
+async function insertLander2Path(landerid, pathid, pathweight, connection) {
     var sqllander2path = "insert into Lander2Path (`landerId`,`pathId`,`weight`) values (?,?,?)";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqllander2path, [landerid, pathid, pathweight], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+    let result = await query(sqllander2path, [landerid, pathid, pathweight], connection);
+    return result;
 }
 
-function updateLander2Path(landerId, pathId, weight, connection) {
+async function updateLander2Path(landerId, pathId, weight, connection) {
     var sqllander2path = "delete from   Lander2Path   where `landerId` =? and `pathId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqllander2path, [landerId, pathId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+    await query(sqllander2path, [landerId, pathId], connection);
+    return true;
+
 }
 
-function deleteLander2Path(pathId, connection) {
+async function deleteLander2Path(pathId, connection) {
     var sqllander2path = "delete from   Lander2Path   where `pathId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqllander2path, [pathId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+    await query(sqllander2path, [pathId], connection);
+    return true;
 }
 
 //Offer
-function insertOffer(userId, idText, offer, connection) {
-
+async function insertOffer(userId, idText, offer, connection) {
+    let params = [];
     //required
     var col = "`userId`"
-    var val = userId
+    var val = "?";
+    params.push(userId);
+
     var hash = uuidV4();
 
     col += ",`name`";
-    val += ",'" + offer.name + "'"
+    val += ",?";
+    params.push(offer.name);
 
     col += ",`hash`";
-    val += ",'" + hash + "'"
+    val += ",?";
+    params.push(hash);
 
     col += ",`url`";
-    val += ",'" + offer.url + "'";
+    val += ",?";
+    params.push(offer.url);
 
     col += ",`payoutMode`";
-    val += "," + offer.payoutMode
+    val += ",?";
+
+    params.push(offer.payoutMode);
 
 
     //optional
     if (offer.country) {
         //var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
         col += ",`country`";
-        val += ",'" + offer.country + "'";
+        val += ",?";
+        params.push(offer.country);
     }
 
     if (offer.postbackUrl) {
         col += ",`postbackUrl`";
-        val += ",'" + offer.postbackUrl + "'"
+        val += ",?";
+        params.push(offer.postbackUrl);
     }
 
 
     if (offer.payoutValue != undefined) {
         col += ",`payoutValue`";
-        val += "," + offer.payoutValue
+        val += ",?";
+        params.push(offer.payoutValue);
     }
     if (offer.affiliateNetwork && offer.affiliateNetwork.id) {
         col += ",`AffiliateNetworkId`";
-        val += "," + offer.affiliateNetwork.id;
+        val += ",?";
+        params.push(offer.affiliateNetwork.id);
     }
     if (offer.affiliateNetwork && offer.affiliateNetwork.name) {
         col += ",`AffiliateNetworkName`";
-        val += ",'" + offer.affiliateNetwork.name + "'";
+        val += ",?";
+        params.push(offer.affiliateNetwork.name);
     }
 
     var sqloffer = "insert into Offer (" + col + ") values (" + val + ") ";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqloffer, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name ? offer.name : "", hash, 1], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    });
+
+    let result = await Promise.all([query(sqloffer, params, connection),insertEventLog(userId, 3, offer.name, hash, 1, connection)]);
+   
+    return result[0];
 }
 
-function updateOffer(userId, offer, connection) {
+async function updateOffer(userId, offer, connection) {
     let params = [];
     var sqlUpdateOffer = "update  Offer  set `id`= ? ";
     params.push(offer.id);
@@ -766,394 +719,297 @@ function updateOffer(userId, offer, connection) {
     params.push(userId);
     params.push(offer.id);
 
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlUpdateOffer, params, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, offer.name ? offer.name : "", offer.hash ? offer.hash : "", 2], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    });
+    let result = await query(sqlUpdateOffer, params, connection);
+
+    let offerResult = await query("select `name`,`hash` from Offer where `id`= ? and `userId`= ?", [offer.id,userId], connection);
+    if (offerResult.length) {
+        await insertEventLog(userId, 3, offerResult[0].name, offerResult[0].hash, 2, connection);
+    }
+
+    return result;
 
 }
 
-function getOfferDetail(id, userId, connection) {
+async function getOfferDetail(id, userId, connection) {
     let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `id`=?";
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlLander, [userId, id], function (err, lander) {
-            if (err) {
-                reject(err);
-            }
-            connection.query(sqltag, [userId, id, 3, 0], function (err, tagsResult) {
-                if (err) {
-                    reject(err);
-                }
-                let tags = [];
-                for (let index = 0; index < tagsResult.length; index++) {
-                    tags.push(tagsResult[index]);
-                }
-                if (lander[0]) {
-                    lander[0].tags = tags;
-                }
-                resolve(lander[0])
-            })
-        })
-    })
+
+    let results = await Promise.all([query(sqlLander, [userId, id], connection), query(sqltag, [userId, id, 3, 0],connection)]);
+    let lander = results[0];
+    let tagsResult = results[1];
+    let tags = [];
+    for (let index = 0; index < tagsResult.length; index++) {
+        tags.push(tagsResult[index]);
+    }
+    if (lander[0]) {
+        lander[0].tags = tags;
+    }
+    return lander[0];
 }
 
-function deleteOffer(id, userId, name, hash, connection) {
-    var sqlCampaign = "update Offer set `deleted`= 1"
-    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId;
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 3, name ? name : "", hash ? hash : "", 3], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(1);
-            });
-        });
-    })
+async function deleteOffer(id, userId, name, hash, connection) {
+    var sqlCampaign = "update Offer set `deleted`= 1 where `id`= ? and `userId`= ? ";
+
+    await query(sqlCampaign, [id, userId], connection);
+    let offerResult = await query("select `name`,`hash` from Offer where `id`= ?", [offer.id], connection);
+    if (offerResult.length) {
+        await insertEventLog(userId, 3, offerResult[0].name, offerResult[0].hash, 3, connection);
+    }
+
+    return true;
 }
 
 //Offer2Path
-function insertOffer2Path(offerid, pathid, pathweight, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into Offer2Path (`offerId`,`pathId`,`weight`) values (?,?,?)", [offerid, pathid, pathweight], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+async function insertOffer2Path(offerid, pathid, pathweight, connection) {
+    let result = await query("insert into Offer2Path (`offerId`,`pathId`,`weight`) values (?,?,?)", [offerid, pathid, pathweight], connection);
+    return result;
 }
 
-function updateOffer2Path(offerId, pathId, weight, connection) {
+async function updateOffer2Path(offerId, pathId, weight, connection) {
     var sqloffer2path = "delete from   Offer2Path  where `offerId`=? and `pathId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqloffer2path, [offerId, pathId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+    await query(sqloffer2path, [offerId, pathId], connection);
+    return true;
 }
 
-function deleteOffer2Path(pathId, connection) {
+async function deleteOffer2Path(pathId, connection) {
     var sqloffer2path = "delete from   Offer2Path  where  `pathId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqloffer2path, [pathId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    })
+    await query(sqloffer2path, [pathId], connection);
+    return true;
 }
 
 //Path2Rule 
-function insertPath2Rule(pathId, ruleId, weight, status, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into Path2Rule (`pathId`,`ruleId`,`weight`,`status`) values (?,?,?,?)", [pathId, ruleId, weight, status], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+async function insertPath2Rule(pathId, ruleId, weight, status, connection) {
+    let result = await query("insert into Path2Rule (`pathId`,`ruleId`,`weight`,`status`) values (?,?,?,?)", [pathId, ruleId, weight, status], connection);
+    return result;
 }
 
-function updatePath2Rule(pathId, ruleId, weight, status, connection) {
+async function updatePath2Rule(pathId, ruleId, weight, status, connection) {
     var sqlpath2rule = "delete  from Path2Rule   where `pathId`=? and `ruleId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlpath2rule, [pathId, ruleId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+
+    let result = await query(sqlpath2rule, [pathId, ruleId], connection);
+    return result;
+
 }
-function deletePath2Rule(ruleId, connection) {
+async function deletePath2Rule(ruleId, connection) {
     var sqlpath2rule = "delete  from Path2Rule  where  `ruleId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlpath2rule, [ruleId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+
+    let result = await query(sqlpath2rule, [ruleId], connection);
+    return result;
 }
 
 //Rule2Flow
-function insertRule2Flow(ruleId, flowId, status, connection) {
-
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into Rule2Flow (`ruleId`,`flowId`,`status`) values (?,?,?)", [ruleId, flowId, status], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+async function insertRule2Flow(ruleId, flowId, status, connection) {
+    let result = await query("insert into Rule2Flow (`ruleId`,`flowId`,`status`) values (?,?,?)", [ruleId, flowId, status], connection);
+    return result;
 }
 
-function updateRule2Flow(status, ruleId, flowId, connection) {
+async function updateRule2Flow(status, ruleId, flowId, connection) {
     var sqlrule2flow = "delete from   Rule2Flow   where  `ruleId`=?  and `flowId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlrule2flow, [ruleId, flowId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+
+    let result = await query(sqlrule2flow, [ruleId, flowId], connection);
+    return result;
+
 }
 
-function deleteRule2Flow(flowId, connection) {
+async function deleteRule2Flow(flowId, connection) {
     var sqlrule2flow = "delete from  Rule2Flow   where  `flowId`=?";
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlrule2flow, [flowId], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+    let result = await query(sqlrule2flow, [flowId], connection);
+    return result;
 }
 
-function insertTrafficSource(userId, traffic, connection) {
-    return new Promise(function (resolve, reject) {
-        //required
-        var col = "`userId`"
-        var val = userId
-        var hash = uuidV4();
+async function insertTrafficSource(userId, traffic, connection) {
+    let params = [];
+    //required
+    var col = "`userId`"
+    var val = "?";
+    params.push(userId);
+    var hash = uuidV4();
 
-        col += ",`name`";
-        val += ",'" + traffic.name + "'"
+    col += ",`name`";
+    val += ",?";
+    params.push(traffic.name);
 
-        col += ",`hash`";
-        val += ",'" + hash + "'"
+    col += ",`hash`";
+    val += ",?";
+    params.push(hash);
 
-        if (traffic.postbackUrl) {
-            col += ",`postbackUrl`";
-            val += ",'" + traffic.postbackUrl + "'"
-        }
+    if (traffic.postbackUrl) {
+        col += ",`postbackUrl`";
+        val += ",?";
+        params.push(traffic.postbackUrl);
+    }
 
-        if (traffic.pixelRedirectUrl) {
-            col += ",`pixelRedirectUrl`";
-            val += ",'" + traffic.pixelRedirectUrl + "'"
-        }
+    if (traffic.pixelRedirectUrl) {
+        col += ",`pixelRedirectUrl`";
+        val += ",?";
+        params.push(traffic.pixelRedirectUrl);
+    }
 
-        if (traffic.impTracking != undefined) {
-            col += ",`impTracking`";
-            val += "," + traffic.impTracking
-        }
-        if (traffic.externalId) {
-            col += ",`externalId`";
-            val += ",'" + traffic.externalId + "'"
-        }
-        if (traffic.cost) {
-            col += ",`cost`";
-            val += ",'" + traffic.cost + "'"
-        }
-        if (traffic.params) {
-            col += ",`params`";
-            val += ",'" + traffic.params + "'"
-        }
-        var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val + ") ";
+    if (traffic.impTracking != undefined) {
+        col += ",`impTracking`";
+        val += ",?";
+        params.push(traffic.impTracking);
+    }
+    if (traffic.externalId) {
+        col += ",`externalId`";
+        val += ",?";
+        params.push(traffic.externalId);
+    }
+    if (traffic.cost) {
+        col += ",`cost`";
+        val += ",?";
+        params.push(traffic.cost);
+    }
+    if (traffic.params) {
+        col += ",`params`";
+        val += ",?";
+        params.push(traffic.params);
+    }
+    var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val + ") ";
+    let result = await Promise.all([query(sqltraffic, params, connection), insertEventLog(userId, 4, traffic.name, hash, 1,connection)]);
+    return result[0];
 
-        connection.query(sqltraffic, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name ? traffic.name : "", hash, 1], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    });
 }
 
-function updatetraffic(userId, traffic, connection) {
-    return new Promise(function (resolve, reject) {
-        var sqlUpdateOffer = "update  TrafficSource  set `id`=" + traffic.id;
-        if (traffic.name) {
-            sqlUpdateOffer += ",`name`='" + traffic.name + "'"
-        }
-        if (traffic.postbackUrl) {
-            sqlUpdateOffer += ",`postbackUrl`='" + traffic.postbackUrl + "'"
-        }
-        if (traffic.pixelRedirectUrl) {
-            sqlUpdateOffer += ",`pixelRedirectUrl`='" + traffic.pixelRedirectUrl + "'"
-        }
-        if (traffic.impTracking != undefined) {
-            sqlUpdateOffer += ",`impTracking`=" + traffic.impTracking
-        }
-        if (traffic.externalId) {
-            sqlUpdateOffer += ",`externalId`='" + traffic.externalId + "'"
-        }
-        if (traffic.cost) {
-            sqlUpdateOffer += ",`cost`='" + traffic.cost + "'"
-        }
-        if (traffic.params) {
-            sqlUpdateOffer += ",`params`='" + traffic.params + "'"
-        }
-        sqlUpdateOffer += " where `userId`=" + userId + " and `id`= " + traffic.id;
-        connection.query(sqlUpdateOffer, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, traffic.name ? traffic.name : "", traffic.hash ? traffic.hash : "", 2], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    })
+async function updatetraffic(userId, traffic, connection) {
+    let params = [];
+    let sqlUpdateOffer = "update  TrafficSource  set `id`= ?";
+    params.push(traffic.id);
+    if (traffic.name != undefined) {
+        sqlUpdateOffer += ",`name`=?";
+        params.push(traffic.name);
+    }
+    if (traffic.postbackUrl != undefined) {
+        sqlUpdateOffer += ",`postbackUrl`=?";
+        params.push(traffic.postbackUrl);
+    }
+    if (traffic.pixelRedirectUrl != undefined) {
+        sqlUpdateOffer += ",`pixelRedirectUrl`=?";
+        params.push(traffic.pixelRedirectUrl);
+    }
+    if (traffic.impTracking != undefined) {
+        sqlUpdateOffer += ",`impTracking`=?";
+        params.push(traffic.impTracking);
+    }
+    if (traffic.externalId != undefined) {
+        sqlUpdateOffer += ",`externalId`=?";
+        params.push(traffic.externalId);
+    }
+    if (traffic.cost != undefined) {
+        sqlUpdateOffer += ",`cost`=?";
+        params.push(traffic.cost);
+    }
+    if (traffic.params != undefined) {
+        sqlUpdateOffer += ",`params`=?";
+        params.push(traffic.params);
+    }
+    sqlUpdateOffer += " where `userId`= ?  and `id`= ? ";
+    params.push(userId);
+    params.push(traffic.id);
+    let result = await query(sqlUpdateOffer, params, connection);
+    let trafficResult = await query("select `name`,`hash` from TrafficSource where `id`=? and `userId`=?", [traffic.id,userId], connection);
+    if (trafficResult.length) {
+        await insertEventLog(userId, 4, trafficResult[0].name, trafficResult[0].hash, 2, connection);
+    }
+    return result;
+
 }
 
-function gettrafficDetail(id, userId, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(result);
-        });
-    });
+async function gettrafficDetail(id, userId, connection) {
+    let result = await query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], connection);
+    return result;
 }
 
-function deletetraffic(id, userId, name, hash, connection) {
-    var sqlCampaign = "update TrafficSource set `deleted`= 1"
-    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 4, name ? name : "", hash ? hash : "", 3], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(1);
-            });
-        });
-    })
-}
+async function deletetraffic(id, userId, connection) {
+    let sqlCampaign = "update TrafficSource set `deleted`= 1 where `id`= ?  and `userId`= ?";
+    await query(sqlCampaign, [id, userId], connection);
+    let trafficResult = await query("select `name`,`hash` from TrafficSource where `id`=? and `userId`= ?", [id,userId], connection);
+    if (trafficResult.length) {
+        await insertEventLog(userId, 4, trafficResult[0].name, trafficResult[0].hash, 3, connection);
+    }
 
-function saveEventLog(userId, entityType, entityName, entityId, actionType, connection) {
-
-    return new Promise(function (resolve, reject) {
-        connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, entityType, entityName, entityId, actionType], function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            resolve(1);
-        });
-    })
-}
-
-function insertAffiliates(userId, affiliate, connection) {
-    return new Promise(function (resolve, reject) {
-        var hash = uuidV4();
-        var sql = "insert into AffiliateNetwork set `userId`= " +
-            userId + ",`name`='" + affiliate.name + "',`hash`= '" + hash + "'";
-
-        if (affiliate.postbackUrl) {
-            sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
-        }
-        if (affiliate.appendClickId != undefined) {
-            sql += ",`appendClickId`='" + affiliate.appendClickId + "'"
-        }
-        if (affiliate.duplicatedPostback != undefined) {
-            sql += ",`duplicatedPostback`='" + affiliate.duplicatedPostback +
-                "'"
-        }
-        if (affiliate.ipWhiteList) {
-            sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
-        }
-        connection.query(sql, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name ? affiliate.name : "", hash ? hash : "", 1], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    });
-}
-
-function updateAffiliates(userId, affiliate, connection) {
-    return new Promise(function (resolve, reject) {
-        var sql = "update AffiliateNetwork set `id`= " + affiliate.id;
-
-        if (affiliate.name) {
-            sql += ",`name`='" + affiliate.name + "'"
-        }
-        if (affiliate.postbackUrl) {
-            sql += ",`postbackUrl`='" + affiliate.postbackUrl + "'"
-        }
-        if (affiliate.appendClickId != undefined) {
-            sql += ",`appendClickId`=" + affiliate.appendClickId
-        }
-        if (affiliate.duplicatedPostback != undefined) {
-            sql += ",`duplicatedPostback`=" + affiliate.duplicatedPostback
-        }
-        if (affiliate.ipWhiteList) {
-            sql += ",`ipWhiteList`='" + affiliate.ipWhiteList + "'"
-        }
-
-        sql += " where `userId`=" + userId + " and `id`=" +
-            affiliate.id
-        connection.query(sql, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, affiliate.name ? affiliate.name : "", affiliate.hash ? affiliate.hash : "", 2], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(result);
-            });
-        });
-    });
+    return true;
 }
 
 
-function deleteAffiliate(id, userId, name, hash, connection) {
-    var sqlCampaign = "update AffiliateNetwork set `deleted`= 1"
-    sqlCampaign += " where `id`=" + id + " and `userId`=" + userId
-    return new Promise(function (resolve, reject) {
-        connection.query(sqlCampaign, function (err, result) {
-            if (err) {
-                reject(err);
-            }
-            connection.query("insert into UserEventLog (`userId`,`entityType`,`entityName`,`entityId`,`actionType`,`changedAt`) values (?,?,?,?,?,unix_timestamp(now()))", [userId, 5, name ? name : "", hash ? hash : "", 3], function (err) {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(1);
-            });
-        });
-    })
+
+async function insertAffiliates(userId, affiliate, connection) {
+    let params = [];
+    var hash = uuidV4();
+    var sql = "insert into AffiliateNetwork set `userId`= ?,`name`=?,`hash`= ?";
+
+    params.push(userId);
+    params.push(affiliate.name);
+    params.push(hash);
+    if (affiliate.postbackUrl) {
+        sql += ",`postbackUrl`=?";
+        params.push(affiliate.postbackUrl);
+    }
+    if (affiliate.appendClickId != undefined) {
+        sql += ",`appendClickId`=?";
+        params.push(affiliate.appendClickId);
+    }
+    if (affiliate.duplicatedPostback != undefined) {
+        sql += ",`duplicatedPostback`=?";
+        params.push(affiliate.duplicatedPostback);
+    }
+    if (affiliate.ipWhiteList) {
+        sql += ",`ipWhiteList`=?";
+        params.push(affiliate.ipWhiteList);
+    }
+    let result = await Promise.all([query(sql, params, connection), insertEventLog(userId, 5, affiliate.name, hash, 1, connection)]);
+
+    return result[0];
+
+}
+
+async function updateAffiliates(userId, affiliate, connection) {
+    let params = [];
+    var sql = "update AffiliateNetwork set `id`= ?";
+    params.push(affiliate.id)
+    if (affiliate.name != undefined) {
+        sql += ",`name`=?";
+        params.push(affiliate.name);
+    }
+    if (affiliate.postbackUrl != undefined) {
+        sql += ",`postbackUrl`=?";
+        params.push(affiliate.postbackUrl);
+    }
+    if (affiliate.appendClickId != undefined) {
+        sql += ",`appendClickId`= ?";
+        params.push(affiliate.appendClickId);
+    }
+    if (affiliate.duplicatedPostback != undefined) {
+        sql += ",`duplicatedPostback`= ?";
+        params.push(affiliate.duplicatedPostback);
+    }
+    if (affiliate.ipWhiteList != undefined) {
+        sql += ",`ipWhiteList`=?";
+        params.push(affiliate.ipWhiteList);
+    }
+
+    sql += " where `userId`= ? and `id`= ?";
+
+    params.push(userId);
+    params.push(affiliate.id);
+    let result=await query(sql,params,connection);
+    let affiliateResult = await query("select `name`,`hash` from AffiliateNetwork where `id`=? and `userId`= ?",[affiliate.id,userId],connection);
+    if(affiliateResult.length){
+        await insertEventLog(userId,5, affiliateResult[0].name , affiliateResult[0].hash , 2,connection);
+    }
+    return result;
+}
+
+
+async function deleteAffiliate(id, userId, connection) {
+    var sqlCampaign = "update AffiliateNetwork set `deleted`= 1  where `id`= ? and `userId`= ? ";
+    
+    await query(sqlCampaign,[id,userId],connection);
+    let affiliateResult = await query("select `name`,`hash` from AffiliateNetwork where `id`=? and `userId`= ?",[id,userId],connection);
+    if(affiliateResult.length){
+        await insertEventLog(userId,5, affiliateResult[0].name , affiliateResult[0].hash , 3,connection);
+    }
+    return true;
 }
 
 exports.deleteAffiliate = deleteAffiliate;
@@ -1198,7 +1054,6 @@ exports.deleteFlow = deleteFlow;
 exports.deleteLander = deleteLander;
 exports.deleteOffer = deleteOffer;
 exports.deletetraffic = deletetraffic;
-exports.saveEventLog = saveEventLog;
 exports.query = query;
 exports.deletePath2Rule = deletePath2Rule;
 exports.deleteRule2Flow = deleteRule2Flow;

@@ -282,8 +282,8 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        hash: Joi.string().required(),
-        name: Joi.string().required()
+        hash: Joi.string().optional(),
+        name: Joi.string().optional()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -291,7 +291,7 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(value.id, value.userId, value.hash, value.name, connection);
+        let result = await common.deleteCampaign(value.id, value.userId,  connection);
         res.json({
             status: 1,
             message: 'success'

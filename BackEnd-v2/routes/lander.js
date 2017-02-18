@@ -95,7 +95,7 @@ router.post('/api/landers/:id', async function (req, res, next) {
         userId: Joi.number().required(),
         name: Joi.string().required(),
         url: Joi.string().required(),
-        country: Joi.string().optional(),
+        country: Joi.string().optional().allow(""),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional()
@@ -233,8 +233,8 @@ router.delete('/api/landers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name: Joi.string().required(),
-        hash: Joi.string().required()
+        name: Joi.string().optional(),
+        hash: Joi.string().optional()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -269,7 +269,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
           return ;
         }
 
-        let result = await common.deleteLander(value.id, value.userId,value.name,value.hash, connection);
+        let result = await common.deleteLander(value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

@@ -229,8 +229,8 @@ router.delete('/api/affiliates/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name: Joi.string().required(),
-        hash: Joi.string().required()
+        name: Joi.string().optional(),
+        hash: Joi.string().optional()
     });
     req.query.userId = req.userId;
     req.query.id = req.params.id;
@@ -238,7 +238,7 @@ router.delete('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteAffiliate(value.id, value.userId,value.name,value.hash, connection);
+        let result = await common.deleteAffiliate(value.id, value.userId, connection);
 
         res.json({
             status: 1,
