@@ -1,0 +1,236 @@
+import sequelize from 'sequelize';
+import _ from 'lodash';
+
+export const mapping = {
+    UserID: "UserID",
+    campaign: "CampaignID",
+    CampaignName: "CampaignName",
+    flow: "FlowID",
+    FlowName: "FlowName",
+    lander: "LanderID",
+    LanderName: "LanderName",
+    offer: "OfferID",
+    OfferName: "OfferName",
+    OfferUrl: "OfferUrl",
+    OfferCountry: "OfferCountry",
+    affiliate: "AffiliateNetworkID",
+    AffilliateNetworkName: "AffilliateNetworkName",
+    traffic: "TrafficSourceID",
+    TrafficSourceName: "TrafficSourceName",
+    Language: "Language",
+    Model: "Model",
+    Country: "Country",
+    City: "City",
+    Region: "Region",
+    ISP: "ISP",
+    MobileCarrier: "MobileCarrier",
+    Domain: "Domain",
+    DeviceType: "DeviceType",
+    brand: "Brand",
+    OS: "OS",
+    OSVersion: "OSVersion",
+    Browser: "Browser",
+    BrowserVersion: "BrowserVersion",
+    ConnectionType: "ConnectionType",
+    Timestamp: "Timestamp",
+    Visits: "Visits",
+    Clicks: "Clicks",
+    Conversions: "Conversions",
+    Cost: "Cost",
+    Revenue: "Revenue",
+    Impressions: "Impressions",
+    KeysMD5: "KeysMD5",
+    V1: "V1",
+    V2: "V2",
+    V3: "V3",
+    V4: "V4",
+    V5: "V5",
+    V6: "V6",
+    V7: "V7",
+    V8: "V8",
+    V9: "V9",
+    V10: "V10"
+}
+
+export const groupByMapping = {
+    campaign: 'campaignId',
+    flow: 'flowId',
+    lander: 'landerId',
+    offer: 'offerId',
+    traffic: 'TrafficSourceId',
+    affiliate: 'affiliateId'
+}
+
+export const groupByModel = {
+    campaign: 'TrackingCampaign',
+    flow: 'Flow',
+    lander: 'Lander',
+    offer: 'Offer',
+    traffic: 'TrafficSource',
+    affiliate: 'AffiliateNetwork'
+}
+
+export const groupByTag = {
+    campaign: [
+        'campaignId', 'campaignName', 'CampaignName'
+    ],
+    flow: [
+        'flowId', 'flowName', 'FlowName'
+    ],
+    lander: [
+        'landerId', 'landerName', 'LanderName'
+    ],
+    offer: [
+        'offerId', 'offerName', 'OfferName'
+    ],
+    traffic: [
+        'trafficId', 'trafficName', 'TrafficSourceName'
+    ],
+    affiliate: ['affiliateId', 'affiliateName', 'AffilliateNetworkName']
+}
+
+export const sumShorts = {
+    visits: [
+        sequelize.fn('SUM', sequelize.col('Visits')),
+        'visits'
+    ],
+    impressions: [
+        sequelize.fn('SUM', sequelize.col('Impressions')),
+        'impressions'
+    ],
+    revenue: [
+        sequelize.fn('SUM', sequelize.col('Revenue')),
+        'revenue'
+    ],
+    clicks: [
+        sequelize.fn('SUM', sequelize.col('Clicks')),
+        'clicks'
+    ],
+    conversions: [
+        sequelize.fn('SUM', sequelize.col('Conversions')),
+        'conversions'
+    ],
+    cost: [
+        sequelize.fn('SUM', sequelize.col('AdStatis.Cost')),
+        'cost'
+    ],
+    profit: [
+        sequelize.fn('SUM', sequelize.literal('AdStatis.Revenue / 1000000 - AdStatis.Cost / 1000000')),
+        'profit'
+    ],
+    cpv: [
+        sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.impressions)'), 'cpv'
+    ],
+    ictr: [
+        sequelize.literal('sum(AdStatis.Visits)/sum(AdStatis.Impressions)'), 'ictr'
+    ],
+    ctr: [
+        sequelize.literal('sum(AdStatis.Clicks)/sum(AdStatis.Visits)'), 'ctr'
+    ],
+    cr: [
+        sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Clicks)'), 'cr'
+    ],
+    cv: [
+        sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Visits)'), 'cv'
+    ],
+    roi: [
+        sequelize.literal('sum(AdStatis.Revenue)/sum(AdStatis.Cost)'), 'roi'
+    ],
+    epv: [
+        sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Visits)'), 'epv'
+    ],
+    epc: [
+        sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Clicks)'), 'epc'
+    ],
+    ap: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Conversions)'), 'ap']
+}
+
+
+export const attributes = [
+    'UserID',
+    'Language',
+    [
+        'model', 'Model'
+    ],
+    [
+        'CampaignID', 'campaignId'
+    ],
+    [
+        'CampaignName', 'campaignName'
+    ],
+    [
+        'FlowID', 'flowId'
+    ],
+    [
+        'FlowName', 'flowName'
+    ],
+    [
+        'LanderID', 'landerId'
+    ],
+    [
+        'LanderName', 'landerName'
+    ],
+    [
+        'OfferID', 'offerId'
+    ],
+    [
+        'OfferName', 'offerName'
+    ],
+    [
+        'AffiliateNetworkID', 'affiliateId'
+    ],
+    [
+        'AffilliateNetworkName', 'affiliateName'
+    ],
+    [
+        'TrafficSourceID', 'trafficId'
+    ],
+    [
+        'TrafficSourceName', 'trafficName'
+    ],
+    'Country',
+    'City',
+    'Region',
+    'ISP',
+    'MobileCarrier',
+    'Domain',
+    'DeviceType',
+    'Brand',
+    'OS',
+    'OSVersion',
+    'Browser',
+    'BrowserVersion',
+    'ConnectionType',
+    ...(_.values(sumShorts))
+]
+
+export const keys = [
+    'visits',
+    'impressions',
+    'revenue',
+    'clicks',
+    'conversions',
+    'cost',
+    'profit',
+    'cpv',
+    'ictr',
+    'ctr',
+    'cr',
+    'cv',
+    'roi',
+    'epv',
+    'epc',
+    'ap',
+    'campaignId',
+    'campaignName',
+    'flowId',
+    'flowName',
+    'landerId',
+    'landerName',
+    'offerId',
+    'offerName',
+    'affiliateId',
+    'affiliateName',
+    'trafficId',
+    'trafficName'
+]
