@@ -8,6 +8,7 @@
     ]);
 
   function EventLogCtrl($scope, $mdDialog, Profile, EventLog) {
+    $scope.app.subtitle = "EventLog";
     $scope.hours = [];
     for (var i = 0; i < 24; ++i) {
       if (i < 10) {

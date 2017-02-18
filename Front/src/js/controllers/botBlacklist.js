@@ -8,7 +8,7 @@
     ]);
 
   function BotBlacklistCtrl($scope, $mdDialog, toastr, BlackList) {
-    this.titleType = "BotBlack";
+    $scope.app.subtitle = "BotBlack";
     $scope.blacklistCount = 20;
 
     $scope.getList = function () {

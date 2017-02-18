@@ -8,7 +8,7 @@
     ]);
 
   function ProfileCtrl($scope, toastr, Profile, Password, Email, AccountCheck, Timezone) {
-    $scope.app.subtitle = 'Setting';
+    $scope.app.subtitle = 'Profile';
 
     Timezone.get(null, function (timezone) {
       $scope.timezone = timezone.data.timezones;
@@ -16,6 +16,10 @@
 
     Profile.get(null, function (user) {
       $scope.accountItem = user.data;
+      $scope.emailItem = {
+        email: $scope.accountItem.email
+      };
+      delete $scope.accountItem.email;
     });
     $scope.phoneNumbr = /^[0-9]*$/;
     $scope.accountSave = function () {
@@ -54,7 +58,7 @@
       var passwrodItem = {
         oldpassword: $scope.passwordItem.oldpassword,
         newpassword: $scope.passwordItem.newpassword
-      }
+      };
       Password.save(passwrodItem, function (result) {
         if (result.status) {
           toastr.success('Password reset success!');

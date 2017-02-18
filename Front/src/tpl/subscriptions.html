@@ -12,7 +12,7 @@
 				</tr>
 				<tr>
 					<td>Current period:</td>
-					<td>{{item.startTime}} - {{item.endTime}}</td>
+					<td>{{item.startTime}} <em ng-show="item.startTime">-</em> {{item.endTime}}</td>
 				</tr>
 				<tr>
 					<td>Billed events:</td>
@@ -49,7 +49,7 @@
 					<div class="pro clearfix">
 						<span>{{item.plan.name}}</span>
 						<span class="pro-right">
-							<span class="pro-price">${{item.plan.price}}</span>/mo
+							<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
 						</span>
 					</div>
 					<md-button class="md-raised copy-btn" ng-click="changePlan()">Change Plan</md-button>

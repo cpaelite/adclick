@@ -29,7 +29,6 @@
         locals: {
           item: item
         },
-        bindToController: true,
         templateUrl: 'tpl/change-paln-dialog.html'
       });
     };
@@ -42,7 +41,6 @@
       $mdDialog.show({
         multiple: true,
         skipHide: true,
-        bindToController: true,
         targetEvent: ev,
         clickOutsideToClose: false,
         controllerAs: 'ctrl',
