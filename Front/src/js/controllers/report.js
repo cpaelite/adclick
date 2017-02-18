@@ -890,6 +890,10 @@
     };
 
     function success(item) {
+      if(item.data.status == 8) {
+        $scope.errMessage = item.data.message;
+        return;
+      }
       var campaign = item.data;
       $scope.item.url = campaign.url;
       $scope.item.impPixelUrl = campaign.impPixelUrl;
@@ -1064,7 +1068,12 @@
     this.cancel = $mdDialog.cancel;
 
     function success(item) {
-      $mdDialog.hide(item);
+      if(item.data.status == 8) {
+        $scope.errMessage = item.data.message;
+        return;
+      } else {
+        $mdDialog.hide(item);
+      }
     }
 
     this.save = function () {
@@ -1271,7 +1280,12 @@
     };
 
     function success(item) {
-      $mdDialog.hide(item);
+      if(item.data.status == 8) {
+        $scope.errMessage = item.data.message;
+        return;
+      } else {
+        $mdDialog.hide(item);
+      }
     }
 
     this.save = function () {
@@ -1324,7 +1338,6 @@
         } else {
           $scope.cost = {};
         }
-
         if ($scope.item.externalId) {
           $scope.externalId = JSON.parse($scope.item.externalId);
         } else {
@@ -1375,7 +1388,12 @@
     this.cancel = $mdDialog.cancel;
 
     function success(item) {
-      $mdDialog.hide(item);
+      if(item.data.status == 8) {
+        $scope.errMessage = item.data.message;
+        return;
+      } else {
+        $mdDialog.hide(item);
+      }
     }
 
     this.save = function () {
@@ -1434,8 +1452,8 @@
 
     $scope.$watch('cost.Parameter', function (newValue, oldValue) {
       if (!newValue){
-        if ($scope.externalId) {
-          delete $scope.externalId.Placeholder;
+        if ($scope.cost) {
+          delete $scope.cost.Placeholder;
         }
         return;
       }
@@ -1562,7 +1580,12 @@
     this.cancel = $mdDialog.cancel;
 
     function success(item) {
-      $mdDialog.hide(item);
+      if(item.data.status == 8) {
+        $scope.errMessage = item.data.message;
+        return;
+      } else {
+        $mdDialog.hide(item);
+      }
     }
 
     this.save = function () {

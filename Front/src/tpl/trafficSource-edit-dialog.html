@@ -6,6 +6,9 @@
     </md-toolbar>
 
     <md-dialog-content class="md-dialog-content">
+        <div uib-alert class="alert-danger error-message" ng-show="errMessage" close="errMessage = ''">
+            <p ng-repeat="(key, message) in errMessage" style="margin:0;">{{message}}</p>
+        </div>
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group traffic-source">
                 <label class="col-sm-3 control-label"></label>

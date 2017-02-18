@@ -2,6 +2,27 @@
   'use strict';
 
   angular.module('app')
+    .factory('myInterceptor', ['$q', '$rootScope', function($q, $rootScope) {
+      var interceptor = {
+        request: function(config){
+          return config;
+        },
+        response: function(response){
+          var data = response.data;
+          var toStr = Object.prototype.toString;
+          
+          // state 8: form validate
+          if(toStr.apply(data) == '[object Object]' && data.state == 0) {
+            // 
+          }
+
+          return response;
+        }
+      };
+
+      return interceptor;
+    }]);
+  angular.module('app')
     .config(['$mdThemingProvider', '$mdIconProvider', function ($mdThemingProvider, $mdIconProvider) {
       $mdIconProvider
         .defaultIconSet("./assets/svg/avatars.svg", 128)
@@ -17,6 +38,10 @@
         .accentPalette('pink')
         .warnPalette('red');
       //.backgroundPalette('white');
+    }])
+
+    .config(['$httpProvider', function($httpProvider) {
+      $httpProvider.interceptors.push('myInterceptor'); 
     }])
 
     .config(['ChartJsProvider', function (ChartJsProvider) {
