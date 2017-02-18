@@ -898,8 +898,8 @@
     };
 
     function success(item) {
-      if(item.data.status == 8) {
-        $scope.errMessage = item.data.message;
+      if(item.data.status == 0) {
+        $scope.errMessage = item.message;
         return;
       }
       var campaign = item.data;
@@ -1079,8 +1079,8 @@
     this.cancel = $mdDialog.cancel;
 
     function success(item) {
-      if(item.data.status == 8) {
-        $scope.errMessage = item.data.message;
+      if(item.data.status == 0) {
+        $scope.errMessage = item.message;
         return;
       } else {
         $mdDialog.hide(item);
@@ -1294,8 +1294,8 @@
     };
 
     function success(item) {
-      if(item.data.status == 8) {
-        $scope.errMessage = item.data.message;
+      if(item.data.status == 0) {
+        $scope.errMessage = item.message;
         return;
       } else {
         $mdDialog.hide(item);
@@ -1422,8 +1422,8 @@
     };
 
     function success(item) {
-      if(item.data.status == 8) {
-        $scope.errMessage = item.data.message;
+      if(item.data.status == 0) {
+        $scope.errMessage = item.message;
         return;
       } else {
         if(fromCampaign) {
@@ -1626,8 +1626,8 @@
     };
 
     function success(item) {
-      if(item.data.status == 8) {
-        $scope.errMessage = item.data.message;
+      if(item.data.status == 0) {
+        $scope.errMessage = item.message;
         return;
       } else {
         if(fromOffer) {
