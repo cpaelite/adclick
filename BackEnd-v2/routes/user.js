@@ -8,6 +8,7 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var setting =require('../config/setting');
+var common = require('./common');
 
 /**
  * @api {post} /api/preferences  编辑用户配置
@@ -210,6 +211,53 @@ router.get('/api/postbackurl', function (req, res, next) {
     });
 });
 
+
+/**
+ * @api {get} /api/names  check name exists
+ * @apiName    check name exists
+ * @apiGroup User
+ * @apiParam {String} name  
+ * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer4:Flow
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{
+ *           exists:true
+ *        }
+ *     }
+ *
+ */
+router.post('/api/names',async function(req,res,next){
+      var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        name:Joi.string().required().trim(),
+        type:Joi.number().required()
+    });
+    req.body.userId = req.userId;
+    let connection;
+    try {
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let responseData = await common.checkNameExists(value.userId,value.name,value.type,connection);
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: {
+                exists:responseData
+            }
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
 
 
 

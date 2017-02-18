@@ -86,9 +86,9 @@ app.use(function(err, req, res, next) {
 
     }
     res.json({
-        status: err.code ? err.code : 0,
+        status: err.code? err.code: 0,
         message: err.message,
-        data: err.data?err.data:{}
+        data:{}
     });
 });
 
