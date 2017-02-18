@@ -86,11 +86,12 @@ app.use(function(err, req, res, next) {
 
     }
     res.json({
-        status: 0,
+        status: err.code ? err.code : 0,
         message: err.message,
-        data: {}
+        data: err.data?err.data:{}
     });
 });
+
 
 
 module.exports = app;
