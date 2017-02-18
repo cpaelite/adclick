@@ -9,8 +9,8 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
   <div class="bot-blacklist-content clearfix">
     <div class="form-group bot-select">
       <label>Bot rules: </label>
-        <md-select class="cs-subform-select" ng-model="data.enabled"  required>
-            <md-option value="true" selected>Enabled</md-option>
+        <md-select class="cs-subform-select" ng-model="data.enabled" required>
+            <md-option value="true">Enabled</md-option>
             <md-option value="false">Disabled</md-option>
         </md-select>
     </div>
@@ -40,11 +40,10 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
               </span>
           </td>
           <td>
-              <em ng-if="item.ipRules[0].ipRangeStart == item.ipRules[0].ipRangeEnd">{{item.ipRules[0].ipRangeStart}}</em>
-              <em ng-if="item.ipRules[0].ipRangeStart != item.ipRules[0].ipRangeEnd">{{item.ipRules[0].ipRangeStart}} - {{item.ipRules[0].ipRangeEnd}}</em>
+              {{item.ipRules[0]}}
               <span style="color:red" ng-if="item.ipRules.length >= 2">{{item.ipRules.length -1}}</span></td>
           <td>
-              {{item.userAgentRules[0].userAgent}}
+              {{item.userAgentRules[0]}}
               <span style="color:red" ng-if="item.userAgentRules.length >= 2">{{item.userAgentRules.length -1}}</span>
           </td>
         </tr>

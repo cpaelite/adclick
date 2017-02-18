@@ -2480,42 +2480,17 @@ app.get('/api/blacklist', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      enabled: true,
+      enabled: false,
       blacklist: [
         {
           name: "test1",
-          ipRules: [
-            {
-              ipRangeStart: "1.1.1.1",
-              ipRangeEnd: "1.1.1.1"
-            },
-            {
-              ipRangeStart: "2.2.2.2",
-              ipRangeEnd: "2.2.2.2"
-            }
-          ],
-          userAgentRules: [
-            {
-              userAgent: "test1"
-            },
-            {
-              userAgent: "test2"
-            }
-          ]
+          ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
+          userAgentRules: ["test1", "test2"]
         },
         {
           name: "test2",
-          ipRules: [
-            {
-              ipRangeStart: "192.168.0.1",
-              ipRangeEnd: "192.168.0.100"
-            }
-          ],
-          userAgentRules: [
-            {
-              userAgent: "test2"
-            }
-          ]
+          ipRules: ["192.168.0.1-192.168.0.100"],
+          userAgentRules: ["test2"]
         }
       ]
     }
@@ -2536,38 +2511,13 @@ app.post('/api/blacklist', function (req, res) {
       blacklist: [
         {
           name: "test1",
-          ipRules: [
-            {
-              ipRangeStart: "1.1.1.1",
-              ipRangeEnd: "1.1.1.1"
-            },
-            {
-              ipRangeStart: "2.2.2.2",
-              ipRangeEnd: "2.2.2.2"
-            }
-          ],
-          userAgentRules: [
-            {
-              userAgent: "test1"
-            },
-            {
-              userAgent: "test2"
-            }
-          ]
+          ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
+          userAgentRules: ["test1", "test2"]
         },
         {
           name: "test2",
-          ipRules: [
-            {
-              ipRangeStart: "192.168.0.1",
-              ipRangeEnd: "192.168.0.100"
-            }
-          ],
-          userAgentRules: [
-            {
-              userAgent: "test2"
-            }
-          ]
+          ipRules: ["192.168.0.1-192.168.0.100"],
+          userAgentRules: ["test2"]
         }
       ]
     }
@@ -2590,38 +2540,13 @@ app.put('/api/blacklist', function (req, res) {
       blacklist: [
         {
           name: "test1",
-          ipRules: [
-            {
-              ipRangeStart: "1.1.1.1",
-              ipRangeEnd: "1.1.1.1"
-            },
-            {
-              ipRangeStart: "2.2.2.2",
-              ipRangeEnd: "2.2.2.2"
-            }
-          ],
-          userAgentRules: [
-            {
-              userAgent: "test1"
-            },
-            {
-              userAgent: "test2"
-            }
-          ]
+          ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
+          userAgentRules: ["test1", "test2"]
         },
         {
           name: "test2",
-          ipRules: [
-            {
-              ipRangeStart: "192.168.0.1",
-              ipRangeEnd: "192.168.0.100"
-            }
-          ],
-          userAgentRules: [
-            {
-              userAgent: "test2"
-            }
-          ]
+          ipRules: ["192.168.0.1-192.168.0.100"],
+          userAgentRules: ["test2"]
         }
       ]
     }

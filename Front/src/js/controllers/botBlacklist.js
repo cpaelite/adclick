@@ -1,112 +1,97 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular.module('app')
-        .controller('BotBlacklistCtrl', [
-            '$scope','$mdDialog', 'toastr', 'BlackList',
-            BotBlacklistCtrl
-        ]);
+  angular.module('app')
+    .controller('BotBlacklistCtrl', [
+      '$scope', '$mdDialog', 'toastr', 'BlackList',
+      BotBlacklistCtrl
+    ]);
 
-    function BotBlacklistCtrl($scope,$mdDialog, toastr, BlackList) {
-      this.titleType = "BotBlack";
-      $scope.blacklistCount = 20;
+  function BotBlacklistCtrl($scope, $mdDialog, toastr, BlackList) {
+    this.titleType = "BotBlack";
+    $scope.blacklistCount = 20;
 
-      $scope.getList = function () {
-        BlackList.get(null, function (blacklist) {
-          $scope.data = blacklist.data;
-          /*$scope.items = blacklist.data.blacklist;
-          $scope.status = blacklist.data.enabled;*/
-        });
-      };
+    $scope.getList = function () {
+      BlackList.get(null, function (blacklist) {
+        $scope.data = blacklist.data;
+      });
+    };
 
-      $scope.getList();
+    $scope.getList();
+    
+    $scope.$watch('data.enabled', function (newValue, oldValue) {
+      if ((newValue != undefined && oldValue == undefined) || newValue == oldValue) {
+        return;
+      }
 
-      $scope.$watch('status', function (newValue, oldValue) {
-        if (!oldValue || angular.equals(newValue, oldValue)) {
-          return;
+      BlackList.save($scope.data, function (result) {
+        if (result.status) {
+          toastr.success('Update Success!');
+        } else {
+          toastr.error(result.message, {timeOut: 7000, positionClass: 'toast-top-center'});
         }
-        BlackList.save($scope.data, function (result) {
-          console.log(result);
-          if (result.status) {
-            toastr.success('Update Success!');
-          } else {
-            toastr.error(result.message, { timeOut: 7000, positionClass: 'toast-top-center' });
-          }
-        });
+      });
+    });
+
+    $scope.editItem = function (ev, index) {
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', editItemCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: {index: index, data: $scope.data},
+        bindToController: true,
+        targetEvent: ev,
+        templateUrl: 'tpl/botBlacklist-edit-dialog.html'
       });
 
-      $scope.editItem = function(ev, index) {
-        $mdDialog.show({
-          clickOutsideToClose: false,
-          controller: ['$scope', '$mdDialog', 'BlackList', editItemCtrl],
-          controllerAs: 'ctrl',
-          focusOnOpen: false,
-          locals: { index: index, data: $scope.data },
-          bindToController: true,
-          targetEvent: ev,
-          templateUrl: 'tpl/botBlacklist-edit-dialog.html'
-        });
-        
-      };
+    };
 
-      $scope.deleteItem = function (ev, index) {
-        $mdDialog.show({
-          clickOutsideToClose: true,
-          controller: ['$scope', '$mdDialog', 'BlackList', deleteCtrl],
-          controllerAs: 'ctrl',
-          focusOnOpen: false,
-          targetEvent: ev,
-          locals: { index: index, data: $scope.data  },
-          bindToController: true,
-          templateUrl: 'tpl/delete-confirm-dialog.html',
-        });
-      };
+    $scope.deleteItem = function (ev, index) {
+      $mdDialog.show({
+        clickOutsideToClose: true,
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', deleteCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        targetEvent: ev,
+        locals: {index: index, data: $scope.data},
+        bindToController: true,
+        templateUrl: 'tpl/delete-confirm-dialog.html'
+      });
+    };
 
-    }
+  }
 
-  function editItemCtrl($scope, $mdDialog, BlackList) {
+  function editItemCtrl($scope, $mdDialog, toastr, BlackList) {
     if (this.data.blacklist && this.index >= 0) {
       $scope.item = this.data.blacklist[this.index];
-
-      var ips = [];
-      var ip = "";
-      $scope.item.ipRules.forEach(function (ipRule) {
-        if (ipRule.ipRangeStart == ipRule.ipRangeEnd) {
-          ip = ipRule.ipRangeStart;
-          ips.push({value: ip});
-        } else {
-          ip = ipRule.ipRangeStart + "-" + ipRule.ipRangeEnd;
-          ips.push({value: ip});
-        }
-      });
-      $scope.ips = ips;
     } else {
       $scope.item = {
-        userAgentRules: [{}]
+        ipRules:[""],
+        userAgentRules: [""]
       };
-      $scope.ips = [{}];
     }
 
     $scope.addIP = function () {
-        $scope.ips.push({ value: "" })
+      $scope.item.ipRules.push("");
     };
 
     $scope.deleteIP = function (index) {
-      $scope.ips.splice(index, index);
+      $scope.item.ipRules.splice(index, index);
     };
 
     $scope.addAgent = function () {
-      $scope.item.userAgentRules.push({ value: "" })
+      $scope.item.userAgentRules.push("")
     };
 
     $scope.deleteAgent = function (index) {
       $scope.item.userAgentRules.splice(index, index);
     };
 
-    $scope.checkIP = function () {
+    $scope.checkIP = function (index) {
       var isValid = true;
       // 验证IP格式
-      var ipList = $scope.ipRange;
+      var ipList = $scope.item.ipRules[index];
       if (ipList) {
         var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
         var ips = ipList.split('-');
@@ -116,7 +101,8 @@
             return;
           }
         });
-        $scope.editForm.ipRange.$setValidity('valid', isValid);
+        var temp = 'ipRange' + index;
+        $scope.editForm[temp].$setValidity('valid', isValid);
       } else {
         $scope.editForm.ipRange.$setValidity('valid', isValid);
       }
@@ -124,55 +110,40 @@
 
     this.cancel = $mdDialog.cancel;
 
-    function success() {
+    function success(result) {
+      if (result.status) {
+        toastr.success('Update Success!');
+      } else {
+        toastr.error(result.message, {timeOut: 7000, positionClass: 'toast-top-center'});
+      }
       $mdDialog.hide();
     }
 
     this.save = function () {
-      var ipRules = [];
-      var ipRule;
-      $scope.ips.forEach(function (ip) {
-        var ips = ip.value.split('-');
-        if (ips.length <= 1) {
-          ipRule = {
-            ipRangeStart: ips[0],
-            ipRangeEnd: ips[0]
-          };
-        }
-        if (ips.length >= 2) {
-          ipRule = {
-            ipRangeStart: ips[0],
-            ipRangeEnd: ips[1]
-          }
-        }
-        ipRules.push(ipRule);
-      });
-
-      $scope.item.ipRules = ipRules;
       if (this.index < 0) {
         this.data.blacklist.push($scope.item);
       }
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
-        BlackList.save(this.items, success);
+        BlackList.save(this.data, success);
       }
     };
   }
 
-  function deleteCtrl($scope, $mdDialog, BlackList) {
+  function deleteCtrl($scope, $mdDialog, toastr, BlackList) {
     this.title = "delete";
     this.content = 'warnDelete';
 
     this.cancel = $mdDialog.cancel;
 
-    this.ok = function() {
-      delete this.data.blacklist[this.index];
+    this.ok = function () {
+      this.data.blacklist.splice(this.index, this.index);
       BlackList.save(this.data, success, error);
     };
 
     function success() {
-      console.log("success delete");
+      toastr.success("success delete");
       $mdDialog.hide();
     }
 

@@ -10,11 +10,11 @@
     function UserManagementCtrl($scope, $mdDialog, toastr, Member, Invitation) {
         $scope.app.subtitle = 'UserManagement';
 
-        Member.get({id:''},function(user){
+        Member.get(null,function(user){
         	$scope.item = user.data;
         });
 
-        Invitation.get({id:''},function(user){
+        Invitation.get(null,function(user){
         	$scope.iItem = user.data;
         });
         
