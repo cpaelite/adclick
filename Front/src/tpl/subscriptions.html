@@ -7,58 +7,54 @@
 		<div class="table-out">
 			<table>
 				<tr>
-					<td>Next issued plan:</td>
-					<td>PRO</td>
+					<td>Plan:</td>
+					<td>{{item.plan.name}}</td>
 				</tr>
 				<tr>
 					<td>Current period:</td>
-					<td>15-01-2017 - 15-02-2017</td>
-				</tr>
-				<tr>
-					<td>Free Zeropark events:</td>
-					<td>0</td>
+					<td>{{item.startTime}} <em ng-show="item.startTime">-</em> {{item.endTime}}</td>
 				</tr>
 				<tr>
 					<td>Billed events:</td>
-					<td>81,630</td>
+					<td>{{item.statistics.billedEvents}}</td>
 				</tr>
 				<tr>
 					<td>Total events:</td>
-					<td>81,630</td>
+					<td>{{item.statistics.totalEvents}}</td>
 				</tr>
 				<tr>
 					<td>Included events:</td>
-					<td>1,000,000</td>
+					<td>{{item.plan.eventsLimit}}</td>
 				</tr>
 				<tr>
 					<td>Remaining events:</td>
-					<td>918,370</td>
+					<td>{{item.statistics.remainEvents}}</td>
 				</tr>
 				<tr>
 					<td>Overage events:</td>
-					<td>0</td>
+					<td>{{item.statistics.overageEvents}}</td>
 				</tr>
 				<tr>
 					<td>Overage cost:</td>
-					<td>0.00$</td>
+					<td>{{item.statistics.overageCost}}</td>
 				</tr>
 			</table>
 		</div>
     </div>
     <div class="col-sm-12 col-md-6">
-					<h3 class="subscription-title">Plan details</h3>
-					<div class="table-out">
-						<div class="plan-detail">
-							<span>Subscription plan:</span>
-							<div class="pro clearfix">
-								<span>Pro</span>
-								<span class="pro-right">
-									<span class="pro-price">$99</span>/mo
-								</span>
-							</div>
-							<md-button class="md-raised copy-btn">Copy to clipboard</md-button>
-						</div>
+			<h3 class="subscription-title">Plan details</h3>
+			<div class="table-out">
+				<div class="plan-detail">
+					<span>Subscription plan:</span>
+					<div class="pro clearfix">
+						<span>{{item.plan.name}}</span>
+						<span class="pro-right">
+							<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
+						</span>
 					</div>
+					<md-button class="md-raised copy-btn" ng-click="changePlan()">Change Plan</md-button>
+				</div>
+			</div>
     </div>
   </div>
 </div>

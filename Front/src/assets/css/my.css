@@ -17,6 +17,10 @@ header.navbar {
 header .md-toolbar-tools {
     height: auto;
 }
+.home a.home-link,
+.setting a.setting-link{
+    display: block;
+}
 header .setting,
 header .home{
     width: 60px;
@@ -1086,7 +1090,7 @@ h1.setting-title{
     margin-top: 13px;
 }
 .profile-content{
-    padding: 80px 0px;
+    padding: 30px 0px;
     background: rgba(18, 189, 206, 0.14);
 }
 .password-change .profile-form-footer{
@@ -1112,6 +1116,15 @@ h1.setting-title{
 }
 .profile-form-footer .save-btn{
     float: right;
+    padding: 0;
+    margin: 0;
+}
+.profile-form-footer .save-btn:hover{
+    background: #12bdce;
+}
+.profile-form-footer .save-btn[disabled]{
+    color: #fff !important;
+    background: rgba(128, 128, 128, 0.6);
 }
 .save-btn .material-icons{
     font-size:22px;
@@ -1131,6 +1144,19 @@ h1.setting-title{
     padding: 0 10px;
     background: #12bdce;
     color: #fff;
+}
+.md-raised.copy-btn.verify-btn{
+    background: #29af61;
+}
+.md-raised.copy-btn.verify-btn:hover{
+    background: rgb(75, 208, 131) !important;
+}
+.md-raised.copy-btn.verify-btn.domain-error
+{
+    background: red;
+}
+.md-raised.copy-btn.verify-btn.domain-error:hover{
+    background: rgba(255, 0, 0, 0.62) !important;
 }
 .md-raised.copy-btn:hover{
     background: #12bdce !important;
@@ -1155,6 +1181,12 @@ h1.setting-title{
     margin: 0;
     padding: 0 10px;
     background: #12bdce;
+}
+.plan-select{
+    background: #2dcc70;
+    font-size: 12px;
+    padding: 5px 0;
+    text-align: center;
 }
 .table-out{
     padding: 10px 35px;
@@ -1208,7 +1240,7 @@ h1.setting-title{
 }
 .add-another-btn{
     float: right;
-    background: #8992aa !important;
+    background: #12bdce !important;
     color: #fff !important;
 }
 .add-another-button{
@@ -1227,10 +1259,30 @@ h1.setting-title{
 }
 .domain-btn-list .md-raised.copy-btn{
     float: right;
+}
+.domain-btn-list .md-raised.copy-btn,
+.another-list-btn .md-raised.copy-btn{
     min-width: 146px;
+    border: none;
+    border-radius: 4px;
+    height: 36px;
+    line-height: 36px;
+}
+.copy-btn.domain-btn.gray-btn,
+.md-raised.copy-btn.verify-btn.gray-btn,
+.md-raised.add-another-btn.gray-btn,
+.copy-btn.domain-btn.gray-btn:hover,
+.md-raised.copy-btn.verify-btn.gray-btn:hover{
+    background: #8992aa !important;
 }
 .copy-btn.domain-btn{
     background: #006064;
+}
+.copy-btn.domain-btn.main-domain{
+    background: #12bdce !important;
+}
+.copy-btn.domain-btn.main-domain:hover{
+    background: #12bdce !important;
 }
 .copy-btn.domain-btn:hover{
     background: rgba(0, 96, 100, 0.66) !important;
@@ -1276,6 +1328,35 @@ h1.setting-title{
 .domain-footer{
     padding: 0 100px;
 }
+.domain-verify h2{
+    text-align: center;
+    color: red;
+    font-size: 20px;
+    padding: 20px 0;
+}
+.domain-verify p{
+    text-align: center;
+}
+.domain-verify .dns-data{
+    max-width: 80%;
+    margin:0 auto;
+    background: #eaf1f9;
+}
+.domain-verify .dns-data h3{
+    font-size: 18px;
+    background: #5281eb;
+    color: #fff;
+    line-height: 45px;
+    text-align: center;
+}
+.domain-verify .dns-data .dns-records{
+    color: #363636;
+    padding: 15px 50px;
+}
+.domain-verify .dns-data .dns-records ul{
+    padding:0;
+    list-style-type: disc;
+}
 .cs-setting-page.cs-flow-bottom-actions{
     position: static; 
     margin-top: 20px;
@@ -1302,6 +1383,9 @@ h1.setting-title{
 .user-mangement-content button{
     float: right;
 }
+.user-mangement-content .plan-btn button{
+    float: none;
+}
 .user-mangement-content label{
     font-weight: 700;
 }
@@ -1320,7 +1404,7 @@ h1.setting-title{
 }
 .user-mangement-content .user-list button{
     float: none;
-    margin-left: 88px;
+    margin: 0 15px 0 88px;
 }
 .user-mangement-content .user-list span.nothing-word{
     display: block;
@@ -1339,6 +1423,7 @@ h1.setting-title{
     text-align: center;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 4px;
 }
 .user-mangement span,
 .user-mangement-content span{
@@ -1347,9 +1432,20 @@ h1.setting-title{
     text-align: center;
     margin-bottom: 15px;
 }
+.itemList{
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+}
+.itemList:last-child{
+    margin-bottom: 0;
+}
+.itemList span{
+    margin: 0;
+}
 .plan-btn{
     text-align: center;
-    margin-top: 40px;
+    margin: 20px 0;
 }
 .plan-btn .md-raised.copy-btn{
     padding: 0 25px;

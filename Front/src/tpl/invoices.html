@@ -6,7 +6,7 @@
 			<h3 class="subscription-title">Payment method</h3>
 			<div class="payment-content">
 				<h1>PayPal</h1>
-				<span>286005051@qq.com</span>
+				<span>{{item.email}}</span>
 				<div class="plan-btn">
 	      			<md-button class="md-raised copy-btn" ng-click="editInvoices()">Update</md-button>
 	    		</div>
@@ -16,39 +16,34 @@
     	<h3 class="subscription-title">Your account balance</h3>
 			<div class="balance-content">
 				<span>$</span>
-				<span class="amount">0</span>
-				<span>,00</span>
+				<span class="amount">{{item.accountbalance}}</span>
+				<!-- <span>,00</span> -->
 			</div>
     </div>
   </div>
 	<div class="data-table">
 		<h2>Payments</h2>
-		<table md-table class="table">
-			<thead>
-				<tr>
-					<th>Date</th>
-					<th>Amount</th>
-					<th>Tax</th>
-					<th>Total</th>
-					<th>Invoice</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>2017-01-01</td>
-					<td>$99.00</td>
-					<td>$0.00</td>
-					<td>$99.00</td>
-					<td><i class="material-icons">file_download</i><span class="download">Download</span></td>
-				</tr>
-				<tr>
-					<td>2017-01-01</td>
-					<td>$99.00</td>
-					<td>$0.00</td>
-					<td>$99.00</td>
-					<td><i class="material-icons">file_download</i><span class="download">Download</span></td>
-				</tr>
-			</tbody>
-		</table>
+		<md-table-container>
+			<table md-table multiple class="table">
+				<thead md-head md-order="query.order">
+					<tr md-row>
+						<th md-column md-order-by="date">Date</th>
+						<th md-column md-order-by="amount">Amount</th>
+						<th md-column md-order-by="tax">Tax</th>
+						<th md-column md-order-by="totals">Total</th>
+						<th md-column>Invoice</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="p in pItem.payments track by $index">
+						<td>{{p.date}}</td>
+						<td>{{p.amount}}</td>
+						<td>{{p.tax}}</td>
+						<td>{{p.totals}}</td>
+						<td><i class="material-icons">file_download</i><span class="download">Download</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</md-table-container>
 	</div>
 </div>

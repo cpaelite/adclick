@@ -645,18 +645,12 @@
         }
       });
 
-      var cost = "";
-      if (traffic.cost) {
-        cost = JSON.parse(traffic.cost);
-      }
-      if (cost) {
+      var cost = JSON.parse(traffic.cost);
+      if (cost.Placeholder) {
         impParam = impParam + cost.Parameter + "=" + cost.Placeholder + "&";
       }
-      var external = "";
-      if (traffic.externalId) {
-        external = JSON.parse(traffic.externalId);
-      }
-      if (external) {
+      var external = JSON.parse(traffic.externalId);
+      if (external.Placeholder) {
         impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
       }
 
@@ -911,7 +905,6 @@
 
       var traffic = JSON.parse($scope.item.trafficSource);
       spliceUrlParams(traffic);
-
       if ($scope.item.id) {
         $mdDialog.hide();
       } else {
@@ -1161,7 +1154,7 @@
     var defaultPostBackUrl;
     prms = DefaultPostBackUrl.get(null, function (postbackUrl) {
       defaultPostBackUrl = postbackUrl.data.defaultPostBackUrl;
-    });
+    }).$promise;
     initPromises.push(prms);
 
     var allAffiliate;
@@ -1364,7 +1357,9 @@
         if($scope.item.cost) {
           $scope.cost = JSON.parse($scope.item.cost);
         } else {
-          $scope.cost = {};
+          $scope.cost = {
+            Parameter: '', Placeholder: '', Name: ''
+          };
         }
         if ($scope.item.externalId) {
           $scope.externalId = JSON.parse($scope.item.externalId);
@@ -1393,8 +1388,12 @@
       $scope.item = {
         impTracking: 0,
       };
-      $scope.externalId = {};
-      $scope.cost = {};
+      $scope.externalId = {
+        Parameter: '', Placeholder: '', Name: ''
+      };
+      $scope.cost = {
+        Parameter: '', Placeholder: '', Name: ''
+      };
       $scope.params = [
         {Parameter: '', Placeholder: '', Name: '', Track: 0},
         {Parameter: '', Placeholder: '', Name: '', Track: 0},

@@ -17,8 +17,8 @@
       <div layout="row">
         <md-input-container flex="100">
           <label>Card Number</label>
-          <input required="" name="cardNumber" ng-model="project.cardNumber">
-          <div ng-messages="projectForm.cardNumber.$error">
+          <input required="" name="cardNumber" ng-model="item.cardNumber">
+          <div ng-messages="editPayPal.cardNumber.$error">
             <div ng-message="required">This is required.</div>
           </div>
         </md-input-container>
@@ -26,15 +26,15 @@
       <div layout="row">
         <md-input-container flex="50">
           <label>MM / YY</label>
-          <input required name="expiration" ng-model="project.expiration" type="tel">
-          <div ng-messages="projectForm.expiration.$error">
+          <input required name="expiration" ng-model="item.expiration" type="tel">
+          <div ng-messages="editPayPal.expiration.$error">
             <div ng-message="required">This is required.</div>
           </div>
         </md-input-container>
         <md-input-container flex="50">
           <label>CVV (3 digits)</label>
-          <input required name="cvv" ng-model="project.cvv" type="tel">
-          <div ng-messages="projectForm.cvv.$error">
+          <input required name="cvv" ng-model="item.cvv" type="tel">
+          <div ng-messages="editPayPal.cvv.$error">
             <div ng-message="required">This is required.</div>
           </div>
         </md-input-container>
@@ -43,7 +43,7 @@
     </form>
   </md-dialog-content>
   <md-dialog-actions>
-    <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+    <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editPayPal.$invalid">{{'save' | translate}}
     </md-button>
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
   </md-dialog-actions>

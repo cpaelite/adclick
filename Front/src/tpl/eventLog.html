@@ -6,12 +6,12 @@
 <div class="form-column bot-blacklist">
   <div class="bot-blacklist-content event-log clearfix">
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.user" required>
-        <md-option value="0">All users</md-option>
+      <md-select class="cs-subform-select" ng-model="filter.userId">
+        <md-option value="ALL">All users</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.action" required>
+      <md-select class="cs-subform-select" ng-model="filter.actionType">
         <md-option value="0" selected>All actions</md-option>
         <md-option value="1">Create</md-option>
         <md-option value="2">Change</md-option>
@@ -20,7 +20,7 @@
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.entityType" required>
+      <md-select class="cs-subform-select" ng-model="filter.entityType">
         <md-option value="0" selected>All entity types</md-option>
         <md-option value="1">Campaign</md-option>
         <md-option value="2">Lander</md-option>
@@ -30,7 +30,7 @@
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.datetype" required>
+      <md-select class="cs-subform-select" ng-model="filter.datetype">
         <md-option value="1">Today</md-option>
         <md-option value="2">Yesterday</md-option>
         <md-option value="3">Last 7 days</md-option>
@@ -45,23 +45,23 @@
     <div class="cs-subform-group" ng-show="filter.datetype==0">
       <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
       <div class="cs-subform-control">
-        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
-                ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filterDate.fromDate"
+                ng-max="filterDate.toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
                 ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-          {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+          {{filterDate.fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
         </button>
-        <select class="cs-subform-select" ng-model="fromTime">
+        <select class="cs-subform-select" ng-model="filterDate.fromTime">
           <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
         </select>
       </div>
       <label class="cs-subform-label">{{'toDate' | translate}}：</label>
       <div class="cs-subform-control">
-        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
-                ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filterDate.toDate"
+                ng-min="filterDate.fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
                 ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-          {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+          {{filterDate.toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
         </button>
-        <select class="cs-subform-select" ng-model="toTime">
+        <select class="cs-subform-select" ng-model="filterDate.toTime">
           <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
         </select>
       </div>
@@ -72,7 +72,7 @@
       <md-button class="md-raised add-another-btn" ng-show="false"><i class="material-icons">list</i>Details</md-button>
     </div>
     <div class="data-table">
-      <table md-table class="table">
+      <table class="table">
         <thead>
           <tr>
             <th>User</th>
@@ -85,7 +85,14 @@
         </thead>
         <tbody >
           <tr ng-repeat="item in items.rows">
-            <td>{{item.user}}</td>
+            <td>
+                <span uib-dropdown>
+                    <a uib-dropdown-toggle>{{item.user}}</a>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                        <li role="menuitem"><a ng-click="detailItem($event, item)">Detail</a></li>
+                    </ul>
+                  </span>
+            </td>
             <td>{{item.entityType}}</td>
             <td>{{item.entityName}}</td>
             <td>{{item.entityId}}</td>
