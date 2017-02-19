@@ -133,22 +133,27 @@
                     ng-repeat="column in columns"
                     ng-show="preferences.reportViewColumns[column.key].visible">
                     <!--ng-click="openMenu($event, row, column.role)"-->
-                  <span ng-if="column.role=='name' && treeLevel==1" uib-dropdown>
-                    <a uib-dropdown-toggle>{{row.data[column.key]}}</a>
-                    <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                      <li role="menuitem" ng-if="canEdit"><a ng-click="editItem($event, row)">Edit</a></li>
-                      <li role="menuitem" ng-if="canEdit"><a ng-click="editItem($event, row, true)">Duplicate</a></li>
-                      <li role="menuitem" ng-if="canEdit"><a ng-click="deleteItem($event, row)">Delete</a></li>
-                      <li class="divider" ng-if="canEdit"></li>
-                      <li class="dropdown-submenu">
-                        <a>Drilldown by...</a>
-                        <ul class="dropdown-menu">
-                          <li role="menuitem" ng-repeat="gb in groupByOptions | filter:drilldownFilter">
-                            <a ng-click="drilldown(row, gb)">{{gb.display}}</a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
+                  <span ng-if="column.role=='name' && treeLevel==1">
+                    <md-menu-bar style="padding: 0;">
+                        <md-menu>
+                            <a ng-click="$mdMenu.open()">{{row.data[column.key]}}</a>
+                            <md-menu-content width="3">
+                                <md-menu-item ng-if="canEdit"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item>
+                                    <md-menu>
+                                        <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
+                                        <md-menu-content width="3">
+                                            <md-menu-item ng-repeat="gb in groupByOptions | filter:drilldownFilter">
+                                                <md-button ng-click="drilldown(row, gb)">{{gb.display}}</md-button>
+                                            </md-menu-item>
+                                        </md-menu-content>
+                                    </md-menu>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </md-menu-bar>
                   </span>
                   <span ng-if="column.role!='name' || treeLevel>1">
                     {{row.data[column.key]}}
