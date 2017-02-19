@@ -1353,7 +1353,10 @@
       var isDuplicate = this.duplicate;
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
         $scope.item = angular.copy(trafficsource.data);
-        if (isDuplicate) delete $scope.item.id;
+        if (isDuplicate) {
+          delete $scope.item.id;
+          delete $scope.item.hash;
+        }
         if($scope.item.cost) {
           $scope.cost = JSON.parse($scope.item.cost);
         } else {
@@ -1589,7 +1592,10 @@
       var isDuplicate = this.duplicate;
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
         $scope.item = angular.copy(affiliate.data.affiliates);
-        if (isDuplicate) delete $scope.item.id;
+        if (isDuplicate) {
+          delete $scope.item.id;
+          delete $scope.item.hash;
+        }
         if ($scope.item.ipWhiteList) {
           var ips = JSON.parse($scope.item.ipWhiteList);
           if (ips.length) {
