@@ -2,7 +2,7 @@ var Joi = require('joi');
 var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
-
+var Pub = require('./redis_sub_pub');
 
 
 function query(sql, params, connection) {
@@ -79,7 +79,7 @@ function validate(data, schema) {
 async function insertCampaign(value, hash, connection) {
     let params = [];
     //required
-    let  col = "`userId`";
+    let col = "`userId`";
     let val = "?";
     params.push(value.userId);
 
@@ -168,6 +168,8 @@ async function insertCampaign(value, hash, connection) {
     }
 
     let result = await Promise.all([query("insert into TrackingCampaign (" + col + ") values (" + val + ")", params, connection), insertEventLog(value.userId, 1, value.name, hash, 1, connection)]);
+    //redis pub
+    new Pub(true).publish(setting.redis.channel, value.userId + ".add.campaign." + result[0].insertId, "campaignAdd");
     return result[0];
 }
 
@@ -266,10 +268,12 @@ async function updateCampaign(value, connection) {
     params.push(value.id);
     params.push(value.userId);
     let result = await query(sqlCampaign, params, connection);
-    let campaign = await query("select `name`,`hash` from TrackingCampaign where `id`=? and `userId` = ?", [value.id,value.userId], connection);
+    let campaign = await query("select `name`,`hash` from TrackingCampaign where `id`=? and `userId` = ?", [value.id, value.userId], connection);
     if (campaign.length) {
         await insertEventLog(value.userId, 1, campaign[0].name, campaign[0].hash, 2, connection);
     }
+
+    new Pub(true).publish(setting.redis.channel, value.userId + ".update.campaign."+ value.id, "campaignUpdate");
 
     return result;
 }
@@ -313,11 +317,13 @@ async function deleteCampaign(id, userId, connection) {
 
     var sqlCampaign = "update TrackingCampaign set `deleted`= 1  where `id`= ? and `userId`= ? ";
 
-    await query(sqlCampaign, [id, userId],connection);
-    let campaign = await query("select `name`,`hash` from TrackingCampaign where `id`=? and `userId`= ?", [id,userId], connection);
+    await query(sqlCampaign, [id, userId], connection);
+    let campaign = await query("select `name`,`hash` from TrackingCampaign where `id`=? and `userId`= ?", [id, userId], connection);
     if (campaign.length) {
         await insertEventLog(userId, 1, campaign[0].name, campaign[0].hash, 3, connection);
     }
+    //redis 
+    new Pub(true).publish(setting.redis.channel, userId + ".delete.campaign." + id, "campaignDelete");
     return true;
 }
 
@@ -356,6 +362,9 @@ async function insertFlow(userId, flow, connection) {
 
     let result = await query("insert into Flow (" + col + ") values (" + val + ")", params, connection);
 
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, userId + ".add.flow." + result.insertId, "flowAdd");
+
     return result;
 
 
@@ -385,6 +394,8 @@ async function updateFlow(userId, flow, connection) {
     params.push(userId);
 
     let result = await query(sqlFlow, params, connection);
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, userId + ".update.flow." + flow.id, "flowUpdate");
     return result;
 
 }
@@ -392,6 +403,7 @@ async function updateFlow(userId, flow, connection) {
 async function deleteFlow(id, userId, connection) {
     let sql = "update Flow set `deleted`= 1  where `id`= ? and `userId`= ?";
     await query(sql, [id, userId], connection);
+    new Pub(true).publish(setting.redis.channel, userId + ".delete.flow." + id, "flowDelete");
     return true;
 }
 
@@ -413,6 +425,7 @@ async function insetRule(userId, rule, connection) {
     let result = await query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.json ?
         JSON.stringify(rule.json) : JSON.stringify([]), rule.object ?
             JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0], connection);
+    new Pub(true).publish(setting.redis.channel, userId + ".add.rule." + result.insertId, "ruleAdd");
     return result;
 }
 
@@ -444,6 +457,7 @@ async function updateRule(userId, rule, connection) {
     params.push(rule.id);
     sqlRule += " where `userId`= ? and `id`= ? ";
     let result = await query(sqlRule, params, connection);
+    new Pub(true).publish(setting.redis.channel, userId + ".update.rule." + rule.id, "ruleUpdate");
     return result;
 }
 
@@ -451,6 +465,7 @@ async function updateRule(userId, rule, connection) {
 async function insertPath(userId, path, connection) {
     var sqlpath = "insert into `Path` (`userId`,`name`,`hash`,`redirectMode`,`directLink`,`status`) values (?,?,?,?,?,?)";
     let result = await query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking ? 1 : 0, path.enabled ? 1 : 0], connection);
+    new Pub(true).publish(setting.redis.channel, userId + ".add.path." + result.insertId, "pathAdd");
     return result;
 }
 
@@ -466,13 +481,13 @@ async function updatePath(userId, path, connection, callback) {
         sqlUpdatePath += ",`redirectMode`= ?";
         params.push(path.redirectMode);
     }
-    if (path.directLink != undefined) {
+    if (path.directLinking != undefined) {
         sqlUpdatePath += ",`directLink`=?";
-        params.push(path.directLink);
+        params.push(path.directLinking);
     }
-    if (path.status != undefined) {
+    if (path.enabled != undefined) {
         sqlUpdatePath += ",`status`=?";
-        params.push(path.status);
+        params.push(path.enabled);
     }
 
     sqlUpdatePath += " where `id`=? and `userId`= ? ";
@@ -481,6 +496,7 @@ async function updatePath(userId, path, connection, callback) {
     params.push(userId);
 
     let result = await query(sqlUpdatePath, params, connection);
+    new Pub(true).publish(setting.redis.channel, userId + ".update.path." + path.id, "pathUpdate");
     return result;
 
 }
@@ -519,7 +535,10 @@ async function insertLander(userId, lander, connection) {
         val += ",?";
         params.push(lander.country);
     }
-    let result = await  Promise.all([query("insert into Lander (" + col + ") values (" + val + ") ", params, connection),insertEventLog(userId, 2, lander.name, hash, 1, connection)]);
+    let result = await Promise.all([query("insert into Lander (" + col + ") values (" + val + ") ", params, connection), insertEventLog(userId, 2, lander.name, hash, 1, connection)]);
+
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, userId + ".add.lander." + result[0].insertId, "landerAdd");
     return result[0];
 
 }
@@ -551,10 +570,12 @@ async function updateLander(userId, lander, connection) {
     params.push(userId);
 
     let result = await query(sqlUpdateLander, params, connection);
-    let landerResult = await query("select `name`,`hash` from Lander where `id`= ? and `userId`= ?", [lander.id,userId], connection);
+    let landerResult = await query("select `name`,`hash` from Lander where `id`= ? and `userId`= ?", [lander.id, userId], connection);
     if (lander.length) {
         await insertEventLog(userId, 2, landerResult[0].name, landerResult[0].hash, 2, connection);
     }
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, userId + ".update.lander." + lander.id, "landerUpdate");
     return result;
 }
 
@@ -583,10 +604,12 @@ async function deleteLander(id, userId, connection) {
 
     await query(sqlCampaign, [id, userId], connection);
 
-    let lander = await query("select `name`,`hash` from Lander where `id`=? and `userId`= ?", [id,userId], connection);
+    let lander = await query("select `name`,`hash` from Lander where `id`=? and `userId`= ?", [id, userId], connection);
     if (lander.length) {
         await insertEventLog(userId, 2, lander[0].name, lander[0].hash, 3, connection);
     }
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, userId + ".delete.lander." + id, "landerDelete");
     return true;
 }
 
@@ -671,8 +694,10 @@ async function insertOffer(userId, idText, offer, connection) {
 
     var sqloffer = "insert into Offer (" + col + ") values (" + val + ") ";
 
-    let result = await Promise.all([query(sqloffer, params, connection),insertEventLog(userId, 3, offer.name, hash, 1, connection)]);
-   
+    let result = await Promise.all([query(sqloffer, params, connection), insertEventLog(userId, 3, offer.name, hash, 1, connection)]);
+    //reids pub
+    new Pub(true).publish(setting.redis.channel, userId + ".add.offer." + result[0].insertId, "offerAdd");
+
     return result[0];
 }
 
@@ -721,10 +746,11 @@ async function updateOffer(userId, offer, connection) {
 
     let result = await query(sqlUpdateOffer, params, connection);
 
-    let offerResult = await query("select `name`,`hash` from Offer where `id`= ? and `userId`= ?", [offer.id,userId], connection);
+    let offerResult = await query("select `name`,`hash` from Offer where `id`= ? and `userId`= ?", [offer.id, userId], connection);
     if (offerResult.length) {
         await insertEventLog(userId, 3, offerResult[0].name, offerResult[0].hash, 2, connection);
     }
+    new Pub(true).publish(setting.redis.channel, userId + ".update.offer." + offer.id, "offerUpdate");
 
     return result;
 
@@ -734,7 +760,7 @@ async function getOfferDetail(id, userId, connection) {
     let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `id`=?";
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
-    let results = await Promise.all([query(sqlLander, [userId, id], connection), query(sqltag, [userId, id, 3, 0],connection)]);
+    let results = await Promise.all([query(sqlLander, [userId, id], connection), query(sqltag, [userId, id, 3, 0], connection)]);
     let lander = results[0];
     let tagsResult = results[1];
     let tags = [];
@@ -755,6 +781,8 @@ async function deleteOffer(id, userId, name, hash, connection) {
     if (offerResult.length) {
         await insertEventLog(userId, 3, offerResult[0].name, offerResult[0].hash, 3, connection);
     }
+
+    new Pub(true).publish(setting.redis.channel, userId + ".delete.offer." + id, "offerDelete");
 
     return true;
 }
@@ -866,7 +894,7 @@ async function insertTrafficSource(userId, traffic, connection) {
         params.push(traffic.params);
     }
     var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val + ") ";
-    let result = await Promise.all([query(sqltraffic, params, connection), insertEventLog(userId, 4, traffic.name, hash, 1,connection)]);
+    let result = await Promise.all([query(sqltraffic, params, connection), insertEventLog(userId, 4, traffic.name, hash, 1, connection)]);
     return result[0];
 
 }
@@ -907,7 +935,7 @@ async function updatetraffic(userId, traffic, connection) {
     params.push(userId);
     params.push(traffic.id);
     let result = await query(sqlUpdateOffer, params, connection);
-    let trafficResult = await query("select `name`,`hash` from TrafficSource where `id`=? and `userId`=?", [traffic.id,userId], connection);
+    let trafficResult = await query("select `name`,`hash` from TrafficSource where `id`=? and `userId`=?", [traffic.id, userId], connection);
     if (trafficResult.length) {
         await insertEventLog(userId, 4, trafficResult[0].name, trafficResult[0].hash, 2, connection);
     }
@@ -923,7 +951,7 @@ async function gettrafficDetail(id, userId, connection) {
 async function deletetraffic(id, userId, connection) {
     let sqlCampaign = "update TrafficSource set `deleted`= 1 where `id`= ?  and `userId`= ?";
     await query(sqlCampaign, [id, userId], connection);
-    let trafficResult = await query("select `name`,`hash` from TrafficSource where `id`=? and `userId`= ?", [id,userId], connection);
+    let trafficResult = await query("select `name`,`hash` from TrafficSource where `id`=? and `userId`= ?", [id, userId], connection);
     if (trafficResult.length) {
         await insertEventLog(userId, 4, trafficResult[0].name, trafficResult[0].hash, 3, connection);
     }
@@ -992,10 +1020,10 @@ async function updateAffiliates(userId, affiliate, connection) {
 
     params.push(userId);
     params.push(affiliate.id);
-    let result=await query(sql,params,connection);
-    let affiliateResult = await query("select `name`,`hash` from AffiliateNetwork where `id`=? and `userId`= ?",[affiliate.id,userId],connection);
-    if(affiliateResult.length){
-        await insertEventLog(userId,5, affiliateResult[0].name , affiliateResult[0].hash , 2,connection);
+    let result = await query(sql, params, connection);
+    let affiliateResult = await query("select `name`,`hash` from AffiliateNetwork where `id`=? and `userId`= ?", [affiliate.id, userId], connection);
+    if (affiliateResult.length) {
+        await insertEventLog(userId, 5, affiliateResult[0].name, affiliateResult[0].hash, 2, connection);
     }
     return result;
 }
@@ -1003,11 +1031,11 @@ async function updateAffiliates(userId, affiliate, connection) {
 
 async function deleteAffiliate(id, userId, connection) {
     var sqlCampaign = "update AffiliateNetwork set `deleted`= 1  where `id`= ? and `userId`= ? ";
-    
-    await query(sqlCampaign,[id,userId],connection);
-    let affiliateResult = await query("select `name`,`hash` from AffiliateNetwork where `id`=? and `userId`= ?",[id,userId],connection);
-    if(affiliateResult.length){
-        await insertEventLog(userId,5, affiliateResult[0].name , affiliateResult[0].hash , 3,connection);
+
+    await query(sqlCampaign, [id, userId], connection);
+    let affiliateResult = await query("select `name`,`hash` from AffiliateNetwork where `id`=? and `userId`= ?", [id, userId], connection);
+    if (affiliateResult.length) {
+        await insertEventLog(userId, 5, affiliateResult[0].name, affiliateResult[0].hash, 3, connection);
     }
     return true;
 }

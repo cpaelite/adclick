@@ -7,7 +7,6 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
-var Pub = require('./redis_sub_pub');
 var _ = require('lodash');
 
 /**
@@ -60,8 +59,7 @@ router.post('/api/offers', async function (req, res, next) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
             }
         }
-        //reids pub
-        new Pub(true).publish(setting.redis.channel, value.userId, "offerAdd");
+        
 
         delete value.userId;
         delete value.idText;
@@ -138,8 +136,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
                 await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
             }
         }
-        //reids pub
-        new Pub(true).publish(setting.redis.channel, value.userId, "offerUpdate");
+        
 
         delete value.userId;
         delete value.idText;
@@ -296,8 +293,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
         }
 
         let result = await common.deleteOffer(value.id, value.userId, value.name, value.hash, connection);
-        //reids pub
-        new Pub(true).publish(setting.redis.channel, value.userId, "offerDelete");
+         
 
         res.json({
             status: 1,

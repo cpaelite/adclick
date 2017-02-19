@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
-var Pub = require('./redis_sub_pub');
 var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
  
@@ -184,11 +183,11 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
 
 
 const start = async (value, connection) => {
-    let updateMethod = false;
+     
     //Campaign
     let campResult;
     if (value.id) {
-        updateMethod = true;
+       
         await common.updateCampaign(value, connection);
     } else {
         let hash = uuidV4();
@@ -223,8 +222,7 @@ const start = async (value, connection) => {
         }
     }
     
-    //redis pub
-    new Pub(true).publish(setting.redis.channel, value.userId, updateMethod ? "campaignUpdate" : "campaignAdd");
+    
     delete value.userId;
     delete value.idText;
     return value;
@@ -296,8 +294,6 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
             status: 1,
             message: 'success'
         });
-        //redis pub
-        new Pub(true).publish(setting.redis.channel, value.userId, "campaignDelete");
 
     } catch (e) {
         next(e);
