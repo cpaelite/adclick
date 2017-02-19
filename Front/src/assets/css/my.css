@@ -688,6 +688,11 @@ md-content.cs-main-content{
     padding-left: 0px;
 }
 
+.material-icons.flow-arrow-down{
+    float: left;
+    margin-top: 6px;
+}
+
 ul{
     list-style: none;
 }
