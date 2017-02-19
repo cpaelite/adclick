@@ -4,31 +4,31 @@ var log = log4js.getLogger('util');
 var uuidV4 = require('uuid/v4');
 var setting = require('../config/setting');
 
-exports.checkToken = function() {
-  return function(req, res, next) {
+exports.checkToken = function () {
+  return function (req, res, next) {
     var token = req.headers['authorization'];
     if (token) {
       token = token.split(' ')[1];
       try {
         var decode = jwt.decode(token, setting['jwtTokenSrcret']);
-        if(decode.exp <= Date.now()){
-          return  next(new Error('access token has expired'));
+        if (decode.exp <= Date.now()) {
+          return next(new Error('access token has expired'));
         }
-        pool.getConnection(function(err,connection){
-          if(err){
-            err.status =303
+        pool.getConnection(function (err, connection) {
+          if (err) {
+            err.status = 303
             return next(err);
           }
-          connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss ,function(err,user){
+          connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss, function (err, user) {
             connection.release();
-            if(err){
+            if (err) {
               return next(err);
             }
-            if(!user.length){
+            if (!user.length) {
               return next(new Error('no user'));
             }
             req.userId = user[0].id;
-            req.idText= user[0].idText;
+            req.idText = user[0].idText;
             next();
           });
         });
@@ -43,27 +43,27 @@ exports.checkToken = function() {
 }
 
 
-exports.setToken = function(userid,expires,firstname,idtext) {
+exports.setToken = function (userid, expires, firstname, idtext) {
   return jwt.encode({
     iss: userid,
-    exp:expires,
-    firstname:firstname,
-    idText:idtext
+    exp: expires,
+    firstname: firstname,
+    idText: idtext
   }, setting['jwtTokenSrcret'])
 }
 
-exports.getRandomString = function(len) {
+exports.getRandomString = function (len) {
   var chars = ["a", "b", "c", "d", "e", "f",
     "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
     "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
     "6", "7", "8", "9"
   ];
-  var stringToHex = function(str) {
+  var stringToHex = function (str) {
     var val = "";
     for (var i = 0; i < str.length; i++) {
       if (val == "") {
         val = str.charCodeAt(i).toString(16);
-      } else　 {
+      } else {
         val += str.charCodeAt(i).toString(16);
       }
     }
@@ -79,6 +79,20 @@ exports.getRandomString = function(len) {
 }
 
 
-exports.getUUID=function(){
-  return   uuidV4().replace(new RegExp(/-/g), '')
+exports.getUUID = function () {
+  return uuidV4().replace(new RegExp(/-/g), '')
 }
+
+
+exports.regWebURL = new RegExp(
+  "^(http|https)://"
+  + "(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" //ftp的user@  
+  + "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184  
+  + "|" // 允许IP和DOMAIN（域名） 
+  + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.  
+  + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\." // 二级域名  
+  + "[a-z]{2,6})" // first level domain- .com or .museum  
+  + "(:[0-9]{1,4})?" // 端口- :80  
+ + "((/?)|" // a slash isn't required if there is no file name  
+  + "(/\\S+)+/?)$","i"
+);

@@ -6,6 +6,7 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
+var util =require('../util');
 
 
 /**
@@ -93,13 +94,13 @@ router.post('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name: Joi.string().optional(),
-        postbackUrl: Joi.string().optional().empty(""),
-        pixelRedirectUrl: Joi.string().optional().empty(""),
+        name: Joi.string().required(),
+        postbackUrl: Joi.string().regex(util.regWebURL,'url').optional().allow(""),
+        pixelRedirectUrl: Joi.string().regex(util.regWebURL,'url').optional().allow(""),
         impTracking: Joi.number().optional(),
-        externalId: Joi.string().optional().empty(""),
-        cost: Joi.string().optional().empty(""),
-        params: Joi.string().optional().empty(""),
+        externalId: Joi.string().optional().allow(""),
+        cost: Joi.string().optional().allow(""),
+        params: Joi.string().optional().allow(""),
         hash: Joi.string().required()
     });
 
@@ -109,6 +110,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
 
     try {
         let value = await common.validate(req.body, schema);
+         
         let connection = await common.getConnection();
         await common.updatetraffic(value.userId, value, connection);
 

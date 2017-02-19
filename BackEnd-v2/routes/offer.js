@@ -8,6 +8,7 @@ var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
 var _ = require('lodash');
+var util =require('../util');
 
 /**
  * @api {post} /api/offers  新增offer
@@ -33,7 +34,7 @@ router.post('/api/offers', async function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string().required().regex(util.regWebURL,'url'),
         country: Joi.string().required(),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().optional().keys({
@@ -110,7 +111,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string().required().regex(util.regWebURL,'url'),
         country: Joi.string().required(),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().optional().keys({

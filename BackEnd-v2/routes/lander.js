@@ -8,6 +8,7 @@ var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
 var _ = require('lodash');
+var util =require('../util');
 
 /**
  * @api {post} /api/landers  新增lander
@@ -30,7 +31,7 @@ router.post('/api/landers', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string().required().regex(util.regWebURL,'url'),
         country: Joi.string().optional(),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional()
@@ -92,8 +93,8 @@ router.post('/api/landers/:id', async function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        url: Joi.string().required(),
-        country: Joi.string().optional().allow(""),
+        url: Joi.string().required().regex(util.regWebURL,'url'),
+        country: Joi.string().optional(),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional()

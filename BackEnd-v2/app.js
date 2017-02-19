@@ -93,7 +93,10 @@ app.use(function(err, req, res, next) {
     if (err.status == 303) { //mysql 出错
 
     }
-    res.json({status: 0, message: err.message, data: {}});
+    res.json({
+        status: err.code? err.code: 0,
+        message: err.message,
+        data:{}
+    });
 });
-
 module.exports = app;
