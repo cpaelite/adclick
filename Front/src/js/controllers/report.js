@@ -880,7 +880,7 @@
       if (!$scope.item.targetUrl) {
         return;
       }
-      if ($scope.item.targetUrl.indexOf('http://') == -1) {
+      if ($scope.item.targetUrl.indexOf('http://') == -1 && $scope.item.targetUrl.indexOf('https://') == -1) {
         $scope.item.targetUrl = "http://" + $scope.item.targetUrl;
       }
       var strRegex = AppConstant.URLREG; // '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
@@ -1106,7 +1106,7 @@
       if (!$scope.item.url) {
         return;
       }
-      if ($scope.item.url.indexOf('http://') == -1) {
+      if ($scope.item.url.indexOf('http://') == -1 && $scope.item.url.indexOf('https://') == -1) {
         $scope.item.url = "http://" + $scope.item.url;
       }
       var strRegex = AppConstant.URLREG;
@@ -1275,7 +1275,7 @@
       if (!$scope.item.url) {
         return;
       }
-      if ($scope.item.url.indexOf('http://') == -1) {
+      if ($scope.item.url.indexOf('http://') == -1 && $scope.item.url.indexOf('https://') == -1) {
         $scope.item.url = "http://" + $scope.item.url;
       }
       var strRegex = AppConstant.URLREG;
@@ -1450,7 +1450,7 @@
       if (!$scope.item.postbackUrl) {
         return;
       }
-      if ($scope.item.postbackUrl.indexOf('http://') == -1) {
+      if ($scope.item.postbackUrl.indexOf('http://') == -1 && $scope.item.postbackUrl.indexOf('https://') == -1) {
         $scope.item.postbackUrl = "http://" + $scope.item.postbackUrl;
       }
       var strRegex = AppConstant.URLREG;//'^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';

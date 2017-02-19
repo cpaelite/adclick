@@ -1,5 +1,5 @@
 angular.module('app').value('AppConstant', {
-    "URLREG": "^(http://)"
+    "URLREG": "^(http|https)://"
               + "(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" //ftp的user@  
               + "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184  
               + "|" // 允许IP和DOMAIN（域名） 
