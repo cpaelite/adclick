@@ -404,7 +404,7 @@
     $scope.editLander = function(evt, lander) {
       var locals = { perfType: 'lander' };
       if (lander) {
-        locals.item = {data: {landerId: lander.id}};
+        locals.item = {data: {landerId: lander._def.id}};
       } else {
         locals.item = null;
       }
@@ -417,8 +417,23 @@
         bindToController: true,
         targetEvent: evt,
         templateUrl: 'tpl/lander-edit-dialog.html'
-      }).then(function () {
-        //getList();
+      }).then(function(result) {
+        var newLander = {id: result.data.id, name: result.data.name, country: result.data.country};
+        allLanders.unshift(newLander);
+        if (lander) {
+          var idx = allLanders.indexOf(lander._def);
+          if (idx >= 0) {
+            allLanders.splice(idx, 1);
+          }
+          lander._def = newLander;
+        } else {
+          $scope.curPath.landers.push({
+            weight: 100,
+            relativeWeight: -1,
+            _def: newLander,
+            _onEdit: true
+          });
+        }
       });
     };
 
@@ -459,8 +474,8 @@
     }, true);
     $scope.editOffer = function(evt, offer) {
       var locals = { perfType: 'offer' };
-      if (lander) {
-        locals.item = {data: {offerId: offer.id}};
+      if (offer) {
+        locals.item = {data: {offerId: offer._def.id}};
       } else {
         locals.item = null;
       }
@@ -472,9 +487,24 @@
         locals: locals,
         bindToController: true,
         targetEvent: evt,
-        templateUrl: 'tpl/lander-edit-dialog.html'
-      }).then(function () {
-        //getList();
+        templateUrl: 'tpl/offer-edit-dialog.html'
+      }).then(function(result) {
+        var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
+        allOffers.unshift(newOffer);
+        if (offer) {
+          var idx = allOffers.indexOf(offer._def);
+          if (idx >= 0) {
+            allOffers.splice(idx, 1);
+          }
+          offer._def = newOffer;
+        } else {
+          $scope.curPath.offers.push({
+            weight: 100,
+            relativeWeight: -1,
+            _def: newOffer,
+            _onEdit: true
+          });
+        }
       });
     };
 
