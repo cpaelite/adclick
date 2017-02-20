@@ -7,7 +7,7 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var setting =require('../config/setting');
+var setting = require('../config/setting');
 var common = require('./common');
 
 /**
@@ -28,7 +28,7 @@ var common = require('./common');
 router.post('/api/preferences', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        json:Joi.object().required()
+        json: Joi.object().required()
     });
     req.body.userId = req.userId;
     Joi.validate(req.body, schema, function (err, value) {
@@ -40,10 +40,10 @@ router.post('/api/preferences', function (req, res, next) {
                 err.status = 303
                 return next(err);
             }
-            
+
             connection.query(
                 "update  User set `json`=?   where `id` = ?", [
-                    JSON.stringify(value.json),value.userId
+                    JSON.stringify(value.json), value.userId
                 ],
                 function (err) {
                     connection.release();
@@ -53,7 +53,7 @@ router.post('/api/preferences', function (req, res, next) {
                     res.json({
                         status: 1,
                         message: "success",
-                        data:value.json
+                        data: value.json
                     });
                 });
         });
@@ -101,7 +101,7 @@ router.get('/api/preferences', function (req, res, next) {
                     res.json({
                         status: 1,
                         message: "success",
-                        data:result[0].json
+                        data: result[0].json
                     });
                 });
         });
@@ -191,21 +191,21 @@ router.get('/api/postbackurl', function (req, res, next) {
         if (err) {
             return next(err);
         }
-        try{
-        let defaultDomain;
-        for(let index=0;index<setting.domains.length;index++){
-            if(setting.domains[index].postBackDomain){
-                defaultDomain= setting.domains[index].address;
+        try {
+            let defaultDomain;
+            for (let index = 0; index < setting.domains.length; index++) {
+                if (setting.domains[index].postBackDomain) {
+                    defaultDomain = setting.domains[index].address;
+                }
             }
-        }
-        res.json({
-            status:1,
-            message:'success',
-            data:{
-                defaultPostBackUrl:setting.newbidder.httpPix+value.userId+"."+defaultDomain+setting.newbidder.postBackRouter+setting.newbidder.postBackRouterParam
-            }
-        })
-        }catch(e){
+            res.json({
+                status: 1,
+                message: 'success',
+                data: {
+                    defaultPostBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+                }
+            })
+        } catch (e) {
             next(e);
         }
     });
@@ -213,7 +213,7 @@ router.get('/api/postbackurl', function (req, res, next) {
 
 
 /**
- * @api {get} /api/names  check name exists                              
+ * @api {post} /api/names  check name exists                              
  * @apiName    check name exists
  * @apiGroup User
  * @apiParam {String} name  
@@ -230,23 +230,24 @@ router.get('/api/postbackurl', function (req, res, next) {
  *     }
  *
  */
-router.post('/api/names',async function(req,res,next){
-      var schema = Joi.object().keys({
+router.post('/api/names', async function (req, res, next) {
+    var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        name:Joi.string().required().trim(),
-        type:Joi.number().required()
+        name: Joi.string().required().trim(),
+        type: Joi.number().required(),
+        id: Joi.number().required()
     });
     req.body.userId = req.userId;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let responseData = await common.checkNameExists(value.userId,value.name,value.type,connection);
+        let responseData = await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, value.type, connection);
         res.json({
             status: 1,
             message: 'succes',
             data: {
-                exists:responseData
+                exists: responseData
             }
         });
     } catch (e) {

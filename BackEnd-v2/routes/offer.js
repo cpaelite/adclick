@@ -35,7 +35,7 @@ router.post('/api/offers', async function (req, res, next) {
         idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required().regex(util.regWebURL,'url'),
-        country: Joi.string().required(),
+        country: Joi.string().optional().allow(""),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().optional().keys({
             id: Joi.number().required(),
@@ -52,6 +52,11 @@ router.post('/api/offers', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        //check offer name exists
+        if (await common.checkNameExists(value.userId, null, value.name, 3, connection)) {
+            throw new Error("Offer name exists");
+        }
+
         let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
         value.postbackUrl = postbackUrl;
         let landerResult = await common.insertOffer(value.userId, value.idText, value, connection);
@@ -112,7 +117,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         idText: Joi.string().required(),
         name: Joi.string().required(),
         url: Joi.string().required().regex(util.regWebURL,'url'),
-        country: Joi.string().required(),
+        country: Joi.string().optional().allow(""),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().optional().keys({
             id: Joi.number().required(),
@@ -130,6 +135,10 @@ router.post('/api/offers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+         //check offer name exists
+        if (await common.checkNameExists(value.userId, value.id, value.name, 3, connection)) {
+            throw new Error("Offer name exists");
+        }
         await common.updateOffer(value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 3, connection);
         if (value.tags && value.tags.length) {

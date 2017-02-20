@@ -8,7 +8,7 @@ var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
 var _ = require('lodash');
-var util =require('../util');
+var util = require('../util');
 
 /**
  * @api {post} /api/landers  新增lander
@@ -31,9 +31,9 @@ router.post('/api/landers', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        hash:Joi.string().optional(),
-        url: Joi.string().required().regex(util.regWebURL,'url'),
-        country: Joi.string().optional(),
+        hash: Joi.string().optional(),
+        url: Joi.string().required().regex(util.regWebURL, 'url'),
+        country: Joi.string().optional().allow(""),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional()
     });
@@ -43,14 +43,17 @@ router.post('/api/landers', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        //check lander name exists
+        if (await common.checkNameExists(value.userId, null, value.name, 2, connection)) {
+            throw new Error("Lander name exists");
+        }
+
         let landerResult = await common.insertLander(value.userId, value, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 2, connection);
             }
         }
-
-        
 
         delete value.userId;
         value.id = landerResult.insertId;
@@ -94,8 +97,8 @@ router.post('/api/landers/:id', async function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        url: Joi.string().required().regex(util.regWebURL,'url'),
-        country: Joi.string().optional(),
+        url: Joi.string().required().regex(util.regWebURL, 'url'),
+        country: Joi.string().optional().allow(""),
         numberOfOffers: Joi.number().required(),
         tags: Joi.array().optional(),
         hash: Joi.string().optional()
@@ -107,6 +110,10 @@ router.post('/api/landers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        //check lander name exists
+        if (await common.checkNameExists(value.userId, value.id, value.name, 2, connection)) {
+            throw new Error("Lander name exists");
+        }
         await common.updateLander(value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 2, connection);
         if (value.tags && value.tags.length) {
@@ -114,7 +121,7 @@ router.post('/api/landers/:id', async function (req, res, next) {
                 await common.insertTags(value.userId, value.id, value.tags[index], 2, connection);
             }
         }
-          
+
 
         delete value.userId;
 
@@ -198,7 +205,7 @@ router.get('/api/landers', function (req, res, next) {
     // userId from jwt, don't need validation
     var sql = "select id, name, country from Lander where userId = " + req.userId;
 
-    if(req.query.country){
+    if (req.query.country) {
         sql += " and `country`=" + req.query.country;
     }
     pool.getConnection(function (err, connection) {
@@ -242,7 +249,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         //check lander used by flow ?   
-        let templeSql=`select  f.\`id\`as flowId,f.\`name\` as flowName from  Lander lander  
+        let templeSql = `select  f.\`id\`as flowId,f.\`name\` as flowName from  Lander lander  
                         inner join Lander2Path p2 on lander.\`id\` = p2.\`landerId\`
                         inner join Path p on p.\`id\` = p2.\`pathId\` 
                         inner join Path2Rule r2 on r2.\`pathId\` = p.\`id\`
@@ -251,21 +258,21 @@ router.delete('/api/landers/:id', async function (req, res, next) {
                         inner join Flow f on f.\`id\` = f2.\`flowId\` 
                         where  lander.\`deleted\` = 0  and p2.\`deleted\` = 0  and p.\`deleted\` = 0  and r2.\`deleted\` = 0  and r.\`deleted\`= 0 and f2.\`deleted\`= 0 and f.\`deleted\` = 0   
                         and lander.\`id\`= <%=landerId%> and lander.\`userId\`= <%=userId%> and p.\`userId\`=<%=userId%> and r.\`userId\`= <%=userId%> and f.\`userId\` = <%=userId%>`;
-         let buildFuc=_.template(templeSql);
-         let sql = buildFuc({
-             landerId:value.id,
-             userId:value.userId
-         });
-        let flowResult=await common.query(sql,[],connection);
-        if(flowResult.length){
+        let buildFuc = _.template(templeSql);
+        let sql = buildFuc({
+            landerId: value.id,
+            userId: value.userId
+        });
+        let flowResult = await common.query(sql, [], connection);
+        if (flowResult.length) {
             res.json({
-            status: 0,
-            message: 'lander used by flow!',
-            data:{
-                flows:flowResult
-            }
-          });
-          return ;
+                status: 0,
+                message: 'lander used by flow!',
+                data: {
+                    flows: flowResult
+                }
+            });
+            return;
         }
 
         let result = await common.deleteLander(value.id, value.userId, connection);
@@ -273,7 +280,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
             status: 1,
             message: 'success'
         });
-        
+
     } catch (e) {
         next(e);
     }

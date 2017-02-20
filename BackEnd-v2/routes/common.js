@@ -3,6 +3,7 @@ var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
 var Pub = require('./redis_sub_pub');
+var _= require('lodash');
 
 
 function query(sql, params, connection) {
@@ -711,12 +712,12 @@ async function updateOffer(userId, offer, connection) {
     let params = [];
     var sqlUpdateOffer = "update  Offer  set `id`= ? ";
     params.push(offer.id);
-    if (offer.country) {
+    if (offer.country !=undefined) {
         // var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
         sqlUpdateOffer += ",`country`= ? ";
         params.push(offer.country);
     }
-    if (offer.postbackUrl) {
+    if (offer.postbackUrl !=undefined) {
         sqlUpdateOffer += ",`postbackUrl`=?";
         params.push(offer.postbackUrl);
     }
@@ -1046,7 +1047,7 @@ async function deleteAffiliate(id, userId, connection) {
 }
 
 
-async function checkNameExists(userId,name,type,connection){
+async function checkNameExists(userId,id,name,type,connection){
     let results=[];
     switch (type){
         case 1 :
@@ -1065,6 +1066,9 @@ async function checkNameExists(userId,name,type,connection){
            throw new Error("Paramter type error");         
     }
     if(results.length){
+        if(_.some(results,['id',id])){
+            return false;
+        }
         return true;
     } 
     return false;

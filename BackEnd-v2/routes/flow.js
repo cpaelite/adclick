@@ -266,10 +266,10 @@ router.post('/api/flows', async function (req, res, next) {
         hash: Joi.string(),
         type: Joi.number().required(),
         id: Joi.string().optional(),
-        name: Joi.string(),
+        name: Joi.string().required(),
         country: Joi.string(),
         redirectMode: Joi.number()
-    }).optionalKeys('id', 'hash', 'name', 'country', 'redirectMode');
+    }).optionalKeys('id', 'hash', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.type = 1;
@@ -307,12 +307,12 @@ router.post('/api/flows/:id', async function (req, res, next) {
         hash: Joi.string(),
         type: Joi.number(),
         id: Joi.number().required(),
-        name: Joi.string(),
+        name: Joi.string().required(),
         country: Joi.string(),
         redirectMode: Joi.number(),
         userId: Joi.number().required(),
         idText: Joi.string().required()
-    }).optionalKeys('hash', 'type', 'name', 'country', 'redirectMode');
+    }).optionalKeys('hash', 'type', 'country', 'redirectMode');
     req.body.userId = req.userId;
     req.body.idText = req.idText;
     req.body.id = req.params.id;
@@ -386,13 +386,17 @@ async function saveOrUpdateFlow(value, connection) {
 
      
     try {
+         //check flow name exists 
+        if(await common.checkNameExists(value.userId,value.id?value.id:null,value.name,4,connection)){
+             throw new Error("Flow name exists");
+        }
+
         let flowResult;
         await common.beginTransaction(connection);
         //Flow
         if (!value.id) {
             flowResult = await common.insertFlow(value.userId, value, connection)
         } else if (value && value.id) {
-           
             await common.updateFlow(value.userId, value, connection)
         }
 
