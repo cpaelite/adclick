@@ -391,7 +391,7 @@
     $scope.queryLanders = function(query) {
       if (allLanders) {
         var filtered = allLanders.filter(function(lander) {
-          return theFlow.country.value == 'ZZZ' || lander.country == theFlow.country.value;
+          return theFlow.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == theFlow.country.value;
         }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
         return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
       } else {
@@ -462,7 +462,7 @@
     $scope.queryOffers = function(query) {
       if (allOffers) {
         var filtered = allOffers.filter(function(offer) {
-          return theFlow.country.value == 'ZZZ' || offer.country == theFlow.country.value;
+          return theFlow.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == theFlow.country.value;
         }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
         return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
       } else {
