@@ -288,6 +288,7 @@
         return;
       }
 
+      $scope.query.filter = $scope.searchFilter;
       getDateRange($scope.datetype);
       pageStatus.datetype = $scope.datetype;
       pageStatus.status = $scope.activeStatus;
