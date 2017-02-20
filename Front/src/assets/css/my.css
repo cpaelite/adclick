@@ -95,10 +95,13 @@ a.dropdown-toggle:hover{
     color: #fff;
 }
 
-.md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{
+.md-toolbar-tools h1, .md-toolbar-tools h1, .md-toolbar-tools h3{
     font-size: 18px;
     font-weight: 600;
     margin-left: 15px;
+}
+.offer-title h2.md-title{
+    text-align: center;
 }
 
 header .setting,
@@ -126,6 +129,11 @@ header .home:hover{
 .navbar-right > li > a {
     padding-top: 15px;
     padding-bottom: 16px;
+    min-width: 110px;
+}
+.text-md{
+    font-size: 14px;
+    font-weight: bold;
 }
 .material-icons {
     vertical-align: middle;
@@ -198,7 +206,7 @@ header .home:hover{
 }
 .cs-page-content {
     background: #fff none repeat scroll 0 0;
-    padding: 0px 30px 15px;
+    padding: 0px 15px 15px;
     position: relative;
     min-height: 600px !important;
 }
@@ -273,10 +281,14 @@ header .home:hover{
 .cs-filter-input {
     border: medium none;
     color: rgba(0, 0, 0, 0.87);
-    margin: 6px 0px;
+    margin: 2px 0;
     padding: 2px 5px;
     width: 200px;
-    height: 26px;
+    height: 32px;
+}
+md-select.md-table-select > .md-select-value{
+    border-bottom: 1px solid #d5dce4 !important;
+    padding: 0 5px;
 }
 .cs-filter-close {
     margin-left: -35px !important;
@@ -284,18 +296,21 @@ header .home:hover{
 }
 .cs-add-button {
     -moz-user-select: none;
-    background: #12bdce none repeat scroll 0 0 !important;
+    background: #2da8f9 !important;
     border-color: #12bdce;
     border-style: solid;
     border-width: 1px;
     box-shadow: unset !important;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
     color: #fff;
     cursor: pointer;
     display: inline-block;
     overflow: hidden;
     text-align: center;
+    height: 36px;
+    line-height: 36px;
+    border:none;
 }
 .cs-input-label {
     line-height: 20px;
@@ -579,6 +594,13 @@ table.md-table th.md-column {
     background-color: rgb(247, 247, 247);
     height: 40px;
 }
+table.md-table thead.md-head > tr.md-row{
+    height: auto;
+}
+table.md-table td.md-cell{
+    border-top: 1px solid #eaeaea;
+    border-bottom: none;
+}
 .md-table-pagination .label {
     font-size: 12px;
     font-weight: normal;
@@ -811,6 +833,9 @@ table .traficc-source-input input{
     border: 1px solid #cfdadd;
     padding: 5px;
 }
+table .traficc-source-input input[disabled]{
+    background: rgba(128, 128, 128, 0.64);
+}
 table .traficc-source-input input[type="checkbox"]{
     width: 15px;
     height: 15px;
@@ -823,9 +848,6 @@ table .traficc-source-input input[type="checkbox"]{
     color: #fff !important;
     text-transform:lowercase;
     margin: 6px 0;
-}
-.md-button:not([disabled]):hover{
-    background: #253c75;
 }
 .tracking-checkbox input[type="checkbox"]{
     width: 16px;
@@ -922,12 +944,21 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .right-select .cs-add-button{
     float: left;
-    margin: 15px 15px 0 0;
+    margin: 15px 10px 0 0;
+    border-radius: 4px;
 }
 .right-select .search-con{
-    background: ghostwhite; 
-    padding: 0 15px;
+    background: #d5dce4;
+    padding: 0 2px;
     margin-top: 15px;
+    border-radius: 2px;
+}
+md-select.md-default-theme .md-select-value, md-select .md-select-value{
+    border: 1px solid #d5dce4;
+    border-radius: 2px;
+    height: 31px;
+    background: #fff;
+    padding-left: 5px;
 }
 .right-select .selectAll,
 .right-select .view_column{
@@ -968,15 +999,18 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .left-con .cs-subform-select{
     height: 38px;
-    margin: 0px 15px 0px 0;
+    margin: 0px 10px 0px 0;
 }
 .view_column
 {
+    text-align: center;
     width: 55px;
-    height: 38px;
-    background: #12bdce;
+    height: 36px;
+    line-height: 36px;
+    background: #2da8f9;
     cursor: pointer;
     margin-top: 15px;
+    border-radius: 2px;
 } 
 .md-table-container{
     margin-top: 15px;
@@ -985,10 +1019,10 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     color: #fff;
 }
 .view_column .view-column-icon{
-    margin: 8px 0 0 4px;
+    margin: 0 0 0 4px;
 }
 .view_column .arrow-down-icon{
-    margin:7px 0 0 -5px;
+    margin:0px 0 0 -5px;
 }
 .view_column_con{
     position: absolute;
@@ -1068,22 +1102,22 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
     padding-right: 0;
 }
 .dash-board .data-list .data-list-con h3{
-    height: 33px;
-    line-height: 33px;
-    font-size: 14px;
-    background: #12bdce;
-    padding: 0px 10px;
+    font-size: 13px;
+    padding: 25px 0 5px 0;
+    background: #f8f8f8;
     margin: 0;
-    color: #fff;
+    color: #666;
+    text-align: center;
+    border-radius: 2px 2px 0 0;
 }
 .data-num{
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    color: #363636;
+    color: #2f9be1;
     text-align: center;
-    height: 60px;
-    line-height: 60px;
-    background: #f8f8f8;
+    height: 48px;
+    background: #f6f8f8;
+    border-radius: 0 0 2px 2px;
 }
 .data-tables-chart-container .table > thead > tr > th,
 .data-tables-chart-container .table > tbody > tr > td{
@@ -1093,27 +1127,43 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
     background: #f5f5f5;
 }
 .data-tables-chart-container .table-hover > tbody > tr:hover{
-    background-color: #12bdce;
-    color: #fff;
+    background-color: #e6ebf0;
+    color: #333;
 }
 .data-tables-chart-container table thead,
 .table thead,
 .table tfoot{
-    background: #00838f;
-    color: #fff;
+    background: #c5cfdb;
+    color: #333;
 }
 .md-table tfoot.md-body{
-    height: 48px;
-    line-height: 48px;
-    background: rgb(0, 96, 100);
+    height: 42px;
+    line-height: 42px;
+    background: #d5dce4;
 }
-table.md-table tfoot td.md-cell{
+.offer-remind{
+    height: 36px;
+    line-height: 36px;
     color: #fff;
+    background: rgb(33,150,243);
+    text-align: center;
+    font-size: 13px;
+}
+.offer-title md-toolbar._md-toolbar-transitions{
+    background: #fff;
+    color: #205EB2;
+}
+.md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{
+    width: 100%;
+    font-weight: lighter;
 }
 .data-tables-chart-container table tbody td:first-child{
-    background: #cacaca;
-    color: #fff;
+    background: #e6ebf0;
+    color: #333;
+    padding: 0 5px;
     text-align: center;
+    font-size: 12px;
+    vertical-align: middle;
 }
 .table-toggles{
     margin:15px 0; 
@@ -1124,21 +1174,21 @@ table.md-table tfoot td.md-cell{
 }
 .table-toggles li{
     cursor: pointer;
-    font-size:12px;
-    color:  #fff;
-    background: #006064;
+    font-size: 12px;
+    color: #fff;
+    background: #2f9be1;
     padding: 0 15px;
-    border-radius: 4px;
+    border-radius: 2px;
     display: inline-block;
     height: 30px;
     line-height: 30px;
 }
 .table-toggles li.selected,
 .table-toggles li.selected:hover{
-    background: #12bdce;
+    background:#2da8f9;
 }
 .table-toggles li:hover{
-    background: rgba(0, 96, 100, 0.78);
+    background: #2f9be2;
 }
 .toggles-button-left{
     float: left;
@@ -1204,7 +1254,7 @@ h1.setting-title{
 .btn-primary.active, 
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
-    background-color: #2da8f9;
+    background-color: #2da8f9 !important;;
     border-color: #2da8f9;
 }
 .save-btn{
@@ -1940,6 +1990,7 @@ md-content.cs-main-content{
     border: none;
     box-shadow: none;
     background: none;
+    font-size: 13px;
 }
 .cs-flow-lander-action{
     background: #f6f6f6;
@@ -2009,8 +2060,12 @@ p.cs-flow-offer-view{
 .country-select md-select{
     margin: 0;
 }
-.country-select md-select .md-select-value:focus{
+ .md-select-value{
     border: none;
+}
+md-select:not([disabled]):focus .md-select-value{
+    border-bottom-width: 1px;
+    border-bottom-color: #d5dce4;
 }
 .inputgroup-input,
 .select-bg,
