@@ -11,7 +11,8 @@ import {
     groupByTag,
     sumShorts,
     attributes,
-    keys
+    keys,
+    formatRows
 } from '../util/report'
 
 /**
@@ -136,7 +137,7 @@ async function normalReport(query) {
       clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
       visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0)
   }
-  return {rows, totals, totalRows}
+  return {rows: formatRows(rows), totals, totalRows}
 }
 
 async function listPageReport(query) {
@@ -196,10 +197,10 @@ async function listPageReport(query) {
     return {
         totals: nr.totals,
         totalRows,
-        rows: [
+        rows: formatRows([
             ...nr.rows,
             ...placeholders
-        ]
+        ])
     }
 }
 
