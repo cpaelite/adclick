@@ -182,7 +182,7 @@
               </div>
 
               <div ng-if="f.type=='input'" ng-class="{'col-md-8': f.label}">
-                <input ng-model="cdt[f.name]" placeholder="{{f.placeholder}}">
+                <input ng-model="cdt[f.name]" placeholder="{{f.placeholder}}" class="custom-input">
               </div>
 
               <div ng-if="f.type=='inputgroup'" ng-class="{'col-md-10': f.label}">
@@ -194,7 +194,7 @@
 
               <div ng-if="f.type=='checkbox'" ng-class="{'col-md-10': f.label}" class="condition-checkbox">
                 <div ng-repeat="o in f.options">
-                  <md-checkbox ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
+                  <md-checkbox class="md-primary" ng-checked="exists(o.value, cdt[f.name])" ng-click="toggle(o.value, cdt[f.name])">
                     {{o.display}}
                   </md-checkbox>
                 </div>
@@ -450,6 +450,8 @@
     </div>
   </div>
 
-  <div ng-if="initState=='init'" class="cs-flow-init" translate>on-loading</div>
+  <div ng-if="initState=='init'" class="masking-loader" translate></div>
+  <div ng-class="{loader: initState=='init'}"></div>
+  <!-- <div ng-if="initState=='init'" class="cs-flow-init" translate>on-loading</div> -->
   <div ng-if="initState=='error'" class="cs-flow-error" translate>loading-error</div>
 </div>

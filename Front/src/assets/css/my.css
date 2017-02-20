@@ -1,31 +1,111 @@
 .cs-app {
-    height: auto;
-    min-height: 100%;
+    height: 100%;
     position: relative;
     width: 100%;
     background-color: #fff;
     overflow-x:hidden;
+}
+
+.masking-loader{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.loader,
+.loader:before,
+.loader:after {
+  background: #2f9be1;
+  -webkit-animation: load1 1s infinite ease-in-out;
+  animation: load1 1s infinite ease-in-out;
+  width: 0.8em;
+  height: 4em;
+}
+.loader {
+  color: #2f9be1;
+  text-indent: -9999em;
+  margin: 260px auto;
+  position: relative;
+  font-size: 11px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  top: 0;
+  content: '';
+}
+.loader:before {
+  left: -1.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 1.5em;
+}
+@-webkit-keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
 }
 header.navbar {
     position: fixed;
     top: 0;
     z-index: 61;
     width: 100%;
-    background: #0ea6b2 none repeat scroll 0 0;
-    color: #cffbff;
+    background: #2f9be1;
+    color: #fff;
 }
 header .md-toolbar-tools {
-    height: auto;
+    height: 52px;
 }
 .home a.home-link,
 .setting a.setting-link{
     display: block;
 }
+.home a.home-link:hover,
+.setting a.setting-link:hover{
+    color: #fff;
+}
+a.dropdown-toggle:hover{
+    color: #fff;
+}
+
+.md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: 15px;
+}
+
 header .setting,
 header .home{
     width: 60px;
-    height: 60px;
-    line-height: 60px;
+    height: 52px;
+    line-height: 52px;
     text-align: center;
     cursor: pointer;
 }
@@ -41,14 +121,15 @@ header .home:hover{
     width: 8px;
 }
 .navbar-right {
-    height: 60px;
+    height: 52px;
 }
 .navbar-right > li > a {
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-top: 15px;
+    padding-bottom: 16px;
 }
 .material-icons {
     vertical-align: middle;
+    font-size:17px;
 }
 .cs-left-aside {
     -moz-user-select: none;
@@ -73,10 +154,13 @@ header .home:hover{
 }
 .navi {
     margin-top: 8px;
+    margin-top: 52px;
+    background: #fff;
 }
 .navi ul.nav li.active a {
-    font-weight: 700;
-    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+    color: #2da8f9;
+    border-bottom: 2px solid #2da8f9;
 }
 .nav-icon {
     margin-top: 5px;
@@ -1109,15 +1193,35 @@ h1.setting-title{
 .close-btn{
     background: rgba(128, 128, 128, 0.71) !important;
 }
+.btn-primary{
+    color: #ffffff !important;
+    background-color: #2f9be1;
+    border-color: #2f9be1;
+}
+.btn-primary:hover, 
+.btn-primary:focus, 
+.btn-primary:active, 
+.btn-primary.active, 
+.open .dropdown-toggle.btn-primary{
+    color: #ffffff !important;
+    background-color: #2da8f9;
+    border-color: #2da8f9;
+}
+.save-btn{
+    margin-right: 5px;
+}
 .save-btn,.close-btn{
-    width: 100px;
-    background: #12bdce;
-    padding: 5px 10px;
-    font-size: 15px;
+    background: #2da8f9;
+    padding: 0 10px;
+    font-size: 13px;
     color: #fff;
     float: left;
-    margin-left: 10px;
     cursor: pointer;
+    border-radius: 2px;
+    height: 30px;
+    line-height: 25px;
+    cursor: pointer;
+    border: none;
 }
 .profile-form-footer .save-btn{
     float: right;
@@ -1660,7 +1764,7 @@ input[type="checkbox"].th-checkbox{
     padding: 10px;
 }
 .cs-flow-tree{
-    background: rgba(18, 189, 206, 0.14);
+    background: rgba(45, 168, 249, 0.18);
     padding: 30px 0;
     border-radius: 4px;   
     overflow: auto;
@@ -1673,7 +1777,7 @@ input[type="checkbox"].th-checkbox{
 
 }
 .tree-li.cs-flow-active{
-    background: rgba(18, 189, 206, 0.6);
+    background: rgba(47, 155, 225, 0.28);
 }
 .tree-li.cs-is-deleted .cs-path-name{
     display: inline-block;
@@ -1703,17 +1807,31 @@ input[type="checkbox"].th-checkbox{
 .cs-rule-name{
     display: inline-block;
     max-width: 280px;
-    font-size: 15px;
+    font-size: 14px;
     margin-left: 8px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     float: left
 }
+.cs-flow-restore{
+    position: absolute;
+    right: 10px;
+    color: gray;
+}
+.cs-flow-rule .cs-is-disabled .tree-icon{
+    color: rgba(49, 46, 99, 0.41);
+}
+.cs-page-flow li.tree-li.cs-is-disabled.active{
+    background: rgba(45, 168, 249, 0.38);
+}
+.cs-page-flow li.tree-li.cs-is-disabled{
+    color: #717477;
+}
 .path-name{
     display: inline-block;
     max-width: 280px;
-    font-size: 15px;
+    font-size: 14px;
     margin-left: 8px;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -1738,19 +1856,19 @@ input[type="checkbox"].th-checkbox{
     padding: 0 55px;
 }
 .cs-page-flow li.tree-li:hover{
-    background: rgba(18, 189, 206, 0.29);
+    background: rgba(45, 168, 249, 0.28);
 }
 .weight-num{
     display: inline-block;
     float: right;
 }
 .add-box{
-    font-size: 18px;
-    color: #12bdce;
+    font-size: 17px;
+    color: #2da8f9;
 }
 .add-flow-path,
 .add-flow-rule{
-    font-size: 15px;
+    font-size: 14px;
 }
 .cs-flow-content{
     padding-left: 40px;
@@ -1764,10 +1882,6 @@ input[type="checkbox"].th-checkbox{
 .label-radio{
     font-weight: 700;
     padding-left: 0;
-}
-.save-btn,
-.close-btn{
-    cursor: pointer;
 }
 .close-btn{
     background: #898989;
@@ -1793,11 +1907,11 @@ md-content.cs-main-content{
 .top-btn-list button,
 .top-btn-list button.active{
     border: none;
-    background: #006064;
+    background: #2da8f9;
     color: #fff !important;
 }
 .top-btn-list button:hover{
-    background: rgba(0, 96, 100, 0.66);
+    background: #2da8f9;
     color: #fff !important;
 }
 .editPathForm md-switch,
@@ -1816,7 +1930,7 @@ md-content.cs-main-content{
     padding-left: 0;
 }
 .cs-flow-lander-header{
-    background: #00838f;
+    background: #2da8f9;
     height: 35px;
     line-height: 35px;
     color: #fff;
@@ -1882,15 +1996,15 @@ p.cs-flow-offer-view{
     margin: 0;
 }
 .em-close{
-    font-size: 20px;
+    font-size: 16px;
     float: right;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     text-align: center;
     margin-top: -1px;
 }
 .cs-condition-field{
-    padding-left: 30px;
+    padding-left: 27px;
 }
 .country-select md-select{
     margin: 0;
@@ -1898,14 +2012,43 @@ p.cs-flow-offer-view{
 .country-select md-select .md-select-value:focus{
     border: none;
 }
-.day-input-content{
+.inputgroup-input,
+.select-bg,
+.cs-conditions-content .ms-chips{
+    border: none;
+    border-radius: 4px;
+    margin: 10px;
+}
+.day-input-content,
+.condition-select-content,
+.inputgroup-input,
+.select-bg,
+.cs-conditions-content .ms-chips,
+.custom-input
+{
+    background: rgba(45, 168, 249, 0.18);
+    font-size: 75%;
+    padding-left: 10px;
     height: 30px;
     line-height: 30px;
-    border-radius: 4px;
-    background: rgba(18, 189, 206, 0.14);
 }
-.condition-checkbox{
-    margin: 15px 0;
+.custom-input{
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+}
+.condition-select-content{
+    width: 45%;
+    color: #363636;
+    text-shadow: none;
+    margin: 0 15px;
+    display: inline-block;
+    text-align: left;
+    font-weight: normal;
+
+}
+.day-input-content{
+    border-radius: 4px;
 }
 .condition-checkbox div{
     display: inline;
@@ -1947,18 +2090,6 @@ p.cs-flow-offer-view{
 .cs-conditions-content li{
     margin:15px 0;
 }
-.condition-select-content{
-    width: 45%;
-    height: 35px;
-    line-height: 35px;
-    background: rgba(18, 189, 206, 0.14);
-    color: #363636;
-    text-shadow: none;
-    margin: 0 15px;
-    display: inline-block;
-    text-align: left;
-    font-weight: normal;
-}
 .delete-condition{
     width: 35px;
     height: 35px;
@@ -1969,10 +2100,14 @@ p.cs-flow-offer-view{
 }
 .btn-group.is-btn label{
     display: inline-block;
-    width: 100px;
+    min-width: 100px;
     box-shadow: none;
     margin-right: 15px;
     border: none;
+    height: 30px !important;
+    line-height: 17px;
+    border-radius: 4px !important;
+    margin-top: -3px;
 }
 .btn-group.is-btn label:last-child,
 .delete-btn:hover{
@@ -2015,8 +2150,9 @@ p.cs-flow-offer-view{
     padding-right: 15px;
 }
 .cs-select-content{
-    background: rgba(18, 189, 206, 0.14);
-    padding: 15px;
+    background: rgba(45, 168, 249, 0.18);
+    padding: 10px;
+    border-radius: 4px;
 }
 .cs-l2select-l1panel,
 .cs-l2select-l2panel{
@@ -2027,11 +2163,12 @@ p.cs-flow-offer-view{
     border-radius: 5px;
     border: 1px solid #c9c9c9;
     padding: 5px;
+    line-height: 15px;
 }
 .cs-select-query .select-search-icon{
     position: absolute;
-    top: 20px;
-    right: 40px;
+    top: 15px;
+    right: 33px;
     color: rgba(128, 128, 128, 0.55);
 }
 .options-list{
@@ -2040,11 +2177,12 @@ p.cs-flow-offer-view{
     padding: 15px;
 }
 .list-content .md-chips{
-    height: 210px;
-    background: rgba(18, 189, 206, 0.14);
+    height: 197px;
+    background: rgba(45, 168, 249, 0.18);
     box-shadow: none;
     overflow-y: auto;
-    padding: 5px 10px;
+    padding:10px;
+    border-radius: 4px;
 }
 .list-content .md-chips .md-chip{
     font-size: 12px;
@@ -2052,40 +2190,55 @@ p.cs-flow-offer-view{
     background: #12bdce;
     border-radius: 4px;
 }
-.inputgroup-input,
-.select-bg,
-.cs-conditions-content .ms-chips{
-    background: rgba(18, 189, 206, 0.14);
-    border: none;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 4px;
-    margin: 10px;
-}
+
 .select-bg .md-select-value{
     border: 0;
     padding: 0 10px;
 }
 .country-select md-select:not([disabled]):focus .md-select-value{
-    border-bottom-color:rgba(18, 189, 206, 0.14);
+    border:none;
 }
 .inputgroup-input{
     padding: 5px;
 }
 .chips-content .md-chips{
-    background: rgba(18, 189, 206, 0.137255);
+    background: rgba(45, 168, 249, 0.18);
     height: 30px;
     border: none;
     box-shadow: none !important;
+    padding:0 10px;
+}
+.chips-content .md-chips.md-removable{
+    padding: 5px 0px;
+    height: 45px;
+    border-radius: 4px;
+}
+.md-chips md-chip{
+    font-size: 70%;
+    margin: 5px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 6px;
+}
+.md-chips md-chip .md-chip-remove{
+    width: 25px;
+    height: 25px;
+}
+.md-chips md-chip .md-chip-remove md-icon{
+    height: 16px;
+    width: 16px;
+    min-height: 16px;
+    min-width: 16px;
 }
 .chips-content md-chips .md-chips.md-focused{
     box-shadow: none;
-
 }
 .md-chips .md-chip-input-container{
-    font-size: 15px;
+    font-size: 14px;
     color: #363636;
     margin: 0;
+    width: 100%;
+    padding: 0 10px;
 }
 .chips-con,
 .country-select,
