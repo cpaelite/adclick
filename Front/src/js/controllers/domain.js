@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('DomainCtrl', [
-      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', 'Plan',
+      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', 'Plan', '$q',
       DomainCtrl
     ]);
 
-  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, Plan) {
+  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, Plan, $q) {
     $scope.app.subtitle = 'Domain';
 
     $scope.isBtnColor = false;
@@ -15,19 +15,36 @@
       $scope.isBtnColor = !$scope.isBtnColor;
     };
 
-    Plan.get(null, function (plan) {
-      $scope.plan = plan.data;
-    });
+    // init load data
+    var initPromises = [], prms;
 
-    Domains.get(null, function (domain) {
+    var thePlan;
+    prms = Plan.get(null, function (plan) {
+      thePlan = plan.data.plan;
+    }).$promise;
+    initPromises.push(prms);
+
+    var theDomains;
+    prms = Domains.get(null, function (domain) {
       var domains = domain.data;
       if (domains.custom) {
         domains.custom.forEach(function (domain) {
             domain.btnName = "Verify DNS settings";
         });
       }
-      $scope.item = domains;
-    });
+      theDomains = domains;
+    }).$promise;
+    initPromises.push(prms);
+
+    function initSuccess() {
+      $scope.plan = thePlan;
+      $scope.item = theDomains;
+      if ($scope.plan.domainLimit ==  undefined || $scope.item['custom'].length >= $scope.plan.domainLimit) {
+        $scope.isGray = true;
+      }
+    }
+
+    $q.all(initPromises).then(initSuccess);
 
     $scope.mainClick = function (l) {
       $scope.item['internal'].forEach(function (v) {
@@ -50,7 +67,7 @@
           btnName: "Verify DNS settings"
         });
       }
-      if ($scope.item['custom'].length == $scope.plan.domainLimit) {
+      if ($scope.item['custom'].length >= $scope.plan.domainLimit) {
         $scope.isGray = true;
       }
     };

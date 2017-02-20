@@ -2643,14 +2643,16 @@ app.get('/api/plan', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      id: 1,
-      name: 'plan1',
-      price: 399,
-      eventsLimit: 100,
-      overageCPM: 0.5,
-      retentionLimit: 12,
-      userLimit: 3,
-      domainLimit: 5
+      plan: {
+        id: 1,
+        name: 'plan1',
+        price: 399,
+        eventsLimit: 100,
+        overageCPM: 0.5,
+        retentionLimit: 12,
+        userLimit: 3,
+        domainLimit: 5
+      }
     }
   };
   res.send(result);
