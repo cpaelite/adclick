@@ -137,7 +137,7 @@ async function normalReport(query) {
       clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
       visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0)
   }
-  return {rows: formatRows(rows), totals, totalRows}
+  return {rows, totals, totalRows}
 }
 
 async function listPageReport(query) {
@@ -198,7 +198,7 @@ async function listPageReport(query) {
         totals: nr.totals,
         totalRows,
         rows: formatRows([
-            ...nr.rows,
+            ...(nr.rows).map(row => row.dataValues),
             ...placeholders
         ])
     }
