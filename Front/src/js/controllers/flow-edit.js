@@ -37,6 +37,7 @@
         prms;
 
     var theFlow, prefix = '';
+    $scope.showContinue = false;
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
         theFlow = result.data;
@@ -48,6 +49,7 @@
       var defaultRule = angular.copy(ruleSkel);
       defaultRule.name = 'Default paths';
       defaultRule.isDefault = true;
+      $scope.showContinue = true;
 
       theFlow = {
         name: 'Global - ',
@@ -198,6 +200,11 @@
     $scope.isDeleted = false;
     $scope.curRule = null;
     $scope.curPath = null;
+
+    $scope.$watch('onEdit', function (newVal, oldVal) {
+      if (newVal != oldVal)
+        $scope.showContinue = false;
+    });
 
     // operation on flow
     $scope.editFlow = function() {
@@ -800,6 +807,11 @@
         if ($scope.saveErrors.length == 0)
           $scope.close();
       });
+    };
+
+    $scope.continueEdit = function() {
+      var rule = theFlow.rules[0];
+      $scope.editPath(rule, rule.paths[0]);
     };
   }
 })();
