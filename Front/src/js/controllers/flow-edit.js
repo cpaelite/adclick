@@ -711,7 +711,7 @@
             ruleData.conditions.push(conData);
           });
         }
-        if (ruleData.conditions.length == 0) {
+        if (!rule.isDefault && ruleData.conditions.length == 0) {
           $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
         }
 
