@@ -18,6 +18,40 @@ angular.module('app')
   };
 })
 
+.directive('asyncCheckName', ['$q', '$http', function($q, $http) {
+  return {
+    restrict: 'A',
+    require: "ngModel",
+    scope: {
+      asyncValidatorCallback: '&',
+      postValidaterCallback: '&',
+      asyncCheckName: '='
+    },
+    link: function(scope, element, attrs, ctrl) {
+      ctrl.$asyncValidators.asyncCheck = function(modelValue, viewValue) {
+        if (ctrl.$isEmpty(modelValue) || scope.postValidaterCallback()) {
+          return $q.when();
+        }
+        var deferred = $q.defer();
+        var params = scope.asyncCheckName;
+        params.name = modelValue;
+        $http.post('/api/names', params).then(function(response) {
+          if (!response.data.data.exists) {
+            scope.asyncValidatorCallback()(true);
+          } else {
+            scope.asyncValidatorCallback()(false);
+          }
+          deferred.resolve();
+        }, function(response) {
+            deferred.reject();
+        });
+
+        return deferred.promise;
+      };
+    }
+  }
+}])
+
 .directive('asyncCheck', ['$q', '$http', function($q, $http) {
   return {
     restrict: 'A',

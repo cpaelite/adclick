@@ -535,9 +535,15 @@
     // init load data
     var initPromises = [], prms;
     var theCampaign;
+    $scope.checkNameParams = {
+      type: 1
+    };
     if (this.cache) {
       theCampaign = this.cache;
       this.title = theCampaign.id ? 'edit' : 'add';
+      if(theCampaign.id) {
+        $scope.checkNameParams.id = theCampaign.id;
+      }
     } else if (this.item) {
       var isDuplicate = this.duplicate;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
@@ -547,6 +553,9 @@
       initPromises.push(prms);
 
       this.title = "edit";
+      if(!isDuplicate) {
+        $scope.checkNameParams.id = this.item.data.campaignId;
+      }
     } else {
       $scope.item = defaultItem();
       this.title = "add";
@@ -682,7 +691,13 @@
     }
 
     $q.all(initPromises).then(initSuccess);
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
 
+    $scope.postValidateCallback = function() {
+      return $scope.item.name.length == prefix.length;
+    };
     $scope.nameChanged = function(name) {
       if(name == undefined || name.length < prefix.length) {
         $scope.item.name = prefix;
@@ -913,11 +928,10 @@
 
       var traffic = JSON.parse($scope.item.trafficSource);
       spliceUrlParams(traffic);
-      if ($scope.item.id) {
-        $mdDialog.hide();
-      } else {
+      if (!$scope.item.id) {
         $scope.item.id = campaign.id;
       }
+      $mdDialog.hide();
     }
 
     this.save = function () {
@@ -1004,6 +1018,9 @@
   function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant) {
     var prefix = 'Global - ';
     initTags($scope, Tag, 2);
+    $scope.checkNameParams = {
+      type: 2
+    };
     if (this.item) {
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
@@ -1026,6 +1043,9 @@
         }
         $scope.oldName = $scope.item.name;
       });
+      if(!isDuplicate) {
+        $scope.checkNameParams.id = this.item.data.landerId;
+      }
       this.title = "edit";
     } else {
       $scope.item = {
@@ -1038,6 +1058,13 @@
     }
     
     this.titleType = angular.copy(this.perfType);
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.item.name.length == prefix.length;
+    };
     $scope.nameChanged = function() {
       if($scope.item.name == undefined || $scope.item.name.length < prefix.length) {
         $scope.item.name = prefix;
@@ -1132,8 +1159,18 @@
     initTags($scope, Tag, 3);
     // init load data
     var initPromises = [], prms;
+
+    $scope.checkNameParams = {
+      type: 3
+    };
     if(this.cache) {
       var theOffer = this.cache;
+      if(theOffer.id) {
+        $scope.checkNameParams.id = theOffer.id;
+        this.title = "edit";
+      } else {
+        this.title = "add";
+      }
     } else if (this.item) {
       var isDuplicate = this.duplicate;
       var theOffer;
@@ -1144,6 +1181,9 @@
       initPromises.push(prms);
 
       this.title = "edit";
+      if (!isDuplicate) {
+        $scope.checkNameParams.id = this.item.data.offerId;
+      }
     } else {
       $scope.item = {
         payoutMode: 0
@@ -1222,6 +1262,14 @@
         });
       });
     }
+
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.item.name.length == prefix.length;
+    };
 
     $scope.nameChanged = function(name) {
       if(name == undefined || name.length < prefix.length) {
@@ -1735,6 +1783,7 @@
   }
 
   function deleteCtrl($mdDialog, $injector) {
+    var self = this;
     this.title = "delete";
     this.content = 'warnDelete';
 
@@ -1751,24 +1800,28 @@
     }
 
     function deleteItem(item) {
-      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"]}).$promise;
+      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"], errorFn: true}).$promise;
     }
 
     this.onprocess = false;
     this.ok = function () {
-      this.onprocess = true;
+      self.onprocess = true;
       deleteItem(this.item).then(success, error);
     };
 
-    function success() {
+    function success(oData) {
       console.log("success delete");
-      this.onprocess = false;
-      $mdDialog.hide();
+      self.onprocess = false;
+      if(oData.status == 0) {
+        self.error = 'Error occured when delete.';
+      } else {
+        $mdDialog.hide();
+      }
     }
 
     function error() {
-      this.onprocess = false;
-      this.error = 'Error occured when delete.';
+      self.onprocess = false;
+      self.error = 'Error occurred when delete.';
     }
   }
 

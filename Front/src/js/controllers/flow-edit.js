@@ -37,6 +37,9 @@
         prms;
 
     var theFlow, prefix = '';
+    $scope.checkNameParams = {
+      type: 4
+    };
     $scope.showContinue = false;
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
@@ -44,6 +47,9 @@
         $scope.oldName = theFlow.name;
       }).$promise;
       initPromises.push(prms);
+      if(!isDuplicate) {
+        $scope.checkNameParams.id = flowId;
+      }
 
     } else {
       var defaultRule = angular.copy(ruleSkel);
@@ -319,6 +325,14 @@
     var validPattern = /^[- \w]*$/;
     $scope.validateName = function(item) {
       item._nameError = !validPattern.test(item.name);
+    };
+
+    $scope.validateCallback = function(isValid) {
+      $scope.editFlowForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.flow.name.length == prefix.length;
     };
 
     $scope.nameChanged = function(flow) {
@@ -671,7 +685,7 @@
       // clean up before save
       var flowData = {
         name: theFlow.name,
-        country: theFlow.country.value,
+        country: theFlow.country ? theFlow.country.value : 'ZZZ',
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };
