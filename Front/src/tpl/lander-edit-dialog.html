@@ -15,12 +15,14 @@
                 <div class="col-sm-5">
                     <input type="text" name="name" class="form-control" ng-model="item.name"
                         ng-change="nameChanged()"
+                        ng-blur="nameRequired()"
                         async-check-name="checkNameParams"
                         async-validator-callback="validateCallback"
                         post-validater-callback="postValidateCallback()"
                     >
                     <span style="color:red" ng-show="editForm.name.$invalid">
                         <span ng-show="editForm.name.$error.asyncCheckName">Name already exists.</span>
+                        <span ng-show="editForm.name.$error.nameRequired">Name is required.</span>
                     </span>
                 </div>
             </div>
