@@ -587,6 +587,35 @@ app.post('/api/preferences', function (req, res) {
 });
 
 /**
+ * @api {post} /api/names  check name exists                              
+ * @apiName    check name exists
+ * @apiGroup User
+ * @apiParam {String} name  
+ * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer4:Flow
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{
+ *           exists:true
+ *        }
+ *     }
+ *
+ */
+app.post('/api/names', function (req, res) {
+  var result = {
+        "status": 1,
+        "message": "success",
+        "data":{
+            exists: true
+         }
+      };
+  res.send(result);
+});
+
+/**
  * @apiName 获取Report
  *
  * @apiParam {String} from:2017-01-11T00:00:00Z
@@ -1461,7 +1490,7 @@ app.post('/api/offers/:offerId', function (req, res) {
  */
 app.delete('/api/offers/:offerId', function (req, res) {
   var result = {
-    status: 1,
+    status: 0,
     message: 'success'
   };
   res.send(result);
