@@ -48,7 +48,7 @@ router.get('/api/eventlog', async function (req, res, next) {
         page = parseInt(page)
         let offset = (page - 1) * limit;
 
-        let sqlTmp = "select user.`email` as user ,case log.`entityType` when 1 then \"Campaign\" when 2 then \"Lander\" when 3 then \"Offer\" when 4 then \"TrafficSource\" when 5 then \"AffiliateNetwork\" end as entityType,log.`entityName`,log.`entityId`,case log.`actionType` when 1 then \"Create\" when 2 then \"Change\" when 3 then \"Archive\" when 4 then \"Restore\" end as  action ,DATE_FORMAT(convert_tz(FROM_UNIXTIME(log.`changedAt`, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') as changedAt  from `UserEventLog` log  inner join `User` user on user.id=log.`userId`  where log.`changedAt` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')))  " +
+        let sqlTmp = "select user.`email` as user ,case log.`entityType` when 1 then \"Campaign\" when 2 then \"Lander\" when 3 then \"Offer\" when 4 then \"TrafficSource\" when 5 then \"AffiliateNetwork\" end as entityType,log.`entityName`,log.`entityId`,case log.`actionType` when 1 then \"Create\" when 2 then \"Change\" when 3 then \"Archive\" when 4 then \"Restore\" end as  action ,DATE_FORMAT(convert_tz(FROM_UNIXTIME(log.`changedAt`, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') as changeAt  from `UserEventLog` log  inner join `User` user on user.id=log.`userId`  where log.`changedAt` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')))  " +
             " and log.`changedAt` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>'))) and log.`userId`= user.id  ";
 
         if (userId !== "ALL") {
