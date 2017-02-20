@@ -60,7 +60,7 @@ router.post('/api/campaigns', async function (req, res, next) {
             country: Joi.string(),
             redirectMode: Joi.number()
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
-        url: Joi.string().optional(),
+        url: Joi.string().optional().allow(""),
         country: Joi.string().optional(),
         impPixelUrl: Joi.string().optional().empty(""),
         cpc: Joi.number().optional(),
@@ -148,7 +148,7 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
             redirectMode: Joi.number()
         }).optionalKeys('id', 'hash', 'type', 'name', 'country', 'redirectMode', 'rules'),
         url: Joi.string().optional(),
-        country: Joi.string().optional(),
+        country: Joi.string().optional().allow(""),
         impPixelUrl: Joi.string().optional(),
         cpc: Joi.number().optional(),
         cpa: Joi.number().optional(),
@@ -184,15 +184,19 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
 
 
 const start = async (value, connection) => {
-     
+
+    //check campaign name exists
+    if(await common.checkNameExists(value.userId,value.id?value.id:null,value.name,1,connection)){
+             throw new Error("Campaign name exists");
+    }
+
     //Campaign
     let campResult;
     if (value.id) {
-       
         await common.updateCampaign(value, connection);
     } else {
         let hash = uuidV4();
-        let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
+        let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted` = 0";
         campResult = await common.insertCampaign(value, hash, connection);
         let domainResult = await common.query(mainDomainsql, [value.userId], connection);
         value.hash = hash;
