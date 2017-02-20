@@ -663,6 +663,7 @@
       }
 
       $scope.saveErrors.length = 0;
+      $scope.showErrors = false;
       $scope.saveTime = null;
       theFlow.rules.forEach(function(rule) {
         if (rule.isDeleted)
@@ -686,6 +687,8 @@
             });
             ruleData.conditions.push(conData);
           });
+        } else {
+          $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
         }
 
         if (ruleData.isDefault) {
@@ -738,6 +741,7 @@
       });
 
       if ($scope.saveErrors.length > 0) {
+        $scope.showErrors = true;
         return $q.reject('error occurs');
       }
 

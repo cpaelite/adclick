@@ -429,12 +429,7 @@
 
     <div class="cs-flow-bottom-actions clearfix">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
-      <span class="cs-save-result" ng-hide="onSave">
-        <span class="cs-save-error" ng-show="saveErrors.length">
-          <em ng-repeat="err in saveErrors">{{err}}</em>
-        </span>
-        <span class="cs-save-time" ng-show="saveTime && saveErrors.length==0">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
-      </span>
+      <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       <button class="btn btn-primary save-btn" ng-click="save()">
         <i class="material-icons">check</i>
         Save
@@ -450,6 +445,12 @@
     </div>
   </div>
 
+  <div class="cs-save-errors" ng-show="showErrors">
+    <span class="cs-hide-errors" ng-click="showErrors=false">x</span>
+    <ul>
+      <li ng-repeat="err in saveErrors track by $index">{{err}}</li>
+    </ul>
+  </div>
   <div ng-if="initState=='init'" class="cs-flow-init" translate>on-loading</div>
   <div ng-if="initState=='error'" class="cs-flow-error" translate>loading-error</div>
 </div>
