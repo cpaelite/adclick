@@ -48,7 +48,16 @@
     eventLog:'EventLog',
     affiliate: 'AffiliateNetwork',
     addFlowPath: 'Add new path',
-    addFlowRule: 'Add new rule'
+    addFlowRule: 'Add new rule',
+    dashboardColumn: {
+      visits: 'Visits',
+      clicks: 'Clicks',
+      conversions: 'Conversions',
+      revenue: 'Revenue',
+      cost: 'Cost',
+      profit: 'Profit',
+      impressions: 'Impressions'
+    }
   };
   var i18n_zh = {
     ok: '确定',
