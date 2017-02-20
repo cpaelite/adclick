@@ -577,11 +577,10 @@ angular.module('app').value('columnDefinition', {
     }]
 });
 angular.module('app').value('groupByOptions', [
-  { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName" },
-  { value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName" },
-  /*
+  { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName", level: 0 },
+  { value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName", level: 0 },
   { value: "brand", display: "Brands", idKey: "brandId", nameKey: "brandName" },
-  { value: "affiliate", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName" },
+  { value: "affiliate", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName", level: 0 },
   { value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "bvName" },
   { value: "browser", display: "Browsers", idKey: "browserId", nameKey: "browserName" },
   { value: "city", display: "City", idKey: "cityId", nameKey: "cityName" },
@@ -594,24 +593,19 @@ angular.module('app').value('groupByOptions', [
   { value: "hourofday", display: "Hour of day", idKey: "hodId", nameKey: "hodName" },
   { value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName" },
   { value: "isp", display: "ISP / Carrier", idKey: "ispId", nameKey: "ispName" },
-  */
-  { value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName" },
-  /*
+  { value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName", level: 0 },
   { value: "language", display: "Language", idKey: "languageId", nameKey: "languageName" },
   { value: "mobilecarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "mcName" },
   { value: "model", display: "Models", idKey: "modelId", nameKey: "modelName" },
   { value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName" },
   { value: "os", display: "OS", idKey: "osId", nameKey: "osName" },
   { value: "osversion", display: "OS versions", idKey: "osversionId", nameKey: "osversionName" },
-  */
-  { value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName" },
-  /*
+  { value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName", level: 0 },
   { value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName" },
   { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
   { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
-  */
   { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" },
-  { value: "affiliate", display: "Affiliate Network", idKey: "affiliateId", nameKey: "affiliateName" }
+  { value: "affiliate", display: "Affiliate Network", idKey: "affiliateId", nameKey: "affiliateName", level: 0 }
 ]);
 
 angular.module('app').value('userPreferences', {

@@ -25,11 +25,11 @@
     };
     getDateRange($scope.filter.datetype);
     $scope.fromTime = "00:00";
-    $scope.toTime = "23:59";
+    $scope.toTime = "00:00";
 
     $scope.filterDate = {
       fromDate: moment().format('YYYY-MM-DD'),
-      toDate: moment().format('YYYY-MM-DD'),
+      toDate: moment().add(1, 'days').format('YYYY-MM-DD'),
       fromTime: "00:00",
       toTime: "00:00"
     };
@@ -110,49 +110,33 @@
     };
 
     function getDateRange(value) {
-      var fromDate;
-      var toDate;
+      var fromDate = moment().format('YYYY-MM-DD');
+      var toDate = moment().add(1, 'days').format('YYYY-MM-DD');
       switch (value) {
-        case "0":
-          fromDate = moment().format('YYYY-MM-DD');
-          toDate = fromDate;
-          break;
-        case "1":
-          fromDate = moment().format('YYYY-MM-DD');
-          toDate = fromDate;
-          break;
-        case "2":
+        case '2':
           fromDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-          toDate = fromDate;
+          toDate = moment().format('YYYY-MM-DD');
           break;
-        case "3":
+        case '3':
           fromDate = moment().subtract(6, 'days').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
           break;
-        case "4":
+        case '4':
           fromDate = moment().subtract(13, 'days').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
           break;
-        case "5":
+        case '5':
           fromDate = moment().day(1).format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
           break;
-        case "6":
+        case '6':
           fromDate = moment().day(-6).format('YYYY-MM-DD');
-          toDate = moment().day(0).format('YYYY-MM-DD');
+          toDate = moment().day(1).format('YYYY-MM-DD');
           break;
-        case "7":
+        case '7':
           fromDate = moment().startOf('month').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
           break;
-        case "8":
+        case '8':
           fromDate = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-          toDate = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+          toDate = moment().startOf('month').format('YYYY-MM-DD');
           break;
-      }
-      if (value == '0') {
-        $scope.fromTime = "00:00";
-        $scope.toTime = "00:00";
       }
       $scope.fromDate = fromDate;
       $scope.toDate = toDate;

@@ -11,22 +11,22 @@
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
-                    <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions">{{gb.display}}</md-option>
-                </md-select>
+                <select class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
+                    <!--<option value="">Choose grouping</option>-->
+                    <option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filterIsHow">{{gb.display}}</option>
+                </select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(1)">
-                    <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</md-option>
-                </md-select>
+                <select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(1)">
+                    <option value="">Choose grouping</option>
+                    <option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</option>
+                </select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose grouping">
-                    <md-option value="">Choose grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}</md-option>
-                </md-select>
+                <select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose grouping">
+                    <option value="">Choose grouping</option>
+                    <option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}</option>
+                </select>
             </div>
         </div>
         <div class="right-select">
@@ -36,13 +36,14 @@
             </div>
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="datetype">
-                    <md-option value="1">Yesterday</md-option>
-                    <md-option value="2">Last 7 days</md-option>
-                    <md-option value="3">Last 14 days</md-option>
-                    <md-option value="4">This Week</md-option>
-                    <md-option value="5">Last Week</md-option>
-                    <md-option value="6">This Month</md-option>
-                    <md-option value="7">Last Month</md-option>
+                    <md-option value="1">Today</md-option>
+                    <md-option value="2">Yesterday</md-option>
+                    <md-option value="3">Last 7 days</md-option>
+                    <md-option value="4">Last 14 days</md-option>
+                    <md-option value="5">This Week</md-option>
+                    <md-option value="6">Last Week</md-option>
+                    <md-option value="7">This Month</md-option>
+                    <md-option value="8">Last Month</md-option>
                     <md-option value="0">Custom</md-option>
                 </md-select>
             </div>
