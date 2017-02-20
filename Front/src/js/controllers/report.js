@@ -4,6 +4,14 @@
     .controller('ReportCtrl', [
       '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
       ReportCtrl
+    ])
+    .controller('editLanderCtrl', [
+      '$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant',
+      editLanderCtrl
+    ])
+    .controller('editOfferCtrl', [
+      '$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache',
+      editOfferCtrl
     ]);
 
   angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
@@ -394,9 +402,9 @@
         $scope.$state.go('app.flow', params);
         return;
       } else if (perfType == 'lander') {
-        controller = ['$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant', editLanderCtrl];
+        controller = 'editLanderCtrl';
       } else if (perfType == 'offer') {
-        controller = ['$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache', editOfferCtrl];
+        controller = 'editOfferCtrl';
       } else if (perfType == 'traffic') {
         controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', 'AppConstant', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {

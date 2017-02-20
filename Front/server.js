@@ -1284,7 +1284,7 @@ app.get('/api/landers', function (req, res) {
     "country": "us"
   }, {"id": 49, "name": "Lander2", "country": "cn"}, {"id": 50, "name": "Lander3", "country": "us"}, {
     "id": 54,
-    "name": "Lander3",
+    "name": "Lander4",
     "country": "ca"
   }];
   delayResponse(res, result);
@@ -1305,9 +1305,10 @@ app.post('/api/landers', function (req, res) {
     status: 1,
     message: "",
     data: {
+      "id": 3245,
       "name": "Global - SecurityAlert-en",
       "url": "http://s.ktrack.net/w/SecurityAlert.php",
-      "country": "",
+      "country": "us",
       "numberOfOffers": 1,
       "tags": []
     }
@@ -1324,10 +1325,10 @@ app.post('/api/landers/:landerId', function (req, res) {
     status: 1,
     message: "",
     data: {
-      "id": "44c1f491-a22b-455d-bcc9-5c1324a8885b",
+      "id": 49,
       "name": "Global - SecurityAlert-en",
       "url": "http://s.ktrack.net/w/SecurityAlert.php",
-      "country": "",
+      "country": "us",
       "numberOfOffers": 1,
       "tags": []
     }
@@ -1413,6 +1414,7 @@ app.post('/api/offers', function (req, res) {
     status: 1,
     message: "",
     data: {
+      "id": 3,
       "name": "hasoffer - Global - yoshop-Android-benson-CAUSAU",
       "url": "http://adbund.com",
       "country": "CHN",
@@ -1865,6 +1867,7 @@ app.get('/api/conditions', function (req, res) {
  */
 app.get('/api/countries', function (req, res) {
   var result = [
+    {"value": "ZZZ", "display": "Global"},
     {"value": "Canada", "display": "Canada"},
     {"value": "CHN", "display": "China"},
     {"value": "JPN", "display": "Japan"}

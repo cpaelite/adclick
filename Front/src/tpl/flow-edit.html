@@ -78,7 +78,8 @@
     <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
       <div class="form-group">
         <label class="label-name">Name:</label>
-        <input type="text" class="form-control" ng-model="flow.name" required ng-change="nameChanged(flow.name)">
+        <input type="text" class="form-control" ng-class="{error:flow._nameError}" ng-model="flow.name" required ng-change="nameChanged(flow)">
+        <span class-"error-message" ng-show="flow._nameError">Name is invalid</span>
       </div>
 
       <div class="form-group">
@@ -121,16 +122,14 @@
       <div class="row">
         <div class="form-group col-sm-8 col-md-8 name-div">
           <label class="label-name">Name:</label>
-          <input type="text" class="form-control" ng-model="curRule.name" required>
+          <input type="text" class="form-control" ng-class="{error:curRule._nameError}" ng-model="curRule.name" required ng-change="validateName(curRule)">
+          <span class-"error-message" ng-show="curRule._nameError">Name is invalid</span>
         </div>
         <div class="form-group col-sm-4 col-sm-4">
           <label class="label-name">Status:</label>
           <md-switch class="md-primary" ng-model="curRule.enabled" aria-label="Enabled"></md-switch>
         </div>
       </div>
-      
-
-      
 
       <div class="cs-conditions">
         <div class="cs-conditions-button">
@@ -283,7 +282,8 @@
       <div class="row path-top">
         <div class="col-sm-7 col-md-7 name-div" layout="column">
           <label class="label-name">Name:</label>
-          <input type="text" class="form-control" ng-model="curPath.name" required>
+          <input type="text" class="form-control" ng-class="{error:curPath._nameError}" ng-model="curPath.name" required ng-change="validateName(curPath)">
+          <span class-"error-message" ng-show="curPath._nameError">Name is invalid</span>
         </div>
         <div class="col-sm-3 col-md-3" layout="column">
           <label class="label-name">Weight:</label>
@@ -342,7 +342,7 @@
                     No matching found.
                   </md-not-found>
                 </md-autocomplete>
-                <!--i class="material-icons md-mini edit-btn" ng-show="lander.id">edit</i-->
+                <i class="material-icons md-mini edit-btn" ng-show="lander._def" ng-click="editLander($event, lander)">edit</i>
               </div>
             </div>
             <div class="col-sm-3 col-md-3 input-content">
@@ -360,12 +360,12 @@
           <div class="cs-flow-lander-action clearfix">
             <button ng-click="addLander($event)" type="button" class="btn btn-default add-lander-btn">
               <i class="material-icons add-box">add_box</i>
+              Add Lander
+            </button>
+            <button ng-click="editLander($event)" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
               Add New Lander
             </button>
-            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
-              <i class="material-icons add-box">add_box</i>
-              Add Lander
-            </button-->
           </div>
         </div>
 
@@ -397,7 +397,7 @@
                     No matching found.
                   </md-not-found>
                 </md-autocomplete>
-                <!--i class="material-icons md-mini edit-btn" ng-show="offer.id">edit</i-->
+                <i class="material-icons md-mini edit-btn" ng-show="offer._def" ng-click="editOffer($event, offer)">edit</i>
               </div>
             </div>
             <div class="col-sm-3 col-md-3 input-content">
@@ -415,12 +415,12 @@
           <div class="cs-flow-lander-action clearfix">
             <button ng-click="addOffer($event)" type="button" class="btn btn-default add-lander-btn">
               <i class="material-icons add-box">add_box</i>
+              Add Offer
+            </button>
+            <button ng-click="editOffer($event)" class="btn btn-default add-lander-btn">
+              <i class="material-icons add-box">add_box</i>
               Add New Offer
             </button>
-            <!--button ng-click="addLander(curPath)" class="btn btn-default add-lander-btn">
-              <i class="material-icons add-box">add_box</i>
-              Add Lander
-            </button-->
           </div>
         </div>
 
@@ -429,19 +429,18 @@
 
     <div class="cs-flow-bottom-actions clearfix">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
-      <span class="cs-save-result" ng-hide="onSave">
-        <span class="cs-save-error" ng-show="saveErrors.length">
-          <em ng-repeat="err in saveErrors">{{err}}</em>
-        </span>
-        <span class="cs-save-time" ng-show="saveTime && saveErrors.length==0">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
-      </span>
-      <button class="btn btn-primary save-btn" ng-click="save()">
+      <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+      <button class="btn btn-primary save-btn" ng-hide="showContinue" ng-click="save()">
         <i class="material-icons">check</i>
         Save
       </button>
-      <button class="btn btn-primary save-btn" ng-click="saveClose()">
+      <button class="btn btn-primary save-btn" ng-hide="showContinue" ng-click="saveClose()">
         <i class="material-icons">check</i>
         Save&amp;close
+      </button>
+      <button class="btn btn-primary save-btn" ng-show="showContinue" ng-click="continueEdit()">
+        <i class="material-icons">check</i>
+        Continue
       </button>
       <button class="btn close-btn" ng-click="close()">
         <i class="material-icons">close</i>
@@ -450,6 +449,12 @@
     </div>
   </div>
 
+  <div class="cs-save-errors" ng-show="showErrors">
+    <span class="cs-hide-errors" ng-click="showErrors=false">x</span>
+    <ul>
+      <li ng-repeat="err in saveErrors track by $index">{{err}}</li>
+    </ul>
+  </div>
   <div ng-if="initState=='init'" class="cs-flow-init" translate>on-loading</div>
   <div ng-if="initState=='error'" class="cs-flow-error" translate>loading-error</div>
 </div>

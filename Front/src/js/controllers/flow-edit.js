@@ -37,6 +37,7 @@
         prms;
 
     var theFlow, prefix = '';
+    $scope.showContinue = false;
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
         theFlow = result.data;
@@ -48,13 +49,11 @@
       var defaultRule = angular.copy(ruleSkel);
       defaultRule.name = 'Default paths';
       defaultRule.isDefault = true;
+      $scope.showContinue = true;
 
       theFlow = {
         name: 'Global - ',
-        country: {
-          display: 'Global',
-          value: 'ZZZ'
-        },
+        country: 'ZZZ',
         redirectMode: '0',
         rules: [ defaultRule ]
       };
@@ -202,6 +201,11 @@
     $scope.curRule = null;
     $scope.curPath = null;
 
+    $scope.$watch('onEdit', function (newVal, oldVal) {
+      if (newVal != oldVal)
+        $scope.showContinue = false;
+    });
+
     // operation on flow
     $scope.editFlow = function() {
       $scope.onEdit = 'flow';
@@ -312,7 +316,14 @@
       };
     }
 
-    $scope.nameChanged = function(name) {
+    var validPattern = /^[- \w]*$/;
+    $scope.validateName = function(item) {
+      item._nameError = !validPattern.test(item.name);
+    };
+
+    $scope.nameChanged = function(flow) {
+      var name = flow.name;
+      flow._nameError = !validPattern.test(name);
       if(name == undefined || name.length < prefix.length) {
         $scope.flow.name = prefix;
       } else if(name.indexOf(prefix) != 0) {
@@ -387,7 +398,7 @@
     $scope.queryLanders = function(query) {
       if (allLanders) {
         var filtered = allLanders.filter(function(lander) {
-          return theFlow.country.value == 'ZZZ' || lander.country == theFlow.country.value;
+          return theFlow.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == theFlow.country.value;
         }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
         return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
       } else {
@@ -404,6 +415,41 @@
         calculateRelativeWeight($scope.curPath.landers, function(item) { return !!item._def; });
       }
     }, true);
+    $scope.editLander = function(evt, lander) {
+      var locals = { perfType: 'lander' };
+      if (lander) {
+        locals.item = {data: {landerId: lander._def.id}};
+      } else {
+        locals.item = null;
+      }
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: 'editLanderCtrl',
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: locals,
+        bindToController: true,
+        targetEvent: evt,
+        templateUrl: 'tpl/lander-edit-dialog.html'
+      }).then(function(result) {
+        var newLander = {id: result.data.id, name: result.data.name, country: result.data.country};
+        allLanders.unshift(newLander);
+        if (lander) {
+          var idx = allLanders.indexOf(lander._def);
+          if (idx >= 0) {
+            allLanders.splice(idx, 1);
+          }
+          lander._def = newLander;
+        } else {
+          $scope.curPath.landers.push({
+            weight: 100,
+            relativeWeight: -1,
+            _def: newLander,
+            _onEdit: true
+          });
+        }
+      });
+    };
 
     // operations on path offer
     $scope.addOffer = function(evt) {
@@ -423,7 +469,7 @@
     $scope.queryOffers = function(query) {
       if (allOffers) {
         var filtered = allOffers.filter(function(offer) {
-          return theFlow.country.value == 'ZZZ' || offer.country == theFlow.country.value;
+          return theFlow.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == theFlow.country.value;
         }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
         return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
       } else {
@@ -440,6 +486,41 @@
         calculateRelativeWeight($scope.curPath.offers, function(item) { return !!item._def; });
       }
     }, true);
+    $scope.editOffer = function(evt, offer) {
+      var locals = { perfType: 'offer' };
+      if (offer) {
+        locals.item = {data: {offerId: offer._def.id}};
+      } else {
+        locals.item = null;
+      }
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: 'editOfferCtrl',
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: locals,
+        bindToController: true,
+        targetEvent: evt,
+        templateUrl: 'tpl/offer-edit-dialog.html'
+      }).then(function(result) {
+        var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
+        allOffers.unshift(newOffer);
+        if (offer) {
+          var idx = allOffers.indexOf(offer._def);
+          if (idx >= 0) {
+            allOffers.splice(idx, 1);
+          }
+          offer._def = newOffer;
+        } else {
+          $scope.curPath.offers.push({
+            weight: 100,
+            relativeWeight: -1,
+            _def: newOffer,
+            _onEdit: true
+          });
+        }
+      });
+    };
 
     $scope.setEdit = function(evt, item) {
       item._onEdit = true;
@@ -584,6 +665,9 @@
     // save
     $scope.saveErrors = [];
     $scope.save = function() {
+      $scope.saveErrors.length = 0;
+      $scope.showErrors = false;
+
       // clean up before save
       var flowData = {
         name: theFlow.name,
@@ -595,11 +679,18 @@
         flowData.id = theFlow.id;
       }
 
-      $scope.saveErrors.length = 0;
+      if (theFlow._nameError) {
+        $scope.saveErrors.push('Flow name ' + theFlow.name + ' is invalid');
+      }
+
       $scope.saveTime = null;
       theFlow.rules.forEach(function(rule) {
-        if (rule.isDeleted)
+        if (rule.isDeleted) {
           return;
+        }
+        if (rule._nameError) {
+          $scope.saveErrors.push('Rule name ' + rule.name + ' is invalid');
+        }
         var ruleData = {
           id: rule.id || null,
           name: rule.name,
@@ -620,6 +711,9 @@
             ruleData.conditions.push(conData);
           });
         }
+        if (!rule.isDefault && ruleData.conditions.length == 0) {
+          $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
+        }
 
         if (ruleData.isDefault) {
           delete ruleData.name;
@@ -630,8 +724,12 @@
         }
 
         rule.paths.forEach(function(path) {
-          if (path.isDeleted)
+          if (path.isDeleted) {
             return;
+          }
+          if (path._nameError) {
+            $scope.saveErrors.push('Path name ' + path.name + ' is invalid');
+          }
           pathData = {
             id: path.id || null,
             name: path.name,
@@ -671,6 +769,7 @@
       });
 
       if ($scope.saveErrors.length > 0) {
+        $scope.showErrors = true;
         return $q.reject('error occurs');
       }
 
@@ -708,6 +807,11 @@
         if ($scope.saveErrors.length == 0)
           $scope.close();
       });
+    };
+
+    $scope.continueEdit = function() {
+      var rule = theFlow.rules[0];
+      $scope.editPath(rule, rule.paths[0]);
     };
   }
 })();
