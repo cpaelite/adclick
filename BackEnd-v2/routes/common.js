@@ -3,7 +3,7 @@ var uuidV4 = require('uuid/v4');
 var redis = require("redis");
 var setting = require("../config/setting");
 var Pub = require('./redis_sub_pub');
-var _= require('lodash');
+var _ = require('lodash');
 
 
 function query(sql, params, connection) {
@@ -69,11 +69,11 @@ function validate(data, schema) {
     return new Promise(function (resolve, reject) {
         Joi.validate(data, schema, function (err, value) {
             if (err) {
-                let validateJSON={
-                    message:{}
+                let validateJSON = {
+                    message: {}
                 }
-                for(let index=0;index<err.details.length;index++){
-                    validateJSON.message[err.details[index].path]=err.details[index].message;
+                for (let index = 0; index < err.details.length; index++) {
+                    validateJSON.message[err.details[index].path] = err.details[index].message;
                 }
                 reject(validateJSON);
             }
@@ -280,7 +280,7 @@ async function updateCampaign(value, connection) {
         await insertEventLog(value.userId, 1, campaign[0].name, campaign[0].hash, 2, connection);
     }
 
-    new Pub(true).publish(setting.redis.channel, value.userId + ".update.campaign."+ value.id, "campaignUpdate");
+    new Pub(true).publish(setting.redis.channel, value.userId + ".update.campaign." + value.id, "campaignUpdate");
 
     return result;
 }
@@ -370,8 +370,7 @@ async function insertFlow(userId, flow, connection) {
     let result = await query("insert into Flow (" + col + ") values (" + val + ")", params, connection);
 
     //reids pub
-    new Pub(true).publish(setting.redis.channel, userId + ".add.flow." + result.insertId, "flowAdd");
-
+    connection.redisPubSlice.push({ data: userId + ".add.flow." + result.insertId, tag: "flowAdd" });
     return result;
 
 
@@ -402,7 +401,8 @@ async function updateFlow(userId, flow, connection) {
 
     let result = await query(sqlFlow, params, connection);
     //reids pub
-    new Pub(true).publish(setting.redis.channel, userId + ".update.flow." + flow.id, "flowUpdate");
+    connection.redisPubSlice.push({ data: userId + ".update.flow." + flow.id, tag: "flowUpdate" })
+
     return result;
 
 }
@@ -432,7 +432,9 @@ async function insetRule(userId, rule, connection) {
     let result = await query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.json ?
         JSON.stringify(rule.json) : JSON.stringify([]), rule.object ?
             JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0], connection);
-    new Pub(true).publish(setting.redis.channel, userId + ".add.rule." + result.insertId, "ruleAdd");
+
+    connection.redisPubSlice.push({ data: userId + ".add.rule." + result.insertId, tag: "ruleAdd" })
+
     return result;
 }
 
@@ -464,7 +466,8 @@ async function updateRule(userId, rule, connection) {
     params.push(rule.id);
     sqlRule += " where `userId`= ? and `id`= ? ";
     let result = await query(sqlRule, params, connection);
-    new Pub(true).publish(setting.redis.channel, userId + ".update.rule." + rule.id, "ruleUpdate");
+    connection.redisPubSlice.push({ data: userId + ".update.rule." + rule.id, tag: "ruleUpdate" })
+    
     return result;
 }
 
@@ -472,7 +475,7 @@ async function updateRule(userId, rule, connection) {
 async function insertPath(userId, path, connection) {
     var sqlpath = "insert into `Path` (`userId`,`name`,`hash`,`redirectMode`,`directLink`,`status`) values (?,?,?,?,?,?)";
     let result = await query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking ? 1 : 0, path.enabled ? 1 : 0], connection);
-    new Pub(true).publish(setting.redis.channel, userId + ".add.path." + result.insertId, "pathAdd");
+    connection.redisPubSlice.push({data:userId + ".add.path." + result.insertId,tag: "pathAdd"});
     return result;
 }
 
@@ -503,9 +506,8 @@ async function updatePath(userId, path, connection, callback) {
     params.push(userId);
 
     let result = await query(sqlUpdatePath, params, connection);
-    new Pub(true).publish(setting.redis.channel, userId + ".update.path." + path.id, "pathUpdate");
+    connection.redisPubSlice.push({data:userId + ".update.path." + path.id,tag: "pathUpdate"});
     return result;
-
 }
 
 //Lander
@@ -712,12 +714,12 @@ async function updateOffer(userId, offer, connection) {
     let params = [];
     var sqlUpdateOffer = "update  Offer  set `id`= ? ";
     params.push(offer.id);
-    if (offer.country !=undefined) {
+    if (offer.country != undefined) {
         // var countrycode = offer.country.alpha3Code ? offer.country.alpha3Code: "";
         sqlUpdateOffer += ",`country`= ? ";
         params.push(offer.country);
     }
-    if (offer.postbackUrl !=undefined) {
+    if (offer.postbackUrl != undefined) {
         sqlUpdateOffer += ",`postbackUrl`=?";
         params.push(offer.postbackUrl);
     }
@@ -1047,30 +1049,30 @@ async function deleteAffiliate(id, userId, connection) {
 }
 
 
-async function checkNameExists(userId,id,name,type,connection){
-    let results=[];
-    switch (type){
-        case 1 :
-           results= await query("select `id` from TrackingCampaign where `userId`= ? and `name`= ?",[userId,name],connection);
-           break;
+async function checkNameExists(userId, id, name, type, connection) {
+    let results = [];
+    switch (type) {
+        case 1:
+            results = await query("select `id` from TrackingCampaign where `userId`= ? and `name`= ?", [userId, name], connection);
+            break;
         case 2:
-           results= await query("select `id` from Lander where `userId`= ? and `name`= ?",[userId,name],connection);  
-           break;  
+            results = await query("select `id` from Lander where `userId`= ? and `name`= ?", [userId, name], connection);
+            break;
         case 3:
-           results= await query("select `id` from Offer where `userId`= ? and `name`= ?",[userId,name],connection);  
-           break;
+            results = await query("select `id` from Offer where `userId`= ? and `name`= ?", [userId, name], connection);
+            break;
         case 4:
-           results= await query("select `id` from Flow where `userId`= ? and `name`= ?",[userId,name],connection);  
-           break;
+            results = await query("select `id` from Flow where `userId`= ? and `name`= ?", [userId, name], connection);
+            break;
         default:
-           throw new Error("Paramter type error");         
+            throw new Error("Paramter type error");
     }
-    if(results.length){
-        if(_.some(results,['id',id])){
+    if (results.length) {
+        if (_.some(results, ['id', id])) {
             return false;
         }
         return true;
-    } 
+    }
     return false;
 }
 
@@ -1122,4 +1124,4 @@ exports.deletePath2Rule = deletePath2Rule;
 exports.deleteRule2Flow = deleteRule2Flow;
 exports.deleteLander2Path = deleteLander2Path;
 exports.deleteOffer2Path = deleteOffer2Path;
-exports.checkNameExists=checkNameExists;
+exports.checkNameExists = checkNameExists;
