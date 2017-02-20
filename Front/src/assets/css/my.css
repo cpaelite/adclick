@@ -1153,7 +1153,7 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
     background: #fff;
     color: #205EB2;
 }
-.md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{
+.md-toolbar-tools h2{
     width: 100%;
     font-weight: lighter;
 }
