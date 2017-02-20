@@ -309,7 +309,14 @@
       };
     }
 
-    $scope.nameChanged = function(name) {
+    var validPattern = /^[- \w]*$/;
+    $scope.validateName = function(item) {
+      item._nameError = !validPattern.test(item.name);
+    };
+
+    $scope.nameChanged = function(flow) {
+      var name = flow.name;
+      flow._nameError = !validPattern.test(name);
       if(name == undefined || name.length < prefix.length) {
         $scope.flow.name = prefix;
       } else if(name.indexOf(prefix) != 0) {
@@ -651,6 +658,9 @@
     // save
     $scope.saveErrors = [];
     $scope.save = function() {
+      $scope.saveErrors.length = 0;
+      $scope.showErrors = false;
+
       // clean up before save
       var flowData = {
         name: theFlow.name,
@@ -662,12 +672,18 @@
         flowData.id = theFlow.id;
       }
 
-      $scope.saveErrors.length = 0;
-      $scope.showErrors = false;
+      if (theFlow._nameError) {
+        $scope.saveErrors.push('Flow name ' + theFlow.name + ' is invalid');
+      }
+
       $scope.saveTime = null;
       theFlow.rules.forEach(function(rule) {
-        if (rule.isDeleted)
+        if (rule.isDeleted) {
           return;
+        }
+        if (rule._nameError) {
+          $scope.saveErrors.push('Rule name ' + rule.name + ' is invalid');
+        }
         var ruleData = {
           id: rule.id || null,
           name: rule.name,
@@ -687,7 +703,8 @@
             });
             ruleData.conditions.push(conData);
           });
-        } else {
+        }
+        if (ruleData.conditions.length == 0) {
           $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
         }
 
@@ -700,8 +717,12 @@
         }
 
         rule.paths.forEach(function(path) {
-          if (path.isDeleted)
+          if (path.isDeleted) {
             return;
+          }
+          if (path._nameError) {
+            $scope.saveErrors.push('Path name ' + path.name + ' is invalid');
+          }
           pathData = {
             id: path.id || null,
             name: path.name,
