@@ -290,7 +290,7 @@ async function getCampaign(id, userId, idText, connection) {
         "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
-    let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
+    let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0";
 
     let results = await Promise.all([query(sqlCampaign, [userId, id, 0], connection), query(sqltag, [userId, id, 1, 0], connection), query(mainDomainsql, [userId], connection)]);
     let camResult = results[0];

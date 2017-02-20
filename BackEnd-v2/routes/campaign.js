@@ -192,7 +192,7 @@ const start = async (value, connection) => {
         await common.updateCampaign(value, connection);
     } else {
         let hash = uuidV4();
-        let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1";
+        let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted` = 0";
         campResult = await common.insertCampaign(value, hash, connection);
         let domainResult = await common.query(mainDomainsql, [value.userId], connection);
         value.hash = hash;

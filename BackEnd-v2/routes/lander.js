@@ -31,6 +31,7 @@ router.post('/api/landers', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
+        hash:Joi.string().optional(),
         url: Joi.string().required().regex(util.regWebURL,'url'),
         country: Joi.string().optional(),
         numberOfOffers: Joi.number().required(),
