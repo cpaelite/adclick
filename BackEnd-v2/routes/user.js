@@ -235,7 +235,7 @@ router.post('/api/names', async function (req, res, next) {
         userId: Joi.number().required(),
         name: Joi.string().required().trim(),
         type: Joi.number().required(),
-        id: Joi.number().required()
+        id: Joi.number().optional()
     });
     req.body.userId = req.userId;
     let connection;
