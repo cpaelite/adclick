@@ -78,8 +78,18 @@
     <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
       <div class="form-group">
         <label class="label-name">Name:</label>
-        <input type="text" class="form-control" ng-class="{error:flow._nameError}" ng-model="flow.name" required ng-change="nameChanged(flow)">
+        <input type="text" class="form-control" ng-class="{error:flow._nameError}" ng-model="flow.name" required name="name"
+          ng-change="nameChanged(flow)"
+          ng-blur="nameRequired()"
+          async-check-name="checkNameParams"
+          async-validator-callback="validateCallback"
+          post-validater-callback="postValidateCallback()"
+        >
         <span class-"error-message" ng-show="flow._nameError">Name is invalid</span>
+        <span style="color:red" ng-show="editFlowForm.name.$invalid">
+            <span ng-show="editFlowForm.name.$error.asyncCheckName">Name already exists.</span>
+            <span ng-show="editFlowForm.name.$error.nameRequired">Name is required.</span>
+        </span>
       </div>
 
       <div class="form-group">

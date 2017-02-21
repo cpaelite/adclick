@@ -36,7 +36,10 @@
     var initPromises = [],
         prms;
 
-    var theFlow, prefix = '';
+    var theFlow; $scope.prefix = '';
+    $scope.checkNameParams = {
+      type: 4
+    };
     $scope.showContinue = false;
     if (flowId) {
       prms = Flow.get({id:flowId}, function(result) {
@@ -44,6 +47,9 @@
         $scope.oldName = theFlow.name;
       }).$promise;
       initPromises.push(prms);
+      if(!isDuplicate) {
+        $scope.checkNameParams.id = flowId;
+      }
 
     } else {
       var defaultRule = angular.copy(ruleSkel);
@@ -57,7 +63,7 @@
         redirectMode: '0',
         rules: [ defaultRule ]
       };
-      prefix = $scope.oldName = 'Global - ';
+      $scope.prefix = $scope.oldName = 'Global - ';
     }
 
     var allLanders;
@@ -125,7 +131,7 @@
       allCountries.forEach(function(ctry) {
         if (ctry.value == country) {
           theFlow.country = ctry;
-          prefix = ctry.display + ' - ';
+          $scope.prefix = ctry.display + ' - ';
         }
       });
       // fulfill flow with lander/offer/condition
@@ -216,9 +222,9 @@
     $scope.$watch('flow.country', function (newValue, oldValue) {
       var preStr = newValue ? newValue.display + ' - ' : 'Global - ';
       if(newValue) {
-        $scope.flow.name = preStr + $scope.flow.name.substr(prefix.length);
-        $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
-        prefix = preStr;
+        $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
+        $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+        $scope.prefix = preStr;
       }
     }, true);
 
@@ -321,8 +327,26 @@
       item._nameError = !validPattern.test(item.name);
     };
 
+    $scope.validateCallback = function(isValid) {
+      $scope.editFlowForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.flow.name.length == $scope.prefix.length;
+    };
+    function nameRequired() {
+      if ($scope.prefix.length == $scope.flow.name.length) {
+        $scope.editFlowForm.name.$setValidity('nameRequired', false);
+      } else {
+        $scope.editFlowForm.name.$setValidity('nameRequired', true);
+      }
+    };
+
+    $scope.nameRequired = nameRequired;
+
     $scope.nameChanged = function(flow) {
       var name = flow.name;
+      var prefix = $scope.prefix;
       flow._nameError = !validPattern.test(name);
       if(name == undefined || name.length < prefix.length) {
         $scope.flow.name = prefix;
@@ -344,6 +368,7 @@
         }
       }
       $scope.oldName = $scope.flow.name;
+      nameRequired();
     };
 
     $scope.countryChanged = function() {
@@ -667,11 +692,11 @@
     $scope.save = function() {
       $scope.saveErrors.length = 0;
       $scope.showErrors = false;
-
+      nameRequired();
       // clean up before save
       var flowData = {
         name: theFlow.name,
-        country: theFlow.country.value,
+        country: theFlow.country ? theFlow.country.value : 'ZZZ',
         redirectMode: theFlow.redirectMode | 0,
         rules: []
       };
@@ -767,7 +792,7 @@
 
         flowData.rules.push(ruleData);
       });
-
+      $scope.editFlowForm.$setSubmitted();
       if ($scope.saveErrors.length > 0) {
         $scope.showErrors = true;
         return $q.reject('error occurs');

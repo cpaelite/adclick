@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-    .factory('myInterceptor', ['$q', '$rootScope', function($q, $rootScope) {
+    .factory('HttpInterceptor', ['$q', '$rootScope', '$injector', function($q, $rootScope, $injector) {
       var interceptor = {
         request: function(config){
           if (config.params && config.params.errorFn) {
@@ -15,11 +15,16 @@
           var data = response.data;
           var toStr = Object.prototype.toString;
           
-          if(response.config.errorFn && response.data.status == 0) {
-            // error handle
+          if(!response.config.errorFn && response.data.status == 0) {
+            var message = toStr.apply(data.message) == '[object String]' ? data.message : 'Error occurred!';
+            $injector.get('toastr').error(message, {timeOut: 7000, positionClass: 'toast-top-center'});
+            // return $q.reject(response);
           }
-
           return response;
+        },
+        responseError: function(response) {
+          console.log('responseError');
+          return $q.reject(response);
         }
       };
 
@@ -44,7 +49,7 @@
     }])
 
     .config(['$httpProvider', function($httpProvider) {
-      $httpProvider.interceptors.push('myInterceptor'); 
+      $httpProvider.interceptors.push('HttpInterceptor'); 
     }])
 
     .config(['ChartJsProvider', function (ChartJsProvider) {

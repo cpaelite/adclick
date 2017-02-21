@@ -530,14 +530,21 @@
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant) {
-    var prefix = '', prefixCountry = '', prefixTraffic = '';
+    var prefixCountry = '', prefixTraffic = '';
+    $scope.prefix = '';
     initTags($scope, Tag, 1);
     // init load data
     var initPromises = [], prms;
     var theCampaign;
+    $scope.checkNameParams = {
+      type: 1
+    };
     if (this.cache) {
       theCampaign = this.cache;
       this.title = theCampaign.id ? 'edit' : 'add';
+      if(theCampaign.id) {
+        $scope.checkNameParams.id = theCampaign.id;
+      }
     } else if (this.item) {
       var isDuplicate = this.duplicate;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
@@ -547,6 +554,9 @@
       initPromises.push(prms);
 
       this.title = "edit";
+      if(!isDuplicate) {
+        $scope.checkNameParams.id = this.item.data.campaignId;
+      }
     } else {
       $scope.item = defaultItem();
       this.title = "add";
@@ -618,11 +628,11 @@
           }
         });
         $scope.oldName = $scope.item.name;
-        prefix = prefixTraffic + prefixCountry;
+        $scope.prefix = prefixTraffic + prefixCountry;
       } else {
         prefixCountry = 'Global - ';
         prefixTraffic = allTraffic.length > 0 ? allTraffic[0].name + ' - ' : '';
-        prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
+        $scope.prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
         $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
         $scope.item.country = 'ZZZ';
       }
@@ -682,8 +692,24 @@
     }
 
     $q.all(initPromises).then(initSuccess);
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
 
+    $scope.postValidateCallback = function() {
+      return $scope.item.name.length == $scope.prefix.length;
+    };
+    function nameRequired() {
+      if ($scope.prefix.length == $scope.item.name.length) {
+        $scope.editForm.name.$setValidity('nameRequired', false);
+      } else {
+        $scope.editForm.name.$setValidity('nameRequired', true);
+      }
+    };
+
+    $scope.nameRequired = nameRequired;
     $scope.nameChanged = function(name) {
+      var prefix = $scope.prefix;
       if(name == undefined || name.length < prefix.length) {
         $scope.item.name = prefix;
       } else if(name.indexOf(prefix) != 0) {
@@ -704,6 +730,7 @@
         }
       }
       $scope.oldName = $scope.item.name;
+      nameRequired();
     };
 
     $scope.countryChanged = function(country) {
@@ -714,9 +741,9 @@
         }
       });
       var preStr = prefixTraffic + prefixCountry;
-      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
-      prefix = preStr;
+      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+      $scope.prefix = preStr;
     }
 
     $scope.trafficSourceChanged = function(id) {
@@ -727,9 +754,9 @@
         }
       });
       var preStr = prefixTraffic + prefixCountry;
-      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
-      prefix = preStr;
+      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+      $scope.prefix = preStr;
     };
 
     function calculateRelativeWeight(list, isValid) {
@@ -913,15 +940,15 @@
 
       var traffic = JSON.parse($scope.item.trafficSource);
       spliceUrlParams(traffic);
-      if ($scope.item.id) {
-        $mdDialog.hide();
-      } else {
+      if (!$scope.item.id) {
         $scope.item.id = campaign.id;
       }
+      $mdDialog.hide();
     }
 
     this.save = function () {
       // cost model value
+      nameRequired();
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
@@ -1002,8 +1029,11 @@
   }
 
   function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant) {
-    var prefix = 'Global - ';
+    $scope.prefix = 'Global - ';
     initTags($scope, Tag, 2);
+    $scope.checkNameParams = {
+      type: 2
+    };
     if (this.item) {
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
@@ -1019,26 +1049,45 @@
         if($scope.item.country) {
           $scope.countries.forEach(function(v) {
             if(v.value == $scope.item.country) {
-              prefix = v.display + ' - ';
+              $scope.prefix = v.display + ' - ';
               return;
             }
           });
         }
         $scope.oldName = $scope.item.name;
       });
+      if(!isDuplicate) {
+        $scope.checkNameParams.id = this.item.data.landerId;
+      }
       this.title = "edit";
     } else {
       $scope.item = {
         numberOfOffers: 1
       };
       this.title = "add";
-      $scope.item.name = prefix;
+      $scope.item.name = $scope.prefix;
       $scope.oldName = $scope.item.name;
       $scope.item.country = 'ZZZ';
     }
     
     this.titleType = angular.copy(this.perfType);
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.item.name.length == $scope.prefix.length;
+    };
+    function nameRequired() {
+      if ($scope.prefix.length == $scope.item.name.length) {
+        $scope.editForm.name.$setValidity('nameRequired', false);
+      } else {
+        $scope.editForm.name.$setValidity('nameRequired', true);
+      }
+    };
+    $scope.nameRequired = nameRequired;
     $scope.nameChanged = function() {
+      var prefix = $scope.prefix;
       if($scope.item.name == undefined || $scope.item.name.length < prefix.length) {
         $scope.item.name = prefix;
       } else if ($scope.item.name.indexOf(prefix) != 0) {
@@ -1059,6 +1108,7 @@
         }
       }
       $scope.oldName = $scope.item.name;
+      nameRequired();
     };
     $scope.countryChanged = function(country) {
       var countryName = '';
@@ -1069,9 +1119,9 @@
         }
       });
       var preStr = countryName + ' - ';
-      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
-      prefix = preStr;
+      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+      $scope.prefix = preStr;
     }
     
     // Country
@@ -1089,6 +1139,7 @@
     }
 
     this.save = function () {
+      nameRequired();
       $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
@@ -1128,12 +1179,23 @@
   }
 
   function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant, reportCache) {
-    var prefix = '', prefixCountry = '', prefixAffiliate = '';
+    var prefixCountry = '', prefixAffiliate = '';
+    $scope.prefix = '';
     initTags($scope, Tag, 3);
     // init load data
     var initPromises = [], prms;
+
+    $scope.checkNameParams = {
+      type: 3
+    };
     if(this.cache) {
       var theOffer = this.cache;
+      if(theOffer.id) {
+        $scope.checkNameParams.id = theOffer.id;
+        this.title = "edit";
+      } else {
+        this.title = "add";
+      }
     } else if (this.item) {
       var isDuplicate = this.duplicate;
       var theOffer;
@@ -1144,6 +1206,9 @@
       initPromises.push(prms);
 
       this.title = "edit";
+      if (!isDuplicate) {
+        $scope.checkNameParams.id = this.item.data.offerId;
+      }
     } else {
       $scope.item = {
         payoutMode: 0
@@ -1151,7 +1216,7 @@
       $scope.affiliateId = "0";
       this.title = "add";
       prefixCountry = 'Global - ';
-      prefix = $scope.item.name = $scope.oldName = prefixCountry;
+      $scope.prefix = $scope.item.name = $scope.oldName = prefixCountry;
       $scope.tagsFilter.options = $scope.item.tags = [];
       $scope.item.country = 'ZZZ';
     }
@@ -1201,7 +1266,7 @@
           }
         });
         $scope.oldName = $scope.item.name;
-        prefix = prefixAffiliate + prefixCountry;
+        $scope.prefix = prefixAffiliate + prefixCountry;
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
@@ -1223,15 +1288,23 @@
       });
     }
 
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.item.name.length == $scope.prefix.length;
+    };
+
     $scope.nameChanged = function(name) {
-      if(name == undefined || name.length < prefix.length) {
-        $scope.item.name = prefix;
-      } else if(name.indexOf(prefix) != 0) {
-        var sub = name.substr(0, prefix.length);
-        var arr1 = prefix.split('');
+      if(name == undefined || name.length < $scope.prefix.length) {
+        $scope.item.name = $scope.prefix;
+      } else if(name.indexOf($scope.prefix) != 0) {
+        var sub = name.substr(0, $scope.prefix.length);
+        var arr1 = $scope.prefix.split('');
         var arr2 = sub.split('');
         var inputText = '';
-        for(var i = 0, l = prefix.length; i < l; i++) {
+        for(var i = 0, l = $scope.prefix.length; i < l; i++) {
           if(arr1[i] !== arr2[i]) {
             inputText = arr2[i];
             break;
@@ -1246,6 +1319,16 @@
       $scope.oldName = $scope.item.name;
     };
 
+    function nameRequired() {
+      if ($scope.prefix.length == $scope.item.name.length) {
+        $scope.editForm.name.$setValidity('nameRequired', false);
+      } else {
+        $scope.editForm.name.$setValidity('nameRequired', true);
+      }
+    };
+
+    $scope.nameRequired = nameRequired;
+
     $scope.countryChanged = function(country) {
       $scope.countries.forEach(function(v) {
         if(v.value == country) {
@@ -1254,9 +1337,10 @@
         }
       });
       var preStr = prefixAffiliate + prefixCountry;
-      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
-      prefix = preStr;
+      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+      $scope.prefix = preStr;
+      nameRequired();
     }
 
     $scope.affiliateChanged = function(id) {
@@ -1267,9 +1351,9 @@
         }
       });
       var preStr = prefixAffiliate + prefixCountry;
-      $scope.item.name = preStr + $scope.item.name.substr(prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr(prefix.length);
-      prefix = preStr;
+      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
+      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+      $scope.prefix = preStr;
     };
 
     $q.all(initPromises).then(initSuccess);
@@ -1304,6 +1388,7 @@
     }
 
     this.save = function () {
+      nameRequired();
       $scope.item.tags = $scope.tags;
 
       // fill item.affiliateNetwork
@@ -1735,6 +1820,7 @@
   }
 
   function deleteCtrl($mdDialog, $injector) {
+    var self = this;
     this.title = "delete";
     this.content = 'warnDelete';
 
@@ -1751,24 +1837,28 @@
     }
 
     function deleteItem(item) {
-      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"]}).$promise;
+      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"], errorFn: true}).$promise;
     }
 
     this.onprocess = false;
     this.ok = function () {
-      this.onprocess = true;
+      self.onprocess = true;
       deleteItem(this.item).then(success, error);
     };
 
-    function success() {
+    function success(oData) {
       console.log("success delete");
-      this.onprocess = false;
-      $mdDialog.hide();
+      self.onprocess = false;
+      if(oData.status == 0) {
+        self.error = 'Error occured when delete.';
+      } else {
+        $mdDialog.hide();
+      }
     }
 
     function error() {
-      this.onprocess = false;
-      this.error = 'Error occured when delete.';
+      self.onprocess = false;
+      self.error = 'Error occurred when delete.';
     }
   }
 
