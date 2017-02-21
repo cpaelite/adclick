@@ -604,8 +604,7 @@ angular.module('app').value('groupByOptions', [
   { value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName" },
   { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
   { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
-  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" },
-  { value: "affiliate", display: "Affiliate Network", idKey: "affiliateId", nameKey: "affiliateName", level: 0 }
+  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName", level: 0  },
 ]);
 
 angular.module('app').value('userPreferences', {
