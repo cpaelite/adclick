@@ -40,7 +40,8 @@
     "animate.css": "^3.5.2",
     "highcharts": "~5.0.6",
     "angular-clipboard": "^1.5.0",
-    "angular-selectize2": "^3.0.1"
+    "angular-selectize2": "^3.0.1",
+    "angular-awesome-slider": "^2.4.4"
   },
   "devDependencies": {},
   "resolutions": {
