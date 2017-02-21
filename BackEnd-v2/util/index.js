@@ -18,12 +18,14 @@ exports.checkToken = function () {
         return next(new Error('access token has expired'));
       }
       connection = await common.getConnection();
-      let user = await common.query("select `id`,`idText` from `User` where `id`= ?", [decode.iss], connection);
+      let user = await common.query("select user.`id`,user.`idText`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
       if (!user.length) {
         throw new Error('no user');
       }
       req.userId = user[0].id;
       req.idText = user[0].idText;
+      req.groupId = user[0].groupId;
+      req.owner = true;
       next();
     } catch (e) {
       log.error('[util.js][checkToken] error', e)
@@ -43,18 +45,20 @@ exports.resetUserByClientId = function () {
     let connection;
     try {
       let clientId = req.cookies.clientId;
-      if (!clientId) {
+      if (!clientId || (clientId && clientId == req.groupId)) {
         return next();
       }
-      //获取用户group 信息
+      //check clientId 合法
       connection = await common.getConnection();
-      let userGroupSlice = await common.query("select g.`groupId`,g.`userId`,g.`role`,user.`idText`,user.`email` from UserGroup g inner join User user on user.`id` = g.`userId`  where g.`deleted`=? and g.`userId`= ?", [0, req.userId], connection);
-       if(!_.some(userGroupSlice,['groupId',clientId])){
-          throw new Error("clientId invalidate");
-       }
-      let userGroupObject=_.find(userGroupSlice,{groupId:clientId,role:0});
-      req.userId= userGroupObject.userId;
+      let userGroupSlice = await common.query("select g.`groupId`,g.`userId`,g.`role`,user.`idText`,user.`email` from UserGroup g left join User user on user.`id` = g.`userId`  where g.`deleted`=? and g.`userId`= ?", [0, req.userId], connection);
+      if (!_.some(userGroupSlice, ['groupId', clientId])) {
+        throw new Error("clientId invalidate");
+      }
+      let userGroupObject = _.find(userGroupSlice, { groupId: clientId, role: 0 });
+      req.userId = userGroupObject.userId;
       req.idText = userGroupObject.idText;
+      req.groupId = userGroupObject.groupId;
+      req.owner = false;
       next();
     } catch (e) {
       next(e);
