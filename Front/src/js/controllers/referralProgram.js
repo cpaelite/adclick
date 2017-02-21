@@ -12,7 +12,7 @@
 
     Profile.get(null, function (profile) {
       var profile = profile.data;
-      $scope.linkurl = "http://beta.newbidder.com/#/access/signup/?t=" + profile.referralToken;
+      $scope.linkurl = "http://beta.newbidder.com/#/access/signup?refToken=" + profile.referralToken;
     });
 
     $scope.query = {

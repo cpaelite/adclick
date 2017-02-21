@@ -4831,6 +4831,10 @@ a.text-#000000:hover {
     width: 400px;
 }
 
+.w-xxxxl {
+    width: 450px;
+}
+
 .w-full {
   width: 100%;
 }

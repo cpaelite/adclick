@@ -86,12 +86,13 @@
         <tbody >
           <tr ng-repeat="item in items.rows">
             <td>
-                <span uib-dropdown>
+                {{item.user}}
+                <!--<span uib-dropdown>
                     <a uib-dropdown-toggle>{{item.user}}</a>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu">
                         <li role="menuitem"><a ng-click="detailItem($event, item)">Detail</a></li>
                     </ul>
-                  </span>
+                  </span>-->
             </td>
             <td>{{item.entityType}}</td>
             <td>{{item.entityName}}</td>

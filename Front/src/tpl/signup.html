@@ -1,4 +1,4 @@
-<div class="container w-xxxl w-auto-xs">
+<div class="container w-xxxxl w-auto-xs">
     <p class="navbar-brand block m-t">{{app.name}}</p>
     <div class="m-b-lg">
         <div class="wrapper text-center">
@@ -6,49 +6,64 @@
         </div>
         <form name="form" class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-3 control-label">Email</label>
-                <div class="col-sm-9">
+                <label class="col-sm-4 control-label">Email<span class="star-icon">*</span></label>
+                <div class="col-sm-7">
                     <input type="email" name="email" placeholder="Email" class="form-control" ng-model="user.email"
                            ng-blur="checkEmail()" required>
                     <span style="color:red" ng-show="form.email.$dirty && form.email.$invalid">
+                    <span style="color:red" ng-show="form.email.$invalid">
+                    <span ng-show="form.email.$error.required">Email is required.</span>
                     <span ng-show="form.email.$error.email">Email must be a valid Email</span>
                     <span ng-show="form.email.$error.check">Email is exist</span>
                     </span>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Password</label>
-                <div class="col-sm-9">
+                <label class="col-sm-4 control-label">Password<span class="star-icon">*</span></label>
+                <div class="col-sm-7">
                     <input type="password" name="password" placeholder="Password" class="form-control"
                            ng-model="user.password" required>
                     <span style="color:red" ng-show="form.password.$dirty && form.password.$invalid">
+                    <span style="color:red" ng-show="form.password.$invalid">
                     <span ng-show="form.password.$error.required">Password is required.</span>
                     </span>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">FirstName</label>
-                <div class="col-sm-9">
+                <label class="col-sm-4 control-label">Repeat Password<span class="star-icon">*</span></label>
+                <div class="col-sm-7">
+                    <input type="password" name="repeatpassword" placeholder="Repeat Password" class="form-control"
+                           ng-model="repeatpassword">
+                    <span style="color:red" ng-show="form.password.$valid">
+                    <span ng-show="repeatpassword!=user.password">Password is not the same.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">FirstName<span class="star-icon">*</span></label>
+                <div class="col-sm-7">
                     <input type="text" name="firstname" placeholder="FirstName" class="form-control"
                            ng-model="user.firstname" required>
                     <span style="color:red" ng-show="form.firstname.$dirty && form.firstname.$invalid">
+                    <span style="color:red" ng-show="form.firstname.$valid">
                     <span ng-show="form.firstname.$error.required">FirstName is required.</span>
                     </span>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">LastName</label>
-                <div class="col-sm-9">
+                <label class="col-sm-4 control-label">LastName<span class="star-icon">*</span></label>
+                <div class="col-sm-7">
                     <input type="text" name="lastname" placeholder="LastName" class="form-control"
                            ng-model="user.lastname" required>
                     <span style="color:red" ng-show="form.lastname.$dirty && form.lastname.$invalid">
+                    <span style="color:red" ng-show="form.lastname.$invalid">
                     <span ng-show="form.lastname.$error.required">LastName is required.</span>
                     </span>
                 </div>
             </div>
 
             <button type="submit" class="btn btn-lg btn-primary btn-block" ng-click="signup()"
-                    ng-disabled='form.$invalid' translate>{{ 'signup' | translate }}
+                    ng-disabled='form.$invalid || repeatpassword!=user.password' translate>{{ 'signup' | translate }}
             </button>
             <div class="line line-dashed"></div>
             <p class="text-center">

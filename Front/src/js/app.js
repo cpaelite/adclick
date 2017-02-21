@@ -22,7 +22,8 @@
     'angularFileUpload',
     'chart.js',
     'selectize',
-    'angular-clipboard'
+    'angular-clipboard',
+    'angularAwesomeSlider'
   ]);
 
 })();

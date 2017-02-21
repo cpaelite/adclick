@@ -1,11 +1,17 @@
-<md-dialog class="cs-edit-dialog" ng-cloak>
+<md-dialog class="cs-edit-dialog offer-title" ng-cloak>
     <md-toolbar>
         <div class="md-toolbar-tools">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
 
+    <div class="offer-remind">
+        <i class="material-icons">info_outline</i>
+        It is required to use the {clickId} token if you want to track conversions.
+    </div>
+
     <md-dialog-content class="md-dialog-content">
+
         <div uib-alert class="alert-danger error-message" ng-show="errMessage" close="errMessage = ''">
             <p ng-repeat="(key, message) in errMessage" style="margin:0;">{{message}}</p>
         </div>
