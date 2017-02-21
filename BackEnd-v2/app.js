@@ -45,6 +45,7 @@ var log4js = require('log4js');
 var logger = log4js.getLogger("app");
 var bodyParser = require('body-parser');
 var compression=require('compression');
+var cookiePareser = require('cookie-parser');
 
 var app = express();
 var util = require('./util/index');
@@ -63,11 +64,15 @@ app.use("/tpl", compression(),express.static(__dirname + '/../Front/dist/tpl'));
 //log4js
 app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
 
+app.use(cookiePareser());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
-
 // parse application/json
 app.use(bodyParser.json())
+app.use(function(req,res,next){
+    console.log(req.cookies)
+    next()
+})
 
 app.get('/', function(req, res) {
     res.sendFile('index.html', {
@@ -75,7 +80,7 @@ app.get('/', function(req, res) {
     });
 });
 
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(),user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl);
 
 app.use('/', auth);
 

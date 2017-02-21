@@ -21,6 +21,7 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-cluster": "0.0.4",
     "joi": "^10.1.0",
