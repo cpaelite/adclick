@@ -6,6 +6,152 @@ var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
 
 
+//codition model  
+const conditionResult = [{
+    "id": "model",
+    "display": "Brand and model",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "l2select", "name": "value", "options": []
+    }]
+}, {
+    "id": "browser",
+    "display": "Browser and version",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "l2select", "name": "value", "options": []
+    }]
+}, {
+    "id": "connection",
+    "display": "Connection Type",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "select", "name": "value", "options": []
+    }]
+}, {
+    "id": "country",
+    "display": "Country",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "select", "name": "value", "options": []
+    }]
+}, {
+    "id": "region",
+    "display": "State / Region",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "chips", "name": "value", "options": []
+    }]
+}, {
+    "id": "city",
+    "display": "City",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "chips", "name": "value", "options": []
+    }]
+}, {
+    "id": "weekday",
+    "display": "Day of week",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "checkbox", "name": "weekday", "options": [
+            { "value": "0", "display": "Monday" },
+            { "value": "1", "display": "Tuesday" },
+            { "value": "2", "display": "Wednesday" },
+            { "value": "3", "display": "Thursday" },
+            { "value": "4", "display": "Friday" },
+            { "value": "5", "display": "Saturday" },
+            { "value": "6", "display": "Sunday" }
+        ]
+    }, {
+        "type": "select", "label": "Time zone", "name": "tz", "options": [
+            { "value": "+05:45", "display": "(UTC+05:45) Kathmandu" },
+            { "value": "-03:30", "display": "(UTC-03:30) Newfoundland" },
+            { "value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi" },
+            { "value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)" },
+            { "value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta" }
+        ]
+    }]
+}, {
+    "id": "device",
+    "display": "Device type",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "select", "name": "value", "options": []
+    }]
+}, {
+    "id": "iprange",
+    "display": "IP and IP ranges",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "textarea", "name": "value",
+        "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
+    }]
+}, {
+    "id": "isp",
+    "display": "ISP",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "chips", "name": "value", "options": []
+    }]
+}, {
+    "id": "language",
+    "display": "Language",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "chips", "name": "value", "options": []
+    }]
+}, {
+    "id": "carrier",
+    "display": "Mobile carrier",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "chips", "name": "value", "options": []
+    }]
+}, {
+    "id": "os",
+    "display": "Operating system and version",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "l2select", "name": "value", "options": []
+    }]
+}, {
+    "id": "referrer",
+    "display": "Referrer",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "textarea", "name": "value",
+        "desc": ""
+    }]
+}, {
+    "id": "time",
+    "display": "Time of day",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "inputgroup",
+        "inputs": [
+            { "label": "Between", "name": "starttime", "placeholder": "00:00" },
+            { "label": "and", "name": "endtime", "placeholder": "00:00" },
+        ]
+    }, {
+        "type": "select", "label": "Time zone", "name": "tz", "options": [
+            { "value": "utc", "display": "UTC" },
+            { "value": "-8", "display": "-8 PDT" },
+            { "value": "+8", "display": "+8 Shanghai" },
+            { "value": "+7", "display": "+7 Soul" },
+            { "value": "+9", "display": "+7 Tokyo" }
+        ]
+    }]
+}, {
+    "id": "useragent",
+    "display": "User Agent",
+    "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+    "fields": [{
+        "type": "textarea", "name": "value",
+        "desc": ""
+    }]
+}];
+
 /**
  * @api {get} /api/flows  获取用户所有flows
  * @apiName  get  user  flows
@@ -83,7 +229,7 @@ router.get('/api/flows/:id/campaigns', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = " + value.id + " and `userId`=" + value.userId, connection);
+        let result = await query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = ? and `userId`= ?", [value.id, value.userId], connection);
         res.json({
             status: 1,
             message: 'success',
@@ -131,12 +277,12 @@ router.get('/api/flows/:id', async function (req, res, next) {
         Result.rules = [];
         let value = await common.validate(req.query, schema);
 
-        let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
+        let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = ? and `userId`= ?";
         let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`object` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
             "from Flow f " +
             "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "inner join `Rule` r on r.`id` = f2.`ruleId` " +
-            "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` = ? and f.`userId`= ?";
 
         let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
             "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`  " +
@@ -147,7 +293,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "inner join `Path` p on p.`id` = r2.`pathId` " +
             "where f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0  " +
-            "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "and f.`id` = ? and f.`userId`= ?";
 
         let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
@@ -160,7 +306,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "where    f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
-            "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "and f.`id` =?  and f.`userId`= ? ";
 
         let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
@@ -173,11 +319,11 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "where  f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
-            "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "and f.`id` = ? and f.`userId`= ? ";
 
 
         connection = await common.getConnection();
-        let PromiseResult = await Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);
+        let PromiseResult = await Promise.all([query(flowSql, [value.id, value.userId], connection), query(ruleSql, [value.id, value.userId], connection), query(pathsql, [value.id, value.userId], connection), query(landerSql, [value.id, value.userId], connection), query(offerSql, [value.id, value.userId], connection)]);
 
         let flowResult = PromiseResult[0];
         let ruleResult = PromiseResult[1];
@@ -571,209 +717,127 @@ async function insertOrUpdateOfferAndOfferTags(userId, idText, pathId, offersSli
     }
 }
 
-router.get('/api/conditions', async function (req, res) {
+router.get('/api/conditions', async function (req, res, next) {
     //production
-    var result = [{
-        "id": "model",
-        "display": "Brand and model",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "l2select", "name": "value", "options": []
-        }]
-    }, {
-        "id": "browser",
-        "display": "Browser and version",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "l2select", "name": "value", "options": []
-        }]
-    }, {
-        "id": "connection",
-        "display": "Connection Type",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "select", "name": "value", "options": []
-        }]
-    }, {
-        "id": "country",
-        "display": "Country",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "select", "name": "value", "options": []
-        }]
-    }, {
-        "id": "region",
-        "display": "State / Region",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "chips", "name": "value", "options": []
-        }]
-    }, {
-        "id": "city",
-        "display": "City",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "chips", "name": "value", "options": []
-        }]
-    }, {
-        "id": "weekday",
-        "display": "Day of week",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "checkbox", "name": "weekday", "options": [
-                { "value": "0", "display": "Monday" },
-                { "value": "1", "display": "Tuesday" },
-                { "value": "2", "display": "Wednesday" },
-                { "value": "3", "display": "Thursday" },
-                { "value": "4", "display": "Friday" },
-                { "value": "5", "display": "Saturday" },
-                { "value": "6", "display": "Sunday" }
-            ]
-        }, {
-            "type": "select", "label": "Time zone", "name": "tz", "options": [
-                { "value": "+05:45", "display": "(UTC+05:45) Kathmandu" },
-                { "value": "-03:30", "display": "(UTC-03:30) Newfoundland" },
-                { "value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi" },
-                { "value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)" },
-                { "value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta" }
-            ]
-        }]
-    }, {
-        "id": "device",
-        "display": "Device type",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "select", "name": "value", "options": []
-        }]
-    }, {
-        "id": "iprange",
-        "display": "IP and IP ranges",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "textarea", "name": "value",
-            "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
-        }]
-    }, {
-        "id": "isp",
-        "display": "ISP",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "chips", "name": "value", "options": []
-        }]
-    }, {
-        "id": "language",
-        "display": "Language",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "chips", "name": "value", "options": []
-        }]
-    }, {
-        "id": "carrier",
-        "display": "Mobile carrier",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "chips", "name": "value", "options": []
-        }]
-    }, {
-        "id": "os",
-        "display": "Operating system and version",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "l2select", "name": "value", "options": []
-        }]
-    }, {
-        "id": "referrer",
-        "display": "Referrer",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "textarea", "name": "value",
-            "desc": ""
-        }]
-    }, {
-        "id": "time",
-        "display": "Time of day",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "inputgroup",
-            "inputs": [
-                { "label": "Between", "name": "starttime", "placeholder": "00:00" },
-                { "label": "and", "name": "endtime", "placeholder": "00:00" },
-            ]
-        }, {
-            "type": "select", "label": "Time zone", "name": "tz", "options": [
-                { "value": "utc", "display": "UTC" },
-                { "value": "-8", "display": "-8 PDT" },
-                { "value": "+8", "display": "+8 Shanghai" },
-                { "value": "+7", "display": "+7 Soul" },
-                { "value": "+9", "display": "+7 Tokyo" }
-            ]
-        }]
-    }, {
-        "id": "useragent",
-        "display": "User Agent",
-        "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-        "fields": [{
-            "type": "textarea", "name": "value",
-            "desc": ""
-        }]
-    }];
-    await fillConditions(result)
-    res.json(result);
-
+    let connection;
+    try {
+        connection = await common.getConnection();
+        let result = await fillConditions(conditionResult, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
-let loadCondition = async function (result) {
-    let results = await fillConditions(result);
-    return results;
-}
-
-//loadCondition
-let init = function () {
-    if (setting.env !== "development") {
-        loadCondition(setting.conditionResult).then(function (data) {
-            new Pub(true).set(setting.redis.conditionKey, JSON.stringify(data));
-        });
+router.get('/api/cities', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        query: Joi.string().required().trim(),
+    });
+    req.query.userId = req.userId;
+    //production
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await loadCityFromDB(value.query, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
     }
-}
-
-init();
+});
 
 
-async function fillConditions(r) {
+router.get('/api/regions', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        query: Joi.string().required().trim(),
+    });
+    req.query.userId = req.userId;
+    //production
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await loadStateRegionFromDB(value.query, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+router.get('/api/isps', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        query: Joi.string().required().trim(),
+    });
+    req.query.userId = req.userId;
+    //production
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await loadIspFromDB(value.query, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+
+async function fillConditions(r, connection) {
     for (let i = 0; i < r.length; i++) {
         if (r[i].id == 'model') {
-            r[i].fields[0].options = await loadBrandAndVersionFromDB()
+            r[i].fields[0].options = await loadBrandAndVersionFromDB(connection)
         } else if (r[i].id == 'browser') {
-            r[i].fields[0].options = await loadBowerAndVersionFromDB()
+            r[i].fields[0].options = await loadBowerAndVersionFromDB(connection)
         } else if (r[i].id == 'connection') {
             r[i].fields[0].options = await loadConnectionType()
         } else if (r[i].id == 'country') {
-            r[i].fields[0].options = await loadCountryFromDB()
+            r[i].fields[0].options = await loadCountryFromDB(connection)
         } else if (r[i].id == 'region') {
-            r[i].fields[0].options = await loadStateRegionFromDB()
+             // do nothing
         } else if (r[i].id == 'city') {
-            r[i].fields[0].options = await loadCityFromDB()
+             // do nothing
         } else if (r[i].id == 'varN') {
             //TODO: varN
         } else if (r[i].id == 'weekday') {
-            r[i].fields[1].options = await loadTimezoneFromDB()
+            r[i].fields[1].options = await loadTimezoneFromDB(connection)
         } else if (r[i].id == 'device') {
             r[i].fields[0].options = await loadDeviceType()
         } else if (r[i].id == 'iprange') {
             // do nothing
         } else if (r[i].id == 'isp') {
-            r[i].fields[0].options = await loadIspFromDB()
+            // do nothing
         } else if (r[i].id == 'language') {
-            r[i].fields[0].options = await loadLanguageFromDB()
+            r[i].fields[0].options = await loadLanguageFromDB(connection)
         } else if (r[i].id == 'carrier') {
-            r[i].fields[0].options = await loadMobileCarrierFromDB()
+            r[i].fields[0].options = await loadMobileCarrierFromDB(connection)
         } else if (r[i].id == 'os') {
-            r[i].fields[0].options = await loadOsFromDB()
+            r[i].fields[0].options = await loadOsFromDB(connection)
         } else if (r[i].id == 'referrer') {
             // do nothing
         } else if (r[i].id == 'time') {
-            r[i].fields[1].options = await loadTimezoneFromDB()
+            r[i].fields[1].options = await loadTimezoneFromDB(connection)
         } else if (r[i].id == 'useragent') {
             //do nothing
         } else {
@@ -795,176 +859,113 @@ async function fillConditions(r) {
 // ]
 // }
 
-async function loadBrandAndVersionFromDB() {
-    var sql = "select id, category, name from BrandWithVersions"
-    var connection = await common.getConnection();
-    let r = {}
-    var r2 = []
-    try {
-        let lines = await query(sql, connection);
-        for (let i = 0; i < lines.length; i++) {
-            var line = lines[i]
-            if (!r[line.category]) {
-                r[line.category] = { value: line.category, display: line.category, suboptions: [] }
-            }
-            r[line.category].suboptions.push({ value: line.name, display: line.name })
+async function loadBrandAndVersionFromDB(connection) {
+    var sql = "select id, category, name from BrandWithVersions";
+    let r = {};
+    var r2 = [];
+    let lines = await query(sql, [], connection);
+    for (let i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (!r[line.category]) {
+            r[line.category] = { value: line.category, display: line.category, suboptions: [] };
         }
-        r2 = Object.values(r)
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
+        r[line.category].suboptions.push({ value: line.name, display: line.name });
     }
-    return r2
+    r2 = Object.values(r);
+    return r2;
 }
 
-async function loadOsFromDB() {
+async function loadOsFromDB(connection) {
     var sql = "select id, category, name from OSWithVersions"
-    var connection = await common.getConnection();
     let r = {}
     var r2 = []
-    try {
-        let lines = await query(sql, connection);
-        for (let i = 0; i < lines.length; i++) {
-            var line = lines[i]
-            if (!r[line.category]) {
-                r[line.category] = { value: line.category, display: line.category, suboptions: [] }
-            }
-            r[line.category].suboptions.push({ value: line.name, display: line.name })
+    let lines = await query(sql, [], connection);
+    for (let i = 0; i < lines.length; i++) {
+        var line = lines[i]
+        if (!r[line.category]) {
+            r[line.category] = { value: line.category, display: line.category, suboptions: [] }
         }
-        r2 = Object.values(r)
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
+        r[line.category].suboptions.push({ value: line.name, display: line.name })
     }
+    r2 = Object.values(r)
+
     // console.info(r2)
     return r2
 }
 
-async function loadBowerAndVersionFromDB() {
+async function loadBowerAndVersionFromDB(connection) {
     var sql = "select id, category, name from BrowserWithVersions"
-    var connection = await common.getConnection();
     let r = {}
     var r2 = []
-    try {
-        let lines = await query(sql, connection);
-        for (let i = 0; i < lines.length; i++) {
-            var line = lines[i]
-            if (!r[line.category]) {
-                r[line.category] = { value: line.category, display: line.category, suboptions: [] }
-            }
-            r[line.category].suboptions.push({ value: line.name, display: line.name })
+
+    let lines = await query(sql, [], connection);
+    for (let i = 0; i < lines.length; i++) {
+        var line = lines[i]
+        if (!r[line.category]) {
+            r[line.category] = { value: line.category, display: line.category, suboptions: [] }
         }
-        r2 = Object.values(r)
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
+        r[line.category].suboptions.push({ value: line.name, display: line.name })
     }
+    r2 = Object.values(r)
+
     return r2
 }
 
-async function loadCountryFromDB() {
+async function loadCountryFromDB(connection) {
     var sql = "select id, name as display, alpha3Code as value from Country"
-    var connection = await common.getConnection();
     var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
+    r = await query(sql, [], connection);
     return r
 }
 
-// TODO: change sql to City table
-async function loadCityFromDB() {
-    var sql = "select id, name as display, alpha3Code as value from Country"
-    var connection = await common.getConnection();
-    var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
+ 
+async function loadCityFromDB(name, connection) {
+    var sql = "select id, name as display, countryCode as value from City where `name` like '%" + name + "%'";
+    var r = [];
+    r = await query(sql, [], connection);
+    return r
+}
+
+ 
+async function loadStateRegionFromDB(name,connection) {
+    var sql = "select id, regionName as display, countryCode as value from Regions where `regionName` like '%" + name + "%'";
+    var r = [];
+    r = await query(sql, [], connection);
     return r
 }
 
 // TODO: change sql to Region table
-async function loadStateRegionFromDB() {
-    var sql = "select id, name as display, alpha3Code as value from Country"
-    var connection = await common.getConnection();
-    var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
+async function loadIspFromDB(name,connection) {
+    var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%'";
+    var r = [];
+    r = await query(sql, [], connection);
+
     return r
 }
 
-// TODO: change sql to Region table
-async function loadIspFromDB() {
-    var sql = "select id, name as display, alpha3Code as value from Country"
-    var connection = await common.getConnection();
-    var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
-    return r
-}
-
-async function loadLanguageFromDB() {
+async function loadLanguageFromDB(connection) {
     var sql = "select id, name as display, code as value from Languages"
-    var connection = await common.getConnection();
-    var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
+
+    var r = [];
+
+    r = await query(sql, [], connection);
+
     return r
 }
 
 //TODO: load mobile carrier table
-async function loadMobileCarrierFromDB() {
+async function loadMobileCarrierFromDB(connection) {
     var sql = "select id, name as display, code as value from Languages"
-    var connection = await common.getConnection();
-    var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
-    return r
+    var r = [];
+    r = await query(sql, [], connection);
+    return r;
 }
 
-async function loadTimezoneFromDB() {
+async function loadTimezoneFromDB(connection) {
     var sql = "select utcShift as value, detail as display from Timezones"
-    var connection = await common.getConnection();
-    var r = []
-    try {
-        r = await query(sql, connection);
-    } catch (err) {
-        throw err
-    } finally {
-        connection.release()
-    }
-    return r
+    var r = [];
+    r = await query(sql, [], connection);
+    return r;
 }
 
 //TODO: update the values
@@ -989,9 +990,9 @@ async function loadDeviceType() {
     return r
 }
 
-function query(sql, connection) {
+function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
+        connection.query(sql, params, function (err, result) {
             if (err) {
                 return reject(err);
             }
