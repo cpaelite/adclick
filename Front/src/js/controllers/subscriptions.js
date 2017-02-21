@@ -37,6 +37,26 @@
   function changePlanCtrl($scope, $mdDialog, Profile, Billing){
     this.cancel = $mdDialog.cancel;
 
+    $scope.value = 10;
+    $scope.options = {
+      from: 1,
+      to: 100000000,
+      round: 0,
+      heterogeneity: ['33/1000000', '66/25000000'],
+      limits: false,
+      css: {
+          background: {"background-color": "silver"},
+          before: {"background-color": "purple"},// zone before default value
+          default: {"background-color": "white"}, // default value: 1px
+          after: {"background-color": "green"},  // zone after default value
+          pointer: {"background-color": "red"},   // circle pointer
+          range: {"background-color": "red"}, // use it if double value
+      },
+      callback: function(value, elt) {
+          console.log(value);
+      }
+    };
+
     $scope.editChangePlan = function(ev,item){
       $mdDialog.show({
         multiple: true,

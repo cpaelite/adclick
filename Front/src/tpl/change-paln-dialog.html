@@ -1,13 +1,13 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
   <md-dialog-content class="md-dialog-content">
     <div class="nav-box">
-      <div class="container">
+      <div>
           <a class="logo" href="#"><img class="img-responsive" src="../assets/img/logo.png"></a>
           <a class="logo2" href="#"><img class="img-responsive" src="../assets/img/logo-two.png"></a>
       </div>
     </div>
     <div class="pricing-box clearfix">
-        <div class="container">
+        <div>
           <ul>
           <div class="li-con">
             <div class="plan-select">
@@ -128,20 +128,24 @@
           </ul>
         </div>
     </div>
-    <!-- <section id="sliderPricing">
-        <div class="container">
+    <section id="sliderPricing">
+        <div>
             <div class="row">
                 <div class="col-md-12">
                     <div id="pricingCalculator" class="planSlider">
                         <h4 class="titletwo">Monthly cost <b>calculator</b>:</h4>
                         <div class="row eventsSliderBox">
                             <div class="col-xs-12 col-sm-9 col-md-9">
-                                <input id="eventsSlider" class="eventsSlider" type="slider" name="events" value="0" style="display: none;">
+                                <!-- <input id="eventsSlider" class="eventsSlider" type="slider" name="events" value="0" style="display: none;"> -->
+                                <input ng-model="value" type="text" id="mySlider1" slider options="options"/>
                             </div>
                             <div class="col-sm-3 col-md-3">
-                                <input type="text" name="eventsSliderNumber" value="" class="eventsSliderNumber numberField" placeholder="">
+                                  <!-- <md-input-container>
+                                    <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
+                                  </md-input-container> -->
+                                <!-- <input type="text" name="eventsSliderNumber" value="" class="eventsSliderNumber numberField" placeholder="">
                                 <button class="register-btn btn-three" type="button">Sign in</button>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 
@@ -163,7 +167,7 @@
                     </div>
                 </div>
             </div>
-    </section> -->
+    </section>
     <div class="bottom-box">
       © Copyright  new bidder. 2017 All rights reserved
       <span><a href="#">Privacy policy</a>|<a href="#">Terms and conditions</a></span>
