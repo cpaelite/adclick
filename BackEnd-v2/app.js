@@ -44,18 +44,21 @@ var favicon = require('serve-favicon');
 var log4js = require('log4js');
 var logger = log4js.getLogger("app");
 var bodyParser = require('body-parser');
+var compression=require('compression');
 
 var app = express();
 var util = require('./util/index');
 
+app.disable('x-powered-by');
 
+ 
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // page
-app.use("/assets", express.static(__dirname + '/../Front/dist/assets'));
-app.use("/tpl", express.static(__dirname + '/../Front/dist/tpl'));
+app.use("/assets", compression(),express.static(__dirname + '/../Front/dist/assets'));
+app.use("/tpl", compression(),express.static(__dirname + '/../Front/dist/tpl'));
 
 //log4js
 app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
