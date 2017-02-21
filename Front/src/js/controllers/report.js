@@ -1561,6 +1561,13 @@
         $scope.item.name = data.name;
         $scope.item.postbackUrl = data.postbackUrl;
         $scope.params = JSON.parse(data.params);
+        if ($scope.params.length < 10) {
+          var addLength = 10-$scope.params.length;
+          for (var i=0;i<addLength;i++) {
+            var param = {Parameter: '', Placeholder: '', Name: '', Track: 0};
+            $scope.params.push(param);
+          }
+        }
         $scope.cost = JSON.parse(data.cost);
         $scope.externalId = JSON.parse(data.externalId);
         $scope.visible = true;
