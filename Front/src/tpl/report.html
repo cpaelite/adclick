@@ -93,6 +93,7 @@
                       <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible" ng-click="checkboxInput($event)">{{item.name}}
                     </li>
                 </ul>
+                <div class="my-btn">
                 <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applyChange()">
                     <i class="material-icons btn-icon">done</i>
                     {{'apply changes' | translate}}
@@ -102,6 +103,7 @@
                     <i class="material-icons btn-icon close-icon">close</i>
                     {{'close' | translate}}
                 </md-button>
+                </div>
             </div>
         </div>
     </div>

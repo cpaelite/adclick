@@ -329,41 +329,43 @@
             <div class="col-sm-9 col-md-9">Lander</div>
             <div class="col-sm-3 col-md-3">Weight</div>
           </div>
-          <div class="cs-flow-lander-row clearfix"
-               ng-repeat="lander in curPath.landers"
-               ng-click="setEdit($event, lander)"
-               ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
-            <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
-              <div class="cs-flow-lander-edit clearfix">
-                <md-autocomplete
-                    md-selected-item="lander._def"
-                    md-search-text="lander._searchText"
-                    md-items="item in queryLanders(lander._searchText)"
-                    md-no-cache="true"
-                    md-select-on-focus="true"
-                    md-item-text="item.name"
-                    md-min-length="0"
-                    placeholder="Select lander...">
-                  <md-item-template>
-                    <span md-highlight-text="lander._searchText">{{item.name}}</span>
-                  </md-item-template>
-                  <md-not-found>
-                    No matching found.
-                  </md-not-found>
-                </md-autocomplete>
-                <i class="material-icons md-mini edit-btn" ng-show="lander._def" ng-click="editLander($event, lander)">edit</i>
+          <div class="cs-flow-offer-lander">
+            <div class="cs-flow-lander-row clearfix"
+                 ng-repeat="lander in curPath.landers"
+                 ng-click="setEdit($event, lander)"
+                 ng-class="{'cs-flow-lander-onedit':lander._onEdit}">
+              <div class="col-sm-8 col-md-8">
+                <p class="cs-flow-lander-view">{{lander._def.name || 'Select lander...'}}</p>
+                <div class="cs-flow-lander-edit clearfix">
+                  <md-autocomplete
+                      md-selected-item="lander._def"
+                      md-search-text="lander._searchText"
+                      md-items="item in queryLanders(lander._searchText)"
+                      md-no-cache="true"
+                      md-select-on-focus="true"
+                      md-item-text="item.name"
+                      md-min-length="0"
+                      placeholder="Select lander...">
+                    <md-item-template>
+                      <span md-highlight-text="lander._searchText">{{item.name}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                      No matching found.
+                    </md-not-found>
+                  </md-autocomplete>
+                  <i class="material-icons md-mini edit-btn" ng-show="lander._def" ng-click="editLander($event, lander)">edit</i>
+                </div>
               </div>
-            </div>
-            <div class="col-sm-3 col-md-3 input-content">
-              <div class="cs-flow-lander-view">
-                {{lander.weight}}
-                <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
-                <em ng-show="lander.relativeWeight<=0">(N/A)</em>
-              </div>
-              <div class="cs-flow-lander-edit clearfix">
-                <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
-                <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
+              <div class="col-sm-4 col-md-4 input-content">
+                <div class="cs-flow-lander-view">
+                  {{lander.weight}}
+                  <em ng-show="lander.relativeWeight>0">({{lander.relativeWeight | number:2}}%)</em>
+                  <em ng-show="lander.relativeWeight<=0">(N/A)</em>
+                </div>
+                <div class="cs-flow-lander-edit clearfix">
+                  <input type="text" class="form-control weight-input" ng-model="lander.weight" required>
+                  <i ng-click="deleteLander(lander)" class="material-icons md-mini lander-delete-btn">delete</i>
+                </div>
               </div>
             </div>
           </div>
@@ -379,46 +381,48 @@
           </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 offer-content">
+        <div class="col-sm-12 offer-content" ng-class="{'col-md-6': !curPath.directLinking}">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Offer</div>
             <div class="col-sm-3 col-md-3">Weight</div>
           </div>
-          <div class="cs-flow-offer-row clearfix"
-               ng-repeat="offer in curPath.offers"
-               ng-click="setEdit($event, offer)"
-               ng-class="{'cs-flow-offer-onedit':offer._onEdit}">
-            <div class="col-sm-9 col-md-9">
-              <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
-              <div class="cs-flow-offer-edit clearfix">
-                <md-autocomplete
-                    md-selected-item="offer._def"
-                    md-search-text="offer._searchText"
-                    md-items="item in queryOffers(offer._searchText)"
-                    md-no-cache="true"
-                    md-select-on-focus="true"
-                    md-item-text="item.name"
-                    md-min-length="0"
-                    placeholder="Select offer...">
-                  <md-item-template>
-                    <span md-highlight-text="offer._searchText">{{item.name}}</span>
-                  </md-item-template>
-                  <md-not-found>
-                    No matching found.
-                  </md-not-found>
-                </md-autocomplete>
-                <i class="material-icons md-mini edit-btn" ng-show="offer._def" ng-click="editOffer($event, offer)">edit</i>
+          <div class="cs-flow-offer-lander">
+            <div class="cs-flow-offer-row clearfix"
+                 ng-repeat="offer in curPath.offers"
+                 ng-click="setEdit($event, offer)"
+                 ng-class="{'cs-flow-offer-onedit':offer._onEdit}">
+              <div class="col-sm-8 col-md-8">
+                <p class="cs-flow-offer-view">{{offer._def.name || 'Select offer...'}}</p>
+                <div class="cs-flow-offer-edit clearfix">
+                  <md-autocomplete
+                      md-selected-item="offer._def"
+                      md-search-text="offer._searchText"
+                      md-items="item in queryOffers(offer._searchText)"
+                      md-no-cache="true"
+                      md-select-on-focus="true"
+                      md-item-text="item.name"
+                      md-min-length="0"
+                      placeholder="Select offer...">
+                    <md-item-template>
+                      <span md-highlight-text="offer._searchText">{{item.name}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                      No matching found.
+                    </md-not-found>
+                  </md-autocomplete>
+                  <i class="material-icons md-mini edit-btn" ng-show="offer._def" ng-click="editOffer($event, offer)">edit</i>
+                </div>
               </div>
-            </div>
-            <div class="col-sm-3 col-md-3 input-content">
-              <div class="cs-flow-offer-view">
-                {{offer.weight}}
-                <em ng-show="offer.relativeWeight>0">({{offer.relativeWeight | number:2}}%)</em>
-                <em ng-show="offer.relativeWeight<=0">(N/A)</em>
-              </div>
-              <div class="cs-flow-offer-edit clearfix">
-                <input type="text" class="form-control weight-input" ng-model="offer.weight" required>
-                <i ng-click="deleteOffer(offer)" class="material-icons md-mini lander-delete-btn">delete</i>
+              <div class="col-sm-4 col-md-4 input-content">
+                <div class="cs-flow-offer-view">
+                  {{offer.weight}}
+                  <em ng-show="offer.relativeWeight>0">({{offer.relativeWeight | number:2}}%)</em>
+                  <em ng-show="offer.relativeWeight<=0">(N/A)</em>
+                </div>
+                <div class="cs-flow-offer-edit clearfix">
+                  <input type="text" class="form-control weight-input" ng-model="offer.weight" required>
+                  <i ng-click="deleteOffer(offer)" class="material-icons md-mini lander-delete-btn">delete</i>
+                </div>
               </div>
             </div>
           </div>

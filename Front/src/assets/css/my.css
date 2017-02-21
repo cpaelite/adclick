@@ -91,9 +91,6 @@ header .md-toolbar-tools {
 .setting a.setting-link:hover{
     color: #fff;
 }
-a.dropdown-toggle:hover{
-    color: #fff;
-}
 
 .md-toolbar-tools h1, .md-toolbar-tools h1, .md-toolbar-tools h3{
     font-size: 18px;
@@ -582,6 +579,9 @@ a.cs-inline-edit {
 }
 
 /* for md-table */
+table.md-table{
+    overflow-x: auto;
+}
 table.md-table.md-row-select td.md-cell:nth-child(n+3):nth-last-child(n+2),
 table.md-table.md-row-select th.md-column:nth-child(n+3):nth-last-child(n+2) {
     padding: 0 26px 0 0;
@@ -622,6 +622,7 @@ md-sidenav.md-closed{
 }
 .navi ul.nav li{
     float: left;
+    height: 52px;
 }
 md-content.cs-main-content{
     margin: 0;
@@ -796,7 +797,7 @@ md-content.cs-main-content{
 
 .material-icons.flow-arrow-down{
     float: left;
-    margin-top: 6px;
+    margin-top: 10px;
 }
 
 ul{
@@ -944,8 +945,8 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .right-select .cs-add-button{
     float: left;
-    margin: 15px 10px 0 0;
-    border-radius: 4px;
+    margin: 15px 10px 2px 0;
+    border-radius: 2px;
 }
 .right-select .search-con{
     background: #d5dce4;
@@ -1024,40 +1025,50 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     margin:0px 0 0 -5px;
 }
 .view_column_con{
+    width: 285px;
+    padding: 0 0 20px 0;
     position: absolute;
-    background: #12bdce;
+    background: #fbfbfb;
     top: 66px;
-    right: 5px; 
+    right: 30px;
     z-index: 25;
-    padding: 15px;
-    border-radius: 4px;
-    color: #fff;
+    border-radius: 2px;
+    color: #333;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 .view_column_con ul{
-    padding: 0px;
-    max-height: 300px;
+    padding: 0;
+    max-height: 268px;
     overflow-y: auto;
-    margin-bottom: 25px;
+}
+.my-btn{
+    margin-left: 15px;
+}
+.my-btn .cs-add-button{
+    padding: 0 10px 0 5px;
+}
+.my-btn .cs-add-button .btn-icon{
+    width: 20px;
 }
 .view_column_con ul li{
     line-height: 15px;
-    border-bottom: 1px solid #0097a7;
-    min-width: 300px;
-    padding:10px;
+    border-bottom: 1px solid #f3f3f3;
+    padding: 10px 20px;
 }
 .material-icons.btn-icon{
     line-height: 34px;
 }
 .view_column_con ul li:hover{
-    background: #00838f;
+    background: #d5dce4;
 }
 .view_column_con ul li input[type="checkbox"]{
     margin-right: 10px;
     cursor: pointer;
 }
 .view_column_con button{
-    background: #00838f !important;
-    padding-left: 0px;
+    background: #2da8f9 !important;
+    border-radius: 2px;
+    margin-left: 15px;
 }
 .view_column_con button.close-btn{
     background: #8992aa !important;
@@ -1214,12 +1225,12 @@ h1.setting-title{
     width: 100%;
     margin: 0;
 }
-.account-form,
+/*.account-form,
 .basic-form,
 .data-table{
     max-width: 1004px;
     margin: 0 auto;
-}
+}*/
 .basic-form .campaign-radio{
     height: 38px;
     line-height: 38px;
@@ -1228,8 +1239,12 @@ h1.setting-title{
     margin-top: 13px;
 }
 .profile-content{
-    padding: 30px 0px;
-    background: rgba(18, 189, 206, 0.14);
+    padding: 50px 30px;
+    background: #f6f8f8;
+    width: 70%;
+    margin: 0 auto 180px auto;
+    border-radius: 2px;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.08), 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 1px 0 0 rgba(0, 0, 0, 0.05);
 }
 .password-change .profile-form-footer{
     margin-right: 0;
@@ -1278,7 +1293,7 @@ h1.setting-title{
     margin: 0;
 }
 .profile-form-footer .save-btn:hover{
-    background: #12bdce;
+    background: #2da8f9;
 }
 .profile-form-footer .save-btn[disabled]{
     color: #fff !important;
@@ -1300,7 +1315,7 @@ h1.setting-title{
     line-height: 32px;
     text-transform: lowercase;
     padding: 0 10px;
-    background: #12bdce;
+    background: #2f9be1;
     color: #fff;
 }
 .md-raised.copy-btn.verify-btn{
@@ -1317,7 +1332,7 @@ h1.setting-title{
     background: rgba(255, 0, 0, 0.62) !important;
 }
 .md-raised.copy-btn:hover{
-    background: #12bdce !important;
+    background: #2da8f9 !important;
 }
 .table thead{
     font-size: 12px;
@@ -1338,7 +1353,7 @@ h1.setting-title{
     line-height: 39px;
     margin: 0;
     padding: 0 10px;
-    background: #12bdce;
+    background: #2da8f9;
 }
 .plan-select{
     background: #2dcc70;
@@ -1536,7 +1551,7 @@ h1.setting-title{
     margin:0 auto;
 }
 .user-mangement-content input[type="email"]{
-    width: 80%;
+    width: 77%;
 }
 .user-mangement-content button{
     float: right;
@@ -1622,8 +1637,7 @@ h1.setting-title{
     padding-left: 25px;
 }
 .bot-blacklist .table tbody tr:hover{
-    background: rgba(18, 189, 206, 0.27);
-    color: #fff;
+    background: rgba(45, 168, 249, 0.06);
 }
 input[type="checkbox"].th-checkbox{
     position: absolute;
@@ -1707,7 +1721,7 @@ input[type="checkbox"].th-checkbox{
     color: rgba(128, 128, 128, 0.53);
 }
 .invoices .data-table .download{
-    color: #12bdce;
+    color: #2da8f9;
 }
 .PayPal-dialog p{
     text-align: center;
@@ -1771,7 +1785,7 @@ input[type="checkbox"].th-checkbox{
     margin-right: 5%;
 }
 .material-icons.add-next{
-    color: #12bdce;
+    color: #2da8f9;
 }
 .ip-range{
     margin-bottom: 15px;
@@ -1874,8 +1888,10 @@ input[type="checkbox"].th-checkbox{
 .cs-page-flow li.tree-li.cs-is-disabled.active{
     background: rgba(45, 168, 249, 0.38);
 }
-.cs-page-flow li.tree-li.cs-is-disabled{
-    color: #717477;
+.cs-page-flow li.tree-li.cs-is-disabled,
+.cs-is-disabled .cs-rule-name,
+.cs-is-disabled .cs-path-name{
+    color: rgba(113, 116, 119, 0.52);
 }
 .path-name{
     display: inline-block;
@@ -1998,11 +2014,9 @@ md-content.cs-main-content{
 .cs-flow-lander-row md-select{
     margin: 0;
 }
-.cs-flow-lander-edit{
-    margin-top: 7px;
-}
-.edit-btn{
-    margin: 5px 0px 0 10px;
+.edit-btn,
+.lander-delete-btn{
+    margin: 7px 0px 0 10px;
 }
 .cs-flow-lander-row md-select{
     width: 89%;
@@ -2024,9 +2038,6 @@ md-content.cs-main-content{
     height: 30px;
     line-height: 30px;
 }
-.lander-delete-btn{
-    margin-top: 3px;
-}
 .cs-flow-edit{
     position: absolute;
     top: 7px;
@@ -2040,6 +2051,30 @@ md-content.cs-main-content{
 .cs-flow-offer-row{
     background: #f6f6f6;
     padding: 10px 0;
+    font-size: 13px;
+}
+.direct-content md-autocomplete md-autocomplete-wrap{
+    box-shadow: none;
+    height: 34px;
+    border: 1px solid #cfdadd;
+    line-height: 34px;
+}
+.direct-content md-autocomplete input:not(.md-input){
+    font-size: 13px;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 10px;
+}
+.direct-content md-autocomplete{
+    height: 34px;
+    width: 88%;
+    float: left;
+}
+.direct-content md-icon{
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
 }
 p.cs-flow-lander-view,
 p.cs-flow-offer-view{
@@ -2110,19 +2145,26 @@ md-select:not([disabled]):focus .md-select-value{
     line-height: 30px;
     margin-right: 10px;
 }
-.cs-flow-lander-row:nth-child(2n+1){
+.cs-flow-lander-row:nth-child(2n+1),
+.cs-flow-offer-row:nth-child(2n+1){
     background: #e1e6ee;
 }
-.lander-content,
-.offer-content{
-    padding-left: 0px;
+.lander-content{
+    padding-right: 10px !important;
 }
-.direct-content,
+.input-content .cs-flow-offer-view{
+    text-align: right;
+}
 .lander-content,
 .offer-content{
-    max-height: 360px;
-    overflow: auto;
+    
     margin-bottom: 20px;
+    padding:0;
+}
+.cs-flow-offer-lander{
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .input-content{
     padding-left: 0;
@@ -2136,6 +2178,9 @@ md-select:not([disabled]):focus .md-select-value{
     background-color: #fff;
     opacity: 0.6;
     z-index: 10;
+}
+.cs-conditions{
+    margin-top: -10px;
 }
 .cs-conditions-content{
     max-height: 400px;
@@ -2181,11 +2226,10 @@ md-select:not([disabled]):focus .md-select-value{
     margin: 15px 0;
 }
 .weight-input{
-    width: 77%;
+    width: 74%;
     float: left;
-}
-.cw-flow-rule-condition-base{
-
+    padding: 0 10px;
+    font-size: 13px;
 }
 .condition-select-content{
     margin-bottom: 15px;
