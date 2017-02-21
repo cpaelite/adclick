@@ -136,32 +136,37 @@
                         <h4 class="titletwo">Monthly cost <b>calculator</b>:</h4>
                         <div class="row eventsSliderBox">
                             <div class="col-xs-12 col-sm-9 col-md-9">
-                                <!-- <input id="eventsSlider" class="eventsSlider" type="slider" name="events" value="0" style="display: none;"> -->
                                 <input ng-model="value" type="text" id="mySlider1" slider options="options"/>
                             </div>
                             <div class="col-sm-3 col-md-3">
-                                  <!-- <md-input-container>
-                                    <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
-                                  </md-input-container> -->
-                                <!-- <input type="text" name="eventsSliderNumber" value="" class="eventsSliderNumber numberField" placeholder="">
-                                <button class="register-btn btn-three" type="button">Sign in</button>
-                                </div> -->
+                                <input type="text"
+                                  name="eventsSliderNumber"
+                                  ng-model="inputValue"
+                                  class="eventsSliderNumber numberField"
+                                  ng-change="valueChanged(inputValue)"
+                                >
                             </div>
                         </div>
 
                         <section class="row sliderResults">
                             <div class="col-md-3 col-sm-3 col-xs-12">
-                                Plan <span><span class="dolar">$</span><span class="prepay">0</span> <span class="plan">NOOBIE</span></span>
-                                <span class="caption"><span class="includedEvents">10,000,000</span> events included</span>
+                                Plan <span>
+                                      <span class="dolar">$</span>
+                                      <span class="prepay">{{bestPlan.prepayCost}}</span>
+                                      <span class="plan">NOOBIE</span>
+                                    </span>
+                                    <span class="caption">
+                                      <span class="includedEvents">{{bestPlan.includedEvents | split}}</span> events included
+                                    </span>
                             </div>
                             <div class="col-md-1 col-sm-1 separator"><span></span></div>
                             <div class="col-md-3 col-sm-3 col-xs-12 mainPriceContainer">
-                                Price: <span><span class="dolar">$</span><span class="mainPriceLittle">0</span></span> month
+                                Price: <span><span class="dolar">$</span><span class="mainPriceLittle">{{bestPlan.totalCost.toFixed(0)}}</span></span> month
                             </div>
                             <div class="col-md-1 col-sm-1 separator"><span></span></div>
                             <div class="col-md-3 col-sm-3 col-xs-12">
-                                Overages <i class="icon-question-sign" data-toggle="tooltip" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>   : <span><span class="dolar">$</span><span class="overages">0</span></span>
-                                <span class="caption"><span class="overagesEvents">0</span> extra events</span>
+                                Overages <i class="icon-question-sign" data-toggle="tooltip" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>   : <span><span class="dolar">$</span><span class="overages">{{bestPlan.overagesCost.toFixed(0)}}</span></span>
+                                <span class="caption"><span class="overagesEvents">{{bestPlan.overagesEvents | split}}</span> extra events</span>
                             </div>
                         </section>
                     </div>
