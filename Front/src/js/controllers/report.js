@@ -266,6 +266,10 @@
     $scope.groupbyFilter1 = filteGroupBy(1);
     $scope.groupbyFilter2 = filteGroupBy(2);
 
+    $scope.filterIsHow = function (item) {
+      return item.level == 0;
+    };
+
     $scope.hours = [];
     for (var i=0; i<24; ++i) {
       if (i < 10) {
@@ -288,6 +292,7 @@
         return;
       }
 
+      $scope.query.filter = $scope.searchFilter;
       getDateRange($scope.datetype);
       pageStatus.datetype = $scope.datetype;
       pageStatus.status = $scope.activeStatus;
@@ -473,36 +478,32 @@
     }
 
     function getDateRange(value) {
-      var fromDate;
-      var toDate;
+      var fromDate = moment().format('YYYY-MM-DD');
+      var toDate = moment().add(1, 'days').format('YYYY-MM-DD');
       switch (value) {
-        case '1':
+        case '2':
           fromDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
           toDate = moment().format('YYYY-MM-DD');
           break;
-        case '2':
-          fromDate = moment().subtract(6, 'days').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
-          break;
         case '3':
-          fromDate = moment().subtract(13, 'days').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
+          fromDate = moment().subtract(6, 'days').format('YYYY-MM-DD');
           break;
         case '4':
-          fromDate = moment().day(1).format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
+          fromDate = moment().subtract(13, 'days').format('YYYY-MM-DD');
           break;
         case '5':
-          fromDate = moment().day(-6).format('YYYY-MM-DD');
-          toDate = moment().day(0).format('YYYY-MM-DD');
+          fromDate = moment().day(1).format('YYYY-MM-DD');
           break;
         case '6':
-          fromDate = moment().startOf('month').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
+          fromDate = moment().day(-6).format('YYYY-MM-DD');
+          toDate = moment().day(1).format('YYYY-MM-DD');
           break;
         case '7':
+          fromDate = moment().startOf('month').format('YYYY-MM-DD');
+          break;
+        case '8':
           fromDate = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-          toDate = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
+          toDate = moment().startOf('month').format('YYYY-MM-DD');
           break;
       }
       if (value == '0') {
@@ -510,7 +511,7 @@
         pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
       } else {
         pageStatus.from = fromDate + 'T00:00';
-        pageStatus.to = toDate + 'T23:59';
+        pageStatus.to = toDate + 'T00:00';
       }
     }
 
@@ -1645,6 +1646,13 @@
         $scope.item.name = data.name;
         $scope.item.postbackUrl = data.postbackUrl;
         $scope.params = JSON.parse(data.params);
+        if ($scope.params.length < 10) {
+          var addLength = 10-$scope.params.length;
+          for (var i=0;i<addLength;i++) {
+            var param = {Parameter: '', Placeholder: '', Name: '', Track: 0};
+            $scope.params.push(param);
+          }
+        }
         $scope.cost = JSON.parse(data.cost);
         $scope.externalId = JSON.parse(data.externalId);
         $scope.visible = true;
