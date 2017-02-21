@@ -229,7 +229,7 @@ router.get('/api/flows/:id/campaigns', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = " + value.id + " and `userId`=" + value.userId, connection);
+        let result = await query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = ? and `userId`= ?", [value.id, value.userId], connection);
         res.json({
             status: 1,
             message: 'success',
@@ -277,12 +277,12 @@ router.get('/api/flows/:id', async function (req, res, next) {
         Result.rules = [];
         let value = await common.validate(req.query, schema);
 
-        let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = " + value.id + " and `userId`=" + value.userId;
+        let flowSql = "select `id`,`name`,`hash`,`country`,`type`,`redirectMode` from Flow where  `id` = ? and `userId`= ?";
         let ruleSql = "select  f.`id` as parentId, r.`id`,case r.`type` when 0 then 'Default Paths' else r.`name` end as name, r.`object` as conditions ,case r.`status` when 1 then \"true\" else \"false\" end as enabled,r.`type`,case r.`type` when 0 then 'true' else 'false' end as isDefault " +
             "from Flow f " +
             "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
             "inner join `Rule` r on r.`id` = f2.`ruleId` " +
-            "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` = ? and f.`userId`= ?";
 
         let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
             "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`  " +
@@ -293,7 +293,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "inner join `Path` p on p.`id` = r2.`pathId` " +
             "where f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0  " +
-            "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "and f.`id` = ? and f.`userId`= ?";
 
         let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
@@ -306,7 +306,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "where    f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
-            "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "and f.`id` =?  and f.`userId`= ? ";
 
         let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
             "from Flow f " +
@@ -319,11 +319,11 @@ router.get('/api/flows/:id', async function (req, res, next) {
             "where  f2.`deleted`= 0 and r.`deleted` = 0  " +
             "and r2.`deleted`= 0 and p.`deleted` = 0   " +
             "and p2.`deleted` = 0 and l.`deleted` = 0  " +
-            "and f.`id` =" + value.id + " and f.`userId`= " + value.userId;
+            "and f.`id` = ? and f.`userId`= ? ";
 
 
         connection = await common.getConnection();
-        let PromiseResult = await Promise.all([query(flowSql, connection), query(ruleSql, connection), query(pathsql, connection), query(landerSql, connection), query(offerSql, connection)]);
+        let PromiseResult = await Promise.all([query(flowSql, [value.id, value.userId], connection), query(ruleSql, [value.id, value.userId], connection), query(pathsql, [value.id, value.userId], connection), query(landerSql, [value.id, value.userId], connection), query(offerSql, [value.id, value.userId], connection)]);
 
         let flowResult = PromiseResult[0];
         let ruleResult = PromiseResult[1];
@@ -734,6 +734,75 @@ router.get('/api/conditions', async function (req, res, next) {
 });
 
 
+router.get('/api/cities', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        query: Joi.string().required().trim(),
+    });
+    req.query.userId = req.userId;
+    //production
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await loadCityFromDB(value.query, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+router.get('/api/regions', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        query: Joi.string().required().trim(),
+    });
+    req.query.userId = req.userId;
+    //production
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await loadStateRegionFromDB(value.query, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+router.get('/api/isps', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        query: Joi.string().required().trim(),
+    });
+    req.query.userId = req.userId;
+    //production
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await loadIspFromDB(value.query, connection)
+        res.json(result);
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
 
 async function fillConditions(r, connection) {
     for (let i = 0; i < r.length; i++) {
@@ -746,9 +815,9 @@ async function fillConditions(r, connection) {
         } else if (r[i].id == 'country') {
             r[i].fields[0].options = await loadCountryFromDB(connection)
         } else if (r[i].id == 'region') {
-            r[i].fields[0].options = await loadStateRegionFromDB(connection)
+             // do nothing
         } else if (r[i].id == 'city') {
-            r[i].fields[0].options = await loadCityFromDB(connection)
+             // do nothing
         } else if (r[i].id == 'varN') {
             //TODO: varN
         } else if (r[i].id == 'weekday') {
@@ -758,7 +827,7 @@ async function fillConditions(r, connection) {
         } else if (r[i].id == 'iprange') {
             // do nothing
         } else if (r[i].id == 'isp') {
-            r[i].fields[0].options = await loadIspFromDB(connection)
+            // do nothing
         } else if (r[i].id == 'language') {
             r[i].fields[0].options = await loadLanguageFromDB(connection)
         } else if (r[i].id == 'carrier') {
@@ -794,7 +863,7 @@ async function loadBrandAndVersionFromDB(connection) {
     var sql = "select id, category, name from BrandWithVersions";
     let r = {};
     var r2 = [];
-    let lines = await query(sql, connection);
+    let lines = await query(sql, [], connection);
     for (let i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (!r[line.category]) {
@@ -810,7 +879,7 @@ async function loadOsFromDB(connection) {
     var sql = "select id, category, name from OSWithVersions"
     let r = {}
     var r2 = []
-    let lines = await query(sql, connection);
+    let lines = await query(sql, [], connection);
     for (let i = 0; i < lines.length; i++) {
         var line = lines[i]
         if (!r[line.category]) {
@@ -829,7 +898,7 @@ async function loadBowerAndVersionFromDB(connection) {
     let r = {}
     var r2 = []
 
-    let lines = await query(sql, connection);
+    let lines = await query(sql, [], connection);
     for (let i = 0; i < lines.length; i++) {
         var line = lines[i]
         if (!r[line.category]) {
@@ -845,31 +914,31 @@ async function loadBowerAndVersionFromDB(connection) {
 async function loadCountryFromDB(connection) {
     var sql = "select id, name as display, alpha3Code as value from Country"
     var r = []
-    r = await query(sql, connection);
+    r = await query(sql, [], connection);
     return r
 }
 
-// TODO: change sql to City table
-async function loadCityFromDB(connection) {
-    var sql = "select id, name as display, alpha3Code as value from Country"
+ 
+async function loadCityFromDB(name, connection) {
+    var sql = "select id, name as display, countryCode as value from City where `name` like '%" + name + "%'";
     var r = [];
-    r = await query(sql, connection);
+    r = await query(sql, [], connection);
+    return r
+}
+
+ 
+async function loadStateRegionFromDB(name,connection) {
+    var sql = "select id, regionName as display, countryCode as value from Regions where `regionName` like '%" + name + "%'";
+    var r = [];
+    r = await query(sql, [], connection);
     return r
 }
 
 // TODO: change sql to Region table
-async function loadStateRegionFromDB(connection) {
-    var sql = "select id, name as display, alpha3Code as value from Country"
+async function loadIspFromDB(name,connection) {
+    var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%'";
     var r = [];
-    r = await query(sql, connection);
-    return r
-}
-
-// TODO: change sql to Region table
-async function loadIspFromDB(connection) {
-    var sql = "select id, name as display, alpha3Code as value from Country"
-    var r = [];
-    r = await query(sql, connection);
+    r = await query(sql, [], connection);
 
     return r
 }
@@ -879,7 +948,7 @@ async function loadLanguageFromDB(connection) {
 
     var r = [];
 
-    r = await query(sql, connection);
+    r = await query(sql, [], connection);
 
     return r
 }
@@ -888,14 +957,14 @@ async function loadLanguageFromDB(connection) {
 async function loadMobileCarrierFromDB(connection) {
     var sql = "select id, name as display, code as value from Languages"
     var r = [];
-    r = await query(sql, connection);
+    r = await query(sql, [], connection);
     return r;
 }
 
 async function loadTimezoneFromDB(connection) {
     var sql = "select utcShift as value, detail as display from Timezones"
     var r = [];
-    r = await query(sql, connection);
+    r = await query(sql, [], connection);
     return r;
 }
 
@@ -921,9 +990,9 @@ async function loadDeviceType() {
     return r
 }
 
-function query(sql, connection) {
+function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
+        connection.query(sql, params, function (err, result) {
             if (err) {
                 return reject(err);
             }
