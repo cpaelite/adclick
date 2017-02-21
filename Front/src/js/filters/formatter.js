@@ -22,4 +22,10 @@ angular.module('app')
             return input;
         }
     }
-  }]);
+  }])
+ .filter('split', function() {
+    return function(str, glue) {
+        var glue = glue ? glue : ',';
+        return str.toString().replace(/\B(?=(?:\d{3})+\b)/g, ',');
+    }
+  });
