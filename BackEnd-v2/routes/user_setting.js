@@ -933,6 +933,21 @@ router.get('/api/blacklist', async function (req, res, next) {
         }
     }
 
+});
+
+
+/**
+ * @api {post} /api/invitation   邀请user
+ * 
+ * @apiGroup User 
+ * @apiName 邀请user 
+ * 
+ * @apiParam  {Array} invitationEmail 
+ *   
+ * 
+ **/
+router.post('/api/invitation',async function(req,res,next){
+
 })
 
 function query(sql, params, connection) {

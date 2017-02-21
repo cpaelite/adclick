@@ -3,41 +3,65 @@ var log4js = require('log4js');
 var log = log4js.getLogger('util');
 var uuidV4 = require('uuid/v4');
 var setting = require('../config/setting');
+var common = require('../routes/common');
+var _ = require('lodash');
 
 exports.checkToken = function () {
-  return function (req, res, next) {
+  return async function (req, res, next) {
     var token = req.headers['authorization'];
-    if (token) {
-      token = token.split(' ')[1];
-      try {
-        var decode = jwt.decode(token, setting['jwtTokenSrcret']);
-        if (decode.exp <= Date.now()) {
-          return next(new Error('access token has expired'));
-        }
-        pool.getConnection(function (err, connection) {
-          if (err) {
-            err.status = 303
-            return next(err);
-          }
-          connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss, function (err, user) {
-            connection.release();
-            if (err) {
-              return next(err);
-            }
-            if (!user.length) {
-              return next(new Error('no user'));
-            }
-            req.userId = user[0].id;
-            req.idText = user[0].idText;
-            next();
-          });
-        });
-      } catch (e) {
-        log.error('[util.js][checkToken] error', e)
-        next(e);
+    if (!token) throw new Error('need access_token');
+    token = token.split(' ')[1];
+    let connection;
+    try {
+      var decode = jwt.decode(token, setting['jwtTokenSrcret']);
+      if (decode.exp <= Date.now()) {
+        return next(new Error('access token has expired'));
       }
-    } else {
-      next(new Error('need access_token'));
+      connection = await common.getConnection();
+      let user = await common.query("select `id`,`idText` from `User` where `id`= ?", [decode.iss], connection);
+      if (!user.length) {
+        throw new Error('no user');
+      }
+      req.userId = user[0].id;
+      req.idText = user[0].idText;
+      next();
+    } catch (e) {
+      log.error('[util.js][checkToken] error', e)
+      next(e);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+
+  }
+}
+
+
+exports.resetUserByClientId = function () {
+  return async function (req, res, next) {
+    let connection;
+    try {
+      let clientId = req.cookies.clientId;
+      if (!clientId) {
+        return next();
+      }
+      //获取用户group 信息
+      connection = await common.getConnection();
+      let userGroupSlice = await common.query("select g.`groupId`,g.`userId`,g.`role`,user.`idText`,user.`email` from UserGroup g inner join User user on user.`id` = g.`userId`  where g.`deleted`=? and g.`userId`= ?", [0, req.userId], connection);
+       if(!_.some(userGroupSlice,['groupId',clientId])){
+          throw new Error("clientId invalidate");
+       }
+      let userGroupObject=_.find(userGroupSlice,{groupId:clientId,role:0});
+      req.userId= userGroupObject.userId;
+      req.idText = userGroupObject.idText;
+      next();
+    } catch (e) {
+      next(e);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
     }
   }
 }
@@ -85,7 +109,7 @@ exports.getUUID = function () {
 
 
 exports.regWebURL = new RegExp(
- "^((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?$"
+  "^((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?$"
 );
 
 

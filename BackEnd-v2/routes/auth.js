@@ -10,6 +10,7 @@ const dns = require('dns');
 var common = require('./common');
 var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
+var uuidV4 = require('uuid/v4');
 
 /**
  * @api {post} /auth/login  登陆
@@ -45,7 +46,14 @@ router.post('/auth/login', async function (req, res, next) {
 
         if (rows.length > 0) {
             if (rows[0].password == md5(value.password)) {
+                let userGroup=await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0",[rows[0].id],connection);
+                if (userGroup.length == 0){
+                    throw new Error("clientId error");
+                }
+                let clientId= userGroup[0].groupId;
                 var expires = moment().add(200, 'days').valueOf();
+                //set cookie 
+                res.cookie("clientId",clientId);
                 res.json({ token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText) });
 
                 //更新登录时间
@@ -125,6 +133,7 @@ router.post('/auth/signup', async function (req, res, next) {
             sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
             params.push(JSON.stringify(value.json))
         }
+         
         let result = await query(sql, params);
         //系统默认domains
         for (let index = 0; index < setting.domains.length; index++) {
@@ -142,8 +151,12 @@ router.post('/auth/signup', async function (req, res, next) {
                 await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`) values (?,?,unix_timestamp(now()),0)", [USER[0].id, result.insertId]);
             }
         }
+
+        //user Group 
+        await common.query("insert into UserGroup (`groupId`,`userId`,`role`) values(?,?,?)",[uuidV4(),result.insertId,0],connection);
         
         await common.commit(connection);
+        //redis publish
         new Pub(true).publish(setting.redis.channel,result.insertId + ".add.user." + result.insertId, "userAdd");
         res.json({
             status: 1,
