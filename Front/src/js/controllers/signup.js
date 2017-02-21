@@ -18,8 +18,14 @@
     $scope.signup = function () {
       $auth.signup($scope.user, {ignoreAuthModule: true})
         .then(function (response) {
-          $auth.setToken(response);
-          $state.go('access.signin', {});
+          if (response.status) {
+            toastr.clear();
+            toastr.success('Signup success!');
+            $state.go('access.signin', {});
+          } else {
+            toastr.clear();
+            toastr.error(response.message, {timeOut: 5000, positionClass: 'toast-top-center'});
+          }
         })
         .catch(function (response) {
           toastr.error(response.data.message, {timeOut: 7000, positionClass: 'toast-top-center'});

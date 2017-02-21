@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country',
+      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country) {
+  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -63,14 +63,19 @@
       $scope.showLogin = false;
 
       var payload = $auth.getPayload();
+
+      if (!$localStorage.currentUser) {
+        $localStorage.currentUser = angular.copy(payload);
+      }
+
       if ($rootScope.currentUser && $rootScope.currentUser.id == payload.id) {
-        $rootScope.currentUser = payload;
+        $rootScope.currentUser = $localStorage.currentUser;
         authService.loginConfirmed(payload);
       } else {
         authService.loginConfirmed(payload, function () {
           return false;
         });
-        $rootScope.currentUser = payload;
+        $rootScope.currentUser = $localStorage.currentUser;
 
         // load user preferences
         Preference.get(null, function(res) {
@@ -100,6 +105,7 @@
       } else {
         $scope.$state.go('access.signin');
       }
+      delete $localStorage.currentUser;
     };
 
     if ($auth.isAuthenticated()) {
