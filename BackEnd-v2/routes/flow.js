@@ -40,15 +40,16 @@ const conditionResult = [{
     "display": "State / Region",
     "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
     "fields": [{
-        "type": "chips", "name": "value", "options": []
+        "type": "async-select", "name": "value","url": "/api/regions"
     }]
 }, {
     "id": "city",
     "display": "City",
     "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
     "fields": [{
-        "type": "chips", "name": "value", "options": []
+        "type": "async-select", "name": "value","url": "/api/cities"
     }]
+
 }, {
     "id": "weekday",
     "display": "Day of week",
@@ -92,7 +93,7 @@ const conditionResult = [{
     "display": "ISP",
     "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
     "fields": [{
-        "type": "chips", "name": "value", "options": []
+        "type": "async-select", "name": "value","url": "/api/isps"
     }]
 }, {
     "id": "language",
@@ -737,7 +738,7 @@ router.get('/api/conditions', async function (req, res, next) {
 router.get('/api/cities', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        query: Joi.string().required().trim(),
+        q: Joi.string().required().trim(),
     });
     req.query.userId = req.userId;
     //production
@@ -745,7 +746,7 @@ router.get('/api/cities', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await loadCityFromDB(value.query, connection)
+        let result = await loadCityFromDB(value.q, connection)
         res.json(result);
     } catch (e) {
         next(e);
@@ -760,7 +761,7 @@ router.get('/api/cities', async function (req, res, next) {
 router.get('/api/regions', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        query: Joi.string().required().trim(),
+        q: Joi.string().required().trim(),
     });
     req.query.userId = req.userId;
     //production
@@ -768,7 +769,7 @@ router.get('/api/regions', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await loadStateRegionFromDB(value.query, connection)
+        let result = await loadStateRegionFromDB(value.q, connection)
         res.json(result);
     } catch (e) {
         next(e);
@@ -783,7 +784,7 @@ router.get('/api/regions', async function (req, res, next) {
 router.get('/api/isps', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        query: Joi.string().required().trim(),
+        q: Joi.string().required().trim(),
     });
     req.query.userId = req.userId;
     //production
@@ -791,7 +792,7 @@ router.get('/api/isps', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await loadIspFromDB(value.query, connection)
+        let result = await loadIspFromDB(value.q, connection)
         res.json(result);
     } catch (e) {
         next(e);
@@ -920,7 +921,7 @@ async function loadCountryFromDB(connection) {
 
  
 async function loadCityFromDB(name, connection) {
-    var sql = "select id, name as display, countryCode as value from City where `name` like '%" + name + "%'";
+    var sql = "select id, name as display, name as value from City where `name` like '%" + name + "%' limit 5";
     var r = [];
     r = await query(sql, [], connection);
     return r
@@ -928,7 +929,7 @@ async function loadCityFromDB(name, connection) {
 
  
 async function loadStateRegionFromDB(name,connection) {
-    var sql = "select id, regionName as display, countryCode as value from Regions where `regionName` like '%" + name + "%'";
+    var sql = "select id, regionName as display, regionName as value from Regions where `regionName` like '%" + name + "%' limit 5";
     var r = [];
     r = await query(sql, [], connection);
     return r
@@ -936,7 +937,7 @@ async function loadStateRegionFromDB(name,connection) {
 
 // TODO: change sql to Region table
 async function loadIspFromDB(name,connection) {
-    var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%'";
+    var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%' limit 5";
     var r = [];
     r = await query(sql, [], connection);
 
