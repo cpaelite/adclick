@@ -40,6 +40,7 @@ var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
 
 import payment from './routes/payment';
+import billing from './routes/billing';
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -91,9 +92,7 @@ app.get('/', function(req, res) {
     });
 });
 
-app.use(payment);
-
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl);
+app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, payment, billing);
 
 app.use('/', auth);
 

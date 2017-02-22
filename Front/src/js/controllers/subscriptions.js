@@ -12,8 +12,10 @@
 
     Profile.get(null, function (profile) {
       if (profile.data) {
+        console.log(profile.data);
         Billing.get({timezone: profile.data.timezone}, function (bill) {
-          $scope.item = bill.data.activeSubscription;
+          console.log(bill.data);
+          $scope.item = bill.data;
         });
       }
     });

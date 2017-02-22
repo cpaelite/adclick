@@ -9,8 +9,8 @@ var setting = require('../config/setting');
 var _ = require('lodash');
 
 /**
- * @api {get} /api/profile  
- * @apiName  
+ * @api {get} /api/profile
+ * @apiName
  * @apiGroup User
  *
  *
@@ -82,8 +82,8 @@ router.get('/api/profile', async function (req, res, next) {
 });
 
 /**
- * @api {post} /api/profile  
- * @apiName  
+ * @api {post} /api/profile
+ * @apiName
  * @apiGroup User
  *
  * @apiParam {String} firstname
@@ -167,7 +167,7 @@ router.post('/api/profile', async function (req, res, next) {
  * @apiName  用户修改密码
  * @apiGroup User
  *
- * @apiParam {String} oldpassword   
+ * @apiParam {String} oldpassword
  * @apiParam {String} newpassword
  *
  * @apiSuccessExample {json} Success-Response:
@@ -176,7 +176,7 @@ router.post('/api/profile', async function (req, res, next) {
  *       "status": 1,
  *       "message": "success"
  *     }
- * 
+ *
  * @apiErrorExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -239,7 +239,7 @@ router.post('/api/password', async function (req, res, next) {
  *       "status": 1,
  *       "message": "success"
  *     }
- * 
+ *
  * @apiErrorExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -297,7 +297,7 @@ router.post('/api/email', async function (req, res, next) {
  * @api {get} /api/referrals   用户推广收益
  * @apiName  用户推广收益
  * @apiGroup User
- * 
+ *
  * @apiParam {Number} page
  * @apiParam {Number} limit
  * @apiParam {String} order  "-name"
@@ -381,29 +381,29 @@ router.get('/api/referrals', async function (req, res, next) {
  * @api {get} /api/billing   用户套餐使用状态
  * @apiName  用户套餐使用状态
  * @apiGroup User
- * 
+ *
  * @apiParam {String} timezone  "+08:00"
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "status": 1,
  *       "message": "success",
- *       "data":{  
+ *       "data":{
             "activeSubscription" : {
                 "startTime" : "19-01-2017",
                 "endTime" : "19-02-2017",
                 "plan" : {
                     "id" : 1,
                     "name" : "Agency",
-                    "price" : 399,                      //normalPrice  
+                    "price" : 399,                      //normalPrice
                     "eventsLimit" : 10000000,
                     "overageCPM" : 0.000036,
                     "retentionLimit" : 370,
                     "userLimit" : 2,
-                    "domainLimit" : 5                 
+                    "domainLimit" : 5
                 },
-                "statistics" : {     
+                "statistics" : {
                     "overageEvents":1,
                     "remainingEvents":1,
                     "overageCost":0.999,
@@ -411,140 +411,140 @@ router.get('/api/referrals', async function (req, res, next) {
                     "billedEvents" : 2
                 }
               }
-            } 
+            }
  *     }
  *
  */
 
-router.get('/api/billing', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        timezone: Joi.string().required()
-    });
-    req.query.userId = req.userId;
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let compled = _.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,   
-        DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planEnd\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')   as endTime,
-        plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM, bill.\`overageEvents\` as overageEvents,
-        (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents,(plan.\`eventsLimit\` - bill.\`billedEvents\` ) as remainingEvents  
-        from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
-        let sql = compled({
-            tz: value.timezone,
-            userId: value.userId
-        });
-        let results = await query(sql, [], connection);
-        let val = results.length ? results[0] : null;
-        let result = {
-            activeSubscription: {
-            }
-        };
-        if (val) {
-            result.activeSubscription = {
-                startTime: val.startTime,
-                endTime: val.endTime,
-                plan: {
-                    id: val.id,
-                    name: val.name,
-                    price: val.price,
-                    eventsLimit: val.eventsLimit,
-                    overageCPM: val.overageCPM,
-                    retentionLimit: val.retentionLimit,
-                    userLimit: val.userLimit,
-                    domainLimit: val.domainLimit
-                },
-                statistics: {
-                    overageEvents: val.overageEvents,
-                    overageCost: val.overageCost,
-                    totalEvents: val.totalEvents,
-                    billedEvents: val.billedEvents
-                }
-            }
-        }
-        res.json({
-            status: 1,
-            message: 'succes',
-            data: result
-        });
-    } catch (e) {
-        next(e);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-});
+// router.get('/api/billing', async function (req, res, next) {
+//     var schema = Joi.object().keys({
+//         userId: Joi.number().required(),
+//         timezone: Joi.string().required()
+//     });
+//     req.query.userId = req.userId;
+//     let connection;
+//     try {
+//         let value = await common.validate(req.query, schema);
+//         connection = await common.getConnection();
+//         let compled = _.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,
+//         DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planEnd\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')   as endTime,
+//         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
+//         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM, bill.\`overageEvents\` as overageEvents,
+//         (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents,(plan.\`eventsLimit\` - bill.\`billedEvents\` ) as remainingEvents
+//         from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
+//         let sql = compled({
+//             tz: value.timezone,
+//             userId: value.userId
+//         });
+//         let results = await query(sql, [], connection);
+//         let val = results.length ? results[0] : null;
+//         let result = {
+//             activeSubscription: {
+//             }
+//         };
+//         if (val) {
+//             result.activeSubscription = {
+//                 startTime: val.startTime,
+//                 endTime: val.endTime,
+//                 plan: {
+//                     id: val.id,
+//                     name: val.name,
+//                     price: val.price,
+//                     eventsLimit: val.eventsLimit,
+//                     overageCPM: val.overageCPM,
+//                     retentionLimit: val.retentionLimit,
+//                     userLimit: val.userLimit,
+//                     domainLimit: val.domainLimit
+//                 },
+//                 statistics: {
+//                     overageEvents: val.overageEvents,
+//                     overageCost: val.overageCost,
+//                     totalEvents: val.totalEvents,
+//                     billedEvents: val.billedEvents
+//                 }
+//             }
+//         }
+//         res.json({
+//             status: 1,
+//             message: 'succes',
+//             data: result
+//         });
+//     } catch (e) {
+//         next(e);
+//     }
+//     finally {
+//         if (connection) {
+//             connection.release();
+//         }
+//     }
+// });
 
 
 /**
- * @api {get} /api/billing   用户当前套餐 
- * @apiName  用户当前套餐 
+ * @api {get} /api/billing   用户当前套餐
+ * @apiName  用户当前套餐
  * @apiGroup User
- * 
- * 
+ *
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
    {status:1,message:'success', "plan" : {
                     "id" : 1,
                     "name" : "Agency",
-                    "price" : 399,                      //normalPrice  
+                    "price" : 399,                      //normalPrice
                     "eventsLimit" : 10000000,
                     "overageCPM" : 0.000036,
                     "retentionLimit" : 370,
                     "userLimit" : 2,
-                    "domainLimit" : 5                 
+                    "domainLimit" : 5
                 }}
  *
  */
-router.get('/api/plan', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.query.userId = req.userId;
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let compled = _.template(`select   
-        plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
-        let sql = compled({
-            userId: value.userId
-        });
-        let results = await query(sql, [], connection);
-        let val = results.length ? results[0] : null;
-        let responseData = { plan: {} };
-        if (val) {
-            responseData.plan = {
-                id: val.id,
-                name: val.name,
-                price: val.price,
-                eventsLimit: val.eventsLimit,
-                overageCPM: val.overageCPM,
-                retentionLimit: val.retentionLimit,
-                userLimit: val.userLimit,
-                domainLimit: val.domainLimit
-
-            }
-        }
-        res.json({
-            status: 1,
-            message: 'succes',
-            data: responseData
-        });
-    } catch (e) {
-        next(e);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-})
+// router.get('/api/plan', async function (req, res, next) {
+//     var schema = Joi.object().keys({
+//         userId: Joi.number().required()
+//     });
+//     req.query.userId = req.userId;
+//     let connection;
+//     try {
+//         let value = await common.validate(req.query, schema);
+//         connection = await common.getConnection();
+//         let compled = _.template(`select
+//         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
+//         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
+//         let sql = compled({
+//             userId: value.userId
+//         });
+//         let results = await query(sql, [], connection);
+//         let val = results.length ? results[0] : null;
+//         let responseData = { plan: {} };
+//         if (val) {
+//             responseData.plan = {
+//                 id: val.id,
+//                 name: val.name,
+//                 price: val.price,
+//                 eventsLimit: val.eventsLimit,
+//                 overageCPM: val.overageCPM,
+//                 retentionLimit: val.retentionLimit,
+//                 userLimit: val.userLimit,
+//                 domainLimit: val.domainLimit
+//
+//             }
+//         }
+//         res.json({
+//             status: 1,
+//             message: 'succes',
+//             data: responseData
+//         });
+//     } catch (e) {
+//         next(e);
+//     }
+//     finally {
+//         if (connection) {
+//             connection.release();
+//         }
+//     }
+// })
 
 /**
  * @api {get} /api/domains 获取用户domdomains
@@ -623,8 +623,8 @@ router.get('/api/domains', async function (req, res, next) {
  * @api {post} /api/domains 用户修改domdomains
  * @apiName 用户修改domdomains
  * @apiGroup User
- * apiParam {Array} internal 
- * apiParam {Array} custom 
+ * apiParam {Array} internal
+ * apiParam {Array} custom
    {
        //         internal: [
        //             {
@@ -716,12 +716,12 @@ router.post('/api/domains', async function (req, res, next) {
 
 
 /**
- * @api /api/domains/validatecname 
+ * @api /api/domains/validatecname
  * @apiName 验证Domain Adress
  * @apiGroup User
- * 
+ *
  * @apiParam {String} adress {adress: 'www.adbund.com'}
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
          {
@@ -802,46 +802,46 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
 
 
 /**
- * @api {post} /api/blacklist   新增黑名单策略 
- * 
- * @apiGroup User 
- * @apiName 新增黑名单策略 
- * 
- * @apiParam blacklist 
- * @apapiParam enabled   
- * 
+ * @api {post} /api/blacklist   新增黑名单策略
+ *
+ * @apiGroup User
+ * @apiName 新增黑名单策略
+ *
+ * @apiParam blacklist
+ * @apapiParam enabled
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  * {
-    "status": 1, 
-    "message": "success", 
+    "status": 1,
+    "message": "success",
     "data": {
 
         "blacklist": [
             {
-                "id": 1, 
-                "name": "test1", 
+                "id": 1,
+                "name": "test1",
                 "ipRules": [
                     {
-                        "ipRangeStart": "1.1.1.1", 
+                        "ipRangeStart": "1.1.1.1",
                         "ipRangeEnd": "1.1.1.1"
                     }
-                ], 
+                ],
                 "userAgentRules": [
                     {
                         "userAgent": "test1"
                     }
                 ]
-            }, 
+            },
             {
-                "id": 2, 
-                "name": "test2", 
+                "id": 2,
+                "name": "test2",
                 "ipRules": [
                     {
-                        "ipRangeStart": "1.1.1.1", 
+                        "ipRangeStart": "1.1.1.1",
                         "ipRangeEnd": "1.1.1.1"
                     }
-                ], 
+                ],
                 "userAgentRules": [
                     {
                         "userAgent": "test2"
@@ -948,4 +948,3 @@ function query(sql, params, connection) {
 
 
 module.exports = router;
-
