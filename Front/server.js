@@ -2191,6 +2191,76 @@ app.get('/api/billing', function (req, res) {
 });
 
 /**
+ * @apiName 获取Subscription change plan信息
+ *
+ *
+ * @apiParam {String} planId
+ *
+ */
+app.get('/api/plans', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      plan:[
+        {
+          id: 1,
+          desc: "111"
+        },
+        {
+          id:2,
+          desc: "222"
+        },
+        {
+          id:3,
+          desc: "333"
+        },
+        {
+          id:4,
+          desc: "444"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Subscription change plan信息
+ *
+ *
+ * @apiParam {String} planId
+ *
+ */
+app.post('/api/plans/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      plan:[
+        {
+          id: 1,
+          desc: "111"
+        },
+        {
+          id:2,
+          desc: "222"
+        },
+        {
+          id:3,
+          desc: "333"
+        },
+        {
+          id:4,
+          desc: "444"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 获取Domains信息
  *
  */

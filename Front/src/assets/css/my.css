@@ -1360,7 +1360,11 @@ h1.setting-title{
     font-size: 12px;
     padding: 5px 0;
     text-align: center;
+    visibility: hidden;
 }
+/*.plan-select.isVisiable{
+    visibility: inherit;
+}*/
 .table-out{
     padding: 10px 35px;
     background: #fff;
