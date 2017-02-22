@@ -29,7 +29,7 @@ var network = require('./routes/network');
 var offer = require('./routes/offer');
 var flowCtrl = require('./routes/flow');
 var flow=flowCtrl.router;
- 
+
 var report = require('./routes/report');
 var user = require('./routes/user');
 var campaign = require('./routes/campaign');
@@ -38,6 +38,8 @@ var traffic = require('./routes/traffic');
 var user_setting = require('./routes/user_setting');
 var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
+
+import payment from './routes/payment';
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -51,14 +53,28 @@ var util = require('./util/index');
 
 app.disable('x-powered-by');
 
- 
+
 
 //favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // page
-app.use("/assets", compression(),express.static(__dirname + '/../Front/dist/assets'));
-app.use("/tpl", compression(),express.static(__dirname + '/../Front/dist/tpl'));
+
+
+if (process.env.NODE_ENV === "development") {
+  app.use("/js", express.static(__dirname + '/../Front/src/js'));
+  app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
+  app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
+  app.use("/bower_components", express.static(__dirname + '/../Front/bower_components'));
+
+  app.get('/', function (req, res) {
+    res.sendFile('index.html', {root: __dirname + '/../Front/src'});
+  });
+} else {
+  app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets'));
+  app.use("/tpl", compression(), express.static(__dirname + '/../Front/dist/tpl'));
+
+}
 
 //log4js
 app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
@@ -74,6 +90,8 @@ app.get('/', function(req, res) {
         root: __dirname + '/../Front/dist'
     });
 });
+
+app.use(payment);
 
 app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl);
 
