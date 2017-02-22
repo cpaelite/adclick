@@ -999,6 +999,16 @@ app.get('/api/flows/:flowId', function (req, res) {
           "operand": "is", // is/isnt
           "value": ["windows", "android4.5", "android7"]
         }, {
+          "id": "8584",
+          "operand": "isnt",
+          "city": "xiamen",
+          "_city": {"xiamen":"Xiamen"}
+        }, {
+          "id": "8588",
+          "operand": "is",
+          "region": ["xiamen", "shanghai"],
+          "_region": {"xiamen":"Xiamen", "shanghai":"Shanghai"}
+        }, {
           "id": "1234",
           "operand": "isnt",
           "tz": "+0800",
@@ -1730,6 +1740,31 @@ app.get('/api/affilate/tpl', function (req, res) {
   res.send(result);
 });
 
+app.get('/api/cities', function (req, res) {
+  var query = req.query.q;
+  var cities = [
+    {"value": "shanghai", "display": "Shanghai"},
+    {"value": "beijing", "display": "Beijing"},
+    {"value": "tianjin", "display": "Tianjin"},
+    {"value": "xiamen", "display": "Xiamen"},
+    {"value": "zhengzhou", "display": "Zhengzhou"},
+    {"value": "taiyuan", "display": "Taiyuan"},
+    {"value": "jinan", "display": "Jinan"},
+    {"value": "luoyang", "display": "Luoyang"},
+    {"value": "suzhou", "display": "Suzhou"},
+    {"value": "shenyang", "display": "Shenyang"},
+    {"value": "hangzhou", "display": "Hangzhou"},
+    {"value": "fuzhou", "display": "Fuzhou"},
+    {"value": "shenzhen", "display": "Shenzhen"},
+    {"value": "guangzhou", "display": "Guangzhou"},
+    {"value": "guiyang", "display": "Guiyang"},
+    {"value": "sanya", "display": "Sanya"},
+    {"value": "haikou", "display": "Haikou"},
+  ];
+  var result = cities.filter(item => item.value.indexOf(query) >= 0);
+  delayResponse(res, result);
+});
+
 /**
  * get list of conditions
  * shang@v1 [Warren] TODO
@@ -1763,7 +1798,7 @@ app.get('/api/conditions', function (req, res) {
     "display": "Country",
     "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
-      "type": "select", "name": "value", "options": [
+      "type": "input-select", "name": "value", "options": [
         {"value": "us", "display": "American"},
         {"value": "ca", "display": "Canada"},
         {"value": "cn", "display": "China"},
@@ -1804,6 +1839,20 @@ app.get('/api/conditions', function (req, res) {
           {"value": "android7.0", "display": "Android 7.0"}
         ]
       }]
+    }]
+  }, {
+    "id": "8584",
+    "display": "City",
+    "operands": [{value: "ctn", display: "Must Contain"}, {value: "nctn", display: "Not Contain"}],
+    "fields": [{
+      "type": "async-select", "name": "city", "url": "/api/cities"
+    }]
+  }, {
+    "id": "8588",
+    "display": "Region",
+    "operands": [{value: "ctn", display: "Must Contain"}, {value: "nctn", display: "Not Contain"}],
+    "fields": [{
+      "type": "async-chips", "name": "region", "url": "/api/cities"
     }]
   }, {
     "id": "8334",
