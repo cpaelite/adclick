@@ -23,10 +23,11 @@ exports.checkToken = function () {
         throw new Error('no user');
       }
       req.userId = user[0].id;
+      req.subId = user[0].id;  //子账户
       req.idText = user[0].idText;
       req.groupId = user[0].groupId;
-      req.firstname= user[0].firstname;
-      req.campanyname= user[0].campanyName;
+      req.firstname = user[0].firstname;
+      req.campanyname = user[0].campanyName;
       req.owner = true;
       next();
     } catch (e) {

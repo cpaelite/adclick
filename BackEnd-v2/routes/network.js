@@ -145,7 +145,7 @@ router.post('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        await common.updateAffiliates(value.userId, value, connection);
+        await common.updateAffiliates(value.userId,req.subId, value, connection);
         delete value.userId;
         res.json({
             status: 1,
@@ -195,7 +195,7 @@ router.post('/api/affiliates', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let affiliateResult = await common.insertAffiliates(value.userId, value, connection);
+        let affiliateResult = await common.insertAffiliates(value.userId,req.subId, value, connection);
         
         delete value.userId;
         value.id = affiliateResult.insertId;
@@ -238,7 +238,7 @@ router.delete('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteAffiliate(value.id, value.userId, connection);
+        let result = await common.deleteAffiliate(value.id, value.userId, req.subId,connection);
 
         res.json({
             status: 1,
