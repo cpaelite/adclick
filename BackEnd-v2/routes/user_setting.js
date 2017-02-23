@@ -7,6 +7,9 @@ var _ = require('lodash');
 var dns = require("dns");
 var setting = require('../config/setting');
 var _ = require('lodash');
+var emailCtrl = require('../util/email');
+var uuidV4 = require('uuid/v4');
+
 
 /**
  * @api {get} /api/profile  
@@ -114,7 +117,7 @@ router.post('/api/profile', async function (req, res, next) {
         userId: Joi.number().required(),
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
-        companyname: Joi.string().optional(),
+        companyname: Joi.string().optional().allow(""),
         tel: Joi.string().optional().empty(""),
         timezone: Joi.string().required(),
         homescreen: Joi.string().required()
@@ -135,6 +138,9 @@ router.post('/api/profile', async function (req, res, next) {
         }
         if (valueCopy.timezone) {
             sql += ",`timezone`='" + valueCopy.timezone + "'";
+        }
+        if (valueCopy.companyname != undefined) {
+            sql += ",`campanyName`='" + valueCopy.companyname + "'";
         }
 
         delete valueCopy.userId;
@@ -350,11 +356,11 @@ router.get('/api/referrals', async function (req, res, next) {
             "(case log.`status` when 0 then \"New\" when 1 then \"Activated\"  END) as status," +
             "FROM_UNIXTIME(log.`lastActivity`,'%d-%m-%Y %H:%i') as lastactivity," +
             "log.`recentCommission` as recentCommission,log.`totalCommission` as totalCommission " +
-            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId ;
+            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId;
 
         let countsql = "select COUNT(*) as `count`,sum(recentCommission) as lastMonthCommissions,sum(totalCommission) as lifeTimeCommissions from ((" + listSql + ") as T)";
 
-      listSql += " order by " + order + " " + dir + " limit " + offset +"," + limit;
+        listSql += " order by " + order + " " + dir + " limit " + offset + "," + limit;
 
         let result = await Promise.all([query(listSql, [], connection), query(countsql, [], connection)]);
         res.json({
@@ -943,12 +949,223 @@ router.get('/api/blacklist', async function (req, res, next) {
  * @apiName 邀请user 
  * 
  * @apiParam  {Array} invitationEmail 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+  "status": 1,
+  "message": "success",
+  "data": {
+    "invitations": [
+      {
+        "id": 8,
+        "email": "keepin.aedan@gmail.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      },
+      {
+        "id": 10,
+        "email": "772063721@qq.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      }
+    ]
+  }
+}
  *   
  * 
  **/
-router.post('/api/invitation',async function(req,res,next){
+router.post('/api/invitation', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        invitationEmail: Joi.array().items(Joi.string()).required().min(1),
+        groupId: Joi.string().required()
+    });
+    let connection;
+    try {
+        req.body.userId = req.userId;
+        req.body.idText = req.idText;
+        req.body.groupId = req.groupId;
+        let sendContext = [];
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        await common.beginTransaction(connection);
 
+        //邀请入库
+        for (let index = 0; index < value.invitationEmail.length; index++) {
+            let invatationSlice = await common.query("select `id`,`groupId`,`inviteeEmail`,`status`,`code` from GroupInvitation where `deleted`= 0 and `groupId`=? and `inviteeEmail`=? ", [value.groupId, value.invitationEmail[index]], connection);
+            //存在未接受邀请的重新发送
+            if (invatationSlice.length) {
+                if (invatationSlice[0].status != 1) {
+                    await common.query("update GroupInvitation set `status`= 0 ,`inviteeTime`= unix_timestamp(now()) where `id`= ? ", [invatationSlice[0].id], connection);
+                    sendContext.push({ email: value.invitationEmail[index], code: invatationSlice[0].code })
+                }
+            } else {//新邀请
+                let code = uuidV4();
+                await common.query("insert into GroupInvitation (`userId`,`groupId`,`inviteeEmail`,`inviteeTime`,`code`) values(?,?,?,unix_timestamp(now()),?)", [value.userId, value.groupId, value.invitationEmail[index], code], connection);
+                sendContext.push({ email: value.invitationEmail[index], code: code })
+            }
+        }
+
+
+        let tpl = {
+            subject: 'Newbidder Invitation', // Subject line
+            text: ``, // plain text body
+            html: ""
+        }
+        let htmlTpl = _.template(`<p>Hello,<p>
+
+                <p><%=name%> invited you to join <%=companyname%> on Newbidder.</p>
+
+                <p>Please <a href="<%= href%>">click here</a> to accept the invitation.</p>
+
+                <p>Best regards,</p>
+
+                <p> Newbidder Team </p>`); // html body
+
+
+
+        //发送邀请邮件
+
+        async function send(sendContext) {
+            for (let i = 0; i < sendContext.length; i++) {
+                tpl.html = htmlTpl(({
+                    name: req.firstname,
+                    companyname: req.campanyname ? req.campanyname : req.firstname,
+                    href: setting.invitationRouter + "?code=" +sendContext[i].code
+                }));
+                await emailCtrl.sendMail([sendContext[i].email], tpl);
+            }
+        }
+
+        // 并发  
+        let results = await Promise.all([common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection), send(sendContext)])
+
+        await common.commit(connection);
+        res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                invitations: results[0] ? results[0] : []
+            }
+        });
+    } catch (e) {
+        await common.rollback(connection);
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
+});
+
+/**
+ * @api {get} /api/invitation   获取用户邀请lists
+ * 
+ * @apiGroup User 
+ * @apiName 获取用户邀请lists
+ * 
+ 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * 
+ * {
+  "status": 1,
+  "message": "success",
+  "data": {
+    "invitations": [
+      {
+        "id": 8,
+        "email": "keepin.aedan@gmail.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      },
+      {
+        "id": 10,
+        "email": "772063721@qq.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      }
+    ]
+  }
+}
+ */
+router.get('/api/invitation', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        groupId: Joi.string().required()
+    });
+    let connection;
+
+    try {
+        req.query.userId = req.userId;
+        req.query.idText = req.idText;
+        req.query.groupId = req.groupId;
+
+        let value = await common.validate(req.query, schema);
+        connection= await common.getConnection();
+        let result = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                invitations: result.length ? result : []
+            }
+        });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 })
+
+
+
+
+/**
+ * @api {post} /api/invitation/:id  解除邀请    
+ * 
+ * @apiGroup User 
+ * @apiName 解除邀请  
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {status:1,message:'success'}  
+ * 
+ **/
+router.delete('/api/invitation/:id', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        id: Joi.number().required()
+    });
+    let connection;
+
+    try {
+        req.query.userId = req.userId;
+        req.query.idText = req.idText;
+        req.query.id = req.params.id;
+        let value = await common.validate(req.query, schema);
+        await common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
+
+        return res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
 
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {

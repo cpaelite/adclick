@@ -69,10 +69,7 @@ app.use(cookiePareser());
 app.use(bodyParser.urlencoded({extended: false}))
 // parse application/json
 app.use(bodyParser.json())
-app.use(function(req,res,next){
-    console.log(req.cookies)
-    next()
-})
+
 
 app.get('/', function(req, res) {
     res.sendFile('index.html', {
