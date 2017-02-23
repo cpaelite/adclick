@@ -49,7 +49,7 @@ router.post('/api/traffics', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let trafficResult = await common.insertTrafficSource(value.userId, value, connection);
+        let trafficResult = await common.insertTrafficSource(req.subId,value.userId, value, connection);
         delete value.userId;
         value.id = trafficResult.insertId;
 
@@ -116,7 +116,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
 
         let connection = await common.getConnection();
-        await common.updatetraffic(value.userId, value, connection);
+        await common.updatetraffic(req.subId,value.userId, value, connection);
 
         delete value.userId;
 
@@ -254,7 +254,7 @@ router.delete('/api/traffics/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deletetraffic(value.id, value.userId, connection);
+        let result = await common.deletetraffic(req.subId,value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'
