@@ -63,6 +63,7 @@
                     </span>
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="col-sm-3 control-label">Impression tracking：</label>
                 <div class="col-sm-5 tracking-checkbox">
@@ -70,6 +71,13 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Token：</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" name="token" ng-model="item.token">
+                </div>
+            </div>
+            
             <div class="form-group collapsible-tab">
                 <div class="collapsible-header" ng-class="{'active':isActive}" ng-click="toggleShow('1')">
                     <div class="line"></div>

@@ -49,7 +49,7 @@
   }]);
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference) {
-    var perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
+    var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
     $scope.app.subtitle = perfType;
@@ -368,6 +368,11 @@
       $scope.filters.push({ key: group, val: row.id });
 
       go(gb.value);
+    };
+    $scope.goTSReport = function(item) {
+      $scope.$state.go('app.report.tsreport', {
+        trafficId: item.id
+      });
     };
 
     function go(page) {

@@ -5,6 +5,11 @@ angular.module('app')
   .factory('Report', ['$resource', function ($resource) {
     return $resource('/api/report');
   }])
+  .factory('Tsreport', ['$resource', function ($resource) {
+    return $resource('/api/tsreport/:id', {}, {
+      'update': {method:'PUT'}
+    });
+  }])
   .factory('Campaign', ['$resource', function ($resource) {
     return $resource('/api/campaigns/:id', {id: '@id'});
   }])

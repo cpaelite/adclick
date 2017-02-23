@@ -1015,6 +1015,86 @@ app.get('/api/conversions', function (req, res) {
 });
 
 /**
+ * @apiName 获取Report
+ *
+ * @apiParam {String} from:2017-01-11T00:00:00Z
+ * @apiParam {String} to:2017-01-12T00:00:00Z
+ * @apiParam {String} tz:America/New_York
+ * @apiParam {String} sort:visits
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ * @apiParam {Number} trafficSourceId: 123
+ */
+app.get('/api/tsreport', function (req, res) {
+  var result = {
+    "status": 1,
+    "messages": "",
+    data: {
+      "totalRows": 3700,
+      // "totals": {
+      //   "ap": 0.0,
+      //   "bids": 0,
+      //   "clicks": 4368,
+      //   "conversions": 1,
+      //   "cost": 0.0,
+      //   "cpv": 0.0,
+      //   "cr": 0.022894,
+      //   "ctr": 122.28,
+      //   "cv": 0.027996,
+      //   "epc": 0.0,
+      //   "epv": 0.0,
+      //   "errors": 0,
+      //   "ictr": 0.0,
+      //   "impressions": 0,
+      //   "profit": 0.0,
+      //   "revenue": 0.0,
+      //   "roi": 0.0,
+      //   "visits": 3572
+      // },
+      rows: [
+        {
+          "campaignName": "campaignName 1",
+          "campaignId": "1",
+          "clicks": 4368,
+          "conversions": 1,
+          "cost": 0.0,
+          "impressions": 13430,
+          "visits": 3572,
+          "status": false
+        }, {
+          "campaignName": "campaignName 1",
+          "campaignId": "1",
+          "clicks": 4368,
+          "conversions": 1,
+          "cost": 0.0,
+          "impressions": 13430,
+          "visits": 3572,
+          "status": false
+        }, {
+          "campaignName": "campaignName 1",
+          "campaignId": "1",
+          "clicks": 4368,
+          "conversions": 1,
+          "cost": 0.0,
+          "impressions": 13430,
+          "visits": 3572,
+          "status": true
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+app.put('/api/tsreport/:id', function (req, res) {
+  var result = {
+    "status": 1,
+    "messages": ""
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 根据ID获取Campaign信息
  *
  */
@@ -1800,7 +1880,7 @@ app.get('/api/traffics', function (req, res) {
     "data": {
       "trafficsources": [
         {
-          "id": 19,
+          "id": 1,
           "name": "TrafficSource1",
           "cost": "{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\"}",
           "externalId": "{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\"}",
@@ -1813,11 +1893,21 @@ app.get('/api/traffics', function (req, res) {
           "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
         },
         {
-          "id": 20,
+          "id": 2,
           "name": "TrafficSource2",
           "cost": "{}",
           "campaignId": "{}",
           "websiteId": "{}",
+          "hash": "b247e517-4811-4c4a-801c-2d86b3a7a0cb",
+          "postbackUrl": "www.traffic.com",
+          "pixelRedirectUrl": "",
+          "impTracking": 0,
+          "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
+        },
+        {
+          "id": 3,
+          "name": "TrafficSource3",
+          "cost": "{}",
           "hash": "b247e517-4811-4c4a-801c-2d86b3a7a0cb",
           "postbackUrl": "www.traffic.com",
           "pixelRedirectUrl": "",
