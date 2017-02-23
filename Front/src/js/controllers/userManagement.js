@@ -3,15 +3,22 @@
 
   angular.module('app')
     .controller('UserManagementCtrl', [
-      '$scope', '$mdDialog', '$q', 'toastr', 'Plan', 'Invitation',
+      '$scope', '$mdDialog', '$q', 'toastr', 'Profile', 'Plan', 'Invitation',
       UserManagementCtrl
     ]);
 
-  function UserManagementCtrl($scope, $mdDialog, $q, toastr, Plan, Invitation) {
+  function UserManagementCtrl($scope, $mdDialog, $q, toastr, Profile, Plan, Invitation) {
     $scope.app.subtitle = 'UserManagement';
 
     // init load data
     var initPromises = [], prms;
+
+    var theProfile;
+    prms = Profile.get(null, function (profile) {
+      theProfile = profile.data;
+    }).$promise;
+    initPromises.push(prms);
+
     var thePlan;
     prms = Plan.get(null, function (plan) {
       thePlan = plan.data.plan;
@@ -20,31 +27,50 @@
 
     var theInvitation;
     prms = Invitation.get(null, function (invitation) {
-      theInvitation = invitation.data;
+      theInvitation = invitation.data.invitations;
     }).$promise;
     initPromises.push(prms);
 
+    function fillUsers(invitations) {
+      if (invitations.length > 0) {
+        invitations.forEach(function (invitation) {
+          if (invitation.status) {
+            $scope.users.push(invitation);
+          } else {
+            $scope.pendingUsers.push(invitation);
+          }
+        });
+        $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
+      }
+    }
+
     function initSuccess() {
+      if (theProfile) {
+        $scope.profile = theProfile;
+      }
       if (thePlan) {
         $scope.plan = thePlan;
       }
+      $scope.users = [];
+      $scope.pendingUsers = [];
+      $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
       if (theInvitation) {
-        $scope.invitation = theInvitation;
+        fillUsers(theInvitation);
       }
-      $scope.userCount = ($scope.invitation.users.length - 1) + $scope.invitation.invitations.length;
     }
 
     $q.all(initPromises).then(initSuccess);
 
     $scope.sendInvitation = function () {
       var emails = $scope.emails.split(',');
-      $scope.invitationCount = ($scope.invitation.users.length - 1) + $scope.invitation.invitations.length + emails.length;
+      $scope.invitationCount = $scope.invitationUserCount + emails.length;
       if ($scope.invitationCount > $scope.plan.userLimit) {
+        $scope.errMessage = true;
         return;
       }
       Invitation.save({email: emails}, function (result) {
-        $scope.invitation.invitations = result.data.invitations;
         if (result.status) {
+          fillUsers(result.data.invitations);
           toastr.success('invitations success!');
         } else {
           toastr.error('invitations error!');
@@ -66,9 +92,10 @@
         templateUrl: 'tpl/user-delete-dialog.html'
       }).then(function () {
         Invitation.delete({
-          id: invitation.email
+          id: invitation.id
         }, function () {
-          $scope.invitation['invitations'].splice(invitation, 1);
+          $scope.pendingUsers.splice(invitation, 1);
+          $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
         });
       });
 

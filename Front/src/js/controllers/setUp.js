@@ -26,8 +26,8 @@
         }
       });
 
-      $scope.item.clickurl = $scope.mainDomain + '/click';
-      $scope.item.multiofferclickurl = $scope.mainDomain + '/click/1';
+      $scope.item.clickurl = "http://" + $scope.mainDomain + '/click';
+      $scope.item.multiofferclickurl = "http://" + $scope.mainDomain + '/click/1';
     });
 
     DefaultPostBackUrl.get(null, function (postbackUrl) {

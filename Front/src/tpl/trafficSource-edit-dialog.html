@@ -109,6 +109,20 @@
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
+                    <tr>
+                        <td class="col-sm-3 control-label">Campaign ID：</td>
+                        <td class="traficc-source-input"><input type="text" ng-model="campaignId.Parameter"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="campaignId.Placeholder"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="campaignId.Name" disabled></td>
+                        <td class="traficc-source-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-sm-3 control-label">Website ID：</td>
+                        <td class="traficc-source-input"><input type="text" ng-model="websiteId.Parameter"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="websiteId.Placeholder"></td>
+                        <td class="traficc-source-input"><input type="text" ng-model="websiteId.Name" disabled></td>
+                        <td class="traficc-source-input"></td>
+                    </tr>
                     <tr ng-repeat="param in params track by $index">
                         <td class="col-sm-3 control-label">Custom variable{{$index+1}}：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Parameter"></td>
