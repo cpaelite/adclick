@@ -157,6 +157,9 @@
     $scope.id = this.plan.id;
     $scope.planCommit = function(){
       Plans.save({'id': $scope.id},function(result){
+        if(result.status){
+          window.location.href = result;
+        }
       });
     };
 
