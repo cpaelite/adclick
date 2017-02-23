@@ -515,6 +515,7 @@ md-datepicker {
     margin: 15px 10px 0 0;
     line-height: 34px;
     height: 34px;
+    float:left;
 }
 .xxxcs-subform-control::after {
     clear: both;
@@ -998,6 +999,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
 .campaign-radio .checkbox-inline + .checkbox-inline,
 .campaign-radio .radio-inline, .checkbox-inline{
     margin: 0 15px 0 0;
+    line-height:23px;
 }
 
 .dollar-icon{
@@ -2439,11 +2441,11 @@ select{border:1px solid #d5dce4;background:#fff;}
 .form-control:focus{box-shadow:0 0 1px #ccc;border-color:#d5dce4;}
 .my-btn{margin-left:15px;}
 .md-select-value{border:none;}
+md-toolbar{min-height:46px;}
 md-toolbar.md-default-theme:not(.md-menu-toolbar), md-toolbar:not(.md-menu-toolbar){background:#2da8f9;}
 .md-toolbar-tools{height:56px;}
 md-dialog.md-transition-in{border-radius:2px;}
 .md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{font-size:18px;font-weight:600;margin-left:10px;}
-md-toolbar{min-height:auto;}
 .material-icons{font-size:17px;}
 table{border-collapse:collapse;}
 md-select.md-default-theme .md-select-value, md-select .md-select-value{border:1px solid #d5dce4;border-radius:2px;background:#fff;}
