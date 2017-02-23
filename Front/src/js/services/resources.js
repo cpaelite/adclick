@@ -121,4 +121,12 @@ angular.module('app')
   .factory('Group', ['$resource', function ($resource) {
     return $resource('/api/groups');
   }])
+  .factory('TsReference', ['$resource', function ($resource) {
+    return $resource('/api/tsreference/:id', {id: '@id'}, {
+      'update': {method:'PUT'}
+    });
+  }])
+  .factory('ThirdTraffic', ['$resource', function ($resource) {
+    return $resource('/api/third-traffics');
+  }])
 ;

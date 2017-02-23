@@ -3,10 +3,10 @@
 
   angular.module('app')
     .controller('TsreportCtrl', [
-      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', TsreportCtrl
+      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', TsreportCtrl
     ]);
 
-  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog) {
+  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic) {
     var pageStatus = {};
 
     $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
@@ -16,7 +16,7 @@
 
     $scope.query = {
       page: 1,
-      trafficSourceId: '',
+      tsReferenceId: '',
       __tk: 0
     };
 
@@ -48,7 +48,7 @@
     }, true);
 
     $scope.$watch('query', function (newVal, oldVal) {
-      if (!newVal || !newVal.limit || !newVal.trafficSourceId) {
+      if (!newVal || !newVal.limit || !newVal.tsReferenceId) {
         return;
       }
       if (angular.equals(newVal, oldVal)) {
@@ -66,7 +66,6 @@
       getDateRange($scope.datetype);
       $scope.query.page = 1;
       $scope.query.__tk += 1;
-      getList();
     };
 
     $scope.start = function(item) {
@@ -75,6 +74,28 @@
       Tsreport.update({id: params.campaignId}, params, function() {
         item.status = !item.status;
         getList();
+      });
+    };
+
+    $scope.addOrEditTsReference = function(tsId) {
+      var item;
+      $scope.tsReferences.forEach(function(v) {
+        if(v.id = tsId) {
+          item = v;
+          return;
+        }
+      });
+      $mdDialog.show({
+        clickOutsideToClose: true,
+        controller: ['$mdDialog', '$scope', 'TsReference', 'ThirdTraffic', tsReferenceCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        bindToController: true,
+        locals: {item: angular.copy(item)},
+        templateUrl: 'tpl/ts-reference-dialog.html'
+      }).then(function() {
+        getList();
+        getTsReferences();
       });
     };
 
@@ -93,14 +114,16 @@
       })
     };
 
-    TrafficSource.get(null, function(oData) {
-      $scope.trafficSources = oData.data.trafficsources;
-      if($scope.$stateParams.trafficId) {
-        $scope.query.trafficSourceId = $scope.$stateParams.trafficId;
-      } else if($scope.trafficSources && $scope.trafficSources.length > 0) {
-        $scope.query.trafficSourceId = $scope.trafficSources[0].id;
-      }
-    });
+    getTsReferences();
+
+    function getTsReferences() {
+      TsReference.get(null, function(oData) {
+        $scope.tsReferences = oData.data.tsreferences;
+        if(!$scope.query.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
+          $scope.query.tsReferenceId = $scope.tsReferences[0].id;
+        }
+      });
+    }
 
     function getList() {
       var params = {};
@@ -123,6 +146,41 @@
         Tsreport.update({id: params.campaignId}, params, function(oData) {
           $mdDialog.hide();
         });
+      };
+    }
+
+    function tsReferenceCtrl($mdDialog, $scope, TsReference, ThirdTraffic) {
+      var self = this;
+
+      this.title = this.item ? 'edit' : 'add';
+      this.cancel = $mdDialog.cancel;
+      if(this.item) {
+        $scope.formData = this.item;
+      }
+
+      ThirdTraffic.get(null, function(oData) {
+        $scope.thirdTraffics = oData.data.thirdTraffics;
+      });
+
+      $scope.tsChanged = function(id) {
+        $scope.thirdTraffics.some(function(v) {
+          if (v.id = id) {
+            $scope.formData.api = v.api;
+            return true;
+          }
+        });
+      };
+
+      this.save = function() {
+        if(self.item) {
+          TsReference.update({id: self.item.id}, $scope.formData, function(oData) {
+            $mdDialog.hide();
+          });
+        } else {
+          TsReference.save($scope.formData, function(oData) {
+            $mdDialog.hide();
+          });
+        }
       };
     }
 

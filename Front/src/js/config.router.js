@@ -94,7 +94,7 @@
       })
       .state('app.report.tsreport', {
         url: '/tsreport?trafficId',
-        templateUrl: 'tpl/tsreport.html',
+        templateUrl: 'tpl/ts-report.html',
         controller: 'TsreportCtrl'
       })
       .state('app.rule', {

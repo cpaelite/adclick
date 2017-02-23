@@ -2,8 +2,8 @@
     <div class="cs-action-bar clearfix">
         <div class="right-select">
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="query.trafficSourceId">
-                    <md-option value="{{trafficSource.id}}" ng-repeat="trafficSource in trafficSources">{{trafficSource.name}}</md-option>
+                <md-select class="cs-subform-select" ng-model="query.tsReferenceId">
+                    <md-option value="{{tsReference.id}}" ng-repeat="tsReference in tsReferences">{{tsReference.name}}</md-option>
                 </md-select>
             </div>
 
@@ -44,7 +44,28 @@
                     </select>
                 </div>
             </div>
-            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applySearch($event)" translate>apply</md-button>
+            <md-button
+                class="md-raised md-primary cs-compact cs-add-button"
+                ng-click="applySearch($event)"
+                translate
+            >
+                apply
+            </md-button>
+            <md-button
+                class="md-raised md-primary cs-compact cs-add-button"
+                ng-click="addOrEditTsReference()"
+                translate
+            >
+                add
+            </md-button>
+            <md-button 
+                class="md-raised md-primary cs-compact cs-add-button"
+                ng-click="addOrEditTsReference(query.tsReferenceId)"
+                translate
+                ng-show="tsReferences.length > 0"
+                >
+                edit
+            </md-button>
         </div>
     </div>
     <md-table-container>

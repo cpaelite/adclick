@@ -3237,6 +3237,33 @@ app.get('/api/groups', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取跟第三方Traffic source的reference列表
+ *
+ */
+app.get('/api/tsreference', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      tsreferences: [{
+        id: 123,
+        name: 'tsreference 1',
+        token: 'yoshop-Android-benson-CAUSAU',
+        api: 'http://aa088269-5680-470c-a232-582e1dc68d21',
+        tsId: '11'
+      }, {
+        id: 124,
+        name: 'tsreference 2',
+        token: 'yoshop-Android-benson-CAUSAU',
+        api: 'http://aa088269-5680-470c-a232-582e1dc68d21',
+        tsId: '12'
+      }]
+    }
+  };
+  res.send(result);
+});
+
 app.post('/api/conversions', function (req, res) {
   var result = {
     "status": 1,
@@ -3253,6 +3280,55 @@ app.post('/api/conversions', function (req, res) {
         "E": "invalid data"
       }
     ]
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 更新第三方reference
+ *
+ */
+app.put('/api/tsreference/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+
+  res.send(result);
+});
+
+/**
+ * @apiName 添加第三方reference
+ *
+ */
+app.post('/api/tsreference', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+
+  res.send(result);
+});
+
+
+/**
+ * @apiName 获取第三方的Traffic source列表
+ */
+app.get('/api/third-traffics', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      thirdTraffics: [{
+        id: '11',
+        name: 'traffic 1',
+        api: 'http://aa088269-5680-470c-a232-582e1dc68d21'
+      }, {
+        id: '12',
+        name: 'traffic 2',
+        api: 'http://aa088269-5680-470c-a232-582e1dc68d21'
+      }]
+    }
   };
   res.send(result);
 });

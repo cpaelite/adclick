@@ -1,0 +1,52 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>:</label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" class="form-control" ng-model="formData.name" required/>
+                    <span class="text-danger" ng-show="(editForm.name.$touched || editForm.$submitted)&& editForm.name.$invalid">
+                        <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">TS<span class="star-icon">*</span>:</label>
+                <div class="col-sm-8">
+                    <select name="ts" class="form-control" ng-model="formData.tsId" ng-change="tsChanged(formData.tsId)" required>
+                        <option value=""></option>
+                        <option value="{{thirdTraffic.id}}" ng-repeat="thirdTraffic in thirdTraffics">{{thirdTraffic.name}}</option>
+                    </select>
+                    <span class="text-danger" ng-show="(editForm.ts.$touched || editForm.$submitted) && editForm.ts.$invalid">
+                        <span ng-show="editForm.ts.$error.required">Traffic source is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">API:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" disabled ng-model="formData.api"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Token<span class="star-icon">*</span>:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" ng-model="formData.token" required name="token"/>
+                    <span class="text-danger" ng-show="(editForm.token.$touched || editForm.$submitted) && editForm.token.$invalid">
+                        <span ng-show="editForm.token.$error.required">Token is required.</span>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+        </md-button>
+        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+</md-dialog>
