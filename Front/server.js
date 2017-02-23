@@ -2378,6 +2378,13 @@ app.get('/api/invitation', function (req, res) {
     status: 1,
     message: 'success',
     data: {
+      users: [
+        {
+          name: "Yuhuibin",
+          email: "yuhb@qq.com",
+          owner: true
+        }
+      ],
       invitations: [
       ]
     }
