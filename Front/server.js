@@ -388,6 +388,129 @@ app.get('/api/preferences', function (req, res) {
         },
         "variable10": {
           "visible": false
+        },
+        "conversion_postbackTimestamp": {
+          "visible": true
+        },
+        "conversion_visitTimestamp": {
+          "visible": true
+        },
+        "conversion_externalId": {
+          "visible": true
+        },
+        "conversion_clickId": {
+          "visible": true
+        },
+        "conversion_transactionId": {
+          "visible": true
+        },
+        "conversion_revenue": {
+          "visible": true
+        },
+        "conversion_cost": {
+          "visible": true
+        },
+        "conversion_campaignId": {
+          "visible": true
+        },
+        "conversion_campaignName": {
+          "visible": true
+        },
+        "conversion_landerName": {
+          "visible": true
+        },
+        "conversion_landerId": {
+          "visible": true
+        },
+        "conversion_offerName": {
+          "visible": true
+        },
+        "conversion_offerId": {
+          "visible": true
+        },
+        "conversion_countryName": {
+          "visible": true
+        },
+        "conversion_countryCode": {
+          "visible": true
+        },
+        "conversion_trafficSourceName": {
+          "visible": true
+        },
+        "conversion_trafficSourceId": {
+          "visible": true
+        },
+        "conversion_affiliateNetworkName": {
+          "visible": true
+        },
+        "conversion_affiliateNetworkId": {
+          "visible": true
+        },
+        "conversion_deviceName": {
+          "visible": true
+        },
+        "conversion_os": {
+          "visible": true
+        },
+        "conversion_osVersion": {
+          "visible": true
+        },
+        "conversion_brand": {
+          "visible": true
+        },
+        "conversion_model": {
+          "visible": true
+        },
+        "conversion_browser": {
+          "visible": true
+        },
+        "conversion_browserVersion": {
+          "visible": true
+        },
+        "conversion_isp": {
+          "visible": true
+        },
+        "conversion_mobileCarrier": {
+          "visible": true
+        },
+        "conversion_connectionTypeName": {
+          "visible": true
+        },
+        "conversion_ip": {
+          "visible": true
+        },
+        "conversion_referrer": {
+          "visible": true
+        },
+        "conversion_customVariable1": {
+          "visible": false
+        },
+        "conversion_customVariable2": {
+          "visible": false
+        },
+        "conversion_customVariable3": {
+          "visible": false
+        },
+        "conversion_customVariable4": {
+          "visible": false
+        },
+        "conversion_customVariable5": {
+          "visible": false
+        },
+        "conversion_customVariable6": {
+          "visible": false
+        },
+        "conversion_customVariable7": {
+          "visible": false
+        },
+        "conversion_customVariable8": {
+          "visible": false
+        },
+        "conversion_customVariable9": {
+          "visible": false
+        },
+        "conversion_customVariable10": {
+          "visible": false
         }
       }
     })
@@ -724,6 +847,330 @@ app.get('/api/report', function (req, res) {
           "revenue": 0.0,
           "roi": 0.0,
           "visits": 3572
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Conversions
+ *
+ * @apiParam {String} from:2017-01-11T00:00:00Z
+ * @apiParam {String} to:2017-01-12T00:00:00Z
+ * @apiParam {String} tz:America/New_York
+ * @apiParam {String} sort:visits
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ *
+ */
+app.get('/api/conversion', function (req, res) {
+  var groupBy = req.query.groupBy;
+  var result = {
+    "status": 1,
+    "messages": "",
+    data: {
+      "totalRows": 3700,
+      "totals": {
+        "conversions" : 1,
+        "cost" : 0.0,
+        "profit" : 10.0,
+        "revenue" : 10.0,
+        "roi" : 0.0
+      },
+      rows: [
+        {
+          "advertiserId" : "00000000-0000-0000-0000-000000000000",
+          "advertiserName" : null,
+          "affiliateNetworkId" : "c51f53f5-5d6d-4aee-8b01-2a333565bb69",
+          "affiliateNetworkName" : "testsddsdsds111",
+          "appendClickIdToOfferUrl" : true,
+          "applicationBundle" : "UNKNOWN",
+          "applicationId" : "UNKNOWN",
+          "applicationName" : "",
+          "brand" : "Desktop",
+          "browser" : "CURL",
+          "browserVersion" : "CURL 7",
+          "campaignCountry" : null,
+          "campaignId" : "7bc76d21-d86f-4024-abbc-5257870ff589",
+          "campaignName" : "AirPush - Global - aedan22222",
+          "campaignNamePostfix" : "aedan22222",
+          "campaignUrl" : "http://9cmzk.voluumtrk.com/7bc76d21-d86f-4024-abbc-5257870ff589?carrier=%carrier%&device=%device%&brand=%manufacturer%&campaignid=%campaignid%&creativeid=%creativeid%&ip=%ip%&pubid=%pubid%&appid=%dapp%&city=%city%&state=%state%&guid=%guid%",
+          "city" : "Shanghai",
+          "clickId" : "wC5PM0I44QTOG4F31P0B025G",
+          "clickIdArgument" : "guid",
+          "clickRedirectType" : null,
+          "clientId" : "a8c38f91-44ea-4318-8fc8-46681f056e90",
+          "connectionType" : "BROADBAND",
+          "connectionTypeName" : "Broadband",
+          "conversionActionId" : "00000000-0000-0000-0000-000000000000",
+          "conversionActionName" : null,
+          "conversionType" : "",
+          "conversions" : 1,
+          "cost" : 0.0,
+          "costArgument" : null,
+          "costModel" : "NOT_TRACKED",
+          "countryCode" : "CN",
+          "countryName" : "China",
+          "cpa" : null,
+          "cpc" : null,
+          "cpm" : null,
+          "customVariable1" : "%carrier%",
+          "customVariable1-TS" : "carrier",
+          "customVariable10" : "",
+          "customVariable10-TS" : "state",
+          "customVariable2" : "",
+          "customVariable2-TS" : "device",
+          "customVariable3" : "",
+          "customVariable3-TS" : "brand",
+          "customVariable4" : "",
+          "customVariable4-TS" : "campaignid",
+          "customVariable5" : "",
+          "customVariable5-TS" : "creativeid",
+          "customVariable6" : "",
+          "customVariable6-TS" : "ip",
+          "customVariable7" : "",
+          "customVariable7-TS" : "pubid",
+          "customVariable8" : "",
+          "customVariable8-TS" : "appid",
+          "customVariable9" : "",
+          "customVariable9-TS" : "city",
+          "device" : "DESKTOP",
+          "deviceName" : "Desktop",
+          "externalCampaignId" : null,
+          "externalId" : "",
+          "flowId" : "3964f3f9-bcbb-44d6-8030-94e1d9f11013",
+          "flowName" : "Global - New Flow-aedan22",
+          "ip" : "180.168.12.58",
+          "isp" : "Chinanet Shanghai Province Network",
+          "landerCountry" : "",
+          "landerId" : "00000000-0000-0000-0000-000000000000",
+          "landerName" : "Direct linking",
+          "landerUrl" : "",
+          "mobileCarrier" : "",
+          "model" : "Desktop",
+          "numberOfOffers" : 0,
+          "offerCountry" : "Åland Islands",
+          "offerId" : "c05cad45-fbe4-405c-9da4-cb3b5de1ca48",
+          "offerName" : "testsddsdsds111 - Åland Islands - aedanTest",
+          "offerUrl" : "http://it.zhaozhao.info/archives/cid={clickid}",
+          "onlyWhitelistedPostbackIps" : false,
+          "os" : "Unknown",
+          "osVersion" : "Unknown",
+          "payout" : null,
+          "pixelUrl" : null,
+          "postbackTimestamp" : "2017-02-22 07:16:24 AM",
+          "postbackUrl" : "http://api.airpush.com/track/?guid={externalid}",
+          "profit" : 10.0,
+          "publisherId" : "00000000-0000-0000-0000-000000000000",
+          "publisherName" : null,
+          "referrer" : "",
+          "referrerDomain" : "",
+          "region" : "Shanghai",
+          "registrationHour" : "2017-02-17 12:00:00 AM",
+          "revenue" : 10.0,
+          "roi" : 0.0,
+          "siteId" : "UNKNOWN",
+          "trafficSourceId" : "05e5c2fa-83b6-4e21-89c1-ddcac6fbe6b4",
+          "trafficSourceName" : "AirPush",
+          "transactionId" : "abc1234",
+          "type" : "CUSTOM",
+          "visitTimestamp" : "2017-02-22 07:14:53 AM"
+        }, {
+          "advertiserId" : "00000000-0000-0000-0000-000000000000",
+          "advertiserName" : null,
+          "affiliateNetworkId" : "c51f53f5-5d6d-4aee-8b01-2a333565bb69",
+          "affiliateNetworkName" : "testsddsdsds111",
+          "appendClickIdToOfferUrl" : true,
+          "applicationBundle" : "UNKNOWN",
+          "applicationId" : "UNKNOWN",
+          "applicationName" : "",
+          "brand" : "Desktop",
+          "browser" : "CURL",
+          "browserVersion" : "CURL 7",
+          "campaignCountry" : null,
+          "campaignId" : "7bc76d21-d86f-4024-abbc-5257870ff589",
+          "campaignName" : "AirPush - Global - aedan22222",
+          "campaignNamePostfix" : "aedan22222",
+          "campaignUrl" : "http://9cmzk.voluumtrk.com/7bc76d21-d86f-4024-abbc-5257870ff589?carrier=%carrier%&device=%device%&brand=%manufacturer%&campaignid=%campaignid%&creativeid=%creativeid%&ip=%ip%&pubid=%pubid%&appid=%dapp%&city=%city%&state=%state%&guid=%guid%",
+          "city" : "Shanghai",
+          "clickId" : "wC5PM0I44QTOG4F31P0B025G",
+          "clickIdArgument" : "guid",
+          "clickRedirectType" : null,
+          "clientId" : "a8c38f91-44ea-4318-8fc8-46681f056e90",
+          "connectionType" : "BROADBAND",
+          "connectionTypeName" : "Broadband",
+          "conversionActionId" : "00000000-0000-0000-0000-000000000000",
+          "conversionActionName" : null,
+          "conversionType" : "",
+          "conversions" : 1,
+          "cost" : 0.0,
+          "costArgument" : null,
+          "costModel" : "NOT_TRACKED",
+          "countryCode" : "CN",
+          "countryName" : "China",
+          "cpa" : null,
+          "cpc" : null,
+          "cpm" : null,
+          "customVariable1" : "%carrier%",
+          "customVariable1-TS" : "carrier",
+          "customVariable10" : "",
+          "customVariable10-TS" : "state",
+          "customVariable2" : "",
+          "customVariable2-TS" : "device",
+          "customVariable3" : "",
+          "customVariable3-TS" : "brand",
+          "customVariable4" : "",
+          "customVariable4-TS" : "campaignid",
+          "customVariable5" : "",
+          "customVariable5-TS" : "creativeid",
+          "customVariable6" : "",
+          "customVariable6-TS" : "ip",
+          "customVariable7" : "",
+          "customVariable7-TS" : "pubid",
+          "customVariable8" : "",
+          "customVariable8-TS" : "appid",
+          "customVariable9" : "",
+          "customVariable9-TS" : "city",
+          "device" : "DESKTOP",
+          "deviceName" : "Desktop",
+          "externalCampaignId" : null,
+          "externalId" : "",
+          "flowId" : "3964f3f9-bcbb-44d6-8030-94e1d9f11013",
+          "flowName" : "Global - New Flow-aedan22",
+          "ip" : "180.168.12.58",
+          "isp" : "Chinanet Shanghai Province Network",
+          "landerCountry" : "",
+          "landerId" : "00000000-0000-0000-0000-000000000000",
+          "landerName" : "Direct linking",
+          "landerUrl" : "",
+          "mobileCarrier" : "",
+          "model" : "Desktop",
+          "numberOfOffers" : 0,
+          "offerCountry" : "Åland Islands",
+          "offerId" : "c05cad45-fbe4-405c-9da4-cb3b5de1ca48",
+          "offerName" : "testsddsdsds111 - Åland Islands - aedanTest",
+          "offerUrl" : "http://it.zhaozhao.info/archives/cid={clickid}",
+          "onlyWhitelistedPostbackIps" : false,
+          "os" : "Unknown",
+          "osVersion" : "Unknown",
+          "payout" : null,
+          "pixelUrl" : null,
+          "postbackTimestamp" : "2017-02-22 07:16:24 AM",
+          "postbackUrl" : "http://api.airpush.com/track/?guid={externalid}",
+          "profit" : 10.0,
+          "publisherId" : "00000000-0000-0000-0000-000000000000",
+          "publisherName" : null,
+          "referrer" : "",
+          "referrerDomain" : "",
+          "region" : "Shanghai",
+          "registrationHour" : "2017-02-17 12:00:00 AM",
+          "revenue" : 10.0,
+          "roi" : 0.0,
+          "siteId" : "UNKNOWN",
+          "trafficSourceId" : "05e5c2fa-83b6-4e21-89c1-ddcac6fbe6b4",
+          "trafficSourceName" : "AirPush",
+          "transactionId" : "abc1234",
+          "type" : "CUSTOM",
+          "visitTimestamp" : "2017-02-22 07:14:53 AM"
+        }, {
+          "advertiserId" : "00000000-0000-0000-0000-000000000000",
+          "advertiserName" : null,
+          "affiliateNetworkId" : "c51f53f5-5d6d-4aee-8b01-2a333565bb69",
+          "affiliateNetworkName" : "testsddsdsds111",
+          "appendClickIdToOfferUrl" : true,
+          "applicationBundle" : "UNKNOWN",
+          "applicationId" : "UNKNOWN",
+          "applicationName" : "",
+          "brand" : "Desktop",
+          "browser" : "CURL",
+          "browserVersion" : "CURL 7",
+          "campaignCountry" : null,
+          "campaignId" : "7bc76d21-d86f-4024-abbc-5257870ff589",
+          "campaignName" : "AirPush - Global - aedan22222",
+          "campaignNamePostfix" : "aedan22222",
+          "campaignUrl" : "http://9cmzk.voluumtrk.com/7bc76d21-d86f-4024-abbc-5257870ff589?carrier=%carrier%&device=%device%&brand=%manufacturer%&campaignid=%campaignid%&creativeid=%creativeid%&ip=%ip%&pubid=%pubid%&appid=%dapp%&city=%city%&state=%state%&guid=%guid%",
+          "city" : "Shanghai",
+          "clickId" : "wC5PM0I44QTOG4F31P0B025G",
+          "clickIdArgument" : "guid",
+          "clickRedirectType" : null,
+          "clientId" : "a8c38f91-44ea-4318-8fc8-46681f056e90",
+          "connectionType" : "BROADBAND",
+          "connectionTypeName" : "Broadband",
+          "conversionActionId" : "00000000-0000-0000-0000-000000000000",
+          "conversionActionName" : null,
+          "conversionType" : "",
+          "conversions" : 1,
+          "cost" : 0.0,
+          "costArgument" : null,
+          "costModel" : "NOT_TRACKED",
+          "countryCode" : "CN",
+          "countryName" : "China",
+          "cpa" : null,
+          "cpc" : null,
+          "cpm" : null,
+          "customVariable1" : "%carrier%",
+          "customVariable1-TS" : "carrier",
+          "customVariable10" : "",
+          "customVariable10-TS" : "state",
+          "customVariable2" : "",
+          "customVariable2-TS" : "device",
+          "customVariable3" : "",
+          "customVariable3-TS" : "brand",
+          "customVariable4" : "",
+          "customVariable4-TS" : "campaignid",
+          "customVariable5" : "",
+          "customVariable5-TS" : "creativeid",
+          "customVariable6" : "",
+          "customVariable6-TS" : "ip",
+          "customVariable7" : "",
+          "customVariable7-TS" : "pubid",
+          "customVariable8" : "",
+          "customVariable8-TS" : "appid",
+          "customVariable9" : "",
+          "customVariable9-TS" : "city",
+          "device" : "DESKTOP",
+          "deviceName" : "Desktop",
+          "externalCampaignId" : null,
+          "externalId" : "",
+          "flowId" : "3964f3f9-bcbb-44d6-8030-94e1d9f11013",
+          "flowName" : "Global - New Flow-aedan22",
+          "ip" : "180.168.12.58",
+          "isp" : "Chinanet Shanghai Province Network",
+          "landerCountry" : "",
+          "landerId" : "00000000-0000-0000-0000-000000000000",
+          "landerName" : "Direct linking",
+          "landerUrl" : "",
+          "mobileCarrier" : "",
+          "model" : "Desktop",
+          "numberOfOffers" : 0,
+          "offerCountry" : "Åland Islands",
+          "offerId" : "c05cad45-fbe4-405c-9da4-cb3b5de1ca48",
+          "offerName" : "testsddsdsds111 - Åland Islands - aedanTest",
+          "offerUrl" : "http://it.zhaozhao.info/archives/cid={clickid}",
+          "onlyWhitelistedPostbackIps" : false,
+          "os" : "Unknown",
+          "osVersion" : "Unknown",
+          "payout" : null,
+          "pixelUrl" : null,
+          "postbackTimestamp" : "2017-02-22 07:16:24 AM",
+          "postbackUrl" : "http://api.airpush.com/track/?guid={externalid}",
+          "profit" : 10.0,
+          "publisherId" : "00000000-0000-0000-0000-000000000000",
+          "publisherName" : null,
+          "referrer" : "",
+          "referrerDomain" : "",
+          "region" : "Shanghai",
+          "registrationHour" : "2017-02-17 12:00:00 AM",
+          "revenue" : 10.0,
+          "roi" : 0.0,
+          "siteId" : "UNKNOWN",
+          "trafficSourceId" : "05e5c2fa-83b6-4e21-89c1-ddcac6fbe6b4",
+          "trafficSourceName" : "AirPush",
+          "transactionId" : "abc1234",
+          "type" : "CUSTOM",
+          "visitTimestamp" : "2017-02-22 07:14:53 AM"
         }
       ]
     }

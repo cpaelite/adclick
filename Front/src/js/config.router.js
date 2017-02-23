@@ -87,6 +87,11 @@
       .state('app.report.lander',   configReport('lander'))
       .state('app.report.traffic',  configReport('traffic'))
       .state('app.report.affiliate', configReport('affiliate'))
+      .state('app.report.conversion', {
+        url: '/conversion',
+        templateUrl: 'tpl/conversion.html',
+        controller: 'ConversionCtrl'
+      })
       .state('app.rule', {
         url: '/rule',
         templateUrl: 'tpl/rule.html',
