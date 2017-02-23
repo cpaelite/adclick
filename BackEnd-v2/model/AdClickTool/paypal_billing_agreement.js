@@ -6,7 +6,12 @@ export default function(sequelize, DataTypes) {
     description: {
       type: DataTypes.STRING
     },
-    start_date: {
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    createdAt: {
       type: DataTypes.DATE
     },
     token: {
@@ -15,18 +20,34 @@ export default function(sequelize, DataTypes) {
       unique: true,
       primaryKey: true
     },
-    approval_url: {
+    approvalUrl: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    execute_url: {
+    executeUrl: {
       type: DataTypes.STRING,
       allowNull: false
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false
-    }
+    },
+    createReq: {
+      type: DataTypes.TEXT
+    },
+    createResp: {
+      type: DataTypes.TEXT
+    },
+    cancelReq: {
+      type: DataTypes.TEXT
+    },
+    cancelResp: {
+      type: DataTypes.TEXT
+    },
+
+  }, {
+    timestamps: false,
+    tableName: 'PaypalBillingAgreement'
   })
   return model;
 }

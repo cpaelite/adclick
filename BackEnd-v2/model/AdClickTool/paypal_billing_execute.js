@@ -1,43 +1,31 @@
 export default function(sequelize, DataTypes) {
   let model = sequelize.define('PaypalBillingExecute', {
-    paypal_id: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-      unique: true
-    },
-    state: {
-      type: DataTypes.STRING,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    token: {
-      type: DataTypes.STRING,
+    agreementId: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    payer: {
-      // JSON detail
-      type: DataTypes.TEXT
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
-    plan: {
-      // JSON detail
-      type: DataTypes.TEXT
-    },
-    agreement_detail: {
-      // JSON detail
-      type: DataTypes.TEXT
-    },
-    shipping_address: {
-      // JSON detail
-      type: DataTypes.TEXT
-    },
-    start_date: {
-      // JSON detail
-      type: DataTypes.DATE,
+    executedAt: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    links: {
-      // JSON detail
+    executeReq: {
+      type: DataTypes.TEXT
+    },
+    executeResp: {
       type: DataTypes.TEXT
     }
+  }, {
+    timestamps: false,
+    tableName: 'PaypalBillingExecute'
   })
 
   return model;

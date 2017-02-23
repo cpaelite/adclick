@@ -1,9 +1,8 @@
 export default function (sequelize, DataTypes) {
   let model = sequelize.define('PaypalBillingPlan', {
-    paypal_id: {
+    paypalId: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
       unique: true
     },
     name: {
@@ -24,57 +23,55 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 'USD'
     },
-    setup_fee: {
+    setupFee: {
       type: DataTypes.DECIMAL(10,2),
       allowNull: false
     },
-    regular_name: {
+    regularName: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    regular_fee: {
+    regularFee: {
       type: DataTypes.DECIMAL(10,2),
       allowNull: false
     },
-    regular_cycles: {
+    regularCycles: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
       allowNull: false
     },
-    regular_frequency: {
+    regularFrequency: {
       type: DataTypes.ENUM('WEEK', 'DAY', 'YEAR', 'MONTH'),
       defaultValue: 'MONTH',
       allowNull: false
     },
-    regular_frequency_interval: {
+    regularFrequencyInterval: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
       allowNull: false
     },
 
-    trial_name: {
+    trialName: {
       type: DataTypes.STRING,
-      allowNull: false
     },
-    trial_fee: {
+    trialFee: {
       type: DataTypes.DECIMAL(10,2),
-      allowNull: false
     },
-    trial_cycles: {
+    trialCycles: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
-      allowNull: false
     },
-    trial_frequency: {
+    trialFrequency: {
       type: DataTypes.ENUM('WEEK', 'DAY', 'YEAR', 'MONTH'),
       defaultValue: 'MONTH',
-      allowNull: false
     },
-    trial_frequency_interval: {
+    trialFrequencyInterval: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
-      allowNull: false
     }
+  }, {
+    timestamps: false,
+    tableName: 'PaypalBillingPlan'
   })
   return model
 }

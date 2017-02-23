@@ -41,6 +41,7 @@ var traffictpl = require('./routes/traffictpl');
 
 import payment from './routes/payment';
 import billing from './routes/billing';
+import plan from './routes/plan';
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -92,7 +93,7 @@ app.get('/', function(req, res) {
     });
 });
 
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, payment, billing);
+app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, payment, billing, plan);
 
 app.use('/', auth);
 
