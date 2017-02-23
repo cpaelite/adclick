@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('SubscriptionsCtrl', [
-      '$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo',
+      '$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', '$location', 'toastr',
       SubscriptionsCtrl
     ]);
 
-  function SubscriptionsCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo) {
+  function SubscriptionsCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo, $location, toastr) {
     $scope.app.subtitle = 'Subscriptions';
 
     Profile.get(null, function (profile) {
@@ -17,6 +17,14 @@
         });
       }
     });
+
+    var paymessage = $location.$$search.message;
+    if(paymessage === 'success'){
+      toastr.success('pay success');
+    }else if (paymessage === 'cancel'){
+      toastr.error('pay failed');
+    }
+
 
     $scope.changePlan = function(planId ,ev){
       $mdDialog.show({
@@ -158,7 +166,7 @@
     $scope.planCommit = function(){
       Plans.save({'id': $scope.id},function(result){
         if(result.status){
-          window.location.href = result;
+          window.location.href = result.data;
         }
       });
     };

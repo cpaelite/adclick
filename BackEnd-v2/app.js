@@ -42,6 +42,7 @@ var traffictpl = require('./routes/traffictpl');
 import payment from './routes/payment';
 import billing from './routes/billing';
 import plan from './routes/plan';
+import paypal from './routes/paypal';
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -92,6 +93,8 @@ app.get('/', function(req, res) {
         root: __dirname + '/../Front/dist'
     });
 });
+
+app.use(paypal);
 
 app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, payment, billing, plan);
 

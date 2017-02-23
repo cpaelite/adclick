@@ -60,7 +60,11 @@ router.post('/api/plans/:id', async (req, res, next) => {
         }
     }
 
-    res.json(approval_url)
+    res.json({
+      status: 1,
+      message: 'success',
+      data: approval_url
+    })
   } catch (e) {
     next(e)
   }
