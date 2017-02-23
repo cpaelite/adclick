@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('SubscriptionsCtrl', [
-      '$scope', '$mdDialog', 'Profile', 'Billing', 'Plans',
+      '$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo',
       SubscriptionsCtrl
     ]);
 
-  function SubscriptionsCtrl($scope, $mdDialog, Profile, Billing, Plans) {
+  function SubscriptionsCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo) {
     $scope.app.subtitle = 'Subscriptions';
 
     Profile.get(null, function (profile) {
@@ -24,7 +24,7 @@
         targetEvent: ev,
         clickOutsideToClose: false,
         controllerAs: 'ctrl',
-        controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', changePlanCtrl],
+        controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', changePlanCtrl],
         focusOnOpen: false,
         locals: {
           planId: planId
@@ -34,7 +34,7 @@
     };
   }
 
-  function changePlanCtrl($scope, $mdDialog, Profile, Billing, Plans){
+  function changePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo){
 
     $scope.planId = this.planId;
     // console.log(this.planId);
@@ -94,17 +94,16 @@
       $scope.inputValue = val.toString().replace(/\B(?=(?:\d{3})+\b)/g, ',');
     };
 
-    $scope.editChangePlan = function(id){
-      // console.log("desc的内容："+desc);
+    $scope.editChangePlan = function(plan){
       $mdDialog.show({
         multiple: true,
         skipHide: true,
         clickOutsideToClose: false,
         controllerAs: 'ctrl',
-        controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', editChangePlanCtrl],
+        controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', editChangePlanCtrl],
         focusOnOpen: false,
         locals: {
-          id:id
+          plan:plan
         },
         bindToController: true,
         templateUrl: 'tpl/edit-change-paln-dialog.html'
@@ -143,13 +142,24 @@
     }
   }
 
-  function editChangePlanCtrl($scope, $mdDialog, Profile, Billing, Plans){
+  function editChangePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo){
     this.cancel = $mdDialog.cancel;
-    $scope.id = this.id;
+
+    BillingInfo.get(null,function(info){
+      $scope.item = info.data;
+    });
+
+    Profile.get(null,function(user){
+      $scope.userItem = user.data;
+    });
+
+    $scope.id = this.plan.id;
     $scope.planCommit = function(){
       Plans.save({'id': $scope.id},function(result){
-
       });
     };
+
+    $scope.desc = this.plan.desc;
+    console.log($scope.desc);
   }
 })();

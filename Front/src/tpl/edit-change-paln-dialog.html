@@ -11,48 +11,22 @@
           <li class="col-md-8 my-price-l">
             <h2>Billing details</h2>
             <ul class="p-edit">
-              <li><i class="icon-circle-blank"></i><span>billing name</span><em>sadkjhakd</em></li>
-              <li><i class="icon-circle-blank"></i><span>Address line 1</span><em>897344520</em></li>
-              <li><i class="icon-circle-blank"></i><span>City</span><em>shasha</em></li>
-              <li><i class="icon-circle-blank"></i><span>ZIP / Postal code</span><em>kimi</em></li>
-              <li><i class="icon-circle-blank"></i><span>State /Region</span><em>jkjsdksj</em></li>
-              <li><i class="icon-circle-blank"></i><span>Country</span><em>ewfwdw</em></li>
+              <li><i class="icon-circle-blank"></i><span>billing name</span><em>{{item.billingname}}</em></li>
+              <li><i class="icon-circle-blank"></i><span>Address line 1</span><em>{{item.addressline1}}</em></li>
+              <li><i class="icon-circle-blank"></i><span>City</span><em>{{item.city}}</em></li>
+              <li><i class="icon-circle-blank"></i><span>ZIP / Postal code</span><em>{{item.postalcode}}</em></li>
+              <li><i class="icon-circle-blank"></i><span>State /Region</span><em>{{item.stateregion}}</em></li>
+              <li><i class="icon-circle-blank"></i><span>Country</span><em>{{item.country}}</em></li>
               <li class="edit-xg"><em><a id="edit" href="#"><i class="icon-edit"></i>EDIT</a></em></li>
             </ul>
             <h2>Payment method detalis<a href="#"><i class="icon-edit"></i>EDIT</a></h2>
             <ul class="p-pay">
-              <li><i class="icon-circle-blank"></i><span class="p-pay-l">PayPal account</span><span class="p-pay-r">90893049@qq.com</span></li>
+              <li><i class="icon-circle-blank"></i><span class="p-pay-l">PayPal account</span><span class="p-pay-r">{{userItem.email}}</span></li>
             </ul>
           </li>
           <li class="col-md-4 my-price">
-            <div class="p-header-box">
-              <h2>AGENCY</h2>
-              <div class="p-header p-header2">
-                <small class="money-icon">$</small>
-                <span class="money-size">1299</span>
-                <small class="money-small">/ MO</small>
-              </div>
-              <div class="pricedesc">
-                <p>0.025/1000 overage<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i> charge</p>
-              </div>
-              <div class="p-header">
-                <small class="money-icon">$</small>
-                <span class="money-size">899</span>
-                <small class="money-small">/ MO</small>
-              </div>
-              <div class="pricedesc">
-                <p>30000000 included<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>events</p>
-              </div>
-              <ol class="pricedesc-list">
-                <li><b>Report API</b><i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
-                <li>20+ Traffic Source RAW Report (in the list,5 can be custom)<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="E-mail support, 24 hours SLA."></i></li>
-                <li>Skype Support 24/7<i class="icon-question-sign" data-toggle="tooltip" data-placement="top" title="REST type API using secure HTTPS as a transport layer and JSON as encoding."></i></li>
-                <li>2 year data retention</li>
-                <li>Newbidder DSP (event not included)</li>
-                <li>20% volume discount</li>
-              </ol>
-              <button class="btn p-btn btn-three p-btn-02" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-            </div>
+            {{desc}}
+            <button class="btn p-btn btn-three p-btn-02" type="button" disabled><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
           </li>
         </ul>
       </ul>
