@@ -10,8 +10,8 @@
 	</div>
 	
 	<div class="user-mangement-content">
-		<div ng-show="iItem.invitations.length==2">
-			<span>Your plan has limitation of 2 user invitations</span>
+		<div ng-show="userCount==plan.userLimit">
+			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
 			<span>
 				You have reached the limit of users for your chosen plan.<br>
 				To have additional users, you can upgrade to higher plan. 
@@ -20,34 +20,35 @@
 				<md-button class="md-raised copy-btn">Upgrade plan</md-button>
 			</div>
 		</div>
-		<div ng-show="iItem.invitations.length<2">
-			<span>Your plan has limitation of 2 user invitations</span>
-			<span class="small-word">You can invite 2 more users to your account</span>
+		<div ng-show="userCount<plan.userLimit">
+			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
+			<span class="small-word" ng-show="invitationCount<plan.userLimit">You can invite {{plan.userLimit-invitation.invitations.length+invitation.users.length-1}} more users to your account</span>
+			<span style="color:red" ng-show="invitationCount>plan.userLimit">You can invite {{plan.userLimit-invitation.invitations.length+invitation.users.length-1}} more users to your account</span>
 			<form name="emailForm">
 			  <div class="form-group">
 			    <label for="exampleInputEmail2">Invite users:</label>
 			    <div class="form-inline">
-			   		<input type="email" class="form-control" id="exampleInputEmail2" ng-model="email" placeholder="jane.doe@example.com">
-			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(email)">Send invitation</button>
+			   		<input type="text" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="jane.doe@example.com">
+			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(emails)">Send invitation</button>
 			    </div>
 			  </div>	
 			</form>
 		</div>
 		<div class="form-group">
 			<label for="exampleInputEmail2">List of users:</label>
-			<div class="form-inline user-list">
-				<span><i class="material-icons">account_box</i> {{item.firstName}} {{item.lastName}}</span>
-				<button type="submit" class="btn btn-primary">owner</button>
+			<div class="form-inline user-list" ng-repeat="user in invitation.users">
+				<span><i class="material-icons">account_box</i> {{user.name}}</span>
+				<button type="submit" class="btn btn-primary" ng-show="user.main">owner</button>
 				<span>{{item.email}}</span>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="exampleInputEmail2">Pending invitations:</label>
 			<div class="form-inline user-list" >
-				<span class="nothing-word" ng-show="iItem.invitations.length==0">
+				<span class="nothing-word" ng-show="invitation.invitations.length==0">
 					You have no pending invitations
 				</span>
-				<div ng-repeat="i in iItem.invitations track by $index" class="itemList">
+				<div ng-repeat="i in invitation.invitations track by $index" class="itemList">
 					<span><i class="material-icons">account_box</i>{{i.lastDate}}</span>
 					<span class="email-con">{{i.email}}</span>
 					<i class="material-icons delete-user" ng-click="deleteInvitation(i)">close</i>

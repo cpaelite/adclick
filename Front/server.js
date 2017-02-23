@@ -2371,6 +2371,13 @@ app.get('/api/invitation', function (req, res) {
     status: 1,
     message: 'success',
     data: {
+      users: [
+        {
+          name: "Yuhuibin",
+          email: "yuhb@qq.com",
+          owner: true
+        }
+      ],
       invitations: [
         {
           email: "111@qq.com",
@@ -2400,6 +2407,10 @@ app.post('/api/invitation', function (req, res) {
         },
         {
           email: "111@qq.com",
+          lastDate: "13-02-2017"
+        },
+        {
+          email: "333@qq.com",
           lastDate: "13-02-2017"
         }
       ]

@@ -65,9 +65,6 @@ angular.module('app')
   .factory('DomainsValidatecname', ['$resource', function($resource) {
     return $resource('/api/domains/validatecname')
   }])
-  .factory('Member', ['$resource', function($resource) {
-    return $resource('/api/member')
-  }])
   .factory('Invitation', ['$resource', function($resource) {
     return $resource('/api/invitation/:id', {id: '@id'})
   }])
