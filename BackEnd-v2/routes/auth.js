@@ -11,6 +11,8 @@ var common = require('./common');
 var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
 var uuidV4 = require('uuid/v4');
+var emailCtrl = require('../util/email');
+const _ = require('lodash');
 
 /**
  * @api {post} /auth/login  登陆
@@ -46,14 +48,14 @@ router.post('/auth/login', async function (req, res, next) {
 
         if (rows.length > 0) {
             if (rows[0].password == md5(value.password)) {
-                let userGroup=await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0",[rows[0].id],connection);
-                if (userGroup.length == 0){
+                let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
+                if (userGroup.length == 0) {
                     throw new Error("clientId error");
                 }
-                let clientId= userGroup[0].groupId;
+                let clientId = userGroup[0].groupId;
                 var expires = moment().add(200, 'days').valueOf();
                 //set cookie 
-                res.cookie("clientId",clientId);
+                res.cookie("clientId", clientId);
                 res.json({ token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText) });
 
                 //更新登录时间
@@ -104,17 +106,30 @@ router.post('/auth/login', async function (req, res, next) {
  *
  */
 router.post('/auth/signup', async function (req, res, next) {
+    try {
+        req.body.json = setting.defaultSetting;
+        await signup(req.body, next);
+        res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e)
+    }
+});
+
+async function signup(data, next) {
     var schema = Joi.object().keys({
         email: Joi.string().trim().email().required(),
         password: Joi.string().required(),
-        firstname: Joi.string().required(),
-        lastname: Joi.string().required(),
+        firstname: Joi.string().required().allow(""),
+        lastname: Joi.string().required().allow(""),
         json: Joi.object().optional(),
         refToken: Joi.string().optional().empty("")
     });
     let connection;
     try {
-        let value = await common.validate(req.body, schema);
+        let value = await common.validate(data, schema);
         connection = await common.getConnection();
         //check email exists
         let UserResult = await query("select id from User where `email`=?", [value.email]);
@@ -133,19 +148,22 @@ router.post('/auth/signup', async function (req, res, next) {
             sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
             params.push(JSON.stringify(value.json))
         }
-         
+
         let result = await query(sql, params);
+        value.userId = result.insertId;
+        value.idtext = idtext;
         //系统默认domains
         for (let index = 0; index < setting.domains.length; index++) {
             await query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0]);
         }
+
         //如果refToken 不为"" 说明是从推广链接过来的
         if (value.refToken) {
             let slice = value.refToken.split('.');
             let referreUserId = slice.length == 2 ? slice[1] : 0;
             if (referreUserId) {
-                let USER=await query("select `id` from User where `idText` = ?",[referreUserId]);
-                if(USER.length == 0){
+                let USER = await query("select `id` from User where `idText` = ?", [referreUserId]);
+                if (USER.length == 0) {
                     throw new Error("refToken error");
                 }
                 await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`) values (?,?,unix_timestamp(now()),0)", [USER[0].id, result.insertId]);
@@ -153,15 +171,13 @@ router.post('/auth/signup', async function (req, res, next) {
         }
 
         //user Group 
-        await common.query("insert into UserGroup (`groupId`,`userId`,`role`) values(?,?,?)",[uuidV4(),result.insertId,0],connection);
-        
+        await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [uuidV4(), result.insertId, 0], connection);
+
         await common.commit(connection);
         //redis publish
-        new Pub(true).publish(setting.redis.channel,result.insertId + ".add.user." + result.insertId, "userAdd");
-        res.json({
-            status: 1,
-            message: 'success'
-        });
+        new Pub(true).publish(setting.redis.channel, result.insertId + ".add.user." + result.insertId, "userAdd");
+
+        return value;
     } catch (e) {
         await common.rollback(connection);
         next(e);
@@ -171,7 +187,7 @@ router.post('/auth/signup', async function (req, res, next) {
         }
 
     }
-});
+}
 /**
  * @api {post} /account/check  检查用户是否存在
  * @apiName account check
@@ -333,6 +349,74 @@ router.post('/domains/validatecname', function (req, res, next) {
         console.log('addresses:', addresses);
     });
 
+});
+
+
+router.get('/invitation', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        code: Joi.string().trim().required()
+    });
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let userSlice = await common.query("select `userId`,`inviteeEmail`,`groupId` from GroupInvitation where `code`=? and `deleted`= 0 and `status`!= 3", [value.code], connection);
+        if (userSlice.length == 0) {
+            throw new Error("code error");
+        }
+
+        let users = await common.query("select  `id`,`idText`,`firstname` from User where `email` = ?", [userSlice[0].inviteeEmail], connection);
+        if (users.length) {
+            //加入用户组
+            if (users[0].id != userSlice[0].userId) {//排除自身
+                await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now())) ON DUPLICATE KEY UPDATE `role` = 1", [userSlice[0].groupId, users[0].id, 1], connection);
+            }
+            res.redirect(setting.invitationredirect);
+        } else {
+            //自动注册
+            let password = util.getRandomString(6);
+            let user = await signup({ password: password, email: userSlice[0].inviteeEmail, firstname: "", lastname: "", json: setting.defaultSetting }, next);
+            //并发加入用户组   发送邮件
+            let tpl = {
+                subject: 'Newbidder Register', // Subject line
+                text: ``, // plain text body
+                html: _.template(` <p>Hello,</p>
+
+                    <p>Welcome to Newbidder! Please follow the link to complete your registration (or copy/paste it in your browser):</p>
+                    <p>https://www.popads.net/users/reset/87436c100e1c0fa7c046</p>
+
+                    <p>YOUR USERNAME: <%=email%></p>
+                    <p>YOUR SECRET: <%=password%></p>
+
+                    <p>To reset your password follow the link below:</p>
+                    <p>https://www.popads.net/users/reset/87436c100e1c0fa7c046</p>
+
+                    <p>If you have any questions, feel free to contact us at: support@newbidder.com</p>
+
+                     
+                    <p>Best regards,</p>
+                    <p>Newbidder Support Team</p>
+                    <p>Skype：support@newbidder</p>
+                             `)({
+                        email: userSlice[0].inviteeEmail,
+                        password: password
+                    })
+            }
+            await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl)]);
+            var expires = moment().add(200, 'days').valueOf();
+            res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
+            res.cookie("clientId", userSlice[0].groupId);
+            res.redirect(setting.invitationredirect);
+        }
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+
+    }
 });
 
 

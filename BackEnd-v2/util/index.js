@@ -18,13 +18,15 @@ exports.checkToken = function () {
         return next(new Error('access token has expired'));
       }
       connection = await common.getConnection();
-      let user = await common.query("select user.`id`,user.`idText`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
+      let user = await common.query("select user.`id`,user.`idText`,user.`firstname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
       if (!user.length) {
         throw new Error('no user');
       }
       req.userId = user[0].id;
       req.idText = user[0].idText;
       req.groupId = user[0].groupId;
+      req.firstname= user[0].firstname;
+      req.campanyname= user[0].campanyName;
       req.owner = true;
       next();
     } catch (e) {
