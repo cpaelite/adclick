@@ -8,7 +8,8 @@ import paypal from '../util/paypal';
 const {
   TemplatePlan: TP,
   UserBilling: UB,
-  PaypalBillingPlan: PBP
+  PaypalBillingPlan: PBP,
+  PaypalBillingAgreement: PBA
 } = models;
 
 router.get('/api/plans', async (req, res, next) => {
@@ -27,6 +28,7 @@ router.get('/api/plans', async (req, res, next) => {
 router.post('/api/plans/:id', async (req, res, next) => {
   try {
     let {id} = req.params;
+    let {userId} = req;
     let tempalte_plan = await TP.findById(id);
     if (!tempalte_plan) throw new Error('Not Found');
     let paypal_billing_plan = await PBP.findById(tempalte_plan.paypalPlanId);
@@ -58,6 +60,9 @@ router.post('/api/plans/:id', async (req, res, next) => {
             var approval_url = billingAgreement.links[index].href;
             var token = url.parse(approval_url, true).query.token;
         }
+        if (billingAgreement.links[index].rel === 'execute') {
+            var execute_url = billingAgreement.links[index].href;
+        }
     }
 
     res.json({
@@ -65,6 +70,20 @@ router.post('/api/plans/:id', async (req, res, next) => {
       message: 'success',
       data: approval_url
     })
+
+    PBA.build({
+      name: billingAgreement.name,
+      description: billingAgreement.description,
+      token,
+      userId,
+      paypalPlanId: paypal_billing_plan.id,
+      createdAt: new Date(),
+      approvalUrl: approval_url,
+      executeUrl: execute_url,
+      createReq: JSON.stringify(billingAgreementAttributes),
+      createResp: JSON.stringify(billingAgreement)
+    }).save()
+
   } catch (e) {
     next(e)
   }

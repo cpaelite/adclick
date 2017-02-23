@@ -17,8 +17,11 @@ export default function(sequelize, DataTypes) {
     token: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
-      primaryKey: true
+      unique: true
+    },
+    paypalPlanId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     approvalUrl: {
       type: DataTypes.STRING,
