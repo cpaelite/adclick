@@ -2348,10 +2348,10 @@ app.get('/api/setup', function (req, res) {
 });
 
 /**
- * @apiName 获取Member信息 (统一从invitation接口获取信息，此接口不用了)
+ * @apiName 获取Member信息
  *
  */
-/*app.get('/api/member', function (req, res) {
+app.get('/api/member', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
@@ -2367,7 +2367,7 @@ app.get('/api/setup', function (req, res) {
     ]
   };
   res.send(result);
-});*/
+});
 
 /**
  * @apiName 获取Invitation信息
@@ -2378,13 +2378,6 @@ app.get('/api/invitation', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      users: [
-        {
-          name: "Yuhuibin",
-          email: "yuhb@qq.com",
-          owner: true
-        }
-      ],
       invitations: [
       ]
     }

@@ -37,7 +37,6 @@
       if (invitations.length > 0) {
         $scope.users = [];
         $scope.pendingUsers = [];
-
         invitations.forEach(function (invitation) {
           if (invitation.status) {
             $scope.users.push(invitation);
