@@ -1362,6 +1362,10 @@ h1.setting-title{
     text-align: center;
     visibility: hidden;
 }
+.my-price.my-price-select{
+    float: none;
+    margin:0 auto;
+}
 /*.plan-select.isVisiable{
     visibility: inherit;
 }*/
