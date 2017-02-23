@@ -2261,6 +2261,24 @@ app.post('/api/plans/:id', function (req, res) {
 });
 
 /**
+ * @apiName 获取Subscription change plan信息
+ *
+ *
+ * @apiParam {String} planId
+ *
+ */
+app.post('/api/free/trial/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      id:5
+    }
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 获取Domains信息
  *
  */

@@ -83,6 +83,21 @@ header.navbar {
 header .md-toolbar-tools {
     height: 52px;
 }
+.free-btn{
+    width: 100px;
+    height: 36px;
+    font-size: 13px;
+    background: #fff;
+    color: #2f9be1;
+    text-align: center;
+    line-height: 36px;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid rgba(128, 128, 128, 0.33);
+}
+.free-btn a{
+    display: block;
+}
 .home a.home-link,
 .setting a.setting-link{
     display: block;

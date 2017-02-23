@@ -6,6 +6,9 @@
         <h1>{{app.name}}</h1>
 
         <div flex></div>
+        <div class="free-btn" ng-show="freeBtnIsShow">
+            <a class="setting-link" ng-click="freeTrial()">Free Trial</a>
+        </div>
         <div class="home">
           <a class="home-link"  ui-sref="app.report.campaign"><i class="material-icons">home</i></a>
         </div>

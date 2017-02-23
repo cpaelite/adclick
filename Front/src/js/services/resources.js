@@ -59,6 +59,9 @@ angular.module('app')
   .factory('Plans', ['$resource', function($resource) {
     return $resource('/api/plans/:id', {id: '@id'})
   }])
+  .factory('FreeTrial', ['$resource', function($resource) {
+    return $resource('/api/free/trial/:id', {id: '@id'})
+  }])
   .factory('Setup', ['$resource', function($resource) {
     return $resource('/api/setup')
   }])

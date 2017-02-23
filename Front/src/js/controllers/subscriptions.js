@@ -45,12 +45,9 @@
   function changePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo){
 
     $scope.planId = this.planId;
-    // console.log(this.planId);
 
     Plans.get(null,function(plans){
       $scope.item = plans.data;
-      // $scope.html = plans.data.plan[0].desc;
-      // console.log(plans.data.plan.desc);
     });
 
 
