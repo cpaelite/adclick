@@ -41,7 +41,8 @@
 
     Plans.get(null,function(plans){
       $scope.item = plans.data;
-
+      // $scope.html = plans.data.plan[0].desc;
+      // console.log(plans.data.plan.desc);
     });
 
 

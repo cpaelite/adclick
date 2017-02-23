@@ -9,13 +9,13 @@
     <div class="pricing-box clearfix">
       <div>
         <ul class="clearfix">
-          <div class="li-con col-sm-4 col-md-4" ng-repeat="p in item.plan track by $index">
+          <div class="li-con col-sm-4 col-md-4" ng-repeat="p in item.plan">
             <div class="plan-select" ng-class="{'isVisiable':p.id == planId}">
               <i class="material-icons">done</i>
               <span>You are currently subscribed to this plan</span>
             </div>
             <li class=" w-md3 h-line">
-              <div style="color: #000;">{{p.desc}}</div>
+              <div style="color: #000;" ng-bind-html="p.desc"></div>
               <button class="btn p-btn btn-three p-btn-01" type="button" ng-click="editChangePlan(p)"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
             </li>
           </div>
