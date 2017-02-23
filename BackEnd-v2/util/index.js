@@ -24,6 +24,8 @@ exports.checkToken = function () {
       }
       req.userId = user[0].id;
       req.subId = user[0].id;  //子账户
+      req.subidText=user[0].idText;
+      req.subgroupId=user[0].groupId;
       req.idText = user[0].idText;
       req.groupId = user[0].groupId;
       req.firstname = user[0].firstname;

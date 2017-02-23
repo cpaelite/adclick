@@ -6,7 +6,7 @@ var log4js = require('log4js');
 var log = log4js.getLogger('user');
 var md5 = require('md5');
 var moment = require('moment');
-const dns = require('dns');
+ 
 var common = require('./common');
 var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
@@ -309,47 +309,7 @@ router.get('/timezones', function (req, res, next) {
     });
 });
 
-/**
- * @api {post} /domains/validatecname   
- * @apiName  dns verify
- * @apiGroup auth
- * @apiParam address
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{
-  "domain" : "www.keepin.tv",
-  "records" : [ {
-    "name" : "www.keepin.tv.",
-    "type" : "CNAME",
-    "value" : "9cmzk.voluumtrk.com."
-  }, {
-    "name" : "9cmzk.voluumtrk.com.",
-    "type" : "A",
-    "value" : "23.22.158.20"
-  }, {
-    "name" : "9cmzk.voluumtrk.com.",
-    "type" : "A",
-    "value" : "52.22.161.45"
-  }, {
-    "name" : "9cmzk.voluumtrk.com.",
-    "type" : "A",
-    "value" : "52.44.151.120"
-  } ],
-  "validationResult" : "MATCHED",
-  "expectedCName" : [ "9cmzk.voluumtrk2.com.", "9cmzk.voluumtrk.com.", "9cmzk.trackvoluum.com." ]
-}
- *     }
- *
- */
-router.post('/domains/validatecname', function (req, res, next) {
-    dns.resolveCname(req.body.address, (err, addresses) => {
-        console.log('addresses:', addresses);
-    });
-
-});
+ 
 
 
 router.get('/invitation', async function (req, res, next) {
@@ -382,14 +342,14 @@ router.get('/invitation', async function (req, res, next) {
                 text: ``, // plain text body
                 html: _.template(` <p>Hello,</p>
 
-                    <p>Welcome to Newbidder! Please follow the link to complete your registration (or copy/paste it in your browser):</p>
-                    <p>https://www.popads.net/users/reset/87436c100e1c0fa7c046</p>
+                    <p>Welcome to Newbidder! Please follow the link to complete your Profile (or copy/paste it in your browser):</p>
+                    <p>http://beta.newbidder.com/#/setApp/profile</p>
 
                     <p>YOUR USERNAME: <%=email%></p>
                     <p>YOUR SECRET: <%=password%></p>
 
                     <p>To reset your password follow the link below:</p>
-                    <p>https://www.popads.net/users/reset/87436c100e1c0fa7c046</p>
+                    <p>http://beta.newbidder.com/#/setApp/profile</p>
 
                     <p>If you have any questions, feel free to contact us at: support@newbidder.com</p>
 
@@ -402,7 +362,9 @@ router.get('/invitation', async function (req, res, next) {
                         password: password
                     })
             }
-            await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl)]);
+            //异步发送邮件 
+            emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
+            await  common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection);
             var expires = moment().add(200, 'days').valueOf();
             res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
             res.cookie("clientId", userSlice[0].groupId);

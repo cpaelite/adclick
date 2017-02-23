@@ -1,8 +1,10 @@
 const nodemailer = require('nodemailer');
 const _ =require('lodash');
+var log4js = require('log4js');
+var log = log4js.getLogger('email');
 
 let smtpConfig = {
-    host: 'smtp.exmail.qq.com',
+    host: 'hwsmtp.exmail.qq.com',
     port: 465,
     secure: true, // upgrade later with STARTTLS
     auth: {
@@ -15,23 +17,21 @@ let smtpConfig = {
 let transporter = nodemailer.createTransport(smtpConfig);
 
 
-async function sendMail(emails,tpl) {
-    return await new Promise(function (resolve, reject) {
+ function sendMail(emails,tpl) {
         // setup email data with unicode symbols
+        let emailString= emails.join(",");
         let mailOptions = {
             from: 'support@newbidder.com', // sender address
-            to: emails.join(",") // list of receivers
+            to: emailString// list of receivers
         };
         mailOptions=_.merge(mailOptions,tpl);
         transporter.sendMail(mailOptions, (error, info) => {
-            
             if (error) {
-                console.log(error)
-                reject(error);
+               log.error(error.message)
             }
-            resolve(info);
+            log.info("[Success][TO]",emailString,"[context]:",JSON.stringify(tpl));
         });
-    })
+   
 }
 
 exports.sendMail = sendMail;

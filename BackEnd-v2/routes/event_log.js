@@ -55,11 +55,11 @@ router.get('/api/eventlog', async function (req, res, next) {
             sqlTmp += "and user.`idText`= '<%= userId %>'";
         }
 
-        if (actionType !== 0){
+        if (actionType !== 0) {
             sqlTmp += "and log.`actionType`=" + actionType;
         }
 
-        if (entityType !== 0){
+        if (entityType !== 0) {
             sqlTmp += "and log.`entityType`=" + entityType;
         }
 
@@ -92,6 +92,49 @@ router.get('/api/eventlog', async function (req, res, next) {
             connection.release();
         }
 
+    }
+});
+
+
+router.get('/api/members', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        groupId: Joi.string().required()
+    });
+    let connection;
+    try {
+        req.query.userId = req.subId;
+        req.query.groupId = req.subgroupId;
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let results = [];
+        let members = await common.query("select g.`userId`,user.`email`,user.`idText` from UserGroup g left join User user on user.`id`= g.`userId` where g.`groupId`= ? and g.`deleted`= 0", [value.groupId], connection);
+        //如果是子账户请求 只显示他自己
+        if (!req.owner) {
+            for (let index = 0; index < members.length; index++) {
+                if (members[index].userId == value.userId) {
+                    results.push({ email: members[index].email, idText: members[index].idText });
+                }
+            }
+        } else {
+            for (let index = 0; index < members.length; index++) {
+                results.push({ email: members[index].email, idText: members[index].idText });
+            }
+        }
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                members: results
+            }
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
     }
 });
 

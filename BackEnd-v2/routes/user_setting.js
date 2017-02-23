@@ -41,7 +41,7 @@ router.get('/api/profile', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -122,7 +122,7 @@ router.post('/api/profile', async function (req, res, next) {
         timezone: Joi.string().required(),
         homescreen: Joi.string().required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -197,7 +197,7 @@ router.post('/api/password', async function (req, res, next) {
         oldpassword: Joi.string().required().trim(),
         newpassword: Joi.string().required().trim()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
 
     try {
@@ -260,7 +260,7 @@ router.post('/api/email', async function (req, res, next) {
         email: Joi.string().required(),
         password: Joi.string().required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -333,7 +333,7 @@ router.get('/api/referrals', async function (req, res, next) {
         limit: Joi.number().required().min(1),
         order: Joi.string().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -427,7 +427,7 @@ router.get('/api/billing', async function (req, res, next) {
         userId: Joi.number().required(),
         timezone: Joi.string().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -510,7 +510,7 @@ router.get('/api/plan', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -668,7 +668,7 @@ router.post('/api/domains', async function (req, res, next) {
             main: Joi.boolean().required()
         }).required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
     try {
         let insertData = [];
@@ -745,8 +745,8 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
         idText: Joi.string().required(),
         address: Joi.string().required()
     });
-    req.query.userId = req.userId;
-    req.query.idText = req.idText;
+    req.query.userId = req.subId;
+    req.query.idText = req.subidText;
     try {
         let cnames = [];
         let value = await common.validate(req.query, schema);
@@ -870,8 +870,8 @@ router.post('/api/blacklist', async function (req, res, next) {
             userAgentRules: Joi.array().required()
         })
     });
-    req.body.userId = req.userId;
-    req.body.idText = req.idText;
+    req.body.userId = req.subId;
+    req.body.idText = req.subidText;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -983,9 +983,9 @@ router.post('/api/invitation', async function (req, res, next) {
     });
     let connection;
     try {
-        req.body.userId = req.userId;
-        req.body.idText = req.idText;
-        req.body.groupId = req.groupId;
+        req.body.userId = req.subId;
+        req.body.idText = req.subidText;
+        req.body.groupId = req.subgroupId;
         let sendContext = [];
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
@@ -1023,30 +1023,26 @@ router.post('/api/invitation', async function (req, res, next) {
 
                 <p> Newbidder Team </p>`); // html body
 
-
-
-        //发送邀请邮件
-
-        async function send(sendContext) {
-            for (let i = 0; i < sendContext.length; i++) {
+        //异步发送邀请邮件
+        for (let i = 0; i < sendContext.length; i++) {
+            (function (context) {
                 tpl.html = htmlTpl(({
                     name: req.firstname,
                     companyname: req.campanyname ? req.campanyname : req.firstname,
-                    href: setting.invitationRouter + "?code=" +sendContext[i].code
+                    href: setting.invitationRouter + "?code=" + context.code
                 }));
-                await emailCtrl.sendMail([sendContext[i].email], tpl);
-            }
+                emailCtrl.sendMail([context.email], tpl);
+            })(sendContext[i])
         }
 
-        // 并发  
-        let results = await Promise.all([common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection), send(sendContext)])
+        let results = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
 
         await common.commit(connection);
         res.json({
             status: 1,
             message: 'success',
             data: {
-                invitations: results[0] ? results[0] : []
+                invitations: results
             }
         });
     } catch (e) {
@@ -1100,12 +1096,12 @@ router.get('/api/invitation', async function (req, res, next) {
     let connection;
 
     try {
-        req.query.userId = req.userId;
-        req.query.idText = req.idText;
-        req.query.groupId = req.groupId;
+        req.query.userId = req.subId;
+        req.query.idText = req.subidText;
+        req.query.groupId = req.subgroupId;
 
         let value = await common.validate(req.query, schema);
-        connection= await common.getConnection();
+        connection = await common.getConnection();
         let result = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
         return res.json({
             status: 1,
@@ -1147,8 +1143,8 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
     let connection;
 
     try {
-        req.query.userId = req.userId;
-        req.query.idText = req.idText;
+        req.query.userId = req.subId;
+        req.query.idText = req.subidText;
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         await common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
