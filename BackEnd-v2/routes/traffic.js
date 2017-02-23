@@ -6,7 +6,7 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
-var util =require('../util');
+var util = require('../util');
 
 
 /**
@@ -34,12 +34,14 @@ router.post('/api/traffics', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        postbackUrl: Joi.string().optional().regex(util.regWebURL,'postbackUrl').allow(""),
-        pixelRedirectUrl: Joi.string().optional().regex(util.regWebURL,'pixelRedirectUrl').allow(""),
+        postbackUrl: Joi.string().optional().regex(util.regWebURL, 'postbackUrl').allow(""),
+        pixelRedirectUrl: Joi.string().optional().regex(util.regWebURL, 'pixelRedirectUrl').allow(""),
         impTracking: Joi.number().optional(),
         externalId: Joi.string().optional().empty(""),
+        campaignId: Joi.string().optional().empty(""),
+        websiteId: Joi.string().optional().empty(""),
         cost: Joi.string().optional().empty(""),
-        params: Joi.string().optional().empty("") 
+        params: Joi.string().optional().empty("")
     });
 
     req.body.userId = req.userId
@@ -95,11 +97,13 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        postbackUrl: Joi.string().regex(util.regWebURL,'postbackUrl').optional().allow(""),
-        pixelRedirectUrl: Joi.string().regex(util.regWebURL,'pixelRedirectUrl').optional().allow(""),
+        postbackUrl: Joi.string().regex(util.regWebURL, 'postbackUrl').optional().allow(""),
+        pixelRedirectUrl: Joi.string().regex(util.regWebURL, 'pixelRedirectUrl').optional().allow(""),
         impTracking: Joi.number().optional(),
         externalId: Joi.string().optional().allow(""),
         cost: Joi.string().optional().allow(""),
+        campaignId: Joi.string().optional().allow(""),
+        websiteId: Joi.string().optional().allow(""),
         params: Joi.string().optional().allow(""),
         hash: Joi.string().required()
     });
@@ -110,7 +114,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
 
     try {
         let value = await common.validate(req.body, schema);
-         
+
         let connection = await common.getConnection();
         await common.updatetraffic(value.userId, value, connection);
 
@@ -206,7 +210,7 @@ router.get('/api/traffics', function (req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name`,`externalId`,`cost`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`params` from TrafficSource where `userId` = ? and `deleted` =0", [
+                "select  `id`,`name`,`externalId`,`cost`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`params`,`campaignId`,`websiteId` from TrafficSource where `userId` = ? and `deleted` =0", [
                     value.userId
                 ],
                 function (err, result) {
@@ -250,7 +254,7 @@ router.delete('/api/traffics/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deletetraffic(value.id, value.userId,connection);
+        let result = await common.deletetraffic(value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

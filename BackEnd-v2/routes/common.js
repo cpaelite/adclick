@@ -897,6 +897,16 @@ async function insertTrafficSource(userId, traffic, connection) {
         val += ",?";
         params.push(traffic.cost);
     }
+     if (traffic.campaignId) {
+        col += ",`campaignId`";
+        val += ",?";
+        params.push(traffic.campaignId);
+    }
+     if (traffic.websiteId) {
+        col += ",`websiteId`";
+        val += ",?";
+        params.push(traffic.websiteId);
+    }
     if (traffic.params) {
         col += ",`params`";
         val += ",?";
@@ -936,6 +946,14 @@ async function updatetraffic(userId, traffic, connection) {
         sqlUpdateOffer += ",`cost`=?";
         params.push(traffic.cost);
     }
+    if (traffic.campaignId != undefined) {
+        sqlUpdateOffer += ",`campaignId`=?";
+        params.push(traffic.campaignId);
+    }
+    if (traffic.websiteId != undefined) {
+        sqlUpdateOffer += ",`websiteId`=?";
+        params.push(traffic.websiteId);
+    }
     if (traffic.params != undefined) {
         sqlUpdateOffer += ",`params`=?";
         params.push(traffic.params);
@@ -952,7 +970,7 @@ async function updatetraffic(userId, traffic, connection) {
 }
 
 async function gettrafficDetail(id, userId, connection) {
-    let result = await query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], connection);
+    let result = await query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`campaignId`,`websiteId`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], connection);
     return result;
 }
 
