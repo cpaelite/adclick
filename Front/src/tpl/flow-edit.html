@@ -29,7 +29,7 @@
         <li ng-repeat="path in rule.paths" class="tree-li" ng-click="editPath(rule, path)" ng-class="{
           'cs-flow-active': onEdit=='path' && curPath==path,
           'cs-is-deleted': path.isDeleted,
-          'cs-is-disabled': !path.enabled
+          'cs-is-disabled': !(rule.enabled && path.enabled)
         }">
           <i class="material-icons tree-icon">album</i>
           <span class="cs-path-name clearfix">
