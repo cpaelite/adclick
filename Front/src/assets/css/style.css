@@ -1,8 +1,9 @@
 body{font-family:"Futura",Verdana,Helvetica, Tahoma, Arial, "\5b8b\4f53", sans-serif;}
 @font-face {
     font-family:"Futura"! important;
-    src:url("../font/Futura.ttc");
+    src:url("../../assets/fonts/Futura.ttc");
 }
+.md-accent,.md-primary{border-radius:0;}
 .modal-open {
     overflow: inherit !important;padding-right: 0 !important;}
 .small-font{

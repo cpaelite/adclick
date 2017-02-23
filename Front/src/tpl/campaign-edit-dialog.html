@@ -12,7 +12,7 @@
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <input type="text" name="name" class="form-control" ng-model="item.name"
                         ng-change="nameChanged(item.name)"
                         ng-blur="nameRequired()"
@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <input type="text" name="url" class="form-control campaign-url" ng-model="campaignUrl" ng-show="campaignUrl" ng-readonly="true">
                     <label ng-show="!campaignUrl">ID will be available after saving the campaign.</label>
                 </div>
@@ -42,7 +42,7 @@
             </div>
             <div class="form-group" ng-show="impTracking==1">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <input type="text" name="impPixelUrl" class="form-control" ng-model="impPixelUrl" ng-show="impPixelUrl" ng-readonly="true">
                     <label ng-show="!impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
                         <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
@@ -68,7 +68,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
@@ -77,7 +77,7 @@
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Cost Model：</label>
-                <div class="col-sm-5 campaign-radio">
+                <div class="col-sm-9 campaign-radio">
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.costModel" value="0">Do not track costs
                     </label>
@@ -98,7 +98,7 @@
 
             <div class="form-group CPC-Con" ng-show="item.costModel==1 || item.costModel==2 || item.costModel==3">
                 <label class="col-sm-3 control-label">{{radioTitle}}：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <span class="dollar-icon">$</span>
                     <input type="text" class="form-control dollar-input" ng-model="costModelValue" ng-value="$">
                 </div>
@@ -106,7 +106,7 @@
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Redirect Model：</label>
-                <div class="col-sm-5 campaign-radio">
+                <div class="col-sm-9 campaign-radio">
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.redirectMode" value="0">302
                     </label>
@@ -121,7 +121,7 @@
             </div>
             <div class="form-group tag-items">
                 <label class="col-sm-3 control-label">Tags：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-9">
                     <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
                     <!-- <md-chips
                             ng-model="tags"
@@ -142,30 +142,30 @@
                     <div class="label-con">
                         <i class="material-icons">settings</i>
                         <label>Advanced</label>
-                        <i class="material-icons arrow-down">keyboard_arrow_down</i>
+                        <i class="icon-caret-down"></i>
                     </div>
                 </div>
                 <div class="collapse-wrapper" ng-show="visible">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Postback URL：</label>
-                        <div class="col-sm-5">
+                        <div class="col-sm-6">
                             <input type="text" class="form-control" ng-model="trafficPostbackUrl" ng-readonly="btnOverride1 == 'Override'">
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                             <md-button clipboard class="md-raised copied-btn" ng-click="postbackurlOverride()">
-                                <i class="material-icons">mode_edit</i>
+                                <i class="icon-edit"></i>
                                 {{btnOverride1}}
                             </md-button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Pixel redirect URL：</label>
-                        <div class="col-sm-5">
+                        <div class="col-sm-6">
                             <input type="text" class="form-control" ng-model="trafficPixelRedirectUrl" ng-readonly="btnOverride2 == 'Override'">
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                             <md-button clipboard class="md-raised copied-btn" ng-click="pixelredirecturlOverride()">
-                                <i class="material-icons">mode_edit</i>
+                                <i class="icon-edit"></i>
                                 {{btnOverride2}}
                             </md-button>
                         </div>
@@ -197,11 +197,11 @@
                 <div class="form-group flow-actions">
                     <ul>
                         <li class="new-flow" ng-click="toAddFlow()">
-                            <i class="material-icons">add</i>
+                            <i class="icon-plus"></i>
                             Create new flow
                         </li>
                         <li class="edit-flow" ng-show="item.flow" ng-click="toEditFlow()">
-                            <i class="material-icons">edit</i>
+                            <i class="icon-plus"></i>
                             Edit flow
                         </li>
                     </ul>
@@ -244,7 +244,7 @@
                     <div class="label-con">
                         <i class="material-icons">transform</i>
                         <label>Flow preview</label>
-                        <i class="material-icons arrow-down">keyboard_arrow_down</i>
+                        <i class="icon-caret-down"></i>
                     </div>
                 </div>
             </div>
@@ -253,7 +253,6 @@
               <div class="col-md-7">
                 <div class="cs-flow-rule">
                   <div class="tree-li">
-                    <i class="material-icons tree-icon">album</i>
                     <span class="cs-flow-name ng-binding">{{flow.name}}</span>
                   </div>
                 </div>
@@ -263,7 +262,6 @@
                       <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': rule.isShow}">keyboard_arrow_down</i>
                     </span>
                     <span class="cs-path-name">
-                      <i class="material-icons tree-icon">album</i>
                       <span class="cs-rule-name ng-binding">{{rule.name}}</span>
                     </span>
                   </div>
@@ -272,7 +270,6 @@
                       <span>
                         <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': path.isShow}">keyboard_arrow_down</i>
                       </span>
-                      <i class="material-icons tree-icon">album</i>
                       <span class="cs-path-name clearfix">
                         <span class="path-name ng-binding">{{path.name}} </span>
                         <span class="weight-num ng-binding">
@@ -286,14 +283,13 @@
                             <span>
                               <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': offerItem.isShow}">keyboard_arrow_down</i>
                             </span>
-                            <i class="material-icons tree-icon">album</i>
                             <span class="cs-path-name clearfix">
                               <span class="path-name ng-binding">Offers</span>
                             </span>
                           </li>
                           <div ng-repeat="offer in path.offers" ng-hide="offerItem.isShow">
                             <li class="tree-li fourth-tree-li ng-scope">
-                              <i class="material-icons tree-icon">album</i>
+                              <i class="icon-double-angle-right tree-icon"></i>
                               <span class="cs-path-name clearfix">
                                 <span class="path-name ng-binding">{{offer.name}}</span>
                                 <span class="weight-num ng-binding">
@@ -310,14 +306,13 @@
                                 <span>
                                     <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': landerItem.isShow}">keyboard_arrow_down</i>
                                 </span>
-                                <i class="material-icons tree-icon">album</i>
                                 <span class="cs-path-name clearfix">
                                     <span class="path-name ng-binding">Landers</span>
                                 </span>
                             </li>
                             <div ng-repeat="lander in path.landers" ng-hide="landerItem.isShow">
                                 <li class="tree-li fourth-tree-li ng-scope">
-                                    <i class="material-icons tree-icon">album</i>
+                                    <i class="icon-double-angle-right tree-icon"></i>
                                     <span class="cs-path-name clearfix">
                                         <span class="path-name ng-binding">{{lander.name}}</span>
                                         <span class="weight-num ng-binding">
