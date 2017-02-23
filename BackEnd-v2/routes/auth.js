@@ -50,7 +50,7 @@ router.post('/auth/login', async function (req, res, next) {
             if (rows[0].password == md5(value.password)) {
                 let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
                 if (userGroup.length == 0) {
-                    throw new Error("clientId error");
+                    throw new Error("account exception");
                 }
                 let clientId = userGroup[0].groupId;
                 var expires = moment().add(200, 'days').valueOf();
