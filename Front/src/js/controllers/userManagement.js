@@ -33,6 +33,9 @@
 
     function fillUsers(invitations) {
       if (invitations.length > 0) {
+        $scope.users = [];
+        $scope.pendingUsers = [];
+
         invitations.forEach(function (invitation) {
           if (invitation.status) {
             $scope.users.push(invitation);
@@ -51,8 +54,6 @@
       if (thePlan) {
         $scope.plan = thePlan;
       }
-      $scope.users = [];
-      $scope.pendingUsers = [];
       $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
       if (theInvitation) {
         fillUsers(theInvitation);
