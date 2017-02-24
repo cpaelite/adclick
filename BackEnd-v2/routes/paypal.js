@@ -25,22 +25,21 @@ router.get('/paypal/success', async function(req, res, next) {
       })
     })
 
+    let agreement = await PBA.findOne({where: {token}})
+    let template_plan = await TP.findOne({where: {paypalPlanId: agreement.paypalPlanId}})
+    let upm = await UPM.create({
+      userId: agreement.userId,
+      type: 1,
+      paypalAgreementId: agreement.id,
+      info: `${template_plan.name}`,
+      changedAt: moment().unix(),
+      deleted: 0
+    });
+
     await PBA.sequelize.transaction(async (transaction) => {
-      let agreement = await PBA.findOne({where: {token}})
-      let template_plan = await TP.findOne({where: {paypalPlanId: agreement.paypalPlanId}})
-
-      let upm = await UPM.create({
-        userId: agreement.userId,
-        type: 1,
-        paypalAgreementId: agreement.id,
-        info: `${template_plan.name}`,
-        changedAt: moment().unix(),
-        deleted: 0
-      }, {transaction});
-
       let upl = await UPL.create({
         userId: agreement.userId,
-        paymenMethod: upm.id,
+        paymentMethod: upm.id,
         amount: template_plan.onSalePrice,
         tax: 0,
         goodsType: 1,
@@ -65,6 +64,8 @@ router.get('/paypal/success', async function(req, res, next) {
         freeEvents: 0,
         overageEvents: 0,
         includedEvents: template_plan.eventsLimit,
+        nextPlanId: 0, //TODO:
+        nextPaymentMethod: 0, //TODO:
         expired: 0
       }, {transaction})
     })
@@ -77,5 +78,6 @@ router.get('/paypal/success', async function(req, res, next) {
 
 
 router.get('/paypal/cancel', async function(req, res, next) {
+    //TODO: update agreement status log to db
   res.redirect('/#/setApp/subscriptions?message=cancel');
 })

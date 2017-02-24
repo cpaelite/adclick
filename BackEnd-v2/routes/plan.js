@@ -152,7 +152,8 @@ router.post('/api/plans/:id', async (req, res, next) => {
       approvalUrl: approval_url,
       executeUrl: execute_url,
       createReq: JSON.stringify(billingAgreementAttributes),
-      createResp: JSON.stringify(billingAgreement)
+      createResp: JSON.stringify(billingAgreement),
+      status: 1
     }).save()
 
   } catch (e) {

@@ -4,7 +4,7 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    paymenMethod: {
+    paymentMethod: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
