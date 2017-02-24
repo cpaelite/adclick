@@ -576,127 +576,127 @@ angular.module('app').value('columnDefinition', {
       name: 'ERRORS'
     }],
     conversion: [{
-      key: 'postbackTimestamp',
+      key: 'PostbackTimestamp',
       name: 'Postback timestamp'
     }, {
-      key: 'visitTimestamp',
+      key: 'VisitTimestamp',
       name: 'Visit timestamp'
     }, {
-      key: 'externalId',
+      key: 'ExternalID',
       name: 'External ID'
     }, {
-      key: 'clickId',
+      key: 'ClickID',
       name: 'Click ID'
     }, {
-      key: 'transactionId',
+      key: 'TransactionID',
       name: 'Transaction ID'
     }, {
-      key: 'revenue',
+      key: 'Revenue',
       name: 'Revenue'
     }, {
-      key: 'cost',
+      key: 'Cost',
       name: 'Cost'
     }, {
-      key: 'campaignId',
+      key: 'CampaignID',
       name: 'Campaign ID'
     }, {
-      key: 'campaignName',
+      key: 'CampaignName',
       name: 'Campaign'
     }, {
-      key: 'landerName',
+      key: 'LanderName',
       name: 'Lander'
     }, {
-      key: 'landerId',
+      key: 'LanderID',
       name: 'Lander ID'
     }, {
-      key: 'offerName',
+      key: 'OfferName',
       name: 'Offer'
     }, {
-      key: 'offerId',
+      key: 'OfferID',
       name: 'Offer ID'
     }, {
-      key: 'countryName',
+      key: 'Country',
       name: 'Country'
     }, {
-      key: 'countryCode',
+      key: 'CountryCode',
       name: 'Country code'
     }, {
-      key: 'trafficSourceName',
+      key: 'TrafficSourceName',
       name: 'Traffic source'
     }, {
-      key: 'trafficSourceId',
+      key: 'TrafficSourceID',
       name: 'Traffic source ID'
     }, {
-      key: 'affiliateNetworkName',
+      key: 'AffiliateNetworkName',
       name: 'Affiliate network'
     }, {
-      key: 'affiliateNetworkId',
+      key: 'AffiliateNetworkID',
       name: 'Affiliate network ID'
     }, {
-      key: 'deviceName',
+      key: 'Device',
       name: 'Device'
     }, {
-      key: 'os',
+      key: 'OS',
       name: 'Operating system'
     }, {
-      key: 'osVersion',
+      key: 'OSVersion',
       name: 'OS version'
     }, {
-      key: 'brand',
+      key: 'Brand',
       name: 'Brand'
     }, {
-      key: 'model',
+      key: 'Model',
       name: 'Model'
     }, {
-      key: 'browser',
+      key: 'Browser',
       name: 'Browser'
     }, {
-      key: 'browserVersion',
+      key: 'BrowserVersion',
       name: 'Browser version'
     }, {
-      key: 'isp',
+      key: 'ISP',
       name: 'ISP / Carrier'
     }, {
-      key: 'mobileCarrier',
+      key: 'MobileCarrier',
       name: 'Mobile carrier'
     }, {
-      key: 'connectionTypeName',
+      key: 'ConnectionType',
       name: 'Connection type'
     }, {
-      key: 'ip',
+      key: 'VisitorIP',
       name: 'Visitor IP'
     }, {
-      key: 'referrer',
+      key: 'VisitorReferrer',
       name: 'Visitor Referrer'
     }, {
-      key: 'customVariable1',
+      key: 'V1',
       name: 'V1'
     }, {
-      key: 'customVariable2',
+      key: 'V2',
       name: 'V2'
     }, {
-      key: 'customVariable3',
+      key: 'V3',
       name: 'V3'
     }, {
-      key: 'customVariable4',
+      key: 'V4',
       name: 'V4'
     }, {
-      key: 'customVariable5',
+      key: 'V5',
       name: 'V5'
     }, {
-      key: 'customVariable6',
+      key: 'V6',
       name: 'V6'
     }, {
-      key: 'customVariable7',
+      key: 'V7',
       name: 'V7'
     }, {
-      key: 'customVariable8',
+      key: 'V8',
       name: 'V8'
     }, {
-      key: 'customVariable9',
+      key: 'V9',
       name: 'V9'
     }, {
-      key: 'customVariable10',
+      key: 'V10',
       name: 'V10'
     }]
 });

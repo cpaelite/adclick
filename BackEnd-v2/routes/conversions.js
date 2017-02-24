@@ -15,7 +15,7 @@ var setting = require('../config/setting');
  * @apiParam {Number} limit
  * @apiParam {Number} page
  * @apiParam {String} tz
- * @apiParam {String} sort
+ * @apiParam {String} order
  * 
  */
 router.get('/api/conversions', async function (req, res, next) {
@@ -24,7 +24,7 @@ router.get('/api/conversions', async function (req, res, next) {
         to: Joi.string().required(),
         limit: Joi.number().required().min(0),
         page: Joi.number().required(),
-        sort: Joi.string().required(),
+        order:  Joi.string().required(),
         tz: Joi.string().required(),
         user: Joi.number().required()
     });
@@ -39,7 +39,7 @@ router.get('/api/conversions', async function (req, res, next) {
             from,
             to,
             tz,
-            sort,
+            order,
             user
         } = value;
         limit = parseInt(limit)
@@ -66,20 +66,23 @@ router.get('/api/conversions', async function (req, res, next) {
         });
         let countSql = "select COUNT(*) as `total`,sum(`Revenue`) as Revenue,sum(`Cost`) as Cost from ((" + sql + ") as T)";
 
-        if (sort.indexOf('-') >= 0) {
+        if (order.indexOf('-') >= 0) {
             dir = "desc";
-            sort = sort.replace(new RegExp(/-/g), '');
+            order = order.replace(new RegExp(/-/g), '');
         }
 
-        sql += "order by " + sort + " " + dir + "  limit " + offset + "," + limit;
-
+        sql += "order by "+ order +" " + dir +"  limit " + offset + "," + limit ;
         connection = await common.getConnection();
         let result = await Promise.all([query(sql, connection), query(countSql, connection)]);
         res.json({
             status: 1,
             message: 'success',
             data: {
-                totalRows: result[1],
+                totalRows: result[1][0] ? result[1][0].total : 0,
+                totals: {
+                    Cost: result[1][0] ? result[1][0].Cost : 0,
+                    Revenue: result[1][0] ? result[1][0].Revenue : 0
+                },
                 rows: result[0]
             }
         });

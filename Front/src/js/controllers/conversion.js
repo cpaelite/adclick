@@ -30,7 +30,7 @@
           $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
           angular.extend($scope.query, {
             limit: newVal.reportViewLimit,
-            order: 'postbackTimestamp',
+            order: 'PostbackTimestamp',
             tz: newVal.reportTimeZone
           });
 
@@ -89,7 +89,7 @@
           });
         }
 
-        getList();
+        // getList();
 
         function getDateRange(value) {
           var fromDate = moment().format('YYYY-MM-DD');

@@ -105,6 +105,6 @@ angular.module('app')
     return $resource('/api/members');
   }])
   .factory('Conversion', ['$resource', function ($resource) {
-    return $resource('/api/conversion');
+    return $resource('/api/conversions');
   }])
 ;
