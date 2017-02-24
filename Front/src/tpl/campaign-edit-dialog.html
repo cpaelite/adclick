@@ -28,11 +28,11 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">CampaignlUrl：</label>
-                <div class="col-sm-9">
+                <div class="col-sm-7">
                     <input type="text" name="url" class="form-control campaign-url" ng-model="campaignUrl" ng-show="campaignUrl" ng-readonly="true">
                     <label ng-show="!campaignUrl">ID will be available after saving the campaign.</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <md-button clipboard class="md-raised copied-btn" ng-show="campaignUrl" text="campaignUrl" ng-click="itemUrlClick()">
                         <i class="material-icons">content_copy</i>
                         {{btnWord1}}
@@ -42,11 +42,11 @@
             </div>
             <div class="form-group" ng-show="impTracking==1">
                 <label class="col-sm-3 control-label">ImpressionPixelUrl：</label>
-                <div class="col-sm-9">
+                <div class="col-sm-7">
                     <input type="text" name="impPixelUrl" class="form-control" ng-model="impPixelUrl" ng-show="impPixelUrl" ng-readonly="true">
                     <label ng-show="!impPixelUrl">ID will be available after saving the campaign.</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <md-button clipboard class="md-raised copied-btn" ng-show="impPixelUrl" text="impPixelUrl" ng-click="impPixelUrlClick()">
                         <i class="material-icons">content_copy</i>
                         {{btnWord2}}
@@ -56,7 +56,8 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
-                <div class="col-sm-9">
+                <div class="col-sm-9 my-select2">
+                    <i class="icon-sort-down"></i>
                     <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
                         <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
@@ -68,7 +69,8 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
-                <div class="col-sm-9">
+                <div class="col-sm-9 my-select">
+                    <i class="icon-sort-down"></i>
                     <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
@@ -187,7 +189,8 @@
             <div class="flow-action" ng-show="item.targetType==1">
                 <div class="form-group flow-select">
                     <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-8 my-select3">
+                        <i class="icon-sort-down"></i>
                         <select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
                             <option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</option>
                         </select>

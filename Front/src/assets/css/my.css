@@ -649,11 +649,11 @@ md-content.cs-main-content{
 }
 
 .url-tokens-row .url-token{
-    border-radius: 4px;
+    border-radius:2px;
     cursor: pointer;
-    margin: 0px 8px 8px 0;
+    margin: 0 8px 8px 0;
     line-height: 12px;
-    background-color: #8d8d8d;
+    background-color: #777;
     color: #fff;
     padding: 5px;
 }
@@ -941,7 +941,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     height:34px;line-height:34px;padding:0 12px;
     box-shadow: none !important;
     background: #2f9be1;
-    margin: 0;
+    margin:0 0 0 -5px;
     font-size: 12px;
     /*float: right;*/
     color: #fff;
@@ -951,7 +951,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     background: #2da8f9 !important;
 }
 .md-raised.copied-btn .material-icons{
-    font-size: 18px;
+    font-size: 13px;
 }
 .report .right-select{
     float: right;
@@ -1074,7 +1074,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     margin-left: 15px;
 }
 .my-btn .cs-add-button{
-    padding: 0 12px;
+    padding: 0 11px;
     font-weight:normal;
 }
 .my-btn .cs-add-button .btn-icon{
@@ -1121,8 +1121,11 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
 .network-textarea .note{
     margin: 15px 0;
     display: block;
+    font-style:normal;color:#999;
 }
 .network-textarea textarea{
+    border:1px solid #d5dce4;
+border-radius:2px;
     width: 100%;
     min-height: 100px;
     resize: none;
@@ -1264,7 +1267,6 @@ h1.setting-title p{line-height:26px;color:#666;}
     line-height: 38px;
 }
 .basic-form .campaign-radio input[type="radio"]{
-    margin-top: 13px;
 }
 .profile-content{
     padding:50px 30px;
@@ -1673,6 +1675,7 @@ h1.setting-title p{line-height:26px;color:#666;}
 }
 .plan-btn .md-raised.copy-btn{
     padding: 0 25px;
+    font-weight:normal;
 }
 .setting-title p{
     font-size: 13px;
@@ -1713,7 +1716,6 @@ input[type="checkbox"].th-checkbox{
     font-weight: bold;
     float: left;
     display: block;
-    line-height: 38px;
     margin-right: 15px;
 }
 .bot-blacklist-content{
@@ -2415,6 +2417,11 @@ md-select:not([disabled]):focus .md-select-value{
 
 
 /* sasa.css */
+.form-horizontal .cs-subform-select{position:relative;}
+.my-select .icon-sort-down{position:absolute;left:80px;float:left}
+.my-select2 .icon-sort-down{position:absolute;left:120px;float:left}
+.my-select3 .icon-sort-down{position:absolute;left:65px;float:left}
+
 select {
     border: solid 1px #000;
     -webkit-border-radius:3px;
@@ -2425,6 +2432,7 @@ select {
     -webkit-appearance:none;
     padding:0 25px 0 10px;
 }
+.form-control{padding:6px;}
 .icon-sort-down{position:relative;z-index:1;top:9px;right:22px;float:right;color:#666;}
 .url-tokens-row i{font-style:normal;color:#999;}
 md-table-container{max-height:430px;overflow-y:auto;}
@@ -2499,7 +2507,7 @@ md-option .md-text{font-size:14px;color:#333;}
 .dropdown-menu{padding:0;}
 .dropdown-menu li a{padding:10px;font-weight:500;}
 md-icon{min-height:auto;min-width:auto;}
-.md-button{min-height:34px;}
+.md-button{min-height: 32px;min-width:80px;font-size: 12px;font-weight: 600;}
 .md-select-value .md-select-icon{margin:2px 4px;}
 md-dialog .md-dialog-content{padding:50px;}
 .form-horizontal .cs-subform-select{margin-top:0;border-radius:2px;}

@@ -60,7 +60,8 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 my-select">
+                    <i class="icon-sort-down"></i>
                     <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
@@ -68,7 +69,8 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 my-select">
+                    <i class="icon-sort-down"></i>
                     <select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
                         <option value="0"></option>
                         <option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</option>
