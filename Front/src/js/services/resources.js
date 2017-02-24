@@ -98,4 +98,7 @@ angular.module('app')
   .factory('Plan', ['$resource', function ($resource) {
     return $resource('/api/plan');
   }])
+  .factory('Member', ['$resource', function ($resource) {
+    return $resource('/api/member');
+  }])
 ;

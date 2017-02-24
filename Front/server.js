@@ -2355,10 +2355,16 @@ app.get('/api/member', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
-    data: {
-      idText: "dji9012",
-      email: "test@qq.com",
-    }
+    data: [
+      {
+        idText: "dji9012",
+        email: "test1@qq.com",
+      },
+      {
+        idText: "dji9013",
+        email: "test2@qq.com",
+      }
+    ]
   };
   res.send(result);
 });
@@ -2628,6 +2634,7 @@ app.put('/api/blacklist', function (req, res) {
  *
  * @apiParam {String} from: 2017-02-01
  * @apiParam {String} to: 2017-02-10
+ * @apiParam {String} tz: +08:00
  * @apiParam {Number} page:1
  * @apiParam {Number} limit:500
  * @apiParam {String} userId:1  {option}

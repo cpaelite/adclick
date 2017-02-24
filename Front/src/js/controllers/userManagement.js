@@ -32,9 +32,9 @@
     initPromises.push(prms);
 
     function fillUsers(invitations) {
+      $scope.users = [];
+      $scope.pendingUsers = [];
       if (invitations.length > 0) {
-        $scope.users = [];
-        $scope.pendingUsers = [];
         invitations.forEach(function (invitation) {
           if (invitation.status) {
             $scope.users.push(invitation);
@@ -53,10 +53,10 @@
       if (thePlan) {
         $scope.plan = thePlan;
       }
-      $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
       if (theInvitation) {
         fillUsers(theInvitation);
       }
+      $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
     }
 
     $q.all(initPromises).then(initSuccess);

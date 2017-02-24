@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('EventLogCtrl', [
-      '$scope', '$mdDialog', 'Profile', 'EventLog',
+      '$scope', '$mdDialog', 'Profile', 'Member', 'EventLog',
       EventLogCtrl
     ]);
 
-  function EventLogCtrl($scope, $mdDialog, Profile, EventLog) {
+  function EventLogCtrl($scope, $mdDialog, Profile, Member, EventLog) {
     $scope.app.subtitle = "EventLog";
     $scope.hours = [];
     for (var i = 0; i < 24; ++i) {
@@ -48,6 +48,10 @@
     profilePromise.then(function (profile) {
       $scope.query.tz = profile.data.timezone;
       $scope.getList();
+    });
+
+    Member.get(null, function (members) {
+      $scope.members = members.data;
     });
 
     function success(items) {

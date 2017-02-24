@@ -3,15 +3,17 @@
 
   angular.module('app')
     .controller('SetUpCtrl', [
-      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl',
+      '$scope', '$timeout', 'Setup',
       SetUpCtrl
     ]);
 
-  function SetUpCtrl($scope, $timeout, Domains, DefaultPostBackUrl) {
+  function SetUpCtrl($scope, $timeout, Setup) {
     $scope.app.subtitle = 'SetUp';
 
-    $scope.item = {};
-    Domains.get(null, function (domains) {
+    Setup.get(null, function (setup) {
+      $scope.item = setup.data;
+    });
+    /*Domains.get(null, function (domains) {
       var domains = domains.data;
       domains.internal.forEach(function (internal) {
         if (internal.main) {
@@ -32,16 +34,13 @@
 
     DefaultPostBackUrl.get(null, function (postbackUrl) {
       $scope.item.postbackurl = postbackUrl.data.defaultPostBackUrl;
-    });
+    });*/
 
     $scope.btn = {
       copy1: "Copy to clipboard",
       copy2: "Copy to clipboard",
       copy3: "Copy to clipboard",
-      copy4: "Copy to clipboard",
-      copy5: "Copy to clipboard",
-      copy6: "Copy to clipboard",
-      copy7: "Copy to clipboard"
+      copy4: "Copy to clipboard"
     };
     $scope.itemUrlClick = function (copy) {
       $scope.btn[copy] = "Copied";
