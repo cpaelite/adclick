@@ -2422,6 +2422,22 @@ app.post('/api/invitation', function (req, res) {
 });
 
 /**
+ * @apiName conversion
+ *
+ * @apiParam [String] conversion content
+ *
+ */
+app.post('/api/conversion', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      content:'c384EFV6JHQODRN70575OK6UG5, 10.0, abc1234'
+    }
+  };
+  res.send(result);
+});
+/**
  * @apiName 删除Invitation信息
  *
  */

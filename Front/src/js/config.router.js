@@ -170,6 +170,12 @@
         templateUrl: 'tpl/eventLog.html',
         controller: 'EventLogCtrl',
         data: {}
+      })
+      .state('setApp.conversionUpload', {
+        url: '/conversionUpload',
+        templateUrl: 'tpl/conversionUpload.html',
+        controller: 'ConversionUploadCtrl',
+        data: {}
       });
   }
 })();

@@ -67,6 +67,9 @@ angular.module('app')
   }])
   .factory('Invitation', ['$resource', function($resource) {
     return $resource('/api/invitation/:id', {id: '@id'})
+  }])  
+  .factory('Conversion', ['$resource', function($resource) {
+    return $resource('/api/conversion/:id', {id: '@id'})
   }])
   .factory('Invoices', ['$resource', function($resource) {
     return $resource('/api/invoices')

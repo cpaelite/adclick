@@ -1277,6 +1277,23 @@ h1.setting-title p{line-height:26px;color:#666;}
 .password-change .profile-form-footer{
     margin-right: 0;
 }
+.conversion .profile-form-footer .save-btn{
+    float: left;
+}
+.conversion .profile-form-footer .close-btn{
+    float: right;
+    margin: 0;
+}
+.conversion .upload-con{
+    width: 100%;
+    margin-bottom: 20px;
+    min-height: 100px;
+    padding: 10px;
+}
+.conversion .profile-form-footer{
+    margin-right: 0;
+    width: 185px;
+}
 .profile-form-footer{
     width: 220px;
     float: right;
@@ -1419,6 +1436,12 @@ h1.setting-title p{line-height:26px;color:#666;}
     float: right;
     font-size: 14px;
     font-weight: normal;
+}
+.conversion .domain-p .material-icons{
+    margin-top: -3px;
+}
+.conversion .domain-p span{
+    color: #2f9be1;
 }
 .domain-p .material-icons{font-size:14px;margin-right:5px;color:#666;
 }
@@ -1672,6 +1695,7 @@ input[type="checkbox"].th-checkbox{
     height: 15px;
     margin: 0;
 }
+
 .referral-program .profile-form-footer{
     margin-top: 40px;
 }
