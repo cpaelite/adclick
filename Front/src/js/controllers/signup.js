@@ -3,18 +3,17 @@
 
   angular.module('app')
     .controller('SignupCtrl', [
-      '$scope', '$auth', '$state', '$location', 'toastr', 'AccountCheck', 'userPreferences',
+      '$scope', '$auth', '$state', '$location', 'toastr', 'AccountCheck',
       SignupCtrl
     ]);
 
-  function SignupCtrl($scope, $auth, $state, $location, toastr, AccountCheck, userPreferences) {
+  function SignupCtrl($scope, $auth, $state, $location, toastr, AccountCheck) {
     $scope.app.subtitle = 'Sign up';
     console.log($scope.$stateParams.t);
     var refToken = $location.$$search.refToken;
-    $scope.user = {
-      json: JSON.stringify(userPreferences)
-    };
-    $scope.user.refToken = refToken;
+    if (refToken) {
+      $scope.user.refToken = refToken;
+    }
     $scope.signup = function () {
       $auth.signup($scope.user, {ignoreAuthModule: true})
         .then(function (response) {

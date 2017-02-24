@@ -1,4 +1,4 @@
-<h1 class="setting-title">
+\<h1 class="setting-title">
   Event log
   <p>Event log enables you to browse changes that were made in your account.
   A detailed overview of this feature can be found here.</p>
@@ -8,11 +8,12 @@
     <div class="form-group bot-select">
       <md-select class="cs-subform-select" ng-model="filter.userId">
         <md-option value="ALL">All users</md-option>
+        <md-option ng-repeat="member in members" value="{{member.idText}}">{{member.email}}</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
       <md-select class="cs-subform-select" ng-model="filter.actionType">
-        <md-option value="0" selected>All actions</md-option>
+        <md-option value="0">All actions</md-option>
         <md-option value="1">Create</md-option>
         <md-option value="2">Change</md-option>
         <md-option value="3">Archive</md-option>
@@ -21,7 +22,7 @@
     </div>
     <div class="form-group bot-select">
       <md-select class="cs-subform-select" ng-model="filter.entityType">
-        <md-option value="0" selected>All entity types</md-option>
+        <md-option value="0">All entity types</md-option>
         <md-option value="1">Campaign</md-option>
         <md-option value="2">Lander</md-option>
         <md-option value="3">Offer</md-option>

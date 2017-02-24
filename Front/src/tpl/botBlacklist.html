@@ -3,7 +3,7 @@
   <p>Bot Blacklist permits you to add bot rules based on IP / IP range and useragent values.
 Once bot rules are enabled, they will be applied globally to all active campaigns with bot traffic events excluded from your reporting.</p>
   <p>Further information regarding the use of the Bot Blacklist can be referenced here.
-The maximum amount of the bot rules that can be created is {{blacklistCount}}. You can still add {{blacklistCount - items.length}} bot rule(s).</p>
+The maximum amount of the bot rules that can be created is {{blacklistCount}}. You can still add {{blacklistCount - data.blacklist.length}} bot rule(s).</p>
 </h1>
 <div class="form-column bot-blacklist">
   <div class="bot-blacklist-content clearfix">
@@ -14,7 +14,7 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
             <md-option value="false">Disabled</md-option>
         </md-select>
     </div>
-    <div class="btn-right">
+    <div class="btn-right" ng-show="data.blacklist.length < blacklistCount">
       <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="material-icons">add</i>Create New</md-button>
       <!-- <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
       <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button> -->

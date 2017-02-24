@@ -1463,6 +1463,17 @@
         } else {
           $scope.externalId = {};
         }
+        if ($scope.item.campaignId) {
+          $scope.campaignId = JSON.parse($scope.item.campaignId);
+        } else {
+          $scope.campaignId = {};
+        }
+        if ($scope.item.websiteId) {
+          $scope.websiteId = JSON.parse($scope.item.websiteId);
+        } else {
+          $scope.websiteId = {};
+        }
+
         if (!$scope.item.params) {
           $scope.params = [
             {Parameter: '', Placeholder: '', Name: '', Track: 0},
@@ -1489,6 +1500,12 @@
         Parameter: '', Placeholder: '', Name: ''
       };
       $scope.cost = {
+        Parameter: '', Placeholder: '', Name: ''
+      };
+      $scope.campaignId = {
+        Parameter: '', Placeholder: '', Name: ''
+      };
+      $scope.websiteId = {
         Parameter: '', Placeholder: '', Name: ''
       };
       $scope.params = [
@@ -1570,61 +1587,123 @@
     };
 
     $scope.$watch('externalId.Parameter', function (newValue, oldValue) {
-      if(!newValue) {
-        if ($scope.externalId) {
-          delete $scope.externalId.Placeholder;
-        }
+      var placeholder = $scope.externalId.Placeholder;
+      if (!placeholder && !newValue) {
         return;
       }
-      var placeholder = $scope.externalId.Placeholder;
-      if (placeholder) {
-        placeholder = placeholder.substring(1, placeholder.length - 1);
-      }
-      if (placeholder == oldValue) {
+      if (!placeholder && newValue) {
         $scope.externalId.Placeholder = '{' + newValue + '}';
+        return;
+      }
+      oldValue = "{" + oldValue + "}";
+      if (placeholder && !newValue) {
+        if (oldValue == placeholder) {
+          $scope.externalId.Placeholder = "";
+          return;
+        }
+      }
+      if (placeholder && newValue) {
+        if (oldValue == placeholder) {
+          $scope.externalId.Placeholder = '{' + newValue + '}';
+          return;
+        }
       }
     });
 
     $scope.$watch('cost.Parameter', function (newValue, oldValue) {
-      if (!newValue){
-        if ($scope.cost) {
-          delete $scope.cost.Placeholder;
-        }
+      var placeholder = $scope.cost.Placeholder;
+      if (!placeholder && !newValue) {
         return;
       }
-
-      var placeholder = $scope.cost.Placeholder;
-      if (placeholder) {
-        placeholder = placeholder.substring(1, placeholder.length - 1);
-      }
-      if (placeholder == oldValue) {
+      if (!placeholder && newValue) {
         $scope.cost.Placeholder = '{' + newValue + '}';
+        return;
+      }
+      oldValue = "{" + oldValue + "}";
+      if (placeholder && !newValue) {
+        if (oldValue == placeholder) {
+          $scope.cost.Placeholder = "";
+          return;
+        }
+      }
+      if (placeholder && newValue) {
+        if (oldValue == placeholder) {
+          $scope.cost.Placeholder = '{' + newValue + '}';
+          return;
+        }
+      }
+    });
+
+    $scope.$watch('campaignId.Parameter', function (newValue, oldValue) {
+      var placeholder = $scope.campaignId.Placeholder;
+      if (!placeholder && !newValue) {
+        return;
+      }
+      if (!placeholder && newValue) {
+        $scope.campaignId.Placeholder = "{" + newValue + "}";
+        return;
+      }
+      oldValue = "{" + oldValue + "}";
+      if (placeholder && !newValue) {
+        if (oldValue == placeholder) {
+          $scope.campaignId.Placeholder = "";
+          return;
+        }
+      }
+      if (placeholder && newValue) {
+        if (oldValue == placeholder) {
+          $scope.campaignId.Placeholder = "{" + newValue + "}";
+          return;
+        }
+      }
+    });
+
+    $scope.$watch('websiteId.Parameter', function (newValue, oldValue) {
+      var placeholder = $scope.websiteId.Placeholder;
+      if (!placeholder && !newValue) {
+        return;
+      }
+      if (!placeholder && newValue) {
+        $scope.websiteId.Placeholder = "{" + newValue + "}";
+        return;
+      }
+      oldValue = "{" + oldValue + "}";
+      if (placeholder && !newValue) {
+        if (oldValue == placeholder) {
+          $scope.websiteId.Placeholder = "";
+          return;
+        }
+      }
+      if (placeholder && newValue) {
+        if (oldValue == placeholder) {
+          $scope.websiteId.Placeholder = "{" + newValue + "}";
+          return;
+        }
       }
     });
 
     $scope.$watch('params', function (newValue, oldValue) {
-      if (!newValue) {
-        return;
-      }
       newValue.forEach(function (value, index) {
-        if (!value.Parameter) {
-          $scope.params[index].Placeholder = "";
-          $scope.params[index].Name = "";
-          return;
-        }
-
+        var parameter = value.Parameter;
         var placeholder = value.Placeholder;
-        var name = value.Name;
-        if (placeholder) {
-          placeholder = placeholder.substring(1, placeholder.length - 1);
+        // params name
+        if (!oldValue[index].Name || value.Name == oldValue[index].Parameter) {
+          $scope.params[index].Name = $scope.params[index].Parameter;
         }
-
-        if (!oldValue || placeholder == oldValue[index].Parameter) {
-          $scope.params[index].Placeholder = '{' + newValue[index].Parameter + '}';
+        // params placeholder
+        if (!placeholder && parameter) {
+          $scope.params[index].Placeholder = "{" + parameter + "}";
         }
-
-        if (!oldValue || name == oldValue[index].Parameter) {
-          $scope.params[index].Name = newValue[index].Parameter;
+        var oldParameter = "{" + oldValue[index].Parameter + "}";
+        if (placeholder && !parameter) {
+          if (oldParameter == placeholder) {
+            $scope.params[index].Placeholder = "";
+          }
+        }
+        if (placeholder && parameter) {
+          if (oldParameter == placeholder) {
+            $scope.params[index].Placeholder = "{" + parameter + "}";
+          }
         }
 
       });
@@ -1655,6 +1734,8 @@
         }
         $scope.cost = JSON.parse(data.cost);
         $scope.externalId = JSON.parse(data.externalId);
+        $scope.campaignId = JSON.parse(data.campaignId);
+        $scope.websiteId = JSON.parse(data.websiteId);
         $scope.visible = true;
       });
     };

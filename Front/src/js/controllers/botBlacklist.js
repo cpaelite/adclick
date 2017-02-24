@@ -18,7 +18,7 @@
     };
 
     $scope.getList();
-    
+
     $scope.$watch('data.enabled', function (newValue, oldValue) {
       if ((newValue != undefined && oldValue == undefined) || newValue == oldValue) {
         return;
@@ -57,6 +57,10 @@
         locals: {index: index, data: $scope.data},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
+      }).then(function (result) {
+        if (result) {
+          $scope.data.blacklist.splice(index, index);
+        }
       });
     };
 
@@ -72,6 +76,8 @@
       };
     }
 
+    $scope.regex = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(-(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$";
+
     $scope.addIP = function () {
       $scope.item.ipRules.push("");
     };
@@ -86,26 +92,6 @@
 
     $scope.deleteAgent = function (index) {
       $scope.item.userAgentRules.splice(index, index);
-    };
-
-    $scope.checkIP = function (index) {
-      var isValid = true;
-      // 验证IP格式
-      var ipList = $scope.item.ipRules[index];
-      if (ipList) {
-        var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
-        var ips = ipList.split('-');
-        ips.forEach(function (ip) {
-          if (!re.test(ip)) {
-            isValid = false;
-            return;
-          }
-        });
-        var temp = 'ipRange' + index;
-        $scope.editForm[temp].$setValidity('valid', isValid);
-      } else {
-        $scope.editForm.ipRange.$setValidity('valid', isValid);
-      }
     };
 
     this.cancel = $mdDialog.cancel;
@@ -138,17 +124,17 @@
     this.cancel = $mdDialog.cancel;
 
     this.ok = function () {
-      this.data.blacklist.splice(this.index, this.index);
-      BlackList.save(this.data, success, error);
+      BlackList.save(this.data, success);
     };
 
-    function success() {
-      toastr.success("success delete");
-      $mdDialog.hide();
-    }
-
-    function error() {
-      this.error = 'Error occured when delete.';
+    function success(response) {
+      if (response.status) {
+        toastr.success("success delete");
+        $mdDialog.hide(true);
+      } else {
+        toastr.error(response.message);
+        $mdDialog.hide(false);
+      }
     }
   }
 
