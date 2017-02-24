@@ -124,7 +124,7 @@ async function normalReport(query) {
       where,
       limit,
       offset,
-      include,
+      // include,
       attributes,
       group: `AdStatis.${mapping[groupBy]}`,
       order: [orderBy]
