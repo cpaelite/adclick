@@ -45,8 +45,8 @@ router.get('/api/conversions', async function (req, res, next) {
         page = parseInt(page)
         let offset = (page - 1) * limit;
 
-        let sqlTmp="select case when `PostbackTimestamp` IS NULL THEN \"Unknown\" else DATE_FORMAT(convert_tz(FROM_UNIXTIME(`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') end  as PostbackTimestamp,"+
-                     "case when `VisitTimestamp` IS NULL  THEN \"Unknown\" else DATE_FORMAT(convert_tz(FROM_UNIXTIME(`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') end as VisitTimestamp,"+
+        let sqlTmp="select IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") as PostbackTimestamp,"+
+                     "IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\")  as VisitTimestamp,"+
                      "`ExternalID`,`ClickID`,`TransactionID`,`Revenue`,`Cost`,`CampaignName`,`CampaignID`,"+
                      "`LanderName`,`LanderID`,`OfferName`,`OfferID`,`Country`,`CountryCode`,`TrafficSourceName`,`TrafficSourceID`,"+
                     "`AffiliateNetworkName`,`AffiliateNetworkID`,`Device`,`OS`,`OSVersion`,`Brand`,`Model`,`Browser`,`BrowserVersion`,`ISP`,"+
