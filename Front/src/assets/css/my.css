@@ -2432,6 +2432,8 @@ select {
     -webkit-appearance:none;
     padding:0 25px 0 10px;
 }
+table.md-table tbody.md-body > tr.md-row span {white-space: nowrap;}
+
 .form-control{padding:6px;}
 .icon-sort-down{position:relative;z-index:1;top:9px;right:22px;float:right;color:#666;}
 .url-tokens-row i{font-style:normal;color:#999;}
