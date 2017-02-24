@@ -63,7 +63,7 @@ router.get('/api/conversions', async function (req, res, next) {
             user: user
             
         });
-        let countSql = "select COUNT(*) as `total`,sum(`Revenue`) as totalRevenue,sum(`Cost`) as totalCost from ((" + sql + ") as T)";
+        let countSql = "select COUNT(*) as `total`,sum(`Revenue`) as Revenue,sum(`Cost`) as Cost from ((" + sql + ") as T)";
 
         if (sort.indexOf('-') >= 0) {
             dir = "desc";
