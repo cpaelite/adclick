@@ -1858,7 +1858,7 @@
       console.log("success delete");
       self.onprocess = false;
       if(oData.status == 0) {
-        self.error = 'Error occured when delete.';
+        self.error = oData.message || 'Error occured when delete.';
       } else {
         $mdDialog.hide();
       }
