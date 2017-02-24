@@ -15,17 +15,20 @@
         <form name="editForm" class="form-horizontal bot-blacklist-editForm">
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" placeholder="Name" ng-model="item.name" required>
+                <input type="text" name="name" class="form-control" placeholder="Name" ng-model="item.name" required>
+                <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
+                        <span ng-show="editForm.name.$error.required">Name is required.</span>
+                        </span>
             </div>
             <div class="bot-blacklist-add-content">
               <div class="form-group">
                   <label>IP or IP range</label>
                   <div class="ip-range clearfix" ng-repeat="ip in item.ipRules track by $index">
-                    <input type="text" name="ipRule{{$index}}" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="item.ipRules[$index]" required>
+                    <input type="text" name="ipRule{{$index}}" class="form-control" placeholder="IP/IP range(x.x.x.x-x.x.x.x)" ng-model="item.ipRules[$index]" ng-required="!item.userAgentRules[0]" ng-pattern="regex">
                     <i class="material-icons" ng-click="deleteIP($index)" ng-show="$index != 0">delete</i>
                       <span style="color:red" ng-show="editForm.ipRule{{$index}}.$dirty && editForm.ipRule{{$index}}.$invalid">
-                        <span ng-show="editForm.ipRule{{$index}}.$error.valid">IP address is valid.</span>
-                        <span ng-show="editForm.ipRule{{$index}}.$error.required">IP address is not be empty.</span>
+                        <span ng-show="editForm.ipRule{{$index}}.$error.required">IP/IP range or UserAgent value is required.</span>
+                        <span ng-show="editForm.ipRule{{$index}}.$error.pattern">IP address is valid.</span>
                         </span>
                   </div>
               </div>
@@ -38,8 +41,11 @@
               <div class="form-group">
                   <label>Useragent</label>
                   <div class="ip-range clearfix" ng-repeat="agent in item.userAgentRules track by $index">
-                    <input type="text" class="form-control" placeholder="Useragent" ng-model="item.userAgentRules[$index]" required>
+                    <input type="text" name="userAgentRules{{$index}}" class="form-control" placeholder="Useragent" ng-model="item.userAgentRules[$index]" ng-required="!item.ipRules[0]">
                     <i class="material-icons" ng-click="deleteAgent($index)" ng-show="$index != 0">delete</i>
+                      <span style="color:red" ng-show="editForm.userAgentRules{{$index}}.$dirty && editForm.userAgentRules{{$index}}.$invalid">
+                        <span ng-show="editForm.userAgentRules{{$index}}.$error.required">IP/IP range or UserAgent value is required.</span>
+                        </span>
                   </div>
               </div>
               <div class="clearfix">
