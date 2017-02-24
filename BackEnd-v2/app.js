@@ -39,7 +39,6 @@ var user_setting = require('./routes/user_setting');
 var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
 
-import payment from './routes/payment';
 import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
@@ -96,7 +95,7 @@ app.get('/', function(req, res) {
 
 app.use(paypal);
 
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, payment, billing, plan);
+app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, billing, plan);
 
 app.use('/', auth);
 
