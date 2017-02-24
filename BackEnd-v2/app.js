@@ -38,6 +38,7 @@ var traffic = require('./routes/traffic');
 var user_setting = require('./routes/user_setting');
 var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
+var conversions =require('./routes/conversions');
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -77,7 +78,7 @@ app.get('/', function(req, res) {
     });
 });
 
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(),user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(),user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl,conversions);
 
 app.use('/', auth);
 
