@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('BotBlacklistCtrl', [
-      '$scope', '$mdDialog', 'toastr', 'BlackList',
+      '$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout',
       BotBlacklistCtrl
     ]);
 
-  function BotBlacklistCtrl($scope, $mdDialog, toastr, BlackList) {
+  function BotBlacklistCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
     $scope.app.subtitle = "BotBlack";
     $scope.blacklistCount = 20;
 
@@ -36,7 +36,7 @@
     $scope.editItem = function (ev, index) {
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', editItemCtrl],
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', editItemCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: {index: index, data: $scope.data},
@@ -50,7 +50,7 @@
     $scope.deleteItem = function (ev, index) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', deleteCtrl],
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
@@ -66,7 +66,9 @@
 
   }
 
-  function editItemCtrl($scope, $mdDialog, toastr, BlackList) {
+  function editItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
+    var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+
     if (this.data.blacklist && this.index >= 0) {
       $scope.item = this.data.blacklist[this.index];
     } else {
@@ -80,18 +82,82 @@
 
     $scope.addIP = function () {
       $scope.item.ipRules.push("");
+      $timeout(function() {
+        $scope.blurInput();
+      });
     };
 
     $scope.deleteIP = function (index) {
       $scope.item.ipRules.splice(index, index);
+      $scope.blurInput();
     };
 
     $scope.addAgent = function () {
-      $scope.item.userAgentRules.push("")
+      $scope.item.userAgentRules.push("");
+      $timeout(function() {
+        $scope.blurInput();
+      });
     };
 
     $scope.deleteAgent = function (index) {
       $scope.item.userAgentRules.splice(index, index);
+      $scope.blurInput();
+    };
+
+    $scope.checkIP = function (index) {
+      var isValid = true;
+      // 验证IP格式
+      var ipList = $scope.item.ipRules[index];
+      if (ipList) {
+        var ips = ipList.split('-');
+        ips.forEach(function (ip) {
+          if (!re.test(ip)) {
+            isValid = false;
+            return;
+          }
+        });
+        var temp = 'ipRange' + index;
+        $scope.editForm[temp].$setValidity('valid', isValid);
+      } else {
+        $scope.editForm.ipRange.$setValidity('valid', isValid);
+      }
+    };
+
+    $scope.blurInput = function() {
+      var index;
+      var ipReg = $scope.item.ipRules.some(function(v, i) {
+        index = i;
+        return v && !re.test(v);
+      });
+      var ipRequired = $scope.item.ipRules.some(function(v, i) {
+        return v && v.length > 0;
+      });
+      var userAgentRequired = $scope.item.userAgentRules.some(function(v, i) {
+        return v && v.length > 0;
+      });
+      // reset
+      $scope.item.ipRules.forEach(function(v, i) {
+        $scope.editForm['ipRule' + i].$setValidity('valid', true);
+      });
+      $scope.item.ipRules.forEach(function(v, i) {
+        $scope.editForm['ipRule' + i].$setValidity('required', true);
+      });
+      $scope.item.userAgentRules.forEach(function(v, i) {
+        $scope.editForm['userAgentRule' + i].$setValidity('required', true);
+      });
+
+      if (!ipRequired && !userAgentRequired) {
+        $scope.item.ipRules.forEach(function(v, i) {
+          $scope.editForm['ipRule' + i].$setValidity('required', false);
+        });
+        $scope.item.userAgentRules.forEach(function(v, i) {
+          $scope.editForm['userAgentRule' + i].$setValidity('required', false);
+        });
+      } else {
+        if(ipReg) {
+          $scope.editForm['ipRule' + index].$setValidity('valid', false);
+        }
+      }
     };
 
     this.cancel = $mdDialog.cancel;
@@ -109,8 +175,8 @@
       if (this.index < 0) {
         this.data.blacklist.push($scope.item);
       }
-
       $scope.editForm.$setSubmitted();
+      $scope.blurInput();
       if ($scope.editForm.$valid) {
         BlackList.save(this.data, success);
       }

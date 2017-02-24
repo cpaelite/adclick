@@ -711,6 +711,7 @@
       $scope.saveErrors.length = 0;
       $scope.showErrors = false;
       nameRequired();
+
       // clean up before save
       var flowData = {
         name: theFlow.name,
@@ -720,6 +721,14 @@
       };
       if (theFlow.id) {
         flowData.id = theFlow.id;
+      }
+
+      if($scope.editFlowForm.name.$error.asyncCheckName) {
+        $scope.saveErrors.push('Name already exists.');
+      }
+
+      if($scope.editFlowForm.name.$error.nameRequired) {
+        $scope.saveErrors.push('Flow name ' + theFlow.name + ' already exists.');
       }
 
       if (theFlow._nameError) {
