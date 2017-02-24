@@ -1021,6 +1021,9 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     border-radius:2px;
     background:#fff;border:1px solid #d5dce4;
 }
+.left-con .cs-subform-select[disabled]{
+    background: #d5dce4;
+}
 .left-con .cs-subform-select option{border-radius:2px;}
 .view_column
 {
