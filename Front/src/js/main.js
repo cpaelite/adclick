@@ -112,13 +112,6 @@
       $scope.$broadcast("event:auth-loginSuccess");
     }
 
-    $scope.freeBtnIsShow = true;
-    $scope.freeTrial = function(){
-      FreeTrial.save({id:5},function(result){
-        $scope.$state.go('setApp.subscriptions');
-        $scope.freeBtnIsShow = false;
-      });
-    };
   }
 
 })();
