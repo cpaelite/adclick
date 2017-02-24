@@ -625,17 +625,17 @@ md-sidenav.md-closed{
     display: inline;
 }
 .navi{
-    margin-top: 60px;
+    margin-top:52px;
 }
 .navi ul.nav li{
     float: left;
-    height:42px;
 }
 md-content.cs-main-content{
     margin: 0;
 }
 .navi ul.nav li a{
-    padding: 10px 12px;
+    padding:0 12px;
+    height:58px;line-height:58px;
 }
 /*End Nav Style*/
 
@@ -865,8 +865,9 @@ table .traficc-source-input input[type="checkbox"]{
     padding:0 15px;
 }
 .tracking-checkbox input[type="checkbox"]{
-    width: 16px;
+    width: 16px;margin:0;
 }
+.tracking-checkbox input[type="checkbox"]:focus{box-shadow:none;}
 md-backdrop.md-dialog-backdrop:nth-child(2){
     z-index: 81;
 }
@@ -2474,6 +2475,8 @@ md-icon{min-height:auto;min-width:auto;}
 .md-button{min-height:34px;}
 .md-select-value .md-select-icon{margin:2px 4px;}
 md-dialog .md-dialog-content{padding:50px;}
+.form-horizontal .cs-subform-select{margin-top:0;border-radius:2px;}
+.form-horizontal .radio-inline{line-height:23px;}
 md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
 .selectize-input{border:1px solid #d5dce4;border-radius:2px;min-height:34px;line-height:34px;padding:0;}
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{vertical-align:middle}
