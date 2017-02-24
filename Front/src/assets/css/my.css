@@ -981,7 +981,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
 }
 .right-select .selectAll,
 .right-select .view_column{
-    float: left;
+    float: left;position:relative;
 }
 .campaign-radio md-radio-button{
     float: left;
@@ -1055,8 +1055,8 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     padding:0 0 20px 0;
     position: absolute;
     background: #fbfbfb;
-    top: 60px;
-    right:15px;
+    top:45px;
+    right:0;
     z-index: 25;
     border-radius:2px;
     color: #333;
@@ -1086,6 +1086,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     line-height: 15px;
     border-bottom: 1px solid #f3f3f3;
     padding: 10px 20px;
+text-align:left;
 }
 .material-icons.btn-icon{
     line-height: 34px;
@@ -2528,8 +2529,7 @@ md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
     float: right;}.report .right-select{float:left;width:100%}
     .cs-subform-control{padding:0;}
     .right-select2 .search-con{margin-top:-54px;}
-    .report .right-select2{margin-left:0;}
-    .view_column_con{left:360px;top:120px}}
+    .report .right-select2{margin-left:0;}}
 @media (max-width:1024px){
     .navbar-right{width:auto;}
     .fade-in-right-big{width:50%;}
