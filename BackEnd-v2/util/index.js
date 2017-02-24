@@ -18,17 +18,22 @@ exports.checkToken = function () {
         return next(new Error('access token has expired'));
       }
       connection = await common.getConnection();
-      let user = await common.query("select user.`id`,user.`idText`,user.`firstname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
+      let user = await common.query("select user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
       if (!user.length) {
         throw new Error('no user');
       }
-      req.userId = user[0].id;
+
       req.subId = user[0].id;  //子账户
-      req.subidText=user[0].idText;
-      req.subgroupId=user[0].groupId;
+      req.subidText = user[0].idText;
+      req.subgroupId = user[0].groupId;
+
+      req.userId = user[0].id;
       req.idText = user[0].idText;
       req.groupId = user[0].groupId;
+
       req.firstname = user[0].firstname;
+      req.lastname = user[0].lastname;
+      req.email = user[0].email;
       req.campanyname = user[0].campanyName;
       req.owner = true;
       next();
