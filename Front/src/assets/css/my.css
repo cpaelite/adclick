@@ -263,7 +263,7 @@ header .home:hover{
     margin: auto;
 }
 .cs-action-bar {
-    margin:10px 0 25px 0;
+    margin:25px 0;
 }
 .cs-action-bar .md-button:hover {
     background-color: transparent;
@@ -478,7 +478,7 @@ md-datepicker {
     display: inline-block;
 }
 .cs-subform-group {
-    margin: 20px 20px 0;
+    margin:0 20px 0;
 }
 .cs-subform-group::after {
     clear: both;
@@ -487,10 +487,8 @@ md-datepicker {
 }
 .cs-subform-label {
     float: left;
-    line-height: 30px;
     text-align: right;
     vertical-align: top;
-    width: 83px;
 }
 
 .cs-subform-short-label {
@@ -512,7 +510,7 @@ md-datepicker {
     margin-left: 15px;
 }
 .cs-subform-select {
-    margin: 15px 10px 0 0;
+    margin:0 10px 0 0;
     line-height: 34px;
     height: 34px;
     float:left;
@@ -525,11 +523,12 @@ md-datepicker {
 .cs-button-datepicker {
     background: #ebebeb none repeat scroll 0 0;
     float: left;
-    height: 30px;
-    line-height: 30px;
+    height: 34px;
+    line-height: 34px;
     padding: 0 10px;
     border: medium none;
     border-radius: 0;
+    margin-right:10px;
 }
 
 .cs-subform-search {
@@ -931,7 +930,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 /*Start Campaign Style*/
 .report .left-con{
     float: left;
-    margin-top: 15px;
+    margin-top:0;
 }
 .campaign-url{
 /*    width: 78%;
@@ -961,17 +960,20 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .right-select .cs-add-button{
     float: left;
-    margin: 15px 10px 2px 0;
+    margin:0 10px 2px 0;
     border-radius: 2px;
     font-size:12px;
 }
 .right-select .search-con{
     border:1px solid #d5dce4;
     padding: 0 2px;
-    margin-top: 15px;
     border-radius: 2px;
     height:34px;
 }
+.right-select2 .search-con{margin-top:-54px;float:right;}
+.report .right-select2{float:left;margin:20px 0 0 -10px;width:100%;}
+.right-select2 .cs-subform-select{margin-top:0;}
+.ng-not-empty{float:left;}
 md-select.md-default-theme .md-select-value, md-select .md-select-value{
     border: 1px solid #d5dce4;
     border-radius: 2px;
@@ -1016,7 +1018,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     padding-left: 0;
 }
 .left-con .cs-subform-select{
-    height: 36px;
+    height: 34px;
     margin: 0 3px 0 0;
     border-radius:2px;
     background:#fff;border:1px solid #d5dce4;
@@ -1033,7 +1035,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     line-height: 34px;
     background: #2da8f9;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top:0;
     border-radius: 2px;
 } 
 .md-table-container{
@@ -2525,6 +2527,8 @@ md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
     position: relative;
     float: right;}.report .right-select{float:left;width:100%}
     .cs-subform-control{padding:0;}
+    .right-select2 .search-con{margin-top:-54px;}
+    .report .right-select2{margin-left:0;}
     .view_column_con{left:360px;top:120px}}
 @media (max-width:1024px){
     .navbar-right{width:auto;}
