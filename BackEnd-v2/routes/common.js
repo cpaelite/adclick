@@ -897,11 +897,13 @@ async function insertTrafficSource(subId, userId, traffic, connection) {
         val += ",?";
         params.push(traffic.cost);
     }
+ 
     if (traffic.campaignId) {
         col += ",`campaignId`";
         val += ",?";
         params.push(traffic.campaignId);
     }
+ 
     if (traffic.websiteId) {
         col += ",`websiteId`";
         val += ",?";

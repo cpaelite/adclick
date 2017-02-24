@@ -1163,6 +1163,63 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
     }
 });
 
+/**
+ * @api {get} /api/groups  获取用户所在的用户组
+ * 
+ * @apiGroup User 
+ * @apiName  获取用户所在的用户组
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {status:1,message:'success',data:{
+ * 
+ *  groups:[{ groupId:"",
+            firstname:"",
+            lastname:"",
+            email:""}]
+ * }}  
+ * 
+ **/
+router.get('/api/groups', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required()
+    });
+    let connection;
+    try {
+        req.query.userId = req.subId;
+        req.query.idText = req.subidText;
+        let value = await common.validate(req.query, schema);
+        connection= await common.getConnection();
+        let result=[];
+        //获取用户所在的用户组的管理员信息
+        result= await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
+        //myself
+        result.push({
+            groupId:req.subgroupId,
+            firstname:req.firstname,
+            lastname:req.lastname,
+            email:req.email
+        });
+             
+        return res.json({
+            status: 1,
+            message: 'success',
+            data:{
+                groups:result
+            }
+        });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
         connection.query(sql, params, function (err, result) {
