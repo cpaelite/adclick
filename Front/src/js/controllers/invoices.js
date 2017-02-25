@@ -10,11 +10,11 @@
     function InvoicesCtrl($scope, toastr, $mdDialog, Invoices, Payments, BillingInfo, Paypal) {
         $scope.app.subtitle = 'Invoices';
 
-        Invoices.get({id:''},function(user){
+        Invoices.get(null, function(user){
         	$scope.item = user.data;
         });
 
-        Payments.get({id:''},function(user){
+        Payments.get(null, function(user){
         	$scope.pItem = user.data;
         });
 
@@ -47,7 +47,6 @@
 				locals: {
 					item: item
 				},
-				bindToController: true,
 				templateUrl: 'tpl/invoices-update-dialog.html'
 			});
 		};
@@ -56,7 +55,7 @@
 
 	function editInvoicesCtrl($scope, toastr, $mdDialog, BillingInfo, Paypal) {
 		this.title = 'Invoices';
-		this.titleType = 'Update'
+		this.titleType = 'Update';
 		this.cancel = $mdDialog.cancel;
 
 		BillingInfo.get({id:''},function(user){

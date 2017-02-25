@@ -18,6 +18,9 @@
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight w" uib-dropdown-menu>
+                    <li ng-repeat="group in groups">
+                        <a ng-click="changeGroup(group)" ng-show="currentGroup.groupId!=group.groupId">{{group.email}}</a>
+                    </li>
                     <li>
                         <a href ng-click="logout()">{{'logout' | translate}}</a>
                     </li>

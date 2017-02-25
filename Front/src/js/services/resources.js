@@ -107,4 +107,7 @@ angular.module('app')
   .factory('Conversion', ['$resource', function ($resource) {
     return $resource('/api/conversions');
   }])
+  .factory('Group', ['$resource', function ($resource) {
+    return $resource('/api/groups');
+  }])
 ;
