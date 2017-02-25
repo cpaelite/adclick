@@ -2833,7 +2833,7 @@ fieldset[disabled] .i-checks input + i:before {
 
 .form-validation .form-control.ng-dirty.ng-valid,
 .form-validation .form-control.ng-dirty.ng-valid:focus {
-  border-color: #27c24c;
+  border-color:#d5dce4;
 }
 
 .form-validation .i-checks .ng-invalid.ng-dirty + i {

@@ -885,6 +885,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     margin-bottom: 15px;
     cursor: pointer;
 }
+.traffic-source-template-list li .ng-not-empty{float:none;}
 .panel-body{
     padding: 10px 60px;
 }
@@ -1060,7 +1061,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     z-index: 25;
     border-radius:2px;
     color: #333;
-    box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+    box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 .view_column_con ul{
     padding:0 ;
@@ -1303,6 +1304,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     width: 220px;
     float: right;
     margin-right: 15px;
+    margin-top:0;
 }
 .close-btn{
     background: rgba(128, 128, 128, 0.71) !important;
@@ -2067,6 +2069,7 @@ md-content.cs-main-content{
     box-shadow: none;
     background: none;
     font-size: 13px;
+    padding:15px 10px;
 }
 .cs-flow-lander-action{
     background: #f6f6f6;
@@ -2452,7 +2455,7 @@ select{border:1px solid #d5dce4;background:#fff;}
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{background:#fff;}
 .signup-btn{border:none;box-shadow:none;vertical-align:inherit;}
 .sign-text{color:#666;font-size:12px;}
-.sign-text a{color:#333;}
+.sign-text a{color:#333;font-weight:600;}
 .sign-text a:hover{color:#2da8f9;background:transparent;box-shadow: none;}
 .sign-top{margin-top:30px;}
 .list-group-item .form-control-feedback{left:12px}
@@ -2472,13 +2475,13 @@ select{border:1px solid #d5dce4;background:#fff;}
     -o-transform-origin:0 0;        /* Opera */}
 .sign-input input{text-indent:30px;border-radius:2px;background:#f6f8f8;border:1px solid #d5dce4;}
 .w-top{margin-top:5%;}
-.w-top .list-group-item{margin-bottom:10px;border-radius:2px;}
+.w-top .list-group-item{margin-bottom:10px;border-radius:2px;height:38px;}
 .w-top .list-group-sm .list-group-item{background:#f6f8f8;padding:0;}
 .md-primary.save-btn{background:#2da8f9;}
 .md-primary.save-btn span{color:#fff;font-size:12px;}
 .md-primary.cancel-btn{background:#f6f8f8;color:#333;font-size:12px;}
 .md-primary.cancel-btn:hover{background:#f6f8f8;}
-.form-control{height:34px;border:1px solid #d5dce4;border-radius:2px;}
+.form-control{height:36px;border-radius:2px;border:1px solid #cfdadd;}
 .form-control:focus{box-shadow:0 0 1px #ccc;border-color:#d5dce4;}
 .my-btn{margin-left:15px;}
 .md-select-value{border:none;}
@@ -2515,7 +2518,7 @@ md-icon{min-height:auto;min-width:auto;}
 .md-button{min-height: 32px;min-width:80px;font-size: 12px;font-weight: 600;}
 .md-select-value .md-select-icon{margin:2px 4px;}
 md-dialog .md-dialog-content{padding:50px;}
-.form-horizontal .cs-subform-select{margin-top:0;border-radius:2px;}
+.form-horizontal .cs-subform-select{margin-top:0;border-radius:2px;min-width:82px;}
 .form-horizontal .radio-inline{line-height:23px;}
 md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
 .selectize-input{border:1px solid #d5dce4;border-radius:2px;min-height:34px;line-height:34px;padding:0;}
