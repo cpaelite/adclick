@@ -57,7 +57,6 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
                 <div class="col-sm-9 my-select2">
-                    <i class="icon-sort-down"></i>
                     <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
                         <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
@@ -70,7 +69,6 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-9 my-select">
-                    <i class="icon-sort-down"></i>
                     <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
@@ -190,7 +188,6 @@
                 <div class="form-group flow-select">
                     <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
                     <div class="col-sm-8 my-select3">
-                        <i class="icon-sort-down"></i>
                         <select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
                             <option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</option>
                         </select>
