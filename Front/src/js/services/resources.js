@@ -102,6 +102,6 @@ angular.module('app')
     return $resource('/api/plan');
   }])
   .factory('Member', ['$resource', function ($resource) {
-    return $resource('/api/member');
+    return $resource('/api/members');
   }])
 ;
