@@ -974,7 +974,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 .right-select2 .search-con{margin-top:-54px;float:right;}
 .report .right-select2{float:left;margin:20px 0 0 -10px;width:100%;}
 .right-select2 .cs-subform-select{margin-top:0;}
-.ng-not-empty{float:left;}
+.right-select2 .ng-not-empty{float:left;}
 md-select.md-default-theme .md-select-value, md-select .md-select-value{
     border: 1px solid #d5dce4;
     border-radius: 2px;
