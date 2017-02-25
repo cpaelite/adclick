@@ -25,10 +25,10 @@ module.exports = {
   "jwtTokenSrcret": "&s4ha7$dj8",
   "newbidder": {
     "httpPix": "http://",
-    "mainDomain": "newbidder.com",
+    "mainDomain": "nbtrk0.com",
     "impRouter": "/impression",
-    "clickRouter":"/click",
-    "mutiClickRouter":"/click/1",
+    "clickRouter": "/click",
+    "mutiClickRouter": "/click/1",
     "postBackRouter": "/postback",
     "postBackRouterParam": "?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
   },
@@ -46,7 +46,7 @@ module.exports = {
     postBackDomain: false
   }],
   invitationRouter: "http://localhost:5000/invitation",
-  invitationredirect:"http://localhost:5000",
+  invitationredirect: "http://localhost:5000",
   defaultSetting: {
     "reportViewLimit": 500,
     "entityType": 1,
@@ -225,6 +225,129 @@ module.exports = {
         "visible": false
       },
       "variable10": {
+        "visible": false
+      },
+      "conversion_PostbackTimestamp": {
+        "visible": true
+      },
+      "conversion_VisitTimestamp": {
+        "visible": true
+      },
+      "conversion_ExternalID": {
+        "visible": false
+      },
+      "conversion_ClickID": {
+        "visible": true
+      },
+      "conversion_TransactionID": {
+        "visible": true
+      },
+      "conversion_Revenue": {
+        "visible": true
+      },
+      "conversion_Cost": {
+        "visible": true
+      },
+      "conversion_CampaignID": {
+        "visible": true
+      },
+      "conversion_CampaignName": {
+        "visible": true
+      },
+      "conversion_LanderName": {
+        "visible": true
+      },
+      "conversion_LanderID": {
+        "visible": true
+      },
+      "conversion_OfferName": {
+        "visible": true
+      },
+      "conversion_OfferID": {
+        "visible": true
+      },
+      "conversion_Country": {
+        "visible": true
+      },
+      "conversion_CountryCode": {
+        "visible": true
+      },
+      "conversion_TrafficSourceName": {
+        "visible": true
+      },
+      "conversion_TrafficSourceID": {
+        "visible": true
+      },
+      "conversion_AffiliateNetworkName": {
+        "visible": true
+      },
+      "conversion_AffiliateNetworkID": {
+        "visible": true
+      },
+      "conversion_Device": {
+        "visible": true
+      },
+      "conversion_OS": {
+        "visible": true
+      },
+      "conversion_OSVersion": {
+        "visible": true
+      },
+      "conversion_Brand": {
+        "visible": true
+      },
+      "conversion_Model": {
+        "visible": true
+      },
+      "conversion_Browser": {
+        "visible": true
+      },
+      "conversion_BrowserVersion": {
+        "visible": true
+      },
+      "conversion_ISP": {
+        "visible": true
+      },
+      "conversion_MobileCarrier": {
+        "visible": true
+      },
+      "conversion_ConnectionType": {
+        "visible": true
+      },
+      "conversion_VisitorIP": {
+        "visible": false
+      },
+      "conversion_VisitorReferrer": {
+        "visible": false
+      },
+      "conversion_V1": {
+        "visible": false
+      },
+      "conversion_V2": {
+        "visible": false
+      },
+      "conversion_V3": {
+        "visible": false
+      },
+      "conversion_V4": {
+        "visible": false
+      },
+      "conversion_V5": {
+        "visible": false
+      },
+      "conversion_V6": {
+        "visible": false
+      },
+      "conversion_V7": {
+        "visible": false
+      },
+      "conversion_V8": {
+        "visible": false
+      },
+      "conversion_V9": {
+        "visible": false
+      },
+      "conversion_V10": {
         "visible": false
       }
     }
