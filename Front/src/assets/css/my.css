@@ -1295,6 +1295,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     margin-bottom: 20px;
     min-height: 100px;
     padding: 10px;
+    border: 1px solid #cfdadd;
 }
 .conversion .profile-form-footer{
     margin-right: 0;
