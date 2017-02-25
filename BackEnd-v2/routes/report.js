@@ -84,6 +84,36 @@ async function campaignReport(value) {
 
 }
 
+async function fullfill({rows, groupBy}) {
+  let rawRows = rows.map(e => e.dataValues);
+  let foreignConfig = extraConfig(groupBy);
+  let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
+  let foreignRows = await models[groupByModel[groupBy]].findAll({
+    where: {
+      id: foreignKeys
+    },
+    attributes: foreignConfig.attributes
+  })
+  let rawForeignRows = foreignRows.map(e => e.dataValues);
+
+  let totalRows = rows.length;
+
+  for(let i = 0; i < rawForeignRows.length; i++) {
+    let rawForeignRow = rawForeignRows[i];
+    for(let j = 0; j < totalRows; j++) {
+      let rawRow = rawRows[j];
+      if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
+        let keys = Object.keys(rawForeignRow);
+        keys.forEach(key => {
+          if (key === 'id') return;
+          rawRow[key] = rawForeignRow[key]
+        })
+      }
+    }
+  }
+  return rows;
+}
+
 async function normalReport(query) {
   let { userId, where, from, to, tz, groupBy, offset, limit, filter, order, status } = query;
   if (filter) {
@@ -115,32 +145,8 @@ async function normalReport(query) {
       order: [orderBy]
   })
 
-  let rawRows = rows.map(e => e.dataValues);
-  let foreignConfig = extraConfig(groupBy);
-  let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
-  let foreignRows = await models[groupByModel[groupBy]].findAll({
-    where: {
-      id: foreignKeys
-    },
-    attributes: foreignConfig.attributes
-  })
-  let rawForeignRows = foreignRows.map(e => e.dataValues);
-
+  rows = await fullfill({rows, groupBy})
   let totalRows = rows.length;
-
-  for(let i = 0; i < rawForeignRows.length; i++) {
-    let rawForeignRow = rawForeignRows[i];
-    for(let j = 0; j < totalRows; j++) {
-      let rawRow = rawRows[j];
-      if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
-        let keys = Object.keys(rawForeignRow);
-        keys.forEach(key => {
-          if (key === 'id') return;
-          rawRow[key] = rawForeignRow[key]
-        })
-      }
-    }
-  }
 
   let totals = {
       impressions: rows.reduce((sum, row) => sum + row.impressions, 0),
