@@ -84,7 +84,7 @@ async function campaignReport(value) {
 
 }
 
-async function fullfill({rows, groupBy}) {
+async function fullFill({rows, groupBy}) {
   let rawRows = rows.map(e => e.dataValues);
   let foreignConfig = extraConfig(groupBy);
   let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
@@ -145,7 +145,7 @@ async function normalReport(query) {
       order: [orderBy]
   })
 
-  rows = await fullfill({rows, groupBy})
+  rows = await fullFill({rows, groupBy})
   let totalRows = rows.length;
 
   let totals = {
