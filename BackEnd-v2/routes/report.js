@@ -163,6 +163,8 @@ async function listPageReport(query) {
     let Tag = groupByTag[groupBy][0]
     let Name = groupByTag[groupBy][1]
 
+    let foreignConfig = extraConfig(groupBy);
+
     let _where = {
       userId,
       id: { $notIn: nr.rows.length === 0 ? [-1] : nr.rows.map((e) => e[Tag])}
@@ -179,10 +181,7 @@ async function listPageReport(query) {
     let totalRows = await models[groupByModel[groupBy]].count({where: _where});
 
     let placeholders = await models[groupByModel[groupBy]].findAll({
-        attributes: [
-            ['id', Tag],
-            ['name', Name]
-        ],
+        attributes: foreignConfig.attributes,
         where: _where
     })
 
