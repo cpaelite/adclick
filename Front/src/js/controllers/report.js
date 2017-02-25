@@ -129,6 +129,9 @@
       cols[0].name = 'Name';
     }
     $scope.columns = cols;
+    $scope.filterColumns = function(item) {
+      return item.role != 'name';
+    };
 
     function buildSuccess(parentRow) {
       return function success(result) {

@@ -86,7 +86,7 @@
             <div class="view_column" ng-click="viewColumnClick()">
                 <div class="view_column_con" ng-show="viewColumnIsShow">
                     <ul class="view_column_list">
-                        <li ng-repeat="item in columns" ng-click="checkboxIsChecked($event, item.key)">
+                        <li ng-repeat="item in columns | filter:filterColumns" ng-click="checkboxIsChecked($event, item.key)">
                             <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible" ng-click="checkboxInput($event)">{{item.name}}
                         </li>
                     </ul>
@@ -114,7 +114,7 @@
             <tr md-row>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
-                    ng-show="preferences.reportViewColumns[item.key].visible">{{item.name}}
+                    ng-show="preferences.reportViewColumns[item.key].visible || (item.role=='name' && treeLevel>1)">{{item.name}}
                 </th>
             </tr>
             </thead>
@@ -128,7 +128,7 @@
                      ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
                 <td md-cell
                     ng-repeat="column in columns"
-                    ng-show="preferences.reportViewColumns[column.key].visible">
+                    ng-show="preferences.reportViewColumns[column.key].visible  || (column.role=='name' && treeLevel>1)">
                     <!--ng-click="openMenu($event, row, column.role)"-->
                   <span ng-if="column.role=='name' && treeLevel==1">
                     <md-menu-bar style="padding: 0;">
