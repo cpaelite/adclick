@@ -24,20 +24,6 @@
 
         $scope.columns = angular.copy(columnDefinition['conversion']);
 
-        var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
-          if (!newVal)
-            return;
-          $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
-          angular.extend($scope.query, {
-            limit: newVal.reportViewLimit,
-            order: 'PostbackTimestamp',
-            tz: newVal.reportTimeZone
-          });
-
-          unwatch();
-          unwatch = null;
-        }, true);
-
         $scope.$watch('query', function (newVal, oldVal) {
           if (!newVal || !newVal.limit) {
             return;
@@ -51,6 +37,20 @@
           }
 
           getList();
+        }, true);
+
+        var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
+          if (!newVal)
+            return;
+          $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
+          angular.extend($scope.query, {
+            limit: newVal.reportViewLimit,
+            order: 'PostbackTimestamp',
+            tz: newVal.reportTimeZone
+          });
+
+          unwatch();
+          unwatch = null;
         }, true);
 
         $scope.applySearch = function() {

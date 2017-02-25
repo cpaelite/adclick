@@ -389,127 +389,127 @@ app.get('/api/preferences', function (req, res) {
         "variable10": {
           "visible": false
         },
-        "conversion_postbackTimestamp": {
+        "conversion_PostbackTimestamp": {
           "visible": true
         },
-        "conversion_visitTimestamp": {
+        "conversion_VisitTimestamp": {
           "visible": true
         },
-        "conversion_externalId": {
+        "conversion_ExternalID": {
           "visible": true
         },
-        "conversion_clickId": {
+        "conversion_ClickID": {
           "visible": true
         },
-        "conversion_transactionId": {
+        "conversion_TransactionID": {
           "visible": true
         },
-        "conversion_revenue": {
+        "conversion_Revenue": {
           "visible": true
         },
-        "conversion_cost": {
+        "conversion_Cost": {
           "visible": true
         },
-        "conversion_campaignId": {
+        "conversion_CampaignID": {
           "visible": true
         },
-        "conversion_campaignName": {
+        "conversion_CampaignName": {
           "visible": true
         },
-        "conversion_landerName": {
+        "conversion_LanderName": {
           "visible": true
         },
-        "conversion_landerId": {
+        "conversion_LanderID": {
           "visible": true
         },
-        "conversion_offerName": {
+        "conversion_OfferName": {
           "visible": true
         },
-        "conversion_offerId": {
+        "conversion_OfferID": {
           "visible": true
         },
-        "conversion_countryName": {
+        "conversion_Country": {
           "visible": true
         },
-        "conversion_countryCode": {
+        "conversion_CountryCode": {
           "visible": true
         },
-        "conversion_trafficSourceName": {
+        "conversion_TrafficSourceName": {
           "visible": true
         },
-        "conversion_trafficSourceId": {
+        "conversion_TrafficSourceID": {
           "visible": true
         },
-        "conversion_affiliateNetworkName": {
+        "conversion_AffiliateNetworkName": {
           "visible": true
         },
-        "conversion_affiliateNetworkId": {
+        "conversion_AffiliateNetworkID": {
           "visible": true
         },
-        "conversion_deviceName": {
+        "conversion_Device": {
           "visible": true
         },
-        "conversion_os": {
+        "conversion_OS": {
           "visible": true
         },
-        "conversion_osVersion": {
+        "conversion_OSVersion": {
           "visible": true
         },
-        "conversion_brand": {
+        "conversion_Brand": {
           "visible": true
         },
-        "conversion_model": {
+        "conversion_Model": {
           "visible": true
         },
-        "conversion_browser": {
+        "conversion_Browser": {
           "visible": true
         },
-        "conversion_browserVersion": {
+        "conversion_BrowserVersion": {
           "visible": true
         },
-        "conversion_isp": {
+        "conversion_ISP": {
           "visible": true
         },
-        "conversion_mobileCarrier": {
+        "conversion_MobileCarrier": {
           "visible": true
         },
-        "conversion_connectionTypeName": {
+        "conversion_ConnectionType": {
           "visible": true
         },
-        "conversion_ip": {
-          "visible": true
-        },
-        "conversion_referrer": {
-          "visible": true
-        },
-        "conversion_customVariable1": {
+        "conversion_VisitorIP": {
           "visible": false
         },
-        "conversion_customVariable2": {
+        "conversion_VisitorReferrer": {
           "visible": false
         },
-        "conversion_customVariable3": {
+        "conversion_V1": {
           "visible": false
         },
-        "conversion_customVariable4": {
+        "conversion_V2": {
           "visible": false
         },
-        "conversion_customVariable5": {
+        "conversion_V3": {
           "visible": false
         },
-        "conversion_customVariable6": {
+        "conversion_V4": {
           "visible": false
         },
-        "conversion_customVariable7": {
+        "conversion_V5": {
           "visible": false
         },
-        "conversion_customVariable8": {
+        "conversion_V6": {
           "visible": false
         },
-        "conversion_customVariable9": {
+        "conversion_V7": {
           "visible": false
         },
-        "conversion_customVariable10": {
+        "conversion_V8": {
+          "visible": false
+        },
+        "conversion_V9": {
+          "visible": false
+        },
+        "conversion_V10": {
           "visible": false
         }
       }
@@ -873,11 +873,8 @@ app.get('/api/conversions', function (req, res) {
     data: {
       "totalRows": 3700,
       "totals": {
-        "conversions" : 1,
-        "cost" : 0.0,
-        "profit" : 10.0,
-        "revenue" : 10.0,
-        "roi" : 0.0
+        "Cost" : 0.0,
+        "Revenue" : 10.0
       },
       rows: [
         {

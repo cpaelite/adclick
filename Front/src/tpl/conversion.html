@@ -85,7 +85,7 @@
                         ng-repeat="column in columns"
                         ng-show="preferences.reportViewColumns['conversion_' + column.key].visible"
                     >
-                        {{row[column.key]}}
+                        <span>{{row[column.key]}}</span>
                     </td>
                 </tr>
             </tbody>
