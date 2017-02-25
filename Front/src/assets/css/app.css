@@ -2828,7 +2828,7 @@ fieldset[disabled] .i-checks input + i:before {
 }
 
 .form-validation .form-control.ng-dirty.ng-invalid {
-  border-color: #f05050;
+  border-color:transparent;
 }
 
 .form-validation .form-control.ng-dirty.ng-valid,
