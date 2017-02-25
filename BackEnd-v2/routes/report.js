@@ -12,7 +12,8 @@ import {
     sumShorts,
     attributes,
     keys,
-    formatRows
+    formatRows,
+    extraConfig
 } from '../util/report'
 
 /**
@@ -92,21 +93,8 @@ async function normalReport(query) {
   }
   where.UserID = userId
   where.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
-  let include = _.values(groupByModel).map(e => {
-      let _r = {
-          model: models[e]
-      }
-      if (e === groupByModel[groupBy] && (status === "0" || status === "1")) {
-          _r.where = {
-              deleted: status
-          }
-      } else {
-          _r.required = false
-      }
-      return _r;
-  })
 
-  let orderBy = ['campaignId', 'ASC']
+  let orderBy = ['UserID', 'ASC']
 
   if (order) {
       if (order[0] === '-') {
@@ -115,8 +103,6 @@ async function normalReport(query) {
       }
       if (sumShorts[order]) {
           orderBy[0] = sumShorts[order][0]
-      } else {
-          orderBy[0] = order
       }
   }
 
@@ -124,41 +110,60 @@ async function normalReport(query) {
       where,
       limit,
       offset,
-      // include,
       attributes,
       group: `AdStatis.${mapping[groupBy]}`,
       order: [orderBy]
   })
 
+  let rawRows = rows.map(e => e.dataValues);
+  let foreignConfig = extraConfig(groupBy);
+  let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
+  let foreignRows = await models[groupByModel[groupBy]].findAll({
+    where: {
+      id: foreignKeys
+    },
+    attributes: foreignConfig.attributes
+  })
+  let rawForeignRows = foreignRows.map(e => e.dataValues);
+
   let totalRows = rows.length;
 
+  for(let i = 0; i < rawForeignRows.length; i++) {
+    let rawForeignRow = rawForeignRows[i];
+    for(let j = 0; j < totalRows; j++) {
+      let rawRow = rawRows[j];
+      if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
+        let keys = Object.keys(rawForeignRow);
+        keys.forEach(key => {
+          if (key === 'id') return;
+          rawRow[key] = rawForeignRow[key]
+        })
+      }
+    }
+  }
+
   let totals = {
-      impressions: rows.reduce((sum, row) => sum + row.dataValues.impressions, 0),
-      clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
-      visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0)
+      impressions: rows.reduce((sum, row) => sum + row.impressions, 0),
+      clicks: rows.reduce((sum, row) => sum + row.clicks, 0),
+      visits: rows.reduce((sum, row) => sum + row.visits, 0)
   }
   return {rows, totals, totalRows}
 }
 
 async function listPageReport(query) {
     let { userId, where, from, to, tz, groupBy, offset, limit, filter, order, status } = query;
-
     let nr = await normalReport(query);
+
     let Tag = groupByTag[groupBy][0]
     let Name = groupByTag[groupBy][1]
 
     let _where = {
       userId,
-      id: {
-          $notIn: nr.rows.length === 0
-              ? [-1]
-              : nr.rows.map((e) => e.dataValues[Tag])
-      }
+      id: { $notIn: nr.rows.length === 0 ? [-1] : nr.rows.map((e) => e[Tag])}
     }
     if (filter) {
       _where.name = { $like: `%${filter}%`}
     }
-
     if (status === "0") {
       _where.deleted = "1";
     } else if (status === "1") {
@@ -167,40 +172,35 @@ async function listPageReport(query) {
 
     let totalRows = await models[groupByModel[groupBy]].count({where: _where});
 
-    var placeholders = []
+    let placeholders = await models[groupByModel[groupBy]].findAll({
+        attributes: [
+            ['id', Tag],
+            ['name', Name]
+        ],
+        where: _where
+    })
 
-    if (limit > nr.rows.length) {
+    placeholders = placeholders.map((e) => {
+        let obj = e.dataValues;
+        keys.forEach(key => {
+            if (key !== Tag && key !== Name)
+                obj[key] = 0;
+            }
+        );
+        return obj;
+    })
 
-        placeholders = await models[groupByModel[groupBy]].findAll({
-            attributes: [
-                [
-                    'id', Tag
-                ],
-                ['name', Name]
-            ],
-            limit: (limit - nr.rows.length),
-            where: _where
-        })
-        placeholders = placeholders.map((e) => {
-            let obj = e.dataValues;
-            keys.forEach(key => {
-                if (key !== Tag && key !== Name)
-                    obj[key] = 0;
-                }
-            );
-            return obj;
-        })
+    let finalRows = formatRows([
+        ...(nr.rows).map(row => row.dataValues),
+        ...placeholders
+    ])
 
-    }
 
 
     return {
         totals: nr.totals,
         totalRows,
-        rows: formatRows([
-            ...(nr.rows).map(row => row.dataValues),
-            ...placeholders
-        ])
+        rows: finalRows
     }
 }
 
