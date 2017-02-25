@@ -21,7 +21,7 @@ body{font-family:"Avenir Next",Verdana,Helvetica, Tahoma, Arial, "\5b8b\4f53", s
 *{margin:0;padding:0;list-style:none;}
 a{color:#333;}
 a:hover,a:focus{text-decoration:none;color:#357cf4;}
-.nav-box{}
+.nav-box{background:rgba(255,255,255,.9)}
 .logo{width:65px;margin-left:3%;float:left}
 .logo img{width:100%;height:100%;}
 .nav-box ul{float:right;font-size:13px;margin-top:50px;}
@@ -31,7 +31,6 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
     font-weight:500;
     cursor: pointer;
     color: #333;
-    background:rgba(255,255,255,.7);
     transform: translate3d(-50%, -50%, 0);
     padding:6px 10px;
     display: inline-block;
