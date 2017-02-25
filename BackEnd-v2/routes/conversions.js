@@ -121,7 +121,6 @@ router.post('/api/conversions', async function (req, res, next) {
                 defaultDomain = setting.domains[index].address;
             }
         }
-
         let options = {
             method: 'POST',
             uri: `http://${value.idText}.${defaultDomain}/conversions`,
