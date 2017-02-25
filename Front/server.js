@@ -2351,20 +2351,22 @@ app.get('/api/setup', function (req, res) {
  * @apiName 获取Member信息
  *
  */
-app.get('/api/member', function (req, res) {
+app.get('/api/members', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
-    data: [
-      {
-        idText: "dji9012",
-        email: "test1@qq.com",
-      },
-      {
-        idText: "dji9013",
-        email: "test2@qq.com",
-      }
-    ]
+    data: {
+      members: [
+        {
+          idText: "dji9012",
+          email: "test1@qq.com",
+        },
+        {
+          idText: "dji9013",
+          email: "test2@qq.com",
+        }
+      ]
+    }
   };
   res.send(result);
 });

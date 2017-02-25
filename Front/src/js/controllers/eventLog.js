@@ -51,7 +51,7 @@
     });
 
     Member.get(null, function (members) {
-      $scope.members = members.data;
+      $scope.members = members.data.members;
     });
 
     function success(items) {
