@@ -1467,17 +1467,23 @@
         if ($scope.item.externalId) {
           $scope.externalId = JSON.parse($scope.item.externalId);
         } else {
-          $scope.externalId = {};
+          $scope.externalId = {
+            Parameter: '', Placeholder: '', Name: ''
+          };
         }
         if ($scope.item.campaignId) {
           $scope.campaignId = JSON.parse($scope.item.campaignId);
         } else {
-          $scope.campaignId = {};
+          $scope.campaignId = {
+            Parameter: '', Placeholder: '', Name: ''
+          };
         }
         if ($scope.item.websiteId) {
           $scope.websiteId = JSON.parse($scope.item.websiteId);
         } else {
-          $scope.websiteId = {};
+          $scope.websiteId = {
+            Parameter: '', Placeholder: '', Name: ''
+          };
         }
 
         if (!$scope.item.params) {
@@ -1558,6 +1564,8 @@
       $scope.item.params = JSON.stringify($scope.params);
       $scope.item.cost = JSON.stringify($scope.cost);
       $scope.item.externalId = JSON.stringify($scope.externalId);
+      $scope.item.campaignId = JSON.stringify($scope.campaignId);
+      $scope.item.websiteId = JSON.stringify($scope.websiteId);
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
@@ -1593,6 +1601,9 @@
     };
 
     $scope.$watch('externalId.Parameter', function (newValue, oldValue) {
+      if (!newValue && !oldValue) {
+        return;
+      }
       var placeholder = $scope.externalId.Placeholder;
       if (!placeholder && !newValue) {
         return;
@@ -1617,6 +1628,9 @@
     });
 
     $scope.$watch('cost.Parameter', function (newValue, oldValue) {
+      if (!newValue && !oldValue) {
+        return;
+      }
       var placeholder = $scope.cost.Placeholder;
       if (!placeholder && !newValue) {
         return;
@@ -1641,6 +1655,9 @@
     });
 
     $scope.$watch('campaignId.Parameter', function (newValue, oldValue) {
+      if (!newValue && !oldValue) {
+        return;
+      }
       var placeholder = $scope.campaignId.Placeholder;
       if (!placeholder && !newValue) {
         return;
@@ -1665,6 +1682,9 @@
     });
 
     $scope.$watch('websiteId.Parameter', function (newValue, oldValue) {
+      if (!newValue && !oldValue) {
+        return;
+      }
       var placeholder = $scope.websiteId.Placeholder;
       if (!placeholder && !newValue) {
         return;
@@ -1689,18 +1709,24 @@
     });
 
     $scope.$watch('params', function (newValue, oldValue) {
+      if (!newValue && !oldValue) {
+        return;
+      }
       newValue.forEach(function (value, index) {
         var parameter = value.Parameter;
         var placeholder = value.Placeholder;
         // params name
-        if (!oldValue[index].Name || value.Name == oldValue[index].Parameter) {
+        if (!oldValue || !oldValue[index].Name || value.Name == oldValue[index].Parameter) {
           $scope.params[index].Name = $scope.params[index].Parameter;
         }
         // params placeholder
         if (!placeholder && parameter) {
           $scope.params[index].Placeholder = "{" + parameter + "}";
         }
-        var oldParameter = "{" + oldValue[index].Parameter + "}";
+        var oldParameter = "";
+        if (oldValue) {
+          oldParameter = "{" + oldValue[index].Parameter + "}";
+        }
         if (placeholder && !parameter) {
           if (oldParameter == placeholder) {
             $scope.params[index].Placeholder = "";
