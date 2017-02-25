@@ -251,8 +251,11 @@ export function extraConfig(groupBy) {
         foreignKey: 'campaignId',
         attributes: [
           'id',
+          ['id', 'campaignId'],
           ['name', 'campaignName'],
           ['hash', 'campaignHash'],
+          ['url', 'campaignUrl'],
+          ['country', 'campaignCountry'],
         ]
       }
       break;
