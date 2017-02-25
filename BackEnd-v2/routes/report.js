@@ -26,7 +26,7 @@ import {
 
 //from   to tz  sort  direction columns=[]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 
-router.get('/api/report', async function(req, res, next) {
+router.get('/api/report', async function (req, res, next) {
     req.query.userId = req.userId;
     try {
         let result;
@@ -85,95 +85,97 @@ async function campaignReport(value) {
 }
 
 async function fullFill({rows, groupBy}) {
-  let rawRows = rows.map(e => e.dataValues);
-  let foreignConfig = extraConfig(groupBy);
-  let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
-  let foreignRows = await models[groupByModel[groupBy]].findAll({
-    where: {
-      id: foreignKeys
-    },
-    attributes: foreignConfig.attributes
-  })
-  let rawForeignRows = foreignRows.map(e => e.dataValues);
+    let rawRows = rows.map(e => e.dataValues);
+    let foreignConfig = extraConfig(groupBy);
+    let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
+    let foreignRows = await models[groupByModel[groupBy]].findAll({
+        where: {
+            id: foreignKeys
+        },
+        attributes: foreignConfig.attributes
+    })
+    let rawForeignRows = foreignRows.map(e => e.dataValues);
 
-  let totalRows = rows.length;
+    let totalRows = rows.length;
 
-  for(let i = 0; i < rawForeignRows.length; i++) {
-    let rawForeignRow = rawForeignRows[i];
-    for(let j = 0; j < totalRows; j++) {
-      let rawRow = rawRows[j];
-      if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
-        let keys = Object.keys(rawForeignRow);
-        keys.forEach(key => {
-          if (key === 'id') return;
-          rawRow[key] = rawForeignRow[key]
-        })
-      }
+    for (let i = 0; i < rawForeignRows.length; i++) {
+        let rawForeignRow = rawForeignRows[i];
+        for (let j = 0; j < totalRows; j++) {
+            let rawRow = rawRows[j];
+            if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
+                let keys = Object.keys(rawForeignRow);
+                keys.forEach(key => {
+                    if (key === 'id') return;
+                    rawRow[key] = rawForeignRow[key]
+                })
+                break;
+            }
+        }
     }
-  }
-  return rows;
+    return rows;
 }
 
 async function normalReport(query) {
-  let { userId, where, from, to, tz, groupBy, offset, limit, filter, order, status } = query;
-  if (filter) {
-      where[groupByTag[groupBy][2]] = {
-          $like: `%${filter}%`
-      }
-  }
-  where.UserID = userId
-  where.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+    let {userId, where, from, to, tz, groupBy, offset, limit, filter, order, status} = query;
+    if (filter) {
+        where[groupByTag[groupBy][2]] = {
+            $like: `%${filter}%`
+        }
+    }
+    where.UserID = userId
+    where.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
 
-  let orderBy = ['UserID', 'ASC']
+    let orderBy = ['UserID', 'ASC']
 
-  if (order) {
-      if (order[0] === '-') {
-          orderBy[1] = 'DESC'
-          order = order.slice(1)
-      }
-      if (sumShorts[order]) {
-          orderBy[0] = sumShorts[order][0]
-      }
-  }
+    if (order) {
+        if (order[0] === '-') {
+            orderBy[1] = 'DESC'
+            order = order.slice(1)
+        }
+        if (sumShorts[order]) {
+            orderBy[0] = sumShorts[order][0]
+        }
+    }
 
-  let rows = await models.AdStatis.findAll({
-      where,
-      limit,
-      offset,
-      attributes,
-      group: `AdStatis.${mapping[groupBy]}`,
-      order: [orderBy]
-  })
+    let rows = await models.AdStatis.findAll({
+        where,
+        limit,
+        offset,
+        attributes,
+        group: `AdStatis.${mapping[groupBy]}`,
+        order: [orderBy]
+    })
 
-  rows = await fullFill({rows, groupBy})
-  let totalRows = rows.length;
+    rows = await fullFill({rows, groupBy})
+    let totalRows = rows.length;
 
-  let totals = {
-      impressions: rows.reduce((sum, row) => sum + row.impressions, 0),
-      clicks: rows.reduce((sum, row) => sum + row.clicks, 0),
-      visits: rows.reduce((sum, row) => sum + row.visits, 0)
-  }
-  return {rows, totals, totalRows}
+    let totals = {
+        impressions: rows.reduce((sum, row) => sum + row.dataValues.impressions, 0),
+        clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
+        visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0)
+    }
+    return {rows, totals, totalRows}
 }
 
 async function listPageReport(query) {
-    let { userId, where, from, to, tz, groupBy, offset, limit, filter, order, status } = query;
-    let nr = await normalReport(query);
+    let {userId, where, from, to, tz, groupBy, offset, limit, filter, order, status} = query;
 
+    let nr = await normalReport(query);
     let Tag = groupByTag[groupBy][0]
+    console.info("-----------", Tag)
     let Name = groupByTag[groupBy][1]
 
     let foreignConfig = extraConfig(groupBy);
 
     let _where = {
-      userId,
-      id: { $notIn: nr.rows.length === 0 ? [-1] : nr.rows.map((e) => e[Tag])}
+        userId,
+        // id: {$notIn: nr.rows.length === 0 ? [-1] : nr.rows.map((e) => e.dataValues[Tag])}
     }
     if (filter) {
-      _where.name = { $like: `%${filter}%`}
+        _where.name = {$like: `%${filter}%`}
     }
     if (status === "0") {
-      _where.deleted = "1";
+        _where.deleted = "1";
     } else if (status === "1") {
         _where.deleted = "0";
     }
@@ -188,20 +190,30 @@ async function listPageReport(query) {
     placeholders = placeholders.map((e) => {
         let obj = e.dataValues;
         keys.forEach(key => {
-            if (key !== Tag && key !== Name)
-                obj[key] = 0;
+                if (key !== Tag && key !== Name)
+                    obj[key] = 0;
             }
         );
         return obj;
     })
 
-    let finalRows = formatRows([
-        ...(nr.rows).map(row => row.dataValues),
-        ...placeholders
-    ])
-
-
-
+    for (let i = 0; i < nr.rows.length; i++) {
+        let rawForeignRow = nr.rows[i].dataValues;
+        for (let j = 0; j < placeholders.length; j++) {
+            let rawRow = placeholders[j];
+            if (rawForeignRow[foreignConfig.foreignKey] === rawRow.id) {
+                let keys = Object.keys(rawForeignRow);
+                keys.forEach(key => {
+                    if (key === 'id') return;
+                    rawRow[key] = rawForeignRow[key]
+                })
+                break;
+            }
+        }
+    }
+    let finalRows = formatRows(
+        placeholders
+    )
     return {
         totals: nr.totals,
         totalRows,
