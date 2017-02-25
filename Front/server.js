@@ -2335,13 +2335,13 @@ app.get('/api/setup', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      clickurl: "http://9cmzk.voluumtrk.com/click",
-      multiofferclickurl: "http://9cmzk.voluumtrk.com/click/1",
-      postbackurl: "http://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
-      securepostbackurl: "https://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
-      trackingpixelurl: "https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL",
-      trackingpixel: '<img src="https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL" width="1" height="1"/>',
-      trackingscript: '<script type="text/javascript" src="https://9cmzk.voluumtrk.com/conversion.js?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL"/>'
+      clickUrl: "http://9cmzk.voluumtrk.com/click",
+      mutiClickUrl: "http://9cmzk.voluumtrk.com/click/1",
+      postBackUrl: "http://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
+      // securepostbackurl: "https://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
+      // trackingpixelurl: "https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL",
+      // trackingpixel: '<img src="https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL" width="1" height="1"/>',
+      // trackingscript: '<script type="text/javascript" src="https://9cmzk.voluumtrk.com/conversion.js?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL"/>'
     }
   };
   res.send(result);
