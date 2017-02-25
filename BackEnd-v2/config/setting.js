@@ -27,6 +27,8 @@ module.exports = {
     "httpPix": "http://",
     "mainDomain": "newbidder.com",
     "impRouter": "/impression",
+    "clickRouter":"/click",
+    "mutiClickRouter":"/click/1",
     "postBackRouter": "/postback",
     "postBackRouterParam": "?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL"
   },

@@ -1220,6 +1220,58 @@ router.get('/api/groups', async function (req, res, next) {
 });
 
 
+
+/**
+ * @api {get} /api/setup   获取setting  setup
+ * @apiName   获取setting  setup   
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{
+ *           clickUrl:XXX,
+ *           mutiClickUrl:xxx,
+ *           postBackUrl:xxxx
+ *        }
+ *     }
+ *
+ */
+
+router.get('/api/setup', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.string().required()
+    });
+    req.query.userId = req.idText;
+    Joi.validate(req.query, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        try {
+            let defaultDomain;
+            for (let index = 0; index < setting.domains.length; index++) {
+                if (setting.domains[index].postBackDomain) {
+                    defaultDomain = setting.domains[index].address;
+                }
+            }
+            return res.json({
+                status: 1,
+                message: 'success',
+                data: {
+                    clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter ,
+                    mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter ,
+                    postBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+                }
+            });
+        } catch (e) {
+            next(e);
+        }
+    });
+});
+
+
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {
         connection.query(sql, params, function (err, result) {
