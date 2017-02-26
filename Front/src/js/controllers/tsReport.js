@@ -87,11 +87,11 @@
       });
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', '$scope', 'TsReference', 'ThirdTraffic', tsReferenceCtrl],
+        controller: ['$mdDialog', '$scope', 'TsReference', tsReferenceCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         bindToController: true,
-        locals: {item: angular.copy(item)},
+        locals: {item: angular.copy(item), thirdTraffics: $scope.thirdTraffics},
         templateUrl: 'tpl/ts-reference-dialog.html'
       }).then(function() {
         getList();
@@ -115,6 +115,7 @@
     };
 
     getTsReferences();
+    getThirdTraffic();
 
     function getTsReferences() {
       TsReference.get(null, function(oData) {
@@ -122,6 +123,12 @@
         if(!$scope.query.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
           $scope.query.tsReferenceId = $scope.tsReferences[0].id;
         }
+      });
+    }
+
+    function getThirdTraffic() {
+      ThirdTraffic.get(null, function(oData) {
+          $scope.thirdTraffics = oData.data.thirdTraffics;
       });
     }
 
@@ -149,18 +156,17 @@
       };
     }
 
-    function tsReferenceCtrl($mdDialog, $scope, TsReference, ThirdTraffic) {
+    function tsReferenceCtrl($mdDialog, $scope, TsReference) {
       var self = this;
 
       this.title = this.item ? 'edit' : 'add';
       this.cancel = $mdDialog.cancel;
       if(this.item) {
+        this.item.tsId = this.item.tsId.toString();
         $scope.formData = this.item;
       }
 
-      ThirdTraffic.get(null, function(oData) {
-        $scope.thirdTraffics = oData.data.thirdTraffics;
-      });
+      $scope.thirdTraffics = this.thirdTraffics;
 
       // $scope.tsChanged = function(id) {
       //   if(!id) {
