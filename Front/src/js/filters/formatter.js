@@ -28,4 +28,9 @@ angular.module('app')
         var glue = glue ? glue : ',';
         return str.toString().replace(/\B(?=(?:\d{3})+\b)/g, ',');
     }
+  })
+  .filter('ucfirst', function() {
+    return function(input) {
+      return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+    }
   });

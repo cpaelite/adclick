@@ -1008,7 +1008,7 @@ app.get('/api/conversions', function (req, res) {
       ]
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
