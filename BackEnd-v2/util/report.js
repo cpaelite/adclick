@@ -43,7 +43,7 @@ export const mapping = {
   V8: "V8",
   V9: "V9",
   V10: "V10",
-  Day: "day"
+  day: "day"
 }
 
 export const groupByMapping = {
