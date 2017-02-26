@@ -340,7 +340,7 @@ router.get('/invitation', async function (req, res, next) {
         } else {
             //自动注册
             let password = util.getRandomString(6);
-            let user = await signup({ password: password, email: userSlice[0].inviteeEmail, firstname: "", lastname: "", json: setting.defaultSetting }, next);
+            let user = await signup({ password: password, email: userSlice[0].inviteeEmail, firstname: userSlice[0].inviteeEmail.split('@')[0], lastname: "", json: setting.defaultSetting }, next);
             //并发加入用户组   发送邮件
             let tpl = {
                 subject: 'Newbidder Register', // Subject line
@@ -369,7 +369,7 @@ router.get('/invitation', async function (req, res, next) {
             }
             //异步发送邮件 
             emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
-            await  common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection);
+            await  Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
             var expires = moment().add(200, 'days').valueOf();
             res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
             res.cookie("clientId", userSlice[0].groupId);

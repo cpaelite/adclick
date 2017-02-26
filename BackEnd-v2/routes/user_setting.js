@@ -978,7 +978,7 @@ router.post('/api/invitation', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
-        invitationEmail: Joi.array().items(Joi.string()).required().min(1),
+        invitationEmail: Joi.array().items(Joi.string().email()).required().min(1),
         groupId: Joi.string().required()
     });
     let connection;

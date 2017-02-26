@@ -77,7 +77,7 @@ exports.resetUserByClientId = function () {
         throw new Error("clientId invalidate");
       }
       //获取client 管理员信息
-      let userGroupObject = _.find(groupOwers, { groupId: clientId, role: 0 });
+      let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
       if(_.isEmpty(userGroupObject)){
           throw new Error("clientId invalidate");
       }
