@@ -68,6 +68,19 @@
         $scope.errMessage = true;
         return;
       }
+
+      var regexp = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      var valid = true;
+      emails.forEach(function (email) {
+        if (!regexp.test(email)) {
+          valid = false;
+        }
+      });
+      if (!valid) {
+        $scope.emailForm.email.$setValidity('email', valid);
+        return;
+      }
+
       Invitation.save({invitationEmail: emails}, function (result) {
         if (result.status) {
           fillUsers(result.data.invitations);

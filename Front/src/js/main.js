@@ -98,6 +98,8 @@
           groups.forEach(function (group) {
             if (group.groupId == clientId) {
               $rootScope.currentGroup = group;
+              $localStorage.currentUser.firstname = group.firstname;
+              return;
             }
           });
         });

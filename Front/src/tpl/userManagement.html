@@ -28,7 +28,10 @@
 			  <div class="form-group">
 			    <label for="exampleInputEmail2">Invite users:</label>
 			    <div class="form-inline">
-			   		<input type="text" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
+			   		<input type="text" name="email" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
+					<span style="color:red" ng-show="emailForm.email.$dirty && emailForm.email.$invalid">
+						<span ng-show="emailForm.email.$error.email">Email must be a valid Email</span>
+                    </span>
 			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(emails)">Send invitation</button>
 			    </div>
 			  </div>	
