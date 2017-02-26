@@ -141,12 +141,18 @@ async function normalReport(query) {
         }
     }
 
+    // group by day
+    let finalAttribute = attributes
+    if (groupBy.toLowerCase() === 'day') {
+        finalAttribute = [[sequelize.literal('DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((Timestamp/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL 8 HOUR), "%Y-%m-%d")'), 'day'], ...attributes]
+    }
+
     let rows = await models.AdStatis.findAll({
         where,
         limit,
         offset,
-        attributes,
-        group: `AdStatis.${mapping[groupBy]}`,
+        attributes: finalAttribute,
+        group: `${mapping[groupBy]}`,
         order: [orderBy]
     })
 
