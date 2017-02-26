@@ -59,8 +59,17 @@ app.disable('x-powered-by');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // page
-app.use("/assets", compression(),express.static(__dirname + '/../Front/dist/assets'));
-app.use("/tpl", compression(),express.static(__dirname + '/../Front/dist/tpl'));
+// app.use("/assets", compression(),express.static(__dirname + '/../Front/dist/assets'));
+// app.use("/tpl", compression(),express.static(__dirname + '/../Front/dist/tpl'));
+
+app.use("/js", express.static(__dirname + '/../Front/src/js'));
+app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
+app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
+app.use("/bower_components", express.static(__dirname + '/../Front/bower_components'));
+app.get('/', function (req, res) {
+    res.sendFile('index.html', {root: __dirname + '/../Front/src'});
+});
+
 
 //log4js
 app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
