@@ -70,7 +70,7 @@ exports.resetUserByClientId = function () {
       //获取用户所在的用户组的管理员信息
       let groupOwers = common.query("select g1.`groupId`,user.`id` as userId,user.`idText`,g1.`role` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [req.userId], connection);
 
-      let results = Promise.all([userGroups, groupOwers]);
+      let results = await Promise.all([userGroups, groupOwers]);
       let userGroupSlice = results[0];
       //check clientId 合法
       if (!_.some(userGroupSlice, ['groupId', clientId])) {
