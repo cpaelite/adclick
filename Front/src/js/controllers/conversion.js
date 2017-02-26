@@ -59,19 +59,22 @@
           $scope.query.__tk += 1;
         };
 
-        $scope.checkboxIsChecked = function (num) {
+        $scope.checkboxIsChecked = function ($event, num) {
+          $event.stopPropagation();
           $scope.reportViewColumns[num].visible = !$scope.reportViewColumns[num].visible;
         };
         $scope.checkboxInput = function($event){
           $event.stopPropagation();
         };
-        $scope.viewCloumnClose = function () {
+        $scope.viewCloumnClose = function ($event) {
+          $event.stopPropagation();
           $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
         };
         $scope.viewColumnClick = function () {
           $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
         };
-        $scope.applyChange = function () {
+        $scope.applyChange = function ($event) {
+          $event.stopPropagation();
           $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
           $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
           var preferences = {
