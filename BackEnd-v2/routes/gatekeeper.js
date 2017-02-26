@@ -121,9 +121,9 @@ router.get('/api/tsreport', async (req, res, next) => {
       return {
         campaignName: row.Campaign.name,
         campaignId: row.Campaign.campaign_identity,
-        clicks: row.dataValues.clicks,
-        cost: row.dataValues.cost,
-        impressions: row.dataValues.impressions
+        clicks: parseInt(row.dataValues.clicks),
+        cost: parseFloat(row.dataValues.cost).toFixed(2),
+        impressions: parseInt(row.dataValues.impressions)
       }
     })
     res.json({
