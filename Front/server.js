@@ -3093,7 +3093,7 @@ app.get('/api/eventlog', function (req, res) {
  *
  *
  */
-app.get('/api/plan', function (req, res) {
+app.get('/api/plans', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
