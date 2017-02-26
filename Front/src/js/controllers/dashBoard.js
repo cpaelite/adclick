@@ -36,7 +36,7 @@
     $scope.summary = {};
     Report.get(angular.copy(params), function (result) {
       $scope.summary = result.data.totals;
-      feedChartData(params, result.data.rows);
+      feedChartData(result.data.rows);
     });
 
     $scope.order = 'desc';
@@ -89,7 +89,7 @@
 
     }, true);
 
-    function feedChartData(params, data) {
+    function feedChartData(datas) {
       $scope.chart = {
         datasetOverride: [{yAxisID: 'y-axis-1'}, {yAxisID: 'y-axis-2'}],
         options: {
@@ -142,18 +142,24 @@
         }
       };
 
-      var labels = [params.from];
+      var labels = [];
       var series = [];
       var dataset = [];
       var cols = ['visits', 'clicks', 'conversions', 'revenue', 'cost', 'profit', 'impressions'];
-      cols.forEach(function (col, idx) {
+      cols.forEach(function (col) {
         var colName = $filter('translate')('dashboardColumn.' + col);
         series.push(colName);
-        if (dataset[idx]) {
-          dataset.push([data[col]])
-        } else {
-          dataset[idx] = [data[col]];
-        }
+      });
+
+      datas.forEach(function (data) {
+        labels.push(data.date);
+        cols.forEach(function (col, idx) {
+          if (dataset[idx]) {
+            dataset[idx].push(data[col]);
+          } else {
+            dataset[idx] = [data[col]];
+          }
+        });
       });
 
       $scope.chart.labels = labels;
@@ -164,7 +170,7 @@
     function getReportByDate (params) {
       Report.get(angular.copy(params), function (result) {
         $scope.summary = result.data.totals;
-        feedChartData(params, result.data.totals);
+        feedChartData(result.data.rows);
       });
 
       $scope.tables.forEach(function (tbl) {
