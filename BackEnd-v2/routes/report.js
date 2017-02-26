@@ -79,12 +79,16 @@ async function campaignReport(value) {
             status
         })
     } else {
-        return normalReport({where: sqlWhere, from, to, tz, groupBy, offset, limit, filter})
+        return normalReport({userId: value.userId, where: sqlWhere, from, to, tz, groupBy, offset, limit, filter})
     }
 
 }
 
 async function fullFill({rows, groupBy}) {
+    if(!groupByModel[groupBy]) {
+        // don't belong to group by model, do nothing
+        return rows
+    }
     let rawRows = rows.map(e => e.dataValues);
     let foreignConfig = extraConfig(groupBy);
     let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);

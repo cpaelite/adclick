@@ -1,8 +1,9 @@
 angular.module('app').value('columnDefinition', {
-  campaign: [{
-    key: 'campaignName',
-    name: 'Campaign'
-  },
+  campaign: [
+    {
+      key: 'campaignName',
+      name: 'Campaign'
+    },
     {
       key: 'campaignHash',
       name: 'Campaign ID'
@@ -94,19 +95,23 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'redirect',
       name: 'Redirect'
-    },{
+    }, {
       key: 'costModel',
       name: 'Cost model'
-    },{
+    }, {
       key: 'cpa',
       name: 'CPA'
-    },{
+    }, {
       key: 'cpc',
       name: 'CPC'
-    },{
+    }, {
       key: 'cpm',
       name: 'CPM'
-    }],
+    }, {
+      key: 'browser',
+      name: 'Browser'
+    }
+  ],
   flow: [{
     key: 'flowName',
     name: 'Flow'
@@ -701,34 +706,34 @@ angular.module('app').value('columnDefinition', {
     }]
 });
 angular.module('app').value('groupByOptions', [
-  { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName", level: 0 },
-  { value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName", level: 0 },
-  { value: "brand", display: "Brands", idKey: "brandId", nameKey: "brandName" },
-  { value: "affiliate", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName", level: 0 },
-  { value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "bvName" },
-  { value: "browser", display: "Browsers", idKey: "browserId", nameKey: "browserName" },
-  { value: "city", display: "City", idKey: "cityId", nameKey: "cityName" },
-  { value: "connectiontype", display: "Connection type", idKey: "ctId", nameKey: "ctName" },
-  { value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName" },
-  { value: "country", display: "Country", idKey: "countryId", nameKey: "countryName" },
-  { value: "day", display: "Day", idKey: "dayId", nameKey: "dayName" },
-  { value: "dayofweek", display: "Day of week", idKey: "dowId", nameKey: "dowName" },
-  { value: "devicetype", display: "Device types", idKey: "dtId", nameKey: "dtName" },
-  { value: "hourofday", display: "Hour of day", idKey: "hodId", nameKey: "hodName" },
-  { value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName" },
-  { value: "isp", display: "ISP / Carrier", idKey: "ispId", nameKey: "ispName" },
-  { value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName", level: 0 },
-  { value: "language", display: "Language", idKey: "languageId", nameKey: "languageName" },
-  { value: "mobilecarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "mcName" },
-  { value: "model", display: "Models", idKey: "modelId", nameKey: "modelName" },
-  { value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName" },
-  { value: "os", display: "OS", idKey: "osId", nameKey: "osName" },
-  { value: "osversion", display: "OS versions", idKey: "osversionId", nameKey: "osversionName" },
-  { value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName", level: 0 },
-  { value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName" },
-  { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
-  { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
-  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName", level: 0  },
+  {value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName", level: 0},
+  {value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName", level: 0},
+  {value: "Brand", display: "Brands", idKey: "brandId", nameKey: "Brand"},
+  {value: "affiliate", display: "Affiliate networks", idKey: "affiliateId", nameKey: "affiliateName", level: 0},
+  {value: "BrowserVersion", display: "Browser versions", idKey: "bvId", nameKey: "BrowserVersion"},
+  {value: "Browser", display: "Browsers", idKey: "Browser", nameKey: "Browser"},
+  {value: "City", display: "City", idKey: "cityId", nameKey: "City"},
+  {value: "ConnectionType", display: "Connection type", idKey: "ctId", nameKey: "ConnectionType"},
+  // {value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName"},
+  {value: "Country", display: "Country", idKey: "countryId", nameKey: "Country"},
+  {value: "Day", display: "Day", idKey: "dayId", nameKey: "Day"},
+  {value: "DayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
+  {value: "DeviceType", display: "Device types", idKey: "dtId", nameKey: "DeviceType"},
+  {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},
+  // {value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName"},
+  {value: "ISP", display: "ISP / Carrier", idKey: "ispId", nameKey: "ISP"},
+  {value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName", level: 0},
+  {value: "Language", display: "Language", idKey: "languageId", nameKey: "Language"},
+  {value: "MobileCarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "MobileCarrier"},
+  {value: "Model", display: "Models", idKey: "modelId", nameKey: "Model"},
+  // {value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName"},
+  {value: "OS", display: "OS", idKey: "osId", nameKey: "OS"},
+  {value: "OSVersion", display: "OS versions", idKey: "osversionId", nameKey: "OSVersion"},
+  {value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName", level: 0},
+  // {value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName"},
+  {value: "Domain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "Domain"},
+  {value: "Region", display: "State / Region", idKey: "regionId", nameKey: "Region"},
+  {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName", level: 0},
 ]);
 
 angular.module('app').value('urlParameter', {
@@ -855,10 +860,10 @@ angular.module('app').value('urlParameter', {
   ]
 });
 
-angular.module('app').factory('reportCache', ['$cacheFactory', function($cacheFactory) {
+angular.module('app').factory('reportCache', ['$cacheFactory', function ($cacheFactory) {
   var cache = $cacheFactory.get('report-cache');
   if (!cache) {
-    cache = $cacheFactory('report-cache', {capacity:100});
+    cache = $cacheFactory('report-cache', {capacity: 100});
   }
   return cache;
 }]);
