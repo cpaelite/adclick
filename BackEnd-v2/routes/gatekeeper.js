@@ -50,11 +50,25 @@ async function upsert(req, res, next) {
     let {token, tsId} = req.body;
     let provider = await Provider.findById(tsId);
     if (!provider) throw new Error('provider not found');
-    await ApiToken.upsert({
-      token,
-      provider_id: tsId,
-      userId
+
+    let apiToken = await ApiToken.findOne({
+      where: {
+        provider_id: tsId,
+        userId
+      }
     })
+
+    if (apiToken) {
+      apiToken.token = token;
+      await apiToken.save()
+    } else {
+      await ApiToken.create({
+        provider_id: tsId,
+        userId,
+        token
+      })
+    }
+
     res.json({
       status: 1,
       message: 'success'
