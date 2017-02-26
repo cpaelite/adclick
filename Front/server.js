@@ -46,6 +46,7 @@ app.post('/auth/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   if (email && password == 'abc') {
+    res.cookie("clientId", "70012cfe-9940-4ebb-8994-6d15195744cc1");
     delayResponse(res, {token: createJWT()});
   } else {
     res.status(401).send({message: 'Invalid email and/or password!'});
@@ -710,12 +711,12 @@ app.post('/api/preferences', function (req, res) {
 });
 
 /**
- * @api {post} /api/names  check name exists                              
+ * @api {post} /api/names  check name exists
  * @apiName    check name exists
  * @apiGroup User
- * @apiParam {String} name  
+ * @apiParam {String} name
  * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer4:Flow
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -729,12 +730,12 @@ app.post('/api/preferences', function (req, res) {
  */
 app.post('/api/names', function (req, res) {
   var result = {
-        "status": 1,
-        "message": "success",
-        "data":{
-            exists: true
-         }
-      };
+    "status": 1,
+    "message": "success",
+    "data":{
+      exists: true
+    }
+  };
   res.send(result);
 });
 
@@ -2659,8 +2660,7 @@ app.get('/api/invitation', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      invitations: [
-      ]
+      invitations: [{"id":18,"email":"yuhuibin@adbund.com","lastDate":"25-02-2017","status":1}]
     }
   };
   res.send(result);
@@ -2703,22 +2703,6 @@ app.post('/api/invitation', function (req, res) {
 });
 
 /**
- * @apiName conversion
- *
- * @apiParam [String] conversion content
- *
- */
-app.post('/api/conversion', function (req, res) {
-  var result = {
-    status: 1,
-    message: 'success',
-    data: {
-      content:'c384EFV6JHQODRN70575OK6UG5, 10.0, abc1234'
-    }
-  };
-  res.send(result);
-});
-/**
  * @apiName 删除Invitation信息
  *
  */
@@ -2728,6 +2712,12 @@ app.delete('/api/invitation/:id', function (req, res) {
     message: 'success'
   };
   res.send(result);
+});
+
+app.get('/invitation', function (req, res) {
+  res.cookie("token", createJWT());
+  res.cookie("clientId", "70012cfe-9940-4ebb-8994-6d15195744cc1");
+  res.redirect('http://localhost:5000');
 });
 
 /**
@@ -3007,6 +2997,11 @@ app.get('/api/eventlog', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取用户Plan信息
+ *
+ *
+ */
 app.get('/api/plan', function (req, res) {
   var result = {
     status: 1,
@@ -3027,6 +3022,62 @@ app.get('/api/plan', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取用户所在的用户组
+ *
+ */
+app.get('/api/groups', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      groups: [
+        {
+          groupId: "70012cfe-9940-4ebb-8994-6d15195744cc1",
+          firstname: "FirstName1",
+          lastname: "LastName1",
+          email: "1@qq.com"
+        },
+        {
+          groupId: "70012cfe-9940-4ebb-8994-6d15195744cc",
+          firstname: "FirstName2",
+          lastname: "LastName2",
+          email: "2@qq.com"
+        },
+        {
+          groupId: "70012cfe-9940-4ebb-8994-6d15195744cc2",
+          firstname: "FirstName3",
+          lastname: "LastName3",
+          email: "3@qq.com"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+app.post('/api/conversions', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [
+      {
+        "I": 0,
+        "V": "c384EFV6JHQODRN70575OK6UG5, 10.0, abc1234",
+        "E": "invalid data"
+      },
+      {
+        "I": 1,
+        "V": "c384EFV6JHQODRN70575OK6UG6, 11.0, abc1234",
+        "E": "invalid data"
+      }
+    ]
+  };
+  res.send(result);
+});
+
 app.listen(5000, function () {
   console.log('server started success port : 5000');
 });
+
+

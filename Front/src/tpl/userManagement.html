@@ -28,7 +28,10 @@
 			  <div class="form-group">
 			    <label for="exampleInputEmail2">Invite users:</label>
 			    <div class="form-inline">
-			   		<input type="text" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
+			   		<input type="text" name="email" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
+					<span style="color:red" ng-show="emailForm.email.$dirty && emailForm.email.$invalid">
+						<span ng-show="emailForm.email.$error.email">Email must be a valid Email</span>
+                    </span>
 			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(emails)">Send invitation</button>
 			    </div>
 			  </div>	
@@ -38,12 +41,12 @@
 			<label for="exampleInputEmail2">List of users:</label>
 			<div class="form-inline user-list">
 				<span><i class="material-icons">account_box</i> {{profile.name}}</span>
-				<button type="submit" class="btn btn-primary">owner</button>
 				<span>{{profile.email}}</span>
+				<button type="submit" class="btn btn-primary">owner</button>
 			</div>
 			<div class="form-inline user-list" ng-repeat="user in users">
 				<span><i class="material-icons">account_box</i> {{user.name}}</span>
-				<span>{{item.email}}</span>
+				<span>{{user.email}}</span>
 			</div>
 		</div>
 		<div class="form-group">
