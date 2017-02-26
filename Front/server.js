@@ -1031,54 +1031,31 @@ app.get('/api/tsreport', function (req, res) {
     "messages": "",
     data: {
       "totalRows": 3700,
-      // "totals": {
-      //   "ap": 0.0,
-      //   "bids": 0,
-      //   "clicks": 4368,
-      //   "conversions": 1,
-      //   "cost": 0.0,
-      //   "cpv": 0.0,
-      //   "cr": 0.022894,
-      //   "ctr": 122.28,
-      //   "cv": 0.027996,
-      //   "epc": 0.0,
-      //   "epv": 0.0,
-      //   "errors": 0,
-      //   "ictr": 0.0,
-      //   "impressions": 0,
-      //   "profit": 0.0,
-      //   "revenue": 0.0,
-      //   "roi": 0.0,
-      //   "visits": 3572
-      // },
       rows: [
         {
           "campaignName": "campaignName 1",
           "campaignId": "1",
           "clicks": 4368,
-          "conversions": 1,
+          // "conversions": 1,
           "cost": 0.0,
           "impressions": 13430,
-          "visits": 3572,
-          "status": false
+          // "visits": 3572
         }, {
           "campaignName": "campaignName 1",
           "campaignId": "1",
           "clicks": 4368,
-          "conversions": 1,
+          // "conversions": 1,
           "cost": 0.0,
           "impressions": 13430,
-          "visits": 3572,
-          "status": false
+          // "visits": 3572
         }, {
           "campaignName": "campaignName 1",
           "campaignId": "1",
           "clicks": 4368,
-          "conversions": 1,
+          // "conversions": 1,
           "cost": 0.0,
           "impressions": 13430,
-          "visits": 3572,
-          "status": true
+          // "visits": 3572
         }
       ]
     }
@@ -3250,13 +3227,11 @@ app.get('/api/tsreference', function (req, res) {
         id: 123,
         name: 'tsreference 1',
         token: 'yoshop-Android-benson-CAUSAU',
-        api: 'http://aa088269-5680-470c-a232-582e1dc68d21',
         tsId: '11'
       }, {
         id: 124,
         name: 'tsreference 2',
         token: 'yoshop-Android-benson-CAUSAU',
-        api: 'http://aa088269-5680-470c-a232-582e1dc68d21',
         tsId: '12'
       }]
     }
@@ -3321,12 +3296,10 @@ app.get('/api/third-traffics', function (req, res) {
     data: {
       thirdTraffics: [{
         id: '11',
-        name: 'traffic 1',
-        api: 'http://aa088269-5680-470c-a232-582e1dc68d21'
+        name: 'traffic 1'
       }, {
         id: '12',
-        name: 'traffic 2',
-        api: 'http://aa088269-5680-470c-a232-582e1dc68d21'
+        name: 'traffic 2'
       }]
     }
   };

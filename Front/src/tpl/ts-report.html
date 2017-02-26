@@ -77,8 +77,8 @@
                     <th md-column md-order-by="impressions">Impressions</th>
                     <th md-column md-order-by="clicks">Clicks</th>
                     <th md-column md-order-by="cost">Cost</th>
-                    <th md-column md-order-by="conversions">Conversions</th>
-                    <th md-column>Action</th>
+                    <!-- <th md-column md-order-by="conversions">Conversions</th> -->
+                    <!-- <th md-column>Action</th> -->
                 </tr>
             </thead>
             <tbody md-body>
@@ -88,11 +88,11 @@
                     <td md-cell><span>{{row['impressions']}}</span></td>
                     <td md-cell><span>{{row['clicks']}}</span></td>
                     <td md-cell><span>{{row['cost']}}</span></td>
-                    <td md-cell><span>{{row['conversions']}}</span></td>
+                    <!-- <td md-cell><span>{{row['conversions']}}</span></td>
                     <td md-cell>
                         <span ng-show="!row.status" class="btn btn-default btn-xs" ng-click="start(row)" style="width: 50px;">Start</span>
                         <span ng-show="row.status" class="btn btn-default btn-xs" ng-click="pause(row)" style="width: 50px;">Pause</span>
-                    </td>
+                    </td> -->
                 </tr>
             </tbody>
         </table>

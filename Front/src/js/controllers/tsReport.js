@@ -162,14 +162,18 @@
         $scope.thirdTraffics = oData.data.thirdTraffics;
       });
 
-      $scope.tsChanged = function(id) {
-        $scope.thirdTraffics.some(function(v) {
-          if (v.id = id) {
-            $scope.formData.api = v.api;
-            return true;
-          }
-        });
-      };
+      // $scope.tsChanged = function(id) {
+      //   if(!id) {
+      //     $scope.formData.api = '';
+      //     return;
+      //   }
+      //   $scope.thirdTraffics.some(function(v) {
+      //     if (v.id == id) {
+      //       $scope.formData.api = v.api;
+      //       return true;
+      //     }
+      //   });
+      // };
 
       this.save = function() {
         if(self.item) {
