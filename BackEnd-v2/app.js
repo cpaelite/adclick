@@ -44,6 +44,8 @@ import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
 
+import gatekeeper from './routes/gatekeeper'
+
 var express = require('express');
 var favicon = require('serve-favicon');
 var log4js = require('log4js');

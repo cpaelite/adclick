@@ -1,6 +1,6 @@
 export default function(sequelize, DataTypes) {
     let model = sequelize.define('Provider', {
-        zone: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
@@ -10,6 +10,7 @@ export default function(sequelize, DataTypes) {
         tableName: 'providers',
         classMethods: {
             associate(models) {
+                model.hasMany(models.ApiToken, {foreignKey: 'provider_id'})
                 model.hasMany(models.Statistic, {foreignKey: 'provider_id'})
                 model.hasMany(models.Campaign, {foreignKey: 'provider_id'})
             }
