@@ -982,6 +982,7 @@ router.post('/api/invitation', async function (req, res, next) {
         groupId: Joi.string().required()
     });
     let connection;
+    let beginTransaction=false;
     try {
         req.body.userId = req.subId;
         req.body.idText = req.subidText;
@@ -990,7 +991,7 @@ router.post('/api/invitation', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         await common.beginTransaction(connection);
-
+        beginTransaction= true;
         //邀请入库
         for (let index = 0; index < value.invitationEmail.length; index++) {
             let invatationSlice = await common.query("select `id`,`groupId`,`inviteeEmail`,`status`,`code` from GroupInvitation where `deleted`= 0 and `groupId`=? and `inviteeEmail`=? ", [value.groupId, value.invitationEmail[index]], connection);
@@ -1036,8 +1037,9 @@ router.post('/api/invitation', async function (req, res, next) {
         }
 
         let results = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
-
-        await common.commit(connection);
+        if(beginTransaction){
+           await common.commit(connection);
+        }
         res.json({
             status: 1,
             message: 'success',
@@ -1046,8 +1048,10 @@ router.post('/api/invitation', async function (req, res, next) {
             }
         });
     } catch (e) {
-        await common.rollback(connection);
         next(e);
+        if(beginTransaction){
+            await common.rollback(connection);
+        }
     } finally {
         if (connection) {
             connection.release();

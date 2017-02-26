@@ -128,6 +128,7 @@ async function signup(data, next) {
         refToken: Joi.string().optional().empty("")
     });
     let connection;
+    let beginTransaction=false;
     try {
         let value = await common.validate(data, schema);
         connection = await common.getConnection();
@@ -136,6 +137,7 @@ async function signup(data, next) {
         if (UserResult.length > 0) throw new Error("account exists");
         //事务开始
         await common.beginTransaction(connection);
+        beginTransaction=true;
         let idtext = util.getRandomString(6);
         let reftoken = util.getUUID() + "." + idtext;
         //User
@@ -179,7 +181,10 @@ async function signup(data, next) {
 
         return value;
     } catch (e) {
-        await common.rollback(connection);
+        if(beginTransaction){
+           await common.rollback(connection);
+        }
+        
         next(e);
     } finally {
         if (connection) {

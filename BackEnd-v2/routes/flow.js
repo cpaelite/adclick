@@ -531,7 +531,7 @@ router.delete('/api/flows/:id', async function (req, res, next) {
 
 async function saveOrUpdateFlow(subId,value, connection) {
 
-
+    let beginTransaction= false;
     try {
         //check flow name exists 
         if (await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, 4, connection)) {
@@ -542,6 +542,7 @@ async function saveOrUpdateFlow(subId,value, connection) {
         // 用于缓存redis pub数据 {data:"",tag:""}
         connection.redisPubSlice = [];
         await common.beginTransaction(connection);
+        beginTransaction=true;
         //Flow
         if (!value.id) {
             flowResult = await common.insertFlow(value.userId, value, connection)
@@ -638,10 +639,14 @@ async function saveOrUpdateFlow(subId,value, connection) {
         }
 
     } catch (err) {
-        await common.rollback(connection);
+        if(beginTransaction){
+            await common.rollback(connection);
+        }
         throw err;
     }
-    await common.commit(connection);
+    if(beginTransaction){
+         await common.commit(connection);
+    }
 
     //处理缓存中的redis pub数据  =======begin
     let redisClient = new Pub(true);
