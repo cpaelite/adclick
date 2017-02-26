@@ -716,7 +716,7 @@ angular.module('app').value('groupByOptions', [
   {value: "ConnectionType", display: "Connection type", idKey: "ctId", nameKey: "ConnectionType"},
   // {value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName"},
   {value: "Country", display: "Country", idKey: "countryId", nameKey: "Country"},
-  {value: "Day", display: "Day", idKey: "dayId", nameKey: "Day"},
+  {value: "day", display: "Day", idKey: "day", nameKey: "day"},
   // {value: "DayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
   {value: "DeviceType", display: "Device types", idKey: "dtId", nameKey: "DeviceType"},
   // {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},

@@ -52,33 +52,33 @@
         <div class="col-xs-12 col-sm-12 col-md-7">
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
                 <h3>Visits</h3>
-                <div class="data-num">{{summary.visits | number}}</div>
+                <div class="data-num">{{summary.visits || 0 | number}}</div>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
                 <h3>Clicks</h3>
-                <div class="data-num">{{summary.clicks | number}}</div>
+                <div class="data-num">{{summary.clicks || 0 | number}}</div>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
                 <h3>Conversions</h3>
-                <div class="data-num">{{summary.conversions | number}}</div>
+                <div class="data-num">{{summary.conversions || 0 | number}}</div>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
                 <h3>Revenue</h3>
-                <div class="data-num">{{summary.revenue | number:0}}</div>
+                <div class="data-num">${{summary.revenue || 0.00 | number}}</div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-5">
             <div class="col-xs-4 col-sm-4 col-md-4 data-list-con">
                 <h3>Cost</h3>
-                <div class="data-num">{{summary.cost | number:0}}</div>
+                <div class="data-num">${{summary.cost || 0.00 | number}}</div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 data-list-con">
                 <h3>Profit</h3>
-                <div class="data-num">{{summary.profit | number:0}}</div>
+                <div class="data-num">${{summary.profit || 0.00 | number}}</div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 data-list-con">
                 <h3>ROI</h3>
-                <div class="data-num">{{summary.roi | number:0}}</div>
+                <div class="data-num">{{summary.roi || 0.00 | number}}%</div>
             </div>
         </div>
     </div>
@@ -110,7 +110,10 @@
               <tbody>
                 <tr ng-repeat="row in tableData[tbl]">
                   <td>{{$index+1}}</td>
-                  <td>{{row[tbl+'Name']}}</td>
+                  <td>
+                      <em ng-show="row[tbl+'Name']">{{row[tbl+'Name']}}</em>
+                      <em ng-show="row[tbl]">{{row[tbl]}}</em>
+                  </td>
                   <td>{{row[sortby]}}</td>
                 </tr>
               </tbody>
