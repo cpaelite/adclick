@@ -2714,6 +2714,12 @@ app.delete('/api/invitation/:id', function (req, res) {
   res.send(result);
 });
 
+app.get('/invitation', function (req, res) {
+  res.cookie("token", createJWT());
+  res.cookie("clientId", "70012cfe-9940-4ebb-8994-6d15195744cc1");
+  res.redirect('http://localhost:5000');
+});
+
 /**
  * @apiName Invoices
  *
@@ -3046,6 +3052,26 @@ app.get('/api/groups', function (req, res) {
         }
       ]
     }
+  };
+  res.send(result);
+});
+
+app.post('/api/conversions', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [
+      {
+        "I": 0,
+        "V": "c384EFV6JHQODRN70575OK6UG5, 10.0, abc1234",
+        "E": "invalid data"
+      },
+      {
+        "I": 1,
+        "V": "c384EFV6JHQODRN70575OK6UG6, 11.0, abc1234",
+        "E": "invalid data"
+      }
+    ]
   };
   res.send(result);
 });

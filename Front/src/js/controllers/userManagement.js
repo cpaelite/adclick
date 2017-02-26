@@ -68,7 +68,7 @@
         $scope.errMessage = true;
         return;
       }
-      Invitation.save({email: emails}, function (result) {
+      Invitation.save({invitationEmail: emails}, function (result) {
         if (result.status) {
           fillUsers(result.data.invitations);
           toastr.success('invitations success!');

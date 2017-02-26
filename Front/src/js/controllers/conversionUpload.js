@@ -19,12 +19,24 @@
           valid = false;
         }
       });
-      $scope.form.conversionContent.$setValidity("valid", valid);
+      $scope.form.conversionContent.$setValidity("validate", valid);
       if (!valid) {
         return;
       }
 
       Conversion.save({content:contents},function(result){
+        if (!result.status) {
+          $scope.errorMessage = result.message;
+        } else {
+          result.data.forEach(function (data) {
+            var line = data.I + 1;
+            var message = data.E;
+            if (data.E) {
+              $scope.errorMessage = 'Error while parsing CSV in line ' + line + ': ' + message;
+              return;
+            }
+          });
+        }
       });
     };
 

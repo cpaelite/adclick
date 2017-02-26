@@ -126,6 +126,8 @@
         $scope.$state.go('access.signin');
       }
       delete $localStorage.currentUser;
+      $cookies.remove('token');
+      $cookies.remove('clientId');
     };
 
     if ($auth.isAuthenticated()) {
