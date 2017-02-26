@@ -1,8 +1,9 @@
 angular.module('app').value('columnDefinition', {
-  campaign: [{
-    key: 'campaignName',
-    name: 'Campaign'
-  },
+  campaign: [
+    {
+      key: 'campaignName',
+      name: 'Campaign'
+    },
     {
       key: 'campaignHash',
       name: 'Campaign ID'
@@ -94,19 +95,23 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'redirect',
       name: 'Redirect'
-    },{
+    }, {
       key: 'costModel',
       name: 'Cost model'
-    },{
+    }, {
       key: 'cpa',
       name: 'CPA'
-    },{
+    }, {
       key: 'cpc',
       name: 'CPC'
-    },{
+    }, {
       key: 'cpm',
       name: 'CPM'
-    }],
+    }, {
+      key: 'browser',
+      name: 'Browser'
+    }
+  ],
   flow: [{
     key: 'flowName',
     name: 'Flow'
@@ -574,222 +579,162 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'errors',
       name: 'ERRORS'
+    }],
+    conversion: [{
+      key: 'PostbackTimestamp',
+      name: 'Postback timestamp'
+    }, {
+      key: 'VisitTimestamp',
+      name: 'Visit timestamp'
+    }, {
+      key: 'ExternalID',
+      name: 'External ID'
+    }, {
+      key: 'ClickID',
+      name: 'Click ID'
+    }, {
+      key: 'TransactionID',
+      name: 'Transaction ID'
+    }, {
+      key: 'Revenue',
+      name: 'Revenue'
+    }, {
+      key: 'Cost',
+      name: 'Cost'
+    }, {
+      key: 'CampaignID',
+      name: 'Campaign ID'
+    }, {
+      key: 'CampaignName',
+      name: 'Campaign'
+    }, {
+      key: 'LanderName',
+      name: 'Lander'
+    }, {
+      key: 'LanderID',
+      name: 'Lander ID'
+    }, {
+      key: 'OfferName',
+      name: 'Offer'
+    }, {
+      key: 'OfferID',
+      name: 'Offer ID'
+    }, {
+      key: 'Country',
+      name: 'Country'
+    }, {
+      key: 'CountryCode',
+      name: 'Country code'
+    }, {
+      key: 'TrafficSourceName',
+      name: 'Traffic source'
+    }, {
+      key: 'TrafficSourceID',
+      name: 'Traffic source ID'
+    }, {
+      key: 'AffiliateNetworkName',
+      name: 'Affiliate network'
+    }, {
+      key: 'AffiliateNetworkID',
+      name: 'Affiliate network ID'
+    }, {
+      key: 'Device',
+      name: 'Device'
+    }, {
+      key: 'OS',
+      name: 'Operating system'
+    }, {
+      key: 'OSVersion',
+      name: 'OS version'
+    }, {
+      key: 'Brand',
+      name: 'Brand'
+    }, {
+      key: 'Model',
+      name: 'Model'
+    }, {
+      key: 'Browser',
+      name: 'Browser'
+    }, {
+      key: 'BrowserVersion',
+      name: 'Browser version'
+    }, {
+      key: 'ISP',
+      name: 'ISP / Carrier'
+    }, {
+      key: 'MobileCarrier',
+      name: 'Mobile carrier'
+    }, {
+      key: 'ConnectionType',
+      name: 'Connection type'
+    }, {
+      key: 'VisitorIP',
+      name: 'Visitor IP'
+    }, {
+      key: 'VisitorReferrer',
+      name: 'Visitor Referrer'
+    }, {
+      key: 'V1',
+      name: 'V1'
+    }, {
+      key: 'V2',
+      name: 'V2'
+    }, {
+      key: 'V3',
+      name: 'V3'
+    }, {
+      key: 'V4',
+      name: 'V4'
+    }, {
+      key: 'V5',
+      name: 'V5'
+    }, {
+      key: 'V6',
+      name: 'V6'
+    }, {
+      key: 'V7',
+      name: 'V7'
+    }, {
+      key: 'V8',
+      name: 'V8'
+    }, {
+      key: 'V9',
+      name: 'V9'
+    }, {
+      key: 'V10',
+      name: 'V10'
     }]
 });
 angular.module('app').value('groupByOptions', [
-  { value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName", level: 0 },
-  { value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName", level: 0 },
-  { value: "brand", display: "Brands", idKey: "brandId", nameKey: "brandName" },
-  { value: "affiliate", display: "Affiliate networks", idKey: "affnwId", nameKey: "afnwName", level: 0 },
-  { value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "bvName" },
-  { value: "browser", display: "Browsers", idKey: "browserId", nameKey: "browserName" },
-  { value: "city", display: "City", idKey: "cityId", nameKey: "cityName" },
-  { value: "connectiontype", display: "Connection type", idKey: "ctId", nameKey: "ctName" },
-  { value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName" },
-  { value: "country", display: "Country", idKey: "countryId", nameKey: "countryName" },
-  { value: "day", display: "Day", idKey: "dayId", nameKey: "dayName" },
-  { value: "dayofweek", display: "Day of week", idKey: "dowId", nameKey: "dowName" },
-  { value: "devicetype", display: "Device types", idKey: "dtId", nameKey: "dtName" },
-  { value: "hourofday", display: "Hour of day", idKey: "hodId", nameKey: "hodName" },
-  { value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName" },
-  { value: "isp", display: "ISP / Carrier", idKey: "ispId", nameKey: "ispName" },
-  { value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName", level: 0 },
-  { value: "language", display: "Language", idKey: "languageId", nameKey: "languageName" },
-  { value: "mobilecarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "mcName" },
-  { value: "model", display: "Models", idKey: "modelId", nameKey: "modelName" },
-  { value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName" },
-  { value: "os", display: "OS", idKey: "osId", nameKey: "osName" },
-  { value: "osversion", display: "OS versions", idKey: "osversionId", nameKey: "osversionName" },
-  { value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName", level: 0 },
-  { value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName" },
-  { value: "referrerdomain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "referrerdomainName" },
-  { value: "region", display: "State / Region", idKey: "regionId", nameKey: "regionName" },
-  { value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName" },
-  { value: "affiliate", display: "Affiliate Network", idKey: "affiliateId", nameKey: "affiliateName", level: 0 }
+  {value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName", level: 0},
+  {value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName", level: 0},
+  {value: "Brand", display: "Brands", idKey: "brandId", nameKey: "Brand"},
+  {value: "affiliate", display: "Affiliate networks", idKey: "affiliateId", nameKey: "affiliateName", level: 0},
+  {value: "BrowserVersion", display: "Browser versions", idKey: "bvId", nameKey: "BrowserVersion"},
+  {value: "Browser", display: "Browsers", idKey: "Browser", nameKey: "Browser"},
+  {value: "City", display: "City", idKey: "cityId", nameKey: "City"},
+  {value: "ConnectionType", display: "Connection type", idKey: "ctId", nameKey: "ConnectionType"},
+  // {value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName"},
+  {value: "Country", display: "Country", idKey: "countryId", nameKey: "Country"},
+  {value: "day", display: "Day", idKey: "day", nameKey: "day"},
+  // {value: "DayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
+  {value: "DeviceType", display: "Device types", idKey: "dtId", nameKey: "DeviceType"},
+  // {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},
+  // {value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName"},
+  {value: "ISP", display: "ISP / Carrier", idKey: "ispId", nameKey: "ISP"},
+  {value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName", level: 0},
+  {value: "Language", display: "Language", idKey: "languageId", nameKey: "Language"},
+  {value: "MobileCarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "MobileCarrier"},
+  {value: "Model", display: "Models", idKey: "modelId", nameKey: "Model"},
+  // {value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName"},
+  {value: "OS", display: "OS", idKey: "osId", nameKey: "OS"},
+  {value: "OSVersion", display: "OS versions", idKey: "osversionId", nameKey: "OSVersion"},
+  {value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName", level: 0},
+  // {value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName"},
+  {value: "Domain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "Domain"},
+  {value: "Region", display: "State / Region", idKey: "regionId", nameKey: "Region"},
+  {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName", level: 0},
 ]);
-
-angular.module('app').value('userPreferences', {
-  "reportViewLimit": 500,
-  "entityType": 1,
-  "reportViewSort": {
-    "key": "visits",
-    "direction": "desc"
-  },
-  "reportTimeZone": "+08:00",
-  "reportViewColumns": {
-    "campaignName": {
-      "visible": true
-    },
-    "campaignHash": {
-      "visible": false
-    },
-    "campaignUrl": {
-      "visible": false
-    },
-    "campaignCountry": {
-      "visible": false
-    },
-    "flowName": {
-      "visible": true
-    },
-    "flowHash": {
-      "visible": false
-    },
-    "landerName": {
-      "visible": true
-    },
-    "landerHash": {
-      "visible": false
-    },
-    "landerUrl": {
-      "visible": false
-    },
-    "landerCountry": {
-      "visible": false
-    },
-    "numberOfOffers": {
-      "visible": false
-    },
-    "offerName": {
-      "visible": true
-    },
-    "offerHash": {
-      "visible": false
-    },
-    "offerUrl": {
-      "visible": false
-    },
-    "offerCountry": {
-      "visible": false
-    },
-    "payout": {
-      "visible": false
-    },
-    "trafficName": {
-      "visible": true
-    },
-    "trafficHash": {
-      "visible": false
-    },
-    "costArgument": {
-      "visible": false
-    },
-    "affiliateName": {
-      "visible": true
-    },
-    "affiliateHash": {
-      "visible": false
-    },
-    "appendClickId": {
-      "visible": false
-    },
-    "whitelistedIP": {
-      "visible": false
-    },
-    "impressions": {
-      "visible": true
-    },
-    "visits": {
-      "visible": true
-    },
-    "clicks": {
-      "visible": true
-    },
-    "conversions": {
-      "visible": true
-    },
-    "revenue": {
-      "visible": true
-    },
-    "cost": {
-      "visible": true
-    },
-    "profit": {
-      "visible": true
-    },
-    "cpv": {
-      "visible": true
-    },
-    "ictr": {
-      "visible": true
-    },
-    "ctr": {
-      "visible": true
-    },
-    "cr": {
-      "visible": true
-    },
-    "cv": {
-      "visible": true
-    },
-    "roi": {
-      "visible": true
-    },
-    "epv": {
-      "visible": true
-    },
-    "epc": {
-      "visible": true
-    },
-    "ap": {
-      "visible": true
-    },
-    "errors": {
-      "visible": true
-    },
-    "postbackUrl": {
-      "visible": false
-    },
-    "redirect": {
-      "visible": false
-    },
-    "costModel": {
-      "visible": false
-    },
-    "cpa": {
-      "visible": false
-    },
-    "cpc": {
-      "visible": false
-    },
-    "cpm": {
-      "visible": false
-    },
-    "clickId": {
-      "visible": false
-    },
-    "variable1": {
-      "visible": false
-    },
-    "variable2": {
-      "visible": false
-    },
-    "variable3": {
-      "visible": false
-    },
-    "variable4": {
-      "visible": false
-    },
-    "variable5": {
-      "visible": false
-    },
-    "variable6": {
-      "visible": false
-    },
-    "variable7": {
-      "visible": false
-    },
-    "variable8": {
-      "visible": false
-    },
-    "variable9": {
-      "visible": false
-    },
-    "variable10": {
-      "visible": false
-    }
-  }
-});
 
 angular.module('app').value('urlParameter', {
   "campaign": [
@@ -915,10 +860,10 @@ angular.module('app').value('urlParameter', {
   ]
 });
 
-angular.module('app').factory('reportCache', ['$cacheFactory', function($cacheFactory) {
+angular.module('app').factory('reportCache', ['$cacheFactory', function ($cacheFactory) {
   var cache = $cacheFactory.get('report-cache');
   if (!cache) {
-    cache = $cacheFactory('report-cache', {capacity:100});
+    cache = $cacheFactory('report-cache', {capacity: 100});
   }
   return cache;
 }]);

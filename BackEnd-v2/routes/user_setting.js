@@ -7,6 +7,9 @@ var _ = require('lodash');
 var dns = require("dns");
 var setting = require('../config/setting');
 var _ = require('lodash');
+var emailCtrl = require('../util/email');
+var uuidV4 = require('uuid/v4');
+
 
 /**
  * @api {get} /api/profile
@@ -38,7 +41,7 @@ router.get('/api/profile', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -114,12 +117,12 @@ router.post('/api/profile', async function (req, res, next) {
         userId: Joi.number().required(),
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
-        companyname: Joi.string().optional(),
+        companyname: Joi.string().optional().allow(""),
         tel: Joi.string().optional().empty(""),
         timezone: Joi.string().required(),
         homescreen: Joi.string().required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -135,6 +138,9 @@ router.post('/api/profile', async function (req, res, next) {
         }
         if (valueCopy.timezone) {
             sql += ",`timezone`='" + valueCopy.timezone + "'";
+        }
+        if (valueCopy.companyname != undefined) {
+            sql += ",`campanyName`='" + valueCopy.companyname + "'";
         }
 
         delete valueCopy.userId;
@@ -191,7 +197,7 @@ router.post('/api/password', async function (req, res, next) {
         oldpassword: Joi.string().required().trim(),
         newpassword: Joi.string().required().trim()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
 
     try {
@@ -254,7 +260,7 @@ router.post('/api/email', async function (req, res, next) {
         email: Joi.string().required(),
         password: Joi.string().required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -327,7 +333,7 @@ router.get('/api/referrals', async function (req, res, next) {
         limit: Joi.number().required().min(1),
         order: Joi.string().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.subId;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -350,11 +356,11 @@ router.get('/api/referrals', async function (req, res, next) {
             "(case log.`status` when 0 then \"New\" when 1 then \"Activated\"  END) as status," +
             "FROM_UNIXTIME(log.`lastActivity`,'%d-%m-%Y %H:%i') as lastactivity," +
             "log.`recentCommission` as recentCommission,log.`totalCommission` as totalCommission " +
-            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId ;
+            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId;
 
         let countsql = "select COUNT(*) as `count`,sum(recentCommission) as lastMonthCommissions,sum(totalCommission) as lifeTimeCommissions from ((" + listSql + ") as T)";
 
-      listSql += " order by " + order + " " + dir + " limit " + offset +"," + limit;
+        listSql += " order by " + order + " " + dir + " limit " + offset + "," + limit;
 
         let result = await Promise.all([query(listSql, [], connection), query(countsql, [], connection)]);
         res.json({
@@ -375,176 +381,6 @@ router.get('/api/referrals', async function (req, res, next) {
     }
 
 });
-
-
-/**
- * @api {get} /api/billing   用户套餐使用状态
- * @apiName  用户套餐使用状态
- * @apiGroup User
- *
- * @apiParam {String} timezone  "+08:00"
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success",
- *       "data":{
-            "activeSubscription" : {
-                "startTime" : "19-01-2017",
-                "endTime" : "19-02-2017",
-                "plan" : {
-                    "id" : 1,
-                    "name" : "Agency",
-                    "price" : 399,                      //normalPrice
-                    "eventsLimit" : 10000000,
-                    "overageCPM" : 0.000036,
-                    "retentionLimit" : 370,
-                    "userLimit" : 2,
-                    "domainLimit" : 5
-                },
-                "statistics" : {
-                    "overageEvents":1,
-                    "remainingEvents":1,
-                    "overageCost":0.999,
-                    "totalEvents" : 2,
-                    "billedEvents" : 2
-                }
-              }
-            }
- *     }
- *
- */
-
-// router.get('/api/billing', async function (req, res, next) {
-//     var schema = Joi.object().keys({
-//         userId: Joi.number().required(),
-//         timezone: Joi.string().required()
-//     });
-//     req.query.userId = req.userId;
-//     let connection;
-//     try {
-//         let value = await common.validate(req.query, schema);
-//         connection = await common.getConnection();
-//         let compled = _.template(`select  DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planStart\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')  as startTime,
-//         DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(bill.\`planEnd\`,'%Y-%m-%d %H:%i:%s'),'+00:00','<%= tz %>'),'%d-%m-%Y %H:%i')   as endTime,
-//         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-//         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM, bill.\`overageEvents\` as overageEvents,
-//         (plan.\`overageCPM\`/1000 * bill.\`overageEvents\`) as overageCost ,bill.\`totalEvents\` as totalEvents,bill.\`billedEvents\` as billedEvents,(plan.\`eventsLimit\` - bill.\`billedEvents\` ) as remainingEvents
-//         from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
-//         let sql = compled({
-//             tz: value.timezone,
-//             userId: value.userId
-//         });
-//         let results = await query(sql, [], connection);
-//         let val = results.length ? results[0] : null;
-//         let result = {
-//             activeSubscription: {
-//             }
-//         };
-//         if (val) {
-//             result.activeSubscription = {
-//                 startTime: val.startTime,
-//                 endTime: val.endTime,
-//                 plan: {
-//                     id: val.id,
-//                     name: val.name,
-//                     price: val.price,
-//                     eventsLimit: val.eventsLimit,
-//                     overageCPM: val.overageCPM,
-//                     retentionLimit: val.retentionLimit,
-//                     userLimit: val.userLimit,
-//                     domainLimit: val.domainLimit
-//                 },
-//                 statistics: {
-//                     overageEvents: val.overageEvents,
-//                     overageCost: val.overageCost,
-//                     totalEvents: val.totalEvents,
-//                     billedEvents: val.billedEvents
-//                 }
-//             }
-//         }
-//         res.json({
-//             status: 1,
-//             message: 'succes',
-//             data: result
-//         });
-//     } catch (e) {
-//         next(e);
-//     }
-//     finally {
-//         if (connection) {
-//             connection.release();
-//         }
-//     }
-// });
-
-
-/**
- * @api {get} /api/billing   用户当前套餐
- * @apiName  用户当前套餐
- * @apiGroup User
- *
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
-   {status:1,message:'success', "plan" : {
-                    "id" : 1,
-                    "name" : "Agency",
-                    "price" : 399,                      //normalPrice
-                    "eventsLimit" : 10000000,
-                    "overageCPM" : 0.000036,
-                    "retentionLimit" : 370,
-                    "userLimit" : 2,
-                    "domainLimit" : 5
-                }}
- *
- */
-// router.get('/api/plan', async function (req, res, next) {
-//     var schema = Joi.object().keys({
-//         userId: Joi.number().required()
-//     });
-//     req.query.userId = req.userId;
-//     let connection;
-//     try {
-//         let value = await common.validate(req.query, schema);
-//         connection = await common.getConnection();
-//         let compled = _.template(`select
-//         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-//         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
-//         let sql = compled({
-//             userId: value.userId
-//         });
-//         let results = await query(sql, [], connection);
-//         let val = results.length ? results[0] : null;
-//         let responseData = { plan: {} };
-//         if (val) {
-//             responseData.plan = {
-//                 id: val.id,
-//                 name: val.name,
-//                 price: val.price,
-//                 eventsLimit: val.eventsLimit,
-//                 overageCPM: val.overageCPM,
-//                 retentionLimit: val.retentionLimit,
-//                 userLimit: val.userLimit,
-//                 domainLimit: val.domainLimit
-//
-//             }
-//         }
-//         res.json({
-//             status: 1,
-//             message: 'succes',
-//             data: responseData
-//         });
-//     } catch (e) {
-//         next(e);
-//     }
-//     finally {
-//         if (connection) {
-//             connection.release();
-//         }
-//     }
-// })
 
 /**
  * @api {get} /api/domains 获取用户domdomains
@@ -662,7 +498,7 @@ router.post('/api/domains', async function (req, res, next) {
             main: Joi.boolean().required()
         }).required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.subId;
     let connection;
     try {
         let insertData = [];
@@ -739,8 +575,8 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
         idText: Joi.string().required(),
         address: Joi.string().required()
     });
-    req.query.userId = req.userId;
-    req.query.idText = req.idText;
+    req.query.userId = req.subId;
+    req.query.idText = req.subidText;
     try {
         let cnames = [];
         let value = await common.validate(req.query, schema);
@@ -864,8 +700,8 @@ router.post('/api/blacklist', async function (req, res, next) {
             userAgentRules: Joi.array().required()
         })
     });
-    req.body.userId = req.userId;
-    req.body.idText = req.idText;
+    req.body.userId = req.subId;
+    req.body.idText = req.subidText;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -933,7 +769,342 @@ router.get('/api/blacklist', async function (req, res, next) {
         }
     }
 
+});
+
+
+/**
+ * @api {post} /api/invitation   邀请user
+ *
+ * @apiGroup User
+ * @apiName 邀请user
+ *
+ * @apiParam  {Array} invitationEmail
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+  "status": 1,
+  "message": "success",
+  "data": {
+    "invitations": [
+      {
+        "id": 8,
+        "email": "keepin.aedan@gmail.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      },
+      {
+        "id": 10,
+        "email": "772063721@qq.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      }
+    ]
+  }
+}
+ *
+ *
+ **/
+router.post('/api/invitation', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        invitationEmail: Joi.array().items(Joi.string().email()).required().min(1),
+        groupId: Joi.string().required()
+    });
+    let connection;
+    let beginTransaction=false;
+    try {
+        req.body.userId = req.subId;
+        req.body.idText = req.subidText;
+        req.body.groupId = req.subgroupId;
+        let sendContext = [];
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        await common.beginTransaction(connection);
+        beginTransaction= true;
+        //邀请入库
+        for (let index = 0; index < value.invitationEmail.length; index++) {
+            let invatationSlice = await common.query("select `id`,`groupId`,`inviteeEmail`,`status`,`code` from GroupInvitation where `deleted`= 0 and `groupId`=? and `inviteeEmail`=? ", [value.groupId, value.invitationEmail[index]], connection);
+            //存在未接受邀请的重新发送
+            if (invatationSlice.length) {
+                if (invatationSlice[0].status != 1) {
+                    await common.query("update GroupInvitation set `status`= 0 ,`inviteeTime`= unix_timestamp(now()) where `id`= ? ", [invatationSlice[0].id], connection);
+                    sendContext.push({ email: value.invitationEmail[index], code: invatationSlice[0].code })
+                }
+            } else {//新邀请
+                let code = uuidV4();
+                await common.query("insert into GroupInvitation (`userId`,`groupId`,`inviteeEmail`,`inviteeTime`,`code`) values(?,?,?,unix_timestamp(now()),?)", [value.userId, value.groupId, value.invitationEmail[index], code], connection);
+                sendContext.push({ email: value.invitationEmail[index], code: code })
+            }
+        }
+
+
+        let tpl = {
+            subject: 'Newbidder Invitation', // Subject line
+            text: ``, // plain text body
+            html: ""
+        }
+        let htmlTpl = _.template(`<p>Hello,<p>
+
+                <p><%=name%> invited you to join <%=companyname%> on Newbidder.</p>
+
+                <p>Please <a href="<%= href%>">click here</a> to accept the invitation.</p>
+
+                <p>Best regards,</p>
+
+                <p> Newbidder Team </p>`); // html body
+
+        //异步发送邀请邮件
+        for (let i = 0; i < sendContext.length; i++) {
+            (function (context) {
+                tpl.html = htmlTpl(({
+                    name: req.firstname,
+                    companyname: req.campanyname ? req.campanyname : req.firstname,
+                    href: setting.invitationRouter + "?code=" + context.code
+                }));
+                emailCtrl.sendMail([context.email], tpl);
+            })(sendContext[i])
+        }
+
+        let results = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
+        if(beginTransaction){
+           await common.commit(connection);
+        }
+        res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                invitations: results
+            }
+        });
+    } catch (e) {
+        next(e);
+        if(beginTransaction){
+            await common.rollback(connection);
+        }
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
+});
+
+/**
+ * @api {get} /api/invitation   获取用户邀请lists
+ *
+ * @apiGroup User
+ * @apiName 获取用户邀请lists
+ *
+
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *
+ * {
+  "status": 1,
+  "message": "success",
+  "data": {
+    "invitations": [
+      {
+        "id": 8,
+        "email": "keepin.aedan@gmail.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      },
+      {
+        "id": 10,
+        "email": "772063721@qq.com",
+        "lastDate": "22-02-2017",
+        "status": 0
+      }
+    ]
+  }
+}
+ */
+router.get('/api/invitation', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        groupId: Joi.string().required()
+    });
+    let connection;
+
+    try {
+        req.query.userId = req.subId;
+        req.query.idText = req.subidText;
+        req.query.groupId = req.subgroupId;
+
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                invitations: result.length ? result : []
+            }
+        });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 })
+
+
+
+
+/**
+ * @api {post} /api/invitation/:id  解除邀请
+ *
+ * @apiGroup User
+ * @apiName 解除邀请
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {status:1,message:'success'}
+ *
+ **/
+router.delete('/api/invitation/:id', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required(),
+        id: Joi.number().required()
+    });
+    let connection;
+
+    try {
+        req.query.userId = req.subId;
+        req.query.idText = req.subidText;
+        req.query.id = req.params.id;
+        let value = await common.validate(req.query, schema);
+        await common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
+
+        return res.json({
+            status: 1,
+            message: 'success'
+        });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+/**
+ * @api {get} /api/groups  获取用户所在的用户组
+ *
+ * @apiGroup User
+ * @apiName  获取用户所在的用户组
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {status:1,message:'success',data:{
+ *
+ *  groups:[{ groupId:"",
+            firstname:"",
+            lastname:"",
+            email:""}]
+ * }}
+ *
+ **/
+router.get('/api/groups', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required(),
+        idText: Joi.string().required()
+    });
+    let connection;
+    try {
+        req.query.userId = req.subId;
+        req.query.idText = req.subidText;
+        let value = await common.validate(req.query, schema);
+        connection= await common.getConnection();
+        let result=[];
+        //获取用户所在的用户组的管理员信息
+        result= await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
+        //myself
+        result.push({
+            groupId:req.subgroupId,
+            firstname:req.firstname,
+            lastname:req.lastname,
+            email:req.email
+        });
+
+        return res.json({
+            status: 1,
+            message: 'success',
+            data:{
+                groups:result
+            }
+        });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+
+/**
+ * @api {get} /api/setup   获取setting  setup
+ * @apiName   获取setting  setup
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{
+ *           clickUrl:XXX,
+ *           mutiClickUrl:xxx,
+ *           postBackUrl:xxxx
+ *        }
+ *     }
+ *
+ */
+
+router.get('/api/setup', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.string().required()
+    });
+    req.query.userId = req.idText;
+    Joi.validate(req.query, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        try {
+            let defaultDomain;
+            for (let index = 0; index < setting.domains.length; index++) {
+                if (setting.domains[index].postBackDomain) {
+                    defaultDomain = setting.domains[index].address;
+                }
+            }
+            return res.json({
+                status: 1,
+                message: 'success',
+                data: {
+                    clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter ,
+                    mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter ,
+                    postBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+                }
+            });
+        } catch (e) {
+            next(e);
+        }
+    });
+});
+
 
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {

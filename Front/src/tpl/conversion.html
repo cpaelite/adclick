@@ -1,0 +1,108 @@
+<div flex layout="column" class="cs-page-content report">
+    <div class="cs-action-bar clearfix">
+        <div class="right-select">
+            <div class="cs-subform-control search-con hide">
+                <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
+                <i class="icon-search md-24" ng-click="applySearch($event)"></i>
+            </div>
+            <div class="cs-subform-control">
+                <md-select class="cs-subform-select" ng-model="datetype">
+                    <md-option value="1">Today</md-option>
+                    <md-option value="2">Yesterday</md-option>
+                    <md-option value="3">Last 7 days</md-option>
+                    <md-option value="4">Last 14 days</md-option>
+                    <md-option value="5">This Week</md-option>
+                    <md-option value="6">Last Week</md-option>
+                    <md-option value="7">This Month</md-option>
+                    <md-option value="8">Last Month</md-option>
+                    <md-option value="0">Custom</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-group" ng-show="datetype==0">
+                <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
+                <div class="cs-subform-control">
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
+                            ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                        {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                    <select class="cs-subform-select" ng-model="fromTime">
+                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+                    </select>
+                </div>
+                <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+                <div class="cs-subform-control">
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
+                            ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                        {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                    <select class="cs-subform-select" ng-model="toTime">
+                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+                    </select>
+                </div>
+            </div>
+            <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applySearch($event)" translate>apply</md-button>
+            <div class="view_column" ng-click="viewColumnClick()">
+                <div class="view_column_con" ng-show="viewColumnIsShow">
+                    <ul class="view_column_list">
+                        <li ng-repeat="item in columns" ng-click="checkboxIsChecked($event, 'conversion_' + item.key)">
+                          <input type="checkbox" ng-model="reportViewColumns['conversion_' + item.key].visible"
+                            ng-checked="preferences.reportViewColumns['conversion_' + item.key].visible"
+                            ng-click="checkboxInput($event)"
+                          >{{item.name}}
+                        </li>
+                    </ul>
+                    <div class="my-btn">
+                    <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applyChange($event)">
+                        <i class="icon-ok"></i>
+                        {{'apply changes' | translate}}
+                    </md-button>
+                    
+                    <md-button class="md-raised md-primary cs-compact cs-add-button"  ng-click="viewCloumnClose($event)">
+                        <i class="icon-remove"></i>
+                        {{'close' | translate}}
+                    </md-button>
+                    </div>
+                </div>
+                <i class="material-icons view-column-icon">view_column</i>
+                <i class="material-icons arrow-down-icon">keyboard_arrow_down</i>
+            </div>
+        </div>
+    </div>
+    <md-table-container>
+        <table md-table multiple ng-model="selected" md-progress="promise">
+            <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
+                        ng-show="preferences.reportViewColumns['conversion_' + item.key].visible">{{item.name}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row ng-repeat="row in report.rows">
+                    <td md-cell
+                        ng-repeat="column in columns"
+                        ng-show="preferences.reportViewColumns['conversion_' + column.key].visible"
+                    >
+                        <span>{{row[column.key]}}</span>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot md-body ng-if="report.totalRows != 0">
+                <tr md-row>
+                    <td md-cell ng-show="preferences.reportViewColumns['conversion_' + columns[0].key].visible">Total</td>
+                    <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns['conversion_' + column.key].visible && !$first">{{report.totals[column.key]}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </md-table-container>
+    <md-table-pagination
+        md-limit="query.limit"
+        md-limit-options="[50, 100, 200, 500, 1000]"
+        md-page="query.page"
+        md-total="{{report.totalRows}}"
+        md-page-select
+    >
+    </md-table-pagination>
+</div>

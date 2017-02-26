@@ -46,6 +46,7 @@ app.post('/auth/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   if (email && password == 'abc') {
+    res.cookie("clientId", "70012cfe-9940-4ebb-8994-6d15195744cc1");
     delayResponse(res, {token: createJWT()});
   } else {
     res.status(401).send({message: 'Invalid email and/or password!'});
@@ -388,6 +389,129 @@ app.get('/api/preferences', function (req, res) {
         },
         "variable10": {
           "visible": false
+        },
+        "conversion_PostbackTimestamp": {
+          "visible": true
+        },
+        "conversion_VisitTimestamp": {
+          "visible": true
+        },
+        "conversion_ExternalID": {
+          "visible": true
+        },
+        "conversion_ClickID": {
+          "visible": true
+        },
+        "conversion_TransactionID": {
+          "visible": true
+        },
+        "conversion_Revenue": {
+          "visible": true
+        },
+        "conversion_Cost": {
+          "visible": true
+        },
+        "conversion_CampaignID": {
+          "visible": true
+        },
+        "conversion_CampaignName": {
+          "visible": true
+        },
+        "conversion_LanderName": {
+          "visible": true
+        },
+        "conversion_LanderID": {
+          "visible": true
+        },
+        "conversion_OfferName": {
+          "visible": true
+        },
+        "conversion_OfferID": {
+          "visible": true
+        },
+        "conversion_Country": {
+          "visible": true
+        },
+        "conversion_CountryCode": {
+          "visible": true
+        },
+        "conversion_TrafficSourceName": {
+          "visible": true
+        },
+        "conversion_TrafficSourceID": {
+          "visible": true
+        },
+        "conversion_AffiliateNetworkName": {
+          "visible": true
+        },
+        "conversion_AffiliateNetworkID": {
+          "visible": true
+        },
+        "conversion_Device": {
+          "visible": true
+        },
+        "conversion_OS": {
+          "visible": true
+        },
+        "conversion_OSVersion": {
+          "visible": true
+        },
+        "conversion_Brand": {
+          "visible": true
+        },
+        "conversion_Model": {
+          "visible": true
+        },
+        "conversion_Browser": {
+          "visible": true
+        },
+        "conversion_BrowserVersion": {
+          "visible": true
+        },
+        "conversion_ISP": {
+          "visible": true
+        },
+        "conversion_MobileCarrier": {
+          "visible": true
+        },
+        "conversion_ConnectionType": {
+          "visible": true
+        },
+        "conversion_VisitorIP": {
+          "visible": false
+        },
+        "conversion_VisitorReferrer": {
+          "visible": false
+        },
+        "conversion_V1": {
+          "visible": false
+        },
+        "conversion_V2": {
+          "visible": false
+        },
+        "conversion_V3": {
+          "visible": false
+        },
+        "conversion_V4": {
+          "visible": false
+        },
+        "conversion_V5": {
+          "visible": false
+        },
+        "conversion_V6": {
+          "visible": false
+        },
+        "conversion_V7": {
+          "visible": false
+        },
+        "conversion_V8": {
+          "visible": false
+        },
+        "conversion_V9": {
+          "visible": false
+        },
+        "conversion_V10": {
+          "visible": false
         }
       }
     })
@@ -587,12 +711,12 @@ app.post('/api/preferences', function (req, res) {
 });
 
 /**
- * @api {post} /api/names  check name exists                              
+ * @api {post} /api/names  check name exists
  * @apiName    check name exists
  * @apiGroup User
- * @apiParam {String} name  
+ * @apiParam {String} name
  * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer4:Flow
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -606,12 +730,12 @@ app.post('/api/preferences', function (req, res) {
  */
 app.post('/api/names', function (req, res) {
   var result = {
-        "status": 1,
-        "message": "success",
-        "data":{
-            exists: true
-         }
-      };
+    "status": 1,
+    "message": "success",
+    "data":{
+      exists: true
+    }
+  };
   res.send(result);
 });
 
@@ -665,8 +789,8 @@ app.get('/api/report', function (req, res) {
           "ap": 0.0,
           "bids": 0,
           "clicks": 4368,
-          "conversions": 1,
-          "cost": 0.0,
+          "conversions": 1000,
+          "cost": 0.5,
           "cpv": 0.0,
           "cr": 0.022894,
           "ctr": 122.28,
@@ -676,19 +800,20 @@ app.get('/api/report', function (req, res) {
           "errors": 0,
           "ictr": 0.0,
           "impressions": 13430,
-          "profit": 0.0,
-          "revenue": 0.0,
+          "profit": 1.1,
+          "revenue": 3.5,
           "roi": 0.0,
-          "visits": 3572
+          "visits": 3072,
+          "date": "2017-02-20"
         }, {
           [groupBy + "Name"]: groupBy + " 2",
           [groupBy + "Id"]: "2",
           [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
           "ap": 0.0,
           "bids": 0,
-          "clicks": 4368,
-          "conversions": 1,
-          "cost": 0.0,
+          "clicks": 4868,
+          "conversions": 2000,
+          "cost": 0.7,
           "cpv": 0.0,
           "cr": 0.022894,
           "ctr": 122.28,
@@ -698,19 +823,20 @@ app.get('/api/report', function (req, res) {
           "errors": 0,
           "ictr": 0.0,
           "impressions": 0,
-          "profit": 0.0,
-          "revenue": 0.0,
+          "profit": 0.6,
+          "revenue": 2.6,
           "roi": 0.0,
-          "visits": 3572
+          "visits": 1572,
+          "date": "2017-02-21"
         }, {
           [groupBy + "Name"]: groupBy + " 3",
           [groupBy + "Id"]: "3",
           [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
           "ap": 0.0,
           "bids": 0,
-          "clicks": 4368,
-          "conversions": 1,
-          "cost": 0.0,
+          "clicks": 5135,
+          "conversions": 3000,
+          "cost": 0.9,
           "cpv": 0.0,
           "cr": 0.022894,
           "ctr": 122.28,
@@ -720,15 +846,172 @@ app.get('/api/report', function (req, res) {
           "errors": 0,
           "ictr": 0.0,
           "impressions": 0,
-          "profit": 0.0,
-          "revenue": 0.0,
+          "profit": 3.2,
+          "revenue": 6.1,
           "roi": 0.0,
-          "visits": 3572
+          "visits": 5572,
+          "date": "2017-02-22"
         }
       ]
     }
   };
   res.send(result);
+});
+
+/**
+ * @apiName 获取Conversions
+ *
+ * @apiParam {String} from:2017-01-11T00:00:00Z
+ * @apiParam {String} to:2017-01-12T00:00:00Z
+ * @apiParam {String} tz:America/New_York
+ * @apiParam {String} sort:visits
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ *
+ */
+app.get('/api/conversions', function (req, res) {
+  var groupBy = req.query.groupBy;
+  var result = {
+    "status": 1,
+    "messages": "",
+    data: {
+      "totalRows": 3700,
+      "totals": {
+        "Cost" : 0.0,
+        "Revenue" : 10.0
+      },
+      rows: [
+        {
+          "PostbackTimestamp": "2017-02-21 01:12:07 AM",
+          "VisitTimestamp": "1970-01-01 12:00:00 AM",
+          "ExternalID": "18171201102",
+          "ClickID": "b1692e08fb1e121e742e5576393ecced",
+          "TransactionID": "OPTIONAL",
+          "Revenue": 0.96,
+          "Cost": 0.001,
+          "CampaignName": "popads - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "CampaignID": 58,
+          "LanderName": "Global - jp",
+          "LanderID": 33,
+          "OfferName": "mobvista - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "OfferID": 32,
+          "Country": "THA",
+          "CountryCode": "TH",
+          "TrafficSourceName": "popads",
+          "TrafficSourceID": 40,
+          "AffiliateNetworkName": "mobvista",
+          "AffiliateNetworkID": 23,
+          "Device": "",
+          "OS": "Android 6.0",
+          "OSVersion": "6.0",
+          "Brand": "Unknown",
+          "Model": "P500",
+          "Browser": "Android",
+          "BrowserVersion": "4.0",
+          "ISP": "Advanced Info Service",
+          "MobileCarrier": "AIS",
+          "ConnectionType": "",
+          "VisitorIP": "49.230.230.38",
+          "VisitorReferrer": "",
+          "V1": "{ADBLOCK}",
+          "V2": "{BROWSERID}",
+          "V3": "{BROWSERNAME}",
+          "V4": "{CAMPAIGNID}",
+          "V5": "{CAMPAIGNNAME}",
+          "V6": "{CATEGORYID}",
+          "V7": "{CATEGORYNAME}",
+          "V8": "TH",
+          "V9": "{DEVICEID}",
+          "V10": "{DEVICENAME}"
+        }, {
+          "PostbackTimestamp": "2017-02-21 01:12:07 AM",
+          "VisitTimestamp": "1970-01-01 12:00:00 AM",
+          "ExternalID": "18171201102",
+          "ClickID": "b1692e08fb1e121e742e5576393ecced",
+          "TransactionID": "OPTIONAL",
+          "Revenue": 0.96,
+          "Cost": 0.001,
+          "CampaignName": "popads - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "CampaignID": 58,
+          "LanderName": "Global - jp",
+          "LanderID": 33,
+          "OfferName": "mobvista - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "OfferID": 32,
+          "Country": "THA",
+          "CountryCode": "TH",
+          "TrafficSourceName": "popads",
+          "TrafficSourceID": 40,
+          "AffiliateNetworkName": "mobvista",
+          "AffiliateNetworkID": 23,
+          "Device": "",
+          "OS": "Android 6.0",
+          "OSVersion": "6.0",
+          "Brand": "Unknown",
+          "Model": "P500",
+          "Browser": "Android",
+          "BrowserVersion": "4.0",
+          "ISP": "Advanced Info Service",
+          "MobileCarrier": "AIS",
+          "ConnectionType": "",
+          "VisitorIP": "49.230.230.38",
+          "VisitorReferrer": "",
+          "V1": "{ADBLOCK}",
+          "V2": "{BROWSERID}",
+          "V3": "{BROWSERNAME}",
+          "V4": "{CAMPAIGNID}",
+          "V5": "{CAMPAIGNNAME}",
+          "V6": "{CATEGORYID}",
+          "V7": "{CATEGORYNAME}",
+          "V8": "TH",
+          "V9": "{DEVICEID}",
+          "V10": "{DEVICENAME}"
+        }, {
+          "PostbackTimestamp": "2017-02-21 01:12:07 AM",
+          "VisitTimestamp": "1970-01-01 12:00:00 AM",
+          "ExternalID": "18171201102",
+          "ClickID": "b1692e08fb1e121e742e5576393ecced",
+          "TransactionID": "OPTIONAL",
+          "Revenue": 0.96,
+          "Cost": 0.001,
+          "CampaignName": "popads - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "CampaignID": 58,
+          "LanderName": "Global - jp",
+          "LanderID": 33,
+          "OfferName": "mobvista - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "OfferID": 32,
+          "Country": "THA",
+          "CountryCode": "TH",
+          "TrafficSourceName": "popads",
+          "TrafficSourceID": 40,
+          "AffiliateNetworkName": "mobvista",
+          "AffiliateNetworkID": 23,
+          "Device": "",
+          "OS": "Android 6.0",
+          "OSVersion": "6.0",
+          "Brand": "Unknown",
+          "Model": "P500",
+          "Browser": "Android",
+          "BrowserVersion": "4.0",
+          "ISP": "Advanced Info Service",
+          "MobileCarrier": "AIS",
+          "ConnectionType": "",
+          "VisitorIP": "49.230.230.38",
+          "VisitorReferrer": "",
+          "V1": "{ADBLOCK}",
+          "V2": "{BROWSERID}",
+          "V3": "{BROWSERNAME}",
+          "V4": "{CAMPAIGNID}",
+          "V5": "{CAMPAIGNNAME}",
+          "V6": "{CATEGORYID}",
+          "V7": "{CATEGORYNAME}",
+          "V8": "TH",
+          "V9": "{DEVICEID}",
+          "V10": "{DEVICENAME}"
+        }
+      ]
+    }
+  };
+  delayResponse(res, result);
 });
 
 /**
@@ -998,6 +1281,16 @@ app.get('/api/flows/:flowId', function (req, res) {
           "id": "3434",    // condition id, refer to /api/conditions
           "operand": "is", // is/isnt
           "value": ["windows", "android4.5", "android7"]
+        }, {
+          "id": "8584",
+          "operand": "isnt",
+          "city": "xiamen",
+          "_city": {"xiamen":"Xiamen"}
+        }, {
+          "id": "8588",
+          "operand": "is",
+          "region": ["xiamen", "shanghai"],
+          "_region": {"xiamen":"Xiamen", "shanghai":"Shanghai"}
         }, {
           "id": "1234",
           "operand": "isnt",
@@ -1511,6 +1804,8 @@ app.get('/api/traffics', function (req, res) {
           "name": "TrafficSource1",
           "cost": "{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\"}",
           "externalId": "{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\"}",
+          "campaignId": "{}",
+          "websiteId": "{}",
           "hash": "dba9cb56-8e0b-4935-9b69-b1ae049128c4",
           "postbackUrl": "http://www.traffic.com",
           "pixelRedirectUrl": "",
@@ -1521,6 +1816,8 @@ app.get('/api/traffics', function (req, res) {
           "id": 20,
           "name": "TrafficSource2",
           "cost": "{}",
+          "campaignId": "{}",
+          "websiteId": "{}",
           "hash": "b247e517-4811-4c4a-801c-2d86b3a7a0cb",
           "postbackUrl": "www.traffic.com",
           "pixelRedirectUrl": "",
@@ -1549,6 +1846,8 @@ app.get('/api/traffics/:id', function (req, res) {
       "impTracking": 1,
       "externalId": "{\"Parameter\":\"1\",\"Placeholder\":\"1\"}",
       "cost": "",
+      "campaignId": "{}",
+      "websiteId": "{}",
       "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]"
     }
   };
@@ -1569,6 +1868,8 @@ app.post('/api/traffics', function (req, res) {
       "impTracking": 1,
       "externalId": "",
       "cost": "",
+      "campaignId": "{}",
+      "websiteId": "{}",
       "params": ""
     }
   };
@@ -1587,6 +1888,8 @@ app.post('/api/traffics/:id', function (req, res) {
       "impTracking": 1,
       "externalId": "",
       "cost": "",
+      "campaignId": "{}",
+      "websiteId": "{}",
       "params": ""
     }
   };
@@ -1605,14 +1908,7 @@ app.delete('/api/traffics/:id', function (req, res) {
 });
 
 app.get('/api/traffic/tpl', function (req, res) {
-  var result = {
-    "status":1,
-    "message":"success",
-    "data":{
-      "lists":[
-        {"id":1,"name":"AirPush.com","postbackUrl":"http://api.airpush.com/track/?guid={clickid}","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"guid\",\"Placeholder\":\"%guid%\",\"Name\":\"guid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"%carrier%\", \"Parameter\": \"carrier\", \"Name\": \"carrier\"}, {\"Track\": 1, \"Placeholder\": \"%d%\", \"Parameter\": \"d\", \"Name\": \"d\"}, {\"Track\": 1, \"Placeholder\": \"%device%\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"%manufacturer%\", \"Parameter\": \"manufacturer\", \"Name\": \"manufacturer\"}, {\"Track\": 1, \"Placeholder\": \"%campaignid%\", \"Parameter\": \"campaignid\", \"Name\": \"campaignid\"}, {\"Track\": 1, \"Placeholder\": \"%creativeid%\", \"Parameter\": \"creativeid\", \"Name\": \"creativeid\"}, {\"Track\": 1, \"Placeholder\": \"%ip%\", \"Parameter\": \"ip\", \"Name\": \"ip\"}, {\"Track\": 1, \"Placeholder\": \"%pubid%\", \"Parameter\": \"pubid\", \"Name\": \"pubid\"}, {\"Track\": 1, \"Placeholder\": \"%dapp%\", \"Parameter\": \"dapp\", \"Name\": \"dapp\"}, {\"Track\": 1, \"Placeholder\": \"%city%\", \"Parameter\": \"city\", \"Name\": \"city\"}]"},{"id":2,"name":"popads.com","postbackUrl":"http://serve.popads.net/cpixel.php?s2s=1&aid=b18b7ac1b27b01fdada779adf1b51fdb&id=impressionId&value=conversionValue","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"IMPRESSIONID\",\"Placeholder\":\"[IMPRESSIONID]\",\"Name\":\"IMPRESSIONID\"}","cost":"{\"Parameter\":\"BID\",\"Placeholder\":\"[BID]\",\"Name\":\"BID\"}","params":"[{\"Track\": 1, \"Placeholder\": \"[ADBLOCK]\", \"Parameter\": \"ADBLOCK\", \"Name\": \"ADBLOCK\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERID]\", \"Parameter\": \"BROWSERID\", \"Name\": \"BROWSERID\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERNAME]\", \"Parameter\": \"BROWSERNAME\", \"Name\": \"BROWSERNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CAMPAIGNID]\", \"Parameter\": \"CAMPAIGNID\", \"Name\": \"CAMPAIGNID\"}, {\"Track\": 1, \"Placeholder\": \"[CAMPAIGNNAME]\", \"Parameter\": \"CAMPAIGNNAME\", \"Name\": \"CAMPAIGNNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYID]\", \"Parameter\": \"CATEGORYID\", \"Name\": \"CATEGORYID\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYNAME]\", \"Parameter\": \"CATEGORYNAME\", \"Name\": \"CATEGORYNAME\"}, {\"Track\": 1, \"Placeholder\": \"[COUNTRY]\", \"Parameter\": \"COUNTRY\", \"Name\": \"COUNTRY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICEID]\", \"Parameter\": \"DEVICEID\", \"Name\": \"DEVICEID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICENAME]\", \"Parameter\": \"DEVICENAME\", \"Name\": \"DEVICENAME\"}]"},{"id":3,"name":"PropellerAds.com","postbackUrl":"http://ad.propellerads.com/conversion.php?aid=45412&pid=&tid=11006&visitor_id=[[c4]]","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"SUBID\",\"Placeholder\":\"${SUBID}\",\"Name\":\"SUBID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{bannerid}\", \"Parameter\": \"bannerid\", \"Name\": \"bannerid\"}, {\"Track\": 1, \"Placeholder\": \"{campaignid}\", \"Parameter\": \"campaignid\", \"Name\": \"campaignid\"}, {\"Track\": 1, \"Placeholder\": \"{zoneid}\", \"Parameter\": \"zoneid\", \"Name\": \"zoneid\"}]"},{"id":4,"name":"JuicyAds.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{dynamicCMP}\", \"Parameter\": \"dynamicCMP\", \"Name\": \"dynamicCMP\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicCON}\", \"Parameter\": \"dynamicCON\", \"Name\": \"dynamicCON\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicDATE}\", \"Parameter\": \"dynamicDATE\", \"Name\": \"dynamicDATE\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicDOS}\", \"Parameter\": \"dynamicDOS\", \"Name\": \"dynamicDOS\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicDTY}\", \"Parameter\": \"dynamicDTY\", \"Name\": \"dynamicDTY\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicGEO}\", \"Parameter\": \"dynamicGEO\", \"Name\": \"dynamicGEO\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicHOUR}\", \"Parameter\": \"dynamicHOUR\", \"Name\": \"dynamicHOUR\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicIMG}\", \"Parameter\": \"dynamicIMG\", \"Name\": \"dynamicIMG\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicPUB}\", \"Parameter\": \"dynamicPUB\", \"Name\": \"dynamicPUB\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicSITE}\", \"Parameter\": \"dynamicSITE\", \"Name\": \"dynamicSITE\"}]"},{"id":5,"name":"RevContent.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{adv_targets}\", \"Parameter\": \"adv_targets\", \"Name\": \"adv_targets\"}, {\"Track\": 1, \"Placeholder\": \"{boost_id}\", \"Parameter\": \"boost_id\", \"Name\": \"boost_id\"}, {\"Track\": 1, \"Placeholder\": \"{content_id}\", \"Parameter\": \"content_id\", \"Name\": \"content_id\"}, {\"Track\": 1, \"Placeholder\": \"{widget_id}\", \"Parameter\": \"widget_id\", \"Name\": \"widget_id\"}]"},{"id":6,"name":"TrafficJunky.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{\"Parameter\":\"BidValue\",\"Placeholder\":\"{BidValue}\",\"Name\":\"BidValue\"}","params":"[{\"Track\": 1, \"Placeholder\": \"{AdID}\", \"Parameter\": \"AdID\", \"Name\": \"AdID\"}, {\"Track\": 1, \"Placeholder\": \"{BanID}\", \"Parameter\": \"BanID\", \"Name\": \"BanID\"}, {\"Track\": 1, \"Placeholder\": \"{BanName}\", \"Parameter\": \"BanName\", \"Name\": \"BanName\"}, {\"Track\": 1, \"Placeholder\": \"{CampaignID}\", \"Parameter\": \"CampaignID\", \"Name\": \"CampaignID\"}, {\"Track\": 1, \"Placeholder\": \"{Location}\", \"Parameter\": \"Location\", \"Name\": \"Location\"}, {\"Track\": 1, \"Placeholder\": \"{SiteName}\", \"Parameter\": \"SiteName\", \"Name\": \"SiteName\"}, {\"Track\": 1, \"Placeholder\": \"{SpotName}\", \"Parameter\": \"SpotName\", \"Name\": \"SpotName\"}]"},{"id":7,"name":"taboola.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{campaign}\", \"Parameter\": \"campaign\", \"Name\": \"campaign\"}, {\"Track\": 1, \"Placeholder\": \"{site}\", \"Parameter\": \"site\", \"Name\": \"site\"}, {\"Track\": 1, \"Placeholder\": \"{thumbnail}\", \"Parameter\": \"thumbnail\", \"Name\": \"thumbnail\"}, {\"Track\": 1, \"Placeholder\": \"{title}\", \"Parameter\": \"title\", \"Name\": \"title\"}]"},{"id":8,"name":"TrafficFactory.biz","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{target.bid}\", \"Parameter\": \"target.bid\", \"Name\": \"target.bid\"}, {\"Track\": 1, \"Placeholder\": \"{banner.id}\", \"Parameter\": \"banner.id\", \"Name\": \"banner.id\"}, {\"Track\": 1, \"Placeholder\": \"{banner.name}\", \"Parameter\": \"banner.name\", \"Name\": \"banner.name\"}, {\"Track\": 1, \"Placeholder\": \"{banner.size}\", \"Parameter\": \"banner.size\", \"Name\": \"banner.size\"}, {\"Track\": 1, \"Placeholder\": \"{campaign.id}\", \"Parameter\": \"campaign.id\", \"Name\": \"campaign.id\"}, {\"Track\": 1, \"Placeholder\": \"{categories}\", \"Parameter\": \"categories\", \"Name\": \"categories\"}, {\"Track\": 1, \"Placeholder\": \"{target.name}\", \"Parameter\": \"target.name\", \"Name\": \"target.name\"}, {\"Track\": 1, \"Placeholder\": \"{time.stamp}\", \"Parameter\": \"time.stamp\", \"Name\": \"time.stamp\"}, {\"Track\": 1, \"Placeholder\": \"{user.browser}\", \"Parameter\": \"user.browser\", \"Name\": \"user.browser\"}, {\"Track\": 1, \"Placeholder\": \"{user.country}\", \"Parameter\": \"user.country\", \"Name\": \"user.country\"}]"},{"id":9,"name":"AdCash.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"[clickid]\",\"Name\":\"clickid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"[campaign]\", \"Parameter\": \"campaign\", \"Name\": \"campaign\"}, {\"Track\": 1, \"Placeholder\": \"[country]\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"[lang]\", \"Parameter\": \"lang\", \"Name\": \"lang\"}, {\"Track\": 1, \"Placeholder\": \"[time]\", \"Parameter\": \"time\", \"Name\": \"time\"}, {\"Track\": 1, \"Placeholder\": \"[zone]\", \"Parameter\": \"zone\", \"Name\": \"zone\"}]"},{"id":10,"name":"Ero-Advertising.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"tracking\",\"Placeholder\":\"[tracking]\",\"Name\":\"tracking\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"[adid]\", \"Parameter\": \"adid\", \"Name\": \"adid\"}, {\"Track\": 1, \"Placeholder\": \"[campaignid]\", \"Parameter\": \"campaignid\", \"Name\": \"campaignid\"}, {\"Track\": 1, \"Placeholder\": \"[country]\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"[domainid]\", \"Parameter\": \"domainid\", \"Name\": \"domainid\"}, {\"Track\": 1, \"Placeholder\": \"[timestamp]\", \"Parameter\": \"timestamp\", \"Name\": \"timestamp\"}, {\"Track\": 1, \"Placeholder\": \"[spaceid]\", \"Parameter\": \"spaceid\", \"Name\": \"spaceid\"}]"},{"id":11,"name":"ExoClick.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"conversions_tracking\",\"Placeholder\":\"{conversions_tracking}\",\"Name\":\"conversions_tracking\"}","cost":"{\"Parameter\":\"cost\",\"Placeholder\":\"{cost}\",\"Name\":\"cost\"}","params":"[{\"Track\": 1, \"Placeholder\": \"{campaign_id}\", \"Parameter\": \"campaign_id\", \"Name\": \"campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"{category_id}\", \"Parameter\": \"category_id\", \"Name\": \"category_id\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"{format}\", \"Parameter\": \"format\", \"Name\": \"format\"}, {\"Track\": 1, \"Placeholder\": \"{site_id}\", \"Parameter\": \"site_id\", \"Name\": \"site_id\"}, {\"Track\": 1, \"Placeholder\": \"{src_hostname}\", \"Parameter\": \"src_hostname\", \"Name\": \"src_hostname\"}, {\"Track\": 1, \"Placeholder\": \"{time}\", \"Parameter\": \"time\", \"Name\": \"time\"}, {\"Track\": 1, \"Placeholder\": \"{variation_id}\", \"Parameter\": \"variation_id\", \"Name\": \"variation_id\"}, {\"Track\": 1, \"Placeholder\": \"{zone_id}\", \"Parameter\": \"zone_id\", \"Name\": \"zone_id\"}]"},{"id":12,"name":"Go2Mobi.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"{clickid}\",\"Name\":\"clickid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{agent}\", \"Parameter\": \"agent\", \"Name\": \"agent\"}, {\"Track\": 1, \"Placeholder\": \"{campaign}\", \"Parameter\": \"campaign\", \"Name\": \"campaign\"}, {\"Track\": 1, \"Placeholder\": \"{cc}\", \"Parameter\": \"cc\", \"Name\": \"cc\"}, {\"Track\": 1, \"Placeholder\": \"{city}\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"{crid}\", \"Parameter\": \"crid\", \"Name\": \"crid\"}, {\"Track\": 1, \"Placeholder\": \"{device_model}\", \"Parameter\": \"device_model\", \"Name\": \"device_model\"}, {\"Track\": 1, \"Placeholder\": \"{device_vendor}\", \"Parameter\": \"device_vendor\", \"Name\": \"device_vendor\"}, {\"Track\": 1, \"Placeholder\": \"{imp}\", \"Parameter\": \"imp\", \"Name\": \"imp\"}, {\"Track\": 1, \"Placeholder\": \"{ip}\", \"Parameter\": \"ip\", \"Name\": \"ip\"}]"},{"id":13,"name":"OutBrain.com","postbackUrl":"http://www.yourdomain.com/article?utm_term={{origsrcid}}&utm_source={{ad_id}}","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{{ad_id}}\", \"Parameter\": \"ad_id\", \"Name\": \"ad_id\"}, {\"Track\": 1, \"Placeholder\": \"{{ad_title}}\", \"Parameter\": \"ad_title\", \"Name\": \"ad_title\"}, {\"Track\": 1, \"Placeholder\": \"{{doc_title}}\", \"Parameter\": \"doc_title\", \"Name\": \"doc_title\"}, {\"Track\": 1, \"Placeholder\": \"{{origsrcid}}\", \"Parameter\": \"origsrcid\", \"Name\": \"origsrcid\"}, {\"Track\": 1, \"Placeholder\": \"{{time_stamp}}\", \"Parameter\": \"time_stamp\", \"Name\": \"time_stamp\"}]"},{"id":14,"name":"PopCash.net","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"%category%\", \"Parameter\": \"category\", \"Name\": \"category\"}, {\"Track\": 1, \"Placeholder\": \"%cc%\", \"Parameter\": \"cc\", \"Name\": \"cc\"}, {\"Track\": 1, \"Placeholder\": \"%operatingsystem%\", \"Parameter\": \"operatingsystem\", \"Name\": \"operatingsystem\"}, {\"Track\": 1, \"Placeholder\": \"%siteid%\", \"Parameter\": \"siteid\", \"Name\": \"siteid\"}]"},{"id":15,"name":"reporo.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"rcid\",\"Placeholder\":\"{rcid}\",\"Name\":\"rcid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{repBannerid}\", \"Parameter\": \"repBannerid\", \"Name\": \"repBannerid\"}, {\"Track\": 1, \"Placeholder\": \"{repCampaignid}\", \"Parameter\": \"repCampaignid\", \"Name\": \"repCampaignid\"}, {\"Track\": 1, \"Placeholder\": \"{repCpcid}\", \"Parameter\": \"repCpcid\", \"Name\": \"repCpcid\"}, {\"Track\": 1, \"Placeholder\": \"{repZoneid}\", \"Parameter\": \"repZoneid\", \"Name\": \"repZoneid\"}]"},{"id":16,"name":"POF.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"{clickid}\",\"Name\":\"clickid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{age:}\", \"Parameter\": \"age\", \"Name\": \"age\"}, {\"Track\": 1, \"Placeholder\": \"{city:}\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"{creativeid:}\", \"Parameter\": \"creativeid\", \"Name\": \"creativeid\"}, {\"Track\": 1, \"Placeholder\": \"{gender:}\", \"Parameter\": \"gender\", \"Name\": \"gender\"}, {\"Track\": 1, \"Placeholder\": \"{state:}\", \"Parameter\": \"state\", \"Name\": \"state\"}]"},{"id":17,"name":"ZeroPark.com","postbackUrl":"http://postback.zeroredirect1.com/zppostback/XXXXXX-XXXX-XXXX-XXXX-XXXXXX?cid={clickid}","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"cid\",\"Placeholder\":\"{cid}\",\"Name\":\"cid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{campaign_id}\", \"Parameter\": \"campaign_id\", \"Name\": \"campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"{campaign_name}\", \"Parameter\": \"campaign_name\", \"Name\": \"campaign_name\"}, {\"Track\": 1, \"Placeholder\": \"{geo}\", \"Parameter\": \"geo\", \"Name\": \"geo\"}, {\"Track\": 1, \"Placeholder\": \"{keyword}\", \"Parameter\": \"keyword\", \"Name\": \"keyword\"}, {\"Track\": 1, \"Placeholder\": \"{long_campaign_id}\", \"Parameter\": \"long_campaign_id\", \"Name\": \"long_campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"{match}\", \"Parameter\": \"match\", \"Name\": \"match\"}, {\"Track\": 1, \"Placeholder\": \"{target}\", \"Parameter\": \"target\", \"Name\": \"target\"}, {\"Track\": 1, \"Placeholder\": \"{target_url}\", \"Parameter\": \"target_url\", \"Name\": \"target_url\"}, {\"Track\": 1, \"Placeholder\": \"{traffic_type}\", \"Parameter\": \"traffic_type\", \"Name\": \"traffic_type\"}, {\"Track\": 1, \"Placeholder\": \"{visitor_type}\", \"Parameter\": \"visitor_type\", \"Name\": \"visitor_type\"}]"},{"id":18,"name":"adxpansion.com","postbackUrl":"https://api.adxpansion.com/v1/conversions/ log?token=YOUR-API-TOKEN&id=transactionID","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"transactionID\",\"Placeholder\":\"{transactionID}\",\"Name\":\"transactionID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{adgroupID}\", \"Parameter\": \"adgroupID\", \"Name\": \"adgroupID\"}, {\"Track\": 1, \"Placeholder\": \"{campaignID}\", \"Parameter\": \"campaignID\", \"Name\": \"campaignID\"}, {\"Track\": 1, \"Placeholder\": \"{carrier}\", \"Parameter\": \"carrier\", \"Name\": \"carrier\"}, {\"Track\": 1, \"Placeholder\": \"{connectiontype}\", \"Parameter\": \"connectiontype\", \"Name\": \"connectiontype\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"{creativeID}\", \"Parameter\": \"creativeID\", \"Name\": \"creativeID\"}, {\"Track\": 1, \"Placeholder\": \"{date}\", \"Parameter\": \"date\", \"Name\": \"date\"}, {\"Track\": 1, \"Placeholder\": \"{keyword}\", \"Parameter\": \"keyword\", \"Name\": \"keyword\"}, {\"Track\": 1, \"Placeholder\": \"{zone}\", \"Parameter\": \"zone\", \"Name\": \"zone\"}]"},{"id":19,"name":"MGID.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{teaser_id}\", \"Parameter\": \"teaser_id\", \"Name\": \"teaser_id\"}, {\"Track\": 1, \"Placeholder\": \"{widget_id}\", \"Parameter\": \"widget_id\", \"Name\": \"widget_id\"}]"},{"id":20,"name":"MobFox.com","postbackUrl":"http://my.mobfox.com/conversion.track.php?account_id=UNIQUEID&click_id={clickid}","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"MFOXCLICKID\",\"Placeholder\":\"MFOXCLICKID\",\"Name\":\"MFOXCLICKID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"MFOXADID\", \"Parameter\": \"MFOXADID\", \"Name\": \"MFOXADID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXAGID\", \"Parameter\": \"MFOXAGID\", \"Name\": \"MFOXAGID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXCAID\", \"Parameter\": \"MFOXCAID\", \"Name\": \"MFOXCAID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXGAID\", \"Parameter\": \"MFOXGAID\", \"Name\": \"MFOXGAID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXIFA\", \"Parameter\": \"MFOXIFA\", \"Name\": \"MFOXIFA\"}, {\"Track\": 1, \"Placeholder\": \"MFOXPUBID\", \"Parameter\": \"MFOXPUBID\", \"Name\": \"MFOXPUBID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXUDID\", \"Parameter\": \"MFOXUDID\", \"Name\": \"MFOXUDID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXTSTAMP\", \"Parameter\": \"MFOXTSTAMP\", \"Name\": \"MFOXTSTAMP\"}, {\"Track\": 1, \"Placeholder\": \"RANDOMNR\", \"Parameter\": \"RANDOMNR\", \"Name\": \"RANDOMNR\"}]"},{"id":21,"name":"NativeAds.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{ad_id}\", \"Parameter\": \"ad_id\", \"Name\": \"ad_id\"}, {\"Track\": 1, \"Placeholder\": \"{ad_title}\", \"Parameter\": \"ad_title\", \"Name\": \"ad_title\"}, {\"Track\": 1, \"Placeholder\": \"{campaign_ID}\", \"Parameter\": \"campaign_ID\", \"Name\": \"campaign_ID\"}, {\"Track\": 1, \"Placeholder\": \"{campaign_name}\", \"Parameter\": \"campaign_name\", \"Name\": \"campaign_name\"}, {\"Track\": 1, \"Placeholder\": \"{device}\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"{widget_id}\", \"Parameter\": \"widget_id\", \"Name\": \"widget_id\"}]"},{"id":22,"name":"AdWill.co","postbackUrl":"http://click.adwill.co/conversion?c1=[CLICKID]","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"CLICKID\",\"Placeholder\":\"{CLICKID}\",\"Name\":\"CLICKID\"}","cost":"{}","params":"[]"},{"id":23,"name":"50onRed.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\",\"Name\":\"click_id\"}","cost":"{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\",\"Name\":\"bid\"}","params":"[{\"Track\": 1, \"Placeholder\": \"{keyword}\", \"Parameter\": \"keyword\", \"Name\": \"keyword\"}, {\"Track\": 1, \"Placeholder\": \"{keyword_id}\", \"Parameter\": \"keyword_id\", \"Name\": \"keyword_id\"}, {\"Track\": 1, \"Placeholder\": \"{creative_id}\", \"Parameter\": \"creative_id\", \"Name\": \"creative_id\"}, {\"Track\": 1, \"Placeholder\": \"{campaign_id}\", \"Parameter\": \"campaign_id\", \"Name\": \"campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}]"},{"id":24,"name":"admoda.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"%clickid%\",\"Name\":\"clickid\"}","cost":"{\"Parameter\":\"cpc-usd\",\"Placeholder\":\"%cpc-usd%\",\"Name\":\"cpc-usd\"}","params":"[{\"Track\": 1, \"Placeholder\": \"%adid%\", \"Parameter\": \"adid\", \"Name\": \"adid\"}, {\"Track\": 1, \"Placeholder\": \"%campaignid%\", \"Parameter\": \"campaignid\", \"Name\": \"campaignid\"}, {\"Track\": 1, \"Placeholder\": \"%cpc%\", \"Parameter\": \"cpc\", \"Name\": \"cpc\"}, {\"Track\": 1, \"Placeholder\": \"%zoneid%\", \"Parameter\": \"zoneid\", \"Name\": \"zoneid\"}]"},{"id":25,"name":"LeadBolt.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"CLK_ID\",\"Placeholder\":\"[CLK_ID]\",\"Name\":\"CLK_ID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"[AD_GROUP_ID]\", \"Parameter\": \"AD_GROUP_ID\", \"Name\": \"AD_GROUP_ID\"}, {\"Track\": 1, \"Placeholder\": \"[AD_ID]\", \"Parameter\": \"AD_ID\", \"Name\": \"AD_ID\"}, {\"Track\": 1, \"Placeholder\": \"[CAMP_ID]\", \"Parameter\": \"CAMP_ID\", \"Name\": \"CAMP_ID\"}, {\"Track\": 1, \"Placeholder\": \"[CAT_ID]\", \"Parameter\": \"CAT_ID\", \"Name\": \"CAT_ID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID]\", \"Parameter\": \"DEVICE_ID\", \"Name\": \"DEVICE_ID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID_ANY]\", \"Parameter\": \"DEVICE_ID_ANY\", \"Name\": \"DEVICE_ID_ANY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID_MD5]\", \"Parameter\": \"DEVICE_ID_MD\", \"Name\": \"DEVICE_ID_MD\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID_SHA1]\", \"Parameter\": \"DEVICE_ID_SHA\", \"Name\": \"DEVICE_ID_SHA\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_AD_ID]\", \"Parameter\": \"DEVICE_AD_ID\", \"Name\": \"DEVICE_AD_ID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_AD_ID_ANY]\", \"Parameter\": \"DEVICE_AD_ID_ANY\", \"Name\": \"DEVICE_AD_ID_ANY\"}]"},{"id":26,"name":"PopVertising.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"bid\",\"Placeholder\":\"-bid-\",\"Name\":\"bid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"-browser-\", \"Parameter\": \"browser\", \"Name\": \"browser\"}, {\"Track\": 1, \"Placeholder\": \"-catid-\", \"Parameter\": \"catid\", \"Name\": \"catid\"}, {\"Track\": 1, \"Placeholder\": \"-catname-\", \"Parameter\": \"catname\", \"Name\": \"catname\"}, {\"Track\": 1, \"Placeholder\": \"-country-\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"-device-\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"-i-\", \"Parameter\": \"i\", \"Name\": \"i\"}, {\"Track\": 1, \"Placeholder\": \"-ispid-\", \"Parameter\": \"ispid\", \"Name\": \"ispid\"}, {\"Track\": 1, \"Placeholder\": \"-ispn-\", \"Parameter\": \"ispn\", \"Name\": \"ispn\"}, {\"Track\": 1, \"Placeholder\": \"-source-\", \"Parameter\": \"source\", \"Name\": \"source\"}]"},{"id":27,"name":"BuzzCity.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickcode\",\"Placeholder\":\"{clickcode}\",\"Name\":\"clickcode\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{pubid}\", \"Parameter\": \"pubid\", \"Name\": \"pubid\"}, {\"Track\": 1, \"Placeholder\": \"{random}\", \"Parameter\": \"random\", \"Name\": \"random\"}, {\"Track\": 1, \"Placeholder\": \"{timestamp}\", \"Parameter\": \"timestamp\", \"Name\": \"timestamp\"}]"},{"id":28,"name":"RevMob","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"%{android_id}\", \"Parameter\": \"android_id\", \"Name\": \"android_id\"}, {\"Track\": 1, \"Placeholder\": \"%{app_id}\", \"Parameter\": \"app_id\", \"Name\": \"app_id\"}, {\"Track\": 1, \"Placeholder\": \"%{campaign_id}\", \"Parameter\": \"campaign_id\", \"Name\": \"campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"%{idfa}\", \"Parameter\": \"idfa\", \"Name\": \"idfa\"}, {\"Track\": 1, \"Placeholder\": \"%{mac_address}\", \"Parameter\": \"mac_address\", \"Name\": \"mac_address\"}, {\"Track\": 1, \"Placeholder\": \"%{mobile_id}\", \"Parameter\": \"mobile_id\", \"Name\": \"mobile_id\"}]"},{"id":29,"name":"TrafficForce.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"CLICK_ID\",\"Placeholder\":\"{CLICK_ID}\",\"Name\":\"CLICK_ID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{ad_id}\", \"Parameter\": \"ad_id\", \"Name\": \"ad_id\"}, {\"Track\": 1, \"Placeholder\": \"{campaign_id}\", \"Parameter\": \"campaign_id\", \"Name\": \"campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"{channel_id}\", \"Parameter\": \"channel_id\", \"Name\": \"channel_id\"}, {\"Track\": 1, \"Placeholder\": \"{group_id}\", \"Parameter\": \"group_id\", \"Name\": \"group_id\"}, {\"Track\": 1, \"Placeholder\": \"{keywords}\", \"Parameter\": \"keywords\", \"Name\": \"keywords\"}, {\"Track\": 1, \"Placeholder\": \"{site_id}\", \"Parameter\": \"site_id\", \"Name\": \"site_id\"}, {\"Track\": 1, \"Placeholder\": \"{v_browser}\", \"Parameter\": \"v_browser\", \"Name\": \"v_browser\"}, {\"Track\": 1, \"Placeholder\": \"{v_country}\", \"Parameter\": \"v_country\", \"Name\": \"v_country\"}, {\"Track\": 1, \"Placeholder\": \"{v_language}\", \"Parameter\": \"v_language\", \"Name\": \"v_language\"}, {\"Track\": 1, \"Placeholder\": \"{v_os}\", \"Parameter\": \"v_os\", \"Name\": \"v_os\"}]"}]
-    }
-  };
+  var result = {"status":1,"message":"success","data":{"lists":[{"id":1,"name":"AirPush.com","postbackUrl":"http://api.airpush.com/track/?guid={clickid}","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"guid\",\"Placeholder\":\"%guid%\",\"Name\":\"guid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"%carrier%\", \"Parameter\": \"carrier\", \"Name\": \"carrier\"}, {\"Track\": 1, \"Placeholder\": \"%d%\", \"Parameter\": \"d\", \"Name\": \"d\"}, {\"Track\": 1, \"Placeholder\": \"%device%\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"%manufacturer%\", \"Parameter\": \"manufacturer\", \"Name\": \"manufacturer\"}, {\"Track\": 1, \"Placeholder\": \"%creativeid%\", \"Parameter\": \"creativeid\", \"Name\": \"creativeid\"}, {\"Track\": 1, \"Placeholder\": \"%ip%\", \"Parameter\": \"ip\", \"Name\": \"ip\"}, {\"Track\": 1, \"Placeholder\": \"%dapp%\", \"Parameter\": \"dapp\", \"Name\": \"dapp\"}, {\"Track\": 1, \"Placeholder\": \"%city%\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"%state%\", \"Parameter\": \"state\", \"Name\": \"state\"}, {\"Track\": 1, \"Placeholder\": \"%androidid%\", \"Parameter\": \"androidid\", \"Name\": \"androidid\"}]","campaignId":"{\"Parameter\":\"campaignid\",\"Placeholder\":\"%campaignid%\",\"Name\":\"campaignid\"}","websiteId":"{\"Parameter\":\"pubid\",\"Placeholder\":\"%pubid%\",\"Name\":\"pubid\"}"},{"id":2,"name":"popads.com","postbackUrl":"http://serve.popads.net/cpixel.php?s2s=1&aid=b18b7ac1b27b01fdada779adf1b51fdb&id=impressionId&value=conversionValue","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"IMPRESSIONID\",\"Placeholder\":\"[IMPRESSIONID]\",\"Name\":\"IMPRESSIONID\"}","cost":"{\"Parameter\":\"BID\",\"Placeholder\":\"[BID]\",\"Name\":\"BID\"}","params":"[{\"Track\": 1, \"Placeholder\": \"[ADBLOCK]\", \"Parameter\": \"ADBLOCK\", \"Name\": \"ADBLOCK\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERID]\", \"Parameter\": \"BROWSERID\", \"Name\": \"BROWSERID\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERNAME]\", \"Parameter\": \"BROWSERNAME\", \"Name\": \"BROWSERNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CAMPAIGNNAME]\", \"Parameter\": \"CAMPAIGNNAME\", \"Name\": \"CAMPAIGNNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYID]\", \"Parameter\": \"CATEGORYID\", \"Name\": \"CATEGORYID\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYNAME]\", \"Parameter\": \"CATEGORYNAME\", \"Name\": \"CATEGORYNAME\"}, {\"Track\": 1, \"Placeholder\": \"[COUNTRY]\", \"Parameter\": \"COUNTRY\", \"Name\": \"COUNTRY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICEID]\", \"Parameter\": \"DEVICEID\", \"Name\": \"DEVICEID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICENAME]\", \"Parameter\": \"DEVICENAME\", \"Name\": \"DEVICENAME\"}, {\"Track\": 1, \"Placeholder\": \"[FORMFACTORID]\", \"Parameter\": \"FORMFACTORID\", \"Name\": \"FORMFACTORID\"}]","campaignId":"{\"Parameter\":\"CAMPAIGNID\",\"Placeholder\":\"[CAMPAIGNID]\",\"Name\":\"CAMPAIGNID\"}","websiteId":"{\"Parameter\":\"WEBSITEID\",\"Placeholder\":\"[WEBSITEID]\",\"Name\":\"WEBSITEID\"}"},{"id":3,"name":"PropellerAds.com","postbackUrl":"http://ad.propellerads.com/conversion.php?aid=45412&pid=&tid=11006&visitor_id=[[c4]]","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"SUBID\",\"Placeholder\":\"${SUBID}\",\"Name\":\"SUBID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{bannerid}\", \"Parameter\": \"bannerid\", \"Name\": \"bannerid\"}]","campaignId":"{\"Parameter\":\"campaignid\",\"Placeholder\":\"{campaignid}\",\"Name\":\"campaignid\"}","websiteId":"{\"Parameter\":\"zoneid\",\"Placeholder\":\"{zoneid}\",\"Name\":\"zoneid\"}"},{"id":4,"name":"JuicyAds.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{dynamicCON}\", \"Parameter\": \"dynamicCON\", \"Name\": \"dynamicCON\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicDATE}\", \"Parameter\": \"dynamicDATE\", \"Name\": \"dynamicDATE\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicDOS}\", \"Parameter\": \"dynamicDOS\", \"Name\": \"dynamicDOS\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicDTY}\", \"Parameter\": \"dynamicDTY\", \"Name\": \"dynamicDTY\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicGEO}\", \"Parameter\": \"dynamicGEO\", \"Name\": \"dynamicGEO\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicHOUR}\", \"Parameter\": \"dynamicHOUR\", \"Name\": \"dynamicHOUR\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicIMG}\", \"Parameter\": \"dynamicIMG\", \"Name\": \"dynamicIMG\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicPUB}\", \"Parameter\": \"dynamicPUB\", \"Name\": \"dynamicPUB\"}, {\"Track\": 1, \"Placeholder\": \"{dynamicZNE}\", \"Parameter\": \"dynamicZNE\", \"Name\": \"dynamicZNE\"}]","campaignId":"{\"Parameter\":\"dynamicCMP\",\"Placeholder\":\"{dynamicCMP}\",\"Name\":\"dynamicCMP\"}","websiteId":"{\"Parameter\":\"dynamicSITE\",\"Placeholder\":\"{dynamicSITE}\",\"Name\":\"dynamicSITE\"}"},{"id":5,"name":"RevContent.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{adv_targets}\", \"Parameter\": \"adv_targets\", \"Name\": \"adv_targets\"}, {\"Track\": 1, \"Placeholder\": \"{boost_id}\", \"Parameter\": \"boost_id\", \"Name\": \"boost_id\"}, {\"Track\": 1, \"Placeholder\": \"{widget_id}\", \"Parameter\": \"widget_id\", \"Name\": \"widget_id\"}]","campaignId":"{\"Parameter\":\"boost_id\",\"Placeholder\":\"{boost_id}\",\"Name\":\"boost_id\"}","websiteId":"{\"Parameter\":\"content_id\",\"Placeholder\":\"{content_id}\",\"Name\":\"content_id\"}"},{"id":6,"name":"TrafficJunky.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{\"Parameter\":\"BidValue\",\"Placeholder\":\"{BidValue}\",\"Name\":\"BidValue\"}","params":"[{\"Track\": 1, \"Placeholder\": \"{AdID}\", \"Parameter\": \"AdID\", \"Name\": \"AdID\"}, {\"Track\": 1, \"Placeholder\": \"{BanID}\", \"Parameter\": \"BanID\", \"Name\": \"BanID\"}, {\"Track\": 1, \"Placeholder\": \"{BanName}\", \"Parameter\": \"BanName\", \"Name\": \"BanName\"}, {\"Track\": 1, \"Placeholder\": \"{Location}\", \"Parameter\": \"Location\", \"Name\": \"Location\"}, {\"Track\": 1, \"Placeholder\": \"{SiteName}\", \"Parameter\": \"SiteName\", \"Name\": \"SiteName\"}]","campaignId":"{\"Parameter\":\"CampaignID\",\"Placeholder\":\"{CampaignID}\",\"Name\":\"CampaignID\"}","websiteId":"{\"Parameter\":\"SpotName\",\"Placeholder\":\"{SpotName}\",\"Name\":\"SpotName\"}"},{"id":7,"name":"taboola.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{thumbnail}\", \"Parameter\": \"thumbnail\", \"Name\": \"thumbnail\"}, {\"Track\": 1, \"Placeholder\": \"{title}\", \"Parameter\": \"title\", \"Name\": \"title\"}]","campaignId":"{\"Parameter\":\"campaign\",\"Placeholder\":\"{campaign}\",\"Name\":\"campaign\"}","websiteId":"{\"Parameter\":\"site\",\"Placeholder\":\"{site}\",\"Name\":\"site\"}"},{"id":8,"name":"TrafficFactory.biz","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{target.bid}\", \"Parameter\": \"target.bid\", \"Name\": \"target.bid\"}, {\"Track\": 1, \"Placeholder\": \"{banner.id}\", \"Parameter\": \"banner.id\", \"Name\": \"banner.id\"}, {\"Track\": 1, \"Placeholder\": \"{banner.name}\", \"Parameter\": \"banner.name\", \"Name\": \"banner.name\"}, {\"Track\": 1, \"Placeholder\": \"{banner.size}\", \"Parameter\": \"banner.size\", \"Name\": \"banner.size\"}, {\"Track\": 1, \"Placeholder\": \"{categories}\", \"Parameter\": \"categories\", \"Name\": \"categories\"}, {\"Track\": 1, \"Placeholder\": \"{time.stamp}\", \"Parameter\": \"time.stamp\", \"Name\": \"time.stamp\"}, {\"Track\": 1, \"Placeholder\": \"{user.browser}\", \"Parameter\": \"user.browser\", \"Name\": \"user.browser\"}, {\"Track\": 1, \"Placeholder\": \"{user.country}\", \"Parameter\": \"user.country\", \"Name\": \"user.country\"}, {\"Track\": 1, \"Placeholder\": \"{user.browser}\", \"Parameter\": \"user.browser\", \"Name\": \"user.browser\"}, {\"Track\": 1, \"Placeholder\": \"{user.os}\", \"Parameter\": \"user.os\", \"Name\": \"user.os\"}]","campaignId":"{\"Parameter\":\"campaign.id\",\"Placeholder\":\"{campaign.id}\",\"Name\":\"campaign.id\"}","websiteId":"{\"Parameter\":\"target.name\",\"Placeholder\":\"{target.name}\",\"Name\":\"target.name\"}"},{"id":9,"name":"AdCash.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"[clickid]\",\"Name\":\"clickid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"[country]\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"[lang]\", \"Parameter\": \"lang\", \"Name\": \"lang\"}, {\"Track\": 1, \"Placeholder\": \"[time]\", \"Parameter\": \"time\", \"Name\": \"time\"}]","campaignId":"{\"Parameter\":\"campaign\",\"Placeholder\":\"[campaign]\",\"Name\":\"campaign\"}","websiteId":"{\"Parameter\":\"zone\",\"Placeholder\":\"[zone]\",\"Name\":\"zone\"}"},{"id":10,"name":"Ero-Advertising.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"tracking\",\"Placeholder\":\"[tracking]\",\"Name\":\"tracking\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"[adid]\", \"Parameter\": \"adid\", \"Name\": \"adid\"}, {\"Track\": 1, \"Placeholder\": \"[country]\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"[domainid]\", \"Parameter\": \"domainid\", \"Name\": \"domainid\"}, {\"Track\": 1, \"Placeholder\": \"[timestamp]\", \"Parameter\": \"timestamp\", \"Name\": \"timestamp\"}, {\"Track\": 1, \"Placeholder\": \"[spaceid]\", \"Parameter\": \"spaceid\", \"Name\": \"spaceid\"}]","campaignId":"{\"Parameter\":\"campaignid\",\"Placeholder\":\"[campaignid]\",\"Name\":\"campaignid\"}","websiteId":"{\"Parameter\":\"spaceid\",\"Placeholder\":\"[spaceid]\",\"Name\":\"spaceid\"}"},{"id":11,"name":"ExoClick.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"conversions_tracking\",\"Placeholder\":\"{conversions_tracking}\",\"Name\":\"conversions_tracking\"}","cost":"{\"Parameter\":\"cost\",\"Placeholder\":\"{cost}\",\"Name\":\"cost\"}","params":"[{\"Track\": 1, \"Placeholder\": \"{category_id}\", \"Parameter\": \"category_id\", \"Name\": \"category_id\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"{format}\", \"Parameter\": \"format\", \"Name\": \"format\"}, {\"Track\": 1, \"Placeholder\": \"{site_id}\", \"Parameter\": \"site_id\", \"Name\": \"site_id\"}, {\"Track\": 1, \"Placeholder\": \"{src_hostname}\", \"Parameter\": \"src_hostname\", \"Name\": \"src_hostname\"}, {\"Track\": 1, \"Placeholder\": \"{time}\", \"Parameter\": \"time\", \"Name\": \"time\"}, {\"Track\": 1, \"Placeholder\": \"{variation_id}\", \"Parameter\": \"variation_id\", \"Name\": \"variation_id\"}]","campaignId":"{\"Parameter\":\"campaign_id\",\"Placeholder\":\"{campaign_id}\",\"Name\":\"campaign_id\"}","websiteId":"{\"Parameter\":\"zone_id\",\"Placeholder\":\"{zone_id}\",\"Name\":\"zone_id\"}"},{"id":12,"name":"Go2Mobi.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"{clickid}\",\"Name\":\"clickid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{agent}\", \"Parameter\": \"agent\", \"Name\": \"agent\"}, {\"Track\": 1, \"Placeholder\": \"{cc}\", \"Parameter\": \"cc\", \"Name\": \"cc\"}, {\"Track\": 1, \"Placeholder\": \"{city}\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"{crid}\", \"Parameter\": \"crid\", \"Name\": \"crid\"}, {\"Track\": 1, \"Placeholder\": \"{device_model}\", \"Parameter\": \"device_model\", \"Name\": \"device_model\"}, {\"Track\": 1, \"Placeholder\": \"{device_vendor}\", \"Parameter\": \"device_vendor\", \"Name\": \"device_vendor\"}, {\"Track\": 1, \"Placeholder\": \"{imp}\", \"Parameter\": \"imp\", \"Name\": \"imp\"}, {\"Track\": 1, \"Placeholder\": \"{ip}\", \"Parameter\": \"ip\", \"Name\": \"ip\"}, {\"Track\": 1, \"Placeholder\": \"{isp}\", \"Parameter\": \"isp\", \"Name\": \"isp\"}]","campaignId":"{\"Parameter\":\"campaign\",\"Placeholder\":\"{campaign}\",\"Name\":\"campaign\"}","websiteId":"{\"Parameter\":\"plid\",\"Placeholder\":\"{plid}\",\"Name\":\"plid\"}"},{"id":13,"name":"OutBrain.com","postbackUrl":"http://www.yourdomain.com/article?utm_term={{origsrcid}}&utm_source={{ad_id}}","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{{ad_id}}\", \"Parameter\": \"ad_id\", \"Name\": \"ad_id\"}, {\"Track\": 1, \"Placeholder\": \"{{ad_title}}\", \"Parameter\": \"ad_title\", \"Name\": \"ad_title\"}, {\"Track\": 1, \"Placeholder\": \"{{doc_title}}\", \"Parameter\": \"doc_title\", \"Name\": \"doc_title\"}, {\"Track\": 1, \"Placeholder\": \"{{time_stamp}}\", \"Parameter\": \"time_stamp\", \"Name\": \"time_stamp\"}]","campaignId":"{}","websiteId":"{\"Parameter\":\"origsrcid\",\"Placeholder\":\"{{origsrcid}}\",\"Name\":\"origsrcid\"}"},{"id":14,"name":"PopCash.net","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"%category%\", \"Parameter\": \"category\", \"Name\": \"category\"}, {\"Track\": 1, \"Placeholder\": \"%cc%\", \"Parameter\": \"cc\", \"Name\": \"cc\"}, {\"Track\": 1, \"Placeholder\": \"%operatingsystem%\", \"Parameter\": \"operatingsystem\", \"Name\": \"operatingsystem\"}]","campaignId":"{}","websiteId":"{\"Parameter\":\"siteid\",\"Placeholder\":\"%siteid%\",\"Name\":\"siteid\"}"},{"id":15,"name":"reporo.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"rcid\",\"Placeholder\":\"{rcid}\",\"Name\":\"rcid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{repBannerid}\", \"Parameter\": \"repBannerid\", \"Name\": \"repBannerid\"}, {\"Track\": 1, \"Placeholder\": \"{repCpcid}\", \"Parameter\": \"repCpcid\", \"Name\": \"repCpcid\"}]","campaignId":"{\"Parameter\":\"repCampaignid\",\"Placeholder\":\"{repCampaignid}\",\"Name\":\"repCampaignid\"}","websiteId":"{\"Parameter\":\"repZoneid\",\"Placeholder\":\"{repZoneid}\",\"Name\":\"repZoneid\"}"},{"id":16,"name":"POF.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"{clickid}\",\"Name\":\"clickid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{age:}\", \"Parameter\": \"age\", \"Name\": \"age\"}, {\"Track\": 1, \"Placeholder\": \"{city:}\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"{creativeid:}\", \"Parameter\": \"creativeid\", \"Name\": \"creativeid\"}, {\"Track\": 1, \"Placeholder\": \"{gender:}\", \"Parameter\": \"gender\", \"Name\": \"gender\"}, {\"Track\": 1, \"Placeholder\": \"{state:}\", \"Parameter\": \"state\", \"Name\": \"state\"}]","campaignId":"{}","websiteId":"{}"},{"id":17,"name":"ZeroPark.com","postbackUrl":"http://postback.zeroredirect1.com/zppostback/XXXXXX-XXXX-XXXX-XXXX-XXXXXX?cid={clickid}","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"cid\",\"Placeholder\":\"{cid}\",\"Name\":\"cid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{campaign_name}\", \"Parameter\": \"campaign_name\", \"Name\": \"campaign_name\"}, {\"Track\": 1, \"Placeholder\": \"{geo}\", \"Parameter\": \"geo\", \"Name\": \"geo\"}, {\"Track\": 1, \"Placeholder\": \"{keyword}\", \"Parameter\": \"keyword\", \"Name\": \"keyword\"}, {\"Track\": 1, \"Placeholder\": \"{long_campaign_id}\", \"Parameter\": \"long_campaign_id\", \"Name\": \"long_campaign_id\"}, {\"Track\": 1, \"Placeholder\": \"{match}\", \"Parameter\": \"match\", \"Name\": \"match\"}, {\"Track\": 1, \"Placeholder\": \"{target_url}\", \"Parameter\": \"target_url\", \"Name\": \"target_url\"}, {\"Track\": 1, \"Placeholder\": \"{traffic_type}\", \"Parameter\": \"traffic_type\", \"Name\": \"traffic_type\"}, {\"Track\": 1, \"Placeholder\": \"{visitor_type}\", \"Parameter\": \"visitor_type\", \"Name\": \"visitor_type\"}]","campaignId":"{\"Parameter\":\"campaign_id\",\"Placeholder\":\"{campaign_id}\",\"Name\":\"campaign_id\"}","websiteId":"{\"Parameter\":\"target\",\"Placeholder\":\"{target}\",\"Name\":\"target\"}"},{"id":18,"name":"adxpansion.com","postbackUrl":"https://api.adxpansion.com/v1/conversions/ log?token=YOUR-API-TOKEN&id=transactionID","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"transactionID\",\"Placeholder\":\"{transactionID}\",\"Name\":\"transactionID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{adgroupID}\", \"Parameter\": \"adgroupID\", \"Name\": \"adgroupID\"}, {\"Track\": 1, \"Placeholder\": \"{carrier}\", \"Parameter\": \"carrier\", \"Name\": \"carrier\"}, {\"Track\": 1, \"Placeholder\": \"{connectiontype}\", \"Parameter\": \"connectiontype\", \"Name\": \"connectiontype\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"{creativeID}\", \"Parameter\": \"creativeID\", \"Name\": \"creativeID\"}, {\"Track\": 1, \"Placeholder\": \"{date}\", \"Parameter\": \"date\", \"Name\": \"date\"}, {\"Track\": 1, \"Placeholder\": \"{keyword}\", \"Parameter\": \"keyword\", \"Name\": \"keyword\"}]","campaignId":"{\"Parameter\":\"campaignID\",\"Placeholder\":\"{campaignID}\",\"Name\":\"campaignID\"}","websiteId":"{\"Parameter\":\"zone\",\"Placeholder\":\"{zone}\",\"Name\":\"zone\"}"},{"id":19,"name":"MGID.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{teaser_id}\", \"Parameter\": \"teaser_id\", \"Name\": \"teaser_id\"}]","campaignId":"{}","websiteId":"{\"Parameter\":\"widget_id\",\"Placeholder\":\"{widget_id}\",\"Name\":\"widget_id\"}"},{"id":20,"name":"MobFox.com","postbackUrl":"http://my.mobfox.com/conversion.track.php?account_id=UNIQUEID&click_id={clickid}","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"MFOXCLICKID\",\"Placeholder\":\"MFOXCLICKID\",\"Name\":\"MFOXCLICKID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"MFOXADID\", \"Parameter\": \"MFOXADID\", \"Name\": \"MFOXADID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXAGID\", \"Parameter\": \"MFOXAGID\", \"Name\": \"MFOXAGID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXGAID\", \"Parameter\": \"MFOXGAID\", \"Name\": \"MFOXGAID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXIFA\", \"Parameter\": \"MFOXIFA\", \"Name\": \"MFOXIFA\"}, {\"Track\": 1, \"Placeholder\": \"MFOXUDID\", \"Parameter\": \"MFOXUDID\", \"Name\": \"MFOXUDID\"}, {\"Track\": 1, \"Placeholder\": \"MFOXTSTAMP\", \"Parameter\": \"MFOXTSTAMP\", \"Name\": \"MFOXTSTAMP\"}, {\"Track\": 1, \"Placeholder\": \"RANDOMNR\", \"Parameter\": \"RANDOMNR\", \"Name\": \"RANDOMNR\"}]","campaignId":"{\"Parameter\":\"MFOXCAID\",\"Placeholder\":\"MFOXCAID\",\"Name\":\"MFOXCAID\"}","websiteId":"{\"Parameter\":\"MFOXPUBID\",\"Placeholder\":\"MFOXPUBID\",\"Name\":\"MFOXPUBID\"}"},{"id":21,"name":"NativeAds.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{ad_id}\", \"Parameter\": \"ad_id\", \"Name\": \"ad_id\"}, {\"Track\": 1, \"Placeholder\": \"{ad_title}\", \"Parameter\": \"ad_title\", \"Name\": \"ad_title\"}, {\"Track\": 1, \"Placeholder\": \"{campaign_name}\", \"Parameter\": \"campaign_name\", \"Name\": \"campaign_name\"}, {\"Track\": 1, \"Placeholder\": \"{device}\", \"Parameter\": \"device\", \"Name\": \"device\"}]","campaignId":"{\"Parameter\":\"campaign_ID\",\"Placeholder\":\"{campaign_ID}\",\"Name\":\"campaign_ID\"}","websiteId":"{\"Parameter\":\"widget_id\",\"Placeholder\":\"{widget_id}\",\"Name\":\"widget_id\"}"},{"id":22,"name":"AdWill.co","postbackUrl":"http://click.adwill.co/conversion?c1=[CLICKID]","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"CLICKID\",\"Placeholder\":\"{CLICKID}\",\"Name\":\"CLICKID\"}","cost":"{}","params":"[]","campaignId":"{}","websiteId":"{}"},{"id":23,"name":"50onRed.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\",\"Name\":\"click_id\"}","cost":"{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\",\"Name\":\"bid\"}","params":"[{\"Track\": 1, \"Placeholder\": \"{keyword}\", \"Parameter\": \"keyword\", \"Name\": \"keyword\"}, {\"Track\": 1, \"Placeholder\": \"{keyword_id}\", \"Parameter\": \"keyword_id\", \"Name\": \"keyword_id\"}, {\"Track\": 1, \"Placeholder\": \"{creative_id}\", \"Parameter\": \"creative_id\", \"Name\": \"creative_id\"}, {\"Track\": 1, \"Placeholder\": \"{country}\", \"Parameter\": \"country\", \"Name\": \"country\"}]","campaignId":"{\"Parameter\":\"campaign_id\",\"Placeholder\":\"{campaign_id}\",\"Name\":\"campaign_id\"}","websiteId":"{}"},{"id":24,"name":"admoda.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickid\",\"Placeholder\":\"%clickid%\",\"Name\":\"clickid\"}","cost":"{\"Parameter\":\"cpc-usd\",\"Placeholder\":\"%cpc-usd%\",\"Name\":\"cpc-usd\"}","params":"[{\"Track\": 1, \"Placeholder\": \"%adid%\", \"Parameter\": \"adid\", \"Name\": \"adid\"}, {\"Track\": 1, \"Placeholder\": \"%cpc%\", \"Parameter\": \"cpc\", \"Name\": \"cpc\"}]","campaignId":"{\"Parameter\":\"campaignid\",\"Placeholder\":\"%campaignid%\",\"Name\":\"campaignid\"}","websiteId":"{\"Parameter\":\"zoneid\",\"Placeholder\":\"%zoneid%\",\"Name\":\"zoneid\"}"},{"id":25,"name":"LeadBolt.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"CLK_ID\",\"Placeholder\":\"[CLK_ID]\",\"Name\":\"CLK_ID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"[AD_GROUP_ID]\", \"Parameter\": \"AD_GROUP_ID\", \"Name\": \"AD_GROUP_ID\"}, {\"Track\": 1, \"Placeholder\": \"[AD_ID]\", \"Parameter\": \"AD_ID\", \"Name\": \"AD_ID\"}, {\"Track\": 1, \"Placeholder\": \"[CAT_ID]\", \"Parameter\": \"CAT_ID\", \"Name\": \"CAT_ID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID]\", \"Parameter\": \"DEVICE_ID\", \"Name\": \"DEVICE_ID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID_ANY]\", \"Parameter\": \"DEVICE_ID_ANY\", \"Name\": \"DEVICE_ID_ANY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID_MD5]\", \"Parameter\": \"DEVICE_ID_MD\", \"Name\": \"DEVICE_ID_MD\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_ID_SHA1]\", \"Parameter\": \"DEVICE_ID_SHA\", \"Name\": \"DEVICE_ID_SHA\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_AD_ID]\", \"Parameter\": \"DEVICE_AD_ID\", \"Name\": \"DEVICE_AD_ID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_AD_ID_ANY]\", \"Parameter\": \"DEVICE_AD_ID_ANY\", \"Name\": \"DEVICE_AD_ID_ANY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICE_AD_ID_MD5]\", \"Parameter\": \"DEVICE_AD_ID_MD\", \"Name\": \"DEVICE_AD_ID_MD\"}]","campaignId":"{\"Parameter\":\"CAMP_ID\",\"Placeholder\":\"[CAMP_ID]\",\"Name\":\"CAMP_ID\"}","websiteId":"{\"Parameter\":\"PUB_ID\",\"Placeholder\":\"[PUB_ID]\",\"Name\":\"PUB_ID\"}"},{"id":26,"name":"PopVertising.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"bid\",\"Placeholder\":\"-bid-\",\"Name\":\"bid\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"-browser-\", \"Parameter\": \"browser\", \"Name\": \"browser\"}, {\"Track\": 1, \"Placeholder\": \"-catid-\", \"Parameter\": \"catid\", \"Name\": \"catid\"}, {\"Track\": 1, \"Placeholder\": \"-catname-\", \"Parameter\": \"catname\", \"Name\": \"catname\"}, {\"Track\": 1, \"Placeholder\": \"-country-\", \"Parameter\": \"country\", \"Name\": \"country\"}, {\"Track\": 1, \"Placeholder\": \"-device-\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"-ispid-\", \"Parameter\": \"ispid\", \"Name\": \"ispid\"}, {\"Track\": 1, \"Placeholder\": \"-ispn-\", \"Parameter\": \"ispn\", \"Name\": \"ispn\"}, {\"Track\": 1, \"Placeholder\": \"-source-\", \"Parameter\": \"source\", \"Name\": \"source\"}]","campaignId":"{}","websiteId":"{\"Parameter\":\"i\",\"Placeholder\":\"_i_\",\"Name\":\"i\"}"},{"id":27,"name":"BuzzCity.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"clickcode\",\"Placeholder\":\"{clickcode}\",\"Name\":\"clickcode\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{random}\", \"Parameter\": \"random\", \"Name\": \"random\"}, {\"Track\": 1, \"Placeholder\": \"{timestamp}\", \"Parameter\": \"timestamp\", \"Name\": \"timestamp\"}]","campaignId":"{}","websiteId":"{\"Parameter\":\"pubid\",\"Placeholder\":\"{pubid}\",\"Name\":\"pubid\"}"},{"id":28,"name":"RevMob","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"%{android_id}\", \"Parameter\": \"android_id\", \"Name\": \"android_id\"}, {\"Track\": 1, \"Placeholder\": \"%{idfa}\", \"Parameter\": \"idfa\", \"Name\": \"idfa\"}, {\"Track\": 1, \"Placeholder\": \"%{mac_address}\", \"Parameter\": \"mac_address\", \"Name\": \"mac_address\"}, {\"Track\": 1, \"Placeholder\": \"%{mobile_id}\", \"Parameter\": \"mobile_id\", \"Name\": \"mobile_id\"}]","campaignId":"{\"Parameter\":\"campaign_id\",\"Placeholder\":\"%{campaign_id}\",\"Name\":\"campaign_id\"}","websiteId":"{\"Parameter\":\"app_id\",\"Placeholder\":\"%{app_id}\",\"Name\":\"app_id\"}"},{"id":29,"name":"TrafficForce.com","postbackUrl":"","pixelRedirectUrl":"","externalId":"{\"Parameter\":\"CLICK_ID\",\"Placeholder\":\"{CLICK_ID}\",\"Name\":\"CLICK_ID\"}","cost":"{}","params":"[{\"Track\": 1, \"Placeholder\": \"{ad_id}\", \"Parameter\": \"ad_id\", \"Name\": \"ad_id\"}, {\"Track\": 1, \"Placeholder\": \"{channel_id}\", \"Parameter\": \"channel_id\", \"Name\": \"channel_id\"}, {\"Track\": 1, \"Placeholder\": \"{group_id}\", \"Parameter\": \"group_id\", \"Name\": \"group_id\"}, {\"Track\": 1, \"Placeholder\": \"{keywords}\", \"Parameter\": \"keywords\", \"Name\": \"keywords\"}, {\"Track\": 1, \"Placeholder\": \"{v_browser}\", \"Parameter\": \"v_browser\", \"Name\": \"v_browser\"}, {\"Track\": 1, \"Placeholder\": \"{v_country}\", \"Parameter\": \"v_country\", \"Name\": \"v_country\"}, {\"Track\": 1, \"Placeholder\": \"{v_language}\", \"Parameter\": \"v_language\", \"Name\": \"v_language\"}, {\"Track\": 1, \"Placeholder\": \"{v_os}\", \"Parameter\": \"v_os\", \"Name\": \"v_os\"}]","campaignId":"{\"Parameter\":\"campaign_id\",\"Placeholder\":\"{campaign_id}\",\"Name\":\"campaign_id\"}","websiteId":"{\"Parameter\":\"site_id\",\"Placeholder\":\"{site_id}\",\"Name\":\"site_id\"}"},{"id":30,"name":"Google AdWords","postbackUrl":"","pixelRedirectUrl":"","externalId":"{}","cost":"{}","params":"[]","campaignId":"{\"Parameter\":\"campid\",\"Placeholder\":\"{campid}\",\"Name\":\"campid\"}","websiteId":"{\"Parameter\":\"placement\",\"Placeholder\":\"{placement}\",\"Name\":\"placement\"}"}]}};
   res.send(result);
 });
 
@@ -1730,6 +2026,31 @@ app.get('/api/affilate/tpl', function (req, res) {
   res.send(result);
 });
 
+app.get('/api/cities', function (req, res) {
+  var query = req.query.q;
+  var cities = [
+    {"value": "shanghai", "display": "Shanghai"},
+    {"value": "beijing", "display": "Beijing"},
+    {"value": "tianjin", "display": "Tianjin"},
+    {"value": "xiamen", "display": "Xiamen"},
+    {"value": "zhengzhou", "display": "Zhengzhou"},
+    {"value": "taiyuan", "display": "Taiyuan"},
+    {"value": "jinan", "display": "Jinan"},
+    {"value": "luoyang", "display": "Luoyang"},
+    {"value": "suzhou", "display": "Suzhou"},
+    {"value": "shenyang", "display": "Shenyang"},
+    {"value": "hangzhou", "display": "Hangzhou"},
+    {"value": "fuzhou", "display": "Fuzhou"},
+    {"value": "shenzhen", "display": "Shenzhen"},
+    {"value": "guangzhou", "display": "Guangzhou"},
+    {"value": "guiyang", "display": "Guiyang"},
+    {"value": "sanya", "display": "Sanya"},
+    {"value": "haikou", "display": "Haikou"},
+  ];
+  var result = cities.filter(item => item.value.indexOf(query) >= 0);
+  delayResponse(res, result);
+});
+
 /**
  * get list of conditions
  * shang@v1 [Warren] TODO
@@ -1763,7 +2084,7 @@ app.get('/api/conditions', function (req, res) {
     "display": "Country",
     "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
     "fields": [{
-      "type": "select", "name": "value", "options": [
+      "type": "input-select", "name": "value", "options": [
         {"value": "us", "display": "American"},
         {"value": "ca", "display": "Canada"},
         {"value": "cn", "display": "China"},
@@ -1804,6 +2125,20 @@ app.get('/api/conditions', function (req, res) {
           {"value": "android7.0", "display": "Android 7.0"}
         ]
       }]
+    }]
+  }, {
+    "id": "8584",
+    "display": "City",
+    "operands": [{value: "ctn", display: "Must Contain"}, {value: "nctn", display: "Not Contain"}],
+    "fields": [{
+      "type": "async-select", "name": "city", "url": "/api/cities"
+    }]
+  }, {
+    "id": "8588",
+    "display": "Region",
+    "operands": [{value: "ctn", display: "Must Contain"}, {value: "nctn", display: "Not Contain"}],
+    "fields": [{
+      "type": "async-chips", "name": "region", "url": "/api/cities"
     }]
   }, {
     "id": "8334",
@@ -2371,13 +2706,13 @@ app.get('/api/setup', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      clickurl: "http://9cmzk.voluumtrk.com/click",
-      multiofferclickurl: "http://9cmzk.voluumtrk.com/click/1",
-      postbackurl: "http://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
-      securepostbackurl: "https://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
-      trackingpixelurl: "https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL",
-      trackingpixel: '<img src="https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL" width="1" height="1"/>',
-      trackingscript: '<script type="text/javascript" src="https://9cmzk.voluumtrk.com/conversion.js?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL"/>'
+      clickUrl: "http://9cmzk.voluumtrk.com/click",
+      mutiClickUrl: "http://9cmzk.voluumtrk.com/click/1",
+      postBackUrl: "http://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
+      // securepostbackurl: "https://9cmzk.voluumtrk2.com/postback?cid=REPLACE&payout=OPTIONAL&txid=OPTIONAL",
+      // trackingpixelurl: "https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL",
+      // trackingpixel: '<img src="https://9cmzk.voluumtrk.com/conversion.gif?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL" width="1" height="1"/>',
+      // trackingscript: '<script type="text/javascript" src="https://9cmzk.voluumtrk.com/conversion.js?cid=OPTIONAL&payout=OPTIONAL&txid=OPTIONAL"/>'
     }
   };
   res.send(result);
@@ -2387,15 +2722,21 @@ app.get('/api/setup', function (req, res) {
  * @apiName 获取Member信息
  *
  */
-app.get('/api/member', function (req, res) {
+app.get('/api/members', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
     data: {
-      email: "test@qq.com",
-      firstName: "test",
-      lastName: "test",
-      owner: true
+      members: [
+        {
+          idText: "dji9012",
+          email: "test1@qq.com",
+        },
+        {
+          idText: "dji9013",
+          email: "test2@qq.com",
+        }
+      ]
     }
   };
   res.send(result);
@@ -2410,12 +2751,7 @@ app.get('/api/invitation', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      invitations: [
-        {
-          email: "111@qq.com",
-          lastDate: "13-02-2017"
-        }
-      ]
+      invitations: [{"id":18,"email":"yuhuibin@adbund.com","lastDate":"25-02-2017","status":1}]
     }
   };
   res.send(result);
@@ -2434,12 +2770,22 @@ app.post('/api/invitation', function (req, res) {
     data: {
       invitations: [
         {
+          id: 1,
           email: "222@qq.com",
-          lastDate: "13-02-2017"
+          lastDate: "13-02-2017",
+          status: 0
         },
         {
+          id: 2,
           email: "111@qq.com",
-          lastDate: "13-02-2017"
+          lastDate: "13-02-2017",
+          status: 0
+        },
+        {
+          id: 3,
+          email: "333@qq.com",
+          lastDate: "13-02-2017",
+          status: 0
         }
       ]
     }
@@ -2451,12 +2797,18 @@ app.post('/api/invitation', function (req, res) {
  * @apiName 删除Invitation信息
  *
  */
-app.delete('/api/invitation/:email', function (req, res) {
+app.delete('/api/invitation/:id', function (req, res) {
   var result = {
     status: 1,
     message: 'success'
   };
   res.send(result);
+});
+
+app.get('/invitation', function (req, res) {
+  res.cookie("token", createJWT());
+  res.cookie("clientId", "70012cfe-9940-4ebb-8994-6d15195744cc1");
+  res.redirect('http://localhost:5000');
 });
 
 /**
@@ -2660,6 +3012,7 @@ app.put('/api/blacklist', function (req, res) {
  *
  * @apiParam {String} from: 2017-02-01
  * @apiParam {String} to: 2017-02-10
+ * @apiParam {String} tz: +08:00
  * @apiParam {Number} page:1
  * @apiParam {Number} limit:500
  * @apiParam {String} userId:1  {option}
@@ -2735,6 +3088,11 @@ app.get('/api/eventlog', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取用户Plan信息
+ *
+ *
+ */
 app.get('/api/plan', function (req, res) {
   var result = {
     status: 1,
@@ -2755,6 +3113,62 @@ app.get('/api/plan', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取用户所在的用户组
+ *
+ */
+app.get('/api/groups', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      groups: [
+        {
+          groupId: "70012cfe-9940-4ebb-8994-6d15195744cc1",
+          firstname: "FirstName1",
+          lastname: "LastName1",
+          email: "1@qq.com"
+        },
+        {
+          groupId: "70012cfe-9940-4ebb-8994-6d15195744cc",
+          firstname: "FirstName2",
+          lastname: "LastName2",
+          email: "2@qq.com"
+        },
+        {
+          groupId: "70012cfe-9940-4ebb-8994-6d15195744cc2",
+          firstname: "FirstName3",
+          lastname: "LastName3",
+          email: "3@qq.com"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+app.post('/api/conversions', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [
+      {
+        "I": 0,
+        "V": "c384EFV6JHQODRN70575OK6UG5, 10.0, abc1234",
+        "E": "invalid data"
+      },
+      {
+        "I": 1,
+        "V": "c384EFV6JHQODRN70575OK6UG6, 11.0, abc1234",
+        "E": "invalid data"
+      }
+    ]
+  };
+  res.send(result);
+});
+
 app.listen(5000, function () {
   console.log('server started success port : 5000');
 });
+
+

@@ -3,41 +3,95 @@ var log4js = require('log4js');
 var log = log4js.getLogger('util');
 var uuidV4 = require('uuid/v4');
 var setting = require('../config/setting');
+var common = require('../routes/common');
+var _ = require('lodash');
 
 exports.checkToken = function () {
-  return function (req, res, next) {
+  return async function (req, res, next) {
     var token = req.headers['authorization'];
-    if (token) {
-      token = token.split(' ')[1];
-      try {
-        var decode = jwt.decode(token, setting['jwtTokenSrcret']);
-        if (decode.exp <= Date.now()) {
-          return next(new Error('access token has expired'));
-        }
-        pool.getConnection(function (err, connection) {
-          if (err) {
-            err.status = 303
-            return next(err);
-          }
-          connection.query("select `id`,`idText` from `User` where `id`=" + decode.iss, function (err, user) {
-            connection.release();
-            if (err) {
-              return next(err);
-            }
-            if (!user.length) {
-              return next(new Error('no user'));
-            }
-            req.userId = user[0].id;
-            req.idText = user[0].idText;
-            next();
-          });
-        });
-      } catch (e) {
-        log.error('[util.js][checkToken] error', e)
-        next(e);
+    if (!token) throw new Error('need access_token');
+    token = token.split(' ')[1];
+    let connection;
+    try {
+      var decode = jwt.decode(token, setting['jwtTokenSrcret']);
+      if (decode.exp <= Date.now()) {
+        return next(new Error('access token has expired'));
       }
-    } else {
-      next(new Error('need access_token'));
+      connection = await common.getConnection();
+      let user = await common.query("select user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
+      if (!user.length) {
+        throw new Error('no user');
+      }
+
+      req.subId = user[0].id;  //子账户
+      req.subidText = user[0].idText;
+      req.subgroupId = user[0].groupId;
+
+      req.userId = user[0].id;
+      req.subId = user[0].id;  //子账户
+      req.subidText = user[0].idText;
+      req.subgroupId = user[0].groupId;
+      req.idText = user[0].idText;
+      req.groupId = user[0].groupId;
+
+
+      req.firstname = user[0].firstname;
+      req.lastname = user[0].lastname;
+      req.email = user[0].email;
+      req.campanyname = user[0].campanyName;
+      req.owner = true;
+      next();
+    } catch (e) {
+      log.error('[util.js][checkToken] error', e)
+      next(e);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+
+  }
+}
+
+
+exports.resetUserByClientId = function () {
+  return async function (req, res, next) {
+    let connection;
+    try {
+      let clientId = req.cookies.clientId;
+      if (!clientId || (clientId && clientId == req.groupId)) {
+        return next();
+      }
+     
+      connection = await common.getConnection();
+      //查询用户所在的组
+      let userGroups = common.query("select `groupId` from UserGroup  where `deleted`=? and `userId`= ?", [0, req.userId], connection);
+
+      //获取用户所在的用户组的管理员信息
+      let groupOwers = common.query("select g1.`groupId`,user.`id` as userId,user.`idText`,g1.`role` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [req.userId], connection);
+
+      let results = await Promise.all([userGroups, groupOwers]);
+      let userGroupSlice = results[0];
+      //check clientId 合法
+      if (!_.some(userGroupSlice, ['groupId', clientId])) {
+        throw new Error("clientId invalidate");
+      }
+      //获取client 管理员信息
+      let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
+      if(_.isEmpty(userGroupObject)){
+          throw new Error("clientId invalidate");
+      }
+      req.userId = userGroupObject.userId;
+      req.idText = userGroupObject.idText;
+      req.groupId = userGroupObject.groupId;
+      req.owner = false;
+      next();
+    } catch (e) {
+      next(e);
+    } finally {
+      if (connection) {
+        connection.release();
+      }
     }
   }
 }
@@ -85,7 +139,7 @@ exports.getUUID = function () {
 
 
 exports.regWebURL = new RegExp(
- "^((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?$"
+  "^((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?$"
 );
 
 

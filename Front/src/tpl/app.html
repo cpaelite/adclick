@@ -21,6 +21,9 @@
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight w" uib-dropdown-menu>
+                    <li ng-repeat="group in groups">
+                        <a ng-click="changeGroup(group)" ng-show="currentGroup.groupId!=group.groupId">{{group.email}}</a>
+                    </li>
                     <li>
                         <a href ng-click="logout()">{{'logout' | translate}}</a>
                     </li>
@@ -76,6 +79,12 @@
                 <a ui-sref="app.report.affiliate" md-ink-ripple>
                     <i class="icon-globe"></i>
                     <span>{{'affiliate' | translate}}</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.conversion" md-ink-ripple>
+                    <i class="icon-usd"></i>
+                    <span>{{'Conversions' | translate}}</span>
                 </a>
             </li>
         </ul>

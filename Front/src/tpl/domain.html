@@ -2,9 +2,9 @@
 <div class="form-column profile-content ">
   <div class="basic-form">
     <div class="domain-p">
-      <i class="material-icons">info_outline</i>
-      <p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
-      The default voluumtrk.com is meant for testing purposes only.</p>
+
+      <p><i class="material-icons">info_outline</i>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
+      The default Newbiddertrk.com is meant for testing purposes only.</p>
     </div>
     <p>In order to add a domain you will need to CNAME one of following domains:
         <b><em ng-repeat="internal in item.internal track by $index">{{internal.address}}<em ng-if="$index < item.internal.length-1">, </em><em ng-if="$index == item.internal.length-1">.</em></em></b>
@@ -20,7 +20,7 @@
       <div class="domains-container">
         <div class="internal-domains form-horizontal">
           <div class="item-domains clearfix" ng-repeat="l in item.internal track by $index" >
-            <label>Voluum domain {{$index+1}}</label>
+            <label>Newbidder domain {{$index+1}}</label>
             <div class="input-out">
               <input type="text" class="form-control" ng-model="l.address">
             </div>
@@ -49,14 +49,14 @@
       <!-- <div class="domain-p">
         <i class="material-icons">info_outline</i>
         <p>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
-        The default voluumtrk.com is meant for testing purposes only.</p>
+        The default Newbiddertrk.com is meant for testing purposes only.</p>
       </div>
       <div class="domain-footer clearfix">
         <div class="form-group clearfix">
           <label class="col-sm-3 control-label">Cloaking domain</label>
           <div class="col-sm-5 campaign-radio">
             <label class="radio-inline">
-              <input type="radio" ng-model="item.costModel" checked value="redirectvoluum.com">redirectvoluum.com
+              <input type="radio" ng-model="item.costModel" checked value="redirectNewbidder.com">redirectNewbidder.com
             </label>
             <label class="radio-inline">
               <input type="radio" ng-model="item.costModel" value="Custom">Custom
@@ -75,7 +75,7 @@
       </div> -->
       <div class="profile-form-footer clearfix">
         <md-button class="save-btn" ng-click="domainSava()" ng-disabled="form.$invalid">
-          <i class="material-icons save-btn-icon">done</i>
+          <i class="icon-ok"></i>
           save
         </md-button>
       </div>

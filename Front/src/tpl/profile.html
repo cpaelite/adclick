@@ -52,7 +52,7 @@
     </div>
     <div class="profile-form-footer clearfix">
       <md-button class="save-btn" ng-click="accountSave()" ng-disabled="form.$invalid">
-        <i class="material-icons save-btn-icon">done</i>
+        <i class="icon-ok"></i>
         save
       </md-button>
     </div>
@@ -64,7 +64,7 @@
 <div class="form-column profile-content password-change">
   <div class="basic-form clearfix">
   <form name="passwordForm" ng-submit="passwordUpdateSave()">
-    <div class="col-md-6">
+    <div class="col-xs-12 col-sm-6 col-md-6">
       <div class="form-group">
         <label>Old password</label>
         <input type="password" name="oldpassword" class="form-control" ng-model="passwordItem.oldpassword">
@@ -89,14 +89,14 @@
       </div>
       <div class="profile-form-footer clearfix">
         <md-button class="save-btn" ng-click="passwordUpdateSave()">
-          <i class="material-icons save-btn-icon">done</i>
+          <i class="icon-ok"></i>
           save
         </md-button>
       </div>
     </div>
   </form>
   <form name="emailForm" ng-submit="emailUpdateSave()">
-    <div class="col-md-6">
+    <div class="col-xs-12 col-sm-6 col-md-6">
       <div class="form-group">
         <label>Change e-mail address</label>
         <input type="email" name="email" placeholder="Email" class="form-control no-border" ng-model="emailItem.email" ng-blur="checkEmail()" required>
@@ -114,7 +114,7 @@
       </div>
       <div class="profile-form-footer clearfix">
         <md-button class="save-btn" ng-click="emailUpdateSave()" ng-disabled="emailForm.$invalid"> 
-          <i class="material-icons save-btn-icon">done</i>
+          <i class="icon-ok"></i>
           save
         </md-button>
       </div>

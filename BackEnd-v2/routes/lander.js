@@ -48,7 +48,7 @@ router.post('/api/landers', async function (req, res, next) {
             throw new Error("Lander name exists");
         }
 
-        let landerResult = await common.insertLander(value.userId, value, connection);
+        let landerResult = await common.insertLander(req.subId,value.userId, value, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 2, connection);
@@ -114,7 +114,7 @@ router.post('/api/landers/:id', async function (req, res, next) {
         if (await common.checkNameExists(value.userId, value.id, value.name, 2, connection)) {
             throw new Error("Lander name exists");
         }
-        await common.updateLander(value.userId, value, connection);
+        await common.updateLander(req.subId,value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 2, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
@@ -275,7 +275,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
             return;
         }
 
-        let result = await common.deleteLander(value.id, value.userId, connection);
+        let result = await common.deleteLander(req.subId,value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

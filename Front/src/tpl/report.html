@@ -29,10 +29,10 @@
                 </select>
             </div>
         </div>
-        <div class="right-select">
+        <div class="right-select" ng-class="{'right-select2': datetype == '0'}">
             <div class="cs-subform-control search-con">
                 <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
-                <md-icon class="material-icons md-24" ng-click="applySearch($event)">search</md-icon>
+                <i class="icon-search md-24" ng-click="applySearch($event)"></i>
             </div>
             <div class="cs-subform-control">
                 <md-select class="cs-subform-select" ng-model="datetype">
@@ -84,26 +84,26 @@
 
             <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="editItem($event)" translate>add</md-button>
             <div class="view_column" ng-click="viewColumnClick()">
+                <div class="view_column_con" ng-show="viewColumnIsShow">
+                    <ul class="view_column_list">
+                        <li ng-repeat="item in columns | filter:filterColumns" ng-click="checkboxIsChecked($event, item.key)">
+                            <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible" ng-click="checkboxInput($event)">{{item.name}}
+                        </li>
+                    </ul>
+                    <div class="my-btn">
+                        <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applyChange($event)">
+                            <i class="icon-ok"></i>
+                            {{'apply changes' | translate}}
+                        </md-button>
+
+                        <md-button class="md-raised md-primary cs-compact cs-add-button"  ng-click="viewCloumnClose($event)">
+                            <i class="icon-remove"></i>
+                            {{'close' | translate}}
+                        </md-button>
+                    </div>
+                </div>
                 <i class="material-icons view-column-icon">view_column</i>
                 <i class="material-icons arrow-down-icon">keyboard_arrow_down</i>
-            </div>
-            <div class="view_column_con" ng-show="viewColumnIsShow">
-                <ul class="view_column_list">
-                    <li ng-repeat="item in columns" ng-click="checkboxIsChecked(item.key)">
-                      <input type="checkbox" ng-model="reportViewColumns[item.key].visible" ng-checked="preferences.reportViewColumns[item.key].visible" ng-click="checkboxInput($event)">{{item.name}}
-                    </li>
-                </ul>
-                <div class="my-btn">
-                <md-button class="md-raised md-primary cs-compact cs-add-button" ng-click="applyChange()">
-                    <i class="material-icons btn-icon">done</i>
-                    {{'apply changes' | translate}}
-                </md-button>
-                
-                <md-button class="md-raised md-primary cs-compact cs-add-button"  ng-click="viewCloumnClose()">
-                    <i class="material-icons btn-icon close-icon">close</i>
-                    {{'close' | translate}}
-                </md-button>
-                </div>
             </div>
         </div>
     </div>
@@ -114,7 +114,7 @@
             <tr md-row>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
-                    ng-show="preferences.reportViewColumns[item.key].visible">{{item.name}}
+                    ng-show="preferences.reportViewColumns[item.key].visible || (item.role=='name' && treeLevel>1)">{{item.name}}
                 </th>
             </tr>
             </thead>
@@ -128,7 +128,7 @@
                      ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
                 <td md-cell
                     ng-repeat="column in columns"
-                    ng-show="preferences.reportViewColumns[column.key].visible">
+                    ng-show="preferences.reportViewColumns[column.key].visible  || (column.role=='name' && treeLevel>1)">
                     <!--ng-click="openMenu($event, row, column.role)"-->
                   <span ng-if="column.role=='name' && treeLevel==1">
                     <md-menu-bar style="padding: 0;">

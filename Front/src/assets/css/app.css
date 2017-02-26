@@ -7,14 +7,17 @@ html {
 }
 
 body {
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-family:"Roboto-Regular",Arial,"Helvetica Neue", Helvetica, sans-serif;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
   line-height: 1.42857143;
-  color: #58666e;
+  color: #333;
   background-color: transparent;
 }
-
+@font-face {
+  font-family:"Roboto-Regular"! important;
+  src:url("../../assets/fonts/Roboto-Regular.woff");
+}
 *:focus {
   outline: 0 !important;
 }
@@ -42,6 +45,7 @@ a:focus {
 
 label {
   font-weight: normal;
+  padding-top:7px;
 }
 
 small,
@@ -898,10 +902,10 @@ body {
 }
 
 .navbar-brand img {
+  width:138px;
   display: inline;
-  max-height: 20px;
-  margin-top: -4px;
   vertical-align: middle;
+  margin:40px 0;
 }
 
 @media (min-width: 768px) {
@@ -1241,16 +1245,14 @@ html.bg {
 }
 
 .navi ul.nav li a > i {
-  position: relative;
-  float: left;
-  width: 40px;
-  margin: -10px -10px;
-  margin-right: 5px;
+  font-size:12px;
+  margin-right:3px;
   overflow: hidden;
-  line-height: 40px;
+  line-height:20px;
   text-align: center;
+  color:#6D6F72;
 }
-
+.navi ul.nav li a:hover > i{color:#2da8f9;}
 .navi ul.nav li a > i:before {
   position: relative;
   z-index: 2;
@@ -1854,8 +1856,8 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #0ea6b2;
-  border-color: #0ea6b2;
+  background-color: #2f9be1;
+  border-color: #2f9be1;
 }
 
 .btn-success {
@@ -2826,12 +2828,12 @@ fieldset[disabled] .i-checks input + i:before {
 }
 
 .form-validation .form-control.ng-dirty.ng-invalid {
-  border-color: #f05050;
+  border-color:transparent;
 }
 
 .form-validation .form-control.ng-dirty.ng-valid,
 .form-validation .form-control.ng-dirty.ng-valid:focus {
-  border-color: #27c24c;
+  border-color:#d5dce4;
 }
 
 .form-validation .i-checks .ng-invalid.ng-dirty + i {
@@ -4909,7 +4911,6 @@ a.text-#000000:hover {
 .img-full img {
   width: 100%;
 }
-
 .scrollable {
   overflow-x: hidden;
   overflow-y: auto;

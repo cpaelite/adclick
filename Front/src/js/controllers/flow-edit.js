@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('FlowEditCtrl', [
-        '$scope', '$mdDialog', '$q', 'Flow', 'Lander', 'Offer', 'Condition', 'Country',
+        '$scope', '$mdDialog', '$q', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country',
         FlowEditCtrl
     ]);
 
-  function FlowEditCtrl($scope, $mdDialog, $q, Flow, Lander, Offer, Condition, Country) {
+  function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country) {
     $scope.app.subtitle = 'Flow';
     var flowId = $scope.$stateParams.id;
     var isDuplicate = $scope.$stateParams.dup == '1';
@@ -117,7 +117,7 @@
             });
             field._v2n = val2name;
 
-          } else if (field.type == 'chips') {
+          } else if (field.type == 'chips' || field.type == 'input-select') {
             var val2name = {};
             field.options.forEach(function(opt) {
               val2name[opt.value] = opt.display;
@@ -147,6 +147,12 @@
         }
         rule.conditions.forEach(function(condition) {
           condition._def = conditionMap[condition.id];
+          conditionMap[condition.id].fields.forEach(function(field) {
+            if (!condition[field.name]) return;
+            if (field.type == "async-select" || field.type == "async-chips") {
+              field._v2n = condition['_'+field.name];
+            }
+          });
         });
 
         if (!Array.isArray(rule.paths)) {
@@ -571,8 +577,9 @@
         _def: condition,
         operand: condition.operands[0].value
       };
+      var arrTypes = ['chips', 'checkbox', 'l2select', 'async-chips'];
       condition.fields.forEach(function(f) {
-        if (f.type == "chips" || f.type == "checkbox" || f.type == 'l2select') {
+        if (arrTypes.indexOf(f.type) >= 0) {
           newCond[f.name] = [];
         }
       });
@@ -584,9 +591,20 @@
         $scope.curRule.conditions.splice(idx, 1);
       }
     };
-    $scope.querySearchIn = function(query, options, selected) {
+    $scope.querySearchSync = function(query, options, selected) {
       var matched = query ? options.filter(createFilterFor(query, "display")) : options;
       return matched.map(function(item) { return item.value; }).filter(excludeIn(selected));
+    };
+    $scope.querySearchAsync = function(query, f, selected) {
+      return $http.get(f.url, {params: { q: query }}).then(function(response) {
+        if (!f._v2n) f._v2n = {};
+        var result = [];
+        response.data.forEach(function(item) {
+          f._v2n[item.value] = item.display;
+          result.push(item.value);
+        });
+        return result.filter(excludeIn(selected));
+      });
     };
 
     function excludeIn(list) {
@@ -693,6 +711,7 @@
       $scope.saveErrors.length = 0;
       $scope.showErrors = false;
       nameRequired();
+
       // clean up before save
       var flowData = {
         name: theFlow.name,
@@ -702,6 +721,14 @@
       };
       if (theFlow.id) {
         flowData.id = theFlow.id;
+      }
+
+      if($scope.editFlowForm.name.$error.asyncCheckName) {
+        $scope.saveErrors.push('Name already exists.');
+      }
+
+      if($scope.editFlowForm.name.$error.nameRequired) {
+        $scope.saveErrors.push('Flow name ' + theFlow.name + ' already exists.');
       }
 
       if (theFlow._nameError) {

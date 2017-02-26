@@ -38,6 +38,7 @@ var traffic = require('./routes/traffic');
 var user_setting = require('./routes/user_setting');
 var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
+var conversions =require('./routes/conversions');
 
 import billing from './routes/billing';
 import plan from './routes/plan';
@@ -49,6 +50,7 @@ var log4js = require('log4js');
 var logger = log4js.getLogger("app");
 var bodyParser = require('body-parser');
 var compression=require('compression');
+var cookiePareser = require('cookie-parser');
 
 var app = express();
 var util = require('./util/index');
@@ -61,8 +63,6 @@ app.disable('x-powered-by');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // page
-
-
 if (process.env.NODE_ENV === "development") {
   app.use("/js", express.static(__dirname + '/../Front/src/js'));
   app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
@@ -81,11 +81,12 @@ if (process.env.NODE_ENV === "development") {
 //log4js
 app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
 
+app.use(cookiePareser());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
-
 // parse application/json
 app.use(bodyParser.json())
+
 
 app.get('/', function(req, res) {
     res.sendFile('index.html', {
@@ -95,8 +96,7 @@ app.get('/', function(req, res) {
 
 app.use(paypal);
 
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, billing, plan);
-
+app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions, billing, plan);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler

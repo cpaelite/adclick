@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('BotBlacklistCtrl', [
-      '$scope', '$mdDialog', 'toastr', 'BlackList',
+      '$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout',
       BotBlacklistCtrl
     ]);
 
-  function BotBlacklistCtrl($scope, $mdDialog, toastr, BlackList) {
+  function BotBlacklistCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
     $scope.app.subtitle = "BotBlack";
     $scope.blacklistCount = 20;
 
@@ -18,7 +18,7 @@
     };
 
     $scope.getList();
-    
+
     $scope.$watch('data.enabled', function (newValue, oldValue) {
       if ((newValue != undefined && oldValue == undefined) || newValue == oldValue) {
         return;
@@ -36,7 +36,7 @@
     $scope.editItem = function (ev, index) {
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', editItemCtrl],
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', editItemCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: {index: index, data: $scope.data},
@@ -50,19 +50,25 @@
     $scope.deleteItem = function (ev, index) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', deleteCtrl],
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
         locals: {index: index, data: $scope.data},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
+      }).then(function (result) {
+        if (result) {
+          $scope.data.blacklist.splice(index, index);
+        }
       });
     };
 
   }
 
-  function editItemCtrl($scope, $mdDialog, toastr, BlackList) {
+  function editItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
+    var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+
     if (this.data.blacklist && this.index >= 0) {
       $scope.item = this.data.blacklist[this.index];
     } else {
@@ -72,20 +78,30 @@
       };
     }
 
+    $scope.regex = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(-(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$";
+
     $scope.addIP = function () {
       $scope.item.ipRules.push("");
+      $timeout(function() {
+        $scope.blurInput();
+      });
     };
 
     $scope.deleteIP = function (index) {
       $scope.item.ipRules.splice(index, index);
+      $scope.blurInput();
     };
 
     $scope.addAgent = function () {
-      $scope.item.userAgentRules.push("")
+      $scope.item.userAgentRules.push("");
+      $timeout(function() {
+        $scope.blurInput();
+      });
     };
 
     $scope.deleteAgent = function (index) {
       $scope.item.userAgentRules.splice(index, index);
+      $scope.blurInput();
     };
 
     $scope.checkIP = function (index) {
@@ -93,7 +109,6 @@
       // 验证IP格式
       var ipList = $scope.item.ipRules[index];
       if (ipList) {
-        var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
         var ips = ipList.split('-');
         ips.forEach(function (ip) {
           if (!re.test(ip)) {
@@ -105,6 +120,43 @@
         $scope.editForm[temp].$setValidity('valid', isValid);
       } else {
         $scope.editForm.ipRange.$setValidity('valid', isValid);
+      }
+    };
+
+    $scope.blurInput = function() {
+      var index;
+      var ipReg = $scope.item.ipRules.some(function(v, i) {
+        index = i;
+        return v && !re.test(v);
+      });
+      var ipRequired = $scope.item.ipRules.some(function(v, i) {
+        return v && v.length > 0;
+      });
+      var userAgentRequired = $scope.item.userAgentRules.some(function(v, i) {
+        return v && v.length > 0;
+      });
+      // reset
+      $scope.item.ipRules.forEach(function(v, i) {
+        $scope.editForm['ipRule' + i].$setValidity('valid', true);
+      });
+      $scope.item.ipRules.forEach(function(v, i) {
+        $scope.editForm['ipRule' + i].$setValidity('required', true);
+      });
+      $scope.item.userAgentRules.forEach(function(v, i) {
+        $scope.editForm['userAgentRule' + i].$setValidity('required', true);
+      });
+
+      if (!ipRequired && !userAgentRequired) {
+        $scope.item.ipRules.forEach(function(v, i) {
+          $scope.editForm['ipRule' + i].$setValidity('required', false);
+        });
+        $scope.item.userAgentRules.forEach(function(v, i) {
+          $scope.editForm['userAgentRule' + i].$setValidity('required', false);
+        });
+      } else {
+        if(ipReg) {
+          $scope.editForm['ipRule' + index].$setValidity('valid', false);
+        }
       }
     };
 
@@ -123,8 +175,8 @@
       if (this.index < 0) {
         this.data.blacklist.push($scope.item);
       }
-
       $scope.editForm.$setSubmitted();
+      $scope.blurInput();
       if ($scope.editForm.$valid) {
         BlackList.save(this.data, success);
       }
@@ -138,17 +190,17 @@
     this.cancel = $mdDialog.cancel;
 
     this.ok = function () {
-      this.data.blacklist.splice(this.index, this.index);
-      BlackList.save(this.data, success, error);
+      BlackList.save(this.data, success);
     };
 
-    function success() {
-      toastr.success("success delete");
-      $mdDialog.hide();
-    }
-
-    function error() {
-      this.error = 'Error occured when delete.';
+    function success(response) {
+      if (response.status) {
+        toastr.success("success delete");
+        $mdDialog.hide(true);
+      } else {
+        toastr.error(response.message);
+        $mdDialog.hide(false);
+      }
     }
   }
 

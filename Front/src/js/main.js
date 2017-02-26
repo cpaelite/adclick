@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'FreeTrial',
+      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'FreeTrial', 'Group', '$cookies',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, FreeTrial) {
+  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, FreeTrial, Group, $cookies) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -53,6 +53,7 @@
 
     $rootScope.currentUser = null;
     $scope.showLogin = false;
+
     $scope.$on("event:auth-loginRequired", function () {
       // this event can be emitted when stateChangeStart or $http response with 401 status
       console.log("need auth: get event:auth-loginRequired");
@@ -83,14 +84,35 @@
             $scope.preferences = JSON.parse(res.data);
           }
         });
-        
+
         // 国家信息
-        Country.query({}, function(result) {
+        Country.query(null, function(result) {
           $rootScope.countries = result;
         });
 
+        var clientId = $cookies.get('clientId');
+        // 用户组信息
+        Group.get(null, function (result) {
+          var groups = result.data.groups;
+          $rootScope.groups = groups;
+          groups.forEach(function (group) {
+            if (group.groupId == clientId) {
+              $rootScope.currentGroup = group;
+              $localStorage.currentUser.firstname = group.firstname;
+              return;
+            }
+          });
+        });
       }
     });
+
+    $scope.changeGroup = function (group) {
+      $cookies.put("clientId", group.groupId);
+      $rootScope.currentGroup = group;
+      $localStorage.currentUser.firstname = group.firstname;
+      window.location.reload();
+    };
+
     // this event can be emitted when $http response with 403 status
     // or on '$stateChangeStart'
     $scope.$on("event:auth-forbidden", function () {
@@ -106,6 +128,8 @@
         $scope.$state.go('access.signin');
       }
       delete $localStorage.currentUser;
+      $cookies.remove('token');
+      $cookies.remove('clientId');
     };
 
     if ($auth.isAuthenticated()) {

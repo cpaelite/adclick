@@ -71,11 +71,11 @@ angular.module('app')
   .factory('DomainsValidatecname', ['$resource', function($resource) {
     return $resource('/api/domains/validatecname')
   }])
-  .factory('Member', ['$resource', function($resource) {
-    return $resource('/api/member')
-  }])
   .factory('Invitation', ['$resource', function($resource) {
     return $resource('/api/invitation/:id', {id: '@id'})
+  }])  
+  .factory('Conversion', ['$resource', function($resource) {
+    return $resource('/api/conversions')
   }])
   .factory('Invoices', ['$resource', function($resource) {
     return $resource('/api/invoices')
@@ -106,5 +106,14 @@ angular.module('app')
   }])
   .factory('Plan', ['$resource', function ($resource) {
     return $resource('/api/plan');
+  }])
+  .factory('Member', ['$resource', function ($resource) {
+    return $resource('/api/members');
+  }])
+  .factory('Conversion', ['$resource', function ($resource) {
+    return $resource('/api/conversions');
+  }])
+  .factory('Group', ['$resource', function ($resource) {
+    return $resource('/api/groups');
   }])
 ;

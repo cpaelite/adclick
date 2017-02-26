@@ -18,6 +18,9 @@
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight w" uib-dropdown-menu>
+                    <li ng-repeat="group in groups">
+                        <a ng-click="changeGroup(group)" ng-show="currentGroup.groupId!=group.groupId">{{group.email}}</a>
+                    </li>
                     <li>
                         <a href ng-click="logout()">{{'logout' | translate}}</a>
                     </li>
@@ -84,8 +87,14 @@
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="setApp.eventLog" md-ink-ripple>
-                    <i class="glyphicon glyphicon-list-alt"></i>
+                    <i class="icon-th-list"></i>
                     <span>{{'eventLog' | translate}}</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="setApp.conversionUpload" md-ink-ripple>
+                    <i class="icon-cloud-upload"></i>
+                    <span>{{'conversionUpload' | translate}}</span>
                 </a>
             </li>
         </ul>

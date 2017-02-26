@@ -59,7 +59,7 @@ router.post('/api/offers', async function (req, res, next) {
 
         let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
         value.postbackUrl = postbackUrl;
-        let landerResult = await common.insertOffer(value.userId, value.idText, value, connection);
+        let landerResult = await common.insertOffer(req.subId,value.userId, value.idText, value, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
@@ -139,7 +139,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         if (await common.checkNameExists(value.userId, value.id, value.name, 3, connection)) {
             throw new Error("Offer name exists");
         }
-        await common.updateOffer(value.userId, value, connection);
+        await common.updateOffer(req.subId,value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 3, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
@@ -302,7 +302,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
           return ;
         }
 
-        let result = await common.deleteOffer(value.id, value.userId, value.name, value.hash, connection);
+        let result = await common.deleteOffer(req.subId,value.id, value.userId, value.name, value.hash, connection);
          
 
         res.json({

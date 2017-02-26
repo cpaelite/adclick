@@ -1,76 +1,108 @@
 {
-  "name": "new flow",
-  "redirectMode": 0,
-  "rules": [
-    {
-      "id": null,
-      "isDefault": true,
-      "paths": [
-        {
-          "name": "Path 1",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        },
-        {
-          "name": "Path 2",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        },
-        {
-          "name": "Path 3",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        }
-      ]
+  "status": 1,
+  "message": "success",
+  "data": {
+    "rows": [
+      {
+        "day": "2017-02-25",
+        "UserID": 71,
+        "Language": "zh-CN",
+        "Model": "Desktop",
+        "campaignId": 80,
+        "campaignName": "popads.com - Global - Campaign-with-flow-1",
+        "flowId": 111,
+        "flowName": "Global - Flow1",
+        "landerId": 45,
+        "landerName": "Global - Lander1",
+        "offerId": 0,
+        "offerName": "",
+        "affiliateId": 0,
+        "affiliateName": "",
+        "trafficId": 57,
+        "trafficName": "popads.com",
+        "Country": "JPN",
+        "City": "Tokyo",
+        "Region": "Tokyo",
+        "ISP": "Choopa LLC",
+        "MobileCarrier": "-",
+        "Domain": "",
+        "DeviceType": "Desktop",
+        "Brand": "Desktop",
+        "OS": "Intel Mac OS X 1",
+        "OSVersion": "10.12.1",
+        "Browser": "Chrome",
+        "BrowserVersion": "56.0.2924.87",
+        "ConnectionType": "T1",
+        "visits": 9,
+        "impressions": 0,
+        "revenue": 0,
+        "clicks": 7,
+        "conversions": 0,
+        "cost": 0,
+        "profit": 0,
+        "cpv": null,
+        "ictr": null,
+        "ctr": 0.7778,
+        "cr": 0,
+        "cv": 0,
+        "roi": null,
+        "epv": 0,
+        "epc": 0,
+        "ap": null
+      },
+      {
+        "day": "2017-02-26",
+        "UserID": 71,
+        "Language": "zh-CN",
+        "Model": "Desktop",
+        "campaignId": 80,
+        "campaignName": "popads.com - Global - Campaign-with-flow-1",
+        "flowId": 111,
+        "flowName": "Global - Flow1",
+        "landerId": 45,
+        "landerName": "Global - Lander1",
+        "offerId": 0,
+        "offerName": "",
+        "affiliateId": 0,
+        "affiliateName": "",
+        "trafficId": 57,
+        "trafficName": "popads.com",
+        "Country": "JPN",
+        "City": "Tokyo",
+        "Region": "Tokyo",
+        "ISP": "Choopa LLC",
+        "MobileCarrier": "-",
+        "Domain": "",
+        "DeviceType": "Desktop",
+        "Brand": "Desktop",
+        "OS": "Intel Mac OS X 1",
+        "OSVersion": "10.12.1",
+        "Browser": "Chrome",
+        "BrowserVersion": "56.0.2924.87",
+        "ConnectionType": "T1",
+        "visits": 4,
+        "impressions": 0,
+        "revenue": 0,
+        "clicks": 0,
+        "conversions": 0,
+        "cost": 0,
+        "profit": 0,
+        "cpv": null,
+        "ictr": null,
+        "ctr": 0,
+        "cr": null,
+        "cv": 0,
+        "roi": null,
+        "epv": 0,
+        "epc": null,
+        "ap": null
+      }
+    ],
+    "totals": {
+      "impressions": 0,
+      "clicks": 7,
+      "visits": 13
     },
-    {
-      "id": null,
-      "name": "china",
-      "enabled": true,
-      "isDefault": false,
-      "conditions": [
-        {
-          "id": "2334",
-          "operand": "is",
-          "value": "cn"
-        }
-      ],
-      "paths": [
-        {
-          "name": "Path 1",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        },
-        {
-          "name": "Path 2",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        },
-        {
-          "name": "Path 3",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        },
-        {
-          "name": "Path 4",
-          "enabled": true,
-          "weight": 100,
-          "redirectMode": 0,
-          "directLinking": false
-        }
-      ]
-    }
-  ]
+    "totalRows": 2
+  }
 }

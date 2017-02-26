@@ -40,15 +40,16 @@ const conditionResult = [{
     "display": "State / Region",
     "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
     "fields": [{
-        "type": "chips", "name": "value", "options": []
+        "type": "async-select", "name": "value","url": "/api/regions"
     }]
 }, {
     "id": "city",
     "display": "City",
     "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
     "fields": [{
-        "type": "chips", "name": "value", "options": []
+        "type": "async-select", "name": "value","url": "/api/cities"
     }]
+
 }, {
     "id": "weekday",
     "display": "Day of week",
@@ -92,7 +93,7 @@ const conditionResult = [{
     "display": "ISP",
     "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
     "fields": [{
-        "type": "chips", "name": "value", "options": []
+        "type": "async-select", "name": "value","url": "/api/isps"
     }]
 }, {
     "id": "language",
@@ -423,7 +424,7 @@ router.post('/api/flows', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data = await saveOrUpdateFlow(value, connection);
+        let data = await saveOrUpdateFlow(req.subId,value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -466,7 +467,7 @@ router.post('/api/flows/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data = await saveOrUpdateFlow(value, connection);
+        let data = await saveOrUpdateFlow(req.subId,value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -528,9 +529,9 @@ router.delete('/api/flows/:id', async function (req, res, next) {
 });
 
 
-async function saveOrUpdateFlow(value, connection) {
+async function saveOrUpdateFlow(subId,value, connection) {
 
-
+    let beginTransaction= false;
     try {
         //check flow name exists 
         if (await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, 4, connection)) {
@@ -541,6 +542,7 @@ async function saveOrUpdateFlow(value, connection) {
         // 用于缓存redis pub数据 {data:"",tag:""}
         connection.redisPubSlice = [];
         await common.beginTransaction(connection);
+        beginTransaction=true;
         //Flow
         if (!value.id) {
             flowResult = await common.insertFlow(value.userId, value, connection)
@@ -622,8 +624,8 @@ async function saveOrUpdateFlow(value, connection) {
                                 throw err;
                             }
 
-                            let p1 = insertOrUpdateLanderAndLanderTags(value.userId, pathId, landersSlice, connection);
-                            let p2 = insertOrUpdateOfferAndOfferTags(value.userId, value.idText, pathId, offersSlice, connection);
+                            let p1 = insertOrUpdateLanderAndLanderTags(subId,value.userId, pathId, landersSlice, connection);
+                            let p2 = insertOrUpdateOfferAndOfferTags(subId,value.userId, value.idText, pathId, offersSlice, connection);
 
                             await Promise.all([p1, p2]);
 
@@ -637,10 +639,14 @@ async function saveOrUpdateFlow(value, connection) {
         }
 
     } catch (err) {
-        await common.rollback(connection);
+        if(beginTransaction){
+            await common.rollback(connection);
+        }
         throw err;
     }
-    await common.commit(connection);
+    if(beginTransaction){
+         await common.commit(connection);
+    }
 
     //处理缓存中的redis pub数据  =======begin
     let redisClient = new Pub(true);
@@ -654,15 +660,15 @@ async function saveOrUpdateFlow(value, connection) {
     return value;
 };
 
-async function insertOrUpdateLanderAndLanderTags(userId, pathId, landersSlice, connection) {
+async function insertOrUpdateLanderAndLanderTags(subId,userId, pathId, landersSlice, connection) {
     if (landersSlice && landersSlice.length > 0) {
         for (let k = 0; k < landersSlice.length; k++) {
             let landerResult;
             if (!landersSlice[k].id) {
-                landerResult = await common.insertLander(userId, landersSlice[k], connection);
+                landerResult = await common.insertLander(subId,userId, landersSlice[k], connection);
 
             } else {
-                await common.updateLander(userId, landersSlice[k], connection);
+                await common.updateLander(subId,userId, landersSlice[k], connection);
             }
 
             let landerId = landersSlice[k].id ? landersSlice[k].id : (landerResult ? (landerResult.insertId ? landerResult.insertId : 0) : 0);
@@ -685,7 +691,7 @@ async function insertOrUpdateLanderAndLanderTags(userId, pathId, landersSlice, c
     }
 }
 
-async function insertOrUpdateOfferAndOfferTags(userId, idText, pathId, offersSlice, connection) {
+async function insertOrUpdateOfferAndOfferTags(subId,userId, idText, pathId, offersSlice, connection) {
     if (offersSlice && offersSlice.length > 0) {
         for (let z = 0; z < offersSlice.length; z++) {
             let offerResult;
@@ -693,9 +699,9 @@ async function insertOrUpdateOfferAndOfferTags(userId, idText, pathId, offersSli
             if (!offersSlice[z].id) {
                 let postbackUrl = setting.newbidder.httpPix + idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
                 offersSlice[z].postbackUrl = postbackUrl;
-                offerResult = await common.insertOffer(userId, idText, offersSlice[z], connection);
+                offerResult = await common.insertOffer(subId,userId, idText, offersSlice[z], connection);
             } else {
-                await common.updateOffer(userId, offersSlice[z], connection);
+                await common.updateOffer(subId,userId, offersSlice[z], connection);
             }
 
             let offerId = offersSlice[z].id ? offersSlice[z].id : (offerResult ? (offerResult.insertId ? offerResult.insertId : 0) : 0);
@@ -737,7 +743,7 @@ router.get('/api/conditions', async function (req, res, next) {
 router.get('/api/cities', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        query: Joi.string().required().trim(),
+        q: Joi.string().required().trim(),
     });
     req.query.userId = req.userId;
     //production
@@ -745,7 +751,7 @@ router.get('/api/cities', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await loadCityFromDB(value.query, connection)
+        let result = await loadCityFromDB(value.q, connection)
         res.json(result);
     } catch (e) {
         next(e);
@@ -760,7 +766,7 @@ router.get('/api/cities', async function (req, res, next) {
 router.get('/api/regions', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        query: Joi.string().required().trim(),
+        q: Joi.string().required().trim(),
     });
     req.query.userId = req.userId;
     //production
@@ -768,7 +774,7 @@ router.get('/api/regions', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await loadStateRegionFromDB(value.query, connection)
+        let result = await loadStateRegionFromDB(value.q, connection)
         res.json(result);
     } catch (e) {
         next(e);
@@ -783,7 +789,7 @@ router.get('/api/regions', async function (req, res, next) {
 router.get('/api/isps', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
-        query: Joi.string().required().trim(),
+        q: Joi.string().required().trim(),
     });
     req.query.userId = req.userId;
     //production
@@ -791,7 +797,7 @@ router.get('/api/isps', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await loadIspFromDB(value.query, connection)
+        let result = await loadIspFromDB(value.q, connection)
         res.json(result);
     } catch (e) {
         next(e);
@@ -920,7 +926,7 @@ async function loadCountryFromDB(connection) {
 
  
 async function loadCityFromDB(name, connection) {
-    var sql = "select id, name as display, countryCode as value from City where `name` like '%" + name + "%'";
+    var sql = "select id, name as display, name as value from City where `name` like '%" + name + "%' limit 5";
     var r = [];
     r = await query(sql, [], connection);
     return r
@@ -928,7 +934,7 @@ async function loadCityFromDB(name, connection) {
 
  
 async function loadStateRegionFromDB(name,connection) {
-    var sql = "select id, regionName as display, countryCode as value from Regions where `regionName` like '%" + name + "%'";
+    var sql = "select id, regionName as display, regionName as value from Regions where `regionName` like '%" + name + "%' limit 5";
     var r = [];
     r = await query(sql, [], connection);
     return r
@@ -936,7 +942,7 @@ async function loadStateRegionFromDB(name,connection) {
 
 // TODO: change sql to Region table
 async function loadIspFromDB(name,connection) {
-    var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%'";
+    var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%' limit 5";
     var r = [];
     r = await query(sql, [], connection);
 

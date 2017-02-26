@@ -29,7 +29,7 @@
         <li ng-repeat="path in rule.paths" class="tree-li" ng-click="editPath(rule, path)" ng-class="{
           'cs-flow-active': onEdit=='path' && curPath==path,
           'cs-is-deleted': path.isDeleted,
-          'cs-is-disabled': !path.enabled
+          'cs-is-disabled': !(rule.enabled && path.enabled)
         }">
           <i class="material-icons tree-icon">album</i>
           <span class="cs-path-name clearfix">
@@ -264,6 +264,43 @@
                 </div>
               </div>
 
+              <div ng-if="f.type=='input-select'" ng-class="{'col-md-8': f.label}" class="country-select">
+                <md-autocomplete
+                    md-selected-item="cdt[f.name]"
+                    md-search-text="cdt['_st'+f.name]"
+                    md-items="item in querySearchSync(cdt['_st'+f.name], f.options, [])"
+                    md-no-cache="true"
+                    md-min-length="0"
+                    md-item-text="f._v2n[item]"
+                    placeholder="{{f.placeholder}}">
+                  <md-item-template>
+                    <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No matching found.
+                  </md-not-found>
+                </md-autocomplete>
+              </div>
+
+              <div ng-if="f.type=='async-select'" ng-class="{'col-md-8': f.label}" class="country-select">
+                <md-autocomplete
+                    md-selected-item="cdt[f.name]"
+                    md-no-cache="false"
+                    md-min-length="1"
+                    md-search-text="cdt['_st'+f.name]"
+                    md-items="item in querySearchAsync(cdt['_st'+f.name], f, [])"
+                    md-delay="500"
+                    md-item-text="f._v2n[item]"
+                    placeholder="{{f.placeholder}}">
+                  <md-item-template>
+                    <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No matching found.
+                  </md-not-found>
+                </md-autocomplete>
+              </div>
+
               <div ng-if="f.type=='chips'" ng-class="{'col-md-10': f.label}" class="chips-con">
                 <md-chips
                     ng-model="cdt[f.name]"
@@ -273,7 +310,26 @@
                       md-search-text="cdt['_st'+f.name]"
                       md-no-cache="true"
                       md-min-length="0"
-                      md-items="item in querySearchIn(cdt['_st'+f.name], f.options, cdt[f.name])"
+                      md-items="item in querySearchSync(cdt['_st'+f.name], f.options, cdt[f.name])"
+                      md-item-text="f._v2n[item]"
+                      placeholder="{{f.placeholder}}">
+                    <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>
+                  </md-autocomplete>
+                  <md-chip-template><span>{{f._v2n[$chip]}}</span></md-chip-template>
+                </md-chips>
+              </div>
+
+              <div ng-if="f.type=='async-chips'" ng-class="{'col-md-10': f.label}" class="chips-con">
+                <md-chips
+                    ng-model="cdt[f.name]"
+                    md-autocomplete-snap
+                    md-require-match="true" class="chips-content">
+                  <md-autocomplete
+                      md-no-cache="false"
+                      md-min-length="1"
+                      md-search-text="cdt['_st'+f.name]"
+                      md-items="item in querySearchAsync(cdt['_st'+f.name], f, cdt[f.name])"
+                      md-delay="500"
                       md-item-text="f._v2n[item]"
                       placeholder="{{f.placeholder}}">
                     <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>

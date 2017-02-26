@@ -79,7 +79,7 @@ router.post('/api/campaigns', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data = await start(value, connection);
+        let data = await start(req.subId,value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -158,7 +158,8 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         targetUrl: Joi.string().regex(util.regWebURL,'targetUrl').optional().allow(""),
         targetFlowId: Joi.number().optional(),
         postbackUrl: Joi.string().optional().empty(""),
-        pixelRedirectUrl: Joi.string().optional().empty(""),
+        pixelRedirectUrl: Joi.string().optional().empty("")
+         
     });
     req.body.userId = req.userId;
     req.body.id = req.params.id;
@@ -167,7 +168,7 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data = await start(value, connection);
+        let data = await start(req.subId,value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -183,7 +184,7 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
 });
 
 
-const start = async (value, connection) => {
+const start = async (subId,value, connection) => {
 
     //check campaign name exists
     if(await common.checkNameExists(value.userId,value.id?value.id:null,value.name,1,connection)){
@@ -193,11 +194,11 @@ const start = async (value, connection) => {
     //Campaign
     let campResult;
     if (value.id) {
-        await common.updateCampaign(value, connection);
+        await common.updateCampaign(subId,value, connection);
     } else {
         let hash = uuidV4();
         let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted` = 0";
-        campResult = await common.insertCampaign(value, hash, connection);
+        campResult = await common.insertCampaign(subId,value, hash, connection);
         let domainResult = await common.query(mainDomainsql, [value.userId], connection);
         value.hash = hash;
         if (domainResult.length) {
@@ -294,7 +295,7 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(value.id, value.userId,  connection);
+        let result = await common.deleteCampaign(req.subId,value.id, value.userId,  connection);
         res.json({
             status: 1,
             message: 'success'

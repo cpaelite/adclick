@@ -7,8 +7,9 @@
 var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
-var setting = require('../config/setting');
 var common = require('./common');
+var setting = require('../config/setting');
+const _ = require('lodash');
 
 /**
  * @api {post} /api/preferences  编辑用户配置
@@ -75,37 +76,65 @@ router.post('/api/preferences', function (req, res, next) {
  *     }
  *
  */
-router.get('/api/preferences', function (req, res, next) {
+router.get('/api/preferences', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
     req.body.userId = req.userId;
-    Joi.validate(req.body, schema, function (err, value) {
-        if (err) {
-            return next(err);
+    let connection;
+    try {
+        let result;
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let results = await common.query("select  `json` from User where `id` = ? and `deleted` =0", [value.userId], connection);
+       
+        if (results.length) {
+            result = JSON.stringify(_.merge(setting.defaultSetting, JSON.parse(results[0].json)));
+             
+        } else {
+            result = JSON.stringify(setting.defaultSetting);
         }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query(
-                "select  `json` from User where `id` = ? and `deleted` =0", [
-                    value.userId
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: "success",
-                        data: result[0].json
-                    });
-                });
+        console.log()
+        return res.json({
+            status: 1,
+            message: "success",
+            data: result
         });
-    });
+    } catch (e) {
+        next(e);
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+
+    }
+    // Joi.validate(req.body, schema, function (err, value) {
+    //     if (err) {
+    //         return next(err);
+    //     }
+    //     pool.getConnection(function (err, connection) {
+    //         if (err) {
+    //             err.status = 303
+    //             return next(err);
+    //         }
+    //         connection.query(
+    //             "select  `json` from User where `id` = ? and `deleted` =0", [
+    //                 value.userId
+    //             ],
+    //             function (err, result) {
+    //                 connection.release();
+    //                 if (err) {
+    //                     return next(err);
+    //                 }
+    //                 res.json({
+    //                     status: 1,
+    //                     message: "success",
+    //                     data: result[0].json
+    //                 });
+    //             });
+    //     });
+    // });
 });
 
 
@@ -165,51 +194,7 @@ router.get('/api/tags', function (req, res, next) {
 
 
 
-/**
- * @api {get} /api/postbackurl  获取offer默认postbackurl
- * @apiName   获取offer默认postbackurl   
- * @apiGroup User
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{
- *           defaultPostBackUrl:XXX
- *        }
- *     }
- *
- */
 
-router.get('/api/postbackurl', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.string().required()
-    });
-    req.query.userId = req.idText;
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        try {
-            let defaultDomain;
-            for (let index = 0; index < setting.domains.length; index++) {
-                if (setting.domains[index].postBackDomain) {
-                    defaultDomain = setting.domains[index].address;
-                }
-            }
-            res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    defaultPostBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
-                }
-            })
-        } catch (e) {
-            next(e);
-        }
-    });
-});
 
 
 /**
@@ -258,6 +243,53 @@ router.post('/api/names', async function (req, res, next) {
             connection.release();
         }
     }
+});
+
+
+/**
+ * @api {get} /api/postbackurl  获取offer默认postbackurl
+ * @apiName   获取offer默认postbackurl   
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{
+ *           defaultPostBackUrl:XXX
+ *        }
+ *     }
+ *
+ */
+
+router.get('/api/postbackurl', function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.string().required()
+    });
+    req.query.userId = req.idText;
+    Joi.validate(req.query, schema, function (err, value) {
+        if (err) {
+            return next(err);
+        }
+        try {
+            let defaultDomain;
+            for (let index = 0; index < setting.domains.length; index++) {
+                if (setting.domains[index].postBackDomain) {
+                    defaultDomain = setting.domains[index].address;
+                }
+            }
+            res.json({
+                status: 1,
+                message: 'success',
+                data: {
+                    defaultPostBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+                }
+            })
+        } catch (e) {
+            next(e);
+        }
+    });
 });
 
 
