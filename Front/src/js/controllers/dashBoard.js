@@ -29,14 +29,14 @@
     };
 
     var params = {
-      groupBy: "date",
+      groupBy: "day",
       from: moment($scope.fromDate).format('YYYY-MM-DD') + "T" + $scope.fromTime,
       to: moment($scope.toDate).format('YYYY-MM-DD') + "T" + $scope.toTime
     };
     $scope.summary = {};
     Report.get(angular.copy(params), function (result) {
       $scope.summary = result.data.totals;
-      feedChartData(params, result.data.totals);
+      feedChartData(params, result.data.rows);
     });
 
     $scope.order = 'desc';
