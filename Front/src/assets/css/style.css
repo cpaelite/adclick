@@ -70,7 +70,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .pricing-box .my-price{-webkit-transition: all 0.3s;
     transition: all 0.3s;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;box-shadow:0 0 3px #d4d4d4;border-radius:2px;padding:15px 0 30px 0;}
 .pricing-box li{-webkit-transition: all 0.3s;
-    transition: all 0.3s;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;height:850px;padding-top:15px;}
+    transition: all 0.3s;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;height:auto;padding-top:15px;}
 .pricing-box li:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #357cf3;}
 .pricing-box li:nth-last-child(1){margin:0;}
 .pricing-box li.h-line{border-top:2px solid #ff8c00;}
@@ -157,7 +157,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .p-btn.p-btn-03:hover{background:#00aa83;color:#fff;border:2px solid #00aa83;}
 .p-btn.p-btn-04:hover{background:#04a3c0;color:#fff;border:2px solid #04a3c0;}
 .p-btn i{margin:3px 0  0 10px;font-size:19px;}
-.p-btn.btn-three{color:#357cf3;}
+.p-btn.btn-three{color:#357cf3;margin: 15px auto;display: block;}
 .p-btn.btn-three:hover{color:#fff;}
 .btn-three{color:#fff;-webkit-transition: all 0.5s;transition: all 0.5s;position: relative;}
 .btn-three::before {

@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'Group', '$cookies',
+      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'FreeTrial', 'Group', '$cookies',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, Group, $cookies) {
+  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, FreeTrial, Group, $cookies) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -135,8 +135,7 @@
     if ($auth.isAuthenticated()) {
       $scope.$broadcast("event:auth-loginSuccess");
     }
+
   }
 
 })();
-
-

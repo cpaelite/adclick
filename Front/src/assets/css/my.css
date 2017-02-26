@@ -87,6 +87,21 @@ header.navbar {
 header .md-toolbar-tools {
     height: 52px;
 }
+.free-btn{
+    width: 100px;
+    height: 36px;
+    font-size: 13px;
+    background: #fff;
+    color: #2f9be1;
+    text-align: center;
+    line-height: 36px;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid rgba(128, 128, 128, 0.33);
+}
+.free-btn a{
+    display: block;
+}
 .home a.home-link,
 .setting a.setting-link{
     display: block;
@@ -1416,7 +1431,15 @@ h1.setting-title p{line-height:26px;color:#666;}
     font-size: 12px;
     padding: 5px 0;
     text-align: center;
+    visibility: hidden;
 }
+.my-price.my-price-select{
+    float: none;
+    margin:0 auto;
+}
+/*.plan-select.isVisiable{
+    visibility: inherit;
+}*/
 .table-out{
     padding:20px 35px;
     background: #fff;

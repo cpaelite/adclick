@@ -8,35 +8,35 @@
 			<table>
 				<tr>
 					<td>Plan:</td>
-					<td>{{item.plan.name}}</td>
+					<td>{{item.statistic.planCode}}</td>
 				</tr>
 				<tr>
 					<td>Current period:</td>
-					<td>{{item.startTime}} <em ng-show="item.startTime">-</em> {{item.endTime}}</td>
+					<td>{{item.statistic.from}} <em ng-show="item.startTime">-</em> {{item.tatistic.to}}</td>
 				</tr>
 				<tr>
 					<td>Billed events:</td>
-					<td>{{item.statistics.billedEvents}}</td>
+					<td>{{item.statistic.billedEvents}}</td>
 				</tr>
 				<tr>
 					<td>Total events:</td>
-					<td>{{item.statistics.totalEvents}}</td>
+					<td>{{item.statistic.totalEvents}}</td>
 				</tr>
 				<tr>
 					<td>Included events:</td>
-					<td>{{item.plan.eventsLimit}}</td>
+					<td>{{item.statistic.includedEvents}}</td>
 				</tr>
 				<tr>
 					<td>Remaining events:</td>
-					<td>{{item.statistics.remainEvents}}</td>
+					<td>{{item.statistic.remainEvents}}</td>
 				</tr>
 				<tr>
 					<td>Overage events:</td>
-					<td>{{item.statistics.overageEvents}}</td>
+					<td>{{item.statistic.overageEvents}}</td>
 				</tr>
 				<tr>
 					<td>Overage cost:</td>
-					<td>{{item.statistics.overageCost}}</td>
+					<td>{{item.statistic.overageCost}}</td>
 				</tr>
 			</table>
 		</div>
@@ -52,7 +52,7 @@
 							<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
 						</span>
 					</div>
-					<md-button class="md-raised copy-btn" ng-click="changePlan()">Change Plan</md-button>
+					<md-button class="md-raised copy-btn" ng-click="changePlan(item.plan.id)">Change Plan</md-button>
 				</div>
 			</div>
     </div>

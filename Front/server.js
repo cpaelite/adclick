@@ -2526,6 +2526,94 @@ app.get('/api/billing', function (req, res) {
 });
 
 /**
+ * @apiName 获取Subscription change plan信息
+ *
+ *
+ * @apiParam {String} planId
+ *
+ */
+app.get('/api/plans', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      plan:[
+        {
+          id: 1,
+          desc: "<div><span>HTML 代码1</span></div>"
+        },
+        {
+          id:2,
+          desc: "<div><span>HTML 代码2</span></div>"
+        },
+        {
+          id:3,
+          desc: "<div><span>HTML 代码3</span></div>"
+        },
+        {
+          id:4,
+          desc: "<div><span>HTML 代码4</span></div>"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Subscription change plan信息
+ *
+ *
+ * @apiParam {String} planId
+ *
+ */
+app.post('/api/plans/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      plan:[
+        {
+          id: 1,
+          desc: "111"
+        },
+        {
+          id:2,
+          desc: "222"
+        },
+        {
+          id:3,
+          desc: "333"
+        },
+        {
+          id:4,
+          desc: "444"
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Subscription change plan信息
+ *
+ *
+ * @apiParam {String} planId
+ *
+ */
+app.post('/api/free/trial/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      id:5
+    }
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 获取Domains信息
  *
  */
