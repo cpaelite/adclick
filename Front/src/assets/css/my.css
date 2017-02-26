@@ -971,6 +971,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     border-radius: 2px;
     height:34px;
 }
+.cs-subform-control>div[uib-datepicker-popup-wrap] {float: left;}
 .right-select2 .search-con{margin-top:-54px;float:right;}
 .report .right-select2{float:left;margin:20px 0 0 -10px;width:100%;}
 .right-select2 .cs-subform-select{margin-top:0;}

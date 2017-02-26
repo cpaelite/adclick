@@ -388,6 +388,129 @@ app.get('/api/preferences', function (req, res) {
         },
         "variable10": {
           "visible": false
+        },
+        "conversion_PostbackTimestamp": {
+          "visible": true
+        },
+        "conversion_VisitTimestamp": {
+          "visible": true
+        },
+        "conversion_ExternalID": {
+          "visible": true
+        },
+        "conversion_ClickID": {
+          "visible": true
+        },
+        "conversion_TransactionID": {
+          "visible": true
+        },
+        "conversion_Revenue": {
+          "visible": true
+        },
+        "conversion_Cost": {
+          "visible": true
+        },
+        "conversion_CampaignID": {
+          "visible": true
+        },
+        "conversion_CampaignName": {
+          "visible": true
+        },
+        "conversion_LanderName": {
+          "visible": true
+        },
+        "conversion_LanderID": {
+          "visible": true
+        },
+        "conversion_OfferName": {
+          "visible": true
+        },
+        "conversion_OfferID": {
+          "visible": true
+        },
+        "conversion_Country": {
+          "visible": true
+        },
+        "conversion_CountryCode": {
+          "visible": true
+        },
+        "conversion_TrafficSourceName": {
+          "visible": true
+        },
+        "conversion_TrafficSourceID": {
+          "visible": true
+        },
+        "conversion_AffiliateNetworkName": {
+          "visible": true
+        },
+        "conversion_AffiliateNetworkID": {
+          "visible": true
+        },
+        "conversion_Device": {
+          "visible": true
+        },
+        "conversion_OS": {
+          "visible": true
+        },
+        "conversion_OSVersion": {
+          "visible": true
+        },
+        "conversion_Brand": {
+          "visible": true
+        },
+        "conversion_Model": {
+          "visible": true
+        },
+        "conversion_Browser": {
+          "visible": true
+        },
+        "conversion_BrowserVersion": {
+          "visible": true
+        },
+        "conversion_ISP": {
+          "visible": true
+        },
+        "conversion_MobileCarrier": {
+          "visible": true
+        },
+        "conversion_ConnectionType": {
+          "visible": true
+        },
+        "conversion_VisitorIP": {
+          "visible": false
+        },
+        "conversion_VisitorReferrer": {
+          "visible": false
+        },
+        "conversion_V1": {
+          "visible": false
+        },
+        "conversion_V2": {
+          "visible": false
+        },
+        "conversion_V3": {
+          "visible": false
+        },
+        "conversion_V4": {
+          "visible": false
+        },
+        "conversion_V5": {
+          "visible": false
+        },
+        "conversion_V6": {
+          "visible": false
+        },
+        "conversion_V7": {
+          "visible": false
+        },
+        "conversion_V8": {
+          "visible": false
+        },
+        "conversion_V9": {
+          "visible": false
+        },
+        "conversion_V10": {
+          "visible": false
         }
       }
     })
@@ -724,6 +847,162 @@ app.get('/api/report', function (req, res) {
           "revenue": 0.0,
           "roi": 0.0,
           "visits": 3572
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取Conversions
+ *
+ * @apiParam {String} from:2017-01-11T00:00:00Z
+ * @apiParam {String} to:2017-01-12T00:00:00Z
+ * @apiParam {String} tz:America/New_York
+ * @apiParam {String} sort:visits
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ *
+ */
+app.get('/api/conversions', function (req, res) {
+  var groupBy = req.query.groupBy;
+  var result = {
+    "status": 1,
+    "messages": "",
+    data: {
+      "totalRows": 3700,
+      "totals": {
+        "Cost" : 0.0,
+        "Revenue" : 10.0
+      },
+      rows: [
+        {
+          "PostbackTimestamp": "2017-02-21 01:12:07 AM",
+          "VisitTimestamp": "1970-01-01 12:00:00 AM",
+          "ExternalID": "18171201102",
+          "ClickID": "b1692e08fb1e121e742e5576393ecced",
+          "TransactionID": "OPTIONAL",
+          "Revenue": 0.96,
+          "Cost": 0.001,
+          "CampaignName": "popads - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "CampaignID": 58,
+          "LanderName": "Global - jp",
+          "LanderID": 33,
+          "OfferName": "mobvista - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "OfferID": 32,
+          "Country": "THA",
+          "CountryCode": "TH",
+          "TrafficSourceName": "popads",
+          "TrafficSourceID": 40,
+          "AffiliateNetworkName": "mobvista",
+          "AffiliateNetworkID": 23,
+          "Device": "",
+          "OS": "Android 6.0",
+          "OSVersion": "6.0",
+          "Brand": "Unknown",
+          "Model": "P500",
+          "Browser": "Android",
+          "BrowserVersion": "4.0",
+          "ISP": "Advanced Info Service",
+          "MobileCarrier": "AIS",
+          "ConnectionType": "",
+          "VisitorIP": "49.230.230.38",
+          "VisitorReferrer": "",
+          "V1": "{ADBLOCK}",
+          "V2": "{BROWSERID}",
+          "V3": "{BROWSERNAME}",
+          "V4": "{CAMPAIGNID}",
+          "V5": "{CAMPAIGNNAME}",
+          "V6": "{CATEGORYID}",
+          "V7": "{CATEGORYNAME}",
+          "V8": "TH",
+          "V9": "{DEVICEID}",
+          "V10": "{DEVICENAME}"
+        }, {
+          "PostbackTimestamp": "2017-02-21 01:12:07 AM",
+          "VisitTimestamp": "1970-01-01 12:00:00 AM",
+          "ExternalID": "18171201102",
+          "ClickID": "b1692e08fb1e121e742e5576393ecced",
+          "TransactionID": "OPTIONAL",
+          "Revenue": 0.96,
+          "Cost": 0.001,
+          "CampaignName": "popads - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "CampaignID": 58,
+          "LanderName": "Global - jp",
+          "LanderID": 33,
+          "OfferName": "mobvista - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "OfferID": 32,
+          "Country": "THA",
+          "CountryCode": "TH",
+          "TrafficSourceName": "popads",
+          "TrafficSourceID": 40,
+          "AffiliateNetworkName": "mobvista",
+          "AffiliateNetworkID": 23,
+          "Device": "",
+          "OS": "Android 6.0",
+          "OSVersion": "6.0",
+          "Brand": "Unknown",
+          "Model": "P500",
+          "Browser": "Android",
+          "BrowserVersion": "4.0",
+          "ISP": "Advanced Info Service",
+          "MobileCarrier": "AIS",
+          "ConnectionType": "",
+          "VisitorIP": "49.230.230.38",
+          "VisitorReferrer": "",
+          "V1": "{ADBLOCK}",
+          "V2": "{BROWSERID}",
+          "V3": "{BROWSERNAME}",
+          "V4": "{CAMPAIGNID}",
+          "V5": "{CAMPAIGNNAME}",
+          "V6": "{CATEGORYID}",
+          "V7": "{CATEGORYNAME}",
+          "V8": "TH",
+          "V9": "{DEVICEID}",
+          "V10": "{DEVICENAME}"
+        }, {
+          "PostbackTimestamp": "2017-02-21 01:12:07 AM",
+          "VisitTimestamp": "1970-01-01 12:00:00 AM",
+          "ExternalID": "18171201102",
+          "ClickID": "b1692e08fb1e121e742e5576393ecced",
+          "TransactionID": "OPTIONAL",
+          "Revenue": 0.96,
+          "Cost": 0.001,
+          "CampaignName": "popads - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "CampaignID": 58,
+          "LanderName": "Global - jp",
+          "LanderID": 33,
+          "OfferName": "mobvista - Thailand - SexyPhoto1-Adult-TH-AIS",
+          "OfferID": 32,
+          "Country": "THA",
+          "CountryCode": "TH",
+          "TrafficSourceName": "popads",
+          "TrafficSourceID": 40,
+          "AffiliateNetworkName": "mobvista",
+          "AffiliateNetworkID": 23,
+          "Device": "",
+          "OS": "Android 6.0",
+          "OSVersion": "6.0",
+          "Brand": "Unknown",
+          "Model": "P500",
+          "Browser": "Android",
+          "BrowserVersion": "4.0",
+          "ISP": "Advanced Info Service",
+          "MobileCarrier": "AIS",
+          "ConnectionType": "",
+          "VisitorIP": "49.230.230.38",
+          "VisitorReferrer": "",
+          "V1": "{ADBLOCK}",
+          "V2": "{BROWSERID}",
+          "V3": "{BROWSERNAME}",
+          "V4": "{CAMPAIGNID}",
+          "V5": "{CAMPAIGNNAME}",
+          "V6": "{CATEGORYID}",
+          "V7": "{CATEGORYNAME}",
+          "V8": "TH",
+          "V9": "{DEVICEID}",
+          "V10": "{DEVICENAME}"
         }
       ]
     }

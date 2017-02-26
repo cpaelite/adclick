@@ -574,6 +574,130 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'errors',
       name: 'ERRORS'
+    }],
+    conversion: [{
+      key: 'PostbackTimestamp',
+      name: 'Postback timestamp'
+    }, {
+      key: 'VisitTimestamp',
+      name: 'Visit timestamp'
+    }, {
+      key: 'ExternalID',
+      name: 'External ID'
+    }, {
+      key: 'ClickID',
+      name: 'Click ID'
+    }, {
+      key: 'TransactionID',
+      name: 'Transaction ID'
+    }, {
+      key: 'Revenue',
+      name: 'Revenue'
+    }, {
+      key: 'Cost',
+      name: 'Cost'
+    }, {
+      key: 'CampaignID',
+      name: 'Campaign ID'
+    }, {
+      key: 'CampaignName',
+      name: 'Campaign'
+    }, {
+      key: 'LanderName',
+      name: 'Lander'
+    }, {
+      key: 'LanderID',
+      name: 'Lander ID'
+    }, {
+      key: 'OfferName',
+      name: 'Offer'
+    }, {
+      key: 'OfferID',
+      name: 'Offer ID'
+    }, {
+      key: 'Country',
+      name: 'Country'
+    }, {
+      key: 'CountryCode',
+      name: 'Country code'
+    }, {
+      key: 'TrafficSourceName',
+      name: 'Traffic source'
+    }, {
+      key: 'TrafficSourceID',
+      name: 'Traffic source ID'
+    }, {
+      key: 'AffiliateNetworkName',
+      name: 'Affiliate network'
+    }, {
+      key: 'AffiliateNetworkID',
+      name: 'Affiliate network ID'
+    }, {
+      key: 'Device',
+      name: 'Device'
+    }, {
+      key: 'OS',
+      name: 'Operating system'
+    }, {
+      key: 'OSVersion',
+      name: 'OS version'
+    }, {
+      key: 'Brand',
+      name: 'Brand'
+    }, {
+      key: 'Model',
+      name: 'Model'
+    }, {
+      key: 'Browser',
+      name: 'Browser'
+    }, {
+      key: 'BrowserVersion',
+      name: 'Browser version'
+    }, {
+      key: 'ISP',
+      name: 'ISP / Carrier'
+    }, {
+      key: 'MobileCarrier',
+      name: 'Mobile carrier'
+    }, {
+      key: 'ConnectionType',
+      name: 'Connection type'
+    }, {
+      key: 'VisitorIP',
+      name: 'Visitor IP'
+    }, {
+      key: 'VisitorReferrer',
+      name: 'Visitor Referrer'
+    }, {
+      key: 'V1',
+      name: 'V1'
+    }, {
+      key: 'V2',
+      name: 'V2'
+    }, {
+      key: 'V3',
+      name: 'V3'
+    }, {
+      key: 'V4',
+      name: 'V4'
+    }, {
+      key: 'V5',
+      name: 'V5'
+    }, {
+      key: 'V6',
+      name: 'V6'
+    }, {
+      key: 'V7',
+      name: 'V7'
+    }, {
+      key: 'V8',
+      name: 'V8'
+    }, {
+      key: 'V9',
+      name: 'V9'
+    }, {
+      key: 'V10',
+      name: 'V10'
     }]
 });
 angular.module('app').value('groupByOptions', [
