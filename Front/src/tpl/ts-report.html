@@ -1,0 +1,108 @@
+<div flex layout="column" class="cs-page-content report">
+    <div class="cs-action-bar clearfix">
+        <div class="right-select">
+            <div class="cs-subform-control">
+                <md-select class="cs-subform-select" ng-model="query.tsReferenceId">
+                    <md-option value="{{tsReference.id}}" ng-repeat="tsReference in tsReferences">{{tsReference.name}}</md-option>
+                </md-select>
+            </div>
+
+            <div class="cs-subform-control">
+                <md-select class="cs-subform-select" ng-model="datetype">
+                    <md-option value="1">Today</md-option>
+                    <md-option value="2">Yesterday</md-option>
+                    <md-option value="3">Last 7 days</md-option>
+                    <md-option value="4">Last 14 days</md-option>
+                    <md-option value="5">This Week</md-option>
+                    <md-option value="6">Last Week</md-option>
+                    <md-option value="7">This Month</md-option>
+                    <md-option value="8">Last Month</md-option>
+                    <md-option value="0">Custom</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-group" ng-show="datetype==0">
+                <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
+                <div class="cs-subform-control">
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
+                            ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                        {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                    <select class="cs-subform-select" ng-model="fromTime">
+                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+                    </select>
+                </div>
+                <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+                <div class="cs-subform-control">
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
+                            ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                        {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                    <select class="cs-subform-select" ng-model="toTime">
+                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+                    </select>
+                </div>
+            </div>
+            <md-button
+                class="md-raised md-primary cs-compact cs-add-button"
+                ng-click="applySearch($event)"
+                translate
+            >
+                apply
+            </md-button>
+            <md-button
+                class="md-raised md-primary cs-compact cs-add-button"
+                ng-click="addOrEditTsReference()"
+                translate
+            >
+                add
+            </md-button>
+            <md-button 
+                class="md-raised md-primary cs-compact cs-add-button"
+                ng-click="addOrEditTsReference(query.tsReferenceId)"
+                translate
+                ng-show="tsReferences.length > 0"
+                >
+                edit
+            </md-button>
+        </div>
+    </div>
+    <md-table-container>
+        <table md-table multiple ng-model="selected" md-progress="promise">
+            <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column md-order-by="campaignName">Campaign</th>
+                    <th md-column md-order-by="campaignId">Campaign ID</th>
+                    <th md-column md-order-by="impressions">Impressions</th>
+                    <th md-column md-order-by="clicks">Clicks</th>
+                    <th md-column md-order-by="cost">Cost</th>
+                    <!-- <th md-column md-order-by="conversions">Conversions</th> -->
+                    <!-- <th md-column>Action</th> -->
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row ng-repeat="row in report.rows">
+                    <td md-cell><span>{{row['campaignName']}}</span></td>
+                    <td md-cell><span>{{row['campaignId']}}</span></td>
+                    <td md-cell><span>{{row['impressions']}}</span></td>
+                    <td md-cell><span>{{row['clicks']}}</span></td>
+                    <td md-cell><span>{{row['cost']}}</span></td>
+                    <!-- <td md-cell><span>{{row['conversions']}}</span></td>
+                    <td md-cell>
+                        <span ng-show="!row.status" class="btn btn-default btn-xs" ng-click="start(row)" style="width: 50px;">Start</span>
+                        <span ng-show="row.status" class="btn btn-default btn-xs" ng-click="pause(row)" style="width: 50px;">Pause</span>
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+    <md-table-pagination 
+        md-limit="query.limit"
+        md-limit-options="[50, 100, 200, 500, 1000]"
+        md-page="query.page"
+        md-total="{{report.totalRows}}"
+        md-page-select
+    >
+    </md-table-pagination>
+</div>

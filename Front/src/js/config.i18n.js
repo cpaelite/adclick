@@ -12,6 +12,8 @@
     warnDelete: 'Are you sure you want to delete this item? Note that this operation can not be undone!',
     warnClose: 'Form has unsaved changes. Do you want to proceed?',
     warnCloseTitle: 'Confirm Close',
+    confirmPauseTitle: 'Confirm Pause',
+    confirmPauseContent: 'Are you sure you want to pause this item?',
     picture: 'Picture',
     signin: 'Login',
     goBackHomePage: 'Home Page',

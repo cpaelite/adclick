@@ -1015,6 +1015,63 @@ app.get('/api/conversions', function (req, res) {
 });
 
 /**
+ * @apiName 获取Report
+ *
+ * @apiParam {String} from:2017-01-11T00:00:00Z
+ * @apiParam {String} to:2017-01-12T00:00:00Z
+ * @apiParam {String} tz:America/New_York
+ * @apiParam {String} sort:visits
+ * @apiParam {Number} page:1
+ * @apiParam {Number} limit:500
+ * @apiParam {Number} trafficSourceId: 123
+ */
+app.get('/api/tsreport', function (req, res) {
+  var result = {
+    "status": 1,
+    "messages": "",
+    data: {
+      "totalRows": 3700,
+      rows: [
+        {
+          "campaignName": "campaignName 1",
+          "campaignId": "1",
+          "clicks": 4368,
+          // "conversions": 1,
+          "cost": 0.0,
+          "impressions": 13430,
+          // "visits": 3572
+        }, {
+          "campaignName": "campaignName 1",
+          "campaignId": "1",
+          "clicks": 4368,
+          // "conversions": 1,
+          "cost": 0.0,
+          "impressions": 13430,
+          // "visits": 3572
+        }, {
+          "campaignName": "campaignName 1",
+          "campaignId": "1",
+          "clicks": 4368,
+          // "conversions": 1,
+          "cost": 0.0,
+          "impressions": 13430,
+          // "visits": 3572
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+app.put('/api/tsreport/:id', function (req, res) {
+  var result = {
+    "status": 1,
+    "messages": ""
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 根据ID获取Campaign信息
  *
  */
@@ -1800,7 +1857,7 @@ app.get('/api/traffics', function (req, res) {
     "data": {
       "trafficsources": [
         {
-          "id": 19,
+          "id": 1,
           "name": "TrafficSource1",
           "cost": "{\"Parameter\":\"bid\",\"Placeholder\":\"{bid}\"}",
           "externalId": "{\"Parameter\":\"click_id\",\"Placeholder\":\"{click_id}\"}",
@@ -1813,11 +1870,21 @@ app.get('/api/traffics', function (req, res) {
           "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
         },
         {
-          "id": 20,
+          "id": 2,
           "name": "TrafficSource2",
           "cost": "{}",
           "campaignId": "{}",
           "websiteId": "{}",
+          "hash": "b247e517-4811-4c4a-801c-2d86b3a7a0cb",
+          "postbackUrl": "www.traffic.com",
+          "pixelRedirectUrl": "",
+          "impTracking": 0,
+          "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":0}]"
+        },
+        {
+          "id": 3,
+          "name": "TrafficSource3",
+          "cost": "{}",
           "hash": "b247e517-4811-4c4a-801c-2d86b3a7a0cb",
           "postbackUrl": "www.traffic.com",
           "pixelRedirectUrl": "",
@@ -3147,6 +3214,31 @@ app.get('/api/groups', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取跟第三方Traffic source的reference列表
+ *
+ */
+app.get('/api/tsreference', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      tsreferences: [{
+        id: 123,
+        name: 'tsreference 1',
+        token: 'yoshop-Android-benson-CAUSAU',
+        tsId: '11'
+      }, {
+        id: 124,
+        name: 'tsreference 2',
+        token: 'yoshop-Android-benson-CAUSAU',
+        tsId: '12'
+      }]
+    }
+  };
+  res.send(result);
+});
+
 app.post('/api/conversions', function (req, res) {
   var result = {
     "status": 1,
@@ -3163,6 +3255,53 @@ app.post('/api/conversions', function (req, res) {
         "E": "invalid data"
       }
     ]
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 更新第三方reference
+ *
+ */
+app.put('/api/tsreference/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+
+  res.send(result);
+});
+
+/**
+ * @apiName 添加第三方reference
+ *
+ */
+app.post('/api/tsreference', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success'
+  };
+
+  res.send(result);
+});
+
+
+/**
+ * @apiName 获取第三方的Traffic source列表
+ */
+app.get('/api/third-traffics', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      thirdTraffics: [{
+        id: '11',
+        name: 'traffic 1'
+      }, {
+        id: '12',
+        name: 'traffic 2'
+      }]
+    }
   };
   res.send(result);
 });

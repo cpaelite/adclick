@@ -5,6 +5,11 @@ angular.module('app')
   .factory('Report', ['$resource', function ($resource) {
     return $resource('/api/report');
   }])
+  .factory('Tsreport', ['$resource', function ($resource) {
+    return $resource('/api/tsreport/:id', {}, {
+      'update': {method:'PUT'}
+    });
+  }])
   .factory('Campaign', ['$resource', function ($resource) {
     return $resource('/api/campaigns/:id', {id: '@id'});
   }])
@@ -115,5 +120,13 @@ angular.module('app')
   }])
   .factory('Group', ['$resource', function ($resource) {
     return $resource('/api/groups');
+  }])
+  .factory('TsReference', ['$resource', function ($resource) {
+    return $resource('/api/tsreference/:id', {id: '@id'}, {
+      'update': {method:'PUT'}
+    });
+  }])
+  .factory('ThirdTraffic', ['$resource', function ($resource) {
+    return $resource('/api/third-traffics');
   }])
 ;

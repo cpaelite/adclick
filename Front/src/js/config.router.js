@@ -92,6 +92,11 @@
         templateUrl: 'tpl/conversion.html',
         controller: 'ConversionCtrl'
       })
+      .state('app.report.tsreport', {
+        url: '/tsreport?trafficId',
+        templateUrl: 'tpl/ts-report.html',
+        controller: 'TsreportCtrl'
+      })
       .state('app.rule', {
         url: '/rule',
         templateUrl: 'tpl/rule.html',
