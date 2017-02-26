@@ -29,11 +29,11 @@ exports.checkToken = function () {
 
       req.userId = user[0].id;
       req.subId = user[0].id;  //子账户
-      req.subidText=user[0].idText;
-      req.subgroupId=user[0].groupId;
+      req.subidText = user[0].idText;
+      req.subgroupId = user[0].groupId;
       req.idText = user[0].idText;
       req.groupId = user[0].groupId;
- 
+
 
       req.firstname = user[0].firstname;
       req.lastname = user[0].lastname;
@@ -62,13 +62,25 @@ exports.resetUserByClientId = function () {
       if (!clientId || (clientId && clientId == req.groupId)) {
         return next();
       }
-      //check clientId 合法
+     
       connection = await common.getConnection();
-      let userGroupSlice = await common.query("select g.`groupId`,g.`userId`,g.`role`,user.`idText`,user.`email` from UserGroup g left join User user on user.`id` = g.`userId`  where g.`deleted`=? and g.`userId`= ?", [0, req.userId], connection);
+      //查询用户所在的组
+      let userGroups = common.query("select `groupId` from UserGroup  where `deleted`=? and `userId`= ?", [0, req.userId], connection);
+
+      //获取用户所在的用户组的管理员信息
+      let groupOwers = common.query("select g1.`groupId`,user.`id` as userId,user.`idText`,g1.`role` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [req.userId], connection);
+
+      let results = await Promise.all([userGroups, groupOwers]);
+      let userGroupSlice = results[0];
+      //check clientId 合法
       if (!_.some(userGroupSlice, ['groupId', clientId])) {
         throw new Error("clientId invalidate");
       }
-      let userGroupObject = _.find(userGroupSlice, { groupId: clientId, role: 0 });
+      //获取client 管理员信息
+      let userGroupObject = _.find(groupOwers, { groupId: clientId, role: 0 });
+      if(_.isEmpty(userGroupObject)){
+          throw new Error("clientId invalidate");
+      }
       req.userId = userGroupObject.userId;
       req.idText = userGroupObject.idText;
       req.groupId = userGroupObject.groupId;

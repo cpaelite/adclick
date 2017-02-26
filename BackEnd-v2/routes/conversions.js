@@ -101,6 +101,24 @@ router.get('/api/conversions', async function (req, res, next) {
  * @apiGroup conversions
  * @apiParam {Array} keys 
  * 
+ *  @apiSuccessExample {json} Success-Response:
+ * 
+ * {
+  "status": 1,
+  "message": "success",
+  "data": [
+    {
+      "I": 0,
+      "V": "c384EFV6JHQODRN70575OK6UG5, 10.0, abc1234",
+      "E": "invalid data"
+    },
+    {
+      "I": 1,
+      "V": "c384EFV6JHQODRN70575OK6UG6, 11.0, abc1234",
+      "E": "invalid data"
+    }
+  ]
+}
  * 
  */
 router.post('/api/conversions', async function (req, res, next) {
