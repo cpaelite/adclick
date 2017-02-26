@@ -71,21 +71,11 @@ export const groupByModel = {
 }
 
 export const groupByTag = {
-    campaign: [
-        'campaignId', 'campaignName', 'CampaignName'
-    ],
-    flow: [
-        'flowId', 'flowName', 'FlowName'
-    ],
-    lander: [
-        'landerId', 'landerName', 'LanderName'
-    ],
-    offer: [
-        'offerId', 'offerName', 'OfferName'
-    ],
-    traffic: [
-        'trafficId', 'trafficName', 'TrafficSourceName'
-    ],
+    campaign: ['campaignId', 'campaignName', 'CampaignName'],
+    flow: ['flowId', 'flowName', 'FlowName'],
+    lander: ['landerId', 'landerName', 'LanderName'],
+    offer: ['offerId', 'offerName', 'OfferName'],
+    traffic: ['trafficId', 'trafficName', 'TrafficSourceName'],
     affiliate: ['affiliateId', 'affiliateName', 'AffilliateNetworkName']
 }
 
@@ -251,4 +241,75 @@ export function formatRows(rows) {
     row.ap = parseFloat(row.ap).toFixed(2);
     return row;
   })
+}
+
+export function extraConfig(groupBy) {
+  let answer;
+  switch (groupBy) {
+    case 'campaign':
+      answer = {
+        foreignKey: 'campaignId',
+        attributes: [
+          'id',
+          ['id', 'campaignId'],
+          ['name', 'campaignName'],
+          ['hash', 'campaignHash'],
+          ['url', 'campaignUrl'],
+          ['country', 'campaignCountry'],
+        ]
+      }
+      break;
+    case 'flow':
+      answer = {
+        foreignKey: 'flowId',
+        attributes: [
+          'id',
+          ['name', 'flowName'],
+          ['hash', 'flowHash'],
+        ]
+      }
+      break;
+    case 'lander':
+      answer = {
+        foreignKey: 'landerId',
+        attributes: [
+          'id',
+          ['name', 'landerName'],
+          ['hash', 'landerHash'],
+        ]
+      }
+      break;
+    case 'offer':
+      answer = {
+        foreignKey: 'offerId',
+        attributes: [
+          'id',
+          ['name', 'offerName'],
+          ['hash', 'offerHash']
+        ]
+      }
+      break;
+    case 'traffic':
+      answer = {
+        foreignKey: 'trafficId',
+        attributes: [
+          'id',
+          ['name', 'trafficName'],
+          ['hash', 'trafficHash']
+        ]
+      }
+      break;
+    case 'affiliate':
+      answer = {
+        foreignKey: 'affiliateId',
+        attributes: [
+          'id',
+          ['name', 'affiliateName'],
+          ['hash', 'affiliateHash'],
+        ]
+      }
+      break;
+  }
+
+  return answer;
 }
