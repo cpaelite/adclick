@@ -96,9 +96,9 @@ app.get('/', function(req, res) {
     });
 });
 
-app.use(paypal);
 
-app.all('/api/*', util.checkToken(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions, billing, plan);
+app.use(paypal);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions, billing, plan, gatekeeper);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
