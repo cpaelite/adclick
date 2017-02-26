@@ -79,7 +79,7 @@ async function campaignReport(value) {
             status
         })
     } else {
-        return normalReport({where: sqlWhere, from, to, tz, groupBy, offset, limit, filter})
+        return normalReport({userId: value.userId, where: sqlWhere, from, to, tz, groupBy, offset, limit, filter})
     }
 
 }
