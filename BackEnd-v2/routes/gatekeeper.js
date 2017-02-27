@@ -198,7 +198,6 @@ router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
     });
   } catch (e) {
     if(e.status === 500) {
-      console.log(e);
       res.json({
         status: 0,
         message: e.response.body.errors[0].title
