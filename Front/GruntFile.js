@@ -18,6 +18,7 @@ module.exports = function (grunt) {
     'concat:generated',
     'cssmin:generated',
     'uglify:generated',
+    'cacheBust',
     'usemin',
     'clean:tmp'
   ]);
