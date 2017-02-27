@@ -29,16 +29,14 @@
 
       Profile.save($scope.accountItem, function (response) {
         if (response.status) {
-          $localStorage.currentUser.firstname = $scope.accountItem.firstname;
           toastr.success('Your account data save success!');
-        } else {
-          toastr.error(response.message, {timeOut: 7000, positionClass: 'toast-top-center'});
+          $localStorage.currentUser.firstname = $scope.accountItem.firstname;
         }
       });
     };
 
     $scope.passwordUpdateSave = function () {
-      // 更改密码以后页面的输入框需要清空,如果页面验证就会直接显示错误信息,所以改为后台验证(帮助回忆的注释)
+      // 更改密码以后页面的输入框需要清空,如果页面验证就会直接显示错误信息,所以改为js验证(帮助回忆的注释)
       if (!$scope.passwordItem || !$scope.passwordItem.oldpassword) {
         $scope.passwordForm.oldpassword.$setValidity('required', false);
         return;
@@ -66,11 +64,9 @@
       };
       Password.save(passwrodItem, function (result) {
         if (result.status) {
-          toastr.success('Password reset success!');
-        } else {
-          toastr.error(result.message);
+          toastr.success('Password Reset Success!');
+          $scope.passwordItem = {}
         }
-        $scope.passwordItem = {}
       });
     };
 
@@ -89,13 +85,33 @@
     };
 
     $scope.emailUpdateSave = function () {
+      if (!$scope.emailItem.email) {
+        $scope.emailForm.password.$setValidity('required', false);
+        return;
+      } else {
+        $scope.emailForm.password.$setValidity('required', true);
+      }
+
+      var regexp = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!regexp.test($scope.emailItem.email)) {
+        $scope.emailForm.password.$setValidity('email', false);
+        return;
+      } else {
+        $scope.emailForm.password.$setValidity('email', false);
+      }
+
+      if (!$scope.emailItem.password) {
+        $scope.emailForm.password.$setValidity('required', false);
+        return;
+      } else {
+        $scope.emailForm.password.$setValidity('required', true);
+      }
+
       Email.save($scope.emailItem, function (result) {
         if (result.status) {
-          toastr.success('Email reset success!');
-        } else {
-          toastr.error(result.message);
+          toastr.success('Email Reset Success!');
+          $scope.emailItem = {};
         }
-
       });
     };
   }

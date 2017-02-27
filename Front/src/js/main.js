@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$mdDialog', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'FreeTrial', 'Group', '$cookies',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $mdDialog, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, FreeTrial, Group, $cookies) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, Group, $cookies, toastr) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -80,19 +80,23 @@
 
         // load user preferences
         Preference.get(null, function(res) {
-          if (res.status == 1) {
-            $scope.preferences = JSON.parse(res.data);
-          }
+          if (!res.status)
+            return;
+          $scope.preferences = JSON.parse(res.data);
         });
 
         // 国家信息
         Country.query(null, function(result) {
+          if (!result.status)
+            return;
           $rootScope.countries = result;
         });
 
         var clientId = $cookies.get('clientId');
         // 用户组信息
         Group.get(null, function (result) {
+          if (!result.status)
+            return;
           var groups = result.data.groups;
           $rootScope.groups = groups;
           groups.forEach(function (group) {
@@ -116,7 +120,13 @@
     // this event can be emitted when $http response with 403 status
     // or on '$stateChangeStart'
     $scope.$on("event:auth-forbidden", function () {
-      $scope.$state.go('access.signin');
+      var current_name = $scope.$state.current.name;
+      if (current_name == "access.signin") {
+        return;
+      }
+      toastr.clear();
+      toastr.error('Account Exception, Please Contact support@newbidder.com', {timeOut: 7000, positionClass: 'toast-top-center'});
+      $scope.logout();
     });
 
     $scope.logout = function () {

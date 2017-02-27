@@ -210,7 +210,6 @@ app.get('/api/preferences', function (req, res) {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
       "reportViewOrder": "-visits",
-      "reportTimeZone": "+08:00",
       /*
        // todo: use array for visible columns
        "reportVisibleColumns": [
@@ -2872,6 +2871,10 @@ app.delete('/api/invitation/:id', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 点击邀请链接发送请求
+ *
+ */
 app.get('/invitation', function (req, res) {
   res.cookie("token", createJWT());
   res.cookie("clientId", "70012cfe-9940-4ebb-8994-6d15195744cc1");

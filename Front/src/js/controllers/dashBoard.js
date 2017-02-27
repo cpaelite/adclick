@@ -94,9 +94,8 @@
 
     function feedChartData(datas) {
       $scope.chart = {
-        datasetOverride: [{yAxisID: 'y-axis-1'}, {yAxisID: 'y-axis-2'}],
+        datasetOverride: [{yAxisID: 'y-axis-1'}],
         options: {
-          maintainAspectRatio: false,
           responsive: true,
           legend: {
             display: true,
@@ -114,33 +113,10 @@
               type: 'linear',
               display: true,
               position: 'left',
-              scaleLabel: {
-                display: false,
-                labelString: 'Y1'
-              },
-              gridLines: {
-                display: false
-              }
-            }, {
-              id: 'y-axis-2',
-              type: 'linear',
-              display: true,
-              position: 'right',
-              scaleLabel: {
-                display: false,
-                labelString: 'Y2'
-              },
               gridLines: {
                 display: false
               }
             }]
-          },
-          tooltips: {
-            mode: 'x-axis',
-            multiKeyBackground: '#000'
-          },
-          hover: {
-            mode: 'x-axis'
           }
         }
       };
@@ -164,6 +140,13 @@
           }
         });
       });
+
+      if (labels.length == 0) {
+        labels = [$scope.fromDate, $scope.toDate];
+      }
+      if (dataset.length == 0) {
+        dataset = [[0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0]];
+      }
 
       $scope.chart.labels = labels;
       $scope.chart.series = series;

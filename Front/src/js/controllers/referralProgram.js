@@ -18,7 +18,7 @@
     $scope.query = {
       page: 1,
       limit: 100,
-      order: 'userId'
+      order: 'referredUserId'
     };
 
     function success(item) {

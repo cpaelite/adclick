@@ -12,7 +12,9 @@
     console.log($scope.$stateParams.t);
     var refToken = $location.$$search.refToken;
     if (refToken) {
-      $scope.user.refToken = refToken;
+      $scope.user = {
+        refToken: refToken
+      };
     }
     $scope.signup = function () {
       $auth.signup($scope.user, {ignoreAuthModule: true})
