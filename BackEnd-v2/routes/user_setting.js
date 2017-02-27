@@ -9,6 +9,7 @@ var setting = require('../config/setting');
 var _ = require('lodash');
 var emailCtrl = require('../util/email');
 var uuidV4 = require('uuid/v4');
+var moment = require('moment');
 
 
 /**
@@ -364,13 +365,16 @@ router.get('/api/referrals', async function (req, res, next) {
             dir = "desc";
             order = order.replace(new RegExp(/-/g), '');
         }
-        let listSql = "select  user.`idText` as referredUserId ,FROM_UNIXTIME(log.`acquired`,'%d-%m-%Y %H:%i') as acquired," +
-            "(case log.`status` when 0 then \"New\" when 1 then \"Activated\"  END) as status," +
-            "FROM_UNIXTIME(log.`lastActivity`,'%d-%m-%Y %H:%i') as lastactivity," +
-            "log.`recentCommission` as recentCommission,log.`totalCommission` as totalCommission " +
-            "from UserReferralLog log  inner join User  user on user.`id` = log.`referredUserId` where log.`userId`=" + userId;
+         
+        let tmp = `select a.referredUserId,a.acquired,a.status,a.lastactivity,a.totalCommission   
+ ,b.recentCommission from ((select  user.idText as referredUserId,tmp.acquired,tmp.status,tmp.lastactivity,truncate(tmp.recentCommission/1000000,2) as totalCommission from User user right join (select  sum(mis.commission) as recentCommission,FROM_UNIXTIME(ref.acquired,'%d-%m-%Y %H:%i') as acquired,(case ref.status when 0 then "New" when 1 then "Activated"  END) as status ,FROM_UNIXTIME(max(mis.createdAt),'%d-%m-%Y %H:%i') as lastactivity,ref.referredUserId as userId  from UserCommissionLog mis left join UserReferralLog ref on mis.referralId = ref.id  where  ref.userId=<%=userId%>  group by ref.referredUserId ) tmp on tmp.userId = user.id)a  inner join(select  user.idText as referredUserId,truncate(tmp.recentCommission/1000000,2) as recentCommission from User user right join (select  sum(mis.commission) as recentCommission,ref.referredUserId as userId  from UserCommissionLog mis left join UserReferralLog ref on mis.referralId = ref.id  where mis.createdAt > <%=time%> and  ref.userId= <%=userId%>  group by ref.referredUserId ) tmp on tmp.userId = user.id) b on  a.referredUserId = b.referredUserId )`
+        let time = parseInt(moment().subtract(30, 'd').utc().valueOf() / 1000);
+        let listSql = _.template(tmp)({
+            time: time,
+            userId: value.userId
+        })
 
-        let countsql = "select COUNT(*) as `count`,sum(recentCommission) as lastMonthCommissions,sum(totalCommission) as lifeTimeCommissions from ((" + listSql + ") as T)";
+        let countsql = "select COUNT(*) as `count`,sum(recentCommission) as recentCommission,sum(totalCommission) as totalCommission from ((" + listSql + ") as T)";
 
         listSql += " order by " + order + " " + dir + " limit " + offset + "," + limit;
 

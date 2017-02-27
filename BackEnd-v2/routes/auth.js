@@ -168,7 +168,7 @@ async function signup(data, next) {
                 if (USER.length == 0) {
                     throw new Error("refToken error");
                 }
-                await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`) values (?,?,unix_timestamp(now()),0)", [USER[0].id, result.insertId]);
+                await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId,500]);
             }
         }
 
