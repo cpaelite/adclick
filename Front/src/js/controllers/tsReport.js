@@ -70,9 +70,10 @@
 
     $scope.start = function(item) {
       var params = angular.copy(item);
-      params.status = !params.status;
-      Tsreport.update({id: params.campaignId}, params, function() {
-        item.status = !item.status;
+      Tsreport.save({id: params.campaignId}, {
+        tsReferenceId: $scope.query.tsReferenceId,
+        action: 'start'
+      }, function() {
         getList();
       });
     };
@@ -105,7 +106,7 @@
         controller: ['$mdDialog', 'Tsreport', pauseCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {item: item},
+        locals: {item: item, tsReferenceId: $scope.query.tsReferenceId},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
       }).then(function() {
@@ -150,7 +151,10 @@
       params.status = !params.status;
 
       this.ok = function () {
-        Tsreport.update({id: params.campaignId}, params, function(oData) {
+        Tsreport.save({id: params.campaignId}, {
+          tsReferenceId: self.tsReferenceId,
+          action: 'pause'
+        }, function() {
           $mdDialog.hide();
         });
       };

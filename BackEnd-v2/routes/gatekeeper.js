@@ -155,10 +155,12 @@ import popads from 'popads';
 const providers = {
   popads
 }
-async function start_or_stop(action, req, res, next) {
-  try {
+
+router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
+    try {
     let {userId} = req;
-    let {tsReferenceId: provider_id, campaignId: campaign_identity} = req.body;
+    let campaign_identity = req.params.campaignId;
+    let {tsReferenceId: provider_id, action} = req.body;
     let record = await ApiToken.findOne({
       where: {
         userId
@@ -187,6 +189,7 @@ async function start_or_stop(action, req, res, next) {
     if (!Api) throw new Error('unknown source');
 
     let api = new Api(record.token);
+    if (!api.campaign[action]) throw new Error('wrong action');
     let result = await api.campaign[action]({campaign_id: campaign_identity});
 
     res.json({
@@ -196,7 +199,6 @@ async function start_or_stop(action, req, res, next) {
   } catch (e) {
     next(e)
   }
-}
 
-router.post('/api/tsCampaign/start', start_or_stop.bind(null, 'start'))
-router.post('/api/tsCampaign/pause', start_or_stop.bind(null, 'pause'))
+})
+
