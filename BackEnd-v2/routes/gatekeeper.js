@@ -98,8 +98,6 @@ router.get('/api/third-traffics', async (req, res, next) => {
   }
 })
 
-// from=2017-02-26T00:00&limit=500&page=1&to=2017-02-27T00:00&tsReferenceId=1&tz=%2B08:00
-
 router.get('/api/tsreport', async (req, res, next) => {
   try {
     let {userId} = req;
@@ -152,3 +150,53 @@ router.get('/api/tsreport', async (req, res, next) => {
     next(e);
   }
 })
+
+import popads from 'popads';
+const providers = {
+  popads
+}
+async function start_or_stop(action, req, res, next) {
+  try {
+    let {userId} = req;
+    let {tsReferenceId: provider_id, campaignId: campaign_identity} = req.body;
+    let record = await ApiToken.findOne({
+      where: {
+        userId
+      },
+      include: [
+        {
+          model: Provider,
+          required: true,
+          where: {
+            id: provider_id,
+          },
+          include: [
+            {
+              model: Campaign,
+              required: true,
+              where: {
+                campaign_identity
+              }
+            }
+          ]
+        }
+      ]
+    })
+    if (!record) throw new Error('campaign not found');
+    let Api = providers[record.Provider.name];
+    if (!Api) throw new Error('unknown source');
+
+    let api = new Api(record.token);
+    let result = await api.campaign[action]({campaign_id: campaign_identity});
+
+    res.json({
+      status: 1,
+      message: 'success'
+    });
+  } catch (e) {
+    next(e)
+  }
+}
+
+router.post('/api/tsCampaign/start', start_or_stop.bind(null, 'start'))
+router.post('/api/tsCampaign/pause', start_or_stop.bind(null, 'pause'))
