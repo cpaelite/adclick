@@ -3,10 +3,10 @@
 
   angular.module('app')
     .controller('TsreportCtrl', [
-      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', 'TsCampaign', TsreportCtrl
+      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', 'TsCampaign', 'toastr', TsreportCtrl
     ]);
 
-  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic, TsCampaign) {
+  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic, TsCampaign, toastr) {
     var pageStatus = {};
 
     $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
@@ -73,8 +73,13 @@
       TsCampaign.save({id: params.campaignId}, {
         tsReferenceId: $scope.query.tsReferenceId,
         action: 'start'
-      }, function() {
-        // getList();
+      }, function(oData) {
+        toastr.clear();
+        if(oData.status) {
+          toastr.success(oData.message);
+        } else {
+          toastr.error(oData.message);
+        }
       });
     };
 
@@ -109,9 +114,13 @@
         locals: {item: item, tsReferenceId: $scope.query.tsReferenceId},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
-      }).then(function() {
-        item.status = !item.status;
-        getList();
+      }).then(function(oData) {
+        toastr.clear();
+        if(oData.status) {
+          toastr.success(oData.message);
+        } else {
+          toastr.error(oData.message);
+        }
       })
     };
 
@@ -153,8 +162,8 @@
         TsCampaign.save({id: params.campaignId}, {
           tsReferenceId: self.tsReferenceId,
           action: 'pause'
-        }, function() {
-          $mdDialog.hide();
+        }, function(oData) {
+          $mdDialog.hide(oData);
         });
       };
     }
