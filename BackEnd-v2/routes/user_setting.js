@@ -205,8 +205,8 @@ router.post('/api/password', async function (req, res, next) {
         connection = await common.getConnection();
         let result = await query("select `password`,`idText` from User where `id`= ? ", [value.userId], connection);
         if (result.length) {
-            if (md5(value.oldpassword + result[0].idText) == result[0].password) {
-                await query("update User set `password`= ? where `id`= ? ", [md5(value.newpassword + result[0].idText), value.userId], connection);
+            if (md5(value.oldpassword) == result[0].password) {
+                await query("update User set `password`= ? where `id`= ? ", [md5(value.newpassword), value.userId], connection);
                 return res.json({
                     status: 1,
                     message: 'success'
@@ -281,7 +281,7 @@ router.post('/api/email', async function (req, res, next) {
 
 
         if (result && result[0]) {
-            if (md5(value.password + result[0].idText) == result[0].password) {
+            if (md5(value.password) == result[0].password) {
                 await query("update User set `email`= ?  where `id`= ? ", [value.email, value.userId], connection);
                 return res.json({
                     status: 1,

@@ -47,7 +47,7 @@ router.post('/auth/login', async function (req, res, next) {
         let rows = await query(sql, [value.email]);
 
         if (rows.length > 0) {
-            if (rows[0].password == md5(value.password + rows[0].idText)) {
+            if (rows[0].password == md5(value.password)) {
                 let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
                 if (userGroup.length == 0) {
                     throw new Error("account exception");
@@ -144,7 +144,7 @@ async function signup(data, next) {
         let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (unix_timestamp(now()),?,?,?,?,?,?)";
         let params = [
             value.firstname, value.lastname, value.email,
-            md5(value.password + idtext), idtext, reftoken
+            md5(value.password), idtext, reftoken
         ];
         if (value.json) {
             sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
