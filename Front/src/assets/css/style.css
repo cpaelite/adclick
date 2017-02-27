@@ -48,7 +48,7 @@
 #sliderPricing .sliderResults{min-height:180px}
 
 .jslider{background:#ccced0;border-radius:2px;box-shadow:inset 0 2px 6px rgba(0,0,0,.08);height:12px!important;display:block;width:100%;height:1em;position:relative;top:.6em}
-.jslider .jslider-pointer{background:url("../img/la-bg.png") no-repeat left;background-size:100%;display:inline-block;width:48px;height:32px;position:absolute;left:0;top:-11px;margin-left:-12px;cursor:pointer;}
+.jslider .jslider-pointer{background:url("../../assets/img/la-bg.png") no-repeat left;background-size:100%;display:inline-block;width:48px;height:32px;position:absolute;left:0;top:-11px;margin-left:-12px;cursor:pointer;}
 .jslider table{width:100%;border-collapse:collapse;border:0}
 .jslider .jslider th,.jslider td{padding:0;vertical-align:top;text-align:left;border:0}
 .jslider table,.jslider table tr,.jslider table tr td{width:80%;vertical-align:top}

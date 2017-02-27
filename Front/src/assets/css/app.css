@@ -1246,11 +1246,11 @@ html.bg {
 
 .navi ul.nav li a > i {
   font-size:12px;
-  margin-right:3px;
+  margin-right:5px;
   overflow: hidden;
-  line-height:20px;
   text-align: center;
-  color:#6D6F72;
+  color:#6D6F72;width:14px;
+  float:left;line-height:56px;
 }
 .navi ul.nav li a:hover > i{color:#2da8f9;}
 .navi ul.nav li a > i:before {
