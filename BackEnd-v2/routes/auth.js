@@ -6,7 +6,7 @@ var log4js = require('log4js');
 var log = log4js.getLogger('user');
 var md5 = require('md5');
 var moment = require('moment');
- 
+
 var common = require('./common');
 var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
@@ -47,7 +47,7 @@ router.post('/auth/login', async function (req, res, next) {
         let rows = await query(sql, [value.email]);
 
         if (rows.length > 0) {
-            if (rows[0].password == md5(value.password)) {
+            if (rows[0].password == md5(value.password + rows[0].idText)) {
                 let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
                 if (userGroup.length == 0) {
                     throw new Error("account exception");
@@ -128,7 +128,7 @@ async function signup(data, next) {
         refToken: Joi.string().optional().empty("")
     });
     let connection;
-    let beginTransaction=false;
+    let beginTransaction = false;
     try {
         let value = await common.validate(data, schema);
         connection = await common.getConnection();
@@ -137,14 +137,14 @@ async function signup(data, next) {
         if (UserResult.length > 0) throw new Error("account exists");
         //事务开始
         await common.beginTransaction(connection);
-        beginTransaction=true;
+        beginTransaction = true;
         let idtext = util.getRandomString(6);
         let reftoken = util.getUUID() + "." + idtext;
         //User
         let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (unix_timestamp(now()),?,?,?,?,?,?)";
         let params = [
             value.firstname, value.lastname, value.email,
-            md5(value.password), idtext, reftoken
+            md5(value.password + idtext), idtext, reftoken
         ];
         if (value.json) {
             sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
@@ -181,10 +181,10 @@ async function signup(data, next) {
 
         return value;
     } catch (e) {
-        if(beginTransaction){
-           await common.rollback(connection);
+        if (beginTransaction) {
+            await common.rollback(connection);
         }
-        
+
         next(e);
     } finally {
         if (connection) {
@@ -314,7 +314,7 @@ router.get('/timezones', function (req, res, next) {
     });
 });
 
- 
+
 
 
 router.get('/invitation', async function (req, res, next) {
@@ -369,7 +369,7 @@ router.get('/invitation', async function (req, res, next) {
             }
             //异步发送邮件 
             emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
-            await  Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
+            await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
             var expires = moment().add(200, 'days').valueOf();
             res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
             res.cookie("clientId", userSlice[0].groupId);

@@ -9,29 +9,35 @@ var _ = require('lodash');
 exports.checkToken = function () {
   return async function (req, res, next) {
     var token = req.headers['authorization'];
-    if (!token) throw new Error('need access_token');
+    if (!token) {
+      let err = new Error('need access_token');
+      err.status = 401;
+      throw err;
+    }
     token = token.split(' ')[1];
     let connection;
     try {
       var decode = jwt.decode(token, setting['jwtTokenSrcret']);
       if (decode.exp <= Date.now()) {
-        return next(new Error('access token has expired'));
+        let err = new Error('access token has expired');
+        err.status = 401;
+        throw err;
       }
       connection = await common.getConnection();
       let user = await common.query("select user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
       if (!user.length) {
-        throw new Error('no user');
+        let err = new Error('no user');
+        err.status = 401;
+        throw err;
       }
-
-      req.subId = user[0].id;  //子账户
+      //copy一份主账号信息 区别于子账号 
+      req.subId = user[0].id;
       req.subidText = user[0].idText;
       req.subgroupId = user[0].groupId;
 
       req.userId = user[0].id;
       req.idText = user[0].idText;
       req.groupId = user[0].groupId;
-
-
       req.firstname = user[0].firstname;
       req.lastname = user[0].lastname;
       req.email = user[0].email;
@@ -59,7 +65,7 @@ exports.resetUserByClientId = function () {
       if (!clientId || (clientId && clientId == req.groupId)) {
         return next();
       }
-     
+
       connection = await common.getConnection();
       //查询用户所在的组
       let userGroups = common.query("select `groupId` from UserGroup  where `deleted`=? and `userId`= ?", [0, req.userId], connection);
@@ -71,12 +77,16 @@ exports.resetUserByClientId = function () {
       let userGroupSlice = results[0];
       //check clientId 合法
       if (!_.some(userGroupSlice, ['groupId', clientId])) {
-        throw new Error("clientId invalidate");
+        let err = new Error('clientId invalidate');
+        err.status = 401;
+        throw err;
       }
       //获取client 管理员信息
       let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
-      if(_.isEmpty(userGroupObject)){
-          throw new Error("clientId invalidate");
+      if (_.isEmpty(userGroupObject)) {
+        let err = new Error('clientId invalidate');
+        err.status = 401;
+        throw err;
       }
       req.userId = userGroupObject.userId;
       req.idText = userGroupObject.idText;

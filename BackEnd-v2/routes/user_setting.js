@@ -203,22 +203,26 @@ router.post('/api/password', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let result = await query("select `password` from User where `id`= ? ", [value.userId], connection);
-        let message;
-        if (result && result[0]) {
-            if (md5(value.oldpassword) == result[0].password) {
-                await query("update User set `password`= ? where `id`= ? ", [md5(value.newpassword), value.userId], connection);
-                message = "success";
+        let result = await query("select `password`,`idText` from User where `id`= ? ", [value.userId], connection);
+        if (result.length) {
+            if (md5(value.oldpassword + result[0].idText) == result[0].password) {
+                await query("update User set `password`= ? where `id`= ? ", [md5(value.newpassword + result[0].idText), value.userId], connection);
+                return res.json({
+                    status: 1,
+                    message: 'success'
+                });
             } else {
-                message = "password error";
+                let err = new Error("password error");
+                err.status = 200;
+                throw err;
+
             }
         } else {
-            message = "account error";
+            let err = new Error("account error");
+            err.status = 200;
+            throw err;
         }
-        res.json({
-            status: 1,
-            message: message
-        });
+
     } catch (e) {
         next(e);
     }
@@ -267,25 +271,33 @@ router.post('/api/email', async function (req, res, next) {
         connection = await common.getConnection();
         //check email 是否存在
         let UserResult = await query("select id from User where `email`= ? ", [value.email], connection);
-        if (UserResult.length > 0) throw new Error("email exists");
+        if (UserResult.length > 0) {
+            let err = new Error("email exists");
+            err.status = 200;
+            throw err;
+        }
 
-        let result = await query("select `password` from User where `id`= ? ", [value.userId], connection);
+        let result = await query("select `password`,`idText` from User where `id`= ? ", [value.userId], connection);
 
 
         if (result && result[0]) {
-            if (md5(value.password) == result[0].password) {
+            if (md5(value.password + result[0].idText) == result[0].password) {
                 await query("update User set `email`= ?  where `id`= ? ", [value.email, value.userId], connection);
-
+                return res.json({
+                    status: 1,
+                    message: "success"
+                });
             } else {
-                throw new Error("password error");
+                let err = new Error("password error");
+                err.status = 200;
+                throw err;
             }
         } else {
-            throw new Error("account error");
+            let err = new Error("account error");
+            err.status = 200;
+            throw err;
         }
-        res.json({
-            status: 1,
-            message: "success"
-        });
+
     } catch (e) {
         next(e);
     }
@@ -812,7 +824,7 @@ router.post('/api/invitation', async function (req, res, next) {
         groupId: Joi.string().required()
     });
     let connection;
-    let beginTransaction=false;
+    let beginTransaction = false;
     try {
         req.body.userId = req.subId;
         req.body.idText = req.subidText;
@@ -821,7 +833,7 @@ router.post('/api/invitation', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         await common.beginTransaction(connection);
-        beginTransaction= true;
+        beginTransaction = true;
         //邀请入库
         for (let index = 0; index < value.invitationEmail.length; index++) {
             let invatationSlice = await common.query("select `id`,`groupId`,`inviteeEmail`,`status`,`code` from GroupInvitation where `deleted`= 0 and `groupId`=? and `inviteeEmail`=? ", [value.groupId, value.invitationEmail[index]], connection);
@@ -867,8 +879,8 @@ router.post('/api/invitation', async function (req, res, next) {
         }
 
         let results = await common.query('select `id` ,`inviteeEmail` as email,FROM_UNIXTIME( `inviteeTime`, \"%d-%m-%Y\") as lastDate,`status` from GroupInvitation where (`status`= 0 or `status`= 1) and  `deleted`= 0 and `groupId`=? and `userId`= ? ', [value.groupId, value.userId], connection)
-        if(beginTransaction){
-           await common.commit(connection);
+        if (beginTransaction) {
+            await common.commit(connection);
         }
         res.json({
             status: 1,
@@ -879,7 +891,7 @@ router.post('/api/invitation', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-        if(beginTransaction){
+        if (beginTransaction) {
             await common.rollback(connection);
         }
     } finally {
@@ -1024,23 +1036,23 @@ router.get('/api/groups', async function (req, res, next) {
         req.query.userId = req.subId;
         req.query.idText = req.subidText;
         let value = await common.validate(req.query, schema);
-        connection= await common.getConnection();
-        let result=[];
+        connection = await common.getConnection();
+        let result = [];
         //获取用户所在的用户组的管理员信息
-        result= await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
+        result = await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
         //myself
         result.push({
-            groupId:req.subgroupId,
-            firstname:req.firstname,
-            lastname:req.lastname,
-            email:req.email
+            groupId: req.subgroupId,
+            firstname: req.firstname,
+            lastname: req.lastname,
+            email: req.email
         });
 
         return res.json({
             status: 1,
             message: 'success',
-            data:{
-                groups:result
+            data: {
+                groups: result
             }
         });
     } catch (e) {
@@ -1094,8 +1106,8 @@ router.get('/api/setup', function (req, res, next) {
                 status: 1,
                 message: 'success',
                 data: {
-                    clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter ,
-                    mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter ,
+                    clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter,
+                    mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter,
                     postBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
                 }
             });
