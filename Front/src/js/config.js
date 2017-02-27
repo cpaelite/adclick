@@ -16,6 +16,7 @@
           var toStr = Object.prototype.toString;
           
           if(!response.config.errorFn && response.data.status == 0) {
+            $injector.get('toastr').clear();
             var message = toStr.apply(data.message) == '[object String]' ? data.message : 'Error occurred!';
             $injector.get('toastr').error(message, {timeOut: 7000, positionClass: 'toast-top-center'});
             // return $q.reject(response);

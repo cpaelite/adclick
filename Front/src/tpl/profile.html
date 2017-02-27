@@ -99,21 +99,22 @@
     <div class="col-xs-12 col-sm-6 col-md-6">
       <div class="form-group">
         <label>Change e-mail address</label>
-        <input type="email" name="email" placeholder="Email" class="form-control no-border" ng-model="emailItem.email" ng-blur="checkEmail()" required>
-        <span style="color:red" ng-show="emailForm.email.$dirty && emailForm.email.$invalid">
+        <input type="text" name="email" placeholder="Email" class="form-control no-border" ng-model="emailItem.email" ng-blur="checkEmail()">
+        <span style="color:red" ng-show="emailForm.email.$invalid">
+          <span ng-show="emailForm.email.$error.required">Email is required.</span>
           <span ng-show="emailForm.email.$error.email">Email must be a valid Email</span>
           <span ng-show="emailForm.email.$error.check">Email is exist</span>
         </span>
       </div>
       <div class="form-group">
         <label>Confirm with your password</label>
-        <input type="password" name="password" class="form-control" ng-model="emailItem.password" required>
-        <span style="color:red" ng-show="emailForm.password.$dirty && emailForm.password.$invalid">
+        <input type="password" name="password" class="form-control" ng-model="emailItem.password">
+        <span style="color:red" ng-show="emailForm.password.$invalid">
           <span ng-show="emailForm.password.$error.required">password is required.</span>
         </span>
       </div>
       <div class="profile-form-footer clearfix">
-        <md-button class="save-btn" ng-click="emailUpdateSave()" ng-disabled="emailForm.$invalid"> 
+        <md-button class="save-btn" ng-click="emailUpdateSave()">
           <i class="icon-ok"></i>
           save
         </md-button>

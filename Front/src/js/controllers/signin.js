@@ -22,13 +22,6 @@
       return;
     }
 
-    Profile.get(null, function (profile) {
-      if (!profile.status) {
-        return;
-      }
-      $scope.profile = profile.data;
-    });
-
     $scope.user = {};
     $scope.login = function() {
       $auth.login($scope.user, { ignoreAuthModule: true })
@@ -36,11 +29,16 @@
           toastr.clear();
           toastr.success('Login success!');
           $scope.$emit('event:auth-loginSuccess');
-          if ($scope.profile.homescreen == "dashboard") {
-            $state.go('app.dashboard');
-          } else {
-            $state.go('app.report.campaign');
-          }
+          Profile.get(null, function (profile) {
+            if (!profile.status) {
+              return;
+            }
+            if (profile.data.homescreen && profile.data.homescreen == "dashboard") {
+              $scope.$state.go('app.dashboard');
+            } else {
+              $scope.$state.go('app.report.campaign');
+            }
+          });
         })
         .catch(function(response) {
           toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
