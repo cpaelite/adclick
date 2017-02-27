@@ -22,7 +22,7 @@
     affiliateNetwork: 'AffiliateNetwork',
     affiliateNetworkName: 'Name',
     affiliateNetworkPostBackUrl: 'Url',
-    dashBoard: 'DashBoard',
+    dashBoard: 'Dashboard',
     trackCampaignName: 'Name',
     trackCampaignStatus: {
         0: 'Active',
@@ -31,7 +31,7 @@
     offer: 'Offer',
     lander: 'Lander',
     flow: 'Flow',
-    traffic: 'TrafficSource',
+    traffic: 'Traffic Source',
     trafficSourceStatus: {
       0: 'Active',
       1: 'InActive'
@@ -40,15 +40,15 @@
     fromDate: 'From',
     toDate: 'To',
     profile:'Profile',
-    referralProgram:'ReferralProgram',
+    referralProgram:'Referral Program',
     subscriptions:'Subscriptions',
     domain:'Domain',
     setUp:'SetUp',
-    userManagement:'UserManagement',
-    botBlacklist:'BotBlacklist',
-    invoices:'Invoices',
-    eventLog:'EventLog',
-    affiliate: 'AffiliateNetwork',
+    userManagement:'User Management',
+    botBlacklist:'Bot Blacklist',
+    invoices:'Invoice',
+    eventLog:'Event Log',
+    affiliate: 'Affiliate Network',
     addFlowPath: 'Add new path',
     addFlowRule: 'Add new rule',
     dashboardColumn: {
@@ -59,7 +59,8 @@
       cost: 'Cost',
       profit: 'Profit',
       impressions: 'Impressions'
-    }
+    },
+    conversionUpload: 'Conversion Upload'
   };
   var i18n_zh = {
     ok: '确定',

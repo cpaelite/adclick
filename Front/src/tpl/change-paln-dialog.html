@@ -7,69 +7,168 @@
       </div>
     </div>
     <div class="pricing-box clearfix">
-      <div>
-        <ul class="clearfix">
-          <div class="li-con col-sm-4 col-md-4" ng-repeat="p in item.plan">
-            <div class="plan-select" ng-class="{'isVisiable':p.id == planId}">
-              <i class="material-icons">done</i>
-              <span>You are currently subscribed to this plan</span>
+        <div><div class="plan-select">
+            <i class="material-icons">done</i>
+            <span>You are currently subscribed to this plan</span>
+        </div>
+          <ul>
+          <div class="li-con">
+
+              <li class="w-md3 h-line">
+                  <div class="p-header-box">
+                      <h2>STARTER</h2>
+                      <div class="p-header">
+                          <small class="money-icon">$</small>
+                          <span class="money-size">39</span>
+                          <small class="money-small">/ Mon</small>
+                      </div>
+                      <div class="pricedesc">
+                          <p>0.045/1000 overage</p>
+                          <p>450000 included events</p>
+                      </div>
+                      <ol class="pricedesc-list">
+                          <li>3 Traffic <b>Source RAW Report</b> (in the list)</li>
+                          <li>Skype Support 24/7</li>
+                          <li>3 month data <b>retention</b></li>
+                          <li>1 custom tracking <b>domains</b></li>
+                          <li>Newbidder DSP (event not included)</li>
+                          <li class="hg"><em>&times;</em></li>
+                          <li class="hg"><em>&times;</em></li>
+                          <li class="hg"><em>&times;</em></li>
+                      </ol>
+                      <button class="btn p-btn btn-three p-btn-01" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
+
+                  </div></li>
             </div>
-            <li class=" w-md3 h-line">
-              <div style="color: #000;" ng-bind-html="p.desc"></div>
-              <button class="btn p-btn btn-three p-btn-01" type="button" ng-click="editChangePlan(p)"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-            </li>
-          </div>
-        </ul>
-      </div>
+            <div class="li-con">
+                <li class="w-md3 h-line2">
+                    <div class="p-header-box">
+                        <h2>PRO</h2>
+                        <div class="p-header">
+                            <small class="money-icon">$</small>
+                            <span class="money-size">89</span>
+                            <small class="money-small">/ Mon</small>
+                        </div>
+                        <div class="pricedesc">
+                            <p>1000000 includedevents</p>
+                            <p>0.035/1000 overage charge</p>
+                        </div>
+                        <ol class="pricedesc-list">
+                            <li>5 Traffic <b>Source RAW Report</b></li>
+                            <li>Skype Support 24/7</li>
+                            <li>6 month data <b>retention</b></li>
+                            <li>5 custom tracking <b>domains</b></li>
+                            <li>Newbidder DSP (event not included)</li>
+                            <li>Affiliate Network Offer <b>Management</b></li>
+                            <li>1 additional users</li>
+                            <li>10% volume discount</li>
+                        </ol>
+                        <button class="btn p-btn btn-three p-btn-02" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
+
+                    </div></li>
+            </div>
+            <div class="li-con">
+                <li class="ww-md3 h-line3">
+                    <div class="p-header-box">
+                        <h2>AGENCY</h2>
+                        <div class="p-header">
+                            <small class="money-icon">$</small>
+                            <span class="money-size">299</span>
+                            <small class="money-small">/ Mon</small>
+                        </div>
+                        <div class="pricedesc">
+                            <p>10000000 included events</p>
+                            <p>0.03/1000 overage charge</p>
+                        </div>
+                        <ol class="pricedesc-list">
+                            <li>10 Traffic <b>Source RAW Report</b> (in the list,3 can be custom)</li>
+                            <li>Skype Support 24/7</li>
+                            <li>1 year data retention</li>
+                            <li>10 custom <b>tracking domains</b></li>
+                            <li>Newbidder DSP (event not included)</li>
+                            <li>Affiliate Network Offer <b>Management</b></li>
+                            <li>2 additional users</li>
+                            <li>15% volume discount</li>
+                        </ol>
+                        <button class="btn p-btn btn-three p-btn-03" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
+
+                    </div></li>
+            </div>
+            <div class="li-con">
+                <li class="w-md3 h-line4">
+                    <div class="p-header-box">
+                        <h2>ENTERPRISE</h2>
+                        <div class="p-header">
+                            <small class="money-icon">$</small>
+                            <span class="money-size">899</span>
+                            <small class="money-small">/ MO</small>
+                        </div>
+                        <div class="pricedesc">
+                            <p>30000000 included events</p>
+                            <p>0.025/1000 overage charge</p>
+                        </div>
+                        <ol class="pricedesc-list">
+                            <li>20+ Traffic Source RAW Report (in the list,5 can be custom)</li>
+                            <li>Skype Support 24/7</li>
+                            <li>2 year data retention</li>
+                            <li>30 custom <b>tracking domains</b></li>
+                            <li>Newbidder DSP (event not included)</li>
+                            <li>Affiliate Network Offer <b>Management</b></li>
+                            <li>5 additional users</li>
+                            <li>20% volume discount</li>
+                        </ol>
+                        <button class="btn p-btn btn-three p-btn-04" type="button"><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
+                    </div>
+                </li>
+            </div>
+          </ul>
+        </div>
     </div>
     <section id="sliderPricing">
-      <div>
-        <div class="row">
-          <div class="col-md-12">
-            <div id="pricingCalculator" class="planSlider">
-              <h4 class="titletwo">Monthly cost <b>calculator</b>:</h4>
-              <div class="row eventsSliderBox">
-                <div class="col-xs-12 col-sm-9 col-md-9">
-                  <input ng-model="value" type="text" id="mySlider1" slider options="options"/>
+        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="pricingCalculator" class="planSlider">
+                        <h4 class="titletwo">Monthly cost <b>calculator</b>:</h4>
+                        <div class="row eventsSliderBox">
+                            <div class="col-xs-12 col-sm-9 col-md-9">
+                                <input ng-model="value" type="text" id="mySlider1" slider options="options"/>
+                            </div>
+                            <div class="col-sm-3 col-md-3">
+                                <input type="text"
+                                  name="eventsSliderNumber"
+                                  ng-model="inputValue"
+                                  class="eventsSliderNumber numberField"
+                                  ng-change="valueChanged(inputValue)"
+                                >
+                            </div>
+                        </div>
+
+                        <section class="row sliderResults">
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                Plan <span>
+                                      <span class="dolar">$</span>
+                                      <span class="prepay">{{bestPlan.prepayCost}}</span>
+                                      <span class="plan">NOOBIE</span>
+                                    </span>
+                                    <span class="caption">
+                                      <span class="includedEvents">{{bestPlan.includedEvents | split}}</span> events included
+                                    </span>
+                            </div>
+                            <div class="col-md-1 col-sm-1 separator"><span></span></div>
+                            <div class="col-md-3 col-sm-3 col-xs-12 mainPriceContainer">
+                                Price: <span><span class="dolar">$</span><span class="mainPriceLittle">{{bestPlan.totalCost.toFixed(0)}}</span></span> month
+                            </div>
+                            <div class="col-md-1 col-sm-1 separator"><span></span></div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                Overages <i class="icon-question-sign" data-toggle="tooltip" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>   : <span><span class="dolar">$</span><span class="overages">{{bestPlan.overagesCost.toFixed(0)}}</span></span>
+                                <span class="caption"><span class="overagesEvents">{{bestPlan.overagesEvents | split}}</span> extra events</span>
+                            </div>
+                        </section>
+                    </div>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                  <input type="text"
-                  name="eventsSliderNumber"
-                  ng-model="inputValue"
-                  class="eventsSliderNumber numberField"
-                  ng-change="valueChanged(inputValue)"
-                  >
-                </div>
-              </div>
-              <section class="row sliderResults">
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                  Plan <span>
-                    <span class="dolar">$</span>
-                    <span class="prepay">{{bestPlan.prepayCost}}</span>
-                    <span class="plan">NOOBIE</span>
-                  </span>
-                  <span class="caption">
-                    <span class="includedEvents">{{bestPlan.includedEvents | split}}</span> events included
-                  </span>
-                </div>
-                <div class="col-md-1 col-sm-1 separator"><span></span></div>
-                <div class="col-md-3 col-sm-3 col-xs-12 mainPriceContainer">
-                  Price: <span><span class="dolar">$</span><span class="mainPriceLittle">{{bestPlan.totalCost.toFixed(0)}}</span></span> month
-                </div>
-                <div class="col-md-1 col-sm-1 separator"><span></span></div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                  Overages <i class="icon-question-sign" data-toggle="tooltip" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>   : <span><span class="dolar">$</span><span class="overages">{{bestPlan.overagesCost.toFixed(0)}}</span></span>
-                  <span class="caption"><span class="overagesEvents">{{bestPlan.overagesEvents | split}}</span> extra events</span>
-                </div>
-              </section>
             </div>
-          </div>
-        </div>
     </section>
-    <div class="bottom-box">
-      © Copyright  new bidder. 2017 All rights reserved
-      <span><a href="#">Privacy policy</a>|<a href="#">Terms and conditions</a></span>
-    </div>
   </md-dialog-content>
   <md-dialog-actions>
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>

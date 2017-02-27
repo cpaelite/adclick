@@ -1036,7 +1036,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
 }
 .left-con .cs-subform-select{
     height: 34px;
-    margin: 0 3px 0 0;
+    margin: 0 10px 0 0;
     border-radius:2px;border:1px solid #d5dce4;padding:0 18px 0 8px;
 }
 .left-con .cs-subform-select[disabled]{
@@ -1430,8 +1430,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     background: #2dcc70;
     font-size: 12px;
     padding: 5px 0;
-    text-align: center;
-    visibility: hidden;
+    text-align: center;margin-bottom:30px;border-radius: 2px;
 }
 .my-price.my-price-select{
     float: none;
@@ -1878,7 +1877,7 @@ input[type="checkbox"].th-checkbox{
 }
 .ip-range input{
     float: left;
-    width: 95%;
+    width:100%;
 }
 .ip-range .material-icons{
     float: right;

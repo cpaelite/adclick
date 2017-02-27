@@ -66,13 +66,14 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .jslider-single .jslider-bg .v,.jslider-single .jslider-label,.jslider-single .jslider-pointer-to,.jslider-single .jslider-value-to{display:none}
 .title{font-size:32px;text-align:center;margin:80px 0 100px 0;line-height:48px;}
 .pricing-box{margin:0 auto 80px auto;}
-.pricing-box .li-con{width:24.15%;float:left;margin-right: 8px;}
+.pricing-box .li-con{width:24.15%;float:left;margin-right: 8px;margin-bottom:15px;}
 .pricing-box .my-price{-webkit-transition: all 0.3s;
     transition: all 0.3s;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;box-shadow:0 0 3px #d4d4d4;border-radius:2px;padding:15px 0 30px 0;}
 .pricing-box li{-webkit-transition: all 0.3s;
     transition: all 0.3s;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;height:auto;padding-top:15px;}
 .pricing-box li:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #357cf3;}
 .pricing-box li:nth-last-child(1){margin:0;}
+.pricing-box .li-con:nth-last-child(1){margin:0;}
 .pricing-box li.h-line{border-top:2px solid #ff8c00;}
 .pricing-box li.h-line:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #ff8c00;}
 .pricing-box li.h-line .money-size,.pricing-box li.h-line .money-icon{color:#ff8c00;}
@@ -189,8 +190,10 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .bottom-box a{color:#4f4f4f;margin:0 10px;}
 .bottom-box span{color:#b8c2d1;}
 .logo2{display:none;}
+
+@media only screen and (max-width:1280px){.pricing-box .li-con{width:48%}}
 @media only screen and (max-width:1100px){
-    .pricing-box .w-md{width:48.833333%;margin-bottom:20px;}
+    .pricing-box .w-md{margin-bottom:20px;}
     .pricing-box .w-md:nth-last-child(1){margin-right:0;}}
 @media only screen and (max-width:900px){
     .swiper-container li{width:38%;}
@@ -213,6 +216,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
     .close{margin:-10px -5px 0 0;}
     .trk-md-img{display: none;}
     .trk-img{display: block;}
+    .pricing-box .li-con{width:100%}
 }
 @media only screen and (max-width:640px){.pricing-box .w-md3{width:100%;}}
 @media only screen and (max-width:540px){
@@ -223,9 +227,6 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
     .swiper-container li{width:52%;}
     .bider-menu-nr{margin-top:100px;}
     .nav-box{margin:20px 0;}
-    .logo2{width:125px;display:inline-block;float:left;}
-    .logo2 img{width:100%;height:100%;}
-    .logo{display:none;}
     .nav-box ul{position:inherit;font-size:12px;float:right;margin-top:5px;}
     .nav-box ul li{float:left;margin-left:20px;}
     .nav-box ul li a{cursor:pointer;color:#333;display:inline-block;font-size:12px;}
