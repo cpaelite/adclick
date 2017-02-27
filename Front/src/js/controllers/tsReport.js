@@ -3,10 +3,10 @@
 
   angular.module('app')
     .controller('TsreportCtrl', [
-      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', TsreportCtrl
+      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', 'TsCampaign', 'toastr', TsreportCtrl
     ]);
 
-  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic) {
+  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic, TsCampaign, toastr) {
     var pageStatus = {};
 
     $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
@@ -69,11 +69,19 @@
     };
 
     $scope.start = function(item) {
-      var params = angular.copy(item);
-      params.status = !params.status;
-      Tsreport.update({id: params.campaignId}, params, function() {
-        item.status = !item.status;
-        getList();
+      if(item.startStatus) {
+        return;
+      } else {
+        item.startStatus = true;
+      }
+      TsCampaign.save({id: item.campaignId}, {
+        tsReferenceId: $scope.query.tsReferenceId,
+        action: 'start'
+      }, function(oData) {
+        if(oData.status) {
+          toastr.success(oData.message);
+        }
+        item.startStatus = false;
       });
     };
 
@@ -102,15 +110,16 @@
     $scope.pause = function(item) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Tsreport', pauseCtrl],
+        controller: ['$mdDialog', 'Tsreport', 'TsCampaign', pauseCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {item: item},
+        locals: {item: item, tsReferenceId: $scope.query.tsReferenceId},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
-      }).then(function() {
-        item.status = !item.status;
-        getList();
+      }).then(function(oData) {
+        if(oData.status) {
+          toastr.success(oData.message);
+        }
       })
     };
 
@@ -141,17 +150,24 @@
       });
     }
 
-    function pauseCtrl($mdDialog, Tsreport) {
+    function pauseCtrl($mdDialog, Tsreport, TsCampaign) {
       var self = this;
       this.title = "confirmPauseTitle";
       this.content = 'confirmPauseContent';
       this.cancel = $mdDialog.cancel;
-      var params = angular.copy(this.item);
-      params.status = !params.status;
 
       this.ok = function () {
-        Tsreport.update({id: params.campaignId}, params, function(oData) {
-          $mdDialog.hide();
+        if(self.item.pauseStatus) {
+          return;
+        } else {
+          self.item.pauseStatus = true;
+        }
+        TsCampaign.save({id: self.item.campaignId}, {
+          tsReferenceId: self.tsReferenceId,
+          action: 'pause'
+        }, function(oData) {
+          $mdDialog.hide(oData);
+          self.item.pauseStatus = false;
         });
       };
     }
