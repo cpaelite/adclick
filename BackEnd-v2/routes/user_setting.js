@@ -1105,6 +1105,72 @@ router.get('/api/setup', function (req, res, next) {
     });
 });
 
+/**
+ * @api {get} /api/plan   用户当前套餐 
+ * @apiName  用户当前套餐 
+ * @apiGroup User
+ * 
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+   {status:1,message:'success', "plan" : {
+                    "id" : 1,
+                    "name" : "Agency",
+                    "price" : 399,                      //normalPrice  
+                    "eventsLimit" : 10000000,
+                    "overageCPM" : 0.000036,
+                    "retentionLimit" : 370,
+                    "userLimit" : 2,
+                    "domainLimit" : 5                 
+                }}
+ *
+ */
+router.get('/api/plan', async function (req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.subId;
+    let connection;
+    try {
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let compled = _.template(`select   
+        plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
+        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
+        let sql = compled({
+            userId: value.userId
+        });
+        let results = await query(sql, [], connection);
+        let val = results.length ? results[0] : null;
+        let responseData = { plan: {} };
+        if (val) {
+            responseData.plan = {
+                id: val.id,
+                name: val.name,
+                price: val.price,
+                eventsLimit: val.eventsLimit,
+                overageCPM: val.overageCPM,
+                retentionLimit: val.retentionLimit,
+                userLimit: val.userLimit,
+                domainLimit: val.domainLimit
+
+            }
+        }
+        res.json({
+            status: 1,
+            message: 'succes',
+            data: responseData
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+})
+
 
 function query(sql, params, connection) {
     return new Promise(function (resolve, reject) {

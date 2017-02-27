@@ -8,7 +8,7 @@ const {
   TemplatePlan: TB
 } = models;
 
-router.get('/api/Billing', async (req, res) => {
+router.get('/api/billing', async (req, res) => {
   let {userId} = req;
   let billing = await UB.findOne({where: {userId}})
   if (!billing) {
