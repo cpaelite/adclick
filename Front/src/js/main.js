@@ -24,7 +24,7 @@
 
     // config
     $scope.app = {
-      name: 'AdBund-AdClick',
+      name: 'NewBidder',
       version: '0.0.1',
       // for chart colors
       color: {
