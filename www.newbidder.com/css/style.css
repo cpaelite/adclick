@@ -180,17 +180,13 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .title{font-size:32px;text-align:center;margin:80px 0 100px 0;line-height:48px;}
 .pricing-box{margin:0 auto 80px auto;}
 .pricing-box li{-webkit-transition: all 0.3s;
-    transition: all 0.3s;width:24.15%;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;float:left;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;height:750px;padding-top:15px;}
-.pricing-box li:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #357cf3;}
+    transition: all 0.3s;width:24.15%;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;float:left;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;height:650px;padding-top:15px;}
 .pricing-box li:nth-last-child(1){margin:0;}
 .pricing-box li.h-line{border-top:2px solid #ff8c00;}
-.pricing-box li.h-line:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #ff8c00;}
 .pricing-box li.h-line .money-size,.pricing-box li.h-line .money-icon{color:#ff8c00;}
 .pricing-box li.h-line3{border-top:2px solid #00aa83;}
-.pricing-box li.h-line3:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #00aa83;}
 .pricing-box li.h-line3 .money-size,.pricing-box li.h-line3 .money-icon{color:#019170;}
 .pricing-box li.h-line4{border-top:2px solid #04a3c0;}
-.pricing-box li.h-line4:hover{-webkit-transform: scale(1,1);transform: scale(1,1);border:2px solid #04a3c0;}
 .pricing-box li.h-line4 .money-size,.pricing-box li.h-line4 .money-icon{color:#04a3c0;}
 .p-header{margin:25px 0 20px 0;}
 .p-header-box{text-align:center;}
@@ -204,6 +200,8 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .pricedesc p i{margin:0 5px;}
 .pricedesc-list{border-top:1px solid #f3f3f3;margin:30px auto;display:inline-block;width:85%;height:435px;}
 .pricedesc-list li{line-height:20px;background:transparent;padding:15px 0;font-size:12px;color:#333;width:100%;border-width:0 0 1px 0;border-style:solid;border-color:#f3f3f3;box-shadow:none;border-radius:0;height:auto;font-weight:400;}
+.pricedesc-list li:nth-last-child(1),.pricedesc-list li:nth-last-child(1):hover{border-bottom:none;}
+
 .pricedesc-list li:hover{border-width:0 0 1px 0;border-style:solid;border-color:#f3f3f3;}
 .pricedesc-list li i{margin:0 5px;color:#494949;}
 .pricedesc-list .hg{line-height:normal;padding:8px 0;}

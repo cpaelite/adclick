@@ -952,6 +952,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 /*    width: 78%;
     float: left;*/
 }
+.rd{background:url("../../assets/img/3rd.png") no-repeat;background-size:19px;width:20px;height:19px;display:block;float:left;margin-top:12px;}
 .md-raised.copied-btn{
     height:34px;line-height:34px;padding:0 12px;
     box-shadow: none !important;
