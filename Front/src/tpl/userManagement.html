@@ -25,7 +25,7 @@
 			<span class="small-word" ng-show="!errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
 			<span style="color:red" ng-show="errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
 			<form name="emailForm">
-			  <div class="form-group">
+			  <div class="form-group clearfix">
 			    <label for="exampleInputEmail2">Invite users:</label>
 			    <div class="form-inline">
 			   		<input type="text" name="email" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
