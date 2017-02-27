@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -48,7 +48,7 @@
     }
   }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
@@ -205,39 +205,49 @@
       $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
     };
 
-    $scope.$watch('query', function (newVal, oldVal) {
-      if (!newVal || !newVal.limit) {
+    function watchFilter() {
+      $scope.$watch('query', function (newVal, oldVal) {
+        if (!newVal || !newVal.limit) {
+          return;
+        }
+        if (angular.equals(newVal, oldVal)) {
+          return;
+        }
+        if (oldVal && (newVal.order != oldVal.order || newVal.limit != oldVal.limit) && newVal.page > 1) {
+          $scope.query.page = 1;
+          return;
+        }
+
+        getList();
+      }, true);
+
+      var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
+        if (!newVal)
+          return;
+
+        $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
+        angular.extend($scope.query, {
+          limit: newVal.reportViewLimit,
+          order: newVal.reportViewOrder,
+        });
+        if (!pageStatus.status) {
+          $scope.activeStatus = newVal.entityType;
+          pageStatus.status = newVal.entityType;
+        }
+
+        unwatch();
+        unwatch = null;
+      }, true);
+    }
+
+    Profile.get(null, function (profile) {
+      if (!profile.status) {
         return;
       }
-      if (angular.equals(newVal, oldVal)) {
-        return;
-      }
-      if (oldVal && (newVal.order != oldVal.order || newVal.limit != oldVal.limit) && newVal.page > 1) {
-        $scope.query.page = 1;
-        return;
-      }
-
-      getList();
-    }, true);
-
-    var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
-      if (!newVal)
-        return;
-
-      $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
-      angular.extend($scope.query, {
-        limit: newVal.reportViewLimit,
-        order: newVal.reportViewOrder,
-        tz: newVal.reportTimeZone
-      });
-      if (!pageStatus.status) {
-        $scope.activeStatus = newVal.entityType;
-        pageStatus.status = newVal.entityType;
-      }
-
-      unwatch();
-      unwatch = null;
-    }, true);
+      $scope.profile = profile.data;
+      watchFilter();
+      $scope.query.tz = $scope.profile.timezone;
+    });
 
     $scope.deleteFilter = function(filter) {
       var idx = $scope.filters.indexOf(filter);
