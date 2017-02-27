@@ -17,14 +17,14 @@
                 </select>
             </div>
             <div class="cs-subform-control">
-                <select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(1)">
-                    <option value="">Choose grouping</option>
+                <select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose Grouping" ng-change="changeGroupby(1)">
+                    <option value="">Choose Grouping</option>
                     <option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</option>
                 </select>
             </div>
             <div class="cs-subform-control">
-                <select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose grouping">
-                    <option value="">Choose grouping</option>
+                <select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose Grouping">
+                    <option value="">Choose Grouping</option>
                     <option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}</option>
                 </select>
             </div>

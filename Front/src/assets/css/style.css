@@ -66,7 +66,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .jslider-single .jslider-bg .v,.jslider-single .jslider-label,.jslider-single .jslider-pointer-to,.jslider-single .jslider-value-to{display:none}
 .title{font-size:32px;text-align:center;margin:80px 0 100px 0;line-height:48px;}
 .pricing-box{margin:0 auto 80px auto;}
-.pricing-box .li-con{width:24.15%;float:left;margin-right: 8px;}
+.pricing-box .li-con{width:24.15%;float:left;margin-right: 8px;margin-bottom:15px;}
 .pricing-box .my-price{-webkit-transition: all 0.3s;
     transition: all 0.3s;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;box-shadow:0 0 3px #d4d4d4;border-radius:2px;padding:15px 0 30px 0;}
 .pricing-box li{-webkit-transition: all 0.3s;
