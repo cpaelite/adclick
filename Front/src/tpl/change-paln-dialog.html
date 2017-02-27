@@ -13,6 +13,7 @@
         </div>
           <ul>
           <div class="li-con">
+
               <li class="w-md3 h-line">
                   <div class="p-header-box">
                       <h2>STARTER</h2>
@@ -120,8 +121,53 @@
                     </div>
                 </li>
             </div>
-          </div>
+          </ul>
         </div>
+    </div>
+    <section id="sliderPricing">
+        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="pricingCalculator" class="planSlider">
+                        <h4 class="titletwo">Monthly cost <b>calculator</b>:</h4>
+                        <div class="row eventsSliderBox">
+                            <div class="col-xs-12 col-sm-9 col-md-9">
+                                <input ng-model="value" type="text" id="mySlider1" slider options="options"/>
+                            </div>
+                            <div class="col-sm-3 col-md-3">
+                                <input type="text"
+                                  name="eventsSliderNumber"
+                                  ng-model="inputValue"
+                                  class="eventsSliderNumber numberField"
+                                  ng-change="valueChanged(inputValue)"
+                                >
+                            </div>
+                        </div>
+
+                        <section class="row sliderResults">
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                Plan <span>
+                                      <span class="dolar">$</span>
+                                      <span class="prepay">{{bestPlan.prepayCost}}</span>
+                                      <span class="plan">NOOBIE</span>
+                                    </span>
+                                    <span class="caption">
+                                      <span class="includedEvents">{{bestPlan.includedEvents | split}}</span> events included
+                                    </span>
+                            </div>
+                            <div class="col-md-1 col-sm-1 separator"><span></span></div>
+                            <div class="col-md-3 col-sm-3 col-xs-12 mainPriceContainer">
+                                Price: <span><span class="dolar">$</span><span class="mainPriceLittle">{{bestPlan.totalCost.toFixed(0)}}</span></span> month
+                            </div>
+                            <div class="col-md-1 col-sm-1 separator"><span></span></div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                Overages <i class="icon-question-sign" data-toggle="tooltip" title="Overages are events that exceed the included events in a given paid plan. Plans are paid for upfront, overages are paid at the end of the monthly billing cycle."></i>   : <span><span class="dolar">$</span><span class="overages">{{bestPlan.overagesCost.toFixed(0)}}</span></span>
+                                <span class="caption"><span class="overagesEvents">{{bestPlan.overagesEvents | split}}</span> extra events</span>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
     </section>
   </md-dialog-content>
   <md-dialog-actions>
