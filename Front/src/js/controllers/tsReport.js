@@ -69,17 +69,19 @@
     };
 
     $scope.start = function(item) {
-      var params = angular.copy(item);
-      TsCampaign.save({id: params.campaignId}, {
+      if(item.startStatus) {
+        return;
+      } else {
+        item.startStatus = true;
+      }
+      TsCampaign.save({id: item.campaignId}, {
         tsReferenceId: $scope.query.tsReferenceId,
         action: 'start'
       }, function(oData) {
-        toastr.clear();
         if(oData.status) {
           toastr.success(oData.message);
-        } else {
-          toastr.error(oData.message);
         }
+        item.startStatus = false;
       });
     };
 
@@ -115,11 +117,8 @@
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
       }).then(function(oData) {
-        toastr.clear();
         if(oData.status) {
           toastr.success(oData.message);
-        } else {
-          toastr.error(oData.message);
         }
       })
     };
@@ -156,14 +155,19 @@
       this.title = "confirmPauseTitle";
       this.content = 'confirmPauseContent';
       this.cancel = $mdDialog.cancel;
-      var params = angular.copy(this.item);
 
       this.ok = function () {
-        TsCampaign.save({id: params.campaignId}, {
+        if(self.item.pauseStatus) {
+          return;
+        } else {
+          self.item.pauseStatus = true;
+        }
+        TsCampaign.save({id: self.item.campaignId}, {
           tsReferenceId: self.tsReferenceId,
           action: 'pause'
         }, function(oData) {
           $mdDialog.hide(oData);
+          self.item.pauseStatus = false;
         });
       };
     }

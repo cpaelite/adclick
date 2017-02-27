@@ -90,8 +90,8 @@
                     <td md-cell><span>{{row['cost']}}</span></td>
                     <!-- <td md-cell><span>{{row['conversions']}}</span></td> -->
                     <td md-cell>
-                        <span class="btn btn-default btn-xs" ng-click="start(row)" style="width: 50px;">Start</span>
-                        <span class="btn btn-default btn-xs" ng-click="pause(row)" style="width: 50px;">Pause</span>
+                        <span class="btn btn-default btn-xs" ng-class="{disabled: row.startStatus}" ng-click="start(row)" style="width: 50px;">Start</span>
+                        <span class="btn btn-default btn-xs" ng-class="{disabled: row.pauseStatus}" ng-click="pause(row)" style="width: 50px;">Pause</span>
                     </td>
                 </tr>
             </tbody>
