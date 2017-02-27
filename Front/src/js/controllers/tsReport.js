@@ -3,10 +3,10 @@
 
   angular.module('app')
     .controller('TsreportCtrl', [
-      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', TsreportCtrl
+      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', 'TsCampaign', TsreportCtrl
     ]);
 
-  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic) {
+  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic, TsCampaign) {
     var pageStatus = {};
 
     $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
@@ -70,11 +70,11 @@
 
     $scope.start = function(item) {
       var params = angular.copy(item);
-      Tsreport.save({id: params.campaignId}, {
+      TsCampaign.save({id: params.campaignId}, {
         tsReferenceId: $scope.query.tsReferenceId,
         action: 'start'
       }, function() {
-        getList();
+        // getList();
       });
     };
 
@@ -103,7 +103,7 @@
     $scope.pause = function(item) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Tsreport', pauseCtrl],
+        controller: ['$mdDialog', 'Tsreport', 'TsCampaign', pauseCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: {item: item, tsReferenceId: $scope.query.tsReferenceId},
@@ -142,16 +142,15 @@
       });
     }
 
-    function pauseCtrl($mdDialog, Tsreport) {
+    function pauseCtrl($mdDialog, Tsreport, TsCampaign) {
       var self = this;
       this.title = "confirmPauseTitle";
       this.content = 'confirmPauseContent';
       this.cancel = $mdDialog.cancel;
       var params = angular.copy(this.item);
-      params.status = !params.status;
 
       this.ok = function () {
-        Tsreport.save({id: params.campaignId}, {
+        TsCampaign.save({id: params.campaignId}, {
           tsReferenceId: self.tsReferenceId,
           action: 'pause'
         }, function() {

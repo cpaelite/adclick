@@ -129,4 +129,7 @@ angular.module('app')
   .factory('ThirdTraffic', ['$resource', function ($resource) {
     return $resource('/api/third-traffics');
   }])
+  .factory('TsCampaign', ['$resource', function ($resource) {
+    return $resource('/api/tsCampaign/:id');
+  }])
 ;
