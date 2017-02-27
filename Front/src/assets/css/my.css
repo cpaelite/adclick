@@ -2511,7 +2511,7 @@ select{border:1px solid #d5dce4;}
 .md-select-value{border:none;}
 md-toolbar{min-height:46px;}
 md-toolbar.md-default-theme:not(.md-menu-toolbar), md-toolbar:not(.md-menu-toolbar){background:#2da8f9;}
-.md-toolbar-tools{height:56px;}
+.md-toolbar-tools{height:46px;}
 md-dialog.md-transition-in{border-radius:2px;}
 .md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{font-size:18px;font-weight:600;margin-left:10px;}
 .material-icons{font-size:17px;}
