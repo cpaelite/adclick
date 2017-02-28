@@ -9,7 +9,7 @@
   function DashCtrl($scope, $filter, Report, Profile) {
     $scope.app.subtitle = 'DashBoard';
 
-    $scope.datetype = 3;
+    $scope.datetype = "3";
     $scope.fromTime = "00:00";
     $scope.toTime = "00:00";
     Profile.get(null, function (profile) {
