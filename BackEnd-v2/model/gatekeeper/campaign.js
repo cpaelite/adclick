@@ -14,8 +14,9 @@ export default function(sequelize, DataTypes) {
         tableName: 'campaigns',
         classMethods: {
             associate(models) {
-                model.belongsTo(models.Provider, {foreignKey: 'provider_id'})
-                model.hasMany(models.Statistic, {foreignKey: 'campaign_id'})
+                model.belongsTo(models.Provider, {foreignKey: 'provider_id'});
+                model.hasMany(models.Statistic, {foreignKey: 'campaign_id'});
+                model.belongsTo(models.ApiToken, {foreignKey: 'api_token_id'});
             }
         }
     })

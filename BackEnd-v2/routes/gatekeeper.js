@@ -102,6 +102,9 @@ router.get('/api/tsreport', async (req, res, next) => {
   try {
     let {userId} = req;
     let {from, to, tsReferenceId: provider_id} = req.query;
+    let apiToken = await ApiToken.findOne({where: {userId}});
+    if (!apiToken) throw new Error('no api token found');
+
     let rows = await Statistic.findAll({
       attributes: [
         'campaign_id',
@@ -121,6 +124,7 @@ router.get('/api/tsreport', async (req, res, next) => {
       ],
       where: {
         provider_id,
+        api_token_id: apiToken.id,
         $and: [
           {date: {$gte: from}},
           {date: {$lte: to}}

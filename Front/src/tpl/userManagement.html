@@ -9,8 +9,8 @@
 		</div>
 	</div>
 	
-	<div class="user-mangement-content">
-		<div ng-show="invitationUserCount==plan.userLimit">
+	<div class="user-mangement-content" ng-if="initState=='success'">
+		<div ng-if="invitationUserCount==plan.userLimit">
 			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
 			<span>
 				You have reached the limit of users for your chosen plan.<br>
@@ -20,17 +20,17 @@
 				<md-button class="md-raised copy-btn">Upgrade plan</md-button>
 			</div>
 		</div>
-		<div ng-show="invitationUserCount<plan.userLimit">
+		<div ng-if="invitationUserCount<plan.userLimit">
 			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
-			<span class="small-word" ng-show="!errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
-			<span style="color:red" ng-show="errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
+			<span class="small-word" ng-if="!errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
+			<span style="color:red" ng-if="errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
 			<form name="emailForm">
 			  <div class="form-group clearfix">
 			    <label for="exampleInputEmail2">Invite users:</label>
 			    <div class="form-inline">
 			   		<input type="text" name="email" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
-					<span style="color:red" ng-show="emailForm.email.$dirty && emailForm.email.$invalid">
-						<span ng-show="emailForm.email.$error.email">Email must be a valid Email</span>
+					<span style="color:red" ng-if="emailForm.email.$dirty && emailForm.email.$invalid">
+						<span ng-if="emailForm.email.$error.email">Email must be a valid Email</span>
                     </span>
 			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(emails)">Send invitation</button>
 			    </div>
@@ -52,7 +52,7 @@
 		<div class="form-group">
 			<label for="exampleInputEmail2">Pending invitations:</label>
 			<div class="form-inline user-list" >
-				<span class="nothing-word" ng-show="pendingUsers.length==0">
+				<span class="nothing-word" ng-if="pendingUsers.length==0">
 					You have no pending invitations
 				</span>
 				<div ng-repeat="pending in pendingUsers" class="itemList">
@@ -63,5 +63,9 @@
 			</div>
 		</div>
 	</div>
+	<div ng-if="initState=='init'" class="masking-loader-usermanagement" translate></div>
+	<div ng-class="{loader: initState=='init'}"></div>
+	<div ng-if="initState=='error'" class="cs-flow-error" translate>loading-error</div>
 </div>
+
 

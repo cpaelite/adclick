@@ -259,6 +259,7 @@ export function extraConfig(groupBy) {
         foreignKey: 'flowId',
         attributes: [
           'id',
+          ['id', 'flowId'],
           ['name', 'flowName'],
           ['hash', 'flowHash'],
         ]
@@ -269,8 +270,11 @@ export function extraConfig(groupBy) {
         foreignKey: 'landerId',
         attributes: [
           'id',
+          ['id', 'landerId'],
           ['name', 'landerName'],
           ['hash', 'landerHash'],
+          ['country', 'landerCountry'],
+          ['url', 'landerUrl'],
         ]
       }
       break;
@@ -279,8 +283,12 @@ export function extraConfig(groupBy) {
         foreignKey: 'offerId',
         attributes: [
           'id',
+          ['id', 'offerId'],
           ['name', 'offerName'],
-          ['hash', 'offerHash']
+          ['hash', 'offerHash'],
+          ['url', 'offerUrl'],
+          ['country', 'offerCountry'],
+          ['payoutValue', 'offerPayout'],
         ]
       }
       break;
@@ -289,6 +297,7 @@ export function extraConfig(groupBy) {
         foreignKey: 'trafficId',
         attributes: [
           'id',
+          ['id', 'trafficId'],
           ['name', 'trafficName'],
           ['hash', 'trafficHash']
         ]
@@ -299,6 +308,7 @@ export function extraConfig(groupBy) {
         foreignKey: 'affiliateId',
         attributes: [
           'id',
+          ['id', 'affiliateId'],
           ['name', 'affiliateName'],
           ['hash', 'affiliateHash'],
         ]

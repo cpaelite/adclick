@@ -42,7 +42,7 @@
         }
       }
 
-      if ($scope.user.email) {
+      if ($scope.user && $scope.user.email) {
         AccountCheck.save({email: $scope.user.email}, success);
       }
     };

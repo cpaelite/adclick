@@ -27,13 +27,13 @@
                     </span>
                 </div>
             </div>
-            <div class="form-group" ng-show="item.postbackUrl">
+            <div class="form-group" ng-if="item.postbackUrl">
                 <label class="col-sm-3 control-label">Postback URL：</label>
                 <div class="col-sm-6">
                     <input type="url" name="url" class="form-control campaign-url" ng-model="item.postbackUrl" ng-readonly="true">
                 </div>
                 <div class="col-sm-2">
-                    <md-button clipboard class="md-raised copied-btn" text="item.postbackurl" ng-click="itemUrlClick()">
+                    <md-button clipboard class="md-raised copied-btn" text="item.postbackUrl" ng-click="itemUrlClick()">
                         <i class="material-icons">content_copy</i>
                         {{btnWord}}
                         <!-- Clipboard -->

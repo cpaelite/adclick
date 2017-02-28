@@ -5,6 +5,9 @@ var log = log4js.getLogger('redis');
 
 function initClient(param) {
     var option = { host: setting.redis.host, port: setting.redis.port };
+    if(setting.redis && setting.redis.password){
+       option.password= setting.redis.password
+    }
     if (param) {
         option = Object.assign(option, param);
     }
