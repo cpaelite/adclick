@@ -90,8 +90,6 @@
 
         // 国家信息
         Country.query(null, function(result) {
-          if (!result.status)
-            return;
           $rootScope.countries = result;
         });
 
