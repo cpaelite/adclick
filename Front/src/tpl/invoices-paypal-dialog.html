@@ -14,6 +14,7 @@
       <div class="paypal-btn">
         <button type="button" class="btn btn-primary">PayPal</button>
       </div>
+      <!--
       <div layout="row">
         <md-input-container flex="100">
           <label>Card Number</label>
@@ -39,11 +40,12 @@
           </div>
         </md-input-container>
       </div>
+      -->
       <p class="footer-p">Newbidder takes credit card data security very seriously. For that reason, we use Braintree to securely handle credit card information. Braintree is a Validated Level 1 PCI DSS Compliant Service Provider.</p>
     </form>
   </md-dialog-content>
   <md-dialog-actions>
-    <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editPayPal.$invalid">{{'save' | translate}}
+    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'save' | translate}}
     </md-button>
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
   </md-dialog-actions>
