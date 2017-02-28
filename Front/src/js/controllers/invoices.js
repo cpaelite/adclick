@@ -58,7 +58,7 @@
 		this.titleType = 'Update';
 		this.cancel = $mdDialog.cancel;
 
-		BillingInfo.get({id:''},function(user){
+		BillingInfo.get(null, function(user){
 	    	$scope.item = user.data;
 	    });
 
@@ -80,7 +80,7 @@
 
 	    };
 
-	    
+
 
 	}
 

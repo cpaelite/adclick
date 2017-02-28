@@ -20,7 +20,9 @@ export default function(sequelize, DataTypes) {
     timestamps: false,
     classMethods: {
       associate(models) {
-        model.belongsTo(models.Provider, {foreignKey: 'provider_id'})
+        model.belongsTo(models.Provider, {foreignKey: 'provider_id'});
+        model.hasMany(models.Campaign, {foreignKey: 'api_token_id'});
+        model.hasMany(models.Statistic, {foreignKey: 'api_token_id'});
       }
     }
   })

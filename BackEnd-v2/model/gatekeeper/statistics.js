@@ -28,6 +28,7 @@ export default function(sequelize, DataTypes) {
             associate(models) {
                 model.belongsTo(models.Provider, {foreignKey: 'provider_id'});
                 model.belongsTo(models.Campaign, {foreignKey: 'campaign_id'});
+                model.belongsTo(models.ApiToken, {foreignKey: 'api_token_id'});
             }
         }
     })
