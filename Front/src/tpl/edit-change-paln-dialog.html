@@ -1,13 +1,19 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
+  <md-toolbar class="_md _md-toolbar-transitions">
+    <div class="md-toolbar-tools">
+      <h2>Mango (Fruit)</h2>
+      <span flex="" class="flex"></span>
+    </div>
+  </md-toolbar>
   <md-dialog-content class="md-dialog-content">
     <div class="nav-box">
-      <div class="container">
+      <div>
         <a class="logo2" href="#"><img class="img-responsive" src="../assets/img/logo-two.png"></a>
       </div>
     </div>
     <div class="edit-pricing-box clearfix">
     <form name="form" ng-submit="planCommit()">
-      <ul class="container">
+      <ul>
         <ul>
           <!-- <li class="col-md-8 my-price-l">
             <h2>Billing details</h2>
@@ -39,8 +45,8 @@
       <span><a href="#">Privacy policy</a>|<a href="#">Terms and conditions</a></span>
     </div>
   </md-dialog-content>
-  <md-dialog-actions>
+  <md-dialog-actions layout="row">
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
-    <md-button class="md-primary" ng-click="planCommit()">{{'commit' | translate}}</md-button>
+    <md-button class="md-primary" ng-disabled="btnStatus" ng-click="planCommit()">{{'commit' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>

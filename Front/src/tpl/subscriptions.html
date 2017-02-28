@@ -52,7 +52,7 @@
 							<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
 						</span>
 					</div>
-					<md-button class="md-raised copy-btn" ng-click="changePlan(item.plan.id)">Change Plan</md-button>
+					<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(item.plan.id)">Change Plan</md-button>
 				</div>
 			</div>
     </div>
