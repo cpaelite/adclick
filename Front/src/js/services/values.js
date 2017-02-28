@@ -860,10 +860,6 @@ angular.module('app').value('urlParameter', {
   ]
 });
 
-angular.module('app').value('ReferralLink', {
-  "url": "http://panel.newbidder.com/#/access/signup?refToken="
-});
-
 angular.module('app').factory('reportCache', ['$cacheFactory', function ($cacheFactory) {
   var cache = $cacheFactory.get('report-cache');
   if (!cache) {
