@@ -74,11 +74,12 @@
       }
     };
     $scope.bestPlan = {
-      prepayCost: 0,
+      prepayCost: 99,
       includedEvents: 10000000,
-      totalCost: 0,
+      totalCost: 99,
       overagesCost: 0,
-      overagesEvents: 0
+      overagesEvents: 0,
+      plan: 'PRO'
     };
 
     $scope.valueChanged = function(val) {
@@ -149,17 +150,20 @@
     var self = this;
     this.cancel = $mdDialog.cancel;
 
-    BillingInfo.get(null,function(info){
-      $scope.item = info.data;
-    });
+    // BillingInfo.get(null,function(info){
+    //   $scope.item = info.data;
+    // });
 
     Profile.get(null,function(user){
       $scope.userItem = user.data;
     });
 
     $scope.id = this.plan.id;
+    $scope.btnStatus = false;
     $scope.planCommit = function(){
+      $scope.btnStatus = true;
       Plans.save({'id': $scope.id},function(result){
+        $scope.btnStatus = false;
         if(result.status){
           window.location.href = result.data;
         }

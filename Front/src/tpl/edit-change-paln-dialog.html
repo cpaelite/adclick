@@ -47,6 +47,6 @@
   </md-dialog-content>
   <md-dialog-actions layout="row">
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
-    <md-button class="md-primary" ng-click="planCommit()">{{'commit' | translate}}</md-button>
+    <md-button class="md-primary" ng-disabled="btnStatus" ng-click="planCommit()">{{'commit' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>
