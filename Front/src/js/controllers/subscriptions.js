@@ -150,9 +150,9 @@
     var self = this;
     this.cancel = $mdDialog.cancel;
 
-    // BillingInfo.get(null,function(info){
-    //   $scope.item = info.data;
-    // });
+    BillingInfo.get(null,function(info){
+      $scope.item = info.data;
+    });
 
     Profile.get(null,function(user){
       $scope.userItem = user.data;
