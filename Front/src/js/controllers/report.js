@@ -526,6 +526,13 @@
           fromDate = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
           toDate = moment().startOf('month').format('YYYY-MM-DD');
           break;
+        case '9':
+          fromDate = moment().startOf('year').format('YYYY-MM-DD');
+          break;
+        case '10':
+          fromDate = moment().subtract(1, 'year').startOf('year').format('YYYY-MM-DD');
+          toDate = moment().startOf('year').format('YYYY-MM-DD');
+          break;
       }
       if (value == '0') {
         pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
