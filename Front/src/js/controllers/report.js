@@ -971,6 +971,7 @@
       spliceUrlParams(traffic);
       if (!$scope.item.id) {
         $scope.item.id = campaign.id;
+        return;
       }
       $mdDialog.hide();
     }

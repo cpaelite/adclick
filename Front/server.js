@@ -732,7 +732,7 @@ app.post('/api/names', function (req, res) {
     "status": 1,
     "message": "success",
     "data":{
-      exists: true
+      exists: false
     }
   };
   res.send(result);
