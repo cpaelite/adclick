@@ -110,7 +110,7 @@ angular.module('app')
     return $resource('/timezones');
   }])
   .factory('Plan', ['$resource', function ($resource) {
-    return $resource('/api/plans');
+    return $resource('/api/user/plan');
   }])
   .factory('Member', ['$resource', function ($resource) {
     return $resource('/api/members');

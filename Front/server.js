@@ -2387,7 +2387,7 @@ app.get('/api/profile', function (req, res) {
       referralToken: "wkllehZbEjXRk7nJfatdCWjjhKRKyo+jqdyL8ZHuIAZYrDTZ+0kW1A3BiAWGBrDZ",
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -2592,7 +2592,7 @@ app.get('/api/billing', function (req, res) {
 });
 
 /**
- * @apiName 获取Subscription change plan信息
+ * @apiName 选择Plan
  *
  *
  * @apiParam {String} planId
@@ -2711,7 +2711,7 @@ app.get('/api/plans', function (req, res) {
 });
 
 /**
- * @apiName 获取Subscription change plan信息
+ * @apiName
  *
  *
  * @apiParam {String} planId
@@ -3247,7 +3247,7 @@ app.get('/api/eventlog', function (req, res) {
  *
  *
  */
-app.get('/api/plans', function (req, res) {
+app.get('/api/user/plan', function (req, res) {
   var result = {
     status: 1,
     message: 'success',

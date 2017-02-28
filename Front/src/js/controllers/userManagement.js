@@ -10,6 +10,8 @@
   function UserManagementCtrl($scope, $mdDialog, $q, toastr, Profile, Plan, Invitation) {
     $scope.app.subtitle = 'UserManagement';
 
+    $scope.initState = 'init';
+
     // init load data
     var initPromises = [], prms;
 
@@ -34,6 +36,7 @@
     function fillUsers(invitations) {
       $scope.users = [];
       $scope.pendingUsers = [];
+      $scope.invitationUserCount = 0;
       if (invitations.length > 0) {
         invitations.forEach(function (invitation) {
           if (invitation.status) {
@@ -56,10 +59,14 @@
       if (theInvitation) {
         fillUsers(theInvitation);
       }
-      $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
+      $scope.initState = 'success';
     }
 
-    $q.all(initPromises).then(initSuccess);
+    function initError() {
+      $scope.initState = 'error';
+    }
+
+    $q.all(initPromises).then(initSuccess, initError);
 
     $scope.sendInvitation = function () {
       var emails = $scope.emails.split(',');
