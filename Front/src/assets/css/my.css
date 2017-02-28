@@ -965,7 +965,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     font-size: 12px;
     /*float: right;*/
     color: #fff;
-    display: block;    
+    display: block;
 }
 .md-raised.copied-btn:hover{
     background: #2da8f9 !important;
@@ -975,7 +975,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .report .right-select{
     float: right;
-} 
+}
 .right-select .cs-subform-group{
     float: left;
 }
@@ -1020,7 +1020,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
 .campaign-radio md-radio-group md-radio-button:not(:first-child){
     margin:0 15px 0 0;
 }
-.campaign-radio .radio-inline + .radio-inline, 
+.campaign-radio .radio-inline + .radio-inline,
 .campaign-radio .checkbox-inline + .checkbox-inline,
 .campaign-radio .radio-inline, .checkbox-inline{
     margin: 0 15px 0 0;
@@ -1058,7 +1058,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     cursor: pointer;
     margin-top:0;
     border-radius: 2px;
-} 
+}
 .md-table-container{
     margin-top: 15px;
 }
@@ -1231,8 +1231,8 @@ border-radius:2px;
     vertical-align: middle;
 }
 .table-toggles{
-    margin:15px 0; 
-} 
+    margin:15px 0;
+}
 .table-toggles ul{
     padding: 0;
     margin: 0;
@@ -1335,10 +1335,10 @@ h1.setting-title p{line-height:26px;color:#666;}
     background-color: #2f9be1;
     border-color: #2f9be1;
 }
-.btn-primary:hover, 
-.btn-primary:focus, 
-.btn-primary:active, 
-.btn-primary.active, 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
     background-color: #2da8f9 !important;;
@@ -1440,7 +1440,6 @@ h1.setting-title p{line-height:26px;color:#666;}
     visibility: hidden;
 }
 .my-price.my-price-select{
-    float: none;
     margin:0 auto;
 }
 .plan-select.isVisiable{
@@ -1616,7 +1615,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     list-style-type: disc;
 }
 .cs-setting-page.cs-flow-bottom-actions{
-    position: static; 
+    position: static;
     margin-top: 20px;
     float: right;
 }
@@ -1747,7 +1746,7 @@ input[type="checkbox"].th-checkbox{
     margin-top: 0;
 }
 
-.bot-select label{ 
+.bot-select label{
     font-weight: bold;
     float: left;
     display: block;
@@ -1898,7 +1897,7 @@ input[type="checkbox"].th-checkbox{
     .another-list-btn .add-another-btn{
         margin-right: 1px;
     }
-} 
+}
 /*End setting Style*/
 /*Start Flow Style*/
 .flow-select .cs-subform-select,
@@ -1920,7 +1919,7 @@ input[type="checkbox"].th-checkbox{
 .cs-flow-tree{
     background: rgba(45, 168, 249, 0.18);
     padding: 30px 0;
-    border-radius: 4px;   
+    border-radius: 4px;
     overflow: auto;
     height: 100%;
 }
@@ -2008,7 +2007,7 @@ input[type="checkbox"].th-checkbox{
     padding: 0;
     margin: 0;
 }
-.cs-page-flow li.tree-li{ 
+.cs-page-flow li.tree-li{
     padding: 0 55px;
 }
 .cs-page-flow li.tree-li:hover{
@@ -2250,7 +2249,7 @@ md-select:not([disabled]):focus .md-select-value{
 }
 .lander-content,
 .offer-content{
-    
+
     margin-bottom: 20px;
     padding:0;
 }
