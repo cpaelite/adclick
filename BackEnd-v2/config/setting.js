@@ -47,6 +47,7 @@ module.exports = {
   }],
   invitationRouter: "http://localhost:5000/invitation",
   invitationredirect: "http://localhost:5000",
+  freetrialRedirect:"http://localhost:5000/#/access/signup",
   defaultSetting: {
     "reportViewLimit": 500,
     "entityType": 1,
