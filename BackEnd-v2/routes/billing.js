@@ -96,31 +96,32 @@ router.post('/api/billing/info', async (req, res, next) => {
 })
 
 router.get('/api/invoices', async (req, res, next) => {
+  let email = '', balance = 0;
   try {
     let {userId} = req;
 
     let user = await User.findById(userId);
     if (!user) throw new Error('invalid user');
+    email = user.email
 
     let billing = await UB.findOne({where: {userId, expired: 0}});
     if (!billing) throw new Error('no billing')
 
     let template_plan = await TB.findOne({where: {id: billing.planId}});
     if (!template_plan) throw new Error('no plan')
-
+    balance = template_plan.normalPrice
+  } catch (e) {
+    console.log(e)
+  } finally {
     res.json({
       status: 1,
       message: 'success',
       data: {
-        email: user.email,
-        accountbalance: template_plan.normalPrice
+        email,
+        accountbalance: balance
       }
     })
-  } catch (e) {
-    res.json({
-      status: 0,
-      message: 'fail'
-    })
+
   }
 })
 

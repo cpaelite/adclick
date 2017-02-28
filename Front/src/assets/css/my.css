@@ -956,7 +956,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 /*    width: 78%;
     float: left;*/
 }
-.rd{background:url("../../assets/img/3rd.png") no-repeat;background-size:19px;width:20px;height:19px;display:block;float:left;margin-top:12px;}
+.rd{background:url("../../assets/img/3rd.png") no-repeat;background-size:20px;width:20px;height:20px;display:block;float:left;margin:12px 0 0 -12px;}
 .md-raised.copied-btn{
     height:34px;line-height:34px;padding:0 12px;
     box-shadow: none !important;
@@ -965,7 +965,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
     font-size: 12px;
     /*float: right;*/
     color: #fff;
-    display: block;    
+    display: block;
 }
 .md-raised.copied-btn:hover{
     background: #2da8f9 !important;
@@ -975,7 +975,7 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .report .right-select{
     float: right;
-} 
+}
 .right-select .cs-subform-group{
     float: left;
 }
@@ -993,9 +993,9 @@ md-backdrop.md-dialog-backdrop:nth-child(2){
 }
 .cs-subform-control>div[uib-datepicker-popup-wrap] {float: left;}
 .right-select2 .search-con{margin-top:-54px;float:right;}
-.report .right-select2{float:left;margin:20px 0 0 -10px;width:100%;}
+.report .right-select2{float:left;margin:15px 0 0 -10px;width:100%;}
 .right-select2 .cs-subform-select{margin-top:0;}
-.right-select2 .ng-not-empty{float:left;padding:0 18px 0 10px;}
+.right-select2 .ng-not-empty{float:left;}
 md-select.md-default-theme .md-select-value, md-select .md-select-value{
     border: 1px solid #d5dce4;
     border-radius: 2px;
@@ -1020,7 +1020,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
 .campaign-radio md-radio-group md-radio-button:not(:first-child){
     margin:0 15px 0 0;
 }
-.campaign-radio .radio-inline + .radio-inline, 
+.campaign-radio .radio-inline + .radio-inline,
 .campaign-radio .checkbox-inline + .checkbox-inline,
 .campaign-radio .radio-inline, .checkbox-inline{
     margin: 0 15px 0 0;
@@ -1058,7 +1058,7 @@ md-select.md-default-theme .md-select-value, md-select .md-select-value{
     cursor: pointer;
     margin-top:0;
     border-radius: 2px;
-} 
+}
 .md-table-container{
     margin-top: 15px;
 }
@@ -1231,8 +1231,8 @@ border-radius:2px;
     vertical-align: middle;
 }
 .table-toggles{
-    margin:15px 0; 
-} 
+    margin:15px 0;
+}
 .table-toggles ul{
     padding: 0;
     margin: 0;
@@ -1335,10 +1335,10 @@ h1.setting-title p{line-height:26px;color:#666;}
     background-color: #2f9be1;
     border-color: #2f9be1;
 }
-.btn-primary:hover, 
-.btn-primary:focus, 
-.btn-primary:active, 
-.btn-primary.active, 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
     background-color: #2da8f9 !important;;
@@ -1440,7 +1440,6 @@ h1.setting-title p{line-height:26px;color:#666;}
     visibility: hidden;
 }
 .my-price.my-price-select{
-    float: none;
     margin:0 auto;
 }
 .plan-select.isVisiable{
@@ -1616,7 +1615,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     list-style-type: disc;
 }
 .cs-setting-page.cs-flow-bottom-actions{
-    position: static; 
+    position: static;
     margin-top: 20px;
     float: right;
 }
@@ -1747,7 +1746,7 @@ input[type="checkbox"].th-checkbox{
     margin-top: 0;
 }
 
-.bot-select label{ 
+.bot-select label{
     font-weight: bold;
     float: left;
     display: block;
@@ -1898,7 +1897,7 @@ input[type="checkbox"].th-checkbox{
     .another-list-btn .add-another-btn{
         margin-right: 1px;
     }
-} 
+}
 /*End setting Style*/
 /*Start Flow Style*/
 .flow-select .cs-subform-select,
@@ -1920,7 +1919,7 @@ input[type="checkbox"].th-checkbox{
 .cs-flow-tree{
     background: rgba(45, 168, 249, 0.18);
     padding: 30px 0;
-    border-radius: 4px;   
+    border-radius: 4px;
     overflow: auto;
     height: 100%;
 }
@@ -2008,7 +2007,7 @@ input[type="checkbox"].th-checkbox{
     padding: 0;
     margin: 0;
 }
-.cs-page-flow li.tree-li{ 
+.cs-page-flow li.tree-li{
     padding: 0 55px;
 }
 .cs-page-flow li.tree-li:hover{
@@ -2250,7 +2249,7 @@ md-select:not([disabled]):focus .md-select-value{
 }
 .lander-content,
 .offer-content{
-    
+
     margin-bottom: 20px;
     padding:0;
 }
@@ -2554,6 +2553,10 @@ md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
 md-dialog md-dialog-content.botblack-height{overflow:initial;}
 .selectize-input{border:1px solid #d5dce4;border-radius:2px;min-height:34px;line-height:34px;padding:0;}
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{vertical-align:middle}
+.navi ul.nav li .nav-tip{position:relative;}
+.navi ul.nav li .icon-question-sign{margin-left:3px;}
+.navi ul.nav li .icon-question-sign .nav-tips-font{display:none;}
+.navi ul.nav li .icon-question-sign:hover .nav-tips-font{padding:3px 5px;width:175px;line-height:15px;background:#444;color:#fff;position:absolute;top:10px;left:110px;display:block;border-radius:3px;font-size:12px;}
 @media (max-width:1124px){.right-select .search-con{margin-right:5px;
     padding: 0 2px;
     margin-top: -38px;
@@ -2563,10 +2566,12 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     float: right;}.report .right-select{float:left;width:100%}
     .cs-subform-control{padding:0;}
     .right-select2 .search-con{margin-top:-54px;}
-    .report .right-select2{margin-left:0;}}
+    .report .right-select2{margin-left:0;}.right-select{margin-top:15px;}}
 @media (max-width:1024px){
     .navbar-right{width:auto;}
     .fade-in-right-big{width:50%;}
+    .item-domains .input-out{width:50%;}
+    .another-list-btn{margin-top:15px;}
 }
 @media (max-width:910px){
     .profile-content{width:96%;}
