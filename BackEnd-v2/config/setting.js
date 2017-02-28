@@ -45,6 +45,7 @@ module.exports = {
     mainDomain: false,
     postBackDomain: false
   }],
+  activateRouter:"http://localhost:5000/user/active",
   invitationRouter: "http://localhost:5000/invitation",
   invitationredirect: "http://localhost:5000",
   freetrialRedirect:"http://localhost:5000/#/access/signup",
