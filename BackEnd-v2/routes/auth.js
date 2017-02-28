@@ -6,13 +6,13 @@ var log4js = require('log4js');
 var log = log4js.getLogger('user');
 var md5 = require('md5');
 var moment = require('moment');
-
 var common = require('./common');
 var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
 var uuidV4 = require('uuid/v4');
 var emailCtrl = require('../util/email');
 const _ = require('lodash');
+var trial =require('../util/billing');
 
 /**
  * @api {post} /auth/login  登陆
@@ -108,8 +108,12 @@ router.post('/auth/login', async function (req, res, next) {
 router.post('/auth/signup', async function (req, res, next) {
     try {
         req.body.json = setting.defaultSetting;
-        await signup(req.body, next);
-        res.json({
+        let value= await signup(req.body, next);
+        //free trial
+        if(req.cookies && req.cookies.free){
+            await trial.addTrialPlan({userId:value.userId});
+        }
+        return res.json({
             status: 1,
             message: 'success'
         });
@@ -129,8 +133,9 @@ async function signup(data, next) {
     });
     let connection;
     let beginTransaction = false;
+    let value;
     try {
-        let value = await common.validate(data, schema);
+        value = await common.validate(data, schema);
         connection = await common.getConnection();
         //check email exists
         let UserResult = await query("select id from User where `email`=?", [value.email]);
@@ -184,8 +189,7 @@ async function signup(data, next) {
         if (beginTransaction) {
             await common.rollback(connection);
         }
-
-        next(e);
+       throw e;
     } finally {
         if (connection) {
             connection.release();
@@ -384,6 +388,13 @@ router.get('/invitation', async function (req, res, next) {
         }
 
     }
+});
+
+
+
+router.get('/free/trial',async function(req,res,next){
+     res.cookie("free", true);
+     res.redirect(setting.freetrialRedirect);
 });
 
 

@@ -1122,7 +1122,7 @@ router.get('/api/setup', function (req, res, next) {
 });
 
 /**
- * @api {get} /api/plan   用户当前套餐 
+ * @api {get} /api/user/plan   用户当前套餐 
  * @apiName  用户当前套餐 
  * @apiGroup User
  * 
@@ -1141,7 +1141,7 @@ router.get('/api/setup', function (req, res, next) {
                 }}
  *
  */
-router.get('/api/plan', async function (req, res, next) {
+router.get('/api/user/plan', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
