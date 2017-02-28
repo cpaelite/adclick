@@ -26,7 +26,7 @@ export async function addTrialPlan({userId}) {
 
     let upl = await UPL.create({
       userId,
-      paymenMethod: upm.id,
+      paymentMethod: upm.id,
       amount: 0,
       tax: 0,
       goodsType: 1,
