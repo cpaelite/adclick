@@ -365,9 +365,13 @@ router.get('/api/referrals', async function (req, res, next) {
             dir = "desc";
             order = order.replace(new RegExp(/-/g), '');
         }
-         
-        let tmp = `select a.referredUserId,a.acquired,a.status,a.lastactivity,a.totalCommission   
- ,b.recentCommission from ((select  user.idText as referredUserId,tmp.acquired,tmp.status,tmp.lastactivity,truncate(tmp.recentCommission/1000000,2) as totalCommission from User user right join (select  sum(mis.commission) as recentCommission,FROM_UNIXTIME(ref.acquired,'%d-%m-%Y %H:%i') as acquired,(case ref.status when 0 then "New" when 1 then "Activated"  END) as status ,FROM_UNIXTIME(max(mis.createdAt),'%d-%m-%Y %H:%i') as lastactivity,ref.referredUserId as userId  from UserCommissionLog mis left join UserReferralLog ref on mis.referralId = ref.id  where  ref.userId=<%=userId%>  group by ref.referredUserId ) tmp on tmp.userId = user.id)a  inner join(select  user.idText as referredUserId,truncate(tmp.recentCommission/1000000,2) as recentCommission from User user right join (select  sum(mis.commission) as recentCommission,ref.referredUserId as userId  from UserCommissionLog mis left join UserReferralLog ref on mis.referralId = ref.id  where mis.createdAt > <%=time%> and  ref.userId= <%=userId%>  group by ref.referredUserId ) tmp on tmp.userId = user.id) b on  a.referredUserId = b.referredUserId )`
+        let tmp =`select a.idText as referredUserId, FROM_UNIXTIME(a.acquired,'%d-%m-%Y %H:%i') as acquired,
+(case a.status when 0 then "New" when 1 then "Activated"  END) as status, FROM_UNIXTIME(a.createdAt,'%d-%m-%Y %H:%i') as lastactivity , 
+truncate(a.totalcommission/1000000,2)  as totalCommission ,truncate(b.monthcommission/1000000,2) as recentCommission from 
+(select user.idText,ref.acquired,ref.status,max(mis.createdAt)as createdAt,sum(mis.commission) as totalcommission from  UserReferralLog  ref  
+left join  UserCommissionLog mis  on mis.referralId = ref.id   left join User user on user.id= ref.referredUserId  where  ref.userId= <%=userId%> group by ref.referredUserId) a 
+left join (select user.idText,sum(mis.commission) as monthcommission from  UserReferralLog  ref  left join  UserCommissionLog mis  on mis.referralId = ref.id   
+left join User user on user.id= ref.referredUserId  where mis.createdAt><%=time%> and ref.userId= <%=userId%> group by ref.referredUserId) b on  a.idText = b.idText`
         let time = parseInt(moment().subtract(30, 'd').utc().valueOf() / 1000);
         let listSql = _.template(tmp)({
             time: time,
