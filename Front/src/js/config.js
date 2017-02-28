@@ -24,10 +24,6 @@
           return response;
         },
         responseError: function(response) {
-          if (response.status === 401) {
-            //$injector.get('toastr').error('Account Exception, Please Contact support@newbidder.com', {timeOut: 7000, positionClass: 'toast-top-center'});
-            $rootScope.$broadcast('event:auth-forbidden');
-          }
           return $q.reject(response);
         }
       };
