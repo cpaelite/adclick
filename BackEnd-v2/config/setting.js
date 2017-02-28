@@ -19,6 +19,7 @@ module.exports = {
   "redis": {
     host: "adclick-jp.082pif.ng.0001.apne1.cache.amazonaws.com",
     port: "6379",
+    password:"",
     channel: "channel_campaign_changed_users",
     conditionKey: "conditionKey_new"
   },
