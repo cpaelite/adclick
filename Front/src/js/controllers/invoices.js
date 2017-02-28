@@ -54,9 +54,11 @@
     }
 
 	function editInvoicesCtrl($scope, toastr, $mdDialog, BillingInfo, Paypal) {
+    var self = this;
 		this.title = 'Invoices';
 		this.titleType = 'Update';
 		this.cancel = $mdDialog.cancel;
+    $scope.countries = $scope.$root.countries;
 
 		BillingInfo.get(null, function(user){
 	    	$scope.item = user.data;
@@ -64,6 +66,7 @@
 
 		$scope.toPayPal = function (ev, item) {
 			BillingInfo.save($scope.item,function(result){
+        self.cancel();
 				$mdDialog.show({
 			        multiple: true,
 			        skipHide: true,

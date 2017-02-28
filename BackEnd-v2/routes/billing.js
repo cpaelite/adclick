@@ -1,11 +1,13 @@
 import express from 'express';
 const router = express.Router();
+import moment from 'moment';
 
 export default router;
 
 const {
   UserBilling: UB,
   TemplatePlan: TB,
+  UserPaymentLog: UPL,
   User,
   UserBillDetail: UBD
 } = models;
@@ -83,7 +85,6 @@ router.post('/api/billing/info', async (req, res, next) => {
     user_bill_detail.region = (body.stateregion || "").trim();
     user_bill_detail.country = (body.country || "").trim();
     user_bill_detail.taxId = (body.ssntaxvatid || "").trim();
-    console.log(body, user_bill_detail)
     await user_bill_detail.save();
     res.json({
       status: 1,
@@ -120,5 +121,38 @@ router.get('/api/invoices', async (req, res, next) => {
       status: 0,
       message: 'fail'
     })
+  }
+})
+
+router.get('/api/payments', async (req, res, next) => {
+  try {
+    let {userId} = req;
+    let upls = await UPL.findAll({
+      where: {
+        userId
+      },
+      order: 'timeStamp DESC',
+      limit: 100
+    })
+    console.log(upls);
+
+    let result = upls.map(upl => {
+      return {
+        date: moment.unix(upl.timeStamp).format("MM/DD/YYYY"),
+        amount: `$${upl.amount || 0}`,
+        tax: `$${upl.tax || 0}`,
+        totals: `$${(upl.amount || 0) + (upl.tax || 0)}`
+      }
+    })
+
+    res.json({
+      status: 1,
+      message: 'success',
+      data: {
+        payments: result
+      }
+    })
+  } catch (e) {
+    next(e);
   }
 })
