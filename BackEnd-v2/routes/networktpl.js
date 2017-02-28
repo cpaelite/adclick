@@ -105,8 +105,8 @@ router.get('/api/affilate/tpl', function (req, res, next) {
                                     desc: results[i].desc
                                 }
                                 let params = JSON.parse(results[i].postbackParams);
-                                let param = "?" + querystring.stringify(params);
-                                value.postbackurl = setting.newbidder.httpPix + req.idText + "." + defaultDomain + setting.newbidder.postBackRouter + param;
+                                let param = "?" + querystring.stringify(params,{encodeURIComponent:uri => uri});
+                                value.postbackurl = querystring.unescape(setting.newbidder.httpPix + req.idText + "." + defaultDomain + setting.newbidder.postBackRouter + param);
                                 result.push(value);
                             }
                         }
