@@ -139,7 +139,7 @@ router.get('/api/payments', async (req, res, next) => {
     let result = upls.map(upl => {
       return {
         date: moment.unix(upl.timeStamp).format("MM/DD/YYYY"),
-        amout: `$${upl.amount || 0}`,
+        amount: `$${upl.amount || 0}`,
         tax: `$${upl.tax || 0}`,
         totals: `$${(upl.amount || 0) + (upl.tax || 0)}`
       }
