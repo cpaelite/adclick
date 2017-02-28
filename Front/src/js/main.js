@@ -58,6 +58,9 @@
       // this event can be emitted when stateChangeStart or $http response with 401 status
       console.log("need auth: get event:auth-loginRequired");
       $scope.showLogin = true;
+      toastr.clear();
+      toastr.error('Account Exception, Please Contact support@newbidder.com', {timeOut: 7000, positionClass: 'toast-top-center'});
+      $scope.logout();
     });
     $scope.$on("event:auth-loginSuccess", function () {
       // this event can be emitted after user login
@@ -120,10 +123,6 @@
     // this event can be emitted when $http response with 403 status
     // or on '$stateChangeStart'
     $scope.$on("event:auth-forbidden", function () {
-      var current_name = $scope.$state.current.name;
-      if (current_name == "access.signin") {
-        return;
-      }
       toastr.clear();
       toastr.error('Account Exception, Please Contact support@newbidder.com', {timeOut: 7000, positionClass: 'toast-top-center'});
       $scope.logout();
