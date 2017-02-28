@@ -1431,15 +1431,17 @@ h1.setting-title p{line-height:26px;color:#666;}
     background: #2dcc70;
     font-size: 12px;
     padding: 5px 0;
-    text-align: center;margin-bottom:30px;border-radius: 2px;
+    text-align: center;
+    border-radius: 2px;
+    visibility: hidden;
 }
 .my-price.my-price-select{
     float: none;
     margin:0 auto;
 }
-/*.plan-select.isVisiable{
+.plan-select.isVisiable{
     visibility: inherit;
-}*/
+}
 .table-out{
     padding:20px 35px;
     background: #fff;
@@ -2545,7 +2547,7 @@ md-dialog .md-dialog-content{padding:50px;}
 .form-horizontal .radio-inline{line-height:23px;}
 md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
 .botblack-height{margin-top:130px;}
-md-dialog md-dialog-content{overflow:initial;}
+md-dialog md-dialog-content.botblack-height{overflow:initial;}
 .selectize-input{border:1px solid #d5dce4;border-radius:2px;min-height:34px;line-height:34px;padding:0;}
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{vertical-align:middle}
 @media (max-width:1124px){.right-select .search-con{margin-right:5px;

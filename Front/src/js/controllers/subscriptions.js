@@ -25,6 +25,9 @@
       toastr.error('pay failed');
     }
 
+    Plans.get(null,function(plans){
+      $scope.plans = plans.data;
+    });
 
     $scope.changePlan = function(planId ,ev){
       $mdDialog.show({
@@ -35,7 +38,8 @@
         controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', changePlanCtrl],
         focusOnOpen: false,
         locals: {
-          planId: planId
+          planId: planId,
+          plans: $scope.plans
         },
         templateUrl: 'tpl/change-paln-dialog.html'
       });
@@ -43,15 +47,8 @@
   }
 
   function changePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo){
-
     $scope.planId = this.planId;
-
-    Plans.get(null,function(plans){
-      $scope.item = plans.data;
-    });
-
-
-
+    $scope.item = this.plans;
     var proMoreEvents = 0.00004;
     var agencyMoreEvents = 0.000036;
     var superMoreEvents = 0.00003;
@@ -149,6 +146,7 @@
   }
 
   function editChangePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo){
+    var self = this;
     this.cancel = $mdDialog.cancel;
 
     BillingInfo.get(null,function(info){
