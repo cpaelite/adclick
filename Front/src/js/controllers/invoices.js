@@ -57,6 +57,7 @@
 		this.title = 'Invoices';
 		this.titleType = 'Update';
 		this.cancel = $mdDialog.cancel;
+    $scope.countries = $scope.$root.countries;
 
 		BillingInfo.get(null, function(user){
 	    	$scope.item = user.data;
