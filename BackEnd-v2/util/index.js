@@ -24,10 +24,17 @@ exports.checkToken = function () {
         throw err;
       }
       connection = await common.getConnection();
-      let user = await common.query("select user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
+      let user = await common.query("select user.`status`,user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
       if (!user.length) {
         let err = new Error('no user');
         err.status = 401;
+        throw err;
+      }
+
+      //用户是否成功购买套餐
+      if (user[0].status !== 1) {
+        let err = new Error('INSUFFICIENT_SUBSCRIPTION');
+        err.status = 403;
         throw err;
       }
       //copy一份主账号信息 区别于子账号 
