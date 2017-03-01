@@ -35,10 +35,12 @@ router.get('/api/billing', async (req, res) => {
         },
         statistic: {
           planCode: template_plan.name,
+          from:moment.unix(billing.planStart).format("DD-MM-YYYY"),
+          to:moment.unix(billing.planEnd).format("DD-MM-YYYY"),
           billedEvents: billing.billedEvents,
           totalEvents: billing.totalEvents,
           overageEvents: billing.overageEvents,
-          overageCost: 0,
+          overageCost: ((template_plan.overageCPM/1000000) * (billing.overageEvents/1000)).toFixed(2),
           includedEvents: billing.includedEvents,
           remainEvents: (billing.includedEvents - billing.totalEvents),
           freeEvents: billing.freeEvents,
