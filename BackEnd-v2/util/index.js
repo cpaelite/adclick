@@ -30,13 +30,8 @@ exports.checkToken = function () {
         err.status = 401;
         throw err;
       }
+      req.userStatus = user[0].status;
 
-      //用户是否成功购买套餐
-      if (user[0].status !== 1) {
-        let err = new Error('INSUFFICIENT_SUBSCRIPTION');
-        err.status = 403;
-        throw err;
-      }
       //copy一份主账号信息 区别于子账号 
       req.subId = user[0].id;
       req.subidText = user[0].idText;
@@ -60,6 +55,19 @@ exports.checkToken = function () {
       }
     }
 
+  }
+}
+
+exports.checkPlan = function () {
+  return function (req, res, next) {
+    if (req.userStatus !== 1) {
+      //用户是否成功购买套餐
+      let err = new Error('INSUFFICIENT_SUBSCRIPTION');
+      err.status = 403;
+      next(err);
+    } else {
+      next();
+    }
   }
 }
 
