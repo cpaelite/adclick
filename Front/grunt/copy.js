@@ -6,8 +6,7 @@ module.exports = {
           'index.html',
           'tpl/**',
           'assets/fonts/**',
-          'assets/img/**',
-          'assets/sdk/**'
+          'assets/img/**'
         ],
         dest: 'dist/',
         cwd: 'src/',
