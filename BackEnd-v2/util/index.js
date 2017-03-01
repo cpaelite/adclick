@@ -63,7 +63,7 @@ exports.checkPlan = function () {
     if (req.userStatus !== 1) {
       //用户是否成功购买套餐
       let err = new Error('INSUFFICIENT_SUBSCRIPTION');
-      err.status = 403;
+      err.status = 405;
       next(err);
     } else {
       next();
