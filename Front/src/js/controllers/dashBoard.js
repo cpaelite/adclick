@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('DashCtrl', [
-      '$scope', '$filter', 'Report', 'Profile',
+      '$scope', '$filter', 'Report', 'Profile', 'DateRangeUtil',
       DashCtrl
     ]);
 
-  function DashCtrl($scope, $filter, Report, Profile) {
+  function DashCtrl($scope, $filter, Report, Profile, DateRangeUtil) {
     $scope.app.subtitle = 'DashBoard';
 
     $scope.datetype = "3";
@@ -26,15 +26,15 @@
 
       $scope.filter = {
         fromDate: moment().format('YYYY-MM-DD'),
-        toDate: moment().format('YYYY-MM-DD'),
-        fromTime: "00:00",
-        toTime: "00:00"
+        toDate: moment().add(1, 'days').format('YYYY-MM-DD'),
+        fromTime: $scope.fromTime,
+        toTime: $scope.toTime
       };
 
       var params = {
         groupBy: "day",
-        from: moment($scope.fromDate).format('YYYY-MM-DD') + "T" + $scope.fromTime,
-        to: moment($scope.toDate).format('YYYY-MM-DD') + "T" + $scope.toTime,
+        from: $scope.fromDate + "T" + $scope.fromTime,
+        to: $scope.toDate + "T" + $scope.toTime,
         tz: profile.data.timezone
       };
       $scope.summary = {};
@@ -171,43 +171,8 @@
     }
 
     function getDateRange(value) {
-      var fromDate = moment().format('YYYY-MM-DD');
-      var toDate = moment().add(1, 'days').format('YYYY-MM-DD');
-      switch (value) {
-        case '2':
-          fromDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
-          break;
-        case '3':
-          fromDate = moment().subtract(6, 'days').format('YYYY-MM-DD');
-          break;
-        case '4':
-          fromDate = moment().subtract(13, 'days').format('YYYY-MM-DD');
-          break;
-        case '5':
-          fromDate = moment().day(1).format('YYYY-MM-DD');
-          break;
-        case '6':
-          fromDate = moment().day(-6).format('YYYY-MM-DD');
-          toDate = moment().day(1).format('YYYY-MM-DD');
-          break;
-        case '7':
-          fromDate = moment().startOf('month').format('YYYY-MM-DD');
-          break;
-        case '8':
-          fromDate = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-          toDate = moment().startOf('month').format('YYYY-MM-DD');
-          break;
-        case '9':
-          fromDate = moment().startOf('year').format('YYYY-MM-DD');
-          break;
-        case '10':
-          fromDate = moment().subtract(1, 'year').startOf('year').format('YYYY-MM-DD');
-          toDate = moment().startOf('year').format('YYYY-MM-DD');
-          break;
-      }
-      $scope.fromDate = fromDate;
-      $scope.toDate = toDate;
+      $scope.fromDate = DateRangeUtil.fromDate(value);
+      $scope.toDate = DateRangeUtil.toDate(value);
     }
 
   }

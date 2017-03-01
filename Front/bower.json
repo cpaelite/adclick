@@ -41,7 +41,8 @@
     "highcharts": "~5.0.6",
     "angular-clipboard": "^1.5.0",
     "angular-selectize2": "^3.0.1",
-    "angular-awesome-slider": "^2.4.4"
+    "angular-awesome-slider": "^2.4.4",
+    "angular-momentjs": "^0.2.2"
   },
   "devDependencies": {},
   "resolutions": {

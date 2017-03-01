@@ -867,3 +867,59 @@ angular.module('app').factory('reportCache', ['$cacheFactory', function ($cacheF
   }
   return cache;
 }]);
+
+angular.module('app').factory('DateRangeUtil', ['$moment', function ($moment) {
+  return {
+    fromDate: function (datetype) {
+      var fromDate = $moment().format('YYYY-MM-DD');
+      switch (datetype) {
+        case '2':
+          fromDate = $moment().subtract(1, 'days').format('YYYY-MM-DD');
+          break;
+        case '3':
+          fromDate = $moment().subtract(6, 'days').format('YYYY-MM-DD');
+          break;
+        case '4':
+          fromDate = $moment().subtract(13, 'days').format('YYYY-MM-DD');
+          break;
+        case '5':
+          fromDate = $moment().day(1).format('YYYY-MM-DD');
+          break;
+        case '6':
+          fromDate = $moment().day(-6).format('YYYY-MM-DD');
+          break;
+        case '7':
+          fromDate = $moment().startOf('month').format('YYYY-MM-DD');
+          break;
+        case '8':
+          fromDate = $moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+          break;
+        case '9':
+          fromDate = $moment().startOf('year').format('YYYY-MM-DD');
+          break;
+        case '10':
+          fromDate = $moment().subtract(1, 'year').startOf('year').format('YYYY-MM-DD');
+          break;
+      }
+      return fromDate;
+    },
+    toDate: function (datetype) {
+      var toDate = $moment().add(1, 'days').format('YYYY-MM-DD');
+      switch (datetype) {
+        case '2':
+          toDate = $moment().format('YYYY-MM-DD');
+          break;
+        case '6':
+          toDate = $moment().day(1).format('YYYY-MM-DD');
+          break;
+        case '8':
+          toDate = $moment().startOf('month').format('YYYY-MM-DD');
+          break;
+        case '10':
+          toDate = $moment().startOf('year').format('YYYY-MM-DD');
+          break;
+      }
+      return toDate;
+    }
+  }
+}]);

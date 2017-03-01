@@ -23,7 +23,8 @@
     'chart.js',
     'selectize',
     'angular-clipboard',
-    'angularAwesomeSlider'
+    'angularAwesomeSlider',
+    'angular-momentjs'
   ]);
 
 })();
