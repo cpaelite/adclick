@@ -66,19 +66,19 @@
 
 		$scope.toPayPal = function (ev, item) {
 			BillingInfo.save($scope.item,function(result){
-        self.cancel();
-				$mdDialog.show({
-			        multiple: true,
-			        skipHide: true,
-			        clickOutsideToClose: false,
-			        controller: ['$scope', 'toastr', '$mdDialog', 'Paypal', editPayPalCtrl],
-			        controllerAs: 'ctrl',
-			        focusOnOpen: false,
-			        locals: { item: item},
-			        bindToController: true,
-			        targetEvent: ev,
-			        templateUrl: 'tpl/invoices-paypal-dialog.html',
-		      });
+                self.cancel();
+			// 	$mdDialog.show({
+			//         multiple: true,
+			//         skipHide: true,
+			//         clickOutsideToClose: false,
+			//         controller: ['$scope', 'toastr', '$mdDialog', 'Paypal', editPayPalCtrl],
+			//         controllerAs: 'ctrl',
+			//         focusOnOpen: false,
+			//         locals: { item: item},
+			//         bindToController: true,
+			//         targetEvent: ev,
+			//         templateUrl: 'tpl/invoices-paypal-dialog.html',
+		    //   });
 			});
 
 	    };
