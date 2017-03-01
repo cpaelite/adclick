@@ -24,7 +24,7 @@
           return response;
         },
         responseError: function(response) {
-          if(response.status === 403) {
+          if(response.status === 405) {
             if($rootScope.changePlanStatus) {
               // return $q.reject(response);
             } else {
