@@ -222,8 +222,8 @@ export const keys = [
 
 export function formatRows(rows) {
   return rows.map((row) => {
-    row.revenue = parseFloat(row.revenue).toFixed(2);
-    row.cost = parseFloat(row.cost).toFixed(2);
+    row.revenue = (parseFloat(row.revenue) / 1000000).toFixed(2);
+    row.cost = (parseFloat(row.cost) / 1000000).toFixed(2);
     row.profit = parseFloat(row.profit).toFixed(2);
     row.cpv = parseFloat(row.cpv).toFixed(4);
     row.ictr = parseFloat(row.ictr).toFixed(2);
