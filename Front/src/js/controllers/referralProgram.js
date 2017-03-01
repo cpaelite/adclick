@@ -3,16 +3,16 @@
 
   angular.module('app')
     .controller('ReferralProgramCtrl', [
-      '$scope', '$timeout', 'Profile', 'Referrals', 'ReferralLink',
+      '$scope', '$timeout', 'Profile', 'Referrals', '$location',
       ReferralProgramCtrl
     ]);
 
-  function ReferralProgramCtrl($scope, $timeout, Profile, Referrals, ReferralLink) {
+  function ReferralProgramCtrl($scope, $timeout, Profile, Referrals, $location) {
     $scope.app.subtitle = 'Referral Program';
 
     Profile.get(null, function (profile) {
       var profile = profile.data;
-      $scope.linkurl = ReferralLink.url + profile.referralToken;
+      $scope.linkurl = $location.$$absUrl + profile.referralToken;
     });
 
     $scope.query = {
