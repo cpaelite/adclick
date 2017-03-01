@@ -98,7 +98,7 @@ app.get('/', function(req, res) {
 
 
 app.use(paypal);
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), billing, plan, gatekeeper, util.checkPlan(),user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), billing, plan, gatekeeper, user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
