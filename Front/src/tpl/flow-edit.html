@@ -196,7 +196,7 @@
 
               <div ng-if="f.type=='inputgroup'" ng-class="{'col-md-10': f.label}">
                 <label ng-repeat="ipt in f.inputs">
-                  {{ipt.label}} 
+                  {{ipt.label}}
                   <input ng-model="cdt[ipt.name]" class="inputgroup-input" placeholder="{{ipt.placeholder}}">
                 </label>
               </div>
@@ -221,7 +221,7 @@
                         <div ng-repeat="o in f.options | filter:cdt._t1">
                           <label ng-click="toggleL2select(cdt, o, f.name)"
                                  ng-class="{'cs-l2item-selected':exists(o.value, cdt[f.name])}">
-                            {{o.display}} 
+                            {{o.display}}
                           </label>
                         </div>
                       </div>
@@ -343,7 +343,7 @@
         </ul>
       </div>
     </form>
-    
+
     <form name="editPathForm" method="post" ng-submit="$event.preventDefault()" class="editPathForm" ng-if="onEdit=='path'">
       <div class="row path-top">
         <div class="col-sm-7 col-md-7 name-div" layout="column">
@@ -500,11 +500,11 @@
     <div class="cs-flow-bottom-actions clearfix">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
-      <button class="btn btn-primary save-btn" ng-hide="showContinue" ng-click="save()">
+      <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="save()">
         <i class="material-icons">check</i>
         Save
       </button>
-      <button class="btn btn-primary save-btn" ng-hide="showContinue" ng-click="saveClose()">
+      <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="saveClose()">
         <i class="material-icons">check</i>
         Save&amp;close
       </button>

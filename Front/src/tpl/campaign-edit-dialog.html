@@ -1,4 +1,4 @@
-<md-dialog class="cs-edit-dialog" ng-cloak>
+<md-dialog class="cs-edit-dialog" ng-cloak id="campaign_edit_content">
     <md-toolbar>
         <div class="md-toolbar-tools">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
@@ -333,9 +333,11 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid">{{'save' | translate}}
+        <md-button class="md-primary" ng-hide="campaignAddStatus" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
         </md-button>
-        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <md-button class="md-primary" ng-hide="campaignAddStatus" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <md-button class="md-primary" ng-show="campaignAddStatus" ng-click="ctrl.close()">{{'close' | translate}}</md-button>
+
     </md-dialog-actions>
 
 </md-dialog>

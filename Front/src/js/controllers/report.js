@@ -773,7 +773,7 @@
       });
     }
 
-    // Flow preview 
+    // Flow preview
     // $scope.secondIsShow = true ;
     $scope.toggleClick = function(type){
       type.isShow = !type.isShow;
@@ -896,6 +896,9 @@
       }
     };
 
+    this.close = function() {
+      $mdDialog.cancel();
+    };
 
     function defaultItem() {
       return {
@@ -923,6 +926,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -937,13 +941,16 @@
       var traffic = JSON.parse($scope.item.trafficSource);
       spliceUrlParams(traffic);
       if (!$scope.item.id) {
+        $scope.campaignAddStatus = true;
         $scope.item.id = campaign.id;
+        $('#dialogContent_campaign_edit_content').scrollTop(0);
         return;
       }
       $mdDialog.hide();
     }
 
     this.save = function () {
+      $scope.saveStatus = true;
       // cost model value
       nameRequired();
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
@@ -1066,7 +1073,7 @@
       $scope.oldName = $scope.item.name;
       $scope.item.country = 'ZZZ';
     }
-    
+
     this.titleType = angular.copy(this.perfType);
     $scope.validateCallback = function(isValid) {
       $scope.editForm.name.$setValidity('asyncCheckName', isValid);
@@ -1120,13 +1127,14 @@
       $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
       $scope.prefix = preStr;
     }
-    
+
     // Country
     $scope.countries = $scope.$root.countries;
 
     this.cancel = $mdDialog.cancel;
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1136,6 +1144,7 @@
     }
 
     this.save = function () {
+      $scope.saveStatus = true;
       nameRequired();
       $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
@@ -1376,6 +1385,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1385,6 +1395,7 @@
     }
 
     this.save = function () {
+      $scope.saveStatus = true;
       nameRequired();
       $scope.item.tags = $scope.tags;
 
@@ -1537,6 +1548,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1551,6 +1563,7 @@
     }
 
     this.save = function () {
+      $scope.saveStatus = true;
       $scope.item.params = JSON.stringify($scope.params);
       $scope.item.cost = JSON.stringify($scope.cost);
       $scope.item.externalId = JSON.stringify($scope.externalId);
@@ -1835,6 +1848,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1849,6 +1863,7 @@
     }
 
     this.save = function () {
+      $scope.saveStatus = true;
       if (!$scope.ipWhiteCheck) {
         $scope.item.ipWhiteList = "[]";
       } else {
@@ -2006,7 +2021,7 @@
     function closeConfirmCtrl($scope, $mdDialog) {
       this.title = "warnCloseTitle";
       this.content = 'warnClose';
-      
+
       this.ok = function() {
         $mdDialog.hide();
       };
