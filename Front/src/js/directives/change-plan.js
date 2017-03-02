@@ -21,7 +21,8 @@ function($mdDialog, Profile, Billing, Plans, BillingInfo) {
                     afterCancel: $scope.afterCancel,
                     noPlan: $scope.noPlan
                 },
-                templateUrl: 'tpl/change-paln-dialog.html'
+                templateUrl: 'tpl/change-paln-dialog.html',
+                escapeToClose: false
             });
 
             function changePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo) {

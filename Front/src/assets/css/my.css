@@ -1689,7 +1689,7 @@ h1.setting-title p{line-height:26px;color:#666;}
 .user-mangement-content span{
     display: block;
     font-weight: 700;
-    text-align: center;
+    text-align: left;
     margin-bottom: 15px;
 }
 .itemList{
