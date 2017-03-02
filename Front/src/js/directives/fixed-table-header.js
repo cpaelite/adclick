@@ -1,4 +1,4 @@
-angular.module('app').directive('fixHead', fixHead);
+angular.module('app').directive('fixHead', ['$compile', '$window', fixHead]);
 function fixHead($compile, $window) {
   function compile(tElement) {
     var table = {
