@@ -112,7 +112,7 @@
 
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
-            <thead md-head md-order="query.order">
+            <thead md-head md-order="query.order" fix-head>
             <tr md-row>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
