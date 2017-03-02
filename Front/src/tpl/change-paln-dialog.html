@@ -7,11 +7,12 @@
       </div>
     </div>
     <div class="pricing-box clearfix">
+        <div class="plan-select" ng-class="{'isVisiable':p.id == planId}">
+            <i class="material-icons">done</i>
+            <span>You are currently subscribed to this plan</span>
+        </div>
         <ul class="li-con" ng-repeat="p in item.plan track by $index">
-            <div class="plan-select" ng-class="{'isVisiable':p.id == planId}">
-                <i class="material-icons">done</i>
-                <span>You are currently subscribed to this plan</span>
-            </div>
+
             <li class="w-md3 h-line{{$index}}">
                 <div ng-bind-html="p.desc"></div>
                 <button class="btn p-btn btn-three p-btn-0{{$index + 1}}" type="button" ng-click="editChangePlan(p)">
