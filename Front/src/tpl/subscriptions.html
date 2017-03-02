@@ -59,7 +59,7 @@
       <div class="table-out table-out-coupon">
         <form name="couponForm" ng-submit="$event.preventDefault()">
           <div class="form-group">
-            <input type="text" class="form-control form-control-two" name="coupon" ng-model="couponText" placeholder="Please input your coupon" required>
+            <input type="text" class="form-control form-control-two flex" name="coupon" ng-model="couponText" placeholder="Please input your coupon" required>
 			  <md-button class="md-raised copy-btn" ng-disabled="couponForm.coupon.$invalid || couponStatus" ng-click="changeCoupon(couponText)">Submit</md-button>
 		  </div>
         </form>
