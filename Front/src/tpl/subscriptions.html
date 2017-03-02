@@ -57,12 +57,14 @@
   		</div>
       <h3 class="subscription-title subscription-title2">Coupon</h3>
       <div class="table-out">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Please input your coupon" ng-required="true">
-        </div>
-        <div class="text-center">
-          <md-button class="md-raised copy-btn" ng-disabled="true">Coupon</md-button>
-        </div>
+        <form name="couponForm" ng-submit="$event.preventDefault()">
+          <div class="form-group">
+            <input type="text" class="form-control" name="coupon" ng-model="couponText" placeholder="Please input your coupon" required>
+          </div>
+          <div class="text-center">
+            <md-button class="md-raised copy-btn" ng-disabled="couponForm.coupon.$invalid || couponStatus" ng-click="changeCoupon(couponText)">Submit</md-button>
+          </div>
+        </form>
       </div>
       <div change-plan plan-id="item.plan.id" no-plan="false" ng-if="changePlanStatus" after-cancel="changePlan(false)"></div>
     </div>
