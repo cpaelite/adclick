@@ -1421,6 +1421,9 @@ h1.setting-title p{line-height:26px;color:#666;}
 .md-raised.copy-btn:hover{
     background: #2da8f9 !important;
 }
+.md-raised.copy-btn[disabled]:hover{
+    background: rgba(0, 0, 0, 0.117647) !important;
+}
 .table thead{
     font-size: 12px;
 }
