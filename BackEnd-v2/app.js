@@ -39,6 +39,7 @@ var user_setting = require('./routes/user_setting');
 var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
 var conversions =require('./routes/conversions');
+var coupon =require('./routes/coupon');
 
 import billing from './routes/billing';
 import plan from './routes/plan';
@@ -98,7 +99,7 @@ app.get('/', function(req, res) {
 
 
 app.use(paypal);
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
@@ -111,13 +112,7 @@ app.use(function(req, res, next) {
 /// error handlers
 app.use(function(err, req, res, next) {
     logger.error("Something went wrong:", err);
-    console.error(err, err.stack);
     res.status(err.status || 500);
-
-    //TODO
-    if (err.status == 303) { //mysql 出错
-
-    }
     res.json({
         status: err.code? err.code: 0,
         message: err.message,

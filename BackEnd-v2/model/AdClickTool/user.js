@@ -3,11 +3,13 @@ export default function (sequelize, DataTypes) {
     idText: {
       type: DataTypes.STRING(8),
       allowNull: false,
+      unique: true,
       defaultValue: ''
     },
     email: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     emailVerified: {
       type: DataTypes.INTEGER,
