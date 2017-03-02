@@ -13,7 +13,7 @@ const {
 } = models;
 
 router.get('/api/billing', async (req, res) => {
-  let {userId} = req;
+  let {subId: userId} = req;
   let billing = await UB.findOne({where: {userId, expired: 0}})
   if (!billing) {
     return res.json({
@@ -52,7 +52,7 @@ router.get('/api/billing', async (req, res) => {
 
 router.get('/api/billing/info', async (req, res, next) => {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     let user_bill_detail = await UBD.findOne({where: {userId}}) || {}
     res.json({
       status: 1,
@@ -75,7 +75,7 @@ router.get('/api/billing/info', async (req, res, next) => {
 
 router.post('/api/billing/info', async (req, res, next) => {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     let {body} = req;
     let user_bill_detail = await UBD.findOne({where: {userId}});
     if (!user_bill_detail) user_bill_detail = UBD.build({userId});
@@ -100,7 +100,7 @@ router.post('/api/billing/info', async (req, res, next) => {
 router.get('/api/invoices', async (req, res, next) => {
   let email = '', balance = 0;
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
 
     let user = await User.findById(userId);
     if (!user) throw new Error('invalid user');
@@ -129,7 +129,7 @@ router.get('/api/invoices', async (req, res, next) => {
 
 router.get('/api/payments', async (req, res, next) => {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     let upls = await UPL.findAll({
       where: {
         userId
@@ -137,7 +137,6 @@ router.get('/api/payments', async (req, res, next) => {
       order: 'timeStamp DESC',
       limit: 100
     })
-    console.log(upls);
 
     let result = upls.map(upl => {
       return {
