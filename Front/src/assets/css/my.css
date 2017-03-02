@@ -1126,6 +1126,7 @@ text-align:left;
     margin-right: 10px;
     cursor: pointer;
 }
+.table-out-coupon input{border-radius:2px;}
 .view_column_con button{
     background: #2da8f9 !important;
     border-radius: 2px;
@@ -1436,16 +1437,8 @@ h1.setting-title p{line-height:26px;color:#666;}
 .referral-program .md-table-pagination{
     border-top: none;
 }
-.subscription-title{
-    font-size: 14px;
-    color: #999;
-    height: 39px;
-    line-height: 39px;
-    margin: 0;
-    padding: 0 10px;
-    text-align:center;
-
-}
+.subscription-title{background:#dee5e7;margin:0;height: 32px;text-align:center;line-height: 32px;color: #777;font-size: 12px;border-radius: 2px 2px 0 0;font-weight: bold;}
+.subscription-title2{background:#fff;text-align:left;padding-left:15px;color:#333;padding-top:10px;}
 .plan-select{
     background: #2dcc70;
     font-size: 12px;
@@ -1462,28 +1455,37 @@ h1.setting-title p{line-height:26px;color:#666;}
     margin-bottom:15px;
 }
 .table-out{
-    padding:20px 35px;
+    padding:10px 20px 20px 20px;
     background: #fff;
     border-radius:3px;
 }
+.table-out .sub-font{color:#999;}
+.table-out-coupon{padding:15px 15px 10px 15px;}
+.table-out-coupon .form-control.form-control-two{height:32px;line-height:32px;font-size:12px;width:77.5%;float:left;border-radius:2px 0 0 2px;}
+.table-out-coupon .md-raised.copy-btn{margin:0;width:22%;border-radius:0 2px 2px 0 ;}
+.table-out-coupon .md-button.md-raised[disabled]{background:#2f9be1;}
 .table-out table{
     width: 100%;
 }
 .table-out table td{
     padding: 12px 0;
+    color:#666;
 }
+.table-out table tr{border-bottom:1px solid #f6f8f8;}
+.table-out table tr:nth-last-child(1){border:none;}
 .table-out table td:last-child{
-    font-weight: 700;
+    font-weight:600;
     text-align: right;
+    color:#333;
 }
 .pro{
-    margin:10px 0;
+    margin:10px 0 20px 0;
 }
 .pro span,
 .pro span.pro-price{
     display: inline-block;
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 600;
 }
 .pro span.pro-right{
     float: right;
@@ -2586,6 +2588,7 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .right-select2 .search-con{margin-top:-54px;}
     .report .right-select2{margin-left:0;}.right-select{margin-top:15px;}}
 @media (max-width:1024px){
+    .profile-content{width:90%;}
     .navbar-right{width:auto;}
     .fade-in-right-big{width:50%;}
     .item-domains .input-out{width:50%;}
@@ -2602,6 +2605,7 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .cs-subform-control{padding:0;}
     .md-raised.copy-btn, .add-another-btn{margin-top:5px;}
     .fade-in-right-big{width:90%;}
+    .profile-content{padding:25px 0px;}
 }
 @media (max-width:615px){.right-select .search-con{display:block;margin-top:0;}
     .right-select .search-con{margin-top: -38px;}
