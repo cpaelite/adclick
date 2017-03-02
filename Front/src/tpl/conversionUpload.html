@@ -14,7 +14,7 @@
     <span style="color: red" ng-show="errorMessage">{{errorMessage}}</span>
   </form>
   <div class="profile-form-footer clearfix">
-    <md-button class="save-btn" ng-click="conversionSave()">
+    <md-button class="save-btn" ng-click="conversionSave()" ng-disabled="conversionStatus">
     <i class="icon-ok"></i>
     save
     </md-button>

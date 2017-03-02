@@ -74,7 +74,7 @@
         </div>
       </div> -->
       <div class="profile-form-footer clearfix">
-        <md-button class="save-btn" ng-click="domainSava()" ng-disabled="form.$invalid">
+        <md-button class="save-btn" ng-click="domainSava()" ng-disabled="form.$invalid || domainSaveStatus">
           <i class="icon-ok"></i>
           save
         </md-button>

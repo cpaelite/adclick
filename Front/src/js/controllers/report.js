@@ -698,8 +698,10 @@
     function nameRequired() {
       if ($scope.prefix.length == $scope.item.name.length) {
         $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
       } else {
         $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
       }
     };
 
@@ -950,9 +952,8 @@
     }
 
     this.save = function () {
-      $scope.saveStatus = true;
       // cost model value
-      nameRequired();
+      if(!nameRequired()) return;
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
@@ -984,6 +985,7 @@
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         Campaign.save($scope.item, success);
       }
     };
@@ -1085,8 +1087,10 @@
     function nameRequired() {
       if ($scope.prefix.length == $scope.item.name.length) {
         $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
       } else {
         $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
       }
     };
     $scope.nameRequired = nameRequired;
@@ -1144,11 +1148,11 @@
     }
 
     this.save = function () {
-      $scope.saveStatus = true;
-      nameRequired();
+      if(!nameRequired()) return;
       $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         Lander.save($scope.item, success);
       }
     };
@@ -1328,8 +1332,10 @@
     function nameRequired() {
       if ($scope.prefix.length == $scope.item.name.length) {
         $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
       } else {
         $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
       }
     };
 
@@ -1395,8 +1401,7 @@
     }
 
     this.save = function () {
-      $scope.saveStatus = true;
-      nameRequired();
+      if(!nameRequired()) return;
       $scope.item.tags = $scope.tags;
 
       // fill item.affiliateNetwork
@@ -1412,6 +1417,7 @@
       delete $scope.item.postbackUrl;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         Offer.save($scope.item, success);
       }
     };
@@ -1563,7 +1569,6 @@
     }
 
     this.save = function () {
-      $scope.saveStatus = true;
       $scope.item.params = JSON.stringify($scope.params);
       $scope.item.cost = JSON.stringify($scope.cost);
       $scope.item.externalId = JSON.stringify($scope.externalId);
@@ -1572,6 +1577,7 @@
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         TrafficSource.save($scope.item, success);
       }
     };
@@ -1863,7 +1869,6 @@
     }
 
     this.save = function () {
-      $scope.saveStatus = true;
       if (!$scope.ipWhiteCheck) {
         $scope.item.ipWhiteList = "[]";
       } else {
@@ -1872,6 +1877,7 @@
       }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         AffiliateNetwork.save($scope.item, success);
       }
     };

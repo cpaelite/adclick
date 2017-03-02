@@ -69,7 +69,7 @@
     $q.all(initPromises).then(initSuccess, initError);
 
     $scope.sendInvitation = function () {
-      if(!$scope.emails) return; 
+      if(!$scope.emails) return;
       var emails = $scope.emails.split(',');
       $scope.invitationCount = $scope.invitationUserCount + emails.length;
       if ($scope.invitationCount > $scope.plan.userLimit) {
@@ -88,9 +88,9 @@
       if (!valid) {
         return;
       }
-      $scope.invitionSaveStatus = true;
+      $scope.invitationSaveStatus = true;
       Invitation.save({invitationEmail: emails}, function (result) {
-        $scope.invitionSaveStatus = false;
+        $scope.invitationSaveStatus = false;
         if (result.status) {
           fillUsers(result.data.invitations);
           toastr.success('invitations success!');

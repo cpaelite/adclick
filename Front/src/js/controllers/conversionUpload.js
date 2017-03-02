@@ -24,7 +24,9 @@
         return;
       }
 
+      $scope.conversionStatus = true;
       Conversion.save({keys:contents},function(result){
+        $scope.conversionStatus = false;
         if (!result.status) {
           $scope.errorMessage = result.message;
         } else {

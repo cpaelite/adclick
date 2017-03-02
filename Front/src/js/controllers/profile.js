@@ -23,11 +23,13 @@
     });
     $scope.phoneNumbr = /^[0-9]*$/;
     $scope.accountSave = function () {
+      $scope.accountSaveStatus = true;
       delete $scope.accountItem.idText;
       delete $scope.accountItem.status;
       delete $scope.accountItem.referralToken;
 
       Profile.save($scope.accountItem, function (response) {
+        $scope.accountSaveStatus = false;;
         if (response.status) {
           toastr.success('Your account data save success!');
           $localStorage.currentUser.firstname = $scope.accountItem.firstname;

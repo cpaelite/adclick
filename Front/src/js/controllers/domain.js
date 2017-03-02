@@ -84,7 +84,9 @@
           delete domain.btnName;
         });
       }
+      $scope.domainSaveStatus = true;
       Domains.save(saveItem, function (result) {
+        $scope.domainSaveStatus = false;
         if (result.status) {
           toastr.success('domain success!');
         } else {
