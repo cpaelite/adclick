@@ -145,6 +145,10 @@
       $scope.$broadcast("event:auth-loginSuccess");
     }
 
+    $scope.afterCancelChangePlan = function() {
+      $rootScope.changePlanStatus = false;
+    };
+
   }
 
 })();
