@@ -137,7 +137,6 @@ router.get('/api/payments', async (req, res, next) => {
       order: 'timeStamp DESC',
       limit: 100
     })
-    console.log(upls);
 
     let result = upls.map(upl => {
       return {
