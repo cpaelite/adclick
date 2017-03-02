@@ -9,11 +9,11 @@ module.exports = {
       connectionLimit: 10
     },
     staging: {
-      host: 'dev02.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
+      host: 'trackingdb.col8oozqk3ay.us-east-2.rds.amazonaws.com',
       user: 'root',
-      password: 'R%LKsIJF412',
+      password: 'DFICi5#sdf',
       database: 'AdClickTool',
-      connectionLimit: 10
+      connectionLimit: 1000
     }
   },
   "redis": {
