@@ -65,8 +65,10 @@
 	    });
 
 		$scope.toPayPal = function (ev, item) {
+      $scope.invoicesUpdateStatus = true;
 			BillingInfo.save($scope.item,function(result){
                 self.cancel();
+                $scope.invoicesUpdateStatus = false;
 			// 	$mdDialog.show({
 			//         multiple: true,
 			//         skipHide: true,

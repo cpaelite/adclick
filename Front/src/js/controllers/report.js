@@ -698,8 +698,10 @@
     function nameRequired() {
       if ($scope.prefix.length == $scope.item.name.length) {
         $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
       } else {
         $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
       }
     };
 
@@ -773,7 +775,7 @@
       });
     }
 
-    // Flow preview 
+    // Flow preview
     // $scope.secondIsShow = true ;
     $scope.toggleClick = function(type){
       type.isShow = !type.isShow;
@@ -896,6 +898,9 @@
       }
     };
 
+    this.close = function() {
+      $mdDialog.cancel();
+    };
 
     function defaultItem() {
       return {
@@ -923,6 +928,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -937,7 +943,9 @@
       var traffic = JSON.parse($scope.item.trafficSource);
       spliceUrlParams(traffic);
       if (!$scope.item.id) {
+        $scope.campaignAddStatus = true;
         $scope.item.id = campaign.id;
+        $('#dialogContent_campaign_edit_content').scrollTop(0);
         return;
       }
       $mdDialog.hide();
@@ -945,7 +953,7 @@
 
     this.save = function () {
       // cost model value
-      nameRequired();
+      if(!nameRequired()) return;
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
         $scope.item[$scope.radioTitle.toLowerCase()] = $scope.costModelValue;
       }
@@ -977,6 +985,7 @@
 
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         Campaign.save($scope.item, success);
       }
     };
@@ -1066,7 +1075,7 @@
       $scope.oldName = $scope.item.name;
       $scope.item.country = 'ZZZ';
     }
-    
+
     this.titleType = angular.copy(this.perfType);
     $scope.validateCallback = function(isValid) {
       $scope.editForm.name.$setValidity('asyncCheckName', isValid);
@@ -1078,8 +1087,10 @@
     function nameRequired() {
       if ($scope.prefix.length == $scope.item.name.length) {
         $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
       } else {
         $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
       }
     };
     $scope.nameRequired = nameRequired;
@@ -1120,13 +1131,14 @@
       $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
       $scope.prefix = preStr;
     }
-    
+
     // Country
     $scope.countries = $scope.$root.countries;
 
     this.cancel = $mdDialog.cancel;
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1136,10 +1148,11 @@
     }
 
     this.save = function () {
-      nameRequired();
+      if(!nameRequired()) return;
       $scope.item.tags = $scope.tags;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         Lander.save($scope.item, success);
       }
     };
@@ -1319,8 +1332,10 @@
     function nameRequired() {
       if ($scope.prefix.length == $scope.item.name.length) {
         $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
       } else {
         $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
       }
     };
 
@@ -1376,6 +1391,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1385,7 +1401,7 @@
     }
 
     this.save = function () {
-      nameRequired();
+      if(!nameRequired()) return;
       $scope.item.tags = $scope.tags;
 
       // fill item.affiliateNetwork
@@ -1401,6 +1417,7 @@
       delete $scope.item.postbackUrl;
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         Offer.save($scope.item, success);
       }
     };
@@ -1537,6 +1554,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1559,6 +1577,7 @@
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         TrafficSource.save($scope.item, success);
       }
     };
@@ -1835,6 +1854,7 @@
     };
 
     function success(item) {
+      $scope.saveStatus = false;
       if(item.data.status == 0) {
         $scope.errMessage = item.message;
         return;
@@ -1857,6 +1877,7 @@
       }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
+        $scope.saveStatus = true;
         AffiliateNetwork.save($scope.item, success);
       }
     };
@@ -2006,7 +2027,7 @@
     function closeConfirmCtrl($scope, $mdDialog) {
       this.title = "warnCloseTitle";
       this.content = 'warnClose';
-      
+
       this.ok = function() {
         $mdDialog.hide();
       };

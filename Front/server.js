@@ -1191,7 +1191,7 @@ app.post('/api/campaigns', function (req, res) {
       "tags": []
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -1279,7 +1279,7 @@ app.post('/api/campaigns/:campaignId', function (req, res) {
       "tags": []
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -1691,7 +1691,7 @@ app.post('/api/landers', function (req, res) {
       "tags": []
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -1805,7 +1805,7 @@ app.post('/api/offers', function (req, res) {
       "tags": []
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -1939,7 +1939,7 @@ app.post('/api/traffics', function (req, res) {
       "params": ""
     }
   };
-  res.send(result)
+  delayResponse(res, result);
 });
 
 app.post('/api/traffics/:id', function (req, res) {
@@ -2033,7 +2033,7 @@ app.post('/api/affiliates', function (req, res) {
       ipWhiteList: ""
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -3343,7 +3343,7 @@ app.post('/api/conversions', function (req, res) {
       }
     ]
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -3356,7 +3356,7 @@ app.put('/api/tsreference/:id', function (req, res) {
     message: 'success'
   };
 
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -3368,8 +3368,7 @@ app.post('/api/tsreference', function (req, res) {
     status: 1,
     message: 'success'
   };
-
-  res.send(result);
+  delayResponse(res, result);
 });
 
 

@@ -198,13 +198,16 @@
       // };
 
       this.save = function() {
+        $scope.saveStatus = true;
         if(self.item) {
           TsReference.update({id: self.item.id}, $scope.formData, function(oData) {
             $mdDialog.hide();
+            $scope.saveStatus = false;
           });
         } else {
           TsReference.save($scope.formData, function(oData) {
             $mdDialog.hide();
+            $scope.saveStatus = false;
           });
         }
       };

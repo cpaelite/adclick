@@ -163,6 +163,7 @@
     this.cancel = $mdDialog.cancel;
 
     function success(result) {
+      $scope.blackListStatus = false;
       if (result.status) {
         toastr.success('Update Success!');
       } else {
@@ -178,6 +179,7 @@
       $scope.editForm.$setSubmitted();
       $scope.blurInput();
       if ($scope.editForm.$valid) {
+        $scope.blackListStatus = true;
         BlackList.save(this.data, success);
       }
     };
