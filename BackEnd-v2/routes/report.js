@@ -13,6 +13,7 @@ import {
   attributes,
   keys,
   formatRows,
+  formatTotals,
   extraConfig
 } from '../util/report'
 
@@ -169,8 +170,18 @@ async function normalReport(query) {
     conversions: rawRows.reduce((sum, row) => sum + row.conversions, 0),
     revenue: rawRows.reduce((sum, row) => sum + row.revenue, 0),
     cost: rawRows.reduce((sum, row) => sum + row.cost, 0),
-    profit: rawRows.reduce((sum, row) => sum + row.profit, 0.0),
+    profit: rawRows.reduce((sum, row) => sum + row.profit, 0),
+    cpv: rawRows.reduce((sum, row) => sum + row.cost, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
+    ictr: rawRows.reduce((sum, row) => sum + row.visits, 0) / rawRows.reduce((sum, row) => sum + row.impression, 0),
+    ctr: rawRows.reduce((sum, row) => sum + row.clicks, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
+    cr: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
+    cv: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
+    roi: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.cost, 0),
+    epv: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
+    epc: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
+    ap: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.conversions, 0),
   }
+  totals = formatTotals([totals])[0]
   return {rows: rawRows, totals, totalRows}
 }
 

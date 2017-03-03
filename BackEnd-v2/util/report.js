@@ -104,7 +104,7 @@ export const sumShorts = {
     'profit'
   ],
   cpv: [
-    sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.impressions)'), 'cpv'
+    sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.visits)'), 'cpv'
   ],
   ictr: [
     sequelize.literal('sum(AdStatis.Visits)/sum(AdStatis.Impressions)'), 'ictr'
@@ -220,6 +220,24 @@ export const keys = [
   'trafficName'
 ]
 
+export function formatTotals(rows) {
+  return rows.map((row) => {
+    row.revenue = +(parseFloat(row.revenue)).toFixed(2);
+    row.cost = +(parseFloat(row.cost)).toFixed(2);
+    row.profit = +parseFloat(row.profit).toFixed(2);
+    row.cpv = +parseFloat(row.cpv).toFixed(4);
+    row.ictr = +parseFloat(row.ictr).toFixed(2);
+    row.ctr = +parseFloat(row.ctr).toFixed(2);
+    row.cr = +parseFloat(row.cr).toFixed(4);
+    row.cv = +parseFloat(row.cv).toFixed(2);
+    row.roi = +parseFloat(row.roi).toFixed(2);
+    row.epv = +parseFloat(row.epv).toFixed(4);
+    row.epc = +parseFloat(row.epc).toFixed(2);
+    row.ap = +parseFloat(row.ap).toFixed(2);
+    return row;
+  })
+}
+
 export function formatRows(rows) {
   return rows.map((row) => {
     row.revenue = +(parseFloat(row.revenue) / 1000000).toFixed(2);
@@ -228,7 +246,7 @@ export function formatRows(rows) {
     row.cpv = +parseFloat(row.cpv).toFixed(4);
     row.ictr = +parseFloat(row.ictr).toFixed(2);
     row.ctr = +parseFloat(row.ctr).toFixed(2);
-    row.cr = +parseFloat(row.cr).toFixed(2);
+    row.cr = +parseFloat(row.cr).toFixed(4);
     row.cv = +parseFloat(row.cv).toFixed(2);
     row.roi = +parseFloat(row.roi).toFixed(2);
     row.epv = +parseFloat(row.epv).toFixed(4);
