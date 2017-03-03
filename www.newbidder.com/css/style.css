@@ -250,7 +250,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .con-title{margin:25px 0 10px 0;}
 .list-01 li{line-height:32px;}
 .list-01 li a{color:#4f4f4f;}
-.list-01 .qq{background:url("../img/qq.png") no-repeat left;width:12px;height:12px;background-size:100%;float:left;margin-top:9px;}
+.qq img{float:left;margin-top:4px;}
 .product-box li{margin-bottom:15px;}
 .product-box img{width:42px;margin-right:15px;}
 .bottom-box{background:#cfd8e6;text-align:center;color:#4f4f4f;font-size:12px;padding:12px 0;}
