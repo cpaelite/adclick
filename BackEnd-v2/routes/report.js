@@ -167,8 +167,8 @@ async function normalReport(query) {
     clicks: rawRows.reduce((sum, row) => sum + row.clicks, 0),
     visits: rawRows.reduce((sum, row) => sum + row.visits, 0),
     conversions: rawRows.reduce((sum, row) => sum + row.conversions, 0),
-    revenue: rawRows.reduce((sum, row) => sum + row.revenue, 0.0),
-    cost: rawRows.reduce((sum, row) => sum + row.cost, 0.0),
+    revenue: rawRows.reduce((sum, row) => sum + row.revenue, 0),
+    cost: rawRows.reduce((sum, row) => sum + row.cost, 0),
     profit: rawRows.reduce((sum, row) => sum + row.profit, 0.0),
   }
   return {rows: rawRows, totals, totalRows}
