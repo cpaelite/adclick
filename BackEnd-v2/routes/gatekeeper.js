@@ -102,7 +102,7 @@ router.get('/api/tsreport', async (req, res, next) => {
   try {
     let {subId: userId} = req;
     let {from, to, tsReferenceId: provider_id} = req.query;
-    let apiToken = await ApiToken.findOne({where: {userId}});
+    let apiToken = await ApiToken.findOne({where: {userId, provider_id}});
     if (!apiToken) throw new Error('no api token found');
 
     let rows = await Statistic.findAll({
