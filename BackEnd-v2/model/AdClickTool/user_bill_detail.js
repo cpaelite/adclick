@@ -4,6 +4,9 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    email: {
+      type: DataTypes.STRING
+    },
     name: {
       type: DataTypes.TEXT
     },

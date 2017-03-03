@@ -101,10 +101,10 @@ router.get('/api/invoices', async (req, res, next) => {
   let email = '', balance = 0;
   try {
     let {subId: userId} = req;
-
     let user = await User.findById(userId);
+    let user_bill_detail = await UBD.findOne({userId});
     if (!user) throw new Error('invalid user');
-    email = user.email
+    email = user_bill_detail ? user_bill_detail.email : user.email;
 
     let billing = await UB.findOne({where: {userId, expired: 0}});
     if (!billing) throw new Error('no billing')
