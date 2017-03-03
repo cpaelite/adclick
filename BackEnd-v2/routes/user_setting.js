@@ -928,6 +928,7 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
         req.query.idText = req.subidText;
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
         await common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
 
         return res.json({
