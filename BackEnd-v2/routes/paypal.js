@@ -13,7 +13,8 @@ const {
   UserPaymentLog: UPL,
   UserPaymentMethod: UPM,
   TemplatePlan: TP,
-  User
+  User,
+  UserBillDetail: UBD
 } = models;
 
 router.get('/paypal/success', async function(req, res, next) {
@@ -25,41 +26,50 @@ router.get('/paypal/success', async function(req, res, next) {
       })
     })
 
-    let agreement = await PBA.findOne({where: {token}})
-    let template_plan = await TP.findOne({where: {paypalPlanId: agreement.paypalPlanId}})
-    let upm = await UPM.create({
-      userId: agreement.userId,
-      type: 1,
-      paypalAgreementId: agreement.id,
-      info: `${template_plan.name}`,
-      changedAt: moment().unix(),
-      deleted: 0
-    });
+    // setup the new plan
+    await PBA.sequelize.transaction(async (transaction) => {
 
-    let old_ub = await UB.findOne({
-      where: {
-        userId: agreement.userId,
-        expired: 0
+      let agreement = await PBA.findOne({where: {token}})
+      let template_plan = await TP.findOne({where: {paypalPlanId: agreement.paypalPlanId}})
+
+
+      let old_ub = await UB.findOne({
+        where: {
+          userId: agreement.userId,
+          expired: 0
+        }
+      })
+
+      // repeated token, ignore
+      if (old_ub && old_ub.agreementId == agreement.id) {
+        return res.redirect('/#/setApp/subscriptions');
       }
-    })
 
-    if (old_ub) {
-      old_ub.expired = 1;
-      await old_ub.save();
-      let old_agreement
+      // upgrade or downgrade plan, deactivate the previous plan
+      if (old_ub && old_ub.agreementId !== agreement.id) {
+        old_ub.expired = 1;
+        await old_ub.save({transaction});
+        let old_agreement
 
-      let {agreementId} = old_ub;
-      if (agreementId) {
-        old_agreement = await PBA.findById(agreementId);
-        if (old_agreement) {
-          old_agreement.status = 6;
-          await old_agreement.save()
+        let {agreementId} = old_ub;
+        if (agreementId) {
+          old_agreement = await PBA.findById(agreementId);
+          if (old_agreement) {
+            old_agreement.status = 6;
+            await old_agreement.save({transaction})
+          }
         }
       }
-    }
 
 
-    await PBA.sequelize.transaction(async (transaction) => {
+      let upm = await UPM.create({
+        userId: agreement.userId,
+        type: 1,
+        paypalAgreementId: agreement.id,
+        info: `${template_plan.name}`,
+        changedAt: moment().unix(),
+        deleted: 0
+      }, {transaction});
 
       let user = await User.findById(agreement.userId);
       user.status = 1;
@@ -86,6 +96,28 @@ router.get('/paypal/success', async function(req, res, next) {
         executeResp: JSON.stringify(billingAgreement)
       }, {transaction});
 
+      // update UserBilling adress
+      let user_bill_detail = await UBD.findOne({where: {userId: agreement.userId}});
+      if (!user_bill_detail) {
+        console.log(billingAgreement)
+        let {shipping_address, payer} = billingAgreement
+        console.log(payer, shipping_address);
+        user_bill_detail = UBD.build({
+          userId: agreement.userId,
+          email: payer.payer_info.email,
+          name: shipping_address.recipient_name,
+          address1: shipping_address.line1,
+          address2: shipping_address.line2,
+          city: shipping_address.city,
+          zip: shipping_address.postal_code,
+          region: shipping_address.state,
+          country: shipping_address.country_code,
+          taxId: ''
+        });
+
+        await user_bill_detail.save({transaction})
+      }
+
 
       let ub = await UB.create({
         userId: agreement.userId,
@@ -105,7 +137,6 @@ router.get('/paypal/success', async function(req, res, next) {
     })
     res.redirect('/#/setApp/subscriptions?message=success');
   } catch (e) {
-    console.log(e);
     res.redirect('/#/setApp/subscriptions?message=cancel');
   }
 })

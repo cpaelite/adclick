@@ -929,6 +929,14 @@ encodeurl@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.1.tgz#79e3d58655346909fe6f0f45a5de68103b294d20"
 
+eroadvertising@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/eroadvertising/-/eroadvertising-1.0.0.tgz#d806cd6a23f6f304979df780219a6c4d5f9c8c74"
+  dependencies:
+    bluebird "^3.4.7"
+    superagent "^3.3.2"
+    superagent-promise "^1.1.0"
+
 escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
@@ -2418,3 +2426,11 @@ xtend@^4.0.0:
 yallist@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.0.0.tgz#306c543835f09ee1a4cb23b7bce9ab341c91cdd4"
+
+zeropark@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/zeropark/-/zeropark-1.0.0.tgz#d64d40d3b52480e69de172a191e8ed5d170b05f9"
+  dependencies:
+    bluebird "^3.4.7"
+    superagent "^3.3.2"
+    superagent-promise "^1.1.0"
