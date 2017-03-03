@@ -12,7 +12,8 @@
 
     Profile.get(null, function (profile) {
       var profile = profile.data;
-      $scope.linkurl = $location.$$absUrl + profile.referralToken;
+      var domain = $location.$$absUrl.substring(0, $location.$$absUrl.indexOf('#')+1);
+      $scope.linkurl = domain + "/access/signup?refToken=" + profile.referralToken;
     });
 
     $scope.query = {
