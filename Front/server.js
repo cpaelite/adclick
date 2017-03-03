@@ -3393,8 +3393,25 @@ app.get('/api/third-traffics', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @api {post} /api/user/coupon 用户兑换优惠券
+ * @apiName 用户兑换优惠券
+ * @apiGroup coupon
+ *
+ * @apiParam {String} code
+ */
+app.post('/api/user/coupon', function (req, res) {
+  var result = {
+    status: 1,
+    data: {
+
+    }
+  };
+  setTimeout(function() {
+    res.send(result);
+  }, 5000);
+});
+
 app.listen(5000, function () {
   console.log('server started success port : 5000');
 });
-
-

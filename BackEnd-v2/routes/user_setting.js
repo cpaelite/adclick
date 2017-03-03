@@ -12,78 +12,6 @@ var uuidV4 = require('uuid/v4');
 var moment = require('moment');
 
 
-/**
- * @api {get} /api/profile
- * @apiName
- * @apiGroup User
- *
- *
- * @apiSuccessExample {json} Success-Response:
- *   {
- *    status: 1,
- *    message: 'success',
- *    data:{
- *        idText:"",
-          firstname: 'test',
-          lastname:'test',
-          companyname: 'zheng',
-          tel: '13120663670',
-          email:"",
-          timezone:'+08:00',
-          homescreen:'dashboard',  // or campaignList
-          referralToken:"",
-          status:0  //0:New;1:运行中;2:已过期
-    }
- *
- *   }
- *
- */
-router.get('/api/profile', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.query.userId = req.subId;
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let result = await query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
-
-        let responseData = {};
-        if (result.length) {
-            responseData.idText = result[0].idText;
-            responseData.firstname = result[0].firstname;
-            responseData.lastname = result[0].lastname;
-            responseData.status = result[0].status;
-            responseData.timezone = result[0].timezone;
-            responseData.referralToken = result[0].referralToken;
-            responseData.email = result[0].email;
-            if (result[0].setting) {
-                let settingJSON = JSON.parse(result[0].setting);
-                responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
-                responseData.tel = settingJSON.tel ? settingJSON.tel : "";
-                responseData.homescreen = settingJSON.homescreen ? settingJSON.homescreen : "";
-            } else {
-                responseData.companyname = "";
-                responseData.tel = "";
-                responseData.homescreen = "dashboard";
-            }
-        }
-        res.json({
-            status: 1,
-            message: 'succes',
-            data: responseData
-        });
-    } catch (e) {
-        next(e);
-    }
-    finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-
-});
 
 /**
  * @api {post} /api/profile
@@ -365,7 +293,7 @@ router.get('/api/referrals', async function (req, res, next) {
             dir = "desc";
             order = order.replace(new RegExp(/-/g), '');
         }
-        let tmp =`select a.idText as referredUserId, FROM_UNIXTIME(a.acquired,'%d-%m-%Y %H:%i') as acquired,
+        let tmp = `select a.idText as referredUserId, FROM_UNIXTIME(a.acquired,'%d-%m-%Y %H:%i') as acquired,
 (case a.status when 0 then "New" when 1 then "Activated"  END) as status, FROM_UNIXTIME(a.createdAt,'%d-%m-%Y %H:%i') as lastactivity , 
 truncate(a.totalcommission/1000000,2)  as totalCommission ,truncate(b.monthcommission/1000000,2) as recentCommission from 
 (select user.idText,ref.acquired,ref.status,max(mis.createdAt)as createdAt,sum(mis.commission) as totalcommission from  UserReferralLog  ref  
@@ -989,18 +917,18 @@ router.get('/api/invitation', async function (req, res, next) {
  *
  **/
 router.delete('/api/invitation/:id', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        idText: Joi.string().required(),
-        id: Joi.number().required()
-    });
     let connection;
-
     try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            idText: Joi.string().required(),
+            id: Joi.number().required()
+        });
         req.query.userId = req.subId;
         req.query.idText = req.subidText;
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
         await common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
 
         return res.json({
@@ -1017,61 +945,6 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
     }
 });
 
-/**
- * @api {get} /api/groups  获取用户所在的用户组
- *
- * @apiGroup User
- * @apiName  获取用户所在的用户组
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- * {status:1,message:'success',data:{
- *
- *  groups:[{ groupId:"",
-            firstname:"",
-            lastname:"",
-            email:""}]
- * }}
- *
- **/
-router.get('/api/groups', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        idText: Joi.string().required()
-    });
-    let connection;
-    try {
-        req.query.userId = req.subId;
-        req.query.idText = req.subidText;
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let result = [];
-        //获取用户所在的用户组的管理员信息
-        result = await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
-        //myself
-        result.push({
-            groupId: req.subgroupId,
-            firstname: req.firstname,
-            lastname: req.lastname,
-            email: req.email
-        });
-
-        return res.json({
-            status: 1,
-            message: 'success',
-            data: {
-                groups: result
-            }
-        });
-    } catch (e) {
-        next(e);
-
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-});
 
 
 

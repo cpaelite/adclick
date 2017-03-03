@@ -3,59 +3,72 @@
 <div class="form-column profile-content subscription">
   <div class="basic-form clearfix">
     <div class="col-sm-12 col-md-6">
-		<h3 class="subscription-title">Current billing statistics</h3>
-		<div class="table-out">
-			<table>
-				<tr>
-					<td>Plan:</td>
-					<td>{{item.statistic.planCode}}</td>
-				</tr>
-				<tr>
-					<td>Current period:</td>
-					<td>{{item.statistic.from}} - {{item.statistic.to}}</td>
-				</tr>
-				<tr>
-					<td>Billed events:</td>
-					<td>{{item.statistic.billedEvents}}</td>
-				</tr>
-				<tr>
-					<td>Total events:</td>
-					<td>{{item.statistic.totalEvents}}</td>
-				</tr>
-				<tr>
-					<td>Included events:</td>
-					<td>{{item.statistic.includedEvents}}</td>
-				</tr>
-				<tr>
-					<td>Remaining events:</td>
-					<td>{{item.statistic.remainEvents}}</td>
-				</tr>
-				<tr>
-					<td>Overage events:</td>
-					<td>{{item.statistic.overageEvents}}</td>
-				</tr>
-				<tr>
-					<td>Overage cost:</td>
-					<td>{{item.statistic.overageCost}}</td>
-				</tr>
-			</table>
-		</div>
+		  <h3 class="subscription-title">Current billing statistics</h3>
+  		<div class="table-out">
+  			<table>
+  				<tr>
+  					<td>Plan:</td>
+  					<td>{{item.statistic.planCode}}</td>
+  				</tr>
+  				<tr>
+  					<td>Current period:</td>
+  					<td>{{item.statistic.from}} - {{item.statistic.to}}</td>
+  				</tr>
+  				<tr>
+  					<td>Billed events:</td>
+  					<td>{{item.statistic.billedEvents}}</td>
+  				</tr>
+  				<tr>
+  					<td>Total events:</td>
+  					<td>{{item.statistic.totalEvents}}</td>
+  				</tr>
+  				<tr>
+  					<td>Included events:</td>
+  					<td>{{item.statistic.includedEvents}}</td>
+  				</tr>
+  				<tr>
+  					<td>Free events:</td>
+  					<td>{{item.statistic.freeEvents}}</td>
+  				</tr>
+  				<tr>
+  					<td>Remaining events:</td>
+  					<td>{{item.statistic.remainEvents}}</td>
+  				</tr>
+  				<tr>
+  					<td>Overage events:</td>
+  					<td>{{item.statistic.overageEvents}}</td>
+  				</tr>
+  				<tr>
+  					<td>Overage cost:</td>
+  					<td>{{item.statistic.overageCost}}</td>
+  				</tr>
+  			</table>
+  		</div>
     </div>
     <div class="col-sm-12 col-md-6">
-		<h3 class="subscription-title subscription-title2">Plan details</h3>
-		<div class="table-out">
-			<div class="plan-detail">
-				<span>Subscription plan:</span>
-				<div class="pro clearfix">
-					<span>{{item.plan.name}}</span>
-					<span class="pro-right">
-						<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
-					</span>
-				</div>
-				<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(true)">Change Plan</md-button>
-			</div>
-		</div>
-        <div change-plan plan-id="item.plan.id" no-plan="false" ng-if="changePlanStatus" after-cancel="changePlan(false)"></div>
+  		<h3 class="subscription-title">Plan details</h3>
+  		<div class="table-out">
+  			<div class="plan-detail">
+  				<span class="sub-font">Subscription plan:</span>
+  				<div class="pro clearfix">
+  					<span>{{item.plan.name}}</span>
+  					<span class="pro-right">
+  						<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
+  					</span>
+  				</div>
+  				<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(true)">Change Plan</md-button>
+  			</div>
+  		</div>
+      <h3 class="subscription-title subscription-title2">Coupon code</h3>
+      <div class="table-out table-out-coupon">
+        <form name="couponForm" ng-submit="$event.preventDefault()">
+          <div class="form-group" layout="row">
+            <input type="text" class="form-control form-control-two flex" style="height: 32px;" name="coupon" ng-model="couponText" placeholder="Please input your coupon" required>
+			      <md-button style="margin: 0;" class="md-raised copy-btn" ng-disabled="couponForm.coupon.$invalid || couponStatus" ng-click="changeCoupon(couponText)">Submit</md-button>
+		      </div>
+        </form>
+      </div>
+      <div change-plan plan-id="item.plan.id" no-plan="false" ng-if="changePlanStatus" after-cancel="changePlan(false)"></div>
     </div>
   </div>
 </div>

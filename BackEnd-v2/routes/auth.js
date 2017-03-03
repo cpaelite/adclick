@@ -136,7 +136,7 @@ function sendActiveEmail(email, idText) {
 
             <p>Thanks for signing up! We'll just need you to click the activation link below to get your account up and running.</p>
             <p><a href="<%=href%>">Activate my account</a></p>
-            
+
             <p>Best regards,</p>
             <p>Newbidder Team </p>`)({
       href: setting.activateRouter + "?key=" + idText,
@@ -273,39 +273,7 @@ router.post('/account/check', function (req, res, next) {
     });
   });
 });
-/**
- * @api {get} /countries  获取所有国家
- * @apiName  get all countries
- * @apiGroup auth
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{"countries":[]}
- *     }
- *
- */
-router.get('/api/countries', function (req, res, next) {
-  pool.getConnection(function (err, connection) {
-    if (err) {
-      err.status = 303
-      return next(err);
-    }
-    connection.query(
-      "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
-      function (err, result) {
-        connection.release();
-        if (err) {
-          return next(err);
-        }
-        res.json(
-          result
-        );
-      });
-  });
-});
+
 /**
  * @api {get} /timezones  获取所有timezones
  * @apiName  get all timezones
@@ -392,7 +360,7 @@ router.get('/invitation', async function (req, res, next) {
 
                     <p>If you have any questions, feel free to contact us at: support@newbidder.com</p>
 
-                     
+
                     <p>Best regards,</p>
                     <p>Newbidder Support Team</p>
                     <p>Skype：support@newbidder</p>

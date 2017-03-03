@@ -78,7 +78,7 @@ angular.module('app')
   }])
   .factory('Invitation', ['$resource', function($resource) {
     return $resource('/api/invitation/:id', {id: '@id'})
-  }])  
+  }])
   .factory('Conversion', ['$resource', function($resource) {
     return $resource('/api/conversions')
   }])
@@ -131,5 +131,8 @@ angular.module('app')
   }])
   .factory('TsCampaign', ['$resource', function ($resource) {
     return $resource('/api/tsCampaign/:id');
+  }])
+  .factory('Coupon', ['$resource', function ($resource) {
+    return $resource('/api/user/coupon');
   }])
 ;

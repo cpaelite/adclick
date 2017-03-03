@@ -626,12 +626,13 @@ table.md-table th.md-column {
     background: -ms-linear-gradient(top, #F8F8F8 0, #eee 100%);
     background: linear-gradient(to bottom, #F8F8F8 0, #eee 100%);    height:32px;color:#333;
 }
+table.md-table th.md-column.md-active, table.md-table th.md-column.md-active md-icon{color:#2da8f9}
 table.md-table thead.md-head > tr.md-row{
     height: auto;
 }
 table.md-table td.md-cell{
     border-top: 1px solid #eaeaea;
-    border-bottom: none;
+    border-bottom: none;font-size:12px;
 }
 .md-table-pagination .label {
     font-size: 12px;
@@ -2515,7 +2516,7 @@ select{border:1px solid #d5dce4;}
     -moz-transform-origin:0 0;      /* Firefox */
     -o-transform: scale(0.90);      /* Opera */
     -o-transform-origin:0 0;        /* Opera */}
-.sign-input input{text-indent:30px;border-radius:2px;background:#f6f8f8;border:1px solid #d5dce4;}
+.sign-input input{text-indent:30px;border-radius:2px;background:#f6f8f8;border:1px solid #d5dce4;font-size:12px;}
 .w-top{margin-top:5%;}
 .w-top .list-group-item{margin-bottom:10px;border-radius:2px;height:38px;}
 .w-top .list-group-sm .list-group-item{background:#f6f8f8;padding:0;}
@@ -2548,7 +2549,7 @@ md-select-menu.md-default-theme md-option[selected]:hover, md-select-menu md-opt
 md-select.md-table-select > .md-select-value{border-bottom:1px solid #d5dce4 !important;}
 table.md-table thead.md-head > tr.md-row{height: auto;}
 table.md-table td.md-cell{border-top:1px solid #eaeaea;border-bottom:none;}
-table.md-table tbody.md-body > tr.md-row, table.md-table tfoot.md-foot > tr.md-row{height:42px;}
+table.md-table tbody.md-body > tr.md-row, table.md-table tfoot.md-foot > tr.md-row{height:38px;}
 md-option{height:36px;background:#f6f6f6;}
 md-option:hover{background:#e6ebf0;}
 md-option .md-text{font-size:14px;color:#333;}
@@ -2572,6 +2573,11 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
 .navi ul.nav li .icon-question-sign .nav-tips-font{display:none;}
 .navi ul.nav li .icon-question-sign:hover .nav-tips-font{padding:3px 5px;width:175px;line-height:15px;background:#444;color:#fff;position:absolute;top:10px;left:110px;display:block;border-radius:3px;font-size:12px;}
 .md-table-pagination{border:none;}
+.nav{display:inline-block;float:left;}
+.coupon-btn{float:right;margin:14px 15px 0 0;}
+.coupon-btn span{background:#fff8df;float:left;padding:0 10px;border:1px dashed #ded0a0;border-right:none;border-radius:2px 0 0 2px;height:30px;line-height:30px;}
+.coupon-btn a{font-size:11px;display:block;font-weight:600;border-radius:2px;}
+.coupon-btn .coupon-icon{width:30px;height:30px;background:#ebdfb6 url("../../assets/img/coupon-icon.png") no-repeat center;background-size:12px;float:left;border-radius:0 2px 2px 0;}
 @media (max-width:1124px){.right-select .search-con{margin-right:5px;
     padding: 0 2px;
     margin-top: -38px;
