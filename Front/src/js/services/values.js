@@ -37,8 +37,8 @@ angular.module('app').value('columnDefinition', {
   ],
   flow: [
     {
-    key: 'flowName',
-    name: 'Flow'
+      key: 'flowName',
+      name: 'Flow'
     },
     {
       key: 'flowHash',
@@ -46,8 +46,8 @@ angular.module('app').value('columnDefinition', {
     }],
   lander: [
     {
-    key: 'landerName',
-    name: 'Lander'
+      key: 'landerName',
+      name: 'Lander'
     },
     {
       key: 'landerHash',
@@ -67,8 +67,8 @@ angular.module('app').value('columnDefinition', {
     }],
   offer: [
     {
-    key: 'offerName',
-    name: 'Offer'
+      key: 'offerName',
+      name: 'Offer'
     },
     {
       key: 'offerHash',
@@ -92,8 +92,8 @@ angular.module('app').value('columnDefinition', {
     }],
   traffic: [
     {
-    key: 'trafficName',
-    name: 'Traffic source'
+      key: 'trafficName',
+      name: 'Traffic source'
     },
     {
       key: 'trafficHash',
@@ -153,8 +153,8 @@ angular.module('app').value('columnDefinition', {
     }],
   affiliate: [
     {
-    key: 'affiliateName',
-    name: 'Affiliate Network'
+      key: 'affiliateName',
+      name: 'Affiliate Network'
     },
     {
       key: 'affiliateHash',
@@ -168,8 +168,8 @@ angular.module('app').value('columnDefinition', {
       key: 'whitelistedIP',
       name: 'Whitelisted IP'
     }],
-    conversion: [
-      {
+  conversion: [
+    {
       key: 'PostbackTimestamp',
       name: 'Postback timestamp'
     }, {
@@ -299,7 +299,7 @@ angular.module('app').value('columnDefinition', {
       name: 'Brand'
     }
   ],
-  browserversion: [
+  browserVersion: [
     {
       key: 'browserVersion',
       name: 'Brower version'
@@ -308,7 +308,7 @@ angular.module('app').value('columnDefinition', {
   browser: [
     {
       key: 'browser',
-      name: 'browser'
+      name: 'Browser'
     }
   ],
   city: [
@@ -317,10 +317,10 @@ angular.module('app').value('columnDefinition', {
       name: 'City'
     }
   ],
-  connectiontype: [
+  connectionType: [
     {
       key: 'connectionType',
-      name: 'ConnectionType'
+      name: 'Connection Type'
     }
   ],
   country: [
@@ -335,10 +335,16 @@ angular.module('app').value('columnDefinition', {
       name: 'Day'
     }
   ],
-  devicetype: [
+  deviceType: [
     {
       key: 'deviceType',
       name: 'DeviceType'
+    }
+  ],
+  ip: [
+    {
+      key: 'ip',
+      name: 'IP'
     }
   ],
   isp: [
@@ -353,7 +359,7 @@ angular.module('app').value('columnDefinition', {
       name: 'Language'
     }
   ],
-  mobilecarrier: [
+  mobileCarrier: [
     {
       key: 'mobileCarrier',
       name: 'MobileCarrier'
@@ -371,7 +377,7 @@ angular.module('app').value('columnDefinition', {
       name: 'OS'
     }
   ],
-  osversion: [
+  osVersion: [
     {
       key: 'osVersion',
       name: 'OSVersion'
@@ -529,32 +535,32 @@ angular.module('app').value('columnDefinition', {
 angular.module('app').value('groupByOptions', [
   {value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName"},
   {value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName"},
-  {value: "brand", display: "Brands", idKey: "brandId", nameKey: "Brand"},
+  {value: "brand", display: "Brands", idKey: "brand", nameKey: "brand"},
   {value: "affiliate", display: "Affiliate networks", idKey: "affiliateId", nameKey: "affiliateName"},
-  {value: "browserversion", display: "Browser versions", idKey: "bvId", nameKey: "BrowserVersion"},
-  {value: "browser", display: "Browsers", idKey: "Browser", nameKey: "Browser"},
-  {value: "city", display: "City", idKey: "cityId", nameKey: "City"},
-  {value: "connectiontype", display: "Connection type", idKey: "ctId", nameKey: "ConnectionType"},
+  {value: "browserVersion", display: "Browser versions", idKey: "browserVersion", nameKey: "browserVersion"},
+  {value: "browser", display: "Browsers", idKey: "browser", nameKey: "browser"},
+  {value: "city", display: "City", idKey: "city", nameKey: "city"},
+  {value: "connectionType", display: "Connection Type", idKey: "connectionType", nameKey: "connectionType"},
   // {value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName"},
-  {value: "country", display: "Country", idKey: "countryId", nameKey: "Country"},
-  {value: "day", display: "Day", idKey: "dayId", nameKey: "day"},
+  {value: "country", display: "Country", idKey: "country", nameKey: "country"},
+  {value: "day", display: "Day", idKey: "day", nameKey: "day"},
   // {value: "dayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
-  {value: "deviceType", display: "Device type", idKey: "dtId", nameKey: "DeviceType"},
+  {value: "deviceType", display: "Device Type", idKey: "deviceType", nameKey: "deviceType"},
   // {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},
   // {value: "timeOfDay", display: "Time of day", idKey: "todId", nameKey: "TimeOfDay"},
-  {value: "ip", display: "IP and IP range", idKey: "ipId", nameKey: "ipName"},
-  {value: "isp", display: "ISP / Carrier", idKey: "ispId", nameKey: "ISP"},
+  {value: "ip", display: "IP and IP range", idKey: "ip", nameKey: "ip"},
+  {value: "isp", display: "ISP / Carrier", idKey: "isp", nameKey: "isp"},
   {value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName"},
-  {value: "language", display: "Language", idKey: "languageId", nameKey: "Language"},
-  {value: "mobilecarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "MobileCarrier"},
-  {value: "model", display: "Models", idKey: "modelId", nameKey: "Model"},
+  {value: "language", display: "Language", idKey: "language", nameKey: "language"},
+  {value: "mobileCarrier", display: "Mobile carrier", idKey: "mobileCarrier", nameKey: "mobileCarrier"},
+  {value: "model", display: "Models", idKey: "model", nameKey: "model"},
   // {value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName"},
-  {value: "os", display: "OS", idKey: "osId", nameKey: "OS"},
-  {value: "osversion", display: "OS versions", idKey: "osversionId", nameKey: "OSVersion"},
+  {value: "os", display: "OS", idKey: "os", nameKey: "os"},
+  {value: "osVersion", display: "OS versions", idKey: "osVersion", nameKey: "osVersion"},
   {value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName"},
   // {value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName"},
-  {value: "domain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "Domain"},
-  {value: "region", display: "State / Region", idKey: "regionId", nameKey: "Region"},
+  {value: "domain", display: "Referrer domain", idKey: "domain", nameKey: "domain"},
+  {value: "region", display: "State / Region", idKey: "region", nameKey: "region"},
   {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName"},
   {value: "v1", display: "V1", idKey: "v1", nameKey: "v1", role: 'campaign'},
   {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", role: 'campaign'},
