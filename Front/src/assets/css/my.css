@@ -1432,6 +1432,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     padding: 0 10px;
     background:#2da8f9;
     color: #fff;
+    margin:0;
 }
 .md-raised.copy-btn.verify-btn{
     background: #29af69;
@@ -1447,7 +1448,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     background: rgba(255, 0, 0, 0.62) !important;
 }
 .md-raised.copy-btn:hover{
-    background: #2da8f9 !important;
+    background: #2f9be1 !important;
 }
 .table thead{
     font-size: 12px;
@@ -1462,15 +1463,18 @@ h1.setting-title p{line-height:26px;color:#666;}
     border-top: none;
 }
 .subscription-title{
-    font-size: 14px;
-    color: #999;
-    height: 39px;
-    line-height: 39px;
+    font-size: 13px;
+    color: #666;
+    height: 32px;
+    line-height: 32px;
     margin: 0;
-    padding: 0 10px;
+    padding: 0 15px;
     text-align:center;
+    background:#dee5e7;border-radius:2px 2px 0 0;
 
 }
+.subscription-title2{text-align:left;font-weight:bold;background:#fff;color:#333;height:42px;line-height:42px;}
+.sub-font{font-weight:bold;}
 .plan-select{
     background: #2dcc70;
     font-size: 12px;
@@ -1486,7 +1490,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     visibility: inherit;
 }
 .table-out{
-    padding:20px 35px;
+    padding:15px;
     background: #fff;
     border-radius:3px;
 }
@@ -1495,13 +1499,15 @@ h1.setting-title p{line-height:26px;color:#666;}
 }
 .table-out table td{
     padding: 12px 0;
+    color:#666;
 }
 .table-out table td:last-child{
     font-weight: 700;
     text-align: right;
+    color:#333;
 }
 .pro{
-    margin:10px 0;
+    margin:15px 0 25px 0;
 }
 .pro span,
 .pro span.pro-price{
@@ -2513,6 +2519,10 @@ table.md-table tbody.md-body > tr.md-row span {white-space: nowrap;}
 .icon-sort-down{position:relative;z-index:1;top:9px;right:22px;float:right;color:#666;}
 .url-tokens-row i{font-style:normal;color:#999;}
 md-table-container{max-height:430px;overflow-y:auto;border-radius:2px;border:1px solid #ececec;}
+.table-out-coupon{padding-top:0;}
+.table-out-coupon input{border-radius:2px 0 0 2px;border-right:none;}
+.table-out-coupon button{border-radius:0 2px 2px 0;}
+.md-button.md-default-theme.md-accent[disabled], .md-button.md-accent[disabled], .md-button.md-default-theme.md-fab[disabled], .md-button.md-fab[disabled], .md-button.md-default-theme.md-raised[disabled], .md-button.md-raised[disabled], .md-button.md-default-theme.md-warn[disabled], .md-button.md-warn[disabled], .md-button.md-default-theme[disabled], .md-button[disabled]{color:#fff;background:#ccc !important;}
 .referral-group{margin:40px 0;}
 .referral-group .control-label{text-align:right;}
 select{border:1px solid #d5dce4;}
