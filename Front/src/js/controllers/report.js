@@ -119,7 +119,7 @@
     });
 
     // columns
-    var cols = angular.copy(columnDefinition[perfType]);
+    var cols = angular.copy(columnDefinition[perfType].concat(columnDefinition['common']));
     // dirty fix tree view name column
     cols[0].role = 'name';
     cols[0].origKey = cols[0].key;
@@ -266,6 +266,9 @@
     function filteGroupBy(level) {
       return function(item) {
         var exclude = [];
+        if (perfType != 'campaign' && item.role == 'campaign') {
+          exclude.push(item.value);
+        }
         $scope.filters.forEach(function(f) {
           exclude.push(f.key);
         });
@@ -276,12 +279,14 @@
         return exclude.indexOf(item.value) == -1;
       }
     }
+
+    $scope.groupbyFilter = filteGroupBy(0);
     $scope.groupbyFilter1 = filteGroupBy(1);
     $scope.groupbyFilter2 = filteGroupBy(2);
 
-    $scope.filterIsHow = function (item) {
+    /*$scope.filterIsHow = function (item) {
       return item.level == 0;
-    };
+    };*/
 
     $scope.hours = [];
     for (var i=0; i<24; ++i) {
@@ -361,6 +366,9 @@
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
+      if (perfType != 'campaign' && item.role == 'campaign') {
+        exclude.push(item.value);
+      }
       $scope.filters.forEach(function(f) {
         exclude.push(f.key);
       });

@@ -13,7 +13,7 @@
             <div class="cs-subform-control">
                 <select class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <!--<option value="">Choose grouping</option>-->
-                    <option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:filterIsHow">{{gb.display}}</option>
+                    <option value="{{gb.value}}" ng-repeat="gb in groupByOptions" ng-if="gb.role != 'campaign'">{{gb.display}}</option>
                 </select>
             </div>
             <div class="cs-subform-control">
@@ -140,7 +140,7 @@
                                 <md-menu-item ng-if="canEdit"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
-                                <!--<md-menu-item>
+                                <md-menu-item>
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
                                         <md-menu-content width="3">
@@ -149,7 +149,7 @@
                                             </md-menu-item>
                                         </md-menu-content>
                                     </md-menu>
-                                </md-menu-item>-->
+                                </md-menu-item>
                             </md-menu-content>
                         </md-menu>
                     </md-menu-bar>
