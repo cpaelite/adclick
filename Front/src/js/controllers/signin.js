@@ -25,7 +25,8 @@
     $scope.user = {};
     $scope.login = function() {
       $auth.login($scope.user, { ignoreAuthModule: true })
-        .then(function() {
+        .then(function(oData) {
+          $cookies.put('token', oData.data.token);
           toastr.clear();
           toastr.success('Login success!');
           $scope.$emit('event:auth-loginSuccess');
