@@ -1,9 +1,9 @@
 (function() {
   'use strict';
 
-  angular.module('app').factory('ChangePlan', ['$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', changePlan]);
+  angular.module('app').factory('ChangePlan', ['$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', 'Group', changePlan]);
 
-  function changePlan($rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo) {
+  function changePlan($rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo, Group) {
     return {
       showDialog: showDialog,
       hideDialog: hideDialog
@@ -15,7 +15,7 @@
         bindToController: true,
         clickOutsideToClose: false,
         controllerAs: 'ctrl',
-        controller: ['$scope', '$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', changePlanCtrl],
+        controller: ['$scope', '$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', 'Group', changePlanCtrl],
         focusOnOpen: false,
         locals: {
           planId: planId,
@@ -26,7 +26,7 @@
         escapeToClose: false
       });
 
-      function changePlanCtrl($scope, $rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo) {
+      function changePlanCtrl($scope, $rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo, Group) {
         var self = this;
         var proMoreEvents = 0.00004;
         var agencyMoreEvents = 0.000036;
@@ -37,6 +37,11 @@
         var superPrice = 999;
         Plans.get(null,function(plans){
           $scope.item = plans.data;
+        });
+        Group.get(null, function (result) {
+          if (!result.status)
+            return;
+          $scope.groups = result.data.groups;
         });
         $scope.planId = this.planId ? this.planId : -1;
         $scope.noPlan = this.noPlan;
