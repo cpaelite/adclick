@@ -9,7 +9,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
-const _ = require('lodash');
+ 
 
 /**
  * @api {post} /api/preferences  编辑用户配置
@@ -62,80 +62,7 @@ router.post('/api/preferences', function (req, res, next) {
 });
 
 
-/**
- * @api {get} /api/preferences  获取用户配置
- * @apiName  get  user  preferences
- * @apiGroup User
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *       "data":{}
- *     }
- *
- */
-router.get('/api/preferences', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.body.userId = req.userId;
-    let connection;
-    try {
-        let result;
-        let value = await common.validate(req.body, schema);
-        connection = await common.getConnection();
-        let results = await common.query("select  `json` from User where `id` = ? and `deleted` =0", [value.userId], connection);
-       
-        if (results.length) {
-            result = JSON.stringify(_.merge(setting.defaultSetting, JSON.parse(results[0].json)));
-             
-        } else {
-            result = JSON.stringify(setting.defaultSetting);
-        }
-        console.log()
-        return res.json({
-            status: 1,
-            message: "success",
-            data: result
-        });
-    } catch (e) {
-        next(e);
 
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-
-    }
-    // Joi.validate(req.body, schema, function (err, value) {
-    //     if (err) {
-    //         return next(err);
-    //     }
-    //     pool.getConnection(function (err, connection) {
-    //         if (err) {
-    //             err.status = 303
-    //             return next(err);
-    //         }
-    //         connection.query(
-    //             "select  `json` from User where `id` = ? and `deleted` =0", [
-    //                 value.userId
-    //             ],
-    //             function (err, result) {
-    //                 connection.release();
-    //                 if (err) {
-    //                     return next(err);
-    //                 }
-    //                 res.json({
-    //                     status: 1,
-    //                     message: "success",
-    //                     data: result[0].json
-    //                 });
-    //             });
-    //     });
-    // });
-});
 
 
 /**
