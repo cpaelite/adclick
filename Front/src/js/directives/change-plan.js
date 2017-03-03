@@ -9,12 +9,12 @@ function($mdDialog, Profile, Billing, Plans, BillingInfo) {
           noPlan: '=',
           afterCancel: '&'
         },
-        controller: ['$scope', function($scope) {
+        controller: ['$scope', '$rootScope', function($scope) {
             $mdDialog.show({
                 bindToController: true,
                 clickOutsideToClose: false,
                 controllerAs: 'ctrl',
-                controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', changePlanCtrl],
+                controller: ['$scope', '$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', changePlanCtrl],
                 focusOnOpen: false,
                 locals: {
                     planId: $scope.planId,
@@ -25,7 +25,7 @@ function($mdDialog, Profile, Billing, Plans, BillingInfo) {
                 escapeToClose: false
             });
 
-            function changePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo) {
+            function changePlanCtrl($scope, $rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo) {
               var self = this;
               var proMoreEvents = 0.00004;
               var agencyMoreEvents = 0.000036;
@@ -39,6 +39,10 @@ function($mdDialog, Profile, Billing, Plans, BillingInfo) {
               });
               $scope.planId = this.planId ? this.planId : -1;
               $scope.noPlan = this.noPlan;
+              $scope.groups = $rootScope.groups;
+              $scope.changeGroup = function(group) {
+                $rootScope.changeGroup(group);  
+              }
               this.cancel = function () {
                 self.afterCancel();
                 $mdDialog.cancel();

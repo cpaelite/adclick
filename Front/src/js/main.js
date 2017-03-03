@@ -113,7 +113,7 @@
       }
     });
 
-    $scope.changeGroup = function (group) {
+    $rootScope.changeGroup = $scope.changeGroup = function (group) {
       $cookies.put("clientId", group.groupId);
       $rootScope.currentGroup = group;
       $localStorage.currentUser.firstname = group.firstname;

@@ -1,27 +1,26 @@
-<md-dialog class="cs-edit-dialog" ng-cloak>
-  <md-dialog-content class="md-dialog-content">
-    <div class="nav-box">
+<md-dialog class="cs-edit-dialog change-paln-dialog" ng-cloak>
+  <md-dialog-content class="md-dialog-content change-paln-dialog-content">
+    <!-- <div class="nav-box">
       <div>
           <a class="logo" href="#"><img class="img-responsive" src="../assets/img/logo.png"></a>
           <a class="logo2" href="#"><img class="img-responsive" src="../assets/img/logo-two.png"></a>
       </div>
-    </div>
+    </div> -->
     <div class="pricing-box clearfix">
-        <div class="plan-select" ng-class="{'isVisiable':p.id == planId}">
+        <ul class="li-con" ng-repeat="p in item.plan track by $index">
+          <div class="plan-select" ng-class="{'isVisiable':p.id == planId}">
             <i class="material-icons">done</i>
             <span>You are currently subscribed to this plan</span>
-        </div>
-        <ul class="li-con" ng-repeat="p in item.plan track by $index">
-
+          </div>
             <li class="w-md3 h-line{{$index}}">
                 <div ng-bind-html="p.desc"></div>
-                <button class="btn p-btn btn-three p-btn-0{{$index + 1}}" type="button" ng-click="editChangePlan(p)">
+                <button class="btn p-btn btn-three p-btn-0{{$index + 1}}" type="button" ng-click="editChangePlan(p)" ng-disabled="p.id == planId">
                   <p>SELECT PLAN<i class="icon-angle-right"></i></p>
                 </button>
             </li>
         </ul>
     </div>
-    <section id="sliderPricing">
+    <!-- <section id="sliderPricing">
         <div>
             <div class="row">
                 <div class="col-md-12">
@@ -65,9 +64,10 @@
                     </div>
                 </div>
             </div>
-    </section>
+    </section> -->
   </md-dialog-content>
-  <md-dialog-actions ng-class="{hide: noPlan}">
-    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+  <md-dialog-actions>
+    <p class="note">You can change your account to one of the following: <a href="javascript:;" ng-repeat="group in groups" ng-click="changeGroup(group)">{{group.firstname}}</a></p>
+    <md-button class="md-primary" ng-click="ctrl.cancel()" ng-class="{hide: noPlan}">{{'cancel' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>

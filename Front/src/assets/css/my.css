@@ -370,6 +370,33 @@ md-datepicker {
     max-height: 90%;
     border-radius: 0;
 }
+.change-paln-dialog {
+  width: 1024px;max-width: 100%;height: 622px;
+}
+.change-paln-dialog .change-paln-dialog-content {
+  padding-bottom: 5px;
+  height: 570px;
+}
+.change-paln-dialog .change-paln-dialog-content > .pricing-box {
+  margin: 0;
+}
+.change-paln-dialog .change-paln-dialog-content .li-con {
+  width: 24.15%;
+  margin-bottom: 0;
+}
+.change-paln-dialog .note {
+  margin: 0;
+  width: 1000px;
+  position: absolute;
+  left: 50%;
+  margin-left: -500px;
+  text-align: center;
+  font-size: 12px;
+}
+.change-paln-dialog .note a {
+  color: #357cf3;
+  margin-right: 5px;
+}
 .cs-edit-panel {
     width: 80%;
     height: 100%;
@@ -1457,7 +1484,6 @@ h1.setting-title p{line-height:26px;color:#666;}
 }
 .plan-select.isVisiable{
     visibility: inherit;
-    margin-bottom:15px;
 }
 .table-out{
     padding:20px 35px;
@@ -2561,6 +2587,7 @@ md-icon{min-height:auto;min-width:auto;}
 .md-button{min-height: 32px;min-width:80px;font-size: 12px;font-weight: 600;}
 .md-select-value .md-select-icon{margin:2px 4px;}
 md-dialog .md-dialog-content{padding:50px;}
+md-dialog .md-dialog-content.change-paln-dialog-content{padding:15px;}
 .form-horizontal .cs-subform-select{margin-top:0;border-radius:2px;}
 .form-horizontal .radio-inline{line-height:23px;}
 md-dialog .md-actions, md-dialog md-dialog-actions{background:#f6f8f8;}
