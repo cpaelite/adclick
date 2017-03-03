@@ -222,18 +222,18 @@ export const keys = [
 
 export function formatRows(rows) {
   return rows.map((row) => {
-    row.revenue = (parseFloat(row.revenue) / 1000000).toFixed(2);
-    row.cost = (parseFloat(row.cost) / 1000000).toFixed(2);
-    row.profit = parseFloat(row.profit).toFixed(2);
-    row.cpv = parseFloat(row.cpv).toFixed(4);
-    row.ictr = parseFloat(row.ictr).toFixed(2);
-    row.ctr = parseFloat(row.ctr).toFixed(2);
-    row.cr = parseFloat(row.cr).toFixed(2);
-    row.cv = parseFloat(row.cv).toFixed(2);
-    row.roi = parseFloat(row.roi).toFixed(2);
-    row.epv = parseFloat(row.epv).toFixed(4);
-    row.epc = parseFloat(row.epc).toFixed(2);
-    row.ap = parseFloat(row.ap).toFixed(2);
+    row.revenue = +(parseFloat(row.revenue) / 1000000).toFixed(2);
+    row.cost = +(parseFloat(row.cost) / 1000000).toFixed(2);
+    row.profit = +parseFloat(row.profit).toFixed(2);
+    row.cpv = +parseFloat(row.cpv).toFixed(4);
+    row.ictr = +parseFloat(row.ictr).toFixed(2);
+    row.ctr = +parseFloat(row.ctr).toFixed(2);
+    row.cr = +parseFloat(row.cr).toFixed(2);
+    row.cv = +parseFloat(row.cv).toFixed(2);
+    row.roi = +parseFloat(row.roi).toFixed(2);
+    row.epv = +parseFloat(row.epv).toFixed(4);
+    row.epc = +parseFloat(row.epc).toFixed(2);
+    row.ap = +parseFloat(row.ap).toFixed(2);
     return row;
   })
 }

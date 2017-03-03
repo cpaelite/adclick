@@ -67,7 +67,7 @@
             </div>
     </section>
   </md-dialog-content>
-  <md-dialog-actions>
+  <md-dialog-actions ng-class="{hide: noPlan}">
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>

@@ -88,14 +88,13 @@ async function campaignReport(value) {
 
 }
 
-async function fullFill({rows, groupBy}) {
+async function fullFill({rawRows, groupBy}) {
   if (!groupByModel[groupBy]) {
     // don't belong to group by model, do nothing
-    return rows
+    return rawRows
   }
-  let rawRows = rows.map(e => e.dataValues);
   let foreignConfig = extraConfig(groupBy);
-  let foreignKeys = rows.map(r => r.dataValues[foreignConfig.foreignKey]);
+  let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
   let foreignRows = await models[groupByModel[groupBy]].findAll({
     where: {
       id: foreignKeys
@@ -104,7 +103,7 @@ async function fullFill({rows, groupBy}) {
   })
   let rawForeignRows = foreignRows.map(e => e.dataValues);
 
-  let totalRows = rows.length;
+  let totalRows = rawRows.length;
 
   for (let i = 0; i < rawForeignRows.length; i++) {
     let rawForeignRow = rawForeignRows[i];
@@ -120,7 +119,7 @@ async function fullFill({rows, groupBy}) {
       }
     }
   }
-  return rows;
+  return rawRows;
 }
 
 async function normalReport(query) {
@@ -159,20 +158,20 @@ async function normalReport(query) {
     group: `${mapping[groupBy]}`,
     order: [orderBy]
   })
-
-  rows = await fullFill({rows, groupBy})
-  let totalRows = rows.length;
-
+  let rawRows = rows.map(e => e.dataValues);
+  rawRows = await fullFill({rawRows, groupBy})
+  rawRows = formatRows(rawRows)
+  let totalRows = rawRows.length;
   let totals = {
-    impressions: rows.reduce((sum, row) => sum + row.dataValues.impressions, 0),
-    clicks: rows.reduce((sum, row) => sum + row.dataValues.clicks, 0),
-    visits: rows.reduce((sum, row) => sum + row.dataValues.visits, 0),
-    conversions: rows.reduce((sum, row) => sum + row.dataValues.conversions, 0),
-    revenue: rows.reduce((sum, row) => sum + row.dataValues.revenue, 0)/1000000,
-    cost: rows.reduce((sum, row) => sum + row.dataValues.cost, 0)/1000000,
-    profit: rows.reduce((sum, row) => sum + row.dataValues.profit, 0),
+    impressions: rawRows.reduce((sum, row) => sum + row.impressions, 0),
+    clicks: rawRows.reduce((sum, row) => sum + row.clicks, 0),
+    visits: rawRows.reduce((sum, row) => sum + row.visits, 0),
+    conversions: rawRows.reduce((sum, row) => sum + row.conversions, 0),
+    revenue: rawRows.reduce((sum, row) => sum + row.revenue, 0),
+    cost: rawRows.reduce((sum, row) => sum + row.cost, 0),
+    profit: rawRows.reduce((sum, row) => sum + row.profit, 0.0),
   }
-  return {rows, totals, totalRows}
+  return {rows: rawRows, totals, totalRows}
 }
 
 async function listPageReport(query) {
@@ -216,7 +215,7 @@ async function listPageReport(query) {
   })
 
   for (let i = 0; i < nr.rows.length; i++) {
-    let rawForeignRow = nr.rows[i].dataValues;
+    let rawForeignRow = nr.rows[i];
     for (let j = 0; j < placeholders.length; j++) {
       let rawRow = placeholders[j];
       if (rawForeignRow[foreignConfig.foreignKey] === rawRow.id) {
@@ -229,13 +228,10 @@ async function listPageReport(query) {
       }
     }
   }
-  let finalRows = formatRows(
-    placeholders
-  )
   return {
     totals: nr.totals,
     totalRows,
-    rows: finalRows
+    rows: placeholders
   }
 }
 

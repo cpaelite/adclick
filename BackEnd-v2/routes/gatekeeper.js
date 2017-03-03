@@ -12,7 +12,7 @@ const {
 } = models;
 
 router.get('/api/tsreference', async (req, res, next) => {
-  let {userId} = req;
+  let {subId: userId} = req;
   try {
     let apiTokens = await ApiToken.findAll({
       where: {userId},
@@ -46,7 +46,7 @@ router.get('/api/tsreference', async (req, res, next) => {
 
 async function upsert(req, res, next) {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     let {token, tsId} = req.body;
     let provider = await Provider.findById(tsId);
     if (!provider) throw new Error('provider not found');
@@ -100,7 +100,7 @@ router.get('/api/third-traffics', async (req, res, next) => {
 
 router.get('/api/tsreport', async (req, res, next) => {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     let {from, to, tsReferenceId: provider_id} = req.query;
     let apiToken = await ApiToken.findOne({where: {userId}});
     if (!apiToken) throw new Error('no api token found');
@@ -161,8 +161,8 @@ const providers = {
 }
 
 router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
-    try {
-    let {userId} = req;
+  try {
+    let {subId: userId} = req;
     let campaign_identity = req.params.campaignId;
     let {tsReferenceId: provider_id, action} = req.body;
     let record = await ApiToken.findOne({

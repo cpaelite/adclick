@@ -33,58 +33,58 @@ var trial = require('../util/billing');
  *
  */
 router.post('/auth/login', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        email: Joi.string().trim().email().required(),
-        password: Joi.string().required()
-    });
-    let connection;
-    try {
-        let value = await common.validate(req.body, schema);
-        connection = await common.getConnection();
+  var schema = Joi.object().keys({
+    email: Joi.string().trim().email().required(),
+    password: Joi.string().required()
+  });
+  let connection;
+  try {
+    let value = await common.validate(req.body, schema);
+    connection = await common.getConnection();
 
-        let sql = "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified` from User where `email` = ? and `deleted` =0";
+    let sql = "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified` from User where `email` = ? and `deleted` =0";
 
-        let rows = await query(sql, [value.email]);
+    let rows = await query(sql, [value.email]);
 
-        if (rows.length > 0) {
-            if (rows[0].emailVerified == 0) {
-                throw new Error("Your email has not been verified.");
-            }
-            if (rows[0].password == md5(value.password)) {
-                let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
-                if (userGroup.length == 0) {
-                    throw new Error("account exception");
-                }
-                let clientId = userGroup[0].groupId;
-                var expires = moment().add(200, 'days').valueOf();
-                //set cookie 
-                res.cookie("clientId", clientId);
-                res.json({ token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText) });
-
-                //更新登录时间
-                let updateSql = "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
-                await query(updateSql, [rows[0].id]);
-
-            } else {
-                res.status(401).json({
-                    status: 1002,
-                    message: "account/password error"
-                });
-            }
-        } else {
-            res.status(401).json({
-                status: 1001,
-                message: "account/password error"
-            });
+    if (rows.length > 0) {
+      if (rows[0].emailVerified == 0) {
+        throw new Error("Your email has not been verified.");
+      }
+      if (rows[0].password == md5(value.password)) {
+        let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
+        if (userGroup.length == 0) {
+          throw new Error("account exception");
         }
-    } catch (e) {
-        next(e);
-    } finally {
-        if (connection) {
-            connection.release();
-        }
+        let clientId = userGroup[0].groupId;
+        var expires = moment().add(200, 'days').valueOf();
+        //set cookie
+        res.cookie("clientId", clientId);
+        res.json({token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText)});
 
+        //更新登录时间
+        let updateSql = "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
+        await query(updateSql, [rows[0].id]);
+
+      } else {
+        res.status(401).json({
+          status: 1002,
+          message: "account/password error"
+        });
+      }
+    } else {
+      res.status(401).json({
+        status: 1001,
+        message: "account/password error"
+      });
     }
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+
+  }
 });
 
 /**
@@ -109,119 +109,119 @@ router.post('/auth/login', async function (req, res, next) {
  *
  */
 router.post('/auth/signup', async function (req, res, next) {
-    try {
-        req.body.json = setting.defaultSetting;
-        let value = await signup(req.body, next);
-        //free trial
-        if (req.cookies && req.cookies.free) {
-            await trial.addTrialPlan({ userId: value.userId });
-        }
-        //异步发送邮件 
-        sendActiveEmail(req.body.email, value.idtext);
-        return res.json({
-            status: 1,
-            message: 'success'
-        });
-    } catch (e) {
-        next(e)
-    }
+  try {
+    req.body.json = setting.defaultSetting;
+    let value = await signup(req.body, next);
+    //free trial
+    // if (req.cookies && req.cookies.free) {
+    await trial.addTrialPlan({userId: value.userId});
+    // }
+    //异步发送邮件
+    sendActiveEmail(req.body.email, value.idtext);
+    return res.json({
+      status: 1,
+      message: 'success'
+    });
+  } catch (e) {
+    next(e)
+  }
 });
 
 
 function sendActiveEmail(email, idText) {
-    let tpl = {
-        subject: 'Newbidder Activate', // Subject line
-        text: ``, // plain text body
-        html: _.template(` <p>Hello,</p>
+  let tpl = {
+    subject: 'Newbidder Activate', // Subject line
+    text: ``, // plain text body
+    html: _.template(` <p>Hello,</p>
 
             <p>Thanks for signing up! We'll just need you to click the activation link below to get your account up and running.</p>
             <p><a href="<%=href%>">Activate my account</a></p>
             
             <p>Best regards,</p>
             <p>Newbidder Team </p>`)({
-                href: setting.activateRouter + "?key=" + idText,
+      href: setting.activateRouter + "?key=" + idText,
 
-            })
-    };
+    })
+  };
 
-    //异步发送邮件 
-    emailCtrl.sendMail([email], tpl);
+  //异步发送邮件
+  emailCtrl.sendMail([email], tpl);
 }
 
 async function signup(data, next) {
-    var schema = Joi.object().keys({
-        email: Joi.string().trim().email().required(),
-        password: Joi.string().required(),
-        firstname: Joi.string().required().allow(""),
-        lastname: Joi.string().required().allow(""),
-        json: Joi.object().optional(),
-        refToken: Joi.string().optional().empty("")
-    });
-    let connection;
-    let beginTransaction = false;
-    let value;
-    try {
-        value = await common.validate(data, schema);
-        connection = await common.getConnection();
-        //check email exists
-        let UserResult = await query("select id from User where `email`=?", [value.email]);
-        if (UserResult.length > 0) throw new Error("account exists");
-        //事务开始
-        await common.beginTransaction(connection);
-        beginTransaction = true;
-        let idtext = util.getRandomString(6);
-        let reftoken = util.getUUID() + "." + idtext;
-        //User
-        let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (unix_timestamp(now()),?,?,?,?,?,?)";
-        let params = [
-            value.firstname, value.lastname, value.email,
-            md5(value.password), idtext, reftoken
-        ];
-        if (value.json) {
-            sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
-            params.push(JSON.stringify(value.json))
-        }
-
-        let result = await query(sql, params);
-        value.userId = result.insertId;
-        value.idtext = idtext;
-        //系统默认domains
-        for (let index = 0; index < setting.domains.length; index++) {
-            await query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0]);
-        }
-
-        //如果refToken 不为"" 说明是从推广链接过来的
-        if (value.refToken) {
-            let slice = value.refToken.split('.');
-            let referreUserId = slice.length == 2 ? slice[1] : 0;
-            if (referreUserId) {
-                let USER = await query("select `id` from User where `idText` = ?", [referreUserId]);
-                if (USER.length == 0) {
-                    throw new Error("refToken error");
-                }
-                await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500]);
-            }
-        }
-
-        //user Group 
-        await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [uuidV4(), result.insertId, 0], connection);
-
-        await common.commit(connection);
-        //redis publish
-        new Pub(true).publish(setting.redis.channel, result.insertId + ".add.user." + result.insertId, "userAdd");
-
-        return value;
-    } catch (e) {
-        if (beginTransaction) {
-            await common.rollback(connection);
-        }
-        throw e;
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-
+  var schema = Joi.object().keys({
+    email: Joi.string().trim().email().required(),
+    password: Joi.string().required(),
+    firstname: Joi.string().required().allow(""),
+    lastname: Joi.string().required().allow(""),
+    json: Joi.object().optional(),
+    refToken: Joi.string().optional().empty("")
+  });
+  let connection;
+  let beginTransaction = false;
+  let value;
+  try {
+    value = await common.validate(data, schema);
+    connection = await common.getConnection();
+    //check email exists
+    let UserResult = await query("select id from User where `email`=?", [value.email]);
+    if (UserResult.length > 0) throw new Error("account exists");
+    //事务开始
+    await common.beginTransaction(connection);
+    beginTransaction = true;
+    let idtext = util.getRandomString(6);
+    let reftoken = util.getUUID() + "." + idtext;
+    //User
+    let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`) values (unix_timestamp(now()),?,?,?,?,?,?)";
+    let params = [
+      value.firstname, value.lastname, value.email,
+      md5(value.password), idtext, reftoken
+    ];
+    if (value.json) {
+      sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
+      params.push(JSON.stringify(value.json))
     }
+
+    let result = await query(sql, params);
+    value.userId = result.insertId;
+    value.idtext = idtext;
+    //系统默认domains
+    for (let index = 0; index < setting.domains.length; index++) {
+      await query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0]);
+    }
+
+    //如果refToken 不为"" 说明是从推广链接过来的
+    if (value.refToken) {
+      let slice = value.refToken.split('.');
+      let referreUserId = slice.length == 2 ? slice[1] : 0;
+      if (referreUserId) {
+        let USER = await query("select `id` from User where `idText` = ?", [referreUserId]);
+        if (USER.length == 0) {
+          throw new Error("refToken error");
+        }
+        await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500]);
+      }
+    }
+
+    //user Group
+    await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [uuidV4(), result.insertId, 0], connection);
+
+    await common.commit(connection);
+    //redis publish
+    new Pub(true).publish(setting.redis.channel, result.insertId + ".add.user." + result.insertId, "userAdd");
+
+    return value;
+  } catch (e) {
+    if (beginTransaction) {
+      await common.rollback(connection);
+    }
+    throw e;
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+
+  }
 }
 /**
  * @api {post} /account/check  检查用户是否存在
@@ -239,39 +239,39 @@ async function signup(data, next) {
  *
  */
 router.post('/account/check', function (req, res, next) {
-    var schema = Joi.object().keys({
-        email: Joi.string().trim().email().required()
-    });
-    Joi.validate(req.body, schema, function (err, value) {
+  var schema = Joi.object().keys({
+    email: Joi.string().trim().email().required()
+  });
+  Joi.validate(req.body, schema, function (err, value) {
+    if (err) {
+      return next(err);
+    }
+    pool.getConnection(function (err, connection) {
+      if (err) {
+        err.status = 303
+        return next(err);
+      }
+      connection.query("select id from User where `email`=?", [
+        value.email
+      ], function (err, result) {
+        connection.release();
         if (err) {
-            return next(err);
+          return next(err);
         }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query("select id from User where `email`=?", [
-                value.email
-            ], function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                var exist = false;
-                if (result.length > 0) {
-                    exist = true
-                }
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: {
-                        exists: exist
-                    }
-                });
-            });
+        var exist = false;
+        if (result.length > 0) {
+          exist = true
+        }
+        res.json({
+          status: 1,
+          message: 'success',
+          data: {
+            exists: exist
+          }
         });
+      });
     });
+  });
 });
 /**
  * @api {get} /countries  获取所有国家
@@ -288,23 +288,23 @@ router.post('/account/check', function (req, res, next) {
  *
  */
 router.get('/api/countries', function (req, res, next) {
-    pool.getConnection(function (err, connection) {
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      err.status = 303
+      return next(err);
+    }
+    connection.query(
+      "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
+      function (err, result) {
+        connection.release();
         if (err) {
-            err.status = 303
-            return next(err);
+          return next(err);
         }
-        connection.query(
-            "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
-            function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json(
-                    result
-                );
-            });
-    });
+        res.json(
+          result
+        );
+      });
+  });
 });
 /**
  * @api {get} /timezones  获取所有timezones
@@ -321,61 +321,65 @@ router.get('/api/countries', function (req, res, next) {
  *
  */
 router.get('/timezones', function (req, res, next) {
-    pool.getConnection(function (err, connection) {
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      err.status = 303
+      return next(err);
+    }
+    connection.query(
+      "select `id`,`name`,`detail`,`region`,`utcShift` from `Timezones`",
+      function (err, result) {
+        connection.release();
         if (err) {
-            err.status = 303
-            return next(err);
+          return next(err);
         }
-        connection.query(
-            "select `id`,`name`,`detail`,`region`,`utcShift` from `Timezones`",
-            function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json({
-                    status: 1,
-                    message: 'success',
-                    data: {
-                        timezones: result
-                    }
-                });
-            });
-    });
+        res.json({
+          status: 1,
+          message: 'success',
+          data: {
+            timezones: result
+          }
+        });
+      });
+  });
 });
 
 
-
-
 router.get('/invitation', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        code: Joi.string().trim().required()
-    });
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let userSlice = await common.query("select `userId`,`inviteeEmail`,`groupId` from GroupInvitation where `code`=? and `deleted`= 0 and `status`!= 3", [value.code], connection);
-        if (userSlice.length == 0) {
-            throw new Error("code error");
-        }
+  var schema = Joi.object().keys({
+    code: Joi.string().trim().required()
+  });
+  let connection;
+  try {
+    let value = await common.validate(req.query, schema);
+    connection = await common.getConnection();
+    let userSlice = await common.query("select `userId`,`inviteeEmail`,`groupId` from GroupInvitation where `code`=? and `deleted`= 0 and `status`!= 3", [value.code], connection);
+    if (userSlice.length == 0) {
+      throw new Error("code error");
+    }
 
-        let users = await common.query("select  `id`,`idText`,`firstname` from User where `email` = ?", [userSlice[0].inviteeEmail], connection);
-        if (users.length) {
-            //加入用户组
-            if (users[0].id != userSlice[0].userId) {//排除自身
-                await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now())) ON DUPLICATE KEY UPDATE `role` = 1", [userSlice[0].groupId, users[0].id, 1], connection);
-            }
-            res.redirect(setting.invitationredirect);
-        } else {
-            //自动注册
-            let password = util.getRandomString(6);
-            let user = await signup({ password: password, email: userSlice[0].inviteeEmail, firstname: userSlice[0].inviteeEmail.split('@')[0], lastname: "", json: setting.defaultSetting }, next);
-            //并发加入用户组   发送邮件
-            let tpl = {
-                subject: 'Newbidder Register', // Subject line
-                text: ``, // plain text body
-                html: _.template(` <p>Hello,</p>
+    let users = await common.query("select  `id`,`idText`,`firstname` from User where `email` = ?", [userSlice[0].inviteeEmail], connection);
+    if (users.length) {
+      //加入用户组
+      if (users[0].id != userSlice[0].userId) {//排除自身
+        await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now())) ON DUPLICATE KEY UPDATE `role` = 1", [userSlice[0].groupId, users[0].id, 1], connection);
+      }
+      res.redirect(setting.invitationredirect);
+    } else {
+      //自动注册
+      let password = util.getRandomString(6);
+      let user = await signup({
+        password: password,
+        email: userSlice[0].inviteeEmail,
+        firstname: userSlice[0].inviteeEmail.split('@')[0],
+        lastname: "",
+        json: setting.defaultSetting
+      }, next);
+      //并发加入用户组   发送邮件
+      let tpl = {
+        subject: 'Newbidder Register', // Subject line
+        text: ``, // plain text body
+        html: _.template(` <p>Hello,</p>
 
                     <p>Welcome to Newbidder! Please follow the link to complete your Profile (or copy/paste it in your browser):</p>
                     <p>http://beta.newbidder.com/#/setApp/profile</p>
@@ -393,98 +397,97 @@ router.get('/invitation', async function (req, res, next) {
                     <p>Newbidder Support Team</p>
                     <p>Skype：support@newbidder</p>
                              `)({
-                        email: userSlice[0].inviteeEmail,
-                        password: password
-                    })
-            }
-            //异步发送邮件 
-            emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
-            await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
-            var expires = moment().add(200, 'days').valueOf();
-            res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
-            res.cookie("clientId", userSlice[0].groupId);
-            res.redirect(setting.invitationredirect);
-        }
-
-    } catch (e) {
-        next(e);
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-
+          email: userSlice[0].inviteeEmail,
+          password: password
+        })
+      }
+      //异步发送邮件
+      emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
+      await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
+      var expires = moment().add(200, 'days').valueOf();
+      res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
+      res.cookie("clientId", userSlice[0].groupId);
+      res.redirect(setting.invitationredirect);
     }
+
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+
+  }
 });
 
 
-
 router.get('/free/trial', async function (req, res, next) {
-    res.cookie("free", true);
-    res.redirect(setting.freetrialRedirect);
+  res.cookie("free", true);
+  res.redirect(setting.freetrialRedirect);
 });
 
 
 router.get('/user/active', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        key: Joi.string().trim().required()
-    });
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        await common.query("update User set emailVerified = ? where idText = ?", [1, value.key], connection);
-        res.redirect(setting.invitationredirect);
-    } catch (e) {
-        next(e);
-    } finally {
-        if (connection) {
-            connection.release();
-        }
+  var schema = Joi.object().keys({
+    key: Joi.string().trim().required()
+  });
+  let connection;
+  try {
+    let value = await common.validate(req.query, schema);
+    connection = await common.getConnection();
+    await common.query("update User set emailVerified = ? where idText = ?", [1, value.key], connection);
+    res.redirect(setting.invitationredirect);
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
     }
+  }
 });
 
 router.get('/user/resendconfirmation', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        email: Joi.string().trim().required()
-    });
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let user = await common.query("select  `idText` from User   where email = ?", [value.email], connection);
-        //异步发送邮件 
-        if (user.length & user[0].idText) {
-            sendActiveEmail(value.email, user[0].idText);
-        }
-        res.json({
-            status: 1,
-            message: 'success'
-        });
-    } catch (e) {
-        next(e);
-    } finally {
-        if (connection) {
-            connection.release();
-        }
+  var schema = Joi.object().keys({
+    email: Joi.string().trim().required()
+  });
+  let connection;
+  try {
+    let value = await common.validate(req.query, schema);
+    connection = await common.getConnection();
+    let user = await common.query("select  `idText` from User   where email = ?", [value.email], connection);
+    //异步发送邮件
+    if (user.length & user[0].idText) {
+      sendActiveEmail(value.email, user[0].idText);
     }
+    res.json({
+      status: 1,
+      message: 'success'
+    });
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
 });
 
 
 function query(sql, params) {
-    return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                return reject(err)
-            }
-            connection.query(sql, params, function (err, result) {
-                connection.release();
-                if (err) {
-                    reject(err)
-                }
-                resolve(result);
-            });
-        });
-    })
+  return new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+      if (err) {
+        return reject(err)
+      }
+      connection.query(sql, params, function (err, result) {
+        connection.release();
+        if (err) {
+          reject(err)
+        }
+        resolve(result);
+      });
+    });
+  })
 }
 
 

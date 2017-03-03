@@ -14,7 +14,7 @@
         response: function(response) {
           var data = response.data;
           var toStr = Object.prototype.toString;
-          
+
           if(!response.config.errorFn && response.data.status == 0) {
             $injector.get('toastr').clear();
             var message = toStr.apply(data.message) == '[object String]' ? data.message : 'Error occurred!';
@@ -24,6 +24,13 @@
           return response;
         },
         responseError: function(response) {
+          if(response.status === 405) {
+            if($rootScope.changePlanStatus) {
+              // return $q.reject(response);
+            } else {
+              $rootScope.changePlanStatus = true;
+            }
+          }
           return $q.reject(response);
         }
       };
@@ -49,7 +56,7 @@
     }])
 
     .config(['$httpProvider', function($httpProvider) {
-      $httpProvider.interceptors.push('HttpInterceptor'); 
+      $httpProvider.interceptors.push('HttpInterceptor');
     }])
 
     .config(['ChartJsProvider', function (ChartJsProvider) {

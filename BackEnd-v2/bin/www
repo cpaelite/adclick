@@ -2,10 +2,13 @@
 
 require("babel-core/register");
 require("babel-polyfill");
+
 const EventEmitter = require('events');
 
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
+
+global.models = {};
 
 // var cluster = require('express-cluster');
 var path = require('path');
@@ -31,16 +34,19 @@ myEmitter.on('dbDone', () => {
 
   app.set('port', process.env.PORT || 5000);
 
-  var server = app.listen(app.get('port'), function() {
+  var server = app.listen(app.get('port'), function () {
     log.info('adclick server listening on port', server.address().port,
       " with pid ", process.pid);
   });
+
+  const cronJobs = require('../cron');
+  cronJobs()
 })
 
 const {
   connect
 } = require('../util/database');
-global.models = {};
+
 var Promise = require('bluebird');
 
 Promise.all([connect('gatekeeper'), connect('AdClickTool')]).then(orms => {

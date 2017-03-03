@@ -35,7 +35,7 @@
 </head>
 
 <body layout="row" ng-class="{ie: isIE, smart: !screenGtSmall}" ng-cloak>
-<div ui-view class="cs-app"></div>
+<div ui-view class="cs-app"><div change-plan ng-if="changePlanStatus" change-plan-status="changePlanStatus" no-plan="true" after-cancel="afterCancelChangePlan()"></div></div>
 
 <!-- build:js assets/js/app.min.js -->
 <script src="../bower_components/jquery/dist/jquery.js"></script>
@@ -78,6 +78,8 @@
 <script src="js/directives/ui-nav.js"></script>
 <script src="js/directives/ui-butterbar.js"></script>
 <script src="js/directives/form-validator.js"></script>
+<script src="js/directives/change-plan.js"></script>
+<script src="js/directives/fixed-table-header.js"></script>
 <script src="js/services/resources.js"></script>
 <script src="js/services/values.js"></script>
 <script src="js/services/constants.js"></script>
