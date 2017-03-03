@@ -3,20 +3,22 @@
 
   angular.module('app')
     .controller('SubscriptionsCtrl', [
-      '$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', '$location', 'toastr', 'Coupon', '$rootScope',
+      '$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', '$location', 'toastr', 'Coupon', '$rootScope', 'ChangePlan',
       SubscriptionsCtrl
     ]);
 
-  function SubscriptionsCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo, $location, toastr, Coupon, $rootScope) {
+  function SubscriptionsCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo, $location, toastr, Coupon, $rootScope, ChangePlan) {
     var paymessage = $location.$$search.message;
     $scope.app.subtitle = 'Subscriptions';
 
     if(paymessage === 'success') {
       toastr.success('pay success');
       $rootScope.changePlanStatus = false;
+      ChangePlan.hideDialog();
     } else if (paymessage === 'cancel') {
       toastr.error('pay failed');
-      $rootScope.changePlanStatus = false;
+      $rootScope.changePlanStatus = true;
+      ChangePlan.showDialog(-1, true);
     }
 
     function geteBillings() {
@@ -31,8 +33,8 @@
     });
 
     $scope.rootChangePlanStatus = $rootScope.changePlanStatus;
-    $scope.changePlan = function(status) {
-      $scope.changePlanStatus = status;
+    $scope.changePlan = function(id) {
+      ChangePlan.showDialog(id, false, function(){});
     };
 
     $scope.couponText = '';
