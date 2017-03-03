@@ -37,6 +37,9 @@ export default function(sequelize, DataTypes) {
     },
     expired: {
       type: DataTypes.INTEGER
+    },
+    agreementId: {
+      type: DataTypes.INTEGER
     }
   }, {
     timestamps: false,

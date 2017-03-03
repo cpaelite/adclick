@@ -26,4 +26,3 @@ async function logTocommission(paymentLogId) {
     }
     return true;
 }
-

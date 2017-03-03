@@ -32,7 +32,7 @@ router.get('/api/plans', async (req, res, next) => {
 
 router.get('/api/trial_plans', async (req, res, next) => {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     let count = await UPL.count({where: {userId}})
     res.json({
       status: 1,
@@ -46,7 +46,7 @@ router.get('/api/trial_plans', async (req, res, next) => {
 
 router.post('/api/trial_plans', async (req, res, next) => {
   try {
-    let {userId} = req;
+    let {subId: userId} = req;
     await addTrialPlan({userId});
     res.json({
       status: 1,
@@ -61,7 +61,7 @@ router.post('/api/trial_plans', async (req, res, next) => {
 router.post('/api/plans/:id', async (req, res, next) => {
   try {
     let {id} = req.params;
-    let {userId} = req;
+    let {subId: userId} = req;
     let template_plan = await TP.findById(id);
     if (!template_plan) throw new Error('Not Found');
     let paypal_billing_plan = await PBP.findById(template_plan.paypalPlanId);

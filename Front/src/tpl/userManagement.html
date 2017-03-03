@@ -8,33 +8,33 @@
 			<md-button class="md-raised copy-btn">Upgrade plan</md-button>
 		</div>
 	</div>
-	
-	<div class="user-mangement-content" ng-if="initState=='success'">
-		<div ng-if="invitationUserCount==plan.userLimit">
+
+	<div class="user-mangement-content" ng-show="initState=='success'">
+		<div ng-show="invitationUserCount==plan.userLimit">
 			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
 			<span>
 				You have reached the limit of users for your chosen plan.<br>
-				To have additional users, you can upgrade to higher plan. 
+				To have additional users, you can upgrade to higher plan.
 			</span>
 			<div class="plan-btn">
 				<md-button class="md-raised copy-btn">Upgrade plan</md-button>
 			</div>
 		</div>
-		<div ng-if="invitationUserCount<plan.userLimit">
+		<div ng-show="invitationUserCount<plan.userLimit">
 			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
 			<span class="small-word" ng-if="!errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
 			<span style="color:red" ng-if="errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
 			<form name="emailForm">
 			  <div class="form-group clearfix">
 			    <label for="exampleInputEmail2">Invite users:</label>
-			    <div class="form-inline">
-			   		<input type="text" name="email" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
-					<span style="color:red" ng-if="emailForm.email.$dirty && emailForm.email.$invalid">
-						<span ng-if="emailForm.email.$error.email">Email must be a valid Email</span>
-                    </span>
-			    	<button type="submit" class="btn btn-primary" ng-click="sendInvitation(emails)">Send invitation</button>
+			    <div class="form-group">
+		   			<input type="text" name="email" class="form-control" id="exampleInputEmail2" ng-model="emails" placeholder="xxx.xxx@example.com">
+						<span style="color:red;" ng-if="emailForm.email.$dirty && emailForm.email.$invalid">
+							<span ng-if="emailForm.email.$error.email">Email must be a valid Email</span>
+            </span>
 			    </div>
-			  </div>	
+					<button type="submit" class="btn btn-primary" ng-disabled="invitionSaveStatus" ng-click="sendInvitation(emails)">Send invitation</button>
+			  </div>
 			</form>
 		</div>
 		<div class="form-group">
@@ -67,5 +67,3 @@
 	<div ng-class="{loader: initState=='init'}"></div>
 	<div ng-if="initState=='error'" class="cs-flow-error" translate>loading-error</div>
 </div>
-
-
