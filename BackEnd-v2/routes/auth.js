@@ -350,13 +350,13 @@ router.get('/invitation', async function (req, res, next) {
         html: _.template(` <p>Hello,</p>
 
                     <p>Welcome to Newbidder! Please follow the link to complete your Profile (or copy/paste it in your browser):</p>
-                    <p>http://beta.newbidder.com/#/setApp/profile</p>
+                    <p><%= href%>/#/setApp/profile</p>
 
                     <p>YOUR USERNAME: <%=email%></p>
                     <p>YOUR SECRET: <%=password%></p>
 
                     <p>To reset your password follow the link below:</p>
-                    <p>http://beta.newbidder.com/#/setApp/profile</p>
+                    <p><%= href%>/#/setApp/profile</p>
 
                     <p>If you have any questions, feel free to contact us at: support@newbidder.com</p>
 
@@ -366,7 +366,8 @@ router.get('/invitation', async function (req, res, next) {
                     <p>Skype：support@newbidder</p>
                              `)({
           email: userSlice[0].inviteeEmail,
-          password: password
+          password: password,
+          href:setting.invitationredirect
         })
       }
       //异步发送邮件
