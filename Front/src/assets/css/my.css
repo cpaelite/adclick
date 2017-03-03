@@ -2573,8 +2573,8 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
 .navi ul.nav li .icon-question-sign .nav-tips-font{display:none;}
 .navi ul.nav li .icon-question-sign:hover .nav-tips-font{padding:3px 5px;width:175px;line-height:15px;background:#444;color:#fff;position:absolute;top:10px;left:110px;display:block;border-radius:3px;font-size:12px;}
 .md-table-pagination{border:none;}
-.nav{display:inline-block;}
-.coupon-btn{float:right;margin:15px 15px 0 0;}
+.nav{display:inline-block;float:left;}
+.coupon-btn{float:right;margin:14px 15px 0 0;}
 .coupon-btn span{background:#fff8df;float:left;padding:0 10px;border:1px dashed #ded0a0;border-right:none;border-radius:2px 0 0 2px;height:30px;line-height:30px;}
 .coupon-btn a{font-size:11px;display:block;font-weight:600;border-radius:2px;}
 .coupon-btn .coupon-icon{width:30px;height:30px;background:#ebdfb6 url("../../assets/img/coupon-icon.png") no-repeat center;background-size:12px;float:left;border-radius:0 2px 2px 0;}
