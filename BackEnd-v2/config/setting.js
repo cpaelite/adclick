@@ -9,17 +9,17 @@ module.exports = {
       connectionLimit: 10
     },
     staging: {
-      host: 'trackingdb.col8oozqk3ay.us-east-2.rds.amazonaws.com',
+      host: 'dev02.cmjwzbzhppgn.us-west-1.rds.amazonaws.com',
       user: 'root',
-      password: 'DFICi5#sdf',
+      password: 'R%LKsIJF412',
       database: 'AdClickTool',
-      connectionLimit: 1000
+      connectionLimit: 10
     }
   },
   "redis": {
     host: "adclick-jp.082pif.ng.0001.apne1.cache.amazonaws.com",
     port: "6379",
-    password:"",
+    password: "",
     channel: "channel_campaign_changed_users",
     conditionKey: "conditionKey_new"
   },
@@ -46,10 +46,10 @@ module.exports = {
     mainDomain: false,
     postBackDomain: false
   }],
-  activateRouter:"http://localhost:5000/user/active",
+  activateRouter: "http://localhost:5000/user/active",
   invitationRouter: "http://localhost:5000/invitation",
   invitationredirect: "http://localhost:5000",
-  freetrialRedirect:"http://localhost:5000/#/access/signup",
+  freetrialRedirect: "http://localhost:5000/#/access/signup",
   defaultSetting: {
     "reportViewLimit": 500,
     "entityType": 1,
