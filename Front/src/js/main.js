@@ -145,10 +145,6 @@
       $scope.$broadcast("event:auth-loginSuccess");
     }
 
-    $scope.afterCancelChangePlan = function() {
-      $rootScope.changePlanStatus = false;
-    };
-
     $scope.goCoupon = function() {
       $scope.$state.go('setApp.subscriptions');
     };

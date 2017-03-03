@@ -29,6 +29,7 @@
               // return $q.reject(response);
             } else {
               $rootScope.changePlanStatus = true;
+              $injector.get('ChangePlan').showDialog(-1, true, function() {});
             }
           }
           return $q.reject(response);

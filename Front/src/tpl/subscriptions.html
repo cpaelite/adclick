@@ -56,7 +56,7 @@
   						<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
   					</span>
   				</div>
-  				<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(true)">Change Plan</md-button>
+  				<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(item.plan.id)">Change Plan</md-button>
   			</div>
   		</div>
       <h3 class="subscription-title subscription-title2">Coupon code</h3>
@@ -68,7 +68,6 @@
 		      </div>
         </form>
       </div>
-      <div change-plan plan-id="item.plan.id" no-plan="false" ng-if="changePlanStatus" after-cancel="changePlan(false)"></div>
     </div>
   </div>
 </div>
