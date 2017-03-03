@@ -27,13 +27,13 @@ jQuery('.eventsSliderNumber').on('change', function(){
 })
 
 var noobiePrice = 0;
-var proPrice = 99;
-var agencyPrice = 399;
-var superPrice = 999;
+var proPrice = 89;
+var agencyPrice = 299;
+var superPrice = 899;
 
-var proMoreEvents = 0.00004;
-var agencyMoreEvents = 0.000036;
-var superMoreEvents = 0.00003;
+var proMoreEvents = 0.000035;
+var agencyMoreEvents = 0.00003;
+var superMoreEvents = 0.000025;
 
 function calculateSingleCost(val, eventsIncluded, standardCost, overageCost, plan) {
     overagesEvents = (val - eventsIncluded);
