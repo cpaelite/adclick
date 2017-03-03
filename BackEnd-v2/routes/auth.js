@@ -372,7 +372,7 @@ router.get('/invitation', async function (req, res, next) {
       }
       //异步发送邮件
       emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
-      await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
+      await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now()))", [userSlice[0].groupId, user.userId, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)],common.query("update User set emailVerified= ? where id= ?",[1,user.userId],connection));
       var expires = moment().add(200, 'days').valueOf();
       res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
       res.cookie("clientId", userSlice[0].groupId);

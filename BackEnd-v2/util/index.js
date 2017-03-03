@@ -86,7 +86,7 @@ exports.resetUserByClientId = function () {
       let userGroups = common.query("select `groupId` from UserGroup  where `deleted`=? and `userId`= ?", [0, req.userId], connection);
 
       //获取用户所在的用户组的管理员信息
-      let groupOwers = common.query("select g1.`groupId`,user.`id` as userId,user.`idText`,g1.`role` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [req.userId], connection);
+      let groupOwers = common.query("select g1.`groupId`,user.`id` as userId,user.`status` as status,user.`idText`,g1.`role` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [req.userId], connection);
 
       let results = await Promise.all([userGroups, groupOwers]);
       let userGroupSlice = results[0];
@@ -103,6 +103,7 @@ exports.resetUserByClientId = function () {
         err.status = 401;
         throw err;
       }
+      req.userStatus = userGroupObject.status;
       req.userId = userGroupObject.userId;
       req.idText = userGroupObject.idText;
       req.groupId = userGroupObject.groupId;
