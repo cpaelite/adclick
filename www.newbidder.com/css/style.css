@@ -241,7 +241,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .titletwo{text-align:left;color:#333;margin-bottom:30px;}
 .col-md-4.active .icon-question-sign{color:#fff;}
 .icon-question-sign{color:#494949;}
-.footer-box{background:#d6deea;padding:30px 0 0 0;font-size:12px;}
+.footer-box{background:#d6deea;padding:30px 0 0 0;font-size:12px;margin-top:30px;}
 .footer-box .container{padding-bottom:40px;}
 .footer-box h4{color:#72777d;font-size:16px;margin-bottom:15px;}
 .footer-box h5{color:#4f4f4f;margin-bottom:15px;}
@@ -392,7 +392,8 @@ input {outline: none;}
 .trk-img{display:none;}
 .trk-md-img{width:92%;margin:0 auto;}
 .compare-table h4{margin-bottom:20px;font-weight:600;font-size:18px;}
-.list-01 .qq{background:url("../img/qq.png") no-repeat left;width:12px;height:12px;background-size:100%;float:left;margin-top:9px;}#compare{font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:.9em;line-height:20px;margin-bottom:80px;}
+.qq img{float:left;margin:4px 5px 0 0;}
+.qq{font-weight:bold;color:#333;}
 #compare table{width:100%;overflow:hidden;}
 #compare td+td{border:1px solid #fff;}
 #compare td{padding:15px 10px;text-align:center;vertical-align:middle;color:#333;}
