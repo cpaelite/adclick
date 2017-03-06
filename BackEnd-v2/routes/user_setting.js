@@ -384,7 +384,7 @@ router.get('/api/domains', async function (req, res, next) {
         let userDomians = await common.query(sql, [value.userId], connection);
         for (let index = 0; index < userDomians.length; index++) {
             if (userDomians[index].customize == 0) {
-                result.internal.push({ address: value.idText+"."+userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
+                result.internal.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
             } else {
                 result.custom.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
             }
@@ -535,6 +535,7 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
             return new Promise(function (resolve, reject) {
                 dns.resolveCname(address, function (err, result) {
                     if (err) {
+                        err.status= 200;
                         reject(err);
                     }
                     resolve(result);
