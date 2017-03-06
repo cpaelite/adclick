@@ -22,7 +22,7 @@
           <div class="item-domains clearfix" ng-repeat="l in item.internal track by $index" >
             <label>Newbidder domain {{$index+1}}</label>
             <div class="input-out">
-              <input type="text" class="form-control" ng-model="l.address">
+              <input type="text" class="form-control" ng-model="l.address" readonly>
             </div>
             <div class="domain-btn-list">
                   <input type="button" class="md-raised copy-btn domain-btn" value="{{ l.main ? 'Main domain' : 'Set as main domain'}}" ng-class="{'main-domain': l.main}" ng-click="mainClick(l)"></input>
@@ -41,7 +41,12 @@
             <div class="another-list-btn clearfix">
               <input type="button" class="md-raised copy-btn domain-btn" value="{{ c.main ? 'Main domain' : 'Set as main domain'}}" ng-class="{'main-domain': c.main, 'gray-btn':!c.address}" ng-click="mainClick(c)"></input>
               <md-button class="md-raised copy-btn verify-btn" ng-class="{'gray-btn':!c.address,'domain-error':c.btnName=='Domain setup error'}" ng-click="domainsVerify(c)">{{c.btnName}}</md-button>
-              <i class="material-icons" ng-click="deleteCustom($index)">delete</i>
+              <i class="material-icons"
+                ng-class="{'invisible': c.main}"
+                ng-click="deleteCustom($index)"
+              >
+                delete
+              </i>
             </div>
           </div>
         </div>

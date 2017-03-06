@@ -365,12 +365,15 @@ left join User user on user.id= ref.referredUserId  where mis.createdAt><%=time%
  *
  */
 router.get('/api/domains', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.query.userId = req.userId;
+
     let connection;
     try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            idText: Joi.string().required()
+        });
+        req.query.userId = req.userId;
+        req.query.idText = req.idText;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = {
@@ -532,6 +535,8 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
             return new Promise(function (resolve, reject) {
                 dns.resolveCname(address, function (err, result) {
                     if (err) {
+                        delete err.code;
+                        err.status = 200;
                         reject(err);
                     }
                     resolve(result);
@@ -967,35 +972,53 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
  *
  */
 
-router.get('/api/setup', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.string().required()
-    });
-    req.query.userId = req.idText;
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        try {
-            let defaultDomain;
+router.get('/api/setup', async function (req, res, next) {
+
+    let connection;
+    try {
+        var schema = Joi.object().keys({
+            userId: Joi.string().required(),
+            id: Joi.number().required()
+        });
+        req.query.userId = req.idText;
+        req.query.id = req.userId;
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let domainResult = await common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.id], connection);
+
+        let defaultDomain;
+        //如果自己定义了main domain 优先
+        if (domainResult.length) {
+            if (domainResult[0].customize == 1) {
+                defaultDomain = domainResult[0].domain;
+            } else {
+                defaultDomain = value.userId + "." + domainResult[0].domain;
+            }
+        } else {
+            //默认使用系统配置
             for (let index = 0; index < setting.domains.length; index++) {
                 if (setting.domains[index].postBackDomain) {
-                    defaultDomain = setting.domains[index].address;
+                    defaultDomain = value.userId + "." + setting.domains[index].address;
                 }
             }
-            return res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter,
-                    mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter,
-                    postBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
-                }
-            });
-        } catch (e) {
-            next(e);
         }
-    });
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                clickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.clickRouter,
+                mutiClickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.mutiClickRouter,
+                postBackUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+            }
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
 });
 
 /**

@@ -1,5 +1,8 @@
 import sequelize from 'sequelize';
 import moment from 'moment';
+var setting = require('../config/setting');
+var Pub = require('../routes/redis_sub_pub');
+
 const {
   TemplatePlan: TP,
   UserBilling: UB,
@@ -61,6 +64,9 @@ export async function addTrialPlan({userId}) {
       });
 
     await Promise.all([upl, ub, us]);
+
+     //redis publish
+    new Pub(true).publish(setting.redis.channel, userId + ".update.user." + userId, "userUpdate");
 
     return true;
   })
