@@ -474,7 +474,15 @@
     $scope.applyChange = function ($event) {
       $event.stopPropagation();
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
-      $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
+      var reportViewColumnsTemp = $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
+      // remove later
+      reportViewColumnsTemp.affiliateName.visible = true;
+      reportViewColumnsTemp.campaignName.visible = true;
+      reportViewColumnsTemp.flowName.visible = true;
+      reportViewColumnsTemp.landerName.visible = true;
+      reportViewColumnsTemp.offerName.visible = true;
+      reportViewColumnsTemp.trafficName.visible = true;
+      //
       var preferences = {
         json: $scope.preferences
       };
@@ -522,6 +530,14 @@
         reportCache.remove('offer-cache');
         $scope.editItem(null, {}, false, cache);
       }
+    }
+
+    $scope.isNeedCurrency = function(key) {
+      return ['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(key) > -1;
+    }
+
+    $scope.isNeedPercent = function(key) {
+      return ['ctr', 'cr', 'cv', 'roi'].indexOf(key) > -1;
     }
   }
 
@@ -899,7 +915,7 @@
     };
 
     this.close = function() {
-      $mdDialog.cancel();
+      $mdDialog.hide();
     };
 
     function defaultItem() {

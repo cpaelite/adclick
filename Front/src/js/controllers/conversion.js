@@ -103,6 +103,9 @@
       });
     }
 
+    $scope.isNeedCurrency = function(key) {
+      return ['Cost', 'Revenue'].indexOf(key) > -1;
+    };
     // getList();
 
     function getDateRange(value) {

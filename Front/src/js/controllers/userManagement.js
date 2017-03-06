@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('UserManagementCtrl', [
-      '$scope', '$mdDialog', '$q', 'toastr', 'Profile', 'Plan', 'Invitation',
+      '$scope', '$mdDialog', '$q', 'toastr', 'Profile', 'Plan', 'Invitation', 'ChangePlan',
       UserManagementCtrl
     ]);
 
-  function UserManagementCtrl($scope, $mdDialog, $q, toastr, Profile, Plan, Invitation) {
+  function UserManagementCtrl($scope, $mdDialog, $q, toastr, Profile, Plan, Invitation, ChangePlan) {
     $scope.app.subtitle = 'UserManagement';
 
     $scope.initState = 'init';
@@ -120,8 +120,12 @@
           $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
         });
       });
+    };
 
-    }
+    $scope.upgradePlan = function() {
+      ChangePlan.showDialog(thePlan.id, false, function() {
+      }, {upgrade: true});
+    };
   }
 
   function userDeleteCtrl($scope, $mdDialog) {

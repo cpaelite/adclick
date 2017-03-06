@@ -10,7 +10,7 @@
     <div class="form-group referral-group clearfix">
         <label class="col-sm-3 control-label">Click URL</label>
         <div class="col-sm-6">
-          <input type="text" class="form-control" ng-model="item.clickUrl">
+          <input type="text" class="form-control" ng-model="item.clickUrl" readonly>
         </div>
         <div class="col-md-3">
           <md-button clipboard class="md-raised copy-btn" text="item.clickUrl" ng-click="itemUrlClick('copy1')">{{btn.copy1}}</md-button>
@@ -19,7 +19,7 @@
     <div class="form-group referral-group clearfix">
         <label class="col-sm-3 control-label">Multi-offer click URL</label>
         <div class="col-sm-6">
-          <input type="text" class="form-control" ng-model="item.mutiClickUrl">
+          <input type="text" class="form-control" ng-model="item.mutiClickUrl" readonly>
         </div>
         <div class="col-md-3">
           <md-button clipboard class="md-raised copy-btn" text="item.mutiClickUrl" ng-click="itemUrlClick('copy2')">{{btn.copy2}}</md-button>
@@ -35,7 +35,7 @@
     <div class="form-group referral-group clearfix">
         <label class="col-sm-2 control-label">Postback URL</label>
         <div class="col-sm-7">
-          <input type="text" class="form-control" ng-model="item.postBackUrl">
+          <input type="text" class="form-control" ng-model="item.postBackUrl" readonly>
         </div>
         <div class="col-md-3">
           <md-button clipboard class="md-raised copy-btn" text="item.postBackUrl" ng-click="itemUrlClick('copy3')">{{btn.copy3}}</md-button>

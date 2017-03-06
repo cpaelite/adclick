@@ -58,7 +58,7 @@
                         <i class="icon-ok"></i>
                         {{'apply changes' | translate}}
                     </md-button>
-                    
+
                     <md-button class="md-raised md-primary cs-compact cs-add-button"  ng-click="viewCloumnClose($event)">
                         <i class="icon-remove"></i>
                         {{'close' | translate}}
@@ -85,14 +85,18 @@
                         ng-repeat="column in columns"
                         ng-show="preferences.reportViewColumns['conversion_' + column.key].visible"
                     >
-                        <span>{{row[column.key]}}</span>
+                        <span>{{isNeedCurrency(column.key) ? (row[column.key] | currency) : row[column.key]}}</span>
                     </td>
                 </tr>
             </tbody>
             <tfoot md-body ng-if="report.totalRows != 0">
                 <tr md-row>
                     <td md-cell ng-show="preferences.reportViewColumns['conversion_' + columns[0].key].visible">Total</td>
-                    <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns['conversion_' + column.key].visible && !$first">{{report.totals[column.key]}}</td>
+                    <td md-cell ng-repeat="column in columns"
+                      ng-show="preferences.reportViewColumns['conversion_' + column.key].visible && !$first"
+                    >
+                      {{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : report.totals[column.key]}}
+                    </td>
                 </tr>
             </tfoot>
         </table>
