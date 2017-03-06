@@ -658,8 +658,9 @@ table.md-table thead.md-head > tr.md-row{
     height: auto;
 }
 table.md-table td.md-cell{
-    border-top: 1px solid #eaeaea;
-    border-bottom: none;font-size:12px;
+    border-bottom: 1px solid #eaeaea;
+    border-top: none;
+    font-size:12px;
 }
 .md-table-pagination .label {
     font-size: 12px;
@@ -2585,7 +2586,6 @@ md-select-menu.md-default-theme md-option[selected], md-select-menu md-option[se
 md-select-menu.md-default-theme md-option[selected]:hover, md-select-menu md-option[selected]:hover,md-select-menu md-option[selected]:focus{background:#d5dce4;color:#333;}
 md-select.md-table-select > .md-select-value{border-bottom:1px solid #d5dce4 !important;}
 table.md-table thead.md-head > tr.md-row{height: auto;}
-table.md-table td.md-cell{border-top:1px solid #eaeaea;border-bottom:none;}
 table.md-table tbody.md-body > tr.md-row, table.md-table tfoot.md-foot > tr.md-row{height:38px;}
 md-option{height:36px;background:#f6f6f6;}
 md-option:hover{background:#e6ebf0;}
