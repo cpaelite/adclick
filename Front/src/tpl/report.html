@@ -166,7 +166,7 @@
                 <td md-cell ng-if="treeLevel>1">Total</td>
                 <td md-cell ng-if="preferences.reportViewColumns[columns[0].key].visible">Total</td>
                 <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
-                  {{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? (report.totals[column.key] + '%') : report.totals[column.key])}}
+                  {{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? ((report.totals[column.key] || 0) + '%') : report.totals[column.key])}}
                 </td>
                 <!-- <td md-cell></td> -->
               </tr>

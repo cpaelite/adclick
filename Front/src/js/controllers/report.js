@@ -915,7 +915,7 @@
     };
 
     this.close = function() {
-      $mdDialog.cancel();
+      $mdDialog.hide();
     };
 
     function defaultItem() {

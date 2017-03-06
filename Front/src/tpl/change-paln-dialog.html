@@ -72,7 +72,12 @@
     </section> -->
   </md-dialog-content>
   <md-dialog-actions>
-    <p class="note">You can change your account to one of the following: <a href="javascript:;" ng-repeat="group in groups" ng-click="changeGroup(group)">{{group.firstname}}</a></p>
+    <p class="note" ng-show="groups.length != 1">
+      You can change your account to one of the following:
+      <a href="javascript:;" ng-repeat="group in groups" ng-click="changeGroup(group)">
+        {{group.firstname}}
+      </a>
+    </p>
     <md-button class="md-primary" ng-click="ctrl.cancel()" ng-class="{hide: noPlan}">{{'cancel' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>
