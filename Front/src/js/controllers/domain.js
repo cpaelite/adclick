@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('DomainCtrl', [
-      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', 'Plan', '$q',
+      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', 'Plan', '$q', 'Profile',
       DomainCtrl
     ]);
 
-  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, Plan, $q) {
+  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, Plan, $q, Profile) {
     $scope.app.subtitle = 'Domain';
 
     $scope.isBtnColor = false;
@@ -36,9 +36,19 @@
     }).$promise;
     initPromises.push(prms);
 
+    var profiles;
+    prms = Profile.get(null, function (user) {
+      profiles = user.data;
+    }).$promise;
+    initPromises.push(prms);
+
     function initSuccess() {
       $scope.plan = thePlan;
-      $scope.item = theDomains;
+      $scope.item = angular.copy(theDomains);
+      $scope.item.internal = $scope.item.internal.map(function(v) {
+        v.address = profiles.idText + '.' + v.address;
+        return v;
+      });
       if ($scope.plan.domainLimit ==  undefined || $scope.item['custom'].length >= $scope.plan.domainLimit) {
         $scope.isGray = true;
       }
@@ -79,11 +89,16 @@
 
     $scope.domainSava = function () {
       var saveItem = angular.copy($scope.item);
+      saveItem.internal = saveItem.internal.map(function(v, i) {
+        v.address = theDomains.internal[i].address;
+        return v;
+      });
       if (saveItem.custom) {
         saveItem.custom.forEach(function (domain) {
           delete domain.btnName;
         });
       }
+
       $scope.domainSaveStatus = true;
       Domains.save(saveItem, function (result) {
         $scope.domainSaveStatus = false;

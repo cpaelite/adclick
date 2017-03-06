@@ -22,7 +22,7 @@
           <div class="item-domains clearfix" ng-repeat="l in item.internal track by $index" >
             <label>Newbidder domain {{$index+1}}</label>
             <div class="input-out">
-              <input type="text" class="form-control" ng-model="l.address">
+              <input type="text" class="form-control" ng-model="l.address" readonly>
             </div>
             <div class="domain-btn-list">
                   <input type="button" class="md-raised copy-btn domain-btn" value="{{ l.main ? 'Main domain' : 'Set as main domain'}}" ng-class="{'main-domain': l.main}" ng-click="mainClick(l)"></input>
