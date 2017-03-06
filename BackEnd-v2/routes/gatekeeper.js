@@ -156,16 +156,20 @@ router.get('/api/tsreport', async (req, res, next) => {
 })
 
 import popads from 'popads';
+import zeropark from 'zeropark';
+
 const providers = {
-  popads
+  popads,
+  zeropark
 }
 
 router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
+  let record
   try {
     let {subId: userId} = req;
     let campaign_identity = req.params.campaignId;
     let {tsReferenceId: provider_id, action} = req.body;
-    let record = await ApiToken.findOne({
+    record = await ApiToken.findOne({
       where: {
         userId
       },
@@ -201,10 +205,19 @@ router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
       message: 'success'
     });
   } catch (e) {
-    if(e.status === 500) {
+    console.log(e)
+
+    if (!record) return next(e);
+
+    if(e.status === 500 && record.Provider.name === 'popads') {
       res.json({
         status: 0,
         message: e.response.body.errors[0].title
+      })
+    } else if (e.status === 400 && record.Provider.name === 'zeropark'){
+      res.json({
+        status: 0,
+        message: e.response.body.error
       })
     } else {
       next(e)

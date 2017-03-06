@@ -22,7 +22,6 @@
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
-    "eroadvertising": "^1.0.0",
     "express": "^4.14.0",
     "express-cluster": "0.0.4",
     "joi": "^10.1.0",
