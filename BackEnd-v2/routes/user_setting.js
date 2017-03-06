@@ -535,6 +535,7 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
             return new Promise(function (resolve, reject) {
                 dns.resolveCname(address, function (err, result) {
                     if (err) {
+                        delete err.code;
                         err.status= 200;
                         reject(err);
                     }
