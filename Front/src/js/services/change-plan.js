@@ -9,7 +9,7 @@
       hideDialog: hideDialog
     }
 
-    function showDialog(planId, noPlan, afterCancel) {
+    function showDialog(planId, noPlan, afterCancel, options) {
       var $scope = $rootScope.$new()
       $mdDialog.show({
         bindToController: true,
@@ -20,7 +20,8 @@
         locals: {
           planId: planId,
           afterCancel: afterCancel,
-          noPlan: noPlan
+          noPlan: noPlan,
+          options: options
         },
         templateUrl: 'tpl/change-paln-dialog.html',
         escapeToClose: false
@@ -45,6 +46,7 @@
         });
         $scope.planId = this.planId ? this.planId : -1;
         $scope.noPlan = this.noPlan;
+        $scope.upgrade = this.options ? this.options.upgrade : false;
         $scope.groups = $rootScope.groups;
         $scope.changeGroup = function(group) {
           $rootScope.changeGroup(group);

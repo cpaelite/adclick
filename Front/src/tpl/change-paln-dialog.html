@@ -14,7 +14,12 @@
           </div>
             <li class="w-md3 h-line{{$index}}">
                 <div ng-bind-html="p.desc"></div>
-                <button class="btn p-btn btn-three p-btn-0{{$index + 1}}" type="button" ng-click="editChangePlan(p)" ng-disabled="p.id == planId">
+                <button
+                  class="btn p-btn btn-three p-btn-0{{$index + 1}}"
+                  type="button"
+                  ng-click="editChangePlan(p)"
+                  ng-disabled="(p.id == planId || (upgrade && (p.id < planId)))"
+                >
                   <p>SELECT PLAN<i class="icon-angle-right"></i></p>
                 </button>
             </li>
