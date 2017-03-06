@@ -2631,6 +2631,9 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .fade-in-right-big{width:50%;}
     .item-domains .input-out{width:50%;}
     .another-list-btn{margin-top:15px;}
+    .sign-up-success .sign-up-detail .col-sm-6{width:100%;}
+    .sign-up-success .sign-up-detail .col-sm-5{width:100%;}
+    .sign-up-success .sign-up-detail .col-sm-offset-1{margin-left:0;}
 }
 @media (max-width:910px){
     .profile-content{width:96%;}
@@ -2674,20 +2677,24 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .cs-subform-select{width:91px;}
 }
 .sign-up-success {
-  padding-top: 30px;
-  padding-bottom: 40px;
+    width:85%;
+    margin:0 auto;
+  padding:40px 0;
 }
+.sign-up-success > h3{color:#0055bf;font-weight:bold;}
 .sign-up-success > h3, .sign-up-success > p, .sign-up-success .btn-box {
   text-align: center;
 }
 .sign-up-success > p {
-  margin-bottom: 30px;
+  margin-bottom:50px;
 }
 .sign-up-success .btn-box .md-button {
-  padding: 0 15px;
+    margin-top:20px;
+  padding:2px 22px;
+    border-radius:2px;text-transform : capitalize;font-size:14px;
 }
 .sign-up-success .sign-up-detail .i-box {
-  font-size: 24px;
+  font-size: 26px;
   text-align: center;
   color: #ccc;
 }
