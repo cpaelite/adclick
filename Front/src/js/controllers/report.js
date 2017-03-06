@@ -683,6 +683,14 @@
       if (external.Placeholder) {
         impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
       }
+      var campaignId = JSON.parse(traffic.campaignId);
+      if (campaignId.Placeholder) {
+        impParam = impParam + campaignId.Parameter + "=" + campaignId.Placeholder + "&";
+      }
+      var websiteId = JSON.parse(traffic.websiteId);
+      if (websiteId.Placeholder) {
+        impParam = impParam + websiteId.Parameter + "=" + websiteId.Placeholder + "&";
+      }
 
       if (impParam) {
         impParam = "?" + impParam;
