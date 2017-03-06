@@ -1582,7 +1582,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     background: #8992aa !important;
 }
 .copy-btn.domain-btn{
-    background: #2f9be1;border-radius:2px;
+    background: #425fa5;border-radius:2px;
 }
 .copy-btn.domain-btn.main-domain{
     background: #2f9be1 !important;
@@ -1591,7 +1591,7 @@ h1.setting-title p{line-height:26px;color:#666;}
     background: #2f9be1 !important;
 }
 .copy-btn.domain-btn:hover{
-    background:#2da8f9!important;
+    background:#425fa5!important;
 }
 .copy-btn.main-domain{
     padding: 0 15px;
