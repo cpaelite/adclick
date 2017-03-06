@@ -536,7 +536,7 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
                 dns.resolveCname(address, function (err, result) {
                     if (err) {
                         delete err.code;
-                        err.status= 200;
+                        err.status = 200;
                         reject(err);
                     }
                     resolve(result);
@@ -984,17 +984,21 @@ router.get('/api/setup', async function (req, res, next) {
         req.query.id = req.userId;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let domainResult = await common.query("select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.id], connection);
+        let domainResult = await common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.id], connection);
 
         let defaultDomain;
         //如果自己定义了main domain 优先
         if (domainResult.length) {
-            defaultDomain = domainResult[0].domain;
+            if (domainResult[0].customize == 1) {
+                defaultDomain = domainResult[0].domain;
+            } else {
+                defaultDomain = value.userId + "." + domainResult[0].domain;
+            }
         } else {
             //默认使用系统配置
             for (let index = 0; index < setting.domains.length; index++) {
                 if (setting.domains[index].postBackDomain) {
-                    defaultDomain = setting.domains[index].address;
+                    defaultDomain = value.userId + "." + setting.domains[index].address;
                 }
             }
         }
@@ -1002,9 +1006,9 @@ router.get('/api/setup', async function (req, res, next) {
             status: 1,
             message: 'success',
             data: {
-                clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter,
-                mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter,
-                postBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+                clickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.clickRouter,
+                mutiClickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.mutiClickRouter,
+                postBackUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
             }
         });
     } catch (e) {

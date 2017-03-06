@@ -197,14 +197,30 @@ const start = async (subId, value, connection) => {
         await common.updateCampaign(subId, value, connection);
     } else {
         let hash = uuidV4();
-        let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted` = 0";
+        let mainDomainsql = "select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted` = 0";
         campResult = await common.insertCampaign(subId, value, hash, connection);
         let domainResult = await common.query(mainDomainsql, [value.userId], connection);
         value.hash = hash;
+
+        let defaultDomain;
+        //如果自己定义了main domain 优先
         if (domainResult.length) {
-            value.url = setting.newbidder.httpPix + value.idText + "." + domainResult[0].domain + "/" + value.hash;
-            value.impPixelUrl = setting.newbidder.httpPix + value.idText + "." + domainResult[0].domain + setting.newbidder.impRouter + "/" + value.hash;
+            if (domainResult[0].customize == 1) {
+                defaultDomain = domainResult[0].domain;
+            } else {
+                defaultDomain = value.idText + "." + domainResult[0].domain;
+            }
+        } else {
+            //默认使用系统配置
+            for (let index = 0; index < setting.domains.length; index++) {
+                if (setting.domains[index].postBackDomain) {
+                    defaultDomain = value.idText + "." + setting.domains[index].address;
+                }
+            }
         }
+        value.url = setting.newbidder.httpPix + defaultDomain + "/" + value.hash;
+        value.impPixelUrl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.impRouter + "/" + value.hash;
+
     }
 
     let campaignId = value.id ? value.id : (campResult ? (campResult.insertId ? campResult.insertId : 0) : 0);
