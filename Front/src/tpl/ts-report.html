@@ -58,7 +58,7 @@
             >
                 add
             </md-button>
-            <md-button 
+            <md-button
                 class="md-raised md-primary cs-compact cs-add-button"
                 ng-click="addOrEditTsReference(query.tsReferenceId)"
                 translate
@@ -87,7 +87,7 @@
                     <td md-cell><span>{{row['campaignId']}}</span></td>
                     <td md-cell><span>{{row['impressions']}}</span></td>
                     <td md-cell><span>{{row['clicks']}}</span></td>
-                    <td md-cell><span>{{row['cost']}}</span></td>
+                    <td md-cell><span>{{row['cost'] | currency}}</span></td>
                     <!-- <td md-cell><span>{{row['conversions']}}</span></td> -->
                     <td md-cell>
                         <span class="btn btn-default btn-xs" ng-class="{disabled: row.startStatus}" ng-click="start(row)" style="width: 50px;">Start</span>
@@ -97,7 +97,7 @@
             </tbody>
         </table>
     </md-table-container>
-    <md-table-pagination 
+    <md-table-pagination
         md-limit="query.limit"
         md-limit-options="[50, 100, 200, 500, 1000]"
         md-page="query.page"
