@@ -24,6 +24,7 @@
 
     $scope.user = {};
     $scope.login = function() {
+      $scope.loginStatus = true;
       $auth.login($scope.user, { ignoreAuthModule: true })
         .then(function(oData) {
           $cookies.put('token', oData.data.token);
@@ -31,6 +32,7 @@
           toastr.success('Login success!');
           $scope.$emit('event:auth-loginSuccess');
           Profile.get(null, function (profile) {
+            $scope.loginStatus = false;
             if (!profile.status) {
               return;
             }
@@ -42,6 +44,7 @@
           });
         })
         .catch(function(response) {
+          $scope.loginStatus = false;
           toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
         });
     };

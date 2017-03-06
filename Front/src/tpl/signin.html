@@ -14,8 +14,12 @@
                            ng-model="user.password" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-lg btn-primary btn-block" ng-click="login()"
-                    ng-disabled="form.$invalid" translate>{{ 'signin' | translate}}
+            <button type="submit"
+              class="btn btn-lg btn-primary btn-block"
+              ng-click="login()"
+              ng-disabled="form.$invalid || loginStatus" translate
+            >
+              {{ 'signin' | translate}}
             </button>
             <div class="line line-dashed"></div>
             <p class="text-center sign-text">

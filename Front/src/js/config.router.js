@@ -121,6 +121,11 @@
         templateUrl: 'tpl/signup.html',
         controller: 'SignupCtrl'
       })
+      .state('access.signup-success', {
+        url: '/signup-success',
+        templateUrl: 'tpl/signup-success.html',
+        controller: 'SignupCtrl'
+      })
       .state('setApp', {
         abstract: true,
         url: '/setApp',
