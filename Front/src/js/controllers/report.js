@@ -523,6 +523,14 @@
         $scope.editItem(null, {}, false, cache);
       }
     }
+
+    $scope.isNeedCurrency = function(key) {
+      return ['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(key) > -1;
+    }
+
+    $scope.isNeedPercent = function(key) {
+      return ['ctr', 'cr', 'cv', 'roi'].indexOf(key) > -1;
+    }
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant) {
