@@ -2662,3 +2662,24 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{font-weight:bold;font-size:16px;}
     .cs-subform-select{width:91px;}
 }
+.sign-up-success {
+  padding-top: 30px;
+  padding-bottom: 40px;
+}
+.sign-up-success > h3, .sign-up-success > p, .sign-up-success .btn-box {
+  text-align: center;
+}
+.sign-up-success > p {
+  margin-bottom: 30px;
+}
+.sign-up-success .btn-box .md-button {
+  padding: 0 15px;
+}
+.sign-up-success .sign-up-detail .i-box {
+  font-size: 24px;
+  text-align: center;
+  color: #ccc;
+}
+.sign-up-success .sign-up-detail {
+  margin-bottom: 25px;
+}

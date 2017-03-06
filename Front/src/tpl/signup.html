@@ -62,8 +62,13 @@
                     </span>
                 </div>
             </div>
-            <button type="submit" class="btn btn-lg btn-primary btn-block sign-top" ng-click="signup()"
-                    ng-disabled='form.$invalid || repeatpassword!=user.password' translate>{{ 'signup' | translate }}
+            <button type="submit"
+              class="btn btn-lg btn-primary btn-block sign-top"
+              ng-click="signup()"
+              ng-disabled='form.$invalid || repeatpassword!=user.password || signupStatus'
+              translate
+            >
+              {{ 'signup' | translate }}
             </button>
             <div class="line line-dashed"></div>
             <p class="text-center sign-text">
@@ -77,4 +82,3 @@
         <small class="text-muted">All Rights Reserved &copy; 2017</small>
     </p>
 </div>
-
