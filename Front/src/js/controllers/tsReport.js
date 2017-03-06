@@ -130,7 +130,7 @@
       TsReference.get(null, function(oData) {
         $scope.tsReferences = oData.data.tsreferences;
         if(!$scope.query.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
-          $scope.query.tsReferenceId = $scope.tsReferences[0].id;
+          $scope.query.tsReferenceId = $scope.tsReferences[0].tsId;
         }
       });
     }
