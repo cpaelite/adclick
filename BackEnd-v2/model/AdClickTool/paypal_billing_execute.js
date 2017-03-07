@@ -25,7 +25,14 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     timestamps: false,
-    tableName: 'PaypalBillingExecute'
+    tableName: 'PaypalBillingExecute',
+    classMethods: {
+      associate(models) {
+        model.belongsTo(models.PaypalBillingAgreement, {
+          foreignKey: 'agreementId'
+        })
+      }
+    },
   })
 
   return model;

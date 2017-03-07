@@ -29,8 +29,11 @@ router.get('/paypal/success', async function(req, res, next) {
     // setup the new plan
     await PBA.sequelize.transaction(async (transaction) => {
 
-      let agreement = await PBA.findOne({where: {token}})
-      let template_plan = await TP.findOne({where: {paypalPlanId: agreement.paypalPlanId}})
+      let agreement = await PBA.findOne({where: {token}});
+      let template_plan = await TP.findOne({where: {paypalPlanId: agreement.paypalPlanId}});
+
+      agreement.status = 1;
+      agreement.save({transaction});
 
 
       let old_ub = await UB.findOne({
@@ -91,7 +94,7 @@ router.get('/paypal/success', async function(req, res, next) {
       let pbe = await PBE.create({
         userId: agreement.userId,
         agreementId: agreement.id,
-        executedAt: (new Date()).getTime(),
+        executedAt: new Date(),
         executeReq: token,
         executeResp: JSON.stringify(billingAgreement)
       }, {transaction});
@@ -99,9 +102,7 @@ router.get('/paypal/success', async function(req, res, next) {
       // update UserBilling adress
       let user_bill_detail = await UBD.findOne({where: {userId: agreement.userId}});
       if (!user_bill_detail) {
-        console.log(billingAgreement)
         let {shipping_address, payer} = billingAgreement
-        console.log(payer, shipping_address);
         user_bill_detail = UBD.build({
           userId: agreement.userId,
           email: payer.payer_info.email,
@@ -118,6 +119,8 @@ router.get('/paypal/success', async function(req, res, next) {
         await user_bill_detail.save({transaction})
       }
 
+      let events_offset = 0;
+      if (old_ub) events_offset = old_ub.overageEvents;
 
       let ub = await UB.create({
         userId: agreement.userId,
@@ -127,11 +130,11 @@ router.get('/paypal/success', async function(req, res, next) {
         totalEvents: 0,
         freeEvents: 0,
         overageEvents: 0,
-        planStart: moment().unix(),
-        planEnd: moment().add(1, 'Month').unix(),
-        includedEvents: template_plan.eventsLimit,
-        nextPlanId: 0, //TODO:
-        nextPaymentMethod: 0, //TODO:
+        planStart: moment().startOf('day').unix(),
+        planEnd: moment().add(1, 'month').add(5, 'day').startOf('day').unix(),
+        includedEvents: template_plan.eventsLimit - events_offset,
+        nextPlanId: 0,
+        nextPaymentMethod: 0,
         expired: 0
       }, {transaction})
     })
@@ -143,6 +146,5 @@ router.get('/paypal/success', async function(req, res, next) {
 
 
 router.get('/paypal/cancel', async function(req, res, next) {
-    //TODO: update agreement status log to db
   res.redirect('/#/setApp/subscriptions?message=cancel');
 })

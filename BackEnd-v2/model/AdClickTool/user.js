@@ -75,18 +75,14 @@ export default function (sequelize, DataTypes) {
     }
   }, {
       timestamps: false,
-      tableName: 'User'
+      tableName: 'User',
+      classMethods: {
+        associate(models) {
+          model.hasMany(models.UserBilling, {
+            foreignKey: 'userId'
+          })
+        }
+      }
     })
   return model;
 }
-
-
-
-
-
-
-
-
-
-
- 
