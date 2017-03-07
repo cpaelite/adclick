@@ -145,9 +145,9 @@
       var params = {};
       angular.extend(params, $scope.query, pageStatus);
       delete params.__tk;
-      Tsreport.get(params, function(result) {
+      $scope.promise = Tsreport.get(params, function(result) {
         $scope.report = result.data;
-      });
+      }).$promise;
     }
 
     function pauseCtrl($mdDialog, Tsreport, TsCampaign) {

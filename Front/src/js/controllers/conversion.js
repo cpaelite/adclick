@@ -98,9 +98,9 @@
       var params = {};
       angular.extend(params, $scope.query, pageStatus);
       delete params.__tk;
-      Conversion.get(params, function (result) {
+      $scope.promise = Conversion.get(params, function (result) {
         $scope.report = result.data;
-      });
+      }).$promise;
     }
 
     $scope.isNeedCurrency = function(key) {
