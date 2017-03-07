@@ -1,8 +1,4 @@
-body{font-family:"Avenir Next",Verdana,Helvetica, Tahoma, Arial, "\5b8b\4f53", sans-serif;}
-@font-face {
-    font-family:"Avenir Next"! important;
-    src:url("../font/Avenir Next.ttc");
-}
+body{font-family:Helvetica, Verdana,Tahoma, Arial, "\5b8b\4f53", sans-serif;}
 .modal-open {
     overflow: inherit !important;padding-right: 0 !important;}
 .small-font{
@@ -18,8 +14,9 @@ body{font-family:"Avenir Next",Verdana,Helvetica, Tahoma, Arial, "\5b8b\4f53", s
     -o-transform: scale(0.90);      /* Opera */
     -o-transform-origin:0 0;        /* Opera */
 }
+.container.compare-table{overflow-x:auto;}
 *{margin:0;padding:0;list-style:none;}
-a{color:#333;}
+a{color:#222;}
 a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .nav-box{background:rgba(255,255,255,.9)}
 .logo{width:65px;margin-left:3%;float:left}
@@ -30,7 +27,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .nav-box ul li a{
     font-weight:500;
     cursor: pointer;
-    color: #333;
+    color: #222;
     transform: translate3d(-50%, -50%, 0);
     padding:6px 10px;
     display: inline-block;
@@ -102,7 +99,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .bidder-menu{position:relative;z-index:10;top:80px;}
 .bidder-menu img{width:100px;}
 .bidder-menu-title .col-md-3,.col-sm-6{padding:0;}
-.bidder-menu-title a h2{font-size:15px;color:#333;}
+.bidder-menu-title a h2{font-size:15px;color:#222;}
 .bidder-menu-title a:hover h2{color:#0055bf;}
 .bidder-menu-title li.col-md-3{text-align:center;padding:0 20px;word-wrap:break-word;}
 .bidder-menu-title li a{border:none;}
@@ -121,10 +118,10 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .nav-tabs li a:hover .font-lan{color:#038fa9;}
 .modal-open{overflow:hidden;}
 
-.bidder-menu-title li a p{text-align:left;color:#777;font-size:12px;max-height:60px;overflow:hidden;line-height:20px;}
+.bidder-menu-title li a p{text-align:left;color:#555;font-size:12px;max-height:60px;overflow:hidden;line-height:18px;}
 .bider-menu-nr{background:#f8f8f8;margin:110px 0 50px 0;}
 .bider-menu-nr .bider-conten{padding:75px 0 10px 0;}
-.bider-menu-nr .bider-conten a:hover{color:#333;}
+.bider-menu-nr .bider-conten a:hover{color:#222;}
 .jz-c-line,.jz-b-line,.jz-l-line,.jz-h-line{height:3px;display:block;width:100%;position:absolute;left:0;}
 .jz-c-line{border-bottom:3px solid #ff8c00;}
 .jz-b-line{border-bottom:3px solid #357cf4;}
@@ -134,8 +131,8 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .bider-conten h3.hg{line-height:36px;}
 .bider-conten li{text-align:center;margin-bottom:20px;height:190px;}
 .bider-conten img{width:80px;}
-.bider-conten h3{font-size:13px;max-height:46px;line-height:18px;margin-top:20px;font-weight:bold;}
-.bider-conten li a p{color:#777;font-weight:normal;font-size:12px;text-align:left;}
+.bider-conten h3{font-size:12px;max-height:46px;line-height:16px;margin-top:20px;font-weight:bold}
+.bider-conten li a p{color:#555;font-weight:normal;font-size:12px;text-align:left;}
 .all-btn{border:2px solid #d5dce4;color:#357cf3;border-radius:2px;background:transparent;font-size:13px;width:220px;height:42px;
     line-height:36px;padding:0;display:block;
     -webkit-transition-duration: 0.6s; /* Safari */
@@ -180,7 +177,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .title{font-size:32px;text-align:center;margin:80px 0 100px 0;line-height:48px;}
 .pricing-box{margin:0 auto 80px auto;}
 .pricing-box li{-webkit-transition: all 0.3s;
-    transition: all 0.3s;width:24.15%;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;float:left;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;max-height:580px;padding-top:15px;}
+    transition: all 0.3s;width:24.15%;border-style:solid;border-width:2px 2px 2px 2px;border-color:#357cf3 #fbfbfb #fbfbfb #fbfbfb;background:#fbfbfb;float:left;box-shadow:0 0 3px #d4d4d4;margin:0 1.13333% 0 0;border-radius:2px;max-height:480px;padding-top:15px;}
 .pricing-box li:nth-last-child(1){margin:0;}
 .pricing-box li.h-line{border-top:2px solid #ff8c00;}
 .pricing-box li.h-line .money-size,.pricing-box li.h-line .money-icon{color:#ff8c00;}
@@ -190,16 +187,16 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .pricing-box li.h-line4 .money-size,.pricing-box li.h-line4 .money-icon{color:#04a3c0;}
 .p-header{margin:25px 0 20px 0;}
 .p-header-box{text-align:center;}
-.p-header-box h2{font-size:16px;color:#b3b3b3;}
+.p-header-box h2{font-size:15px;color:#666;}
 .p-header .money-icon{color:#357cf3;font-size:18px;vertical-align:top;line-height:24px;font-weight:600;}
-.p-header .money-size{color:#357cf3;font-size:42px;line-height:42px;font-weight:600;}
-.p-header .money-small{color:#b3b3b3;}
+.p-header .money-size{color:#357cf3;font-size:42px;line-height:42px;font-weight:bold;}
+.p-header .money-small{color:#666;}
 
 .pricedesc{margin:5px 0 0 0;}
-.pricedesc p{line-height:20px;font-size:12px;margin:2px 0 0 0;color:#333;font-weight:500;}
+.pricedesc p{line-height:20px;font-size:14px;margin:2px 0 5px 0;color:#222;font-weight:500;}
 .pricedesc p i{margin:0 5px;}
-.pricedesc-list{border-top:1px solid #f3f3f3;margin:30px auto;display:inline-block;width:85%;height:435px;}
-.pricedesc-list li{line-height:20px;background:transparent;padding:10px 0;font-size:12px;color:#333;width:100%;border-width:0 0 1px 0;border-style:solid;border-color:#f3f3f3;box-shadow:none;border-radius:0;height:auto;font-weight:400;}
+.pricedesc-list{border-top:1px solid #f3f3f3;margin:30px auto;display:inline-block;width:88%;height:430px;}
+.pricedesc-list li{line-height:20px;background:transparent;padding:10px 0;font-size:12px;color:#222;width:100%;border-width:0 0 1px 0;border-style:solid;border-color:#f3f3f3;box-shadow:none;border-radius:0;height:auto;font-weight:400;}
 .pricedesc-list li:nth-last-child(1),.pricedesc-list li:nth-last-child(1):hover{border-bottom:none;}
 
 .pricedesc-list li:hover{border-width:0 0 1px 0;border-style:solid;border-color:#f3f3f3;}
@@ -238,7 +235,7 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .col-md-4.active .pricedesc p{color:#fff;}
 .col-md-4.active .p-header-box h2{color:#96ceff}
 .col-md-4.active .p-header .money-icon,.col-md-4.active .p-header .money-size,.col-md-4.active .p-header .money-small{color:#fff;}
-.titletwo{text-align:left;color:#333;margin-bottom:30px;}
+.titletwo{text-align:left;color:#222;margin-bottom:30px;}
 .col-md-4.active .icon-question-sign{color:#fff;}
 .icon-question-sign{color:#494949;}
 .footer-box{background:#d6deea;padding:30px 0 0 0;font-size:12px;margin-top:30px;}
@@ -289,7 +286,7 @@ textarea{width:100%;max-height:60px;border:none;line-height:26px;margin-bottom:1
     align-items: center;
 }
 .swiper-slide a.active:hover .font-orange,.swiper-slide a.active:focus .font-orange,.swiper-slide a.active:active .font-orange{color:#ff8c00;}
-.navbar-default .navbar-toggle .icon-bar{background-color:#333;}
+.navbar-default .navbar-toggle .icon-bar{background-color:#222;}
 .swiper-container-horizontal>.swiper-scrollbar{display:none;}
 .xz-icon li{width:60px;background-size:100%;background-color:transparent;font-weight:normal;display:block;}
 .xz-icon li h6{margin:10px 0 4px 0;}
@@ -401,7 +398,7 @@ input {outline: none;}
 .list-01 .qq span{margin-right:8px;}
 #compare table{width:100%;overflow:hidden;}
 #compare td+td{border:1px solid #fff;}
-#compare td{padding:15px 10px;text-align:center;vertical-align:middle;color:#333;}
+#compare td{padding:15px 10px;text-align:center;vertical-align:middle;color:#222;}
 #compare tr:first-child{border-style:solid;border-width:2px 2px 0 2px;border-color:#357cf4 #fff transparent #fff;}
 #compare tr:first-child, #compare tr td:first-child{background:#f3f3f3;}
 #compare b, #compare tr+tr td:first-child{font-weight:500;}
@@ -424,7 +421,7 @@ input {outline: none;}
     .planSlider .col-md-3{position:inherit;margin:80px auto 50px auto;float:none;width:248px;}
     #sliderPricing .eventsSliderBox .eventsSliderNumber{width:104px;text-align:center;}
     .register-btn{width:104px;}
-    .title{margin:50px 0;}
+    .title{margin:30px 0;font-size:26px;}
     .pricedesc-list{width:90%;}
     .pricing-box{margin-bottom:30px;}
     .separator{display:none;}
@@ -439,8 +436,6 @@ input {outline: none;}
     .trk-img{display: block;}
     .banner-col-r ul{width:80%;}
     .banner-col{background-size:125%;background-position:-15px bottom;padding-bottom:0;}
-
-
 }
 @media only screen and (max-width:640px){.pricing-box .w-md3{width:100%;}}
 @media only screen and (max-width:540px){
