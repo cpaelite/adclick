@@ -197,6 +197,78 @@ app.get('/api/tags', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取用户权限信息
+ *
+ */
+app.get('/auth/permission', function (req, res) {
+  var result = {
+    setting: {
+      profile: {
+        show: true
+      },
+      referralProgram: {
+        show: true
+      },
+      subscriptions: {
+        show: true
+      },
+      domain: {
+        show: true,
+        updateDomain: true
+      },
+      setup: {
+        show: true
+      },
+      userManagement: {
+        show: true
+      },
+      blacklist: {
+        show: true
+      },
+      invoice: {
+        show: true
+      },
+      eventLog: {
+        show: true,
+        selectUser: false
+      },
+      conversionUpload: {
+        show: true
+      }
+    },
+    report: {
+      dashboard: {
+        show: true
+      },
+      campaign: {
+        show: true
+      },
+      flow: {
+        show: true
+      },
+      lander: {
+        show: true
+      },
+      offer: {
+        show: true
+      },
+      trafficSource: {
+        show: true
+      },
+      affiliateNetwork: {
+        show: true
+      },
+      conversions: {
+        show: true
+      },
+      tsReport: {
+        show: true
+      }
+    }
+  };
+  delayResponse(res, result);
+});
 
 /**
  * @apiName 获取用户配置
