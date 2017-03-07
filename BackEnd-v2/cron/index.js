@@ -1,24 +1,20 @@
 import schedule from 'node-schedule'
-import executePaypal from './jobs/executePaypal'
-
-const {
-  PaypalBillingAgreement: PBA,
-  PaypalBillingExecute: PBE,
-  PaypalBillingPlan: PBP,
-  UserBilling: UB,
-  UserPaymentLog: UPL,
-  UserPaymentMethod: UPM,
-  TemplatePlan: TP
-} = models;
+import {cancelAgreement, updatePlan} from './jobs/executePaypal'
 
 module.exports = function () {
-  const spec = '0 2 * * *'
-  schedule.scheduleJob(spec, async () => {
+  schedule.scheduleJob('0 1 * * *', async () => {
     try {
-      await executePaypal()
-      console.log('Executed paypal successfully')
+      await cancelAgreement();
     } catch (err) {
-      console.log(`An error occured when executing paypal: ${err}`)
+      console.log(err);
+    }
+  })
+
+  schedule.scheduleJob('0 3 * * *', async () => {
+    try {
+      await updatePlan();
+    } catch (err) {
+      console.log(err);
     }
   })
 }

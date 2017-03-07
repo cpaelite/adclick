@@ -57,7 +57,14 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     timestamps: false,
-    tableName: 'TemplatePlan'
+    tableName: 'TemplatePlan',
+    classMethods: {
+      associate(models) {
+        model.hasMany(models.UserBilling, {
+          foreignKey: 'planId'
+        })
+      }
+    }
   })
   return model;
 }
