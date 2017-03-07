@@ -32,6 +32,7 @@ angular.module('app')
   .filter('currency', function() {
       return function(input, glue) {
         glue = glue ? glue : '$';
+        input = input || 0;
         return glue + input; //.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       };
   })
