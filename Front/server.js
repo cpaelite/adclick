@@ -203,71 +203,76 @@ app.get('/api/tags', function (req, res) {
  */
 app.get('/auth/permission', function (req, res) {
   var result = {
-    setting: {
-      profile: {
-        show: true
+    status: 1,
+    message: 'success',
+    data: JSON.stringify({
+      setting: {
+        profile: {
+          show: true
+        },
+        referralProgram: {
+          show: true
+        },
+        subscriptions: {
+          show: true
+        },
+        domain: {
+          show: true,
+          update: true
+        },
+        setup: {
+          show: true
+        },
+        userManagement: {
+          show: true
+        },
+        blacklist: {
+          show: true
+        },
+        invoice: {
+          show: true
+        },
+        eventLog: {
+          show: true,
+          selectUser: false
+        },
+        conversionUpload: {
+          show: true
+        }
       },
-      referralProgram: {
-        show: true
-      },
-      subscriptions: {
-        show: true
-      },
-      domain: {
-        show: true,
-        updateDomain: true
-      },
-      setup: {
-        show: true
-      },
-      userManagement: {
-        show: true
-      },
-      blacklist: {
-        show: true
-      },
-      invoice: {
-        show: true
-      },
-      eventLog: {
-        show: true,
-        selectUser: false
-      },
-      conversionUpload: {
-        show: true
+      report: {
+        dashboard: {
+          show: false
+        },
+        campaign: {
+          show: true
+        },
+        flow: {
+          show: true
+        },
+        lander: {
+          show: true
+        },
+        offer: {
+          show: true
+        },
+        trafficSource: {
+          show: true
+        },
+        affiliateNetwork: {
+          show: true
+        },
+        conversions: {
+          show: true
+        },
+        tsReport: {
+          show: true
+        }
       }
-    },
-    report: {
-      dashboard: {
-        show: true
-      },
-      campaign: {
-        show: true
-      },
-      flow: {
-        show: true
-      },
-      lander: {
-        show: true
-      },
-      offer: {
-        show: true
-      },
-      trafficSource: {
-        show: true
-      },
-      affiliateNetwork: {
-        show: true
-      },
-      conversions: {
-        show: true
-      },
-      tsReport: {
-        show: true
-      }
-    }
+    })
   };
-  delayResponse(res, result);
+  //delayResponse(res, result);
+  res.send(result);
 });
 
 /**

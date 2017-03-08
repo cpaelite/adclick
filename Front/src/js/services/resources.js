@@ -135,4 +135,7 @@ angular.module('app')
   .factory('Coupon', ['$resource', function ($resource) {
     return $resource('/api/user/coupon');
   }])
+  .factory('Permission', ['$resource', function($resource) {
+    return $resource('/auth/permission');
+  }])
 ;

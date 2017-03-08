@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, Group, $cookies, toastr) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -83,6 +83,14 @@
           return false;
         });
         $rootScope.currentUser = $localStorage.currentUser;
+
+        // load permission
+        Permission.get(null, function(res) {
+          if (!res.status) {
+            return;
+          }
+          $rootScope.permissions = JSON.parse(res.data);
+        });
 
         // load user preferences
         Preference.get(null, function (res) {
