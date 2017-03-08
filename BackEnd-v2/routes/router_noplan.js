@@ -6,7 +6,6 @@ var setting = require('../config/setting');
 const _ = require('lodash');
 
 
-
 /**
  * @api {get} /api/preferences  获取用户配置
  * @apiName  get  user  preferences
@@ -22,41 +21,39 @@ const _ = require('lodash');
  *
  */
 router.get('/api/preferences', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.body.userId = req.userId;
-    let connection;
-    try {
-        let result;
-        let value = await common.validate(req.body, schema);
-        connection = await common.getConnection();
-        let results = await common.query("select  `json` from User where `id` = ? and `deleted` =0", [value.userId], connection);
-       
-        if (results.length) {
-            result = JSON.stringify(_.merge(setting.defaultSetting, JSON.parse(results[0].json)));
-             
-        } else {
-            result = JSON.stringify(setting.defaultSetting);
-        }
-        return res.json({
-            status: 1,
-            message: "success",
-            data: result
-        });
-    } catch (e) {
-        next(e);
+  var schema = Joi.object().keys({
+    userId: Joi.number().required()
+  });
+  req.body.userId = req.userId;
+  let connection;
+  try {
+    let result;
+    let value = await common.validate(req.body, schema);
+    connection = await common.getConnection();
+    let results = await common.query("select  `json` from User where `id` = ? and `deleted` =0", [value.userId], connection);
 
-    } finally {
-        if (connection) {
-            connection.release();
-        }
+    if (results.length) {
+      result = _.merge(setting.defaultSetting, JSON.parse(results[0].json));
 
+    } else {
+      result = setting.defaultSetting;
     }
-    
+    return res.json({
+      status: 1,
+      message: "success",
+      data: result
+    });
+  } catch (e) {
+    next(e);
+
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+
+  }
+
 });
-
-
 
 
 /**
@@ -74,25 +71,24 @@ router.get('/api/preferences', async function (req, res, next) {
  *
  */
 router.get('/api/countries', function (req, res, next) {
-    pool.getConnection(function (err, connection) {
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      err.status = 303
+      return next(err);
+    }
+    connection.query(
+      "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
+      function (err, result) {
+        connection.release();
         if (err) {
-            err.status = 303
-            return next(err);
+          return next(err);
         }
-        connection.query(
-            "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
-            function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json(
-                    result
-                );
-            });
-    });
+        res.json(
+          result
+        );
+      });
+  });
 });
-
 
 
 /**
@@ -113,44 +109,43 @@ router.get('/api/countries', function (req, res, next) {
  *
  **/
 router.get('/api/groups', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        idText: Joi.string().required()
+  var schema = Joi.object().keys({
+    userId: Joi.number().required(),
+    idText: Joi.string().required()
+  });
+  let connection;
+  try {
+    req.query.userId = req.subId;
+    req.query.idText = req.subidText;
+    let value = await common.validate(req.query, schema);
+    connection = await common.getConnection();
+    let result = [];
+    //获取用户所在的用户组的管理员信息
+    result = await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
+    //myself
+    result.push({
+      groupId: req.subgroupId,
+      firstname: req.firstname,
+      lastname: req.lastname,
+      email: req.email
     });
-    let connection;
-    try {
-        req.query.userId = req.subId;
-        req.query.idText = req.subidText;
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let result = [];
-        //获取用户所在的用户组的管理员信息
-        result = await common.query("select g1.`groupId`,user.`firstname`,user.`lastname`,user.`email` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [value.userId], connection);
-        //myself
-        result.push({
-            groupId: req.subgroupId,
-            firstname: req.firstname,
-            lastname: req.lastname,
-            email: req.email
-        });
 
-        return res.json({
-            status: 1,
-            message: 'success',
-            data: {
-                groups: result
-            }
-        });
-    } catch (e) {
-        next(e);
+    return res.json({
+      status: 1,
+      message: 'success',
+      data: {
+        groups: result
+      }
+    });
+  } catch (e) {
+    next(e);
 
-    } finally {
-        if (connection) {
-            connection.release();
-        }
+  } finally {
+    if (connection) {
+      connection.release();
     }
+  }
 });
-
 
 
 /**
@@ -180,51 +175,51 @@ router.get('/api/groups', async function (req, res, next) {
  *
  */
 router.get('/api/profile', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.query.userId = req.subId;
-    let connection;
-    try {
-        let value = await common.validate(req.query, schema);
-        connection = await common.getConnection();
-        let result = await common.query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
+  var schema = Joi.object().keys({
+    userId: Joi.number().required()
+  });
+  req.query.userId = req.subId;
+  let connection;
+  try {
+    let value = await common.validate(req.query, schema);
+    connection = await common.getConnection();
+    let result = await common.query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
 
-        let responseData = {};
-        if (result.length) {
-            responseData.idText = result[0].idText;
-            responseData.firstname = result[0].firstname;
-            responseData.lastname = result[0].lastname;
-            responseData.status = result[0].status;
-            responseData.timezone = result[0].timezone;
-            responseData.referralToken = result[0].referralToken;
-            responseData.email = result[0].email;
-            if (result[0].setting) {
-                let settingJSON = JSON.parse(result[0].setting);
-                responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
-                responseData.tel = settingJSON.tel ? settingJSON.tel : "";
-                responseData.homescreen = settingJSON.homescreen ? settingJSON.homescreen : "";
-            } else {
-                responseData.companyname = "";
-                responseData.tel = "";
-                responseData.homescreen = "dashboard";
-            }
-        }
-        res.json({
-            status: 1,
-            message: 'succes',
-            data: responseData
-        });
-    } catch (e) {
-        next(e);
+    let responseData = {};
+    if (result.length) {
+      responseData.idText = result[0].idText;
+      responseData.firstname = result[0].firstname;
+      responseData.lastname = result[0].lastname;
+      responseData.status = result[0].status;
+      responseData.timezone = result[0].timezone;
+      responseData.referralToken = result[0].referralToken;
+      responseData.email = result[0].email;
+      if (result[0].setting) {
+        let settingJSON = JSON.parse(result[0].setting);
+        responseData.companyname = settingJSON.companyname ? settingJSON.companyname : "";
+        responseData.tel = settingJSON.tel ? settingJSON.tel : "";
+        responseData.homescreen = settingJSON.homescreen ? settingJSON.homescreen : "";
+      } else {
+        responseData.companyname = "";
+        responseData.tel = "";
+        responseData.homescreen = "dashboard";
+      }
     }
-    finally {
-        if (connection) {
-            connection.release();
-        }
+    res.json({
+      status: 1,
+      message: 'succes',
+      data: responseData
+    });
+  } catch (e) {
+    next(e);
+  }
+  finally {
+    if (connection) {
+      connection.release();
     }
+  }
 
 });
 
 
-module.exports= router;
+module.exports = router;
