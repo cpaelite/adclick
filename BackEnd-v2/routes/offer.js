@@ -46,8 +46,8 @@ router.post('/api/offers', async function (req, res, next) {
         tags: Joi.array().optional()
     });
 
-    req.body.userId = req.userId;
-    req.body.idText = req.idText;
+    req.body.userId = req.parent.id;
+    req.body.idText = req.parent.idText;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -59,7 +59,7 @@ router.post('/api/offers', async function (req, res, next) {
 
         let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
         value.postbackUrl = postbackUrl;
-        let landerResult = await common.insertOffer(req.subId,value.userId, value.idText, value, connection);
+        let landerResult = await common.insertOffer(req.user.id,value.userId, value.idText, value, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
@@ -128,8 +128,8 @@ router.post('/api/offers/:id', async function (req, res, next) {
         deleted: Joi.number().optional(),
     });
 
-    req.body.userId = req.userId;
-    req.body.idText = req.idText;
+    req.body.userId = req.parent.id;
+    req.body.idText = req.parent.idText;
     req.body.id = req.params.id;
     let connection;
     try {
@@ -139,7 +139,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         if (await common.checkNameExists(value.userId, value.id, value.name, 3, connection)) {
             throw new Error("Offer name exists");
         }
-        await common.updateOffer(req.subId,value.userId, value, connection);
+        await common.updateOffer(req.user.id,value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 3, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
@@ -187,7 +187,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
         userId: Joi.number().required()
     });
     req.query.id = req.params.id;
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -226,7 +226,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  */
 router.get('/api/offers', function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name,country from Offer where userId = " + req.userId;
+    var sql = "select id, name,country from Offer where userId = " + req.parent.id;
 
     if (req.query.country) {
         sql += " and `country`=" + req.query.country;
@@ -268,7 +268,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
         name: Joi.string().optional(),
         hash: Joi.string().optional(),
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     req.query.id = req.params.id;
     let connection;
     try {
@@ -302,7 +302,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
           return ;
         }
 
-        let result = await common.deleteOffer(req.subId,value.id, value.userId, value.name, value.hash, connection);
+        let result = await common.deleteOffer(req.user.id,value.id, value.userId, value.name, value.hash, connection);
          
 
         res.json({

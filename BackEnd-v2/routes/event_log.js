@@ -34,7 +34,7 @@ router.get('/api/eventlog', async function (req, res, next) {
     let connection;
 
     try {
-        req.query.user= req.subId;
+        req.query.user= req.user.id;
         let value = await common.validate(req.query, schema);
         let {
             limit,
@@ -109,8 +109,8 @@ router.get('/api/members', async function (req, res, next) {
     });
     let connection;
     try {
-        req.query.userId = req.subId;
-        req.query.groupId = req.subgroupId;
+        req.query.userId = req.user.id;
+        req.query.groupId = req.user.groupId;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let results = [];

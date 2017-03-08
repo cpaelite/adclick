@@ -10,42 +10,42 @@ var Pub = require('./redis_sub_pub');
 const conditionResult = [{
   "id": "model",
   "display": "Brand and model",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "l2select", "name": "value", "options": []
   }]
 }, {
   "id": "browser",
   "display": "Browser and version",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "l2select", "name": "value", "options": []
   }]
 }, {
   "id": "connection",
   "display": "Connection Type",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "select", "name": "value", "options": []
   }]
 }, {
   "id": "country",
   "display": "Country",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "select", "name": "value", "options": []
   }]
 }, {
   "id": "region",
   "display": "State / Region",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "async-select", "name": "value", "url": "/api/regions"
   }]
 }, {
   "id": "city",
   "display": "City",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "async-select", "name": "value", "url": "/api/cities"
   }]
@@ -53,37 +53,37 @@ const conditionResult = [{
 }, {
   "id": "weekday",
   "display": "Day of week",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "checkbox", "name": "weekday", "options": [
-      {"value": "0", "display": "Monday"},
-      {"value": "1", "display": "Tuesday"},
-      {"value": "2", "display": "Wednesday"},
-      {"value": "3", "display": "Thursday"},
-      {"value": "4", "display": "Friday"},
-      {"value": "5", "display": "Saturday"},
-      {"value": "6", "display": "Sunday"}
+      { "value": "0", "display": "Monday" },
+      { "value": "1", "display": "Tuesday" },
+      { "value": "2", "display": "Wednesday" },
+      { "value": "3", "display": "Thursday" },
+      { "value": "4", "display": "Friday" },
+      { "value": "5", "display": "Saturday" },
+      { "value": "6", "display": "Sunday" }
     ]
   }, {
     "type": "select", "label": "Time zone", "name": "tz", "options": [
-      {"value": "+05:45", "display": "(UTC+05:45) Kathmandu"},
-      {"value": "-03:30", "display": "(UTC-03:30) Newfoundland"},
-      {"value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi"},
-      {"value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)"},
-      {"value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta"}
+      { "value": "+05:45", "display": "(UTC+05:45) Kathmandu" },
+      { "value": "-03:30", "display": "(UTC-03:30) Newfoundland" },
+      { "value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi" },
+      { "value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)" },
+      { "value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta" }
     ]
   }]
 }, {
   "id": "device",
   "display": "Device type",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "select", "name": "value", "options": []
   }]
 }, {
   "id": "iprange",
   "display": "IP and IP ranges",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "textarea", "name": "value",
     "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
@@ -91,35 +91,35 @@ const conditionResult = [{
 }, {
   "id": "isp",
   "display": "ISP",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "async-select", "name": "value", "url": "/api/isps"
   }]
 }, {
   "id": "language",
   "display": "Language",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "chips", "name": "value", "options": []
   }]
 }, {
   "id": "carrier",
   "display": "Mobile Carrier",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "async-select", "name": "value", "url": "/api/carriers"
   }]
 }, {
   "id": "os",
   "display": "Operating system and version",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "l2select", "name": "value", "options": []
   }]
 }, {
   "id": "referrer",
   "display": "Referrer",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "textarea", "name": "value",
     "desc": ""
@@ -127,26 +127,26 @@ const conditionResult = [{
 }, {
   "id": "time",
   "display": "Time of day",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "inputgroup",
     "inputs": [
-      {"label": "Between", "name": "starttime", "placeholder": "00:00"},
-      {"label": "and", "name": "endtime", "placeholder": "00:00"},
+      { "label": "Between", "name": "starttime", "placeholder": "00:00" },
+      { "label": "and", "name": "endtime", "placeholder": "00:00" },
     ]
   }, {
     "type": "select", "label": "Time zone", "name": "tz", "options": [
-      {"value": "utc", "display": "UTC"},
-      {"value": "-8", "display": "-8 PDT"},
-      {"value": "+8", "display": "+8 Shanghai"},
-      {"value": "+7", "display": "+7 Soul"},
-      {"value": "+9", "display": "+7 Tokyo"}
+      { "value": "utc", "display": "UTC" },
+      { "value": "-8", "display": "-8 PDT" },
+      { "value": "+8", "display": "+8 Shanghai" },
+      { "value": "+7", "display": "+7 Soul" },
+      { "value": "+9", "display": "+7 Tokyo" }
     ]
   }]
 }, {
   "id": "useragent",
   "display": "User Agent",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "textarea", "name": "value",
     "desc": ""
@@ -154,70 +154,70 @@ const conditionResult = [{
 }, {
   "id": "custom1",
   "display": "Custom variable 1",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom2",
   "display": "Custom variable 2",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom3",
   "display": "Custom variable 3",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom4",
   "display": "Custom variable 4",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom5",
   "display": "Custom variable 5",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom6",
   "display": "Custom variable 6",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom7",
   "display": "Custom variable 7",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom8",
   "display": "Custom variable 8",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom9",
   "display": "Custom variable 9",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
   "id": "custom10",
   "display": "Custom variable 10",
-  "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
@@ -241,7 +241,7 @@ router.get('/api/flows', function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   Joi.validate(req.query, schema, function (err, value) {
     if (err) {
       return next(err);
@@ -294,10 +294,10 @@ router.get('/api/flows/:id/campaigns', async function (req, res, next) {
     userId: Joi.number().required(),
     id: Joi.number().required()
   });
-  req.query.userId = req.userId;
-  req.query.id = req.params.id;
   let connection;
   try {
+    req.query.userId = req.parent.id;
+    req.query.id = req.params.id;
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
     let result = await query("select `id`,`name`,`hash` from TrackingCampaign where `targetType`= 1 and `targetFlowId` = ? and `userId`= ?", [value.id, value.userId], connection);
@@ -340,10 +340,10 @@ router.get('/api/flows/:id', async function (req, res, next) {
     userId: Joi.number().required(),
     id: Joi.number().required()
   });
-  req.query.userId = req.userId;
-  req.query.id = req.params.id;
   let connection;
   try {
+    req.query.userId = req.parent.id;
+    req.query.id = req.params.id;
     let Result = {};
     Result.rules = [];
     let value = await common.validate(req.query, schema);
@@ -487,14 +487,14 @@ router.post('/api/flows', async function (req, res, next) {
     country: Joi.string(),
     redirectMode: Joi.number()
   }).optionalKeys('id', 'hash', 'country', 'redirectMode');
-  req.body.userId = req.userId;
-  req.body.idText = req.idText;
-  req.body.type = 1;
   let connection;
   try {
+    req.body.userId = req.parent.id;
+    req.body.idText = req.parent.idText;
+    req.body.type = 1;
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
-    let data = await saveOrUpdateFlow(req.subId, value, connection);
+    let data = await saveOrUpdateFlow(req.user.id, value, connection);
     res.json({
       status: 1,
       message: 'success',
@@ -530,14 +530,14 @@ router.post('/api/flows/:id', async function (req, res, next) {
     userId: Joi.number().required(),
     idText: Joi.string().required()
   }).optionalKeys('hash', 'type', 'country', 'redirectMode');
-  req.body.userId = req.userId;
-  req.body.idText = req.idText;
-  req.body.id = req.params.id;
   let connection;
   try {
+    req.body.userId = req.parent.id;
+    req.body.idText = req.parent.idText;
+    req.body.id = req.params.id;
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
-    let data = await saveOrUpdateFlow(req.subId, value, connection);
+    let data = await saveOrUpdateFlow(req.user.id, value, connection);
     res.json({
       status: 1,
       message: 'success',
@@ -565,10 +565,10 @@ router.delete('/api/flows/:id', async function (req, res, next) {
     name: Joi.string().optional().empty(""),
     hash: Joi.string().optional().empty("")
   });
-  req.query.userId = req.userId;
-  req.query.id = req.params.id;
   let connection;
   try {
+    req.query.userId = req.parent.id;
+    req.query.id = req.params.id;
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
     //检查flow 是否绑定在某些 active campaign上
@@ -815,7 +815,7 @@ router.get('/api/cities', async function (req, res, next) {
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
   });
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   //production
   let connection;
   try {
@@ -838,7 +838,7 @@ router.get('/api/regions', async function (req, res, next) {
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
   });
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   //production
   let connection;
   try {
@@ -861,7 +861,7 @@ router.get('/api/carriers', async function (req, res, next) {
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
   });
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   //production
   let connection;
   try {
@@ -882,7 +882,7 @@ router.get('/api/isps', async function (req, res, next) {
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
   });
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   //production
   let connection;
   try {
@@ -963,9 +963,9 @@ async function loadBrandAndVersionFromDB(connection) {
   for (let i = 0; i < lines.length; i++) {
     var line = lines[i];
     if (!r[line.category]) {
-      r[line.category] = {value: line.category, display: line.category, suboptions: []};
+      r[line.category] = { value: line.category, display: line.category, suboptions: [] };
     }
-    r[line.category].suboptions.push({value: line.name, display: line.name});
+    r[line.category].suboptions.push({ value: line.name, display: line.name });
   }
   r2 = Object.values(r);
   return r2;
@@ -979,9 +979,9 @@ async function loadOsFromDB(connection) {
   for (let i = 0; i < lines.length; i++) {
     var line = lines[i]
     if (!r[line.category]) {
-      r[line.category] = {value: line.category, display: line.category, suboptions: []}
+      r[line.category] = { value: line.category, display: line.category, suboptions: [] }
     }
-    r[line.category].suboptions.push({value: line.name, display: line.name})
+    r[line.category].suboptions.push({ value: line.name, display: line.name })
   }
   r2 = Object.values(r)
 
@@ -998,9 +998,9 @@ async function loadBowerAndVersionFromDB(connection) {
   for (let i = 0; i < lines.length; i++) {
     var line = lines[i]
     if (!r[line.category]) {
-      r[line.category] = {value: line.category, display: line.category, suboptions: []}
+      r[line.category] = { value: line.category, display: line.category, suboptions: [] }
     }
-    r[line.category].suboptions.push({value: line.name, display: line.name})
+    r[line.category].suboptions.push({ value: line.name, display: line.name })
   }
   r2 = Object.values(r)
 
@@ -1065,22 +1065,22 @@ async function loadTimezoneFromDB(connection) {
 
 //TODO: update the values
 async function loadConnectionType() {
-  var r = [{value: "Broadband", display: "Broadband"},
-    {value: "Cable", display: "Cable"},
-    {value: "Mobile", display: "Mobile"},
-    {value: "Satellite", display: "Satellite"},
-    {value: "Unknown", display: "Unknown"},
-    {value: "Wireless", display: "Wireless"},
-    {value: "XDSL", display: "XDSL"}
+  var r = [{ value: "Broadband", display: "Broadband" },
+  { value: "Cable", display: "Cable" },
+  { value: "Mobile", display: "Mobile" },
+  { value: "Satellite", display: "Satellite" },
+  { value: "Unknown", display: "Unknown" },
+  { value: "Wireless", display: "Wireless" },
+  { value: "XDSL", display: "XDSL" }
   ]
   return r
 }
 
 async function loadDeviceType() {
-  var r = [{value: "DesktopsLaptop", display: "Desktops & Laptops"},
-    {value: "Cable", display: "Mobile Phones"},
-    {value: "Mobile", display: "Smart TV"},
-    {value: "Satellite", display: "Tablet"}
+  var r = [{ value: "DesktopsLaptop", display: "Desktops & Laptops" },
+  { value: "Cable", display: "Mobile Phones" },
+  { value: "Mobile", display: "Smart TV" },
+  { value: "Satellite", display: "Tablet" }
   ]
   return r
 }
@@ -1109,44 +1109,44 @@ function query(sql, params, connection) {
 function conditionFormat(c) {
   var r = []
   c.forEach(function (v) {
-      if (v.id == 'model') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'browser') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'connection') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'country') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'region') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'city') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'varN') {
-        // r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'weekday') {
-        r.push(formatWeekDay(v.id, v.operand, v.tz, v.weekday))
-      } else if (v.id == 'device') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'iprange') {
-        r.push(formatIPValue(v.id, v.operand, v.value))
-      } else if (v.id == 'isp') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'language') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'carrier') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'os') {
-        r.push(formatThreeKeys(v.id, v.operand, v.value))
-      } else if (v.id == 'referrer') {
-        r.push(formatTextValue(v.id, v.operand, v.value))
-      } else if (v.id == 'time') {
-        r.push(formatTime(v.id, v.operand, v.tz, v.starttime, v.endtime))
-      } else if (v.id == 'useragent') {
-        r.push(formatTextValue(v.id, v.operand, v.value))
-      } else {
-        console.error("unsupported id type ", v.id)
-      }
+    if (v.id == 'model') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'browser') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'connection') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'country') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'region') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'city') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'varN') {
+      // r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'weekday') {
+      r.push(formatWeekDay(v.id, v.operand, v.tz, v.weekday))
+    } else if (v.id == 'device') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'iprange') {
+      r.push(formatIPValue(v.id, v.operand, v.value))
+    } else if (v.id == 'isp') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'language') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'carrier') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'os') {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
+    } else if (v.id == 'referrer') {
+      r.push(formatTextValue(v.id, v.operand, v.value))
+    } else if (v.id == 'time') {
+      r.push(formatTime(v.id, v.operand, v.tz, v.starttime, v.endtime))
+    } else if (v.id == 'useragent') {
+      r.push(formatTextValue(v.id, v.operand, v.value))
+    } else {
+      console.error("unsupported id type ", v.id)
     }
+  }
   )
   return [r]
 }

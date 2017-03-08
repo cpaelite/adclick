@@ -23,7 +23,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
         id: Joi.number().required()
     });
      
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     req.query.id=req.params.id;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
@@ -75,7 +75,7 @@ router.get('/api/affiliates', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -139,13 +139,13 @@ router.post('/api/affiliates/:id', async function (req, res, next) {
         hash: Joi.string().optional().empty("")
     });
 
-    req.body.userId = req.userId;
+    req.body.userId = req.parent.id;
     req.body.id = req.params.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        await common.updateAffiliates(value.userId,req.subId, value, connection);
+        await common.updateAffiliates(value.userId,req.user.id, value, connection);
         delete value.userId;
         res.json({
             status: 1,
@@ -190,12 +190,12 @@ router.post('/api/affiliates', async function (req, res, next) {
         duplicatedPostback: Joi.number().optional(),
         ipWhiteList: Joi.string().optional().empty("")
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let affiliateResult = await common.insertAffiliates(value.userId,req.subId, value, connection);
+        let affiliateResult = await common.insertAffiliates(value.userId,req.user.id, value, connection);
         
         delete value.userId;
         value.id = affiliateResult.insertId;
@@ -232,13 +232,13 @@ router.delete('/api/affiliates/:id', async function (req, res, next) {
         name: Joi.string().optional(),
         hash: Joi.string().optional()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     req.query.id = req.params.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteAffiliate(value.id, value.userId, req.subId,connection);
+        let result = await common.deleteAffiliate(value.id, value.userId, req.user.id,connection);
 
         res.json({
             status: 1,

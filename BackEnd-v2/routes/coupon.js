@@ -22,7 +22,7 @@ router.post('/api/user/coupon', async function (req, res, next) {
             code: Joi.string().trim().required(),
             userId: Joi.number().required()
         });
-        req.body.userId = req.subId;
+        req.body.userId = req.user.id;
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         //check  同一张优惠券同一个用户不能重复使用
