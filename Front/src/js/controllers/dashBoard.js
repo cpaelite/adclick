@@ -52,7 +52,7 @@
 
       $scope.tableData = {};
 
-      $scope.tables = ['campaign', 'Country'];
+      $scope.tables = ['campaign', 'country'];
 
       params.limit = 5;
       params.page = 1;

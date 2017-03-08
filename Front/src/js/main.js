@@ -59,7 +59,10 @@
       console.log("need auth: get event:auth-loginRequired");
       $scope.showLogin = true;
       toastr.clear();
-      toastr.error('Account Exception, Please Contact support@newbidder.com', {timeOut: 7000, positionClass: 'toast-top-center'});
+      toastr.error('Account Exception, Please Contact support@newbidder.com', {
+        timeOut: 7000,
+        positionClass: 'toast-top-center'
+      });
       $scope.logout();
     });
     $scope.$on("event:auth-loginSuccess", function () {
@@ -82,16 +85,16 @@
         $rootScope.currentUser = $localStorage.currentUser;
 
         // load user preferences
-        Preference.get(null, function(res) {
+        Preference.get(null, function (res) {
           if (!res.status)
             return;
-          $scope.preferences = JSON.parse(res.data);
+          $scope.preferences = res.data;
         });
 
         // 国家信息
-        Country.query(null, function(result) {
+        Country.query(null, function (result) {
           // if (!result.status)
-            // return;
+          // return;
           $rootScope.countries = result;
         });
 
@@ -124,7 +127,10 @@
     // or on '$stateChangeStart'
     $scope.$on("event:auth-forbidden", function () {
       toastr.clear();
-      toastr.error('Account Exception, Please Contact support@newbidder.com', {timeOut: 7000, positionClass: 'toast-top-center'});
+      toastr.error('Account Exception, Please Contact support@newbidder.com', {
+        timeOut: 7000,
+        positionClass: 'toast-top-center'
+      });
       $scope.logout();
     });
 
@@ -145,7 +151,7 @@
       $scope.$broadcast("event:auth-loginSuccess");
     }
 
-    $scope.goCoupon = function() {
+    $scope.goCoupon = function () {
       $scope.$state.go('setApp.subscriptions');
     };
 
