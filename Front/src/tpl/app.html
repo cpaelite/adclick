@@ -39,55 +39,55 @@
 <md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside">
     <nav ui-nav class="navi clearfix">
         <ul class="nav">
-            <li ui-sref-active="active" has-permission="dashboard">
+            <li ui-sref-active="active" has-permission="report.dashboard.show" operation="show">
                 <a ui-sref="app.dashboard" md-ink-ripple>
                     <i class="icon-dashboard"></i>
                     <span>{{'dashBoard' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" has-permission="report.campaign.show" operation="show">
                 <a ui-sref="app.report.campaign" md-ink-ripple>
                     <i class="icon-desktop"></i>
                     <span>{{'campaign' | translate}}</span>
                 </a>
             </li>
-            <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}">
+            <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}" has-permission="report.flow.show" operation="show">
                 <a ui-sref="app.report.flow" md-ink-ripple>
                     <i class="icon-tasks"></i>
                     <span>{{'flow' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" has-permission="report.lander.show" operation="show">
                 <a ui-sref="app.report.lander" md-ink-ripple>
                     <i class="icon-bar-chart"></i>
                     <span>{{'lander' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" has-permission="report.offer.show" operation="show">
                 <a ui-sref="app.report.offer" md-ink-ripple>
                     <i class="icon-paste"></i>
                     <span>{{'offer' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" has-permission="report.trafficSource.show" operation="show">
                 <a ui-sref="app.report.traffic" md-ink-ripple>
                     <i class="icon-sitemap"></i>
                     <span>{{'traffic' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" has-permission="report.affiliateNetwork.show" operation="show">
                 <a ui-sref="app.report.affiliate" md-ink-ripple>
                     <i class="icon-globe"></i>
                     <span>{{'affiliate' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" has-permission="report.conversion.show" operation="show">
                 <a ui-sref="app.report.conversion" md-ink-ripple>
                     <i class="icon-usd"></i>
                     <span>{{'Conversions' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active" class="nav-tips">
+            <li ui-sref-active="active" class="nav-tips" has-permission="report.tsReport.show" operation="show">
                 <a ui-sref="app.report.tsreport" md-ink-ripple>
                     <em class="rd"></em>
                     <span>{{'TS Report' | translate}}

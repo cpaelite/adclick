@@ -201,7 +201,7 @@ app.get('/api/tags', function (req, res) {
  * @apiName 获取用户权限信息
  *
  */
-app.get('/auth/permission', function (req, res) {
+app.get('/api/permission', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
@@ -226,7 +226,7 @@ app.get('/auth/permission', function (req, res) {
         userManagement: {
           show: true
         },
-        blacklist: {
+        blackList: {
           show: true
         },
         invoice: {

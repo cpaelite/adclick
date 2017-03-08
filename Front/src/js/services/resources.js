@@ -136,6 +136,6 @@ angular.module('app')
     return $resource('/api/user/coupon');
   }])
   .factory('Permission', ['$resource', function($resource) {
-    return $resource('/auth/permission');
+    return $resource('/api/permission');
   }])
 ;

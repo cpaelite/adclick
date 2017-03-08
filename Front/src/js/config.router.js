@@ -33,7 +33,7 @@
 
       if (next.data.needRole && next.data.needRole.indexOf($rootScope.currentUser.role) == -1) {
         if (!current_name)
-          $state.go('app.offernetwork');
+          $state.go('app.dashboard');
         $rootScope.$broadcast('event:auth-forbidden');
         ev.preventDefault();
         return;
@@ -69,7 +69,7 @@
         abstract: true,
         url: '/app',
         templateUrl: "tpl/app.html",
-        data: { needAuth: true }
+        data: {}
       })
       .state('app.dashboard', {
         url: '/dashboard',
@@ -161,7 +161,7 @@
         abstract: true,
         url: '/setApp',
         templateUrl: "tpl/setApp.html",
-        data: { needAuth: true }
+        data: {}
       })
       .state('setApp.profile', {
         url: '/profile',

@@ -92,13 +92,6 @@
           $rootScope.permissions = JSON.parse(res.data);
         });
 
-        // load user preferences
-        Preference.get(null, function (res) {
-          if (!res.status)
-            return;
-          $scope.preferences = res.data;
-        });
-
         // 国家信息
         Country.query(null, function (result) {
           // if (!result.status)
