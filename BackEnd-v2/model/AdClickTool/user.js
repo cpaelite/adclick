@@ -41,7 +41,6 @@ export default function (sequelize, DataTypes) {
     registerts: {
       type: DataTypes.INTEGER,
       allowNull: false
-
     },
     lastLogon: {
       type: DataTypes.INTEGER,

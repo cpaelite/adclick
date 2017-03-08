@@ -115,24 +115,24 @@ router.get('/paypal/success', async function(req, res, next) {
           country: shipping_address.country_code,
           taxId: ''
         });
-
         await user_bill_detail.save({transaction})
       }
 
       let events_offset = 0;
-      if (old_ub) events_offset = old_ub.overageEvents;
+      if (old_ub) events_offset = old_ub.netEvents()
 
       let ub = await UB.create({
         userId: agreement.userId,
         agreementId: agreement.id,
         planId: template_plan.id,
+        planPaymentLogId: upl.id,
         billedEvents: 0,
         totalEvents: 0,
         freeEvents: 0,
         overageEvents: 0,
         planStart: moment().startOf('day').unix(),
         planEnd: moment().add(1, 'month').add(5, 'day').startOf('day').unix(),
-        includedEvents: template_plan.eventsLimit - events_offset,
+        includedEvents: template_plan.eventsLimit + events_offset,
         nextPlanId: 0,
         nextPaymentMethod: 0,
         expired: 0
