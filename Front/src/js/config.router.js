@@ -87,6 +87,25 @@
       .state('app.report.lander',   configReport('lander'))
       .state('app.report.traffic',  configReport('traffic'))
       .state('app.report.affiliate', configReport('affiliate'))
+
+      .state('app.report.brand', configReport('brand'))
+      .state('app.report.browserVersion', configReport('browserversion'))
+      .state('app.report.browser', configReport('browser'))
+      .state('app.report.city', configReport('city'))
+      .state('app.report.connectionType', configReport('connectiontype'))
+      .state('app.report.country', configReport('country'))
+      .state('app.report.day', configReport('day'))
+      .state('app.report.deviceType', configReport('devicetype'))
+      .state('app.report.ip', configReport('ip'))
+      .state('app.report.isp', configReport('isp'))
+      .state('app.report.language', configReport('language'))
+      .state('app.report.mobileCarrier', configReport('mobilecarrier'))
+      .state('app.report.model', configReport('model'))
+      .state('app.report.os', configReport('os'))
+      .state('app.report.osVersion', configReport('oSVersion'))
+      .state('app.report.domain', configReport('domain'))
+      .state('app.report.region', configReport('region'))
+
       .state('app.report.conversion', {
         url: '/conversion',
         templateUrl: 'tpl/conversion.html',
