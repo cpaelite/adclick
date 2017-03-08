@@ -44,7 +44,7 @@ router.post('/auth/login', async function (req, res, next) {
 
     let sql = "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified` from User where `email` = ? and `deleted` =0";
 
-    let rows = await query(sql, [value.email]);
+    let rows = await common.query(sql, [value.email],connection);
 
     if (rows.length > 0) {
       if (rows[0].emailVerified == 0) {
@@ -63,7 +63,7 @@ router.post('/auth/login', async function (req, res, next) {
 
         //更新登录时间
         let updateSql = "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
-        await query(updateSql, [rows[0].id]);
+        await common.query(updateSql, [rows[0].id],connection);
 
       } else {
         res.status(401).json({
@@ -112,10 +112,6 @@ router.post('/auth/signup', async function (req, res, next) {
   try {
     req.body.json = setting.defaultSetting;
     let value = await signup(req.body, next);
-    //free trial
-    // if (req.cookies && req.cookies.free) {
-    await trial.addTrialPlan({userId: value.userId});
-    // }
     //异步发送邮件
     sendActiveEmail(req.body.email, value.idtext);
     return res.json({
@@ -164,7 +160,7 @@ async function signup(data, next) {
     value = await common.validate(data, schema);
     connection = await common.getConnection();
     //check email exists
-    let UserResult = await query("select id from User where `email`=?", [value.email]);
+    let UserResult = await common.query("select id from User where `email`=?", [value.email],connection);
     if (UserResult.length > 0) throw new Error("account exists");
     //事务开始
     await common.beginTransaction(connection);
@@ -182,12 +178,12 @@ async function signup(data, next) {
       params.push(JSON.stringify(value.json))
     }
 
-    let result = await query(sql, params);
+    let result = await common.query(sql, params,connection);
     value.userId = result.insertId;
     value.idtext = idtext;
     //系统默认domains
     for (let index = 0; index < setting.domains.length; index++) {
-      await query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0]);
+      await common.query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0],connection);
     }
 
     //如果refToken 不为"" 说明是从推广链接过来的
@@ -195,11 +191,11 @@ async function signup(data, next) {
       let slice = value.refToken.split('.');
       let referreUserId = slice.length == 2 ? slice[1] : 0;
       if (referreUserId) {
-        let USER = await query("select `id` from User where `idText` = ?", [referreUserId]);
+        let USER = await common.query("select `id` from User where `idText` = ?", [referreUserId],connection);
         if (USER.length == 0) {
           throw new Error("refToken error");
         }
-        await query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500]);
+        await common.query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500],connection);
       }
     }
 
@@ -390,10 +386,10 @@ router.get('/invitation', async function (req, res, next) {
 });
 
 
-router.get('/free/trial', async function (req, res, next) {
-  res.cookie("free", true);
-  res.redirect(setting.freetrialRedirect);
-});
+// router.get('/free/trial', async function (req, res, next) {
+//   res.cookie("free", true);
+//   res.redirect(setting.freetrialRedirect);
+// });
 
 
 router.get('/user/active', async function (req, res, next) {
@@ -442,22 +438,7 @@ router.get('/user/resendconfirmation', async function (req, res, next) {
 });
 
 
-function query(sql, params) {
-  return new Promise(function (resolve, reject) {
-    pool.getConnection(function (err, connection) {
-      if (err) {
-        return reject(err)
-      }
-      connection.query(sql, params, function (err, result) {
-        connection.release();
-        if (err) {
-          reject(err)
-        }
-        resolve(result);
-      });
-    });
-  })
-}
+ 
 
 
 module.exports = router;
