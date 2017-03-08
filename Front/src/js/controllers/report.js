@@ -49,7 +49,7 @@
   }]);
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil) {
-    var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
+    var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
     $scope.app.subtitle = perfType;
