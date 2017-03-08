@@ -27,13 +27,14 @@ jQuery('.eventsSliderNumber').on('change', function(){
 })
 
 var noobiePrice = 0;
-var proPrice = 89;
-var agencyPrice = 299;
-var superPrice = 899;
+var proPrice = 49;
+var agencyPrice = 199;
+var superPrice = 499;
 
-var proMoreEvents = 0.000035;
-var agencyMoreEvents = 0.00003;
-var superMoreEvents = 0.000025;
+var noobieMoreEvents = 0.0006;
+var proMoreEvents = 0.00049;
+var agencyMoreEvents = 0.000199;
+var superMoreEvents = 0.00017;
 
 function calculateSingleCost(val, eventsIncluded, standardCost, overageCost, plan) {
     overagesEvents = (val - eventsIncluded);
@@ -54,6 +55,7 @@ function calculateSingleCost(val, eventsIncluded, standardCost, overageCost, pla
 
 function calculateCosts(val) {
     var costs = [
+        calculateSingleCost(val, 200000, noobiePrice, noobieMoreEvents, 'FREE'),
         calculateSingleCost(val, 1000000, proPrice, proMoreEvents, 'PRO'),
         calculateSingleCost(val, 10000000, agencyPrice, agencyMoreEvents, 'AGENCY'),
         calculateSingleCost(val, 30000000, superPrice, superMoreEvents, 'ENTERPRISE')
