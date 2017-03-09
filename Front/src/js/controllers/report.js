@@ -394,6 +394,8 @@
     };
 
     function go(page) {
+      getDateRange($scope.datetype);
+      pageStatus.datetype = $scope.datetype;
       var params = angular.copy(pageStatus);
       if ($scope.treeLevel > 1) {
         var extgrpby = pageStatus.groupBy.filter(notEmpty);
