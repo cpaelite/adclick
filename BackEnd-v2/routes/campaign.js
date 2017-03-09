@@ -138,7 +138,7 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().required().keys({
+        flow: Joi.object().optional().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
@@ -183,15 +183,27 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
     }
 });
 const start = async (subId, value, connection) => {
-    let promiseSlice = [saveOrUpdateCampaign(subId, value, connection)];
+    let targetFlowId;
     //新建campaign path 
     if (value.flow && value.flow.type == 0) {
         let flowObject = value.flow;
         flowObject.userId = value.userId;
         flowObject.idText = value.idText;
-        promiseSlice.push(saveOrUpdateFlow(subId, flowObject, connection))
+        let flowValue = await saveOrUpdateFlow(subId, flowObject, connection);
+        targetFlowId = flowValue.id;
     }
-    await Promise.all(promiseSlice)
+    if (targetFlowId) {
+        value.targetFlowId = targetFlowId;
+    }
+
+    await saveOrUpdateCampaign(subId, value, connection)
+
+    if (value.flow && value.flow.userId) {
+        delete value.flow.userId
+    }
+    if (value.flow && value.flow.idText) {
+        delete value.flow.idText;
+    }
     delete value.userId;
     delete value.idText;
     return value;
