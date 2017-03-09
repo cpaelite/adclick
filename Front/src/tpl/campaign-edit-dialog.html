@@ -1,11 +1,11 @@
-<md-dialog class="cs-edit-dialog" ng-cloak id="campaign_edit_content">
+<md-dialog class="cs-edit-dialog" ng-cloak id="campaign_edit_content" style="width: 1200px;max-width: 100%;">
     <md-toolbar>
         <div class="md-toolbar-tools">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
 
-    <md-dialog-content class="md-dialog-content edit-page">
+    <md-dialog-content class="md-dialog-content edit-page" style="width: 1200px;">
         <div uib-alert class="alert-danger error-message" ng-show="errMessage" close="errMessage = ''">
             <p ng-repeat="(key, message) in errMessage" style="margin:0;">{{message}}</p>
         </div>
@@ -180,10 +180,15 @@
                         <input type="radio" ng-model="item.targetType" value="1"> Flow
                     </label>
                     <label class="radio-inline">
+                        <input type="radio" ng-model="item.targetType" value="2"> Path
+                    </label>
+                    <label class="radio-inline">
                         <input type="radio" ng-model="item.targetType" value="0"> URL
                     </label>
                 </div>
             </div>
+
+
             <div class="flow-action" ng-show="item.targetType==1">
                 <div class="form-group flow-select">
                     <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
@@ -238,7 +243,7 @@
                 </div>
             </div>
 
-            <div class="form-group collapsible-tab" ng-show="flow">
+            <div class="form-group collapsible-tab" ng-show="flow && item.targetType == 1">
                 <div class="collapsible-header" ng-class="{'active1':isActive1}" ng-click="toggleShow('2')">
                     <div class="line"></div>
                     <div class="label-con">
@@ -249,7 +254,7 @@
                 </div>
             </div>
 
-            <div class="form-group flow-preview" ng-show="ztreeShow && flow">
+            <div class="form-group flow-preview" ng-show="ztreeShow && flow && item.targetType == 1">
               <div class="col-md-7">
                 <div class="cs-flow-rule">
                   <div class="tree-li">
@@ -327,9 +332,10 @@
                 </div>
               </div>
             </div>
-
         </form>
-
+        <div class="" ng-show="item.targetType == 2">
+          <div ng-controller="FlowEditCtrl" ng-include="pathRoute"></div>
+        </div>
     </md-dialog-content>
 
     <md-dialog-actions>

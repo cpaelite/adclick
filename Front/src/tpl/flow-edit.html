@@ -1,10 +1,10 @@
 <div class="cs-page-flow" ng-click="clearOnEdit()">
   <div class="col-sm-4 col-md-4 cs-flow-tree">
-    <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li">
+    <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li" ng-show="flowMode">
       <i class="material-icons tree-icon">album</i>
-      <span class="cs-flow-name">{{flow.name}}</span>
+      <span class="cs-flow-name">{{flowss.name}}</span>
     </div>
-    <div ng-repeat="rule in flow.rules" class="cs-flow-rule">
+    <div ng-repeat="rule in flowss.rules" class="cs-flow-rule">
       <div ng-click="editRule(rule)" class="tree-li" ng-class="{
         'cs-flow-active': onEdit=='rule' && curRule==rule,
         'cs-rule-default': rule.isDefault,
@@ -75,17 +75,17 @@
 
     <div class="cs-deleted-mask" ng-if="isDeleted"></div>
 
-    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
+    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'" ng-if="flowMode">
       <div class="form-group">
         <label class="label-name">Name:</label>
-        <input type="text" class="form-control" ng-class="{error:flow._nameError}" ng-model="flow.name" required name="name"
+        <input type="text" class="form-control" ng-class="{error:flowss._nameError}" ng-model="flowss.name" required name="name"
           ng-change="nameChanged(flow)"
           ng-blur="nameRequired()"
           async-check-name="checkNameParams"
           async-validator-callback="validateCallback"
-          post-validater-callback="postValidateCallback()"
+
         >
-        <span class-"error-message" ng-show="flow._nameError">Name is invalid</span>
+        <span class-"error-message" ng-show="flowss._nameError">Name is invalid</span>
         <span style="color:red" ng-show="editFlowForm.name.$invalid">
             <span ng-show="editFlowForm.name.$error.asyncCheckName">Name already exists.</span>
             <span ng-show="editFlowForm.name.$error.nameRequired">Name is required.</span>
@@ -95,7 +95,7 @@
       <div class="form-group">
         <label class="label-name">Country:</label>
         <md-autocomplete
-            md-selected-item="flow.country"
+            md-selected-item="flowss.country"
             md-search-text="searchText"
             md-items="item in queryCountries(searchText)"
             md-no-cache="true"
@@ -116,13 +116,13 @@
         <label class="col-sm-4 control-label label-radio">Default redirect mode:</label>
         <div class="col-sm-8">
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirectMode" value="0"> 302
+            <input type="radio" ng-model="flowss.redirectMode" value="0"> 302
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirectMode" value="1"> Meta refresh
+            <input type="radio" ng-model="flowss.redirectMode" value="1"> Meta refresh
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="flow.redirectMode" value="2"> Double meta refresh
+            <input type="radio" ng-model="flowss.redirectMode" value="2"> Double meta refresh
           </label>
         </div>
       </div>
@@ -497,7 +497,7 @@
       </div>
     </form>
 
-    <div class="cs-flow-bottom-actions clearfix">
+    <div class="cs-flow-bottom-actions clearfix" ng-show="flowMode">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="save()">

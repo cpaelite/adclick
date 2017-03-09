@@ -577,6 +577,7 @@
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant) {
+    $scope.pathRoute = 'tpl/flow-edit.html'
     var prefixCountry = '', prefixTraffic = '';
     $scope.prefix = '';
     initTags($scope, Tag, 1);
@@ -653,11 +654,16 @@
         $scope.tagsFilter.options = $scope.item.tags;
         if ($scope.item.trafficSourceId)
           $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
-        if ($scope.item.targetFlowId) {
+        if ($scope.item.targetFlowId && $scope.item.targetType == 1) {
           $scope.item.flow = {
             id: $scope.item.targetFlowId.toString()
           };
           showFlow();
+        }
+        if($scope.item.targetFlowId && $scope.item.targetType == 2) {
+          $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId});
+        } else {
+          $scope.$broadcast('targetPathIdChanged', {flowId: ''});
         }
         if ($scope.item['costModel'] == null) {
           $scope.item = defaultItem();
@@ -682,6 +688,7 @@
         $scope.prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
         $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
         $scope.item.country = 'ZZZ';
+        $scope.$broadcast('targetPathIdChanged', {flowId: ''});
       }
 
       $scope.$watch('trafficSourceId', function (newValue, oldValue) {
@@ -1010,7 +1017,24 @@
       $mdDialog.hide();
     }
 
-    this.save = function () {
+    this.save = function() {
+      if($scope.item.targetType == 2) {
+        $scope.$broadcast('saveCampaignStarted');
+      } else {
+        saveCampaign();
+      }
+    };
+
+    $scope.$on('pathDataSuccessed', function(event, oData) {
+      console.log(oData);
+      if(oData.status) {
+        saveCampaign(oData.data);
+      } else {
+        // TODO show error
+      }
+    });
+
+    function saveCampaign(pathData) {
       // cost model value
       if(!nameRequired()) return;
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
@@ -1034,11 +1058,22 @@
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
 
-      if (!$scope.item['flow']) {
-        $scope.item['flow']={
-          type: 0,
+      // if (!$scope.item['flow']) {
+      //   $scope.item['flow'] = {
+      //     type: 0,
+      //     name: 'defaultName',
+      //     redirectMode: 0
+      //   };
+      // }
+
+      // path
+      if($scope.item.targetType == 2) {
+        $scope.item['flow'] = {
+          rules: pathData,
           name: 'defaultName',
-          redirectMode: 0
+          type: 0,
+          redirectMode: $scope.item.redirectMode,
+          country: 'ZZZ'
         };
       }
 
