@@ -177,6 +177,9 @@ async function listPageReport(query) {
   let _where = {
     userId,
   }
+  if (groupBy === 'flow') {
+    _where['type'] = {ne: 0}
+  }
   if (filter) {
     _where.name = {$like: `%${filter}%`}
   }
