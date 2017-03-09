@@ -228,17 +228,17 @@ router.get('/api/permission', async function (req, res, next) {
         let f = await common.query("select functions` from UserFunctions where `userId`= ?", [req.parent.id], connection);
         let privileges = JSON.parse(req.parent.privilege);
         //初始化
-        if(_.has(privileges, "setting.domain")){
-             privileges.setting.domain.domainLimit=0;
+        if (_.has(privileges, "setting.domain")) {
+            privileges.setting.domain.domainLimit = 0;
         }
-        if(_.has(privileges, "setting.userManagement")){
-             privileges.setting.userManagement.userLimit=0;
+        if (_.has(privileges, "setting.userManagement")) {
+            privileges.setting.userManagement.userLimit = 0;
         }
-        if(_.has(privileges, "report.tsReport")){
-             privileges.report.tsReport.tsReportLimit=0;
+        if (_.has(privileges, "report.tsReport")) {
+            privileges.report.tsReport.tsReportLimit = 0;
         }
-        if(_.has(privileges, "report")){
-             privileges.report.retentionLimit=0;
+        if (_.has(privileges, "report")) {
+            privileges.report.retentionLimit = 0;
         }
         if (f.length && req.parent.privilege) {
             let limits = JSON.parse(f[0]);
