@@ -65,7 +65,7 @@ export const sumShorts = {
 export const attributes = [
   'UserID',
   'Language',
-  ['model', 'Model'],
+  ['model', 'model'],
   ['CampaignID', 'campaignId'],
   ['FlowID', 'flowId'],
   ['LanderID', 'landerId'],
