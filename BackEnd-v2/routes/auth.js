@@ -12,7 +12,7 @@ var Pub = require('./redis_sub_pub');
 var uuidV4 = require('uuid/v4');
 var emailCtrl = require('../util/email');
 const _ = require('lodash');
-var trial = require('../util/billing');
+// var trial = require('../util/billing');
 
 /**
  * @api {post} /auth/login  登陆
@@ -166,7 +166,7 @@ async function signup(data, next) {
     let idtext = util.getRandomString(6);
     let reftoken = util.getUUID() + "." + idtext;
     //User
-    let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?)";
+    let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
     let params = [
       value.firstname, value.lastname, value.email,
       md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting)
