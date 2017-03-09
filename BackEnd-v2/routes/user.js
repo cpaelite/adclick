@@ -9,7 +9,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
- 
+const _ = require('lodash');
 
 /**
  * @api {post} /api/preferences  编辑用户配置
@@ -218,6 +218,49 @@ router.get('/api/postbackurl', function (req, res, next) {
         }
     });
 });
+
+
+
+router.get('/api/permission', async function (req, res, next) {
+    let connection;
+    try {
+        connection = await common.getConnection();
+        let f = await common.query("select functions` from UserFunctions where `userId`= ?", [req.parent.id], connection);
+        if (f.length && req.parent.privilege) {
+            let limits = JSON.parse(f[0]);
+            let privileges = JSON.parse(req.parent.privilege);
+            if (_.has(limits, 'domainLimit') && _.has(privileges, "setting.domain")) {
+                privileges.setting.domain.domainLimit = limits.domainLimit;
+            }
+            if (_.has(limits, 'userLimit') && _.has(privileges, "setting.userManagement")) {
+                privileges.setting.userManagement.userLimit = limits.userLimit;
+            }
+            if (_.has(limits, 'tsReportLimit') && _.has(privileges, "report.tsReport")) {
+                privileges.report.tsReport.tsReportLimit = limits.tsReportLimit;
+            }
+            if (_.has(limits, 'retentionLimit') && _.has(privileges, "report")) {
+                privileges.report.retentionLimit = limits.retentionLimit;
+            }
+            return res.json({
+                status: 1,
+                message: 'success',
+                data: privileges
+            })
+        } else {
+            return res.json({
+                status: 0,
+                message: 'fail',
+                data: {}
+            })
+        }
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+})
 
 
 

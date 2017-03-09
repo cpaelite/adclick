@@ -24,7 +24,7 @@ exports.checkToken = function () {
         throw err;
       }
       connection = await common.getConnection();
-      let user = await common.query("select user.`status`,user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
+      let user = await common.query("select user.`status`,user.`id`,user.`email`,user.`idText`,user.`firstname`,user.`lastname`,user.`campanyName`,g.`groupId`,g.`privilege` from `User` user inner join UserGroup g on g.`userId`=user.`id`  where user.`id`= ? and g.`role`= 0 and g.`deleted`= 0", [decode.iss], connection);
       if (!user.length) {
         let err = new Error('no user');
         err.status = 401;
@@ -39,7 +39,8 @@ exports.checkToken = function () {
         firstname: user[0].firstname,
         lastname: user[0].lastname,
         email: user[0].email,
-        campanyname: user[0].campanyName
+        campanyname: user[0].campanyName,
+        privilege:user[0].privilege
       }
       
       req.owner = true;
@@ -82,7 +83,7 @@ exports.resetUserByClientId = function () {
 
       connection = await common.getConnection();
       //查询用户所在的组
-      let userGroups = common.query("select `groupId` from UserGroup  where `deleted`=? and `userId`= ?", [0, req.user.id], connection);
+      let userGroups = common.query("select `groupId`,`privilege` from UserGroup  where `deleted`=? and `userId`= ?", [0, req.user.id], connection);
 
       //获取用户所在的用户组的管理员信息
       let groupOwers = common.query("select g1.`groupId`,user.`id` as userId,user.`status` as status,user.`idText`,user.`email`,user.`firstname`,user.`lastname`,user.`campanyName`,g1.`role` from UserGroup g1 inner join User user on user.`id`= g1.`userId` where `role` =0  and `groupId` in ( select `groupId` from  UserGroup g   where g.`userId`=?  and g.`role`= 1 and g.`deleted`=0)", [req.user.id], connection);
@@ -95,6 +96,7 @@ exports.resetUserByClientId = function () {
         err.status = 401;
         throw err;
       }
+      let user_privilege = _.find(userGroupSlice,{groupId: clientId}).privilege;
       //获取client 管理员信息
       let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
       if (_.isEmpty(userGroupObject)) {
@@ -110,7 +112,8 @@ exports.resetUserByClientId = function () {
         firstname: userGroupObject.firstname,
         lastname: userGroupObject.lastname,
         email: userGroupObject.email,
-        campanyname: userGroupObject.campanyName
+        campanyname: userGroupObject.campanyName,
+        privilege:user_privilege
       }
       req.owner = false;
       next();

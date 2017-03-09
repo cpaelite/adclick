@@ -4,7 +4,7 @@ export default router;
 import moment from 'moment';
 import paypal from '../util/paypal';
 import Promise from 'bluebird';
-import logTocommission from './commission';
+import paymentFollowupWork from './commission';
 const {
   PaypalBillingAgreement: PBA,
   PaypalBillingExecute: PBE,
@@ -89,7 +89,7 @@ router.get('/paypal/success', async function(req, res, next) {
         timeStamp: moment().unix()
       }, {transaction});
 
-      logTocommission(upl.id);
+      paymentFollowupWork(upl.id);
 
       let pbe = await PBE.create({
         userId: agreement.userId,
