@@ -10,7 +10,7 @@
   function ConversionUploadCtrl($scope, Conversion) {
     $scope.app.subtitle = 'Conversion upload';
 
-    var regexp = /^[0-9a-zA-Z]+,\s*([0-9]+\.?[0-9]*)?\s*,\s*[0-9a-zA-Z]*\s*$/;
+    var regexp = /^[0-9a-zA-Z]+(\_[0-9]+)*(,\s*(\s*|[0-9]+\.?[0-9]*)\s*(,\s*[0-9a-zA-Z]*\s*)*)*$/;
     $scope.conversionSave = function(){
       var valid=true;
       var contents = $scope.conversionContent.split("\n");
