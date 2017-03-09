@@ -89,7 +89,14 @@
           if (!res.status) {
             return;
           }
-          $rootScope.permissions = JSON.parse(res.data);
+          $rootScope.permissions = res.data;
+        });
+
+        // load user preferences
+        Preference.get(null, function(res) {
+          if (!res.status)
+            return;
+          $scope.preferences = JSON.parse(res.data);
         });
 
         // 国家信息

@@ -10,10 +10,10 @@
         <b><em ng-repeat="internal in item.internal track by $index">{{internal.address}}<em ng-if="$index < item.internal.length-1">, </em><em ng-if="$index == item.internal.length-1">.</em></em></b>
         The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>
     <form name="form" ng-submit="domainSava()">
-      <div class="add-another-button clearfix">
+      <div class="add-another-button clearfix" has-permission="setting.domain.update" operation="show">
         <ul>
           <li>Set up domains: <b>{{item.custom.length}}</b></li>
-          <li>Available domains: <b>{{plan.domainLimit}}</b></li>
+          <li>Available domains: <b>{{domainLimit}}</b></li>
         </ul>
         <md-button class="md-raised add-another-btn" ng-click="addCustom()" ng-class="{'gray-btn': isGray}">Add another domain</md-button>
       </div>
@@ -24,7 +24,7 @@
             <div class="input-out">
               <input type="text" class="form-control" ng-model="l.address" readonly>
             </div>
-            <div class="domain-btn-list">
+            <div class="domain-btn-list" has-permission="setting.domain.update" operation="show">
                   <input type="button" class="md-raised copy-btn domain-btn" value="{{ l.main ? 'Main domain' : 'Set as main domain'}}" ng-class="{'main-domain': l.main}" ng-click="mainClick(l)"></input>
             </div>
           </div>
@@ -33,12 +33,12 @@
           <div class="item-domains clearfix" ng-repeat="c in item.custom track by $index" ng-class="{'btnColor':isBtnColor}">
             <label>Custom domain {{$index+1}}</label>
             <div class="input-out">
-              <input type="text" name="address{{$index}}" class="form-control" ng-change="inputChange()" ng-model="c.address" required>
+              <input type="text" name="address{{$index}}" class="form-control" ng-change="inputChange()" ng-model="c.address" required has-permission="setting.domain.update" operation="readonly">
               <span style="color:red" ng-show="form.address{{$index}}.$dirty && form.address{{$index}}.$invalid">
                 <span ng-show="form.address{{$index}}.$error.required">address is required.</span>
               </span>
             </div>
-            <div class="another-list-btn clearfix">
+            <div class="another-list-btn clearfix" has-permission="setting.domain.update" operation="show">
               <input type="button" class="md-raised copy-btn domain-btn" value="{{ c.main ? 'Main domain' : 'Set as main domain'}}" ng-class="{'main-domain': c.main, 'gray-btn':!c.address}" ng-click="mainClick(c)"></input>
               <md-button class="md-raised copy-btn verify-btn" ng-class="{'gray-btn':!c.address,'domain-error':c.btnName=='Domain setup error'}" ng-click="domainsVerify(c)">{{c.btnName}}</md-button>
               <i class="material-icons"
@@ -78,7 +78,7 @@
           </div>
         </div>
       </div> -->
-      <div class="profile-form-footer clearfix">
+      <div class="profile-form-footer clearfix" has-permission="setting.domain.update" operation="show">
         <md-button class="save-btn" ng-click="domainSava()" ng-disabled="form.$invalid || domainSaveStatus">
           <i class="icon-ok"></i>
           save

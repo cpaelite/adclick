@@ -18,15 +18,16 @@ angular.module('app').directive('hasPermission', ['Permissions', function(Permis
     link: function(scope, element, attrs) {
       var value = attrs.hasPermission;
       var permission = Permissions.hasPermission(value);
-      if (!permission) {
+      if (permission)
+        return;
+      var operation = attrs.operation;
+      if (operation== "show") {
         element.hide();
         return;
       }
-      var operation = attrs.operation;
-      if (operation== "show") {
-        element.show();
-      } else if (operation == "readonly") {
-        element.addClass('readonly: true')
+      if (operation == "readonly") {
+        angular.element(element).prop('readonly',true);
+        return;
       }
     }
   }

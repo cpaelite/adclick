@@ -52,7 +52,7 @@
           function initSucces() {
             $scope.loginStatus = false;
             if (thePermission) {
-              $rootScope.permissions = JSON.parse(thePermission);
+              $rootScope.permissions = thePermission;
             }
             if (theProfile && theProfile.homescreen && theProfile.homescreen == "dashboard") {
               $scope.$state.go('app.dashboard');

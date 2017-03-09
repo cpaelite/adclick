@@ -205,7 +205,7 @@ app.get('/api/permission', function (req, res) {
   var result = {
     status: 1,
     message: 'success',
-    data: JSON.stringify({
+    data: {
       setting: {
         profile: {
           show: true
@@ -218,13 +218,15 @@ app.get('/api/permission', function (req, res) {
         },
         domain: {
           show: true,
-          update: true
+          update: true,
+          domainLimit: 5
         },
         setup: {
           show: true
         },
         userManagement: {
-          show: true
+          show: true,
+          userLimit: 3
         },
         blackList: {
           show: true
@@ -241,8 +243,9 @@ app.get('/api/permission', function (req, res) {
         }
       },
       report: {
+        retentionLimit: 3,
         dashboard: {
-          show: false
+          show: true
         },
         campaign: {
           show: true
@@ -266,10 +269,11 @@ app.get('/api/permission', function (req, res) {
           show: true
         },
         tsReport: {
-          show: true
+          show: false,
+          tsReportLimit: 3
         }
-      }
-    })
+      },
+    }
   };
   //delayResponse(res, result);
   res.send(result);
