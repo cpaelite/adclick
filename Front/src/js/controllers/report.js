@@ -1069,11 +1069,11 @@
       // path
       if($scope.item.targetType == 2) {
         $scope.item['flow'] = {
-          rules: pathData,
+          rules: pathData.rules,
           name: 'defaultName',
           type: 0,
           redirectMode: $scope.item.redirectMode,
-          country: 'ZZZ'
+          country: $scope.item.country
         };
       }
 
