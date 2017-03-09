@@ -32,7 +32,7 @@ var log = log4js.getLogger('startup');
 myEmitter.on('dbDone', () => {
   var app = require('../app');
 
-  app.set('port', process.env.PORT || 5000);
+  app.set('port', process.env.PORT || 51500);
 
   var server = app.listen(app.get('port'), function () {
     log.info('adclick server listening on port', server.address().port,
