@@ -5,7 +5,7 @@ var common = require('./common');
 var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
 var util = require('../util');
-
+var saveOrUpdateFlow = require('./flow').saveOrUpdateFlow;
 
 
 
@@ -182,15 +182,26 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         }
     }
 });
-
-
 const start = async (subId, value, connection) => {
+    let promiseSlice = [saveOrUpdateCampaign(subId, value, connection)];
+    //新建campaign path 
+    if (value.flow && value.flow.type == 0) {
+        let flowObject = value.flow;
+        flowObject.userId = value.userId;
+        flowObject.idText = value.idText;
+        promiseSlice.push(saveOrUpdateFlow(subId, flowObject, connection))
+    }
+    await Promise.all(promiseSlice)
+    delete value.userId;
+    delete value.idText;
+    return value;
+}
 
+const saveOrUpdateCampaign = async (subId, value, connection) => {
     //check campaign name exists
     if (await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, 1, connection)) {
         throw new Error("Campaign name exists");
     }
-
     //Campaign
     let campResult;
     if (value.id) {
@@ -220,7 +231,6 @@ const start = async (subId, value, connection) => {
         }
         value.url = setting.newbidder.httpPix + defaultDomain + "/" + value.hash;
         value.impPixelUrl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.impRouter + "/" + value.hash;
-
     }
 
     let campaignId = value.id ? value.id : (campResult ? (campResult.insertId ? campResult.insertId : 0) : 0);
@@ -230,11 +240,8 @@ const start = async (subId, value, connection) => {
     }
     //campaignId
     value.id = campaignId;
-
-
     //删除所有tags
     await common.updateTags(value.userId, campaignId, 1, connection);
-
     //campain Tags
     if (value.tags && value.tags.length > 0) {
         if (value.tags && value.tags.length > 0) {
@@ -244,10 +251,8 @@ const start = async (subId, value, connection) => {
         }
     }
 
+    return true;
 
-    delete value.userId;
-    delete value.idText;
-    return value;
 }
 
 

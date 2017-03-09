@@ -1099,7 +1099,7 @@ async function checkNameExists(userId, id, name, type, connection) {
             results = await query("select `id` from Offer where `userId`= ? and `name`= ?", [userId, name], connection);
             break;
         case 4:
-            results = await query("select `id` from Flow where `userId`= ? and `name`= ?", [userId, name], connection);
+            results = await query("select `id` from Flow where `userId`= ? and `name`= ? and `type`=1", [userId, name], connection);
             break;
         default:
             throw new Error("Paramter type error");

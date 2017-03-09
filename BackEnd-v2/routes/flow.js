@@ -495,6 +495,7 @@ router.post('/api/flows', async function (req, res, next) {
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
     let data = await saveOrUpdateFlow(req.user.id, value, connection);
+    delete data.userId;
     res.json({
       status: 1,
       message: 'success',
@@ -538,6 +539,7 @@ router.post('/api/flows/:id', async function (req, res, next) {
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
     let data = await saveOrUpdateFlow(req.user.id, value, connection);
+    delete data.userId;
     res.json({
       status: 1,
       message: 'success',
@@ -627,10 +629,11 @@ async function saveOrUpdateFlow(subId, value, connection) {
     //flowId
     value.id = flowId;
 
-    //解除flow下的所有rules
-    await common.deleteRule2Flow(flowId, connection);
-
     if (value.rules && value.rules.length > 0) {
+      
+      //解除flow下的所有rules
+      await common.deleteRule2Flow(flowId, connection);
+
       for (let i = 0; i < value.rules.length; i++) {
         // parse conditions array
         let rule = value.rules[i]
@@ -725,8 +728,6 @@ async function saveOrUpdateFlow(subId, value, connection) {
   }
   //处理缓存中的redis pub数据 =====end
 
-
-  delete value.userId;
   return value;
 };
 
@@ -899,6 +900,11 @@ router.get('/api/isps', async function (req, res, next) {
   }
 });
 
+
+
+async function saveOrUpdateRules() {
+
+}
 
 async function fillConditions(r, connection) {
   for (let i = 0; i < r.length; i++) {
