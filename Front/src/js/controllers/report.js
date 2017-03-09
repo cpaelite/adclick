@@ -486,12 +486,12 @@
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       var reportViewColumnsTemp = $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
       // remove later
-      reportViewColumnsTemp.affiliateName.visible = true;
+      /*reportViewColumnsTemp.affiliateName.visible = true;
       reportViewColumnsTemp.campaignName.visible = true;
       reportViewColumnsTemp.flowName.visible = true;
       reportViewColumnsTemp.landerName.visible = true;
       reportViewColumnsTemp.offerName.visible = true;
-      reportViewColumnsTemp.trafficName.visible = true;
+      reportViewColumnsTemp.trafficName.visible = true;*/
       //
       var preferences = {
         json: $scope.preferences

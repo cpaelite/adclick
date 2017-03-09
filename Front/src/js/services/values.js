@@ -30,9 +30,6 @@ angular.module('app').value('columnDefinition', {
     }, {
       key: 'costModel',
       name: 'Cost model'
-    }, {
-      key: 'browser',
-      name: 'Browser'
     }
   ],
   flow: [
