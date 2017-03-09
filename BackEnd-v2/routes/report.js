@@ -161,11 +161,12 @@ async function normalReport(query) {
     ctr: rawRows.reduce((sum, row) => sum + row.clicks, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
     cr: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
     cv: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
-    roi: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.cost, 0),
+    // roi: (rawRows.reduce((sum, row) => sum + row.revenue, 0) - rawRows.reduce((sum, row) => sum + row.cost, 0)) / rawRows.reduce((sum, row) => sum + row.cost),
     epv: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
     epc: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
     ap: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.conversions, 0),
   }
+  totals.roi = totals.profit / totals.cost
   totals = formatTotals([totals])[0]
   return {rows: rawRows, totals, totalRows}
 }

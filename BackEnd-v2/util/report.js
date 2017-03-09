@@ -55,7 +55,7 @@ export const sumShorts = {
   ctr: [sequelize.literal('sum(AdStatis.Clicks)/sum(AdStatis.Visits)'), 'ctr'],
   cr: [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Clicks)'), 'cr'],
   cv: [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Visits)'), 'cv'],
-  roi: [sequelize.literal('sum(AdStatis.Revenue)/sum(AdStatis.Cost)'), 'roi'],
+  roi: [sequelize.literal('(sum(AdStatis.Revenue) - sum(AdStatis.Cost))/sum(AdStatis.Cost)'), 'roi'],
   epv: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Visits)'), 'epv'],
   epc: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Clicks)'), 'epc'],
   ap: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Conversions)'), 'ap']
