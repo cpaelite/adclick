@@ -27,17 +27,8 @@
       $scope.conversionStatus = true;
       Conversion.save({keys:contents},function(result){
         $scope.conversionStatus = false;
-        if (!result.status) {
-          $scope.errorMessage = result.message;
-        } else {
-          result.data.forEach(function (data) {
-            var line = data.I + 1;
-            var message = data.E;
-            if (data.E) {
-              $scope.errorMessage = 'Error while parsing CSV in line ' + line + ': ' + message;
-              return;
-            }
-          });
+        if (result.status) {
+          $scope.errorMessage = result.data;
         }
       });
     };
