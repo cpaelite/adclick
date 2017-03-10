@@ -37,41 +37,49 @@ router.get('/api/report', async function (req, res, next) {
 });
 
 async function campaignReport(value) {
-  let {groupBy, limit, page, from, to, tz, filter, order, status} = value;
-  let sqlWhere = {};
+  let {groupBy, limit, page} = value;
+  // init values
+  if (!mapping[groupBy]) {
+    //TODO: unsupport group
+  }
+  // limit
   limit = parseInt(limit)
   if (!limit || limit < 0)
-    limit = 10000
+    limit = 1000
+  value.limit = limit
+  // offset
   page = parseInt(page)
   let offset = (page - 1) * limit;
   if (!offset)
     offset = 0
+  value.offset = offset
+
+
+  console.info("------------", isListPageRequest(value))
+  if (isListPageRequest(value)) {
+    console.info("list page process")
+    return listPageReport(value)
+  } else {
+    console.info("normal process")
+    return normalReport(value)
+  }
+}
+
+function isListPageRequest(value) {
+  let {groupBy} = value
+  let _flag = !!mapping[groupBy].listPage
+  let isListPageRequest = !hasFilter(value) && _flag
+  return isListPageRequest
+}
+
+function hasFilter(value) {
   let attrs = Object.keys(value);
   _.forEach(attrs, (attr) => {
     if (mapping[attr]) {
-      sqlWhere[mapping[attr].dbKey] = value[attr];
+      return true
     }
   })
-  let _flag = !!mapping[groupBy].listPage
-  let isListPageRequest = Object.keys(sqlWhere).length === 0 && _flag
-  if (isListPageRequest) {
-    return listPageReport({
-      userId: value.userId,
-      where: sqlWhere,
-      from,
-      to,
-      tz,
-      groupBy,
-      offset,
-      limit,
-      filter,
-      order,
-      status
-    })
-  } else {
-    return normalReport({userId: value.userId, where: sqlWhere, from, to, tz, groupBy, offset, limit, filter, order})
-  }
-
+  return
 }
 
 async function fullFill({rawRows, groupBy}) {
@@ -108,15 +116,30 @@ async function fullFill({rawRows, groupBy}) {
   return rawRows;
 }
 
-async function normalReport(query) {
-  let {userId, where, from, to, tz, groupBy, offset, limit, filter, order, status} = query;
+async function normalReport(values) {
+  let {userId, from, to, tz, groupBy, offset, limit, filter, order, status} = values;
+
+  let sqlWhere = {};
+  sqlWhere.UserID = userId
+  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+
+  let attrs = Object.keys(values);
+  _.forEach(attrs, (attr) => {
+    if (attr === 'day') {
+      sqlWhere.Timestamp = sequelize.and(
+        sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${values.day.trim()}T00:00','${tz}', '+00:00')) * 1000)`),
+        sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${values.day.trim()}T23:59','${tz}', '+00:00')) * 1000)`)
+      );
+    } else if (mapping[attr]) {
+      sqlWhere[mapping[attr].dbKey] = values[attr];
+    }
+  })
+
   if (filter) {
-    where[mapping[groupBy].dbFilter] = {
+    sqlWhere[mapping[groupBy].dbFilter] = {
       $like: `%${filter}%`
     }
   }
-  where.UserID = userId
-  where.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
 
   let orderBy = ['UserID', 'ASC']
 
@@ -136,8 +159,9 @@ async function normalReport(query) {
     finalAttribute = [[sequelize.literal('DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((Timestamp/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL 8 HOUR), "%Y-%m-%d")'), 'day'], ...attributes]
   }
 
+  console.info(sqlWhere)
   let rows = await models.AdStatis.findAll({
-    where,
+    where: sqlWhere,
     limit,
     offset,
     attributes: finalAttribute,
@@ -172,7 +196,7 @@ async function normalReport(query) {
 }
 
 async function listPageReport(query) {
-  let {userId, where, from, to, tz, groupBy, offset, limit, filter, order, status} = query;
+  let {userId, groupBy, filter, order, status} = query;
   let nr = await normalReport(query);
   let foreignConfig = extraConfig(groupBy);
   let _where = {
