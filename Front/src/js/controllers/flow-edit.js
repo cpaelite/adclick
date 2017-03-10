@@ -7,7 +7,7 @@
     ]);
 
   function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country) {
-    var flowId, isDuplicate, fromCampaign;
+    var flowId, isDuplicate, fromCampaign, theFlow;
     $scope.flowMode = true;
     if($scope.$stateParams) {
       $scope.app.subtitle = 'Flow';
@@ -24,6 +24,30 @@
         console.log(oData);
         flowId = oData.flowId;
         initFlowEditCtrl(flowId, isDuplicate, fromCampaign);
+      });
+      $scope.$on('targetPathCountryChanged', function(event, oData) {
+        console.log('targetPathCountryChanged', oData);
+        var oldCountry = angular.copy(theFlow.country);
+        if(oData !== 'ZZZ' && checkLanderAndOfferStatus(theFlow.rules, {value: oData})) {
+          $mdDialog.show({
+            multiple: true,
+            skipHide: true,
+            clickOutsideToClose: false,
+            controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
+            controllerAs: 'ctrl',
+            focusOnOpen: false,
+            bindToController: true,
+            templateUrl: 'tpl/delete-confirm-dialog.html'
+          }).then(function(result) {
+            if(result.status) {
+              theFlow.rules = checkLanderAndOffer(theFlow.rules, {value: oData})
+              theFlow.country.value = oData.country;
+            } else {
+
+            }
+          });
+        }
+
       });
     }
 
@@ -52,7 +76,7 @@
       var initPromises = [],
       prms;
 
-      var theFlow; $scope.prefix = '';
+      $scope.prefix = '';
       $scope.checkNameParams = {
         type: 4
       };
@@ -200,9 +224,9 @@
           });
         });
 
-        $scope.flowss = theFlow;
+        $scope.flow = theFlow;
         if(!$scope.flowMode) {
-          $scope.editPath($scope.flowss.rules[0], $scope.flowss.rules[0].paths[0]);
+          $scope.editPath($scope.flow.rules[0], $scope.flow.rules[0].paths[0]);
         }
         $scope.initState = 'success';
       }
@@ -244,14 +268,15 @@
         $scope.curPath = null;
         $scope.isDeleted = false;
       };
-      $scope.$watch('flowss.country', function (newValue, oldValue) {
+      $scope.$watch('flow.country', function (newValue, oldValue) {
+        console.log('flow.country changed', newValue, oldValue);
         var preStr = newValue ? newValue.display + ' - ' : 'Global - ';
         if(newValue) {
-          $scope.flowss.name = preStr + $scope.flowss.name.substr($scope.prefix.length);
+          $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
           $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
           $scope.prefix = preStr;
         }
-      }, true);
+      });
 
       // operation on rule
       $scope.editRule = function(rule) {
@@ -263,8 +288,8 @@
       };
       $scope.addRule = function() {
         var newRule = angular.copy(ruleSkel);
-        newRule.name = 'Rule ' + $scope.flowss.rules.length;
-        $scope.flowss.rules.push(newRule);
+        newRule.name = 'Rule ' + $scope.flow.rules.length;
+        $scope.flow.rules.push(newRule);
         $scope.editRule(newRule);
       };
       $scope.toggleExpand = function(rule) {
@@ -274,8 +299,8 @@
       };
       function duplicateRule() {
         var newRule = angular.copy($scope.curRule);
-        //newRule.name = 'Rule ' + $scope.flowss.rules.length;
-        $scope.flowss.rules.push(newRule);
+        //newRule.name = 'Rule ' + $scope.flow.rules.length;
+        $scope.flow.rules.push(newRule);
         $scope.editRule(newRule);
       }
 
@@ -356,14 +381,15 @@
       };
 
       $scope.validateCallback = function(isValid) {
+        if(!$scope.flowMode) return;
         $scope.editFlowForm.name.$setValidity('asyncCheckName', isValid);
       };
 
       $scope.postValidateCallback = function() {
-        return $scope.flowss.name.length == $scope.prefix.length;
+        return $scope.flow.name.length == $scope.prefix.length;
       };
       function nameRequired() {
-        if ($scope.prefix.length == $scope.flowss.name.length) {
+        if ($scope.prefix.length == $scope.flow.name.length) {
           $scope.editFlowForm.name.$setValidity('nameRequired', false);
         } else {
           $scope.editFlowForm.name.$setValidity('nameRequired', true);
@@ -377,7 +403,7 @@
         var prefix = $scope.prefix;
         flow._nameError = !validPattern.test(name);
         if(name == undefined || name.length < prefix.length) {
-          $scope.flowss.name = prefix;
+          $scope.flow.name = prefix;
         } else if(name.indexOf(prefix) != 0) {
           var sub = name.substr(0, prefix.length);
           var arr1 = prefix.split('');
@@ -390,17 +416,36 @@
             }
           }
           if(name.length < $scope.oldName.length) {
-            $scope.flowss.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
+            $scope.flow.name = $scope.oldName.substr(0, $scope.oldName.length - 1);
           } else {
-            $scope.flowss.name = $scope.oldName + inputText;
+            $scope.flow.name = $scope.oldName + inputText;
           }
         }
-        $scope.oldName = $scope.flowss.name;
+        $scope.oldName = $scope.flow.name;
         nameRequired();
       };
 
-      $scope.countryChanged = function() {
-        console.log(123);
+      $scope.countryChanged = function(country) {
+        console.log('country', country, theFlow);
+        if(!country) {return;}
+        if(country.value != 'ZZZ') {
+          if(checkLanderAndOfferStatus(theFlow.rules, country)) {
+            $mdDialog.show({
+              multiple: true,
+              skipHide: true,
+              clickOutsideToClose: false,
+              controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
+              controllerAs: 'ctrl',
+              focusOnOpen: false,
+              bindToController: true,
+              templateUrl: 'tpl/delete-confirm-dialog.html'
+            }).then(function(result) {
+              if(result.status) {
+                theFlow.rules = checkLanderAndOffer(theFlow.rules, country)
+              }
+            });
+          }
+        }
       };
 
       $scope.queryCountries = function(query) {
@@ -1001,9 +1046,75 @@
         var rule = theFlow.rules[0];
         $scope.editPath(rule, rule.paths[0]);
       };
+
     }
 
+    function confirmResetLanderAndOfferCtrl($scope, $mdDialog) {
+      this.title = '';
+      this.content = 'changeCountryConfirm';
 
+      this.ok = function() {
+        $mdDialog.hide({
+          status: true
+        });
+      };
 
+      this.cancel = function() {
+        $mdDialog.hide({
+          status: false
+        });
+      };
+    }
+
+    function checkLanderAndOffer(rules, country) {
+      rules.forEach(function(rule) {
+        rule.paths.forEach(function(path) {
+          if (path.landers) {
+            path.landers.forEach(function(lander) {
+              if (lander._def && lander.country != 'ZZZ' && lander.country != country.value) {
+                lander._def = '';
+                lander._searchText = '';
+              }
+            });
+          }
+
+          if (path.offers) {
+            path.offers.forEach(function(offer) {
+              if (offer._def && offer.country != 'ZZZ' && offer.country != country.value) {
+                offer._def = '';
+                offer._searchText = '';
+              }
+            });
+          }
+        });
+      });
+      return rules;
+    }
+
+    function checkLanderAndOfferStatus(rules, country) {
+      var returnStatus = false;
+      rules.forEach(function(rule) {
+        rule.paths.forEach(function(path) {
+          if (path.landers) {
+            path.landers.some(function(lander) {
+              if (lander._def && lander.country != 'ZZZ' && lander.country != country.value) {
+                returnStatus = true;
+                return false;
+              }
+            });
+          }
+
+          if (path.offers) {
+            path.offers.some(function(offer) {
+              if (offer._def && offer.country != 'ZZZ' && offer.country != country.value) {
+                returnStatus = true;
+                return false;
+              }
+            });
+          }
+        });
+      });
+      return returnStatus;
+    }
   }
 })();

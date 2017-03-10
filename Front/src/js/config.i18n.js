@@ -60,7 +60,8 @@
       profit: 'Profit',
       impressions: 'Impressions'
     },
-    conversionUpload: 'Conversion Upload'
+    conversionUpload: 'Conversion Upload',
+    changeCountryConfirm: 'Changing country will remove landers and offers within paths. Are your sure?'
   };
   var i18n_zh = {
     ok: '确定',

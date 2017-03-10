@@ -798,6 +798,7 @@
     };
 
     $scope.countryChanged = function(country) {
+      $scope.$broadcast('targetPathCountryChanged', {country: country});
       $scope.countries.forEach(function(v) {
         if(v.value == country) {
           prefixCountry = v.display + ' - ';
