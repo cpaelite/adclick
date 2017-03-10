@@ -91,6 +91,7 @@
           }
           $rootScope.permissions = res.data;
         });
+        $rootScope.permissions = $cookies.getObject('permissions');
 
         // load user preferences
         Preference.get(null, function(res) {

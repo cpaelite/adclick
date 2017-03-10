@@ -127,7 +127,7 @@
 
     $scope.upgradePlan = function() {
       ChangePlan.showDialog(thePlan.id, false, function() {
-      }, {upgrade: true});
+      }, {upgrade: true, level: thePlan.level});
     };
   }
 

@@ -18,7 +18,7 @@
     } else if (paymessage === 'cancel') {
       toastr.error('pay failed');
       $rootScope.changePlanStatus = true;
-      ChangePlan.showDialog(-1, true);
+      ChangePlan.showDialog(-1, true, null, {level: -1});
     }
 
     function geteBillings() {
@@ -33,8 +33,8 @@
     });
 
     $scope.rootChangePlanStatus = $rootScope.changePlanStatus;
-    $scope.changePlan = function(id) {
-      ChangePlan.showDialog(id, false, function(){});
+    $scope.changePlan = function(id, level) {
+      ChangePlan.showDialog(id, false, function(){}, {level: level});
     };
 
     $scope.couponText = '';

@@ -46,7 +46,8 @@
         });
         $scope.planId = this.planId ? this.planId : -1;
         $scope.noPlan = this.noPlan;
-        $scope.upgrade = this.options ? this.options.upgrade : false;
+        $scope.upgrade = this.options && this.options.upgrade ? this.options.upgrade : false;
+        $scope.level = this.options.level;
         $scope.groups = $rootScope.groups;
         $scope.changeGroup = function(group) {
           $rootScope.changeGroup(group);
