@@ -265,16 +265,16 @@ app.get('/api/preferences', function (req, res) {
         "cpc": {"visible": false},
         "cpm": {"visible": false},
         "clickId": {"visible": false},
-        "variable1": {"visible": false},
-        "variable2": {"visible": false},
-        "variable3": {"visible": false},
-        "variable4": {"visible": false},
-        "variable5": {"visible": false},
-        "variable6": {"visible": false},
-        "variable7": {"visible": false},
-        "variable8": {"visible": false},
-        "variable9": {"visible": false},
-        "variable10": {"visible": false},
+        "v1": {"visible": true},
+        "v2": {"visible": true},
+        "v3": {"visible": true},
+        "v4": {"visible": true},
+        "v5": {"visible": true},
+        "v6": {"visible": true},
+        "v7": {"visible": true},
+        "v8": {"visible": true},
+        "v9": {"visible": true},
+        "v10": {"visible": true},
         "conversion_PostbackTimestamp": {"visible": true},
         "conversion_VisitTimestamp": {"visible": true},
         "conversion_ExternalID": {"visible": true},
@@ -3538,6 +3538,6 @@ app.post('/api/user/coupon', function (req, res) {
   }, 5000);
 });
 
-app.listen(5000, function () {
-  console.log('server started success port : 5000');
+app.listen(51500, function () {
+  console.log('server started success port : 51500');
 });

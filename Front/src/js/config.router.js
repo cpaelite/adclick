@@ -106,6 +106,18 @@
       .state('app.report.domain', configReport('domain'))
       .state('app.report.region', configReport('region'))
 
+      .state('app.report.tsWebsiteId', configReport('tsWebsiteId'))
+      .state('app.report.v1', configReport('v1'))
+      .state('app.report.v2', configReport('v2'))
+      .state('app.report.v3', configReport('v3'))
+      .state('app.report.v4', configReport('v4'))
+      .state('app.report.v5', configReport('v5'))
+      .state('app.report.v6', configReport('v6'))
+      .state('app.report.v7', configReport('v7'))
+      .state('app.report.v8', configReport('v8'))
+      .state('app.report.v9', configReport('v9'))
+      .state('app.report.v10', configReport('v10'))
+
       .state('app.report.conversion', {
         url: '/conversion',
         templateUrl: 'tpl/conversion.html',

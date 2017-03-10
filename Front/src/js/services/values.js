@@ -404,47 +404,38 @@ angular.module('app').value('columnDefinition', {
       name: 'Time Of Day'
     }
   ],
-  tsParams: [
-    {
-      key: 'v1',
-      name: 'V1'
-    },
-    {
-      key: 'v2',
-      name: 'V2'
-    },
-    {
-      key: 'v3',
-      name: 'V3'
-    },
-    {
-      key: 'v4',
-      name: 'V4'
-    },
-    {
-      key: 'v5',
-      name: 'V5'
-    },
-    {
-      key: 'v6',
-      name: 'V6'
-    },
-    {
-      key: 'v7',
-      name: 'V7'
-    },
-    {
-      key: 'v8',
-      name: 'V8'
-    },
-    {
-      key: 'v9',
-      name: 'V9'
-    },
-    {
-      key: 'v10',
-      name: 'V10'
-    }
+  tsWebsiteId: [
+    {key: 'tsWebsiteId', name: 'WebSite ID'}
+  ],
+  v1: [
+    {key: 'v1', name: 'V1'}
+  ],
+  v2: [
+    {key: 'v2', name: 'V2'}
+  ],
+  v3: [
+    {key: 'v3', name: 'V3'}
+  ],
+  v4: [
+    {key: 'v4', name: 'V4'}
+  ],
+  v5: [
+    {key: 'v5', name: 'V5'}
+  ],
+  v6: [
+    {key: 'v6', name: 'V6'}
+  ],
+  v7: [
+    {key: 'v7', name: 'V7'}
+  ],
+  v8: [
+    {key: 'v8', name: 'V8'}
+  ],
+  v9: [
+    {key: 'v9', name: 'V9'}
+  ],
+  v10: [
+    {key: 'v10', name: 'V10'}
   ],
   common: [
     {
@@ -559,7 +550,8 @@ angular.module('app').value('groupByOptions', [
   {value: "domain", display: "Referrer domain", idKey: "domain", nameKey: "domain"},
   {value: "region", display: "State / Region", idKey: "region", nameKey: "region"},
   {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName"},
-  {value: "v1", display: "V1", idKey: "v1", nameKey: "v1", role: 'campaign'},
+  {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteName"},
+  /*{value: "v1", display: "V1", idKey: "v1", nameKey: "v1", role: 'campaign'},
   {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", role: 'campaign'},
   {value: "v3", display: "V3", idKey: "v3", nameKey: "v3", role: 'campaign'},
   {value: "v4", display: "V4", idKey: "v4", nameKey: "v4", role: 'campaign'},
@@ -568,7 +560,7 @@ angular.module('app').value('groupByOptions', [
   {value: "v7", display: "V7", idKey: "v7", nameKey: "v7", role: 'campaign'},
   {value: "v8", display: "V8", idKey: "v8", nameKey: "v8", role: 'campaign'},
   {value: "v9", display: "V9", idKey: "v9", nameKey: "v9", role: 'campaign'},
-  {value: "v10", display: "V10", idKey: "v10", nameKey: "v10", role: 'campaign'},
+  {value: "v10", display: "V10", idKey: "v10", nameKey: "v10", role: 'campaign'},*/
 ]);
 
 angular.module('app').value('urlParameter', {
