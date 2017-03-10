@@ -796,9 +796,25 @@
       $scope.oldName = $scope.item.name;
       nameRequired();
     };
+    var oldCountryName;
+    $scope.$watch('item.country', function(newCountry, oldCountry) {
+      if (newCountry && !oldCountry) {
+        oldCountryName = newCountry;
+      }
+      if (newCountry && oldCountry) {
+        oldCountryName = oldCountry;
+      }
+    });
 
-    $scope.countryChanged = function(country) {
-      $scope.$broadcast('targetPathCountryChanged', {country: country});
+    $scope.$on('targetPathCountryReseted', function() {
+      $scope.item.country = oldCountryName;
+      $scope.countryChanged(oldCountryName, true);
+    });
+
+    $scope.countryChanged = function(country, reset) {
+      if(!reset) {
+        $scope.$broadcast('targetPathCountryChanged', {country: country});
+      }
       $scope.countries.forEach(function(v) {
         if(v.value == country) {
           prefixCountry = v.display + ' - ';
@@ -1168,7 +1184,11 @@
       this.title = "add";
       $scope.item.name = $scope.prefix;
       $scope.oldName = $scope.item.name;
-      $scope.item.country = 'ZZZ';
+      $scope.item.country = this.country ? this.country.value : 'ZZZ';
+    }
+
+    if(this.country) {
+      $scope.countryInputDisabled = true;
     }
 
     this.titleType = angular.copy(this.perfType);
@@ -1323,7 +1343,11 @@
       prefixCountry = 'Global - ';
       $scope.prefix = $scope.item.name = $scope.oldName = prefixCountry;
       $scope.tagsFilter.options = $scope.item.tags = [];
-      $scope.item.country = 'ZZZ';
+      $scope.item.country = this.country ? this.country.value : 'ZZZ';
+    }
+
+    if(this.country) {
+      $scope.countryInputDisabled = true;
     }
 
     // Country

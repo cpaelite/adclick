@@ -1570,7 +1570,7 @@ app.get('/api/landers', function (req, res) {
     "id": 47,
     "name": "Lander1",
     "country": "us"
-  }, {"id": 49, "name": "Lander2", "country": "cn"}, {"id": 50, "name": "Lander3", "country": "us"}, {
+  }, {"id": 49, "name": "china - Lander2", "country": "CHN"}, {"id": 50, "name": "Lander3", "country": "us"}, {
     "id": 54,
     "name": "Lander4",
     "country": "ca"

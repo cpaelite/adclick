@@ -61,7 +61,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-8 my-select">
-                    <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
+                    <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)" ng-disabled="countryInputDisabled">
                         <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
                     </select>
                 </div>

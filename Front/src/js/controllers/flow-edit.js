@@ -7,7 +7,7 @@
     ]);
 
   function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country) {
-    var flowId, isDuplicate, fromCampaign, theFlow;
+    var flowId, isDuplicate, fromCampaign, theFlow, tempCountryName, oldCountryName;
     $scope.flowMode = true;
     if($scope.$stateParams) {
       $scope.app.subtitle = 'Flow';
@@ -27,8 +27,8 @@
       });
       $scope.$on('targetPathCountryChanged', function(event, oData) {
         console.log('targetPathCountryChanged', oData);
-        var oldCountry = angular.copy(theFlow.country);
-        if(oData !== 'ZZZ' && checkLanderAndOfferStatus(theFlow.rules, {value: oData})) {
+        var oldCountry = angular.copy($scope.country);
+        if(oData !== 'ZZZ' && checkLanderAndOfferStatus(theFlow.rules, {value: oData.country})) {
           $mdDialog.show({
             multiple: true,
             skipHide: true,
@@ -40,14 +40,15 @@
             templateUrl: 'tpl/delete-confirm-dialog.html'
           }).then(function(result) {
             if(result.status) {
-              theFlow.rules = checkLanderAndOffer(theFlow.rules, {value: oData})
-              theFlow.country.value = oData.country;
+              theFlow.rules = checkLanderAndOffer(theFlow.rules, {value: oData.country})
+              $scope.country.value = oData.country;
             } else {
-
+              $scope.$emit('targetPathCountryReseted', {});
             }
           });
+        } else {
+          $scope.country.value = oData.country;
         }
-
       });
     }
 
@@ -103,6 +104,7 @@
           redirectMode: '0',
           rules: [ defaultRule ]
         };
+
         $scope.prefix = $scope.oldName = 'Global - ';
       }
 
@@ -170,10 +172,13 @@
         var country = theFlow.country;
         allCountries.forEach(function(ctry) {
           if (ctry.value == country) {
-            theFlow.country = ctry;
+            $scope.country = ctry;
             $scope.prefix = ctry.display + ' - ';
           }
         });
+
+        oldCountryName = tempCountryName = angular.copy($scope.country);
+
         // fulfill flow with lander/offer/condition
         if (isDuplicate) {
           delete theFlow.id;
@@ -268,8 +273,7 @@
         $scope.curPath = null;
         $scope.isDeleted = false;
       };
-      $scope.$watch('flow.country', function (newValue, oldValue) {
-        console.log('flow.country changed', newValue, oldValue);
+      $scope.$watch('country', function (newValue, oldValue) {
         var preStr = newValue ? newValue.display + ' - ' : 'Global - ';
         if(newValue) {
           $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
@@ -311,8 +315,6 @@
         $scope.curRule = rule;
         $scope.curPath = path;
       };
-
-
 
       $scope.addPath = function(rule) {
         var newPath = angular.copy(pathSkel);
@@ -426,8 +428,9 @@
       };
 
       $scope.countryChanged = function(country) {
-        console.log('country', country, theFlow);
         if(!country) {return;}
+        oldCountryName = angular.copy(tempCountryName);
+        tempCountryName = angular.copy(country);
         if(country.value != 'ZZZ') {
           if(checkLanderAndOfferStatus(theFlow.rules, country)) {
             $mdDialog.show({
@@ -437,11 +440,14 @@
               controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
               controllerAs: 'ctrl',
               focusOnOpen: false,
+              locals: {oldCountryName: oldCountryName},
               bindToController: true,
               templateUrl: 'tpl/delete-confirm-dialog.html'
             }).then(function(result) {
               if(result.status) {
                 theFlow.rules = checkLanderAndOffer(theFlow.rules, country)
+              } else {
+                $scope.country = result.oldCountryName;
               }
             });
           }
@@ -496,7 +502,7 @@
       $scope.queryLanders = function(query) {
         if (allLanders) {
           var filtered = allLanders.filter(function(lander) {
-            return theFlow.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == theFlow.country.value;
+            return $scope.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == $scope.country.value;
           }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
           return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
         } else {
@@ -520,6 +526,7 @@
         } else {
           locals.item = null;
         }
+        locals.country = $scope.country;
         $mdDialog.show({
           multiple: true,
           skipHide: true,
@@ -569,7 +576,7 @@
       $scope.queryOffers = function(query) {
         if (allOffers) {
           var filtered = allOffers.filter(function(offer) {
-            return theFlow.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == theFlow.country.value;
+            return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
           }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
           return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
         } else {
@@ -593,6 +600,8 @@
         } else {
           locals.item = null;
         }
+        locals.country = $scope.country;
+        console.log('locals.country', locals.country);
         $mdDialog.show({
           multiple: true,
           skipHide: true,
@@ -786,7 +795,7 @@
         // clean up before save
         var flowData = {
           name: theFlow.name,
-          country: theFlow.country ? theFlow.country.value : 'ZZZ',
+          country: $scope.country ? $scope.country.value : 'ZZZ',
           redirectMode: theFlow.redirectMode | 0,
           rules: []
         };
@@ -1050,6 +1059,8 @@
     }
 
     function confirmResetLanderAndOfferCtrl($scope, $mdDialog) {
+      console.log('self.oldCountryName', this.oldCountryName);
+      var self = this;
       this.title = '';
       this.content = 'changeCountryConfirm';
 
@@ -1061,7 +1072,8 @@
 
       this.cancel = function() {
         $mdDialog.hide({
-          status: false
+          status: false,
+          oldCountryName: self.oldCountryName
         });
       };
     }
@@ -1071,7 +1083,7 @@
         rule.paths.forEach(function(path) {
           if (path.landers) {
             path.landers.forEach(function(lander) {
-              if (lander._def && lander.country != 'ZZZ' && lander.country != country.value) {
+              if (lander._def && lander._def.country != 'ZZZ' && lander._def.country != country.value) {
                 lander._def = '';
                 lander._searchText = '';
               }
@@ -1080,7 +1092,7 @@
 
           if (path.offers) {
             path.offers.forEach(function(offer) {
-              if (offer._def && offer.country != 'ZZZ' && offer.country != country.value) {
+              if (offer._def && offer._def.country != 'ZZZ' && offer._def.country != country.value) {
                 offer._def = '';
                 offer._searchText = '';
               }
@@ -1097,7 +1109,7 @@
         rule.paths.forEach(function(path) {
           if (path.landers) {
             path.landers.some(function(lander) {
-              if (lander._def && lander.country != 'ZZZ' && lander.country != country.value) {
+              if (lander._def && lander._def.country != 'ZZZ' && lander._def.country != country.value) {
                 returnStatus = true;
                 return false;
               }
@@ -1106,7 +1118,7 @@
 
           if (path.offers) {
             path.offers.some(function(offer) {
-              if (offer._def && offer.country != 'ZZZ' && offer.country != country.value) {
+              if (offer._def && offer._def.country != 'ZZZ' && offer._def.country != country.value) {
                 returnStatus = true;
                 return false;
               }

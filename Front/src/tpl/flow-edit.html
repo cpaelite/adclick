@@ -92,17 +92,17 @@
         </span>
       </div>
 
-      <div class="form-group" ng-if="flowMode">
+      <div class="form-group">
         <label class="label-name">Country:</label>
         <md-autocomplete
-            md-selected-item="flow.country"
+            md-selected-item="country"
             md-search-text="searchText"
             md-items="item in queryCountries(searchText)"
             md-no-cache="true"
             md-select-on-focus="true"
             md-item-text="item.display"
             md-min-length="0"
-            md-selected-item-change="countryChanged(flow.country)"
+            md-selected-item-change="countryChanged(country)"
             placeholder="Select country...">
           <md-item-template>
             <span md-highlight-text="searchText">{{item.display}}</span>
