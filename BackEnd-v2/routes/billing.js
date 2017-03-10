@@ -31,7 +31,7 @@ router.get('/api/billing', async (req, res) => {
         plan: {
           id: template_plan.id,
           name: template_plan.name,
-          price: template_plan.normalPrice || template_plan.onSalePrice
+          price: template_plan.onSalePrice 
         },
         statistic: {
           planCode: template_plan.name,

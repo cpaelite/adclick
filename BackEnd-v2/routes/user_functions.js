@@ -3,7 +3,7 @@ const moment = require('moment');
 var log4js = require('log4js');
 var log = log4js.getLogger('userFunctions');
 
-async function logToUserFunctions(paymentLogId) {
+export const logToUserFunctions= async function (paymentLogId) {
     let connection;
     try {
         connection = await common.getConnection();
@@ -12,7 +12,7 @@ async function logToUserFunctions(paymentLogId) {
             throw new Error("paymentLogId error")
         }
         let config = JSON.stringify({ domainLimit: planSlice[0].domainLimit, userLimit: planSlice[0].userLimit, tsReportLimit: planSlice[0].tsReportLimit,retentionLimit:planSlice[0].retentionLimit });
-        await common.query("insert into UserFunctions (userId,functions) VALUES (?,?) ON DUPLICATE KEY UPDATE functions=?", [planSlice[0].userId, config, config]);
+        await common.query("insert into UserFunctions (userId,functions) VALUES (?,?) ON DUPLICATE KEY UPDATE functions=?", [planSlice[0].userId, config, config],connection);
     } catch (e) {
         log.error("[user_functions.js][logToUserFunctions][error]:", JSON.stringify(e));
         throw e;
@@ -25,4 +25,4 @@ async function logToUserFunctions(paymentLogId) {
 }
 
 
-export default logToUserFunctions;
+ 
