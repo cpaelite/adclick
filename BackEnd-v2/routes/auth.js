@@ -194,9 +194,9 @@ async function signup(data, next) {
 
     //user Group
     let configSlice = await common.query("select `config` from RolePrivilege where `role`=?", [0], connection);
-    if (configSlice.length) {
-      await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice[0].config], connection);
-    }
+
+    await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config : "{}"], connection);
+
 
     await common.commit(connection);
     //redis publish
