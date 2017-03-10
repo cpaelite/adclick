@@ -19,7 +19,7 @@ import {addTrialPlan} from '../util/billing';
 
 router.get('/api/plans', async (req, res, next) => {
   try {
-    let plans = await TP.findAll({where: {hidden: 0,deleted:0},order:"order ASC"})
+    let plans = await TP.findAll({where: {hidden: 0,deleted:0},order:"`order` ASC"})
     res.json({
       status: 1,
       message: 'success',
