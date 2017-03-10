@@ -2524,6 +2524,10 @@ table.md-table tbody.md-body > tr.md-row span {white-space: nowrap;}
 .icon-sort-down{position:relative;z-index:1;top:9px;right:22px;float:right;color:#666;}
 .url-tokens-row i{font-style:normal;color:#999;}
 md-table-container{max-height:430px;overflow-y:auto;border-radius:2px;border:1px solid #ececec;}
+.table-out-coupon{padding-top:25px;}
+.table-out-coupon input{border-radius:2px 0 0 2px;border-right:none;}
+.table-out-coupon button{border-radius:0 2px 2px 0;}
+.md-button.md-default-theme.md-accent[disabled], .md-button.md-accent[disabled], .md-button.md-default-theme.md-fab[disabled], .md-button.md-fab[disabled], .md-button.md-default-theme.md-raised[disabled], .md-button.md-raised[disabled], .md-button.md-default-theme.md-warn[disabled], .md-button.md-warn[disabled], .md-button.md-default-theme[disabled], .md-button[disabled]{color:#fff;background:#ccc !important;}
 .referral-group{margin:40px 0;}
 .referral-group .control-label{text-align:right;}
 select{border:1px solid #d5dce4;}
@@ -2630,6 +2634,9 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .fade-in-right-big{width:50%;}
     .item-domains .input-out{width:50%;}
     .another-list-btn{margin-top:15px;}
+    .sign-up-success .sign-up-detail .col-sm-6{width:100%;}
+    .sign-up-success .sign-up-detail .col-sm-5{width:100%;}
+    .sign-up-success .sign-up-detail .col-sm-offset-1{margin-left:0;}
 }
 @media (max-width:910px){
     .profile-content{width:96%;}
