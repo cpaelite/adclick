@@ -1,12 +1,30 @@
 import sequelize from 'sequelize';
 import _ from 'lodash';
 export const mapping = {
-  campaign: {dbKey: "CampaignID", dbGroupBy: "CampaignID", listPage: true, table: "TrackingCampaign", dbFilter: "CampaignName"},
+  campaign: {
+    dbKey: "CampaignID",
+    dbGroupBy: "CampaignID",
+    listPage: true,
+    table: "TrackingCampaign",
+    dbFilter: "CampaignName"
+  },
   flow: {dbKey: "FlowID", dbGroupBy: "FlowID", listPage: true, table: "Flow", dbFilter: "FlowName"},
   lander: {dbKey: "LanderID", dbGroupBy: "LanderID", listPage: true, table: "Lander", dbFilter: "LanderName"},
   offer: {dbKey: "OfferID", dbGroupBy: "OfferID", listPage: true, table: "Offer", dbFilter: "OfferName"},
-  affiliate: {dbKey: "AffiliateNetworkID", dbGroupBy: "AffiliateNetworkID", listPage: true, table: "AffiliateNetwork", dbFilter: "AffiliateNetworkName"},
-  traffic: {dbKey: "TrafficSourceID", dbGroupBy: "TrafficSourceID", listPage: true, table: "TrafficSource", dbFilter: "TrafficSourceName"},
+  affiliate: {
+    dbKey: "AffiliateNetworkID",
+    dbGroupBy: "AffiliateNetworkID",
+    listPage: true,
+    table: "AffiliateNetwork",
+    dbFilter: "AffiliateNetworkName"
+  },
+  traffic: {
+    dbKey: "TrafficSourceID",
+    dbGroupBy: "TrafficSourceID",
+    listPage: true,
+    table: "TrafficSource",
+    dbFilter: "TrafficSourceName"
+  },
   language: {dbKey: "Language", dbGroupBy: "Language", listPage: false},
   model: {dbKey: "Model", dbGroupBy: "Model", listPage: false},
   country: {dbKey: "Country", dbGroupBy: "Country", listPage: false},
@@ -40,6 +58,7 @@ export const mapping = {
   v9: {dbKey: "V9", dbGroupBy: "V9", listPage: false},
   v10: {dbKey: "V10", dbGroupBy: "V10", listPage: false},
   day: {dbKey: "day", dbGroupBy: "day", listPage: false},
+  tsWebsiteId: {dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false},
 }
 
 export const sumShorts = {
@@ -95,6 +114,7 @@ export const attributes = [
   ['V8', 'v8'],
   ['V9', 'v9'],
   ['V10', 'v10'],
+  ['tsWebsiteId', 'tsWebsiteId'],
   ...(_.values(sumShorts))
 ]
 

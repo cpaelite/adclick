@@ -550,7 +550,7 @@ angular.module('app').value('groupByOptions', [
   {value: "domain", display: "Referrer domain", idKey: "domain", nameKey: "domain"},
   {value: "region", display: "State / Region", idKey: "region", nameKey: "region"},
   {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName"},
-  {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteName"},
+  {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteId"},
   /*{value: "v1", display: "V1", idKey: "v1", nameKey: "v1", role: 'campaign'},
   {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", role: 'campaign'},
   {value: "v3", display: "V3", idKey: "v3", nameKey: "v3", role: 'campaign'},
