@@ -102,16 +102,17 @@
         $scope.emails = '';
       });
     };
-    $scope.deleteInvitation = function (invitation, ev) {
+    $scope.deleteInvitation = function (invitation, type, ev) {
       $mdDialog.show({
         bindToController: true,
         targetEvent: ev,
         clickOutsideToClose: false,
         controllerAs: 'ctrl',
-        controller: ['$mdDialog', userDeleteCtrl],
+        controller: ['$mdDialog', '$scope', userDeleteCtrl],
         focusOnOpen: false,
         locals: {
-          invitation: invitation
+          invitation: invitation,
+          type: type
         },
         templateUrl: 'tpl/user-delete-dialog.html'
       }).then(function () {
@@ -119,7 +120,11 @@
           id: invitation.id
         }, function () {
           $scope.errMessage = false;
-          $scope.pendingUsers.splice(invitation, 1);
+          if(type == 'list') {
+            $scope.users.splice(invitation, 1);
+          } else {
+            $scope.pendingUsers.splice(invitation, 1);
+          }
           $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
         });
       });
@@ -131,7 +136,8 @@
     };
   }
 
-  function userDeleteCtrl($mdDialog) {
+  function userDeleteCtrl($mdDialog, $scope) {
+    $scope.invitation = this.invitation;
     this.cancel = $mdDialog.cancel;
     this.ok = function () {
       $mdDialog.hide();

@@ -1026,9 +1026,9 @@
           $scope.showErrors = true;
           $scope.$emit('pathDataSuccessed', {
             status: 0,
-            message: $scope.showErrors
+            message: angular.copy($scope.saveErrors)
           });
-          return;
+          return $q.reject('error occurs');
         }
 
         $scope.$emit('pathDataSuccessed', {
@@ -1056,6 +1056,9 @@
         $scope.editPath(rule, rule.paths[0]);
       };
 
+      $scope.hideErrors = function() {
+        $scope.showErrors = false;
+      };
     }
 
     function confirmResetLanderAndOfferCtrl($scope, $mdDialog) {

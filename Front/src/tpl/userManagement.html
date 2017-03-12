@@ -47,6 +47,7 @@
 			<div class="form-inline user-list" ng-repeat="user in users">
 				<span><i class="material-icons">account_box</i> {{user.name}}</span>
 				<span>{{user.email}}</span>
+				<i class="material-icons delete-user" ng-click="deleteInvitation(user, 'list')">close</i>
 			</div>
 		</div>
 		<div class="form-group">
@@ -58,7 +59,7 @@
 				<div ng-repeat="pending in pendingUsers" class="itemList">
 					<span><i class="material-icons">account_box</i>{{pending.lastDate}}</span>
 					<span class="email-con">{{pending.email}}</span>
-					<i class="material-icons delete-user" ng-click="deleteInvitation(pending)">close</i>
+					<i class="material-icons delete-user" ng-click="deleteInvitation(pending, 'pending')">close</i>
 				</div>
 			</div>
 		</div>

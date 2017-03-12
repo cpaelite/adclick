@@ -1584,16 +1584,16 @@ h1.setting-title p{line-height:26px;color:#666;}
     background: #8992aa !important;
 }
 .copy-btn.domain-btn{
-    background: #2f9be1;border-radius:2px;
+    background: #253c75;border-radius:2px;
 }
 .copy-btn.domain-btn.main-domain{
     background: #2f9be1 !important;
 }
 .copy-btn.domain-btn.main-domain:hover{
-    background: #2f9be1 !important;
+    background: #2da8f9 !important;
 }
 .copy-btn.domain-btn:hover{
-    background:#2da8f9!important;
+    background:#425fa5!important;
 }
 .copy-btn.main-domain{
     padding: 0 15px;
@@ -2019,6 +2019,7 @@ input[type="checkbox"].th-checkbox{
 }
 .cs-flow-restore{
     position: absolute;
+    top: 0;
     right: 10px;
     color: gray;
 }
@@ -2059,6 +2060,7 @@ input[type="checkbox"].th-checkbox{
 }
 .cs-page-flow li.tree-li{
     padding: 0 55px;
+    position: relative;
 }
 .cs-page-flow li.tree-li:hover{
     background: rgba(45, 168, 249, 0.28);
@@ -2708,4 +2710,19 @@ input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disa
   background-color: #f5f8fd;
   border: .08333333em solid #f5f8fd;
   color: #a4aab1;
+}
+.campaign-path-box {
+  position: relative;
+}
+.campaign-path-box .lander-content, .campaign-path-box .offer-content {
+  width: 100% !important;
+}
+.campaign-path-box .offer-content {
+  padding-right: 10px;
+}
+.campaign-path-box .top-btn-list {
+  text-align: left;
+}
+.campaign-path-box .masking-loader {
+  position: absolute;
 }
