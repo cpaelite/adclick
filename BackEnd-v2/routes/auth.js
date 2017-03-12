@@ -325,7 +325,7 @@ router.get('/invitation', async function (req, res, next) {
     if (users.length) {
       //加入用户组
       if (users[0].id != userSlice[0].userId) {//排除自身
-        await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now())) ON DUPLICATE KEY UPDATE `role` = 1", [userSlice[0].groupId, users[0].id, 1], connection);
+        await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now())) ON DUPLICATE KEY UPDATE `role` = 1", [userSlice[0].groupId, users[0].id, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
       }
       res.redirect(setting.invitationredirect);
     } else {
@@ -370,13 +370,14 @@ router.get('/invitation', async function (req, res, next) {
       if (configSlice == 0) {
         throw new Error('role config error');
       }
-      await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [userSlice[0].groupId, user.userId, 1, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)], common.query("update User set emailVerified= ? where id= ?", [1, user.userId], connection));
-      await common.commit(connection);
+      await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [userSlice[0].groupId, user.userId, 1, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection), common.query("update User set emailVerified= ? where id= ?", [1, user.userId], connection)]);
+
       var expires = moment().add(200, 'days').valueOf();
       res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
       res.cookie("clientId", userSlice[0].groupId);
       res.redirect(setting.invitationredirect);
     }
+    await common.commit(connection);
 
   } catch (e) {
     next(e);
