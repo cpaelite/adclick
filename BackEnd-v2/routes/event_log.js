@@ -34,7 +34,7 @@ router.get('/api/eventlog', async function (req, res, next) {
     let connection;
 
     try {
-        req.query.user= req.subId;
+        req.query.user= req.user.id;
         let value = await common.validate(req.query, schema);
         let {
             limit,
@@ -81,7 +81,7 @@ router.get('/api/eventlog', async function (req, res, next) {
 
         sql += "  limit " + offset + "," + limit;
         connection = await common.getConnection();
-        let result = await Promise.all([query(sql, connection), query(countSql, connection)]);
+        let result = await Promise.all([common.query(sql,[], connection), common.query(countSql,[], connection)]);
         res.json({
             status: 1,
             message: 'success',
@@ -109,8 +109,8 @@ router.get('/api/members', async function (req, res, next) {
     });
     let connection;
     try {
-        req.query.userId = req.subId;
-        req.query.groupId = req.subgroupId;
+        req.query.userId = req.user.id;
+        req.query.groupId = req.user.groupId;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let results = [];
@@ -144,15 +144,6 @@ router.get('/api/members', async function (req, res, next) {
     }
 });
 
-function query(sql, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(result);
-        })
-    });
-}
+ 
 
 module.exports = router;

@@ -44,12 +44,12 @@ router.post('/api/traffics', async function (req, res, next) {
         params: Joi.string().optional().empty("")
     });
 
-    req.body.userId = req.userId
+    req.body.userId = req.parent.id
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let trafficResult = await common.insertTrafficSource(req.subId,value.userId, value, connection);
+        let trafficResult = await common.insertTrafficSource(req.user.id,value.userId, value, connection);
         delete value.userId;
         value.id = trafficResult.insertId;
 
@@ -108,7 +108,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         hash: Joi.string().required()
     });
 
-    req.body.userId = req.userId
+    req.body.userId = req.parent.id
     req.body.id = req.params.id;
     let connection;
 
@@ -116,7 +116,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
 
         let connection = await common.getConnection();
-        await common.updatetraffic(req.subId,value.userId, value, connection);
+        await common.updatetraffic(req.user.id,value.userId, value, connection);
 
         delete value.userId;
 
@@ -159,7 +159,7 @@ router.get('/api/traffics/:id', async function (req, res, next) {
         userId: Joi.number().required()
     });
     req.query.id = req.params.id;
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     let connection;
 
     try {
@@ -199,7 +199,7 @@ router.get('/api/traffics', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -248,13 +248,13 @@ router.delete('/api/traffics/:id', async function (req, res, next) {
         name: Joi.string().optional(),
         hash: Joi.string().optional()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     req.query.id = req.params.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deletetraffic(req.subId,value.id, value.userId, connection);
+        let result = await common.deletetraffic(req.user.id,value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

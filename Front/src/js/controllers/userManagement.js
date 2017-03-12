@@ -12,6 +12,8 @@
 
     $scope.initState = 'init';
 
+    $scope.userLimit = $scope.permissions.setting.userManagement.userLimit;
+
     // init load data
     var initPromises = [], prms;
 
@@ -72,7 +74,7 @@
       if(!$scope.emails) return;
       var emails = $scope.emails.split(',');
       $scope.invitationCount = $scope.invitationUserCount + emails.length;
-      if ($scope.invitationCount > $scope.plan.userLimit) {
+      if ($scope.invitationCount > $scope.userLimit) {
         $scope.errMessage = true;
         return;
       }
@@ -106,7 +108,7 @@
         targetEvent: ev,
         clickOutsideToClose: false,
         controllerAs: 'ctrl',
-        controller: ['$scope', '$mdDialog', 'toastr', userDeleteCtrl],
+        controller: ['$mdDialog', userDeleteCtrl],
         focusOnOpen: false,
         locals: {
           invitation: invitation
@@ -116,6 +118,7 @@
         Invitation.delete({
           id: invitation.id
         }, function () {
+          $scope.errMessage = false;
           $scope.pendingUsers.splice(invitation, 1);
           $scope.invitationUserCount = $scope.users.length + $scope.pendingUsers.length;
         });
@@ -124,11 +127,11 @@
 
     $scope.upgradePlan = function() {
       ChangePlan.showDialog(thePlan.id, false, function() {
-      }, {upgrade: true});
+      }, {upgrade: true, level: thePlan.level});
     };
   }
 
-  function userDeleteCtrl($scope, $mdDialog) {
+  function userDeleteCtrl($mdDialog) {
     this.cancel = $mdDialog.cancel;
     this.ok = function () {
       $mdDialog.hide();

@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('SigninCtrl', [
-      '$scope', '$auth', '$state', 'toastr', '$cookies', 'Profile',
+      '$rootScope', '$scope', '$auth', '$q', '$state', 'toastr', '$cookies', 'Profile', 'Permission',
       SigninCtrl
     ]);
 
-  function SigninCtrl($scope, $auth, $state, toastr, $cookies, Profile) {
+  function SigninCtrl($rootScope, $scope, $auth, $q, $state, toastr, $cookies, Profile, Permission) {
     $scope.app.subtitle = 'Log in';
 
     var token = $cookies.get('token');
@@ -29,19 +29,41 @@
         .then(function(oData) {
           $cookies.put('token', oData.data.token);
           toastr.clear();
-          toastr.success('Login success!');
-          $scope.$emit('event:auth-loginSuccess');
-          Profile.get(null, function (profile) {
-            $scope.loginStatus = false;
-            if (!profile.status) {
-              return;
+          var initPromises = [], prms;
+
+          // 用户配置信息
+          var theProfile;
+          prms = Profile.get(null, function (profile) {
+            if (profile.status) {
+              theProfile = profile.data;
             }
-            if (profile.data.homescreen && profile.data.homescreen == "dashboard") {
+          }).$promise;
+          initPromises.push(prms);
+
+          // 用户权限信息
+          var thePermission;
+          prms = Permission.get(null, function (permission) {
+            if (permission.status) {
+              thePermission = permission.data;
+            }
+          }).$promise;
+          initPromises.push(prms);
+
+          function initSucces() {
+            $scope.loginStatus = false;
+            if (thePermission) {
+              $rootScope.permissions = thePermission;
+            }
+            if (theProfile && theProfile.homescreen && theProfile.homescreen == "dashboard") {
               $scope.$state.go('app.dashboard');
             } else {
               $scope.$state.go('app.report.campaign');
             }
-          });
+          }
+
+          $q.all(initPromises).then(initSucces);
+          toastr.success('Login success!');
+          $scope.$emit('event:auth-loginSuccess');
         })
         .catch(function(response) {
           $scope.loginStatus = false;

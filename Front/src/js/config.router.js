@@ -2,12 +2,28 @@
   'use strict';
 
   angular.module('app')
-    .run(['$rootScope', '$state', '$stateParams', '$auth', run])
-    .config(['$stateProvider', '$urlRouterProvider', config]);
+  .run(['$rootScope', '$state', '$stateParams', '$auth', '$urlRouter', 'Permission', run])
+  .config(['$stateProvider', '$urlRouterProvider', config]);
 
-  function run($rootScope, $state, $stateParams, $auth) {
+  var $cookies;
+  angular.injector(['ngCookies']).invoke(['$cookies', function(_$cookies_) {
+    $cookies = _$cookies_;
+  }]);
+
+  function run($rootScope, $state, $stateParams, $auth, $urlRouter, Permission) {
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
+
+    if($cookies.get('token')) {
+      Permission.get(null, function(res) {
+        if (!res.status) {
+          return;
+        }
+        $rootScope.permissions = res.data;
+        $urlRouter.sync();
+        $urlRouter.listen();
+      });
+    }
 
     $rootScope.$on('$stateChangeStart', function (ev, next) {
       var current_name = $state.current.name;
@@ -33,7 +49,7 @@
 
       if (next.data.needRole && next.data.needRole.indexOf($rootScope.currentUser.role) == -1) {
         if (!current_name)
-          $state.go('app.offernetwork');
+          $state.go('app.dashboard');
         $rootScope.$broadcast('event:auth-forbidden');
         ev.preventDefault();
         return;
@@ -69,7 +85,7 @@
         abstract: true,
         url: '/app',
         templateUrl: "tpl/app.html",
-        data: { needAuth: true }
+        data: {}
       })
       .state('app.dashboard', {
         url: '/dashboard',
@@ -161,7 +177,7 @@
         abstract: true,
         url: '/setApp',
         templateUrl: "tpl/setApp.html",
-        data: { needAuth: true }
+        data: {}
       })
       .state('setApp.profile', {
         url: '/profile',
@@ -223,5 +239,9 @@
         controller: 'ConversionUploadCtrl',
         data: {}
       });
+
+      if($cookies.get('token')) {
+        $urlRouterProvider.deferIntercept();
+      }
   }
 })();

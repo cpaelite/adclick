@@ -31,7 +31,7 @@ router.get('/api/conversions', async function (req, res, next) {
     let connection;
 
     try {
-        req.query.user = req.userId;
+        req.query.user = req.parent.id;
         let value = await common.validate(req.query, schema);
         let {
             limit,
@@ -73,7 +73,7 @@ router.get('/api/conversions', async function (req, res, next) {
 
         sql += "order by "+ order +" " + dir +"  limit " + offset + "," + limit ;
         connection = await common.getConnection();
-        let result = await Promise.all([query(sql, connection), query(countSql, connection)]);
+        let result = await Promise.all([common.query(sql,[], connection), common.query(countSql,[], connection)]);
         res.json({
             status: 1,
             message: 'success',
@@ -131,10 +131,9 @@ router.post('/api/conversions', async function (req, res, next) {
         idText: Joi.string().required(),
     });
     let connection;
-
     try {
-        req.body.user = req.subId;
-        req.body.idText = req.subidText;
+        req.body.user = req.user.id;
+        req.body.idText = req.user.idText;
         let value = await common.validate(req.body, schema);
         let defaultDomain;
         for (let index = 0; index < setting.domains.length; index++) {
@@ -167,15 +166,5 @@ router.post('/api/conversions', async function (req, res, next) {
 
 
 
-function query(sql, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(result);
-        })
-    });
-}
-
+ 
 module.exports = router;

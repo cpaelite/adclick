@@ -38,7 +38,7 @@ router.post('/api/landers', async function (req, res, next) {
         tags: Joi.array().optional()
     });
 
-    req.body.userId = req.userId
+    req.body.userId = req.parent.id
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -48,7 +48,7 @@ router.post('/api/landers', async function (req, res, next) {
             throw new Error("Lander name exists");
         }
 
-        let landerResult = await common.insertLander(req.subId,value.userId, value, connection);
+        let landerResult = await common.insertLander(req.user.id,value.userId, value, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 2, connection);
@@ -104,7 +104,7 @@ router.post('/api/landers/:id', async function (req, res, next) {
         hash: Joi.string().optional()
     });
 
-    req.body.userId = req.userId
+    req.body.userId = req.parent.id
     req.body.id = req.params.id;
     let connection;
     try {
@@ -114,7 +114,7 @@ router.post('/api/landers/:id', async function (req, res, next) {
         if (await common.checkNameExists(value.userId, value.id, value.name, 2, connection)) {
             throw new Error("Lander name exists");
         }
-        await common.updateLander(req.subId,value.userId, value, connection);
+        await common.updateLander(req.user.id,value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 2, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
@@ -163,7 +163,7 @@ router.get('/api/landers/:id', async function (req, res, next) {
         userId: Joi.number().required()
     });
     req.query.id = req.params.id;
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -203,7 +203,7 @@ router.get('/api/landers/:id', async function (req, res, next) {
  */
 router.get('/api/landers', function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name, country from Lander where userId = " + req.userId;
+    var sql = "select id, name, country from Lander where userId = " + req.parent.id;
 
     if (req.query.country) {
         sql += " and `country`=" + req.query.country;
@@ -242,7 +242,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
         name: Joi.string().optional(),
         hash: Joi.string().optional()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     req.query.id = req.params.id;
     let connection;
     try {
@@ -275,7 +275,7 @@ router.delete('/api/landers/:id', async function (req, res, next) {
             return;
         }
 
-        let result = await common.deleteLander(req.subId,value.id, value.userId, connection);
+        let result = await common.deleteLander(req.user.id,value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

@@ -5,7 +5,7 @@ var common = require('./common');
 var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
 var util = require('../util');
-
+var saveOrUpdateFlow = require('./flow').saveOrUpdateFlow;
 
 
 
@@ -73,13 +73,13 @@ router.post('/api/campaigns', async function (req, res, next) {
         postbackUrl: Joi.string().optional().empty(""),
         pixelRedirectUrl: Joi.string().optional().empty(""),
     });
-    req.body.userId = req.userId;
-    req.body.idText = req.idText;
     let connection;
     try {
+        req.body.userId = req.parent.id;
+        req.body.idText = req.parent.idText;
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data = await start(req.subId, value, connection);
+        let data = await start(req.user.id, value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -138,7 +138,7 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         redirectMode: Joi.number().required(),
         targetType: Joi.number().required(),
         status: Joi.number().required(),
-        flow: Joi.object().required().keys({
+        flow: Joi.object().optional().keys({
             rules: Joi.array(),
             hash: Joi.string(),
             type: Joi.number(),
@@ -161,14 +161,14 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         pixelRedirectUrl: Joi.string().optional().empty("")
 
     });
-    req.body.userId = req.userId;
-    req.body.id = req.params.id;
-    req.body.idText = req.idText;
     let connection;
     try {
+        req.body.userId = req.parent.id;
+        req.body.id = req.params.id;
+        req.body.idText = req.parent.idText;
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let data = await start(req.subId, value, connection);
+        let data = await start(req.user.id, value, connection);
         res.json({
             status: 1,
             message: 'success',
@@ -182,15 +182,38 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         }
     }
 });
-
-
 const start = async (subId, value, connection) => {
+    let targetFlowId;
+    //新建campaign path 
+    if (value.flow && value.flow.type == 0) {
+        let flowObject = value.flow;
+        flowObject.userId = value.userId;
+        flowObject.idText = value.idText;
+        let flowValue = await saveOrUpdateFlow(subId, flowObject, connection);
+        targetFlowId = flowValue.id;
+    }
+    if (targetFlowId) {
+        value.targetFlowId = targetFlowId;
+    }
 
+    await saveOrUpdateCampaign(subId, value, connection)
+
+    if (value.flow && value.flow.userId) {
+        delete value.flow.userId
+    }
+    if (value.flow && value.flow.idText) {
+        delete value.flow.idText;
+    }
+    delete value.userId;
+    delete value.idText;
+    return value;
+}
+
+const saveOrUpdateCampaign = async (subId, value, connection) => {
     //check campaign name exists
     if (await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, 1, connection)) {
         throw new Error("Campaign name exists");
     }
-
     //Campaign
     let campResult;
     if (value.id) {
@@ -220,7 +243,6 @@ const start = async (subId, value, connection) => {
         }
         value.url = setting.newbidder.httpPix + defaultDomain + "/" + value.hash;
         value.impPixelUrl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.impRouter + "/" + value.hash;
-
     }
 
     let campaignId = value.id ? value.id : (campResult ? (campResult.insertId ? campResult.insertId : 0) : 0);
@@ -230,11 +252,8 @@ const start = async (subId, value, connection) => {
     }
     //campaignId
     value.id = campaignId;
-
-
     //删除所有tags
     await common.updateTags(value.userId, campaignId, 1, connection);
-
     //campain Tags
     if (value.tags && value.tags.length > 0) {
         if (value.tags && value.tags.length > 0) {
@@ -244,10 +263,8 @@ const start = async (subId, value, connection) => {
         }
     }
 
+    return true;
 
-    delete value.userId;
-    delete value.idText;
-    return value;
 }
 
 
@@ -258,17 +275,16 @@ const start = async (subId, value, connection) => {
  * @apiGroup campaign
  */
 router.get('/api/campaigns/:id', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        id: Joi.number().required(),
-        userId: Joi.number().required(),
-        idText: Joi.string().required()
-    });
-    req.query.userId = req.userId;
-    req.query.id = req.params.id;
-    req.query.idText = req.idText;
     let connection;
-
     try {
+        var schema = Joi.object().keys({
+            id: Joi.number().required(),
+            userId: Joi.number().required(),
+            idText: Joi.string().required()
+        });
+        req.query.userId = req.parent.id;
+        req.query.id = req.params.id;
+        req.query.idText = req.parent.idText;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = await common.getCampaign(value.id, value.userId, value.idText, connection);
@@ -299,19 +315,20 @@ router.get('/api/campaigns/:id', async function (req, res, next) {
  * 
  */
 router.delete('/api/campaigns/:id', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        id: Joi.number().required(),
-        userId: Joi.number().required(),
-        hash: Joi.string().optional(),
-        name: Joi.string().optional()
-    });
-    req.query.userId = req.userId;
-    req.query.id = req.params.id;
+
     let connection;
     try {
+        var schema = Joi.object().keys({
+            id: Joi.number().required(),
+            userId: Joi.number().required(),
+            hash: Joi.string().optional(),
+            name: Joi.string().optional()
+        });
+        req.query.userId = req.parent.id;
+        req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(req.subId, value.id, value.userId, connection);
+        let result = await common.deleteCampaign(req.user.id, value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

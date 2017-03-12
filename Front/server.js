@@ -197,6 +197,87 @@ app.get('/api/tags', function (req, res) {
   res.send(result);
 });
 
+/**
+ * @apiName 获取用户权限信息
+ *
+ */
+app.get('/api/permission', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      setting: {
+        profile: {
+          show: true
+        },
+        referralProgram: {
+          show: true
+        },
+        subscriptions: {
+          show: true
+        },
+        domain: {
+          show: true,
+          update: true,
+          domainLimit: 5
+        },
+        setup: {
+          show: true
+        },
+        userManagement: {
+          show: true,
+          userLimit: 3
+        },
+        blackList: {
+          show: true
+        },
+        invoice: {
+          show: true
+        },
+        eventLog: {
+          show: true,
+          selectUser: false
+        },
+        conversionUpload: {
+          show: true
+        }
+      },
+      report: {
+        retentionLimit: 3,
+        dashboard: {
+          show: true
+        },
+        campaign: {
+          show: true
+        },
+        flow: {
+          show: true
+        },
+        lander: {
+          show: true
+        },
+        offer: {
+          show: true
+        },
+        trafficSource: {
+          show: true
+        },
+        affiliateNetwork: {
+          show: true
+        },
+        conversions: {
+          show: true
+        },
+        tsReport: {
+          show: false,
+          tsReportLimit: 3
+        }
+      },
+    }
+  };
+  //delayResponse(res, result);
+  res.send(result);
+});
 
 /**
  * @apiName 获取用户配置
@@ -1489,7 +1570,7 @@ app.get('/api/landers', function (req, res) {
     "id": 47,
     "name": "Lander1",
     "country": "us"
-  }, {"id": 49, "name": "Lander2", "country": "cn"}, {"id": 50, "name": "Lander3", "country": "us"}, {
+  }, {"id": 49, "name": "china - Lander2", "country": "CHN"}, {"id": 50, "name": "Lander3", "country": "us"}, {
     "id": 54,
     "name": "Lander4",
     "country": "ca"

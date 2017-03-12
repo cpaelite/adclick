@@ -24,7 +24,7 @@ import {
 //from   to tz  sort  direction columns=[]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 
 router.get('/api/report', async function (req, res, next) {
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   try {
     let result;
     result = await campaignReport(req.query);

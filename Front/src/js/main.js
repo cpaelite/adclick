@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Preference, Country, $localStorage, Group, $cookies, toastr) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -85,10 +85,10 @@
         $rootScope.currentUser = $localStorage.currentUser;
 
         // load user preferences
-        Preference.get(null, function (res) {
+        Preference.get(null, function(res) {
           if (!res.status)
             return;
-          $scope.preferences = res.data;
+          $scope.preferences = JSON.parse(res.data);
         });
 
         // 国家信息

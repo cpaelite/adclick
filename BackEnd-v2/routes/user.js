@@ -9,7 +9,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
- 
+const _ = require('lodash');
 
 /**
  * @api {post} /api/preferences  编辑用户配置
@@ -31,7 +31,7 @@ router.post('/api/preferences', function (req, res, next) {
         userId: Joi.number().required(),
         json: Joi.object().required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.parent.id;
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -86,7 +86,7 @@ router.get('/api/tags', function (req, res, next) {
         userId: Joi.number().required(),
         type: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -149,7 +149,7 @@ router.post('/api/names', async function (req, res, next) {
         type: Joi.number().required(),
         id: Joi.number().optional()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -194,7 +194,7 @@ router.get('/api/postbackurl', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.string().required()
     });
-    req.query.userId = req.idText;
+    req.query.userId = req.parent.idText;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -218,6 +218,62 @@ router.get('/api/postbackurl', function (req, res, next) {
         }
     });
 });
+
+
+
+router.get('/api/permission', async function (req, res, next) {
+    let connection;
+    try {
+        connection = await common.getConnection();
+        let f = await common.query("select `functions` from UserFunctions where `userId`= ?", [req.parent.id], connection);
+        let privileges = JSON.parse(req.parent.privilege);
+        //初始化
+        if (_.has(privileges, "setting.domain")) {
+            privileges.setting.domain.domainLimit = 0;
+        }
+        if (_.has(privileges, "setting.userManagement")) {
+            privileges.setting.userManagement.userLimit = 0;
+        }
+        if (_.has(privileges, "report.tsReport")) {
+            privileges.report.tsReport.tsReportLimit = 0;
+        }
+        if (_.has(privileges, "report")) {
+            privileges.report.retentionLimit = 0;
+        }
+        if (f.length && req.parent.privilege) {
+            let limits = JSON.parse(f[0].functions);
+            if (_.has(limits, 'domainLimit') && _.has(privileges, "setting.domain")) {
+                privileges.setting.domain.domainLimit = limits.domainLimit;
+            }
+            if (_.has(limits, 'userLimit') && _.has(privileges, "setting.userManagement")) {
+                privileges.setting.userManagement.userLimit = limits.userLimit;
+            }
+            if (_.has(limits, 'tsReportLimit') && _.has(privileges, "report.tsReport")) {
+                privileges.report.tsReport.tsReportLimit = limits.tsReportLimit;
+            }
+            if (_.has(limits, 'retentionLimit') && _.has(privileges, "report")) {
+                privileges.report.retentionLimit = limits.retentionLimit;
+            }
+            return res.json({
+                status: 1,
+                message: 'success',
+                data: privileges
+            })
+        } else {
+            return res.json({
+                status: 0,
+                message: 'fail',
+                data: {}
+            })
+        }
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+})
 
 
 

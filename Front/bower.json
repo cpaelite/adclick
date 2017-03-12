@@ -42,7 +42,8 @@
     "angular-clipboard": "^1.5.0",
     "angular-selectize2": "^3.0.1",
     "angular-awesome-slider": "^2.4.4",
-    "angular-momentjs": "^0.2.2"
+    "angular-momentjs": "^0.2.2",
+    "angular-permission": "^5.2.1"
   },
   "devDependencies": {},
   "resolutions": {

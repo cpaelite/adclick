@@ -10,8 +10,8 @@
 	</div>
 
 	<div class="user-mangement-content" ng-show="initState=='success'">
-		<div ng-show="invitationUserCount==plan.userLimit">
-			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
+		<div ng-show="invitationUserCount==userLimit">
+			<span>Your plan has limitation of {{userLimit}} user invitations</span>
 			<span>
 				You have reached the limit of users for your chosen plan.<br>
 				To have additional users, you can upgrade to higher plan.
@@ -20,10 +20,10 @@
 				<md-button class="md-raised copy-btn" ng-click="upgradePlan()">Upgrade plan</md-button>
 			</div>
 		</div>
-		<div ng-show="invitationUserCount<plan.userLimit">
-			<span>Your plan has limitation of {{plan.userLimit}} user invitations</span>
-			<span class="small-word" ng-if="!errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
-			<span style="color:red" ng-if="errMessage">You can invite {{plan.userLimit-invitationUserCount}} more users to your account</span>
+		<div ng-show="invitationUserCount<userLimit">
+			<span>Your plan has limitation of {{userLimit}} user invitations</span>
+			<span class="small-word" ng-if="!errMessage">You can invite {{userLimit-invitationUserCount}} more users to your account</span>
+			<span style="color:red" ng-if="errMessage">You can invite {{userLimit-invitationUserCount}} more users to your account</span>
 			<form name="emailForm">
 			  <div class="form-group clearfix">
 			    <label for="exampleInputEmail2">Invite users:</label>
