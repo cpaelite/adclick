@@ -88,7 +88,7 @@
         Preference.get(null, function(res) {
           if (!res.status)
             return;
-          $scope.preferences = JSON.parse(res.data);
+          $scope.preferences = res.data;
         });
 
         // 国家信息
