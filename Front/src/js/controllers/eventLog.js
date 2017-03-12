@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('EventLogCtrl', [
-      '$scope', '$mdDialog', 'Profile', 'Member', 'EventLog',
+      '$scope', '$mdDialog', 'Profile', 'Member', 'EventLog', '$q',
       EventLogCtrl
     ]);
 
-  function EventLogCtrl($scope, $mdDialog, Profile, Member, EventLog) {
+  function EventLogCtrl($scope, $mdDialog, Profile, Member, EventLog, $q) {
     $scope.app.subtitle = "EventLog";
     $scope.hours = [];
     for (var i = 0; i < 24; ++i) {
@@ -17,13 +17,6 @@
         $scope.hours.push('' + i + ':00');
       }
     }
-    $scope.filter = {
-      userId: "ALL",
-      actionType: 0,
-      entityType: 0,
-      datetype: "1"
-    };
-    getDateRange($scope.filter.datetype);
     $scope.fromTime = "00:00";
     $scope.toTime = "00:00";
 
@@ -36,23 +29,46 @@
 
     $scope.query = {
       page: 1,
-      limit: 50,
-      from: $scope.fromDate + "T" + $scope.fromTime,
-      to: $scope.toDate + "T" + $scope.toTime,
-      userId: $scope.filter.userId,
-      actionType: $scope.filter.actionType,
-      entityType: $scope.filter.entityType
+      limit: 50
     };
 
-    var profilePromise = Profile.get(null).$promise;
-    profilePromise.then(function (profile) {
-      $scope.query.tz = profile.data.timezone;
-      $scope.getList();
-    });
+    var initPromise = [], proms;
 
-    Member.get(null, function (members) {
-      $scope.members = members.data.members;
-    });
+    var theProfile;
+    proms = Profile.get(null, function (profile) {
+      theProfile = profile.data;
+    }).$promise;
+    initPromise.push(proms);
+
+    var theMember;
+    proms = Member.get(null, function (members) {
+      theMember = members.data.members;
+    }).$promise;
+    initPromise.push(proms);
+
+    function initSuccess() {
+      if (theProfile) {
+        $scope.query.tz = theProfile.timezone;
+      }
+
+      if (theMember.length > 0 && theMember[0].idText) {
+        $scope.filter = {
+          userId: theMember[0].idText,
+          actionType: 0,
+          entityType: 0,
+          datetype: "1"
+        };
+      } else {
+        $scope.filter = {
+          userId: 'ALL',
+          actionType: 0,
+          entityType: 0,
+          datetype: "1"
+        };
+      }
+
+    }
+    $q.all(initPromise).then(initSuccess);
 
     function success(items) {
       $scope.items = items.data;
@@ -73,9 +89,14 @@
         $scope.query.page = 1;
       }
 
-      getDateRange($scope.filter.datetype);
-      $scope.query.from = $scope.fromDate + "T" + $scope.fromTime;
-      $scope.query.to = $scope.toDate + "T" + $scope.toTime;
+      if ($scope.filter.datetype == '0') {
+        $scope.query.from = moment($scope.filterDate.fromDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.fromTime;
+        $scope.query.to = moment($scope.filterDate.toDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.toTime;
+      } else {
+        getDateRange($scope.filter.datetype);
+        $scope.query.from = $scope.fromDate + "T" + $scope.fromTime;
+        $scope.query.to = $scope.toDate + "T" + $scope.toTime;
+      }
       $scope.query.userId = $scope.filter.userId;
       $scope.query.actionType = $scope.filter.actionType;
       $scope.query.entityType = $scope.filter.entityType;
@@ -89,12 +110,8 @@
       } else {
         $scope.query.page = 1;
       }
-
       $scope.query.from = moment($scope.filterDate.fromDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.fromTime;
       $scope.query.to = moment($scope.filterDate.toDate).format('YYYY-MM-DD') + "T" + $scope.filterDate.toTime;
-      $scope.query.userId = $scope.filter.userId;
-      $scope.query.actionType = $scope.filter.actionType;
-      $scope.query.entityType = $scope.filter.entityType;
 
       $scope.getList();
     }, true);

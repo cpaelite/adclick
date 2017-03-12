@@ -2,12 +2,17 @@ angular.module('app').factory('Permissions', ['$rootScope', function($rootScope)
   return {
     hasPermission: function(permission) {
       var permissions = $rootScope.permissions;
-      var arrayPermission = permission.split('.');
-      if (permissions[arrayPermission[0]][arrayPermission[1]]) {
-        return permissions[arrayPermission[0]][arrayPermission[1]][arrayPermission[2]];
-      } else {
+      if (!permissions) {
         return false;
       }
+      var arrayPermission = permission.split('.');
+      if (!permissions[arrayPermission[0]]) {
+        return false;
+      }
+      if (!permissions[arrayPermission[0]][arrayPermission[1]]) {
+        return false;
+      }
+      return permissions[arrayPermission[0]][arrayPermission[1]][arrayPermission[2]] ? permissions[arrayPermission[0]][arrayPermission[1]][arrayPermission[2]] : false;
     }
   };
 }]);

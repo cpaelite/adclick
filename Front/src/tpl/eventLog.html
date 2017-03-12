@@ -5,7 +5,7 @@
 </h1>
 <div class="form-column bot-blacklist">
   <div class="bot-blacklist-content event-log clearfix">
-    <div class="form-group bot-select">
+    <div class="form-group bot-select" has-permission="setting.eventLog.selectUser" operation="show">
       <md-select class="cs-subform-select" ng-model="filter.userId">
         <md-option value="ALL">All users</md-option>
         <md-option ng-repeat="member in members" value="{{member.idText}}">{{member.email}}</md-option>
@@ -105,7 +105,7 @@
       </table>
     </div>
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
-    md-total="{{items.totalRows}}" md-on-paginate="getList" md-page-select></md-table-pagination>
+    md-total="{{items.totalRows}}" md-page-select></md-table-pagination>
   </div>
 
 </div>
