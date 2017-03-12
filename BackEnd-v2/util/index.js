@@ -8,15 +8,15 @@ var _ = require('lodash');
 
 exports.checkToken = function () {
   return async function (req, res, next) {
-    var token = req.headers['authorization'];
-    if (!token) {
-      let err = new Error('need access_token');
-      err.status = 401;
-      throw err;
-    }
-    token = token.split(' ')[1];
     let connection;
     try {
+      var token = req.headers['authorization'];
+      if (!token) {
+        let err = new Error('need access_token');
+        err.status = 401;
+        throw err;
+      }
+      token = token.split(' ')[1];
       var decode = jwt.decode(token, setting['jwtTokenSrcret']);
       if (decode.exp <= Date.now()) {
         let err = new Error('access token has expired');
@@ -40,9 +40,9 @@ exports.checkToken = function () {
         lastname: user[0].lastname,
         email: user[0].email,
         campanyname: user[0].campanyName,
-        privilege:user[0].privilege
+        privilege: user[0].privilege
       }
-      
+
       req.owner = true;
       next();
     } catch (e) {
@@ -96,7 +96,7 @@ exports.resetUserByClientId = function () {
         err.status = 401;
         throw err;
       }
-      let user_privilege = _.find(userGroupSlice,{groupId: clientId}).privilege;
+      let user_privilege = _.find(userGroupSlice, { groupId: clientId }).privilege;
       //获取client 管理员信息
       let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
       if (_.isEmpty(userGroupObject)) {
@@ -113,7 +113,7 @@ exports.resetUserByClientId = function () {
         lastname: userGroupObject.lastname,
         email: userGroupObject.email,
         campanyname: userGroupObject.campanyName,
-        privilege:user_privilege
+        privilege: user_privilege
       }
       req.owner = false;
       next();
