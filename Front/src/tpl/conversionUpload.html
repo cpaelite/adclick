@@ -11,7 +11,7 @@
       <span ng-show="form.conversionContent.$error.required">conversionContent is required.</span>
       <span ng-show="form.conversionContent.$error.validate">conversionContent is invalid.</span>
     </span>
-    <span style="color: red" ng-show="errorMessage">{{errorMessage}}</span>
+    <span style="color: red" ng-show="errorMessage" ng-repeat="err in errorMessage">{{'Error in line ' + err.I + ': ' + err.E}}<br></span>
   </form>
   <div class="profile-form-footer clearfix">
     <md-button class="save-btn" ng-click="conversionSave()" ng-disabled="conversionStatus">

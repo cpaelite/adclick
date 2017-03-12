@@ -24,7 +24,8 @@
     'selectize',
     'angular-clipboard',
     'angularAwesomeSlider',
-    'angular-momentjs'
+    'angular-momentjs',
+    'permission',
   ]);
 
 })();

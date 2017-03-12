@@ -2,12 +2,28 @@
   'use strict';
 
   angular.module('app')
-    .run(['$rootScope', '$state', '$stateParams', '$auth', run])
-    .config(['$stateProvider', '$urlRouterProvider', config]);
+  .run(['$rootScope', '$state', '$stateParams', '$auth', '$urlRouter', 'Permission', run])
+  .config(['$stateProvider', '$urlRouterProvider', config]);
 
-  function run($rootScope, $state, $stateParams, $auth) {
+  var $cookies;
+  angular.injector(['ngCookies']).invoke(['$cookies', function(_$cookies_) {
+    $cookies = _$cookies_;
+  }]);
+
+  function run($rootScope, $state, $stateParams, $auth, $urlRouter, Permission) {
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
+
+    if($cookies.get('token')) {
+      Permission.get(null, function(res) {
+        if (!res.status) {
+          return;
+        }
+        $rootScope.permissions = res.data;
+        $urlRouter.sync();
+        $urlRouter.listen();
+      });
+    }
 
     $rootScope.$on('$stateChangeStart', function (ev, next) {
       var current_name = $state.current.name;
@@ -33,7 +49,7 @@
 
       if (next.data.needRole && next.data.needRole.indexOf($rootScope.currentUser.role) == -1) {
         if (!current_name)
-          $state.go('app.offernetwork');
+          $state.go('app.dashboard');
         $rootScope.$broadcast('event:auth-forbidden');
         ev.preventDefault();
         return;
@@ -69,7 +85,7 @@
         abstract: true,
         url: '/app',
         templateUrl: "tpl/app.html",
-        data: { needAuth: true }
+        data: {}
       })
       .state('app.dashboard', {
         url: '/dashboard',
@@ -87,6 +103,37 @@
       .state('app.report.lander',   configReport('lander'))
       .state('app.report.traffic',  configReport('traffic'))
       .state('app.report.affiliate', configReport('affiliate'))
+
+      .state('app.report.brand', configReport('brand'))
+      .state('app.report.browserVersion', configReport('browserversion'))
+      .state('app.report.browser', configReport('browser'))
+      .state('app.report.city', configReport('city'))
+      .state('app.report.connectionType', configReport('connectiontype'))
+      .state('app.report.country', configReport('country'))
+      .state('app.report.day', configReport('day'))
+      .state('app.report.deviceType', configReport('devicetype'))
+      .state('app.report.ip', configReport('ip'))
+      .state('app.report.isp', configReport('isp'))
+      .state('app.report.language', configReport('language'))
+      .state('app.report.mobileCarrier', configReport('mobilecarrier'))
+      .state('app.report.model', configReport('model'))
+      .state('app.report.os', configReport('os'))
+      .state('app.report.osVersion', configReport('oSVersion'))
+      .state('app.report.domain', configReport('domain'))
+      .state('app.report.region', configReport('region'))
+
+      .state('app.report.tsWebsiteId', configReport('tsWebsiteId'))
+      .state('app.report.v1', configReport('v1'))
+      .state('app.report.v2', configReport('v2'))
+      .state('app.report.v3', configReport('v3'))
+      .state('app.report.v4', configReport('v4'))
+      .state('app.report.v5', configReport('v5'))
+      .state('app.report.v6', configReport('v6'))
+      .state('app.report.v7', configReport('v7'))
+      .state('app.report.v8', configReport('v8'))
+      .state('app.report.v9', configReport('v9'))
+      .state('app.report.v10', configReport('v10'))
+
       .state('app.report.conversion', {
         url: '/conversion',
         templateUrl: 'tpl/conversion.html',
@@ -130,7 +177,7 @@
         abstract: true,
         url: '/setApp',
         templateUrl: "tpl/setApp.html",
-        data: { needAuth: true }
+        data: {}
       })
       .state('setApp.profile', {
         url: '/profile',
@@ -192,5 +239,9 @@
         controller: 'ConversionUploadCtrl',
         data: {}
       });
+
+      if($cookies.get('token')) {
+        $urlRouterProvider.deferIntercept();
+      }
   }
 })();

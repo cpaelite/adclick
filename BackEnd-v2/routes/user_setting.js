@@ -51,7 +51,7 @@ router.post('/api/profile', async function (req, res, next) {
         timezone: Joi.string().required(),
         homescreen: Joi.string().required()
     });
-    req.body.userId = req.subId;
+    req.body.userId = req.user.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -126,7 +126,7 @@ router.post('/api/password', async function (req, res, next) {
         oldpassword: Joi.string().required().trim(),
         newpassword: Joi.string().required().trim()
     });
-    req.body.userId = req.subId;
+    req.body.userId = req.user.id;
     let connection;
 
     try {
@@ -193,7 +193,7 @@ router.post('/api/email', async function (req, res, next) {
         email: Joi.string().required(),
         password: Joi.string().required()
     });
-    req.body.userId = req.subId;
+    req.body.userId = req.user.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -274,7 +274,7 @@ router.get('/api/referrals', async function (req, res, next) {
         limit: Joi.number().required().min(1),
         order: Joi.string().required()
     });
-    req.query.userId = req.subId;
+    req.query.userId = req.user.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
@@ -365,12 +365,15 @@ left join User user on user.id= ref.referredUserId  where mis.createdAt><%=time%
  *
  */
 router.get('/api/domains', async function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.query.userId = req.userId;
+
     let connection;
     try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            idText: Joi.string().required()
+        });
+        req.query.userId = req.parent.id;
+        req.query.idText = req.parent.idText;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let result = {
@@ -446,7 +449,7 @@ router.post('/api/domains', async function (req, res, next) {
             main: Joi.boolean().required()
         }).required()
     });
-    req.body.userId = req.subId;
+    req.body.userId = req.user.id;
     let connection;
     try {
         let insertData = [];
@@ -523,8 +526,8 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
         idText: Joi.string().required(),
         address: Joi.string().required()
     });
-    req.query.userId = req.subId;
-    req.query.idText = req.subidText;
+    req.query.userId = req.user.id;
+    req.query.idText = req.user.idText;
     try {
         let cnames = [];
         let value = await common.validate(req.query, schema);
@@ -532,6 +535,8 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
             return new Promise(function (resolve, reject) {
                 dns.resolveCname(address, function (err, result) {
                     if (err) {
+                        delete err.code;
+                        err.status = 200;
                         reject(err);
                     }
                     resolve(result);
@@ -648,8 +653,8 @@ router.post('/api/blacklist', async function (req, res, next) {
             userAgentRules: Joi.array().required()
         })
     });
-    req.body.userId = req.subId;
-    req.body.idText = req.subidText;
+    req.body.userId = req.user.id;
+    req.body.idText = req.user.idText;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -684,8 +689,8 @@ router.get('/api/blacklist', async function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required()
     });
-    req.body.userId = req.userId;
-    req.body.idText = req.idText;
+    req.body.userId = req.parent.id;
+    req.body.idText = req.parent.idText;
     let connection;
     try {
         let responseData = {
@@ -762,9 +767,9 @@ router.post('/api/invitation', async function (req, res, next) {
     let connection;
     let beginTransaction = false;
     try {
-        req.body.userId = req.subId;
-        req.body.idText = req.subidText;
-        req.body.groupId = req.subgroupId;
+        req.body.userId = req.user.id;
+        req.body.idText = req.user.idText;
+        req.body.groupId = req.user.groupId;
         let sendContext = [];
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
@@ -806,8 +811,8 @@ router.post('/api/invitation', async function (req, res, next) {
         for (let i = 0; i < sendContext.length; i++) {
             (function (context) {
                 tpl.html = htmlTpl(({
-                    name: req.firstname,
-                    companyname: req.campanyname ? req.campanyname : req.firstname,
+                    name: req.parent.firstname,
+                    companyname: req.user.campanyname ? req.user.campanyname : req.parent.firstname,
                     href: setting.invitationRouter + "?code=" + context.code
                 }));
                 emailCtrl.sendMail([context.email], tpl);
@@ -878,9 +883,9 @@ router.get('/api/invitation', async function (req, res, next) {
     let connection;
 
     try {
-        req.query.userId = req.subId;
-        req.query.idText = req.subidText;
-        req.query.groupId = req.subgroupId;
+        req.query.userId = req.user.id;
+        req.query.idText = req.user.idText;
+        req.query.groupId = req.user.groupId;
 
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
@@ -924,8 +929,8 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
             idText: Joi.string().required(),
             id: Joi.number().required()
         });
-        req.query.userId = req.subId;
-        req.query.idText = req.subidText;
+        req.query.userId = req.user.id;
+        req.query.idText = req.user.idText;
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
@@ -967,35 +972,53 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
  *
  */
 
-router.get('/api/setup', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.string().required()
-    });
-    req.query.userId = req.idText;
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        try {
-            let defaultDomain;
+router.get('/api/setup', async function (req, res, next) {
+
+    let connection;
+    try {
+        var schema = Joi.object().keys({
+            userId: Joi.string().required(),
+            id: Joi.number().required()
+        });
+        req.query.userId = req.parent.idText;
+        req.query.id = req.parent.id;
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let domainResult = await common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.id], connection);
+
+        let defaultDomain;
+        //如果自己定义了main domain 优先
+        if (domainResult.length) {
+            if (domainResult[0].customize == 1) {
+                defaultDomain = domainResult[0].domain;
+            } else {
+                defaultDomain = value.userId + "." + domainResult[0].domain;
+            }
+        } else {
+            //默认使用系统配置
             for (let index = 0; index < setting.domains.length; index++) {
                 if (setting.domains[index].postBackDomain) {
-                    defaultDomain = setting.domains[index].address;
+                    defaultDomain = value.userId + "." + setting.domains[index].address;
                 }
             }
-            return res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    clickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.clickRouter,
-                    mutiClickUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.mutiClickRouter,
-                    postBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
-                }
-            });
-        } catch (e) {
-            next(e);
         }
-    });
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                clickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.clickRouter,
+                mutiClickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.mutiClickRouter,
+                postBackUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+            }
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
 });
 
 /**
@@ -1022,14 +1045,14 @@ router.get('/api/user/plan', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
-    req.query.userId = req.subId;
+    req.query.userId = req.user.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let compled = _.template(`select   
         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
+        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM,plan.\`order\` as level  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
         let sql = compled({
             userId: value.userId
         });
@@ -1045,8 +1068,8 @@ router.get('/api/user/plan', async function (req, res, next) {
                 overageCPM: val.overageCPM,
                 retentionLimit: val.retentionLimit,
                 userLimit: val.userLimit,
-                domainLimit: val.domainLimit
-
+                domainLimit: val.domainLimit,
+                level:val.level
             }
         }
         res.json({

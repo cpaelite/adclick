@@ -13,7 +13,7 @@ const {
 } = models;
 
 router.get('/api/billing', async (req, res) => {
-  let {subId: userId} = req;
+  let {id: userId} = req.user;
   let billing = await UB.findOne({where: {userId, expired: 0}})
   if (!billing) {
     return res.json({
@@ -31,18 +31,18 @@ router.get('/api/billing', async (req, res) => {
         plan: {
           id: template_plan.id,
           name: template_plan.name,
-          price: template_plan.normalPrice || template_plan.onSalePrice
+          price: template_plan.onSalePrice 
         },
         statistic: {
           planCode: template_plan.name,
-          from:moment.unix(billing.planStart).format("DD-MM-YYYY"),
-          to:moment.unix(billing.planEnd).format("DD-MM-YYYY"),
+          from:moment.unix(billing.planStart).format('M/D/YYYY'),
+          to:moment.unix(billing.planEnd).format('M/D/YYYY'),
           billedEvents: billing.billedEvents,
           totalEvents: billing.totalEvents,
           overageEvents: billing.overageEvents,
           overageCost: ((template_plan.overageCPM/1000000) * (billing.overageEvents/1000)).toFixed(2),
           includedEvents: billing.includedEvents,
-          remainEvents: (billing.includedEvents - billing.totalEvents),
+          remainEvents: billing.netEvents(),
           freeEvents: billing.freeEvents,
         }
       }
@@ -52,7 +52,7 @@ router.get('/api/billing', async (req, res) => {
 
 router.get('/api/billing/info', async (req, res, next) => {
   try {
-    let {subId: userId} = req;
+    let {id: userId} = req.user;
     let user_bill_detail = await UBD.findOne({where: {userId}}) || {}
     res.json({
       status: 1,
@@ -75,7 +75,7 @@ router.get('/api/billing/info', async (req, res, next) => {
 
 router.post('/api/billing/info', async (req, res, next) => {
   try {
-    let {subId: userId} = req;
+    let {id: userId} = req.user;
     let {body} = req;
     let user_bill_detail = await UBD.findOne({where: {userId}});
     if (!user_bill_detail) user_bill_detail = UBD.build({userId});
@@ -100,7 +100,7 @@ router.post('/api/billing/info', async (req, res, next) => {
 router.get('/api/invoices', async (req, res, next) => {
   let email = '', balance = 0;
   try {
-    let {subId: userId} = req;
+    let {id: userId} = req.user;
     let user = await User.findById(userId);
     let user_bill_detail = await UBD.findOne({userId});
     if (!user) throw new Error('invalid user');
@@ -129,7 +129,7 @@ router.get('/api/invoices', async (req, res, next) => {
 
 router.get('/api/payments', async (req, res, next) => {
   try {
-    let {subId: userId} = req;
+    let {id: userId} = req.user;
     let upls = await UPL.findAll({
       where: {
         userId

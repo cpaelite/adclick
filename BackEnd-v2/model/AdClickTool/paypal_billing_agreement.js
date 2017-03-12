@@ -50,7 +50,24 @@ export default function(sequelize, DataTypes) {
 
   }, {
     timestamps: false,
-    tableName: 'PaypalBillingAgreement'
+    tableName: 'PaypalBillingAgreement',
+    classMethods: {
+      associate(models) {
+        model.hasMany(models.PaypalBillingExecute, {
+          foreignKey: 'agreementId'
+        });
+        model.hasMany(models.UserBilling, {
+          foreignKey: 'agreementId'
+        });
+      }
+    },
+    instanceMethods: {
+      async getPaypalId() {
+        let executes = await this.getPaypalBillingExecutes()
+        if (executes.length === 0) return;
+        return JSON.parse(executes[0].executeResp).id
+      }
+    }
   })
   return model;
 }

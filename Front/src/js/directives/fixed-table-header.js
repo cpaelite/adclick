@@ -14,9 +14,9 @@ function fixHead($compile, $window) {
     // prevent recursive compilation
     header.clone.removeAttr('fix-head').removeAttr('ng-if');
 
-    table.clone.css({display: 'block', overflow: 'hidden', background: 'rgb(247, 247, 247)'}).addClass('clone');
+    table.clone.css({display: 'block', paddingTop: '3px', overflow: 'hidden', background: 'rgb(247, 247, 247)'}).addClass('clone');
     header.clone.css('display', 'block');
-    header.original.css('visibility', 'hidden');
+    // header.original.css('visibility', 'hidden');
 
     return function postLink(scope) {
       var scrollContainer = table.original.parent();
@@ -54,7 +54,7 @@ function fixHead($compile, $window) {
       }
 
       function marginTop(height) {
-        table.original.css('marginTop', '-' + height + 'px');
+        table.original.css('marginTop', '-' + (height - 3) + 'px');
       }
 
       function updateCells() {

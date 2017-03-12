@@ -1,17 +1,13 @@
 import express from 'express';
 var router = express.Router();
 var common = require('./common');
-import moment from 'moment-timezone';
 import _ from 'lodash';
 import sequelize from 'sequelize';
 import {
   mapping,
-  groupByMapping,
-  groupByModel,
-  groupByTag,
   sumShorts,
   attributes,
-  keys,
+  nunberColumnForListPage,
   formatRows,
   formatTotals,
   extraConfig
@@ -28,75 +24,72 @@ import {
 //from   to tz  sort  direction columns=[]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 
 router.get('/api/report', async function (req, res, next) {
-  req.query.userId = req.userId;
+  req.query.userId = req.parent.id;
   try {
     let result;
     result = await campaignReport(req.query);
     return res.json({status: 1, message: 'success', data: result});
   } catch (e) {
+    console.error(e)
     return next(e);
   }
 
 });
 
 async function campaignReport(value) {
-  let {
-    groupBy,
-    limit,
-    page,
-    from,
-    to,
-    tz,
-    filter,
-    order,
-    status
-  } = value;
-
-  let sqlWhere = {};
+  let {groupBy, limit, page} = value;
+  // init values
+  if (!mapping[groupBy]) {
+    //TODO: unsupport group
+  }
+  // limit
   limit = parseInt(limit)
   if (!limit || limit < 0)
-    limit = 10000
+    limit = 1000
+  value.limit = limit
+  // offset
   page = parseInt(page)
   let offset = (page - 1) * limit;
   if (!offset)
     offset = 0
+  value.offset = offset
+
+
+  console.info("------------", isListPageRequest(value))
+  if (isListPageRequest(value)) {
+    console.info("list page process")
+    return listPageReport(value)
+  } else {
+    console.info("normal process")
+    return normalReport(value)
+  }
+}
+
+function isListPageRequest(value) {
+  let {groupBy} = value
+  let _flag = !!mapping[groupBy].listPage
+  let isListPageRequest = !hasFilter(value) && _flag
+  return isListPageRequest
+}
+
+function hasFilter(value) {
   let attrs = Object.keys(value);
   _.forEach(attrs, (attr) => {
     if (mapping[attr]) {
-      sqlWhere[mapping[attr]] = value[attr];
+      return true
     }
   })
-  let _flag = !!groupByMapping[groupBy]
-  let isListPageRequest = Object.keys(sqlWhere).length === 0 && _flag
-  console.info("------------------------", isListPageRequest)
-  if (isListPageRequest) {
-    return listPageReport({
-      userId: value.userId,
-      where: sqlWhere,
-      from,
-      to,
-      tz,
-      groupBy,
-      offset,
-      limit,
-      filter,
-      order,
-      status
-    })
-  } else {
-    return normalReport({userId: value.userId, where: sqlWhere, from, to, tz, groupBy, offset, limit, filter})
-  }
-
+  return
 }
 
 async function fullFill({rawRows, groupBy}) {
-  if (!groupByModel[groupBy]) {
+  if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
     return rawRows
   }
   let foreignConfig = extraConfig(groupBy);
   let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
-  let foreignRows = await models[groupByModel[groupBy]].findAll({
+  let foreignRows = await models[mapping[groupBy].table].findAll({
     where: {
       id: foreignKeys
     },
@@ -123,15 +116,30 @@ async function fullFill({rawRows, groupBy}) {
   return rawRows;
 }
 
-async function normalReport(query) {
-  let {userId, where, from, to, tz, groupBy, offset, limit, filter, order, status} = query;
+async function normalReport(values) {
+  let {userId, from, to, tz, groupBy, offset, limit, filter, order, status} = values;
+
+  let sqlWhere = {};
+  sqlWhere.UserID = userId
+  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+
+  let attrs = Object.keys(values);
+  _.forEach(attrs, (attr) => {
+    if (attr === 'day') {
+      sqlWhere.Timestamp = sequelize.and(
+        sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${values.day.trim()}T00:00','${tz}', '+00:00')) * 1000)`),
+        sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${values.day.trim()}T23:59','${tz}', '+00:00')) * 1000)`)
+      );
+    } else if (mapping[attr]) {
+      sqlWhere[mapping[attr].dbKey] = values[attr];
+    }
+  })
+
   if (filter) {
-    where[groupByTag[groupBy][2]] = {
+    sqlWhere[mapping[groupBy].dbFilter] = {
       $like: `%${filter}%`
     }
   }
-  where.UserID = userId
-  where.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
 
   let orderBy = ['UserID', 'ASC']
 
@@ -151,16 +159,20 @@ async function normalReport(query) {
     finalAttribute = [[sequelize.literal('DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((Timestamp/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL 8 HOUR), "%Y-%m-%d")'), 'day'], ...attributes]
   }
 
+  console.info(sqlWhere)
   let rows = await models.AdStatis.findAll({
-    where,
+    where: sqlWhere,
     limit,
     offset,
     attributes: finalAttribute,
-    group: `${mapping[groupBy]}`,
+    group: `${mapping[groupBy].dbGroupBy}`,
     order: [orderBy]
   })
   let rawRows = rows.map(e => e.dataValues);
   rawRows = await fullFill({rawRows, groupBy})
+  if (groupBy === "campaign") {
+    rawRows = await fullFill({rawRows, groupBy: "flow"})
+  }
   rawRows = formatRows(rawRows)
   let totalRows = rawRows.length;
   let totals = {
@@ -176,28 +188,25 @@ async function normalReport(query) {
     ctr: rawRows.reduce((sum, row) => sum + row.clicks, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
     cr: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
     cv: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
-    roi: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.cost, 0),
+    // roi: (rawRows.reduce((sum, row) => sum + row.revenue, 0) - rawRows.reduce((sum, row) => sum + row.cost, 0)) / rawRows.reduce((sum, row) => sum + row.cost),
     epv: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
     epc: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
     ap: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.conversions, 0),
   }
+  totals.roi = totals.profit / totals.cost
   totals = formatTotals([totals])[0]
   return {rows: rawRows, totals, totalRows}
 }
 
 async function listPageReport(query) {
-  let {userId, where, from, to, tz, groupBy, offset, limit, filter, order, status} = query;
-
+  let {userId, groupBy, filter, order, status} = query;
   let nr = await normalReport(query);
-  let Tag = groupByTag[groupBy][0]
-  console.info("-----------", Tag)
-  let Name = groupByTag[groupBy][1]
-
   let foreignConfig = extraConfig(groupBy);
-
   let _where = {
     userId,
-    // id: {$notIn: nr.rows.length === 0 ? [-1] : nr.rows.map((e) => e.dataValues[Tag])}
+  }
+  if (groupBy === 'flow') {
+    _where['type'] = {ne: 0}
   }
   if (filter) {
     _where.name = {$like: `%${filter}%`}
@@ -208,18 +217,17 @@ async function listPageReport(query) {
     _where.deleted = "0";
   }
 
-  let totalRows = await models[groupByModel[groupBy]].count({where: _where});
+  let totalRows = await models[mapping[groupBy].table].count({where: _where});
 
-  let placeholders = await models[groupByModel[groupBy]].findAll({
+  let listData = await models[mapping[groupBy].table].findAll({
     attributes: foreignConfig.attributes,
     where: _where
   })
 
-  placeholders = placeholders.map((e) => {
+  listData = listData.map((e) => {
     let obj = e.dataValues;
-    keys.forEach(key => {
-        if (key !== Tag && key !== Name)
-          obj[key] = 0;
+    nunberColumnForListPage.forEach(key => {
+        obj[key] = 0;
       }
     );
     return obj;
@@ -227,8 +235,8 @@ async function listPageReport(query) {
 
   for (let i = 0; i < nr.rows.length; i++) {
     let rawForeignRow = nr.rows[i];
-    for (let j = 0; j < placeholders.length; j++) {
-      let rawRow = placeholders[j];
+    for (let j = 0; j < listData.length; j++) {
+      let rawRow = listData[j];
       if (rawForeignRow[foreignConfig.foreignKey] === rawRow.id) {
         let keys = Object.keys(rawForeignRow);
         keys.forEach(key => {
@@ -237,12 +245,28 @@ async function listPageReport(query) {
         })
         break;
       }
+
     }
+  }
+  if (order) {
+    listData.sort(dynamicSort(order));
   }
   return {
     totals: nr.totals,
     totalRows,
-    rows: placeholders
+    rows: listData
+  }
+}
+
+function dynamicSort(property) {
+  var sortOrder = 1;
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
+  }
+  return function (a, b) {
+    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+    return result * sortOrder;
   }
 }
 

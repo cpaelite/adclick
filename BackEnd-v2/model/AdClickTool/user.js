@@ -41,7 +41,6 @@ export default function (sequelize, DataTypes) {
     registerts: {
       type: DataTypes.INTEGER,
       allowNull: false
-
     },
     lastLogon: {
       type: DataTypes.INTEGER,
@@ -75,18 +74,14 @@ export default function (sequelize, DataTypes) {
     }
   }, {
       timestamps: false,
-      tableName: 'User'
+      tableName: 'User',
+      classMethods: {
+        associate(models) {
+          model.hasMany(models.UserBilling, {
+            foreignKey: 'userId'
+          })
+        }
+      }
     })
   return model;
 }
-
-
-
-
-
-
-
-
-
-
- 

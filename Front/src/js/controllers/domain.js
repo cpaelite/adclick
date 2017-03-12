@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('DomainCtrl', [
-      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', 'Plan', '$q',
+      '$scope', '$mdDialog', 'toastr', 'Domains', 'DomainsValidatecname', '$q', 'Profile',
       DomainCtrl
     ]);
 
-  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, Plan, $q) {
+  function DomainCtrl($scope, $mdDialog, toastr, Domains, DomainsValidatecname, $q, Profile) {
     $scope.app.subtitle = 'Domain';
 
     $scope.isBtnColor = false;
@@ -15,14 +15,10 @@
       $scope.isBtnColor = !$scope.isBtnColor;
     };
 
+    $scope.domainLimit = $scope.permissions.setting.domain.domainLimit;
+
     // init load data
     var initPromises = [], prms;
-
-    var thePlan;
-    prms = Plan.get(null, function (plan) {
-      thePlan = plan.data.plan;
-    }).$promise;
-    initPromises.push(prms);
 
     var theDomains;
     prms = Domains.get(null, function (domain) {
@@ -36,10 +32,19 @@
     }).$promise;
     initPromises.push(prms);
 
+    var profiles;
+    prms = Profile.get(null, function (user) {
+      profiles = user.data;
+    }).$promise;
+    initPromises.push(prms);
+
     function initSuccess() {
-      $scope.plan = thePlan;
-      $scope.item = theDomains;
-      if ($scope.plan.domainLimit ==  undefined || $scope.item['custom'].length >= $scope.plan.domainLimit) {
+      $scope.item = angular.copy(theDomains);
+      $scope.item.internal = $scope.item.internal.map(function(v) {
+        v.address = profiles.idText + '.' + v.address;
+        return v;
+      });
+      if ($scope.domainLimit ==  undefined || $scope.item['custom'].length >= $scope.domainLimit) {
         $scope.isGray = true;
       }
     }
@@ -60,14 +65,14 @@
 
     $scope.isGray = false;
     $scope.addCustom = function () {
-      if ($scope.item['custom'].length < $scope.plan.domainLimit) {
+      if ($scope.item['custom'].length < $scope.domainLimit) {
         $scope.item['custom'].push({
           address: '',
           main: false,
           btnName: "Verify DNS settings"
         });
       }
-      if ($scope.item['custom'].length >= $scope.plan.domainLimit) {
+      if ($scope.item['custom'].length >= $scope.domainLimit) {
         $scope.isGray = true;
       }
     };
@@ -79,11 +84,16 @@
 
     $scope.domainSava = function () {
       var saveItem = angular.copy($scope.item);
+      saveItem.internal = saveItem.internal.map(function(v, i) {
+        v.address = theDomains.internal[i].address;
+        return v;
+      });
       if (saveItem.custom) {
         saveItem.custom.forEach(function (domain) {
           delete domain.btnName;
         });
       }
+
       $scope.domainSaveStatus = true;
       Domains.save(saveItem, function (result) {
         $scope.domainSaveStatus = false;

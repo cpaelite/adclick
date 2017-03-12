@@ -1,6 +1,6 @@
-<div class="cs-page-flow" ng-click="clearOnEdit()">
+<div class="cs-page-flow clearfix" ng-click="clearOnEdit()">
   <div class="col-sm-4 col-md-4 cs-flow-tree">
-    <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li">
+    <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li" ng-show="flowMode">
       <i class="material-icons tree-icon">album</i>
       <span class="cs-flow-name">{{flow.name}}</span>
     </div>
@@ -75,7 +75,7 @@
 
     <div class="cs-deleted-mask" ng-if="isDeleted"></div>
 
-    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow'">
+    <form name="editFlowForm" method="post" ng-submit="$event.preventDefault()" class="form-content" ng-show="onEdit=='flow' && flowMode">
       <div class="form-group">
         <label class="label-name">Name:</label>
         <input type="text" class="form-control" ng-class="{error:flow._nameError}" ng-model="flow.name" required name="name"
@@ -83,7 +83,7 @@
           ng-blur="nameRequired()"
           async-check-name="checkNameParams"
           async-validator-callback="validateCallback"
-          post-validater-callback="postValidateCallback()"
+
         >
         <span class-"error-message" ng-show="flow._nameError">Name is invalid</span>
         <span style="color:red" ng-show="editFlowForm.name.$invalid">
@@ -95,13 +95,14 @@
       <div class="form-group">
         <label class="label-name">Country:</label>
         <md-autocomplete
-            md-selected-item="flow.country"
+            md-selected-item="country"
             md-search-text="searchText"
             md-items="item in queryCountries(searchText)"
             md-no-cache="true"
             md-select-on-focus="true"
             md-item-text="item.display"
             md-min-length="0"
+            md-selected-item-change="countryChanged(country)"
             placeholder="Select country...">
           <md-item-template>
             <span md-highlight-text="searchText">{{item.display}}</span>
@@ -497,7 +498,7 @@
       </div>
     </form>
 
-    <div class="cs-flow-bottom-actions clearfix">
+    <div class="cs-flow-bottom-actions clearfix" ng-show="flowMode">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="save()">
@@ -518,9 +519,8 @@
       </button>
     </div>
   </div>
-
   <div class="cs-save-errors" ng-show="showErrors">
-    <span class="cs-hide-errors" ng-click="showErrors=false">x</span>
+    <span class="cs-hide-errors" ng-click="hideErrors()">x</span>
     <ul>
       <li ng-repeat="err in saveErrors track by $index">{{err}}</li>
     </ul>

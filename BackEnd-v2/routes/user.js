@@ -9,7 +9,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
- 
+const _ = require('lodash');
 
 /**
  * @api {post} /api/preferences  编辑用户配置
@@ -31,7 +31,7 @@ router.post('/api/preferences', function (req, res, next) {
         userId: Joi.number().required(),
         json: Joi.object().required()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.parent.id;
     Joi.validate(req.body, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -86,7 +86,7 @@ router.get('/api/tags', function (req, res, next) {
         userId: Joi.number().required(),
         type: Joi.number().required()
     });
-    req.query.userId = req.userId;
+    req.query.userId = req.parent.id;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -149,7 +149,7 @@ router.post('/api/names', async function (req, res, next) {
         type: Joi.number().required(),
         id: Joi.number().optional()
     });
-    req.body.userId = req.userId;
+    req.body.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
@@ -194,7 +194,7 @@ router.get('/api/postbackurl', function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.string().required()
     });
-    req.query.userId = req.idText;
+    req.query.userId = req.parent.idText;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -218,6 +218,10 @@ router.get('/api/postbackurl', function (req, res, next) {
         }
     });
 });
+
+
+
+
 
 
 

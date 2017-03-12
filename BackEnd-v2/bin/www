@@ -7,6 +7,7 @@ const EventEmitter = require('events');
 
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
+const setting =require('../config/setting');
 
 global.models = {};
 
@@ -32,11 +33,13 @@ var log = log4js.getLogger('startup');
 myEmitter.on('dbDone', () => {
   var app = require('../app');
 
-  app.set('port', process.env.PORT || 5000);
+  app.set('port',setting.port || 51500);
 
   var server = app.listen(app.get('port'), function () {
     log.info('adclick server listening on port', server.address().port,
       " with pid ", process.pid);
+    console.log('adclick server listening on port', server.address().port,
+      " with pid ", process.pid)
   });
 
   const cronJobs = require('../cron');

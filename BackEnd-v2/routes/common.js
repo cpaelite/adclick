@@ -291,7 +291,7 @@ async function getCampaign(id, userId, idText, connection) {
         "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
-    let mainDomainsql = "select `domain` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0";
+    let mainDomainsql = "select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0";
 
     let results = await Promise.all([query(sqlCampaign, [userId, id, 0], connection), query(sqltag, [userId, id, 1, 0], connection), query(mainDomainsql, [userId], connection)]);
     let camResult = results[0];
@@ -302,12 +302,29 @@ async function getCampaign(id, userId, idText, connection) {
     for (let index = 0; index < tagsResult.length; index++) {
         tags.push(tagsResult[index]);
     }
+    let defaultDomain;
+    //如果自己定义了main domain 优先
+    if (domainResult.length) {
+        if (domainResult[0].customize == 1) {
+            defaultDomain = domainResult[0].domain;
+        } else {
+            defaultDomain = idText + "." + domainResult[0].domain;
+        }
+    } else {
+        //默认使用系统配置
+        for (let index = 0; index < setting.domains.length; index++) {
+            if (setting.domains[index].postBackDomain) {
+                defaultDomain = idText + "." + setting.domains[index].address;
+            }
+        }
+    }
+
 
     if (camResult.length) {
         //重写 campaign URL  和 imimpPixelUrl
         if (domainResult.length) {
-            camResult[0].url = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + "/" + camResult[0].hash;
-            camResult[0].impPixelUrl = setting.newbidder.httpPix + idText + "." + domainResult[0].domain + setting.newbidder.impRouter + "/" + camResult[0].hash;
+            camResult[0].url = setting.newbidder.httpPix + defaultDomain + "/" + camResult[0].hash;
+            camResult[0].impPixelUrl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.impRouter + "/" + camResult[0].hash;
         }
         camResult[0].tags = tags;
     }
@@ -897,13 +914,13 @@ async function insertTrafficSource(subId, userId, traffic, connection) {
         val += ",?";
         params.push(traffic.cost);
     }
- 
+
     if (traffic.campaignId) {
         col += ",`campaignId`";
         val += ",?";
         params.push(traffic.campaignId);
     }
- 
+
     if (traffic.websiteId) {
         col += ",`websiteId`";
         val += ",?";
@@ -1082,7 +1099,7 @@ async function checkNameExists(userId, id, name, type, connection) {
             results = await query("select `id` from Offer where `userId`= ? and `name`= ?", [userId, name], connection);
             break;
         case 4:
-            results = await query("select `id` from Flow where `userId`= ? and `name`= ?", [userId, name], connection);
+            results = await query("select `id` from Flow where `userId`= ? and `name`= ? and `type`=1", [userId, name], connection);
             break;
         default:
             throw new Error("Paramter type error");

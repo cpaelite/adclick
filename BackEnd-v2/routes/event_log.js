@@ -32,9 +32,10 @@ router.get('/api/eventlog', async function (req, res, next) {
         user: Joi.number().required()
     });
     let connection;
+   
 
     try {
-        req.query.user= req.subId;
+        req.query.user= req.parent.id;
         let value = await common.validate(req.query, schema);
         let {
             limit,
@@ -51,11 +52,11 @@ router.get('/api/eventlog', async function (req, res, next) {
         page = parseInt(page)
         let offset = (page - 1) * limit;
 
-        let sqlTmp = "select user.`email` as user ,case log.`entityType` when 1 then \"Campaign\" when 2 then \"Lander\" when 3 then \"Offer\" when 4 then \"TrafficSource\" when 5 then \"AffiliateNetwork\" end as entityType,log.`entityName`,log.`entityId`,case log.`actionType` when 1 then \"Create\" when 2 then \"Change\" when 3 then \"Archive\" when 4 then \"Restore\" end as  action ,DATE_FORMAT(convert_tz(FROM_UNIXTIME(log.`changedAt`, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') as changeAt  from `UserEventLog` log  inner join `User` user on user.id=log.`userId`  where log.`changedAt` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')))  " +
-            " and log.`changedAt` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>'))) and log.`operatorId`= user.id  ";
+        let sqlTmp = "select user.`email` as user ,case log.`entityType` when 1 then \"Campaign\" when 2 then \"Lander\" when 3 then \"Offer\" when 4 then \"TrafficSource\" when 5 then \"AffiliateNetwork\" end as entityType,log.`entityName`,log.`entityId`,case log.`actionType` when 1 then \"Create\" when 2 then \"Change\" when 3 then \"Archive\" when 4 then \"Restore\" end as  action ,DATE_FORMAT(convert_tz(FROM_UNIXTIME(log.`changedAt`, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p') as changeAt  from `UserEventLog` log  inner join `User` user on user.id=log.`operatorId`  where log.`changedAt` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>')))  " +
+            " and log.`changedAt` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>')))  ";
 
         if (userId !== "ALL") {
-            sqlTmp += " and user.`idText`= '<%= operatorId %>'";
+            sqlTmp += " and log.`operatorId` in  (select `id` from User where `idText`='<%= operatorId %>') ";
         }
 
         if (actionType !== 0) {
@@ -77,11 +78,13 @@ router.get('/api/eventlog', async function (req, res, next) {
             user: user,
             operatorId:userId
         });
+         
         let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
         sql += "  limit " + offset + "," + limit;
+        
         connection = await common.getConnection();
-        let result = await Promise.all([query(sql, connection), query(countSql, connection)]);
+        let result = await Promise.all([common.query(sql,[], connection), common.query(countSql,[], connection)]);
         res.json({
             status: 1,
             message: 'success',
@@ -109,8 +112,8 @@ router.get('/api/members', async function (req, res, next) {
     });
     let connection;
     try {
-        req.query.userId = req.subId;
-        req.query.groupId = req.subgroupId;
+        req.query.userId = req.user.id;
+        req.query.groupId = req.user.groupId;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let results = [];
@@ -144,15 +147,6 @@ router.get('/api/members', async function (req, res, next) {
     }
 });
 
-function query(sql, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, result) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(result);
-        })
-    });
-}
+ 
 
 module.exports = router;

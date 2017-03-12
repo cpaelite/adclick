@@ -18,7 +18,7 @@
                   class="btn p-btn btn-three p-btn-0{{$index + 1}}"
                   type="button"
                   ng-click="editChangePlan(p)"
-                  ng-disabled="(p.id == planId || (upgrade && (p.id < planId)))"
+                  ng-disabled="(p.level == level || (upgrade && (p.level < level)))"
                 >
                   <p>SELECT PLAN<i class="icon-angle-right"></i></p>
                 </button>

@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -48,8 +48,8 @@
     }
   }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil) {
-    var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop().toLowerCase();
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource) {
+    var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
     $scope.app.subtitle = perfType;
@@ -119,7 +119,7 @@
     });
 
     // columns
-    var cols = angular.copy(columnDefinition[perfType]);
+    var cols = angular.copy(columnDefinition[perfType].concat(columnDefinition['common']));
     // dirty fix tree view name column
     cols[0].role = 'name';
     cols[0].origKey = cols[0].key;
@@ -188,7 +188,7 @@
       if (parentRow) {
         params.groupBy = pageStatus.groupBy[parentRow.treeLevel];
         params.page = 1;
-        params.limit = -1;
+        //params.limit = -1;
 
         var pgrp = pageStatus.groupBy[parentRow.treeLevel-1];
         params[pgrp] = parentRow.id;
@@ -276,12 +276,13 @@
         return exclude.indexOf(item.value) == -1;
       }
     }
+
     $scope.groupbyFilter1 = filteGroupBy(1);
     $scope.groupbyFilter2 = filteGroupBy(2);
 
-    $scope.filterIsHow = function (item) {
+    /*$scope.filterIsHow = function (item) {
       return item.level == 0;
-    };
+    };*/
 
     $scope.hours = [];
     for (var i=0; i<24; ++i) {
@@ -361,11 +362,43 @@
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
+      if (perfType != 'campaign' && perfType != 'traffic' && item.role == 'campaign') {
+        exclude.push(item.value);
+      }
       $scope.filters.forEach(function(f) {
         exclude.push(f.key);
       });
       return exclude.indexOf(item.value) == -1;
     };
+
+    $scope.menuOpen = function (mdMenu, row) {
+      mdMenu.open();
+      var id = 0;
+      if (perfType == "campaign") {
+        id = row.data.trafficId;
+      } else if (perfType == "traffic") {
+        id = row.id;
+      } else {
+        return;
+      }
+      TrafficSource.get({id: id}, function (traffic) {
+        if (traffic.status && traffic.data.params) {
+          var params = JSON.parse(traffic.data.params);
+          $scope.groupByOptions.forEach(function(option, index) {
+            if (option.role == "campaign") {
+              var idx = option.value.substring(1);
+              var parameter = params[idx-1].Parameter;
+              if (parameter) {
+                $scope.groupByOptions[index].paramValue = parameter;
+              } else {
+                $scope.groupByOptions[index].paramValue = "N/A";
+              }
+            }
+          });
+        }
+      });
+    };
+
     $scope.drilldown = function(row, gb) {
       if ($scope.treeLevel > 1)
         return;
@@ -386,6 +419,8 @@
     };
 
     function go(page) {
+      getDateRange($scope.datetype);
+      pageStatus.datetype = $scope.datetype;
       var params = angular.copy(pageStatus);
       if ($scope.treeLevel > 1) {
         var extgrpby = pageStatus.groupBy.filter(notEmpty);
@@ -476,12 +511,12 @@
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
       var reportViewColumnsTemp = $scope.preferences.reportViewColumns = angular.copy($scope.reportViewColumns);
       // remove later
-      reportViewColumnsTemp.affiliateName.visible = true;
+      /*reportViewColumnsTemp.affiliateName.visible = true;
       reportViewColumnsTemp.campaignName.visible = true;
       reportViewColumnsTemp.flowName.visible = true;
       reportViewColumnsTemp.landerName.visible = true;
       reportViewColumnsTemp.offerName.visible = true;
-      reportViewColumnsTemp.trafficName.visible = true;
+      reportViewColumnsTemp.trafficName.visible = true;*/
       //
       var preferences = {
         json: $scope.preferences
@@ -542,6 +577,7 @@
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant) {
+    $scope.pathRoute = 'tpl/flow-edit.html'
     var prefixCountry = '', prefixTraffic = '';
     $scope.prefix = '';
     initTags($scope, Tag, 1);
@@ -618,11 +654,16 @@
         $scope.tagsFilter.options = $scope.item.tags;
         if ($scope.item.trafficSourceId)
           $scope.trafficSourceId = $scope.item.trafficSourceId.toString();
-        if ($scope.item.targetFlowId) {
+        if ($scope.item.targetFlowId && $scope.item.targetType == 1) {
           $scope.item.flow = {
             id: $scope.item.targetFlowId.toString()
           };
           showFlow();
+        }
+        if($scope.item.targetFlowId && $scope.item.targetType == 2) {
+          $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId});
+        } else {
+          $scope.$broadcast('targetPathIdChanged', {flowId: ''});
         }
         if ($scope.item['costModel'] == null) {
           $scope.item = defaultItem();
@@ -647,6 +688,7 @@
         $scope.prefix = $scope.item.name = $scope.oldName = prefixTraffic + prefixCountry;
         $scope.trafficSourceId = allTraffic.length > 0 ? allTraffic[0].id.toString(): null;
         $scope.item.country = 'ZZZ';
+        $scope.$broadcast('targetPathIdChanged', {flowId: ''});
       }
 
       $scope.$watch('trafficSourceId', function (newValue, oldValue) {
@@ -682,6 +724,14 @@
       var external = JSON.parse(traffic.externalId);
       if (external.Placeholder) {
         impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
+      }
+      var campaignId = JSON.parse(traffic.campaignId);
+      if (campaignId.Placeholder) {
+        impParam = impParam + campaignId.Parameter + "=" + campaignId.Placeholder + "&";
+      }
+      var websiteId = JSON.parse(traffic.websiteId);
+      if (websiteId.Placeholder) {
+        impParam = impParam + websiteId.Parameter + "=" + websiteId.Placeholder + "&";
       }
 
       if (impParam) {
@@ -746,8 +796,25 @@
       $scope.oldName = $scope.item.name;
       nameRequired();
     };
+    var oldCountryName;
+    $scope.$watch('item.country', function(newCountry, oldCountry) {
+      if (newCountry && !oldCountry) {
+        oldCountryName = newCountry;
+      }
+      if (newCountry && oldCountry) {
+        oldCountryName = oldCountry;
+      }
+    });
 
-    $scope.countryChanged = function(country) {
+    $scope.$on('targetPathCountryReseted', function() {
+      $scope.item.country = oldCountryName;
+      $scope.countryChanged(oldCountryName, true);
+    });
+
+    $scope.countryChanged = function(country, reset) {
+      if(!reset) {
+        $scope.$broadcast('targetPathCountryChanged', {country: country});
+      }
       $scope.countries.forEach(function(v) {
         if(v.value == country) {
           prefixCountry = v.display + ' - ';
@@ -967,7 +1034,25 @@
       $mdDialog.hide();
     }
 
-    this.save = function () {
+    this.save = function() {
+      if($scope.item.targetType == 2) {
+        $scope.$broadcast('saveCampaignStarted');
+      } else {
+        saveCampaign();
+      }
+    };
+
+    $scope.$on('pathDataSuccessed', function(event, oData) {
+      console.log(oData);
+      if(oData.status) {
+        saveCampaign(oData.data);
+      } else {
+        // TODO show error
+        console.log(oData.data);
+      }
+    });
+
+    function saveCampaign(pathData) {
       // cost model value
       if(!nameRequired()) return;
       if ($scope.item.costModel != 0 && $scope.item.costModel != 4) {
@@ -991,11 +1076,22 @@
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
 
-      if (!$scope.item['flow']) {
-        $scope.item['flow']={
-          type: 0,
+      // if (!$scope.item['flow']) {
+      //   $scope.item['flow'] = {
+      //     type: 0,
+      //     name: 'defaultName',
+      //     redirectMode: 0
+      //   };
+      // }
+
+      // path
+      if($scope.item.targetType == 2) {
+        $scope.item['flow'] = {
+          rules: pathData.rules,
           name: 'defaultName',
-          redirectMode: 0
+          type: 0,
+          redirectMode: $scope.item.redirectMode,
+          country: $scope.item.country
         };
       }
 
@@ -1089,7 +1185,11 @@
       this.title = "add";
       $scope.item.name = $scope.prefix;
       $scope.oldName = $scope.item.name;
-      $scope.item.country = 'ZZZ';
+      $scope.item.country = this.country ? this.country.value : 'ZZZ';
+    }
+
+    if(this.country) {
+      $scope.countryInputDisabled = true;
     }
 
     this.titleType = angular.copy(this.perfType);
@@ -1244,7 +1344,11 @@
       prefixCountry = 'Global - ';
       $scope.prefix = $scope.item.name = $scope.oldName = prefixCountry;
       $scope.tagsFilter.options = $scope.item.tags = [];
-      $scope.item.country = 'ZZZ';
+      $scope.item.country = this.country ? this.country.value : 'ZZZ';
+    }
+
+    if(this.country) {
+      $scope.countryInputDisabled = true;
     }
 
     // Country

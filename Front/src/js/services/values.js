@@ -17,74 +17,6 @@ angular.module('app').value('columnDefinition', {
       name: 'Campaign country'
     },
     {
-      key: 'impressions',
-      name: 'Impressions'
-    },
-    {
-      key: 'visits',
-      name: 'Visits'
-    },
-    {
-      key: 'clicks',
-      name: 'Clicks'
-    },
-    {
-      key: 'conversions',
-      name: 'Conversions'
-    },
-    {
-      key: 'revenue',
-      name: 'Revenue'
-    },
-    {
-      key: 'cost',
-      name: 'Cost'
-    },
-    {
-      key: 'profit',
-      name: 'Profit'
-    },
-    {
-      key: 'cpv',
-      name: 'CPV'
-    },
-    {
-      key: 'ictr',
-      name: 'ICTR'
-    },
-    {
-      key: 'ctr',
-      name: 'CTR'
-    },
-    {
-      key: 'cr',
-      name: 'CR'
-    },
-    {
-      key: 'cv',
-      name: 'CV'
-    },
-    {
-      key: 'roi',
-      name: 'ROI'
-    },
-    {
-      key: 'epv',
-      name: 'EPV'
-    },
-    {
-      key: 'epc',
-      name: 'EPC'
-    },
-    {
-      key: 'ap',
-      name: 'AP'
-    },
-    {
-      key: 'errors',
-      name: 'ERRORS'
-    },
-    {
       key: 'postbackUrl',
       name: 'Postback URL'
     },
@@ -98,100 +30,22 @@ angular.module('app').value('columnDefinition', {
     }, {
       key: 'costModel',
       name: 'Cost model'
-    }, {
-      key: 'cpa',
-      name: 'CPA'
-    }, {
-      key: 'cpc',
-      name: 'CPC'
-    }, {
-      key: 'cpm',
-      name: 'CPM'
-    }, {
-      key: 'browser',
-      name: 'Browser'
     }
   ],
-  flow: [{
-    key: 'flowName',
-    name: 'Flow'
-  },
+  flow: [
+    {
+      key: 'flowName',
+      name: 'Flow'
+    },
     {
       key: 'flowHash',
       name: 'Flow ID'
-    },
-    {
-      key: 'impressions',
-      name: 'Impressions'
-    },
-    {
-      key: 'visits',
-      name: 'Visits'
-    },
-    {
-      key: 'clicks',
-      name: 'Clicks'
-    },
-    {
-      key: 'conversions',
-      name: 'Conversions'
-    },
-    {
-      key: 'revenue',
-      name: 'Revenue'
-    },
-    {
-      key: 'cost',
-      name: 'Cost'
-    },
-    {
-      key: 'profit',
-      name: 'Profit'
-    },
-    {
-      key: 'cpv',
-      name: 'CPV'
-    },
-    {
-      key: 'ictr',
-      name: 'ICTR'
-    },
-    {
-      key: 'ctr',
-      name: 'CTR'
-    },
-    {
-      key: 'cr',
-      name: 'CR'
-    },
-    {
-      key: 'cv',
-      name: 'CV'
-    },
-    {
-      key: 'roi',
-      name: 'ROI'
-    },
-    {
-      key: 'epv',
-      name: 'EPV'
-    },
-    {
-      key: 'epc',
-      name: 'EPC'
-    },
-    {
-      key: 'ap',
-      name: 'AP'
-    },
-    {
-      key: 'errors',
-      name: 'ERRORS'
     }],
-  lander: [{
-    key: 'landerName',
-    name: 'Lander'
-  },
+  lander: [
+    {
+      key: 'landerName',
+      name: 'Lander'
+    },
     {
       key: 'landerHash',
       name: 'Lander ID'
@@ -207,79 +61,12 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'numberOfOffers',
       name: 'Number of offers'
-    },
-    {
-      key: 'impressions',
-      name: 'Impressions'
-    },
-    {
-      key: 'visits',
-      name: 'Visits'
-    },
-    {
-      key: 'clicks',
-      name: 'Clicks'
-    },
-    {
-      key: 'conversions',
-      name: 'Conversions'
-    },
-    {
-      key: 'revenue',
-      name: 'Revenue'
-    },
-    {
-      key: 'cost',
-      name: 'Cost'
-    },
-    {
-      key: 'profit',
-      name: 'Profit'
-    },
-    {
-      key: 'cpv',
-      name: 'CPV'
-    },
-    {
-      key: 'ictr',
-      name: 'ICTR'
-    },
-    {
-      key: 'ctr',
-      name: 'CTR'
-    },
-    {
-      key: 'cr',
-      name: 'CR'
-    },
-    {
-      key: 'cv',
-      name: 'CV'
-    },
-    {
-      key: 'roi',
-      name: 'ROI'
-    },
-    {
-      key: 'epv',
-      name: 'EPV'
-    },
-    {
-      key: 'epc',
-      name: 'EPC'
-    },
-    {
-      key: 'ap',
-      name: 'AP'
-    },
-    {
-      key: 'errors',
-      name: 'ERRORS'
     }],
-  offer: [{
-    key: 'offerName',
-    name: 'Offer'
-  },
+  offer: [
+    {
+      key: 'offerName',
+      name: 'Offer'
+    },
     {
       key: 'offerHash',
       name: 'Offer ID'
@@ -297,152 +84,17 @@ angular.module('app').value('columnDefinition', {
       name: 'Payout'
     },
     {
-      key: 'impressions',
-      name: 'Impressions'
-    },
-    {
-      key: 'visits',
-      name: 'Visits'
-    },
-    {
-      key: 'clicks',
-      name: 'Clicks'
-    },
-    {
-      key: 'conversions',
-      name: 'Conversions'
-    },
-    {
-      key: 'revenue',
-      name: 'Revenue'
-    },
-    {
-      key: 'cost',
-      name: 'Cost'
-    },
-    {
-      key: 'profit',
-      name: 'Profit'
-    },
-    {
-      key: 'cpv',
-      name: 'CPV'
-    },
-    {
-      key: 'ictr',
-      name: 'ICTR'
-    },
-    {
-      key: 'ctr',
-      name: 'CTR'
-    },
-    {
-      key: 'cr',
-      name: 'CR'
-    },
-    {
-      key: 'cv',
-      name: 'CV'
-    },
-    {
-      key: 'roi',
-      name: 'ROI'
-    },
-    {
-      key: 'epv',
-      name: 'EPV'
-    },
-    {
-      key: 'epc',
-      name: 'EPC'
-    },
-    {
-      key: 'ap',
-      name: 'AP'
-    },
-    {
-      key: 'errors',
-      name: 'ERRORS'
-    },
-    {
       key: 'affiliateName',
       name: 'Affiliate network'
     }],
-  traffic: [{
-    key: 'trafficName',
-    name: 'Traffic source'
-  },
+  traffic: [
+    {
+      key: 'trafficName',
+      name: 'Traffic source'
+    },
     {
       key: 'trafficHash',
       name: 'Traffic source ID'
-    },
-    {
-      key: 'impressions',
-      name: 'Impressions'
-    },
-    {
-      key: 'visits',
-      name: 'Visits'
-    },
-    {
-      key: 'clicks',
-      name: 'Clicks'
-    },
-    {
-      key: 'conversions',
-      name: 'Conversions'
-    },
-    {
-      key: 'revenue',
-      name: 'Revenue'
-    },
-    {
-      key: 'cost',
-      name: 'Cost'
-    },
-    {
-      key: 'profit',
-      name: 'Profit'
-    },
-    {
-      key: 'cpv',
-      name: 'CPV'
-    },
-    {
-      key: 'ictr',
-      name: 'ICTR'
-    },
-    {
-      key: 'ctr',
-      name: 'CTR'
-    },
-    {
-      key: 'cr',
-      name: 'CR'
-    },
-    {
-      key: 'cv',
-      name: 'CV'
-    },
-    {
-      key: 'roi',
-      name: 'ROI'
-    },
-    {
-      key: 'epv',
-      name: 'EPV'
-    },
-    {
-      key: 'epc',
-      name: 'EPC'
-    },
-    {
-      key: 'ap',
-      name: 'AP'
-    },
-    {
-      key: 'errors',
-      name: 'ERRORS'
     },
     {
       key: 'postbackUrl',
@@ -496,10 +148,11 @@ angular.module('app').value('columnDefinition', {
       key: 'variable10',
       name: 'Variable 10'
     }],
-  affiliate: [{
-    key: 'affiliateName',
-    name: 'Affiliate Network'
-  },
+  affiliate: [
+    {
+      key: 'affiliateName',
+      name: 'Affiliate Network'
+    },
     {
       key: 'affiliateHash',
       name: 'Affiliate Network ID'
@@ -511,76 +164,9 @@ angular.module('app').value('columnDefinition', {
     {
       key: 'whitelistedIP',
       name: 'Whitelisted IP'
-    },
-    {
-      key: 'impressions',
-      name: 'Impressions'
-    },
-    {
-      key: 'visits',
-      name: 'Visits'
-    },
-    {
-      key: 'clicks',
-      name: 'Clicks'
-    },
-    {
-      key: 'conversions',
-      name: 'Conversions'
-    },
-    {
-      key: 'revenue',
-      name: 'Revenue'
-    },
-    {
-      key: 'cost',
-      name: 'Cost'
-    },
-    {
-      key: 'profit',
-      name: 'Profit'
-    },
-    {
-      key: 'cpv',
-      name: 'CPV'
-    },
-    {
-      key: 'ictr',
-      name: 'ICTR'
-    },
-    {
-      key: 'ctr',
-      name: 'CTR'
-    },
-    {
-      key: 'cr',
-      name: 'CR'
-    },
-    {
-      key: 'cv',
-      name: 'CV'
-    },
-    {
-      key: 'roi',
-      name: 'ROI'
-    },
-    {
-      key: 'epv',
-      name: 'EPV'
-    },
-    {
-      key: 'epc',
-      name: 'EPC'
-    },
-    {
-      key: 'ap',
-      name: 'AP'
-    },
-    {
-      key: 'errors',
-      name: 'ERRORS'
     }],
-    conversion: [{
+  conversion: [
+    {
       key: 'PostbackTimestamp',
       name: 'Postback timestamp'
     }, {
@@ -703,37 +289,278 @@ angular.module('app').value('columnDefinition', {
     }, {
       key: 'V10',
       name: 'V10'
-    }]
+    }],
+  brand: [
+    {
+      key: 'brand',
+      name: 'Brand'
+    }
+  ],
+  browserVersion: [
+    {
+      key: 'browserVersion',
+      name: 'Brower version'
+    }
+  ],
+  browser: [
+    {
+      key: 'browser',
+      name: 'Browser'
+    }
+  ],
+  city: [
+    {
+      key: 'city',
+      name: 'City'
+    }
+  ],
+  connectionType: [
+    {
+      key: 'connectionType',
+      name: 'Connection Type'
+    }
+  ],
+  country: [
+    {
+      key: 'country',
+      name: 'Country'
+    }
+  ],
+  day: [
+    {
+      key: 'day',
+      name: 'Day'
+    }
+  ],
+  deviceType: [
+    {
+      key: 'deviceType',
+      name: 'DeviceType'
+    }
+  ],
+  ip: [
+    {
+      key: 'ip',
+      name: 'IP'
+    }
+  ],
+  isp: [
+    {
+      key: 'isp',
+      name: 'ISP'
+    }
+  ],
+  language: [
+    {
+      key: 'language',
+      name: 'Language'
+    }
+  ],
+  mobileCarrier: [
+    {
+      key: 'mobileCarrier',
+      name: 'MobileCarrier'
+    }
+  ],
+  model: [
+    {
+      key: 'model',
+      name: 'Model'
+    }
+  ],
+  os: [
+    {
+      key: 'os',
+      name: 'OS'
+    }
+  ],
+  osVersion: [
+    {
+      key: 'osVersion',
+      name: 'OSVersion'
+    }
+  ],
+  domain: [
+    {
+      key: 'domain',
+      name: 'Domain'
+    }
+  ],
+  region: [
+    {
+      key: 'region',
+      name: 'Region'
+    }
+  ],
+  dayOfWeek: [
+    {
+      key: 'dayOfWeek',
+      name: 'Day Of Week'
+    }
+  ],
+  timeOfDay: [
+    {
+      key: 'timeOfDay',
+      name: 'Time Of Day'
+    }
+  ],
+  tsWebsiteId: [
+    {key: 'tsWebsiteId', name: 'WebSite ID'}
+  ],
+  v1: [
+    {key: 'v1', name: 'V1'}
+  ],
+  v2: [
+    {key: 'v2', name: 'V2'}
+  ],
+  v3: [
+    {key: 'v3', name: 'V3'}
+  ],
+  v4: [
+    {key: 'v4', name: 'V4'}
+  ],
+  v5: [
+    {key: 'v5', name: 'V5'}
+  ],
+  v6: [
+    {key: 'v6', name: 'V6'}
+  ],
+  v7: [
+    {key: 'v7', name: 'V7'}
+  ],
+  v8: [
+    {key: 'v8', name: 'V8'}
+  ],
+  v9: [
+    {key: 'v9', name: 'V9'}
+  ],
+  v10: [
+    {key: 'v10', name: 'V10'}
+  ],
+  common: [
+    {
+      key: 'impressions',
+      name: 'Impressions'
+    },
+    {
+      key: 'visits',
+      name: 'Visits'
+    },
+    {
+      key: 'clicks',
+      name: 'Clicks'
+    },
+    {
+      key: 'conversions',
+      name: 'Conversions'
+    },
+    {
+      key: 'revenue',
+      name: 'Revenue'
+    },
+    {
+      key: 'cost',
+      name: 'Cost'
+    },
+    {
+      key: 'profit',
+      name: 'Profit'
+    },
+    {
+      key: 'cpv',
+      name: 'CPV'
+    },
+    {
+      key: 'ictr',
+      name: 'ICTR'
+    },
+    {
+      key: 'ctr',
+      name: 'CTR'
+    },
+    {
+      key: 'cr',
+      name: 'CR'
+    },
+    {
+      key: 'cv',
+      name: 'CV'
+    },
+    {
+      key: 'roi',
+      name: 'ROI'
+    },
+    {
+      key: 'epv',
+      name: 'EPV'
+    },
+    {
+      key: 'epc',
+      name: 'EPC'
+    },
+    {
+      key: 'ap',
+      name: 'AP'
+    },
+    {
+      key: 'cpa',
+      name: 'CPA'
+    },
+    {
+      key: 'cpc',
+      name: 'CPC'
+    },
+    {
+      key: 'cpm',
+      name: 'CPM'
+    },
+    {
+      key: 'errors',
+      name: 'ERRORS'
+    }
+  ]
 });
 angular.module('app').value('groupByOptions', [
-  {value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName", level: 0},
-  {value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName", level: 0},
-  {value: "Brand", display: "Brands", idKey: "brandId", nameKey: "Brand"},
-  {value: "affiliate", display: "Affiliate networks", idKey: "affiliateId", nameKey: "affiliateName", level: 0},
-  {value: "BrowserVersion", display: "Browser versions", idKey: "bvId", nameKey: "BrowserVersion"},
-  {value: "Browser", display: "Browsers", idKey: "Browser", nameKey: "Browser"},
-  {value: "City", display: "City", idKey: "cityId", nameKey: "City"},
-  {value: "ConnectionType", display: "Connection type", idKey: "ctId", nameKey: "ConnectionType"},
+  {value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName"},
+  {value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName"},
+  {value: "brand", display: "Brands", idKey: "brand", nameKey: "brand"},
+  {value: "affiliate", display: "Affiliate networks", idKey: "affiliateId", nameKey: "affiliateName"},
+  {value: "browserVersion", display: "Browser versions", idKey: "browserVersion", nameKey: "browserVersion"},
+  {value: "browser", display: "Browsers", idKey: "browser", nameKey: "browser"},
+  {value: "city", display: "City", idKey: "city", nameKey: "city"},
+  {value: "connectionType", display: "Connection Type", idKey: "connectionType", nameKey: "connectionType"},
   // {value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName"},
-  {value: "Country", display: "Country", idKey: "countryId", nameKey: "Country"},
-  {value: "day", display: "Day", idKey: "dayId", nameKey: "day"},
-  // {value: "DayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
-  {value: "DeviceType", display: "Device types", idKey: "dtId", nameKey: "DeviceType"},
+  {value: "country", display: "Country", idKey: "country", nameKey: "country"},
+  {value: "day", display: "Day", idKey: "day", nameKey: "day"},
+  // {value: "dayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
+  {value: "deviceType", display: "Device Type", idKey: "deviceType", nameKey: "deviceType"},
   // {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},
-  // {value: "ip", display: "IP", idKey: "ipId", nameKey: "ipName"},
-  {value: "ISP", display: "ISP / Carrier", idKey: "ispId", nameKey: "ISP"},
-  {value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName", level: 0},
-  {value: "Language", display: "Language", idKey: "languageId", nameKey: "Language"},
-  {value: "MobileCarrier", display: "Mobile carrier", idKey: "mcId", nameKey: "MobileCarrier"},
-  {value: "Model", display: "Models", idKey: "modelId", nameKey: "Model"},
+  // {value: "timeOfDay", display: "Time of day", idKey: "todId", nameKey: "TimeOfDay"},
+  {value: "ip", display: "IP and IP range", idKey: "ip", nameKey: "ip"},
+  {value: "isp", display: "ISP / Carrier", idKey: "isp", nameKey: "isp"},
+  {value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName"},
+  {value: "language", display: "Language", idKey: "language", nameKey: "language"},
+  {value: "mobileCarrier", display: "Mobile carrier", idKey: "mobileCarrier", nameKey: "mobileCarrier"},
+  {value: "model", display: "Models", idKey: "model", nameKey: "model"},
   // {value: "monty", display: "Month", idKey: "montyId", nameKey: "montyName"},
-  {value: "OS", display: "OS", idKey: "osId", nameKey: "OS"},
-  {value: "OSVersion", display: "OS versions", idKey: "osversionId", nameKey: "OSVersion"},
-  {value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName", level: 0},
+  {value: "os", display: "OS", idKey: "os", nameKey: "os"},
+  {value: "osVersion", display: "OS versions", idKey: "osVersion", nameKey: "osVersion"},
+  {value: "offer", display: "Offers", idKey: "offerId", nameKey: "offerName"},
   // {value: "referrer", display: "Referrer", idKey: "referrerId", nameKey: "referrerName"},
-  {value: "Domain", display: "Referrer domain", idKey: "referrerdomainId", nameKey: "Domain"},
-  {value: "Region", display: "State / Region", idKey: "regionId", nameKey: "Region"},
-  {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName", level: 0},
+  {value: "domain", display: "Referrer domain", idKey: "domain", nameKey: "domain"},
+  {value: "region", display: "State / Region", idKey: "region", nameKey: "region"},
+  {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName"},
+  {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteId"},
+  {value: "v1", display: "V1", idKey: "v1", nameKey: "v1", paramValue: "", role: 'campaign'},
+  {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", paramValue: "", role: 'campaign'},
+  {value: "v3", display: "V3", idKey: "v3", nameKey: "v3", paramValue: "", role: 'campaign'},
+  {value: "v4", display: "V4", idKey: "v4", nameKey: "v4", paramValue: "", role: 'campaign'},
+  {value: "v5", display: "V5", idKey: "v5", nameKey: "v5", paramValue: "", role: 'campaign'},
+  {value: "v6", display: "V6", idKey: "v6", nameKey: "v6", paramValue: "", role: 'campaign'},
+  {value: "v7", display: "V7", idKey: "v7", nameKey: "v7", paramValue: "", role: 'campaign'},
+  {value: "v8", display: "V8", idKey: "v8", nameKey: "v8", paramValue: "", role: 'campaign'},
+  {value: "v9", display: "V9", idKey: "v9", nameKey: "v9", paramValue: "", role: 'campaign'},
+  {value: "v10", display: "V10", idKey: "v10", nameKey: "v10", paramValue: "", role: 'campaign'}
 ]);
 
 angular.module('app').value('urlParameter', {

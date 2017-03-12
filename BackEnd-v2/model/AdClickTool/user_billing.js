@@ -8,6 +8,9 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    planPaymentLogId: {
+      type: DataTypes.INTEGER
+    },
     nextPlanId: {
       type: DataTypes.INTEGER
     },
@@ -29,10 +32,16 @@ export default function(sequelize, DataTypes) {
     includedEvents: {
       type: DataTypes.INTEGER
     },
+    boughtEvents: {
+      type: DataTypes.INTEGER
+    },
     freeEvents: {
       type: DataTypes.INTEGER
     },
     overageEvents: {
+      type: DataTypes.INTEGER
+    },
+    overageLimit: {
       type: DataTypes.INTEGER
     },
     expired: {
@@ -43,7 +52,25 @@ export default function(sequelize, DataTypes) {
     }
   }, {
     timestamps: false,
-    tableName: 'UserBilling'
+    tableName: 'UserBilling',
+    classMethods: {
+      associate(models) {
+        model.belongsTo(models.PaypalBillingAgreement, {
+          foreignKey: 'agreementId'
+        })
+        model.belongsTo(models.TemplatePlan, {
+          foreignKey: 'planId'
+        })
+        model.belongsTo(models.User, {
+          foreignKey: 'userId'
+        })
+      }
+    },
+    instanceMethods: {
+      netEvents() {
+        return this.boughtEvents + this.freeEvents + this.includedEvents - this.totalEvents;
+      }
+    }
   })
   return model;
 }

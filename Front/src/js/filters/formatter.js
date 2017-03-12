@@ -29,6 +29,13 @@ angular.module('app')
         return str.toString().replace(/\B(?=(?:\d{3})+\b)/g, ',');
     }
   })
+  .filter('currency', function() {
+      return function(input, glue) {
+        glue = glue ? glue : '$';
+        input = input || 0;
+        return glue + input; //.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      };
+  })
   .filter('ucfirst', function() {
     return function(input) {
       return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
