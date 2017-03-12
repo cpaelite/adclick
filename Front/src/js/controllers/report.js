@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -48,7 +48,7 @@
     }
   }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
@@ -188,7 +188,7 @@
       if (parentRow) {
         params.groupBy = pageStatus.groupBy[parentRow.treeLevel];
         params.page = 1;
-        params.limit = -1;
+        //params.limit = -1;
 
         var pgrp = pageStatus.groupBy[parentRow.treeLevel-1];
         params[pgrp] = parentRow.id;
@@ -266,9 +266,6 @@
     function filteGroupBy(level) {
       return function(item) {
         var exclude = [];
-        if (perfType != 'campaign' && item.role == 'campaign') {
-          exclude.push(item.value);
-        }
         $scope.filters.forEach(function(f) {
           exclude.push(f.key);
         });
@@ -280,7 +277,6 @@
       }
     }
 
-    $scope.groupbyFilter = filteGroupBy(0);
     $scope.groupbyFilter1 = filteGroupBy(1);
     $scope.groupbyFilter2 = filteGroupBy(2);
 
@@ -366,7 +362,7 @@
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
-      if (perfType != 'campaign' && item.role == 'campaign') {
+      if (perfType != 'campaign' && perfType != 'traffic' && item.role == 'campaign') {
         exclude.push(item.value);
       }
       $scope.filters.forEach(function(f) {
@@ -374,6 +370,35 @@
       });
       return exclude.indexOf(item.value) == -1;
     };
+
+    $scope.menuOpen = function (mdMenu, row) {
+      mdMenu.open();
+      var id = 0;
+      if (perfType == "campaign") {
+        id = row.data.trafficId;
+      } else if (perfType == "traffic") {
+        id = row.id;
+      } else {
+        return;
+      }
+      TrafficSource.get({id: id}, function (traffic) {
+        if (traffic.status && traffic.data.params) {
+          var params = JSON.parse(traffic.data.params);
+          $scope.groupByOptions.forEach(function(option, index) {
+            if (option.role == "campaign") {
+              var idx = option.value.substring(1);
+              var parameter = params[idx-1].Parameter;
+              if (parameter) {
+                $scope.groupByOptions[index].paramValue = parameter;
+              } else {
+                $scope.groupByOptions[index].paramValue = "N/A";
+              }
+            }
+          });
+        }
+      });
+    };
+
     $scope.drilldown = function(row, gb) {
       if ($scope.treeLevel > 1)
         return;
