@@ -51,6 +51,7 @@
         $scope.query.tz = theProfile.timezone;
       }
 
+      $scope.members = theMember;
       if (theMember.length > 0 && theMember[0].idText) {
         $scope.filter = {
           userId: theMember[0].idText,

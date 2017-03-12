@@ -236,7 +236,7 @@ app.get('/api/permission', function (req, res) {
         },
         eventLog: {
           show: true,
-          selectUser: false
+          selectUser: true
         },
         conversionUpload: {
           show: true
