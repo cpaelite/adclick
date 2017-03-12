@@ -84,15 +84,6 @@
         });
         $rootScope.currentUser = $localStorage.currentUser;
 
-        // load permission
-        Permission.get(null, function(res) {
-          if (!res.status) {
-            return;
-          }
-          $rootScope.permissions = res.data;
-        });
-        $rootScope.permissions = $cookies.getObject('permissions');
-
         // load user preferences
         Preference.get(null, function(res) {
           if (!res.status)

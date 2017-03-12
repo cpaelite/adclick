@@ -2704,3 +2704,8 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
 .sign-up-success .sign-up-detail {
   margin-bottom: 25px;
 }
+input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disabled, select:disabled {
+  background-color: #f5f8fd;
+  border: .08333333em solid #f5f8fd;
+  color: #a4aab1;
+}
