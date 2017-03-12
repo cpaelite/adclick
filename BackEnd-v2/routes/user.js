@@ -221,59 +221,7 @@ router.get('/api/postbackurl', function (req, res, next) {
 
 
 
-router.get('/api/permission', async function (req, res, next) {
-    let connection;
-    try {
-        connection = await common.getConnection();
-        let f = await common.query("select `functions` from UserFunctions where `userId`= ?", [req.parent.id], connection);
-        let privileges = JSON.parse(req.parent.privilege);
-        //初始化
-        if (_.has(privileges, "setting.domain")) {
-            privileges.setting.domain.domainLimit = 0;
-        }
-        if (_.has(privileges, "setting.userManagement")) {
-            privileges.setting.userManagement.userLimit = 0;
-        }
-        if (_.has(privileges, "report.tsReport")) {
-            privileges.report.tsReport.tsReportLimit = 0;
-        }
-        if (_.has(privileges, "report")) {
-            privileges.report.retentionLimit = 0;
-        }
-        if (f.length && req.parent.privilege) {
-            let limits = JSON.parse(f[0].functions);
-            if (_.has(limits, 'domainLimit') && _.has(privileges, "setting.domain")) {
-                privileges.setting.domain.domainLimit = limits.domainLimit;
-            }
-            if (_.has(limits, 'userLimit') && _.has(privileges, "setting.userManagement")) {
-                privileges.setting.userManagement.userLimit = limits.userLimit;
-            }
-            if (_.has(limits, 'tsReportLimit') && _.has(privileges, "report.tsReport")) {
-                privileges.report.tsReport.tsReportLimit = limits.tsReportLimit;
-            }
-            if (_.has(limits, 'retentionLimit') && _.has(privileges, "report")) {
-                privileges.report.retentionLimit = limits.retentionLimit;
-            }
-            return res.json({
-                status: 1,
-                message: 'success',
-                data: privileges
-            })
-        } else {
-            return res.json({
-                status: 0,
-                message: 'fail',
-                data: {}
-            })
-        }
-    } catch (e) {
-        next(e);
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-})
+
 
 
 
