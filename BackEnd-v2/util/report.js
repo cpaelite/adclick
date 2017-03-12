@@ -184,6 +184,8 @@ export function extraConfig(groupBy) {
           ['hash', 'campaignHash'],
           ['url', 'campaignUrl'],
           ['country', 'campaignCountry'],
+          ['trafficSourceId', 'trafficId'],
+          ['trafficSourceName', 'trafficName'],
         ]
       }
       break;
