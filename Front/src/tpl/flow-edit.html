@@ -1,4 +1,4 @@
-<div class="cs-page-flow" ng-click="clearOnEdit()">
+<div class="cs-page-flow clearfix" ng-click="clearOnEdit()">
   <div class="col-sm-4 col-md-4 cs-flow-tree">
     <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li" ng-show="flowMode">
       <i class="material-icons tree-icon">album</i>
@@ -519,9 +519,8 @@
       </button>
     </div>
   </div>
-
   <div class="cs-save-errors" ng-show="showErrors">
-    <span class="cs-hide-errors" ng-click="showErrors=false">x</span>
+    <span class="cs-hide-errors" ng-click="hideErrors()">x</span>
     <ul>
       <li ng-repeat="err in saveErrors track by $index">{{err}}</li>
     </ul>
