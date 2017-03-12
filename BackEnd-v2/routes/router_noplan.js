@@ -144,7 +144,6 @@ router.get('/api/groups', async function (req, res, next) {
             connection.release();
         }
     }
-  }
 });
 
 
@@ -212,16 +211,7 @@ router.get('/api/profile', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    res.json({
-      status: 1,
-      message: 'succes',
-      data: responseData
-    });
-  } catch (e) {
-    next(e);
-  }
-  finally {
+    }finally {
     if (connection) {
       connection.release();
     }
