@@ -240,11 +240,13 @@ a:hover,a:focus{text-decoration:none;color:#357cf4;}
 .icon-question-sign{color:#494949;}
 .footer-box{background:#d6deea;padding:30px 0 0 0;font-size:12px;margin-top:30px;}
 .footer-box .container{padding-bottom:40px;}
+.footer-box span{margin-bottom:0;display:block;}
+.icon-skype-font{font-size:13px;}
 .footer-box h4{color:#72777d;font-size:16px;margin-bottom:15px;}
-.footer-box h5{color:#4f4f4f;margin-bottom:15px;}
+.footer-box h5{color:#4f4f4f;margin-bottom:10px;}
 .footer-box i{color:#484849;}
 .footer-box span a{color:#4f4f4f;}
-.con-title{margin:25px 0 10px 0;}
+.con-title{margin:15px 0 0 0;}
 .list-01 li{line-height:32px;}
 .list-01 li a{color:#4f4f4f;}
 .qq img{float:left;margin-top:4px;}
