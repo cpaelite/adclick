@@ -170,6 +170,9 @@ async function normalReport(values) {
   })
   let rawRows = rows.map(e => e.dataValues);
   rawRows = await fullFill({rawRows, groupBy})
+  if (groupBy === "campaign") {
+    rawRows = await fullFill({rawRows, groupBy: "flow"})
+  }
   rawRows = formatRows(rawRows)
   let totalRows = rawRows.length;
   let totals = {
