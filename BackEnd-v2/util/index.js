@@ -59,7 +59,7 @@ exports.checkToken = function () {
 
 exports.checkPlan = function () {
   return function (req, res, next) {
-    if (req.user && req.user.status !== 1) {
+    if (req.parent && req.parent.status !== 1) {
       //用户是否成功购买套餐
       let err = new Error('INSUFFICIENT_SUBSCRIPTION');
       err.status = 405;
