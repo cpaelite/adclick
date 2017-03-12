@@ -1048,6 +1048,7 @@
         saveCampaign(oData.data);
       } else {
         // TODO show error
+        console.log(oData.data);
       }
     });
 
