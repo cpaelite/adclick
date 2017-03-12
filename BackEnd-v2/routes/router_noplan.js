@@ -223,9 +223,12 @@ router.get('/api/profile', async function (req, res, next) {
 router.get('/api/permission', async function (req, res, next) {
   let connection;
   try {
+    let privileges;
     connection = await common.getConnection();
     let f = await common.query("select `functions` from UserFunctions where `userId`= ?", [req.parent.id], connection);
-    let privileges = JSON.parse(req.parent.privilege);
+    if (req.parent.privilege) {
+      privileges = JSON.parse(req.parent.privilege);
+    }
     //初始化
     if (_.has(privileges, "setting.domain")) {
       privileges.setting.domain.domainLimit = 0;
