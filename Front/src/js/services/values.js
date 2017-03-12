@@ -551,16 +551,16 @@ angular.module('app').value('groupByOptions', [
   {value: "region", display: "State / Region", idKey: "region", nameKey: "region"},
   {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName"},
   {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteId"},
-  /*{value: "v1", display: "V1", idKey: "v1", nameKey: "v1", role: 'campaign'},
-  {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", role: 'campaign'},
-  {value: "v3", display: "V3", idKey: "v3", nameKey: "v3", role: 'campaign'},
-  {value: "v4", display: "V4", idKey: "v4", nameKey: "v4", role: 'campaign'},
-  {value: "v5", display: "V5", idKey: "v5", nameKey: "v5", role: 'campaign'},
-  {value: "v6", display: "V6", idKey: "v6", nameKey: "v6", role: 'campaign'},
-  {value: "v7", display: "V7", idKey: "v7", nameKey: "v7", role: 'campaign'},
-  {value: "v8", display: "V8", idKey: "v8", nameKey: "v8", role: 'campaign'},
-  {value: "v9", display: "V9", idKey: "v9", nameKey: "v9", role: 'campaign'},
-  {value: "v10", display: "V10", idKey: "v10", nameKey: "v10", role: 'campaign'},*/
+  {value: "v1", display: "V1", idKey: "v1", nameKey: "v1", paramValue: "", role: 'campaign'},
+  {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", paramValue: "", role: 'campaign'},
+  {value: "v3", display: "V3", idKey: "v3", nameKey: "v3", paramValue: "", role: 'campaign'},
+  {value: "v4", display: "V4", idKey: "v4", nameKey: "v4", paramValue: "", role: 'campaign'},
+  {value: "v5", display: "V5", idKey: "v5", nameKey: "v5", paramValue: "", role: 'campaign'},
+  {value: "v6", display: "V6", idKey: "v6", nameKey: "v6", paramValue: "", role: 'campaign'},
+  {value: "v7", display: "V7", idKey: "v7", nameKey: "v7", paramValue: "", role: 'campaign'},
+  {value: "v8", display: "V8", idKey: "v8", nameKey: "v8", paramValue: "", role: 'campaign'},
+  {value: "v9", display: "V9", idKey: "v9", nameKey: "v9", paramValue: "", role: 'campaign'},
+  {value: "v10", display: "V10", idKey: "v10", nameKey: "v10", paramValue: "", role: 'campaign'}
 ]);
 
 angular.module('app').value('urlParameter', {
