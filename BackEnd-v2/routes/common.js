@@ -1101,6 +1101,9 @@ async function checkNameExists(userId, id, name, type, connection) {
         case 4:
             results = await query("select `id` from Flow where `userId`= ? and `name`= ? and `type`=1", [userId, name], connection);
             break;
+        case 5:
+            results = await query("select `id` from TrafficSource where `userId`= ? and `name`= ?", [userId, name], connection);
+            break;
         default:
             throw new Error("Paramter type error");
     }
