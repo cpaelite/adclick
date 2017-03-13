@@ -254,6 +254,7 @@
               <div class="col-md-7">
                 <div class="cs-flow-rule">
                   <div class="tree-li">
+                    <i class="material-icons tree-icon">album</i>
                     <span class="cs-flow-name ng-binding">{{flow.name}}</span>
                   </div>
                 </div>
@@ -261,15 +262,17 @@
                   <div class="tree-li cs-rule-default" ng-click="toggleClick(rule)">
                     <span>
                       <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': rule.isShow}">keyboard_arrow_down</i>
+                      <i class="material-icons tree-icon">album</i>
                     </span>
                     <span class="cs-path-name">
                       <span class="cs-rule-name ng-binding">{{rule.name}}</span>
                     </span>
                   </div>
-                  <ul ng-repeat="path in rule.paths" ng-hide="rule.isShow">
+                  <ul ng-repeat="path in rule.paths" ng-hide="rule.isShow" class="path-ul">
                     <li class="tree-li ng-scope" ng-click="toggleClick(path)">
                       <span>
                         <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': path.isShow}">keyboard_arrow_down</i>
+                        <i class="material-icons tree-icon">album</i>
                       </span>
                       <span class="cs-path-name clearfix">
                         <span class="path-name ng-binding">{{path.name}} </span>
@@ -283,6 +286,7 @@
                           <li class="tree-li third-tree-li ng-scope" ng-click="toggleClick(offerItem)">
                             <span>
                               <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': offerItem.isShow}">keyboard_arrow_down</i>
+                              <i class="material-icons tree-icon">album</i>
                             </span>
                             <span class="cs-path-name clearfix">
                               <span class="path-name ng-binding">Offers</span>
@@ -290,7 +294,7 @@
                           </li>
                           <div ng-repeat="offer in path.offers" ng-hide="offerItem.isShow">
                             <li class="tree-li fourth-tree-li ng-scope">
-                              <i class="icon-double-angle-right tree-icon"></i>
+                              <i class="material-icons tree-icon">album</i>
                               <span class="cs-path-name clearfix">
                                 <span class="path-name ng-binding">{{offer.name}}</span>
                                 <span class="weight-num ng-binding">
@@ -306,6 +310,7 @@
                             <li class="tree-li third-tree-li ng-scope" ng-click="toggleClick(landerItem)">
                                 <span>
                                     <i class="material-icons md-mini cs-arrow-down flow-arrow-down" ng-class="{'rightAction': landerItem.isShow}">keyboard_arrow_down</i>
+                                    <i class="material-icons tree-icon">album</i>
                                 </span>
                                 <span class="cs-path-name clearfix">
                                     <span class="path-name ng-binding">Landers</span>
@@ -313,7 +318,7 @@
                             </li>
                             <div ng-repeat="lander in path.landers" ng-hide="landerItem.isShow">
                                 <li class="tree-li fourth-tree-li ng-scope">
-                                    <i class="icon-double-angle-right tree-icon"></i>
+                                    <i class="material-icons tree-icon">album</i>
                                     <span class="cs-path-name clearfix">
                                         <span class="path-name ng-binding">{{lander.name}}</span>
                                         <span class="weight-num ng-binding">
