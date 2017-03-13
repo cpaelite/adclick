@@ -33,7 +33,7 @@
 							<span ng-if="emailForm.email.$error.email">Email must be a valid Email</span>
             </span>
 			    </div>
-					<button type="submit" class="btn btn-primary" ng-disabled="invitionSaveStatus" ng-click="sendInvitation(emails)">Send invitation</button>
+					<button type="submit" class="btn btn-primary blue-btn" ng-disabled="invitionSaveStatus" ng-click="sendInvitation(emails)">Send invitation</button>
 			  </div>
 			</form>
 		</div>
@@ -42,7 +42,7 @@
 			<div class="form-inline user-list">
 				<span><i class="material-icons">account_box</i> {{profile.name}}</span>
 				<span>{{profile.email}}</span>
-				<button type="submit" class="btn btn-primary">owner</button>
+				<button type="submit" class="btn btn-primary blue-btn">owner</button>
 			</div>
 			<div class="form-inline user-list" ng-repeat="user in users">
 				<span><i class="material-icons">account_box</i> {{user.name}}</span>

@@ -6,7 +6,7 @@ Once bot rules are enabled, they will be applied globally to all active campaign
 The maximum amount of the bot rules that can be created is {{blacklistCount}}. You can still add {{blacklistCount - data.blacklist.length}} bot rule(s).</p>
 </h1>
 <div class="form-column bot-blacklist">
-  <div class="bot-blacklist-content clearfix">
+  <div class="container clearfix">
     <div class="form-group bot-select">
       <label>Bot rules: </label>
         <md-select class="cs-subform-select" ng-model="data.enabled">
@@ -15,7 +15,7 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
         </md-select>
     </div>
     <div class="btn-right" ng-show="data.blacklist.length < blacklistCount">
-      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="material-icons">add</i>Create New</md-button>
+      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="icon-plus"></i>Create New</md-button>
       <!-- <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
       <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button> -->
     </div>

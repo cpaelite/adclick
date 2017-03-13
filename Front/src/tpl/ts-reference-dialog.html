@@ -18,10 +18,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">TS<span class="star-icon">*</span>:</label>
                 <div class="col-sm-8">
-                    <select name="ts" class="form-control" ng-model="formData.tsId" ng-change="tsChanged(formData.tsId)" required>
-                        <option value=""></option>
-                        <option value="{{thirdTraffic.id}}" ng-repeat="thirdTraffic in thirdTraffics">{{thirdTraffic.name}}</option>
-                    </select>
+                    <md-select name="ts" class="form-control" ng-model="formData.tsId" ng-change="tsChanged(formData.tsId)" required>
+                        <md-option value=""></md-option>
+                        <md-option value="{{thirdTraffic.id}}" ng-repeat="thirdTraffic in thirdTraffics">{{thirdTraffic.name}}</md-option>
+                    </md-select>
                     <span class="text-danger" ng-show="(editForm.ts.$touched || editForm.$submitted) && editForm.ts.$invalid">
                         <span ng-show="editForm.ts.$error.required">Traffic source is required.</span>
                     </span>

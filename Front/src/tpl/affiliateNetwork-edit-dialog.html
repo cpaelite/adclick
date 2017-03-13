@@ -1,6 +1,6 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
     <md-toolbar>
-        <div class="md-toolbar-tools">
+        <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
@@ -12,7 +12,7 @@
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group traffic-source">
                 <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <md-button class="md-primary btn-primary traffic-source-templates" ng-click="trustedAffiliateNetworks($event)">
                         {{'Trusted affiliate networks' | translate}}
                     </md-button>
@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{'affiliateNetworkName' | translate}}<span class="star-icon">*</span>: </label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="text" name="name" class="form-control" ng-model="item.name" required>
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
@@ -42,19 +42,19 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="checkbox" ng-model="item.appendClickId" ng-true-value="1" ng-false-value="0"> Append click ID to offer URLs
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="checkbox" ng-model="item.duplicatedPostback" ng-true-value="1" ng-false-value="0"> Accept duplicate postbacks
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="checkbox" ng-model="ipWhiteCheck"> Only accept postbacks from white-listed IPs
                     <div class="network-textarea" ng-show="ipWhiteCheck">
                         <i class="note">Please enter one IP per line.<span class="star-icon">*</span></i>
@@ -71,9 +71,9 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
         </md-button>
-        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
     </md-dialog-actions>
 
 </md-dialog>

@@ -1,8 +1,8 @@
 <h1 class="setting-title">Domains</h1>
 <div class="form-column profile-content ">
+  <div class="container">
   <div class="basic-form">
     <div class="domain-p">
-
       <p><i class="material-icons">info_outline</i>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
       The default Newbidder.com is meant for testing purposes only.</p>
     </div>
@@ -15,7 +15,7 @@
           <li>Set up domains: <b>{{item.custom.length}}</b></li>
           <li>Available domains: <b>{{domainLimit}}</b></li>
         </ul>
-        <md-button class="md-raised add-another-btn" ng-click="addCustom()" ng-class="{'gray-btn': isGray}">Add another domain</md-button>
+        <md-button class="md-raised add-another-btn" ng-click="addCustom()" ng-class="{'gray-btn': isGray}"><i class="icon-plus"></i> Add another domain</md-button>
       </div>
       <div class="domains-container">
         <div class="internal-domains form-horizontal">
@@ -29,7 +29,7 @@
             </div>
           </div>
         </div>
-        <div class="item-domains domains  form-horizontal">
+        <div class="item-domains domains form-horizontal">
           <div class="item-domains clearfix" ng-repeat="c in item.custom track by $index" ng-class="{'btnColor':isBtnColor}">
             <label>Custom domain {{$index+1}}</label>
             <div class="input-out">
@@ -85,5 +85,6 @@
         </md-button>
       </div>
     </form>
+  </div>
   </div>
 </div>

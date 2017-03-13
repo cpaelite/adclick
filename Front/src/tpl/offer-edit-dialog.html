@@ -1,6 +1,6 @@
 <md-dialog class="cs-edit-dialog offer-title" ng-cloak>
     <md-toolbar>
-        <div class="md-toolbar-tools">
+        <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
@@ -18,7 +18,7 @@
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="text" name="name" class="form-control" ng-model="item.name"
                         ng-change="nameChanged(item.name)"
                         ng-blur="nameRequired()"
@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input my-text="" type="text" name="url" class="form-control" ng-model="item.url" ng-blur="validateUrl()" required>
                     <span style="color:red" ng-show="editForm.url.$dirty && editForm.url.$invalid">
                     <span ng-show="editForm.url.$error.required">Url is required.</span>
@@ -44,7 +44,7 @@
             </div>
             <div class="url-tokens-row form-group">
                 <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
                         <div class="url-token"
@@ -60,32 +60,33 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
-                <div class="col-sm-8 my-select">
-                    <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)" ng-disabled="countryInputDisabled">
-                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
-                    </select>
+                <div class="col-sm-7 my-select">
+                    <md-select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)" ng-disabled="countryInputDisabled">
+
+                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
+                    </md-select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
-                <div class="col-sm-8 my-select">
-                    <select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
-                        <option value="0"></option>
-                        <option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</option>
-                    </select>
-                    <span class="btn btn-primary" ng-click="addAffiliateNetwork()">Add affilaite network</span>
+                <div class="col-sm-7 my-select">
+                    <md-select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
+                        <md-option value="0"></md-option>
+                        <md-option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</md-option>
+                    </md-select>
+                    <span class="btn btn-primary blue-btn" ng-click="addAffiliateNetwork()">Add affilaite network</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Postback Url：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-show="postbackUrl">
                     <input type="text" class="form-control" ng-model="item.postbackUrl" ng-readonly="true">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Payout<span class="star-icon">*</span>：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <label class="radio-inline">
                         <input type="radio" name="payoutMode" ng-model="item.payoutMode" value="0" required> Auto
                     </label>
@@ -99,14 +100,14 @@
             </div>
             <div class="form-group" ng-show="item.payoutMode == 1">
                 <label class="col-sm-3 control-label" ng-modle="radioTitle"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <span class="dollar-icon">$</span>
                     <input type="text" class="form-control dollar-input" ng-model="item.payoutValue" ng-value="$">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Tags：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
                     <!-- <md-chips
                             ng-model="tags"
@@ -125,9 +126,9 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
         </md-button>
-        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
     </md-dialog-actions>
 
 </md-dialog>

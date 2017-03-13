@@ -1,73 +1,77 @@
-<div flex layout="column" class="cs-page-content report">
+<div class="cs-action-bar-bg">
+    <h6>Advanced filters:</h6>
     <div class="cs-action-bar clearfix">
-        <div class="right-select">
-            <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="query.tsReferenceId">
-                    <md-option value="{{tsReference.tsId}}" ng-repeat="tsReference in tsReferences">{{tsReference.name}}</md-option>
-                </md-select>
-            </div>
+    <div class="right-select right-select-left">
+        <div class="cs-subform-control">
+            <md-select class="cs-subform-select" ng-model="query.tsReferenceId">
+                <md-option value="{{tsReference.tsId}}" ng-repeat="tsReference in tsReferences">{{tsReference.name}}</md-option>
+            </md-select>
+        </div>
 
+        <div class="cs-subform-control">
+            <md-select class="cs-subform-select" ng-model="datetype">
+                <md-option value="1">Today</md-option>
+                <md-option value="2">Yesterday</md-option>
+                <md-option value="3">Last 7 days</md-option>
+                <md-option value="4">Last 14 days</md-option>
+                <md-option value="5">This Week</md-option>
+                <md-option value="6">Last Week</md-option>
+                <md-option value="7">This Month</md-option>
+                <md-option value="8">Last Month</md-option>
+                <md-option value="0">Custom</md-option>
+            </md-select>
+        </div>
+        <div class="cs-subform-group" ng-show="datetype==0">
+            <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="datetype">
-                    <md-option value="1">Today</md-option>
-                    <md-option value="2">Yesterday</md-option>
-                    <md-option value="3">Last 7 days</md-option>
-                    <md-option value="4">Last 14 days</md-option>
-                    <md-option value="5">This Week</md-option>
-                    <md-option value="6">Last Week</md-option>
-                    <md-option value="7">This Month</md-option>
-                    <md-option value="8">Last Month</md-option>
-                    <md-option value="0">Custom</md-option>
-                </md-select>
+                <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
+                        ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                        ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                    {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                </button>
+                <select class="cs-subform-select" ng-model="fromTime">
+                    <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+                </select>
             </div>
-            <div class="cs-subform-group" ng-show="datetype==0">
-                <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
-                <div class="cs-subform-control">
-                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
-                            ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
-                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-                        {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                    <select class="cs-subform-select" ng-model="fromTime">
-                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
-                    </select>
-                </div>
-                <label class="cs-subform-label">{{'toDate' | translate}}：</label>
-                <div class="cs-subform-control">
-                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
-                            ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
-                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-                        {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                    <select class="cs-subform-select" ng-model="toTime">
-                      <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
-                    </select>
-                </div>
+            <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+            <div class="cs-subform-control">
+                <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
+                        ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                        ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                    {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                </button>
+                <select class="cs-subform-select" ng-model="toTime">
+                    <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
+                </select>
             </div>
-            <md-button
-                class="md-raised md-primary cs-compact cs-add-button"
+        </div>
+        <md-button
+                class="md-raised md-primary cs-compact cs-add-button blue-btn"
                 ng-click="applySearch($event)"
                 translate
-            >
-                apply
-            </md-button>
-            <md-button
-                class="md-raised md-primary cs-compact cs-add-button"
+        >
+            apply
+        </md-button>
+        <md-button
+                class="md-raised md-primary cs-compact cs-add-button blue-btn"
                 ng-click="addOrEditTsReference()"
                 translate
-            >
-                add
-            </md-button>
-            <md-button
-                class="md-raised md-primary cs-compact cs-add-button"
+        >
+            add
+        </md-button>
+        <md-button
+                class="md-raised md-primary cs-compact cs-add-button blue-btn"
                 ng-click="addOrEditTsReference(query.tsReferenceId)"
                 translate
                 ng-show="tsReferences.length > 0"
-                >
-                edit
-            </md-button>
-        </div>
+        >
+            edit
+        </md-button>
     </div>
+</div>
+</div>
+
+<div flex layout="column" class="cs-page-content report">
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order">
@@ -90,8 +94,8 @@
                     <td md-cell><span>{{row['cost'] | currency}}</span></td>
                     <!-- <td md-cell><span>{{row['conversions']}}</span></td> -->
                     <td md-cell>
-                        <span class="btn btn-default btn-xs" ng-class="{disabled: row.startStatus}" ng-click="start(row)" style="width: 50px;">Start</span>
-                        <span class="btn btn-default btn-xs" ng-class="{disabled: row.pauseStatus}" ng-click="pause(row)" style="width: 50px;">Pause</span>
+                        <span class="btn btn-default star-btn" ng-class="{disabled: row.startStatus}" ng-click="start(row)"><i class="icon-ks-01"></i>Start</span>
+                        <span class="btn btn-default star-btn stop-btn" ng-class="{disabled: row.pauseStatus}" ng-click="pause(row)"><i class="icon-zt-02"></i>Pause</span>
                     </td>
                 </tr>
             </tbody>

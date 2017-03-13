@@ -1,6 +1,8 @@
+
 <h1 class="setting-title">Your account data</h1>
 
-<div class="form-column profile-content">
+<div class="form-column profile-content ">
+  <div class="container">
   <form name="form" class="account-form" ng-submit="accountSave()">
     <div class="basic-form clearfix">
       <div class="col-md-6">
@@ -20,9 +22,9 @@
         </div>
         <div class="form-group">
           <label>Default time zone</label>
-          <select class="cs-subform-select" ng-model="accountItem.timezone" required>
-            <option ng-repeat="tz in timezone" value="{{tz.utcShift}}">{{tz.detail}}</option>
-          </select>
+          <md-select class="cs-subform-select" ng-model="accountItem.timezone" required>
+            <md-option ng-repeat="tz in timezone" value="{{tz.utcShift}}">{{tz.detail}}</md-option>
+          </md-select>
         </div>
         <div class="form-group clearfix">
           <label>Default home screen</label>
@@ -57,11 +59,12 @@
       </md-button>
     </div>
   </form>
+  </div>
 </div>
-
 <h1 class="setting-title">Password and e-mail change</h1>
 
 <div class="form-column profile-content password-change">
+  <div class="container">
   <div class="basic-form clearfix">
   <form name="passwordForm" ng-submit="passwordUpdateSave()">
     <div class="col-xs-12 col-sm-6 col-md-6">
@@ -121,5 +124,6 @@
       </div>
     </div>
   </form>
+  </div>
   </div>
 </div>

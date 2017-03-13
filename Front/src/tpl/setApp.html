@@ -1,19 +1,33 @@
-<header class="navbar">
-    <div class="md-toolbar-tools">
-        <h1>{{app.name}}</h1>
+<header class="navbar navbar-box">
+  <div class="md-toolbar-tools">
+      <!-- <md-button class="md-icon-button" hide-gt-sm ng-click="toggleLeftNav()" aria-label="Toggle Left Nav">
+          <md-icon>menu</md-icon>
+      </md-button> -->
+      <h1><img src="assets/img/logo-three.png"></h1>
 
-        <div flex></div>
-        <div class="home">
-          <a class="home-link" ui-sref="app.report.campaign"><i class="material-icons">home</i></a>
-        </div>
-        <div class="setting">
-          <a class="setting-link" ui-sref="setApp.profile"><i class="material-icons">settings</i></a>
-        </div>
+      <div flex></div>
+      <div class="home">
+        <a class="home-link" ui-sref="app.report.campaign"><i class="icon-home fonts17"></i></a>
+      </div>
+      <div class="setting">
+        <a class="setting-link" ui-sref="setApp.profile"><i class="icon-s-03 fonts15"></i></a>
+      </div>
+      <div class="changeplan">
+          <a href="#"><i class="icon-money-02 fonts16"></i>Change Plan</a>
+      </div>
+      <div class="coupon-btn">
+          <a href="javascript:;" ng-click="goCoupon()">
+          <div class="coupon-btn-col">
+          <span class="small-font">COUPON CODE</span><i class="coupon-icon"></i>
+          </div>
+      </a></div>
+
         <ul class="nav navbar-nav navbar-right">
             <!-- dropdown for user -->
             <li class="dropdown" uib-dropdown>
                 <a href class="dropdown-toggle clear" uib-dropdown-toggle>
-                    <i class="material-icons md-mini">&#xE87C;</i>
+                    <i class="icon-user fonts16">
+                    </i>
                     <span class="hidden-sm hidden-md text-md">{{currentUser.firstname}}</span>
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
@@ -39,61 +53,61 @@
         <ul class="nav">
             <li ui-sref-active="active" has-permission="setting.profile.show" operation="show">
                 <a ui-sref="setApp.profile" md-ink-ripple>
-                    <i class="icon-list-alt"></i>
+                    <i class="icon-jj-01 fonts15"></i>
                     <span>{{'profile' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.referralProgram.show" operation="show">
                 <a ui-sref="setApp.referralProgram" md-ink-ripple>
-                    <i class="icon-laptop"></i>
+                    <i class="icon-tj-02 fonts15"></i>
                     <span>{{'referralProgram' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.subscriptions.show" operation="show">
                 <a ui-sref="setApp.subscriptions" md-ink-ripple>
-                    <i class="icon-star"></i>
+                    <i class="icon-tj-04 fonts15"></i>
                     <span>{{'subscriptions' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.domain.show" operation="show">
                 <a ui-sref="setApp.domain" md-ink-ripple>
-                    <i class="icon-link"></i>
+                    <i class="icon-link fonts15"></i>
                     <span>{{'domain' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.setup.show" operation="show">
                 <a ui-sref="setApp.setUp" md-ink-ripple>
-                    <i class="icon-cog"></i>
+                    <i class="icon-s-03 fonts15"></i>
                     <span>{{'setUp' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.userManagement.show" operation="show">
                 <a ui-sref="setApp.userManagement" md-ink-ripple>
-                    <i class="icon-user"></i>
+                    <i class="icon-yh-01 fonts15"></i>
                     <span>{{'userManagement' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.blackList.show" operation="show">
                 <a ui-sref="setApp.botBlacklist" md-ink-ripple>
-                    <i class="icon-list-ul"></i>
+                    <i class="icon-hmd-02 fonts15"></i>
                     <span>{{'botBlacklist' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.invoices.show" operation="show">
                 <a ui-sref="setApp.invoices" md-ink-ripple>
-                    <i class="icon-file"></i>
+                    <i class="icon-fp-02 fonts14"></i>
                     <span>{{'invoices' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.eventLog.show" operation="show">
                 <a ui-sref="setApp.eventLog" md-ink-ripple>
-                    <i class="icon-th-list"></i>
+                    <i class="icon-bj-02 fonts15"></i>
                     <span>{{'eventLog' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="setting.conversionUpload.show" operation="show">
                 <a ui-sref="setApp.conversionUpload" md-ink-ripple>
-                    <i class="icon-cloud-upload"></i>
+                    <i class="icon-cloud-upload fonts15"></i>
                     <span>{{'conversionUpload' | translate}}</span>
                 </a>
             </li>

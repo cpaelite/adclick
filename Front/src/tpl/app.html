@@ -1,22 +1,34 @@
-<header class="navbar">
+<header class="navbar navbar-box">
     <div class="md-toolbar-tools">
         <!-- <md-button class="md-icon-button" hide-gt-sm ng-click="toggleLeftNav()" aria-label="Toggle Left Nav">
             <md-icon>menu</md-icon>
         </md-button> -->
-        <h1>{{app.name}}</h1>
+        <h1><img src="assets/img/logo-three.png"></h1>
 
         <div flex></div>
         <div class="home">
-          <a class="home-link"  ui-sref="app.report.campaign"><i class="material-icons">home</i></a>
+          <a class="home-link" ui-sref="app.report.campaign"><i class="icon-home fonts17"></i></a>
         </div>
         <div class="setting">
-          <a class="setting-link"  ui-sref="setApp.profile"><i class="material-icons">settings</i></a>
+          <a class="setting-link" ui-sref="setApp.profile"><i class="icon-s-03 fonts15"></i></a>
         </div>
+        <div class="changeplan">
+        <a href="#"><i class="icon-money-02 fonts16"></i>Change Plan</a>
+    </div>
+        <div class="coupon-btn">
+            <a href="javascript:;" ng-click="goCoupon()">
+            <div class="coupon-btn-col">
+            <span class="small-font">COUPON CODE</span><i class="coupon-icon"></i>
+            </div>
+        </a></div>
+
+
         <ul class="nav navbar-nav navbar-right">
             <!-- dropdown for user -->
             <li class="dropdown" uib-dropdown>
                 <a href class="dropdown-toggle clear" uib-dropdown-toggle>
-                    <i class="material-icons md-mini">&#xE87C;</i>
+                    <i class="icon-user fonts16">
+                    </i>
                     <span class="hidden-sm hidden-md text-md">{{currentUser.firstname}}</span>
                     <i class="material-icons md-mini">&#xE313;</i>
                 </a>
@@ -37,53 +49,53 @@
 <!-- <md-sidenav md-is-locked-open="screenGtSmall" md-component-id="left"
             class="md-sidenav-left md-whiteframe-z2 cs-left-aside"> -->
 <md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside">
-    <nav ui-nav class="navi clearfix">
+    <nav ui-nav class="navi nav-col clearfix">
         <ul class="nav">
             <li ui-sref-active="active" has-permission="report.dashboard.show" operation="show">
                 <a ui-sref="app.dashboard" md-ink-ripple>
-                    <i class="icon-dashboard"></i>
+                    <i class="icon-meter fonts17"></i>
                     <span>{{'dashBoard' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="report.campaign.show" operation="show">
                 <a ui-sref="app.report.campaign" md-ink-ripple>
-                    <i class="icon-desktop"></i>
+                    <i class="icon-shuju fonts16 mtop"></i>
                     <span>{{'campaign' | translate}}</span>
                 </a>
             </li>
             <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}" has-permission="report.flow.show" operation="show">
                 <a ui-sref="app.report.flow" md-ink-ripple>
-                    <i class="icon-tasks"></i>
+                    <i class="icon-yw-01 fonts17"></i>
                     <span>{{'flow' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="report.lander.show" operation="show">
                 <a ui-sref="app.report.lander" md-ink-ripple>
-                    <i class="icon-bar-chart"></i>
+                    <i class="icon-shm fonts15 mtop"></i>
                     <span>{{'lander' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="report.offer.show" operation="show">
                 <a ui-sref="app.report.offer" md-ink-ripple>
-                    <i class="icon-paste"></i>
+                    <i class="icon-tasks fonts15 mtop2"></i>
                     <span>{{'offer' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="report.trafficSource.show" operation="show">
                 <a ui-sref="app.report.traffic" md-ink-ripple>
-                    <i class="icon-sitemap"></i>
+                    <i class="icon-zh fonts17"></i>
                     <span>{{'traffic' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="report.affiliateNetwork.show" operation="show">
                 <a ui-sref="app.report.affiliate" md-ink-ripple>
-                    <i class="icon-globe"></i>
+                    <i class="icon-dwq fonts17"></i>
                     <span>{{'affiliate' | translate}}</span>
                 </a>
             </li>
             <li ui-sref-active="active" has-permission="report.conversion.show" operation="show">
                 <a ui-sref="app.report.conversion" md-ink-ripple>
-                    <i class="icon-usd"></i>
+                    <i class="icon-pull fonts18"></i>
                     <span>{{'Conversions' | translate}}</span>
                 </a>
             </li>
@@ -91,12 +103,11 @@
                 <a ui-sref="app.report.tsreport" md-ink-ripple>
                     <em class="rd"></em>
                     <span>{{'TS Report' | translate}}
-                     <i class="icon-question-sign"><span class="nav-tips-font">optimize and manage 3rd party traffic source campaign</span></i>
+                     <i class="icon-question-sign"><span class="nav-tips-font">Optimize and manage 3rd party traffic source campaign</span></i>
                     </span>
                 </a>
             </li>
         </ul>
-        <div class="coupon-btn"><a href="javascript:;" ng-click="goCoupon()"><span>COUPON CODE</span><i class="coupon-icon"></i></a></div>
     </nav>
 </md-sidenav>
 

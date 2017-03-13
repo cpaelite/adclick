@@ -1,6 +1,6 @@
 <md-dialog class="cs-edit-dialog" ng-cloak id="campaign_edit_content" style="width: 1200px;max-width: 100%;">
     <md-toolbar>
-        <div class="md-toolbar-tools">
+        <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
@@ -12,7 +12,7 @@
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
-                <div class="col-sm-9">
+                <div class="col-sm-7">
                     <input type="text" name="name" class="form-control" ng-model="item.name"
                         ng-change="nameChanged(item.name)"
                         ng-blur="nameRequired()"
@@ -56,28 +56,28 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">TrafficSource<span class="star-icon">*</span>: </label>
-                <div class="col-sm-9 my-select2">
-                    <select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
-                        <option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</option>
+                <div class="col-sm-7 my-select2">
+                    <md-select class="cs-subform-select" name="trafficSource" ng-model="trafficSourceId" required ng-change="trafficSourceChanged(trafficSourceId)">
+                        <md-option value="{{ts.id}}" ng-repeat="ts in trafficSources">{{ts.name}}</md-option>
                         <span style="color:red" ng-show="editForm.trafficSource.$dirty && editForm.trafficSource.$invalid">
                         <span ng-show="editForm.trafficSource.$error.required">TrafficSource is required.</span>
                         </span>
-                    </select>
-                    <span class="btn btn-primary" ng-click="addTrafficSource()">Add traffic source</span>
+                    </md-select>
+                    <span class="btn btn-primary blue-btn" ng-click="addTrafficSource()"><i class="icon-j-02"></i>Add traffic source</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
-                <div class="col-sm-9 my-select">
-                    <select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
-                        <option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</option>
-                    </select>
+                <div class="col-sm-7 my-select">
+                    <md-select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)">
+                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
+                    </md-select>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Cost Model：</label>
-                <div class="col-sm-9 campaign-radio">
+                <div class="col-sm-7 campaign-radio">
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.costModel" value="0">Do not track costs
                     </label>
@@ -98,7 +98,7 @@
 
             <div class="form-group CPC-Con" ng-show="item.costModel==1 || item.costModel==2 || item.costModel==3">
                 <label class="col-sm-3 control-label">{{radioTitle}}：</label>
-                <div class="col-sm-9">
+                <div class="col-sm-7">
                     <span class="dollar-icon">$</span>
                     <input type="text" class="form-control dollar-input" ng-model="costModelValue" ng-value="$">
                 </div>
@@ -106,7 +106,7 @@
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Redirect Model：</label>
-                <div class="col-sm-9 campaign-radio">
+                <div class="col-sm-7 campaign-radio">
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.redirectMode" value="0">302
                     </label>
@@ -121,7 +121,7 @@
             </div>
             <div class="form-group tag-items">
                 <label class="col-sm-3 control-label">Tags：</label>
-                <div class="col-sm-9">
+                <div class="col-sm-7">
                     <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
                     <!-- <md-chips
                             ng-model="tags"
@@ -138,14 +138,13 @@
 
             <div class="form-group collapsible-tab">
                 <div class="collapsible-header" ng-class="{'active':isActive}" ng-click="toggleShow('1')">
-                    <div class="line"></div>
-                    <div class="label-con">
-                        <i class="material-icons">settings</i>
-                        <label>Advanced</label>
-                        <i class="icon-caret-down"></i>
-                    </div>
+                    <h3 class="label-con">
+                        <span></span>
+                        Advanced
+                        <i class="icon-chevron-down"></i>
+                    </h3>
                 </div>
-                <div class="collapse-wrapper" ng-show="visible">
+                <div class="collapse-wrapper cam-collapse-wrapper" ng-show="visible">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Postback URL：</label>
                         <div class="col-sm-6">
@@ -153,7 +152,6 @@
                         </div>
                         <div class="col-sm-2">
                             <md-button clipboard class="md-raised copied-btn" ng-click="postbackurlOverride()">
-                                <i class="icon-edit"></i>
                                 {{btnOverride1}}
                             </md-button>
                         </div>
@@ -164,8 +162,7 @@
                             <input type="text" class="form-control" ng-model="trafficPixelRedirectUrl" ng-readonly="btnOverride2 == 'Override'">
                         </div>
                         <div class="col-sm-2">
-                            <md-button clipboard class="md-raised copied-btn" ng-click="pixelredirecturlOverride()">
-                                <i class="icon-edit"></i>
+                            <md-button clipboard class="md-raised copied-btn blue-btn" ng-click="pixelredirecturlOverride()">
                                 {{btnOverride2}}
                             </md-button>
                         </div>
@@ -175,7 +172,7 @@
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Destination：</label>
-                <div class="col-sm-5">
+                <div class="col-sm-7">
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.targetType" value="1"> Flow
                     </label>
@@ -192,10 +189,10 @@
             <div class="flow-action" ng-show="item.targetType==1">
                 <div class="form-group flow-select">
                     <label class="col-sm-3 control-label">Flow<span class="star-icon">*</span>：</label>
-                    <div class="col-sm-8 my-select3">
-                        <select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
-                            <option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</option>
-                        </select>
+                    <div class="col-sm-7 my-select3">
+                        <md-select class="cs-subform-select" name="flow" ng-model="item.flow.id" ng-required="item.targetType==1">
+                            <md-option value="{{flow.id}}" ng-repeat="flow in flows">{{flow.name}}</md-option>
+                        </md-select>
                     </div>
                 </div>
 
@@ -205,8 +202,8 @@
                             <i class="icon-plus"></i>
                             Create new flow
                         </li>
-                        <li class="edit-flow" ng-show="item.flow" ng-click="toEditFlow()">
-                            <i class="icon-plus"></i>
+                        <li class="edit-flow green-btn" ng-show="item.flow" ng-click="toEditFlow()">
+                            <i class="icon-pencil"></i>
                             Edit flow
                         </li>
                     </ul>
@@ -217,7 +214,7 @@
             <div class="url-token-con" ng-show="item.targetType==0">
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Url<span class="star-icon">*</span>：</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-7">
                         <input my-text="" type="text" class="form-control" name="targetUrl" ng-model="item.targetUrl" ng-blur="validateUrl()" ng-required="item.targetType==0">
                         <span style="color:red" ng-show="editForm.targetUrl.$dirty && editForm.targetUrl.$invalid">
                         <span ng-show="editForm.targetUrl.$error.required">Url is required.</span>
@@ -227,7 +224,7 @@
                 </div>
                 <div class="url-tokens-row form-group">
                     <label class="col-sm-3 control-label"></label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-7">
                         <i>Available URL tokens:</i>
                         <div class="url-tokens">
                             <div class="url-token"
@@ -245,12 +242,11 @@
 
             <div class="form-group collapsible-tab" ng-show="flow && item.targetType == 1">
                 <div class="collapsible-header" ng-class="{'active1':isActive1}" ng-click="toggleShow('2')">
-                    <div class="line"></div>
-                    <div class="label-con">
-                        <i class="material-icons">transform</i>
-                        <label>Flow preview</label>
-                        <i class="icon-caret-down"></i>
-                    </div>
+                    <h3 class="label-con">
+                        <span></span>
+                        Flow preview
+                        <i class="icon-chevron-down"></i>
+                    </h3>
                 </div>
             </div>
 
@@ -339,10 +335,10 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary" ng-hide="campaignAddStatus" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        <md-button class="md-primary disabled-btn" ng-hide="campaignAddStatus" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
         </md-button>
-        <md-button class="md-primary" ng-hide="campaignAddStatus" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
-        <md-button class="md-primary" ng-show="campaignAddStatus" ng-click="ctrl.close()">{{'close' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-hide="campaignAddStatus" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-show="campaignAddStatus" ng-click="ctrl.close()">{{'close' | translate}}</md-button>
 
     </md-dialog-actions>
 

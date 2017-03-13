@@ -1,4 +1,4 @@
-/* 
+/*
 
 */
 
@@ -7,11 +7,11 @@ html {
 }
 
 body {
-  font-family:"Roboto-Regular",Arial,"Helvetica Neue", Helvetica, sans-serif;
+  font-family:"Roboto-Regular","Helvetica Neue", Helvetica,Arial,sans-serif;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
   line-height: 1.42857143;
-  color: #333;
+  color: #000;
   background-color: transparent;
 }
 @font-face {
@@ -325,8 +325,9 @@ a.list-group-item.hover {
 }
 
 .nav > li > a:hover,
-.nav > li > a:focus {
-  background-color: rgba(0, 0, 0, 0.05);
+.nav > li > a:focus,
+.nav > li > a:active{
+  background-color:#e8e8e8;
 }
 
 .nav.nav-lg > li > a {
@@ -1245,12 +1246,10 @@ html.bg {
 }
 
 .navi ul.nav li a > i {
-  font-size:12px;
   margin-right:5px;
   overflow: hidden;
   text-align: center;
-  color:#6D6F72;width:14px;
-  float:left;line-height:56px;
+  color:#6D6F72;
 }
 .navi ul.nav li a:hover > i{color:#2da8f9;}
 .navi ul.nav li a > i:before {
@@ -5247,7 +5246,7 @@ a.text-#000000:hover {
 .column-sort > li {
     padding: 5px !important;
 }
-.column-sort 
+.column-sort
 div.clear {
     padding-right: 45px;
     white-space: nowrap;

@@ -63,7 +63,7 @@
     .config(['ChartJsProvider', function (ChartJsProvider) {
       // Configure all charts
       ChartJsProvider.setOptions({
-        chartColors: ['#FF7F0E', '#2CA02C', '#7777FF'],
+        chartColors: ['#2770ea', '#2CA02C', '#7777FF'],
         responsive: false
       });
 

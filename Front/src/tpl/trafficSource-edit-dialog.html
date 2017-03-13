@@ -1,6 +1,6 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
     <md-toolbar>
-        <div class="md-toolbar-tools">
+        <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
         </div>
     </md-toolbar>
@@ -13,14 +13,14 @@
             <div class="form-group traffic-source">
                 <label class="col-sm-3 control-label"></label>
                 <div class="col-sm-5">
-                    <md-button class="md-primary btn-primary traffic-source-templates" ng-click="selectTrafficSourceTemplate($event)">
+                    <md-button class="md-primary btn-primary traffic-source-templates blue-btn" ng-click="selectTrafficSourceTemplate($event)">
                         {{'Traffic source templates' | translate}}
                     </md-button>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="text" name="name" class="form-control" ng-model="item.name" required>
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
                     <span ng-show="editForm.name.$error.required">Name is required.</span>
@@ -30,7 +30,7 @@
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Postback Url：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input my-text="" type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-blur="validateUrl()">
                     <span style="color:red" ng-show="editForm.postbackUrl.$dirty && editForm.postbackUrl.$invalid">
                             <span ng-show="editForm.postbackUrl.$error.urlformat">URL must be a valid URL.</span>
@@ -39,7 +39,7 @@
             </div>
             <div class="url-tokens-row form-group">
                 <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <i>Available URL tokens:</i>
                     <div class="url-tokens">
                         <div class="url-token"
@@ -56,7 +56,7 @@
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Pixel redirect URL：</label>
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <input type="url" class="form-control" name="pixelRedirectUrl" ng-model="item.pixelRedirectUrl" ng-pattern="urlPattern">
                     <span style="color:red" ng-show="editForm.pixelRedirectUrl.$dirty && editForm.pixelRedirectUrl.$invalid">
                         <span ng-show="editForm.pixelRedirectUrl.$error.pattern">URL must be a valid URL.</span>
@@ -73,19 +73,21 @@
 
             <div class="form-group collapsible-tab">
                 <div class="collapsible-header" ng-class="{'active':isActive}" ng-click="toggleShow('1')">
-                    <div class="line"></div>
-                    <div class="label-con">
-                        <i class="material-icons">settings</i>
-                        <label>Advanced</label>
-                        <i class="icon-caret-down"></i>
-                    </div>
+                    <h3 class="label-con">
+                        <span></span>
+                        Advanced
+                        <i class="icon-chevron-down"></i>
+                    </h3>
                 </div>
             </div>
 
             <div class="form-group collapse-wrapper" ng-show="visible">
-                <i class="note">Please note that unchecking <b>"Track"</b> will not affect Conversion report
-                    results.</i>
-                <table>
+                <div class="offer-remind offer-remind-m">
+                    <i class="material-icons"></i>
+                    Please note that unchecking <b>"Track"</b> will not affect Conversion report
+                    results.
+                </div>
+                <table class="traffic-source-table">
                     <thead>
                     <tr>
                         <th></th>
@@ -97,35 +99,35 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="col-sm-3 control-label">External ID：</td>
+                        <td class="col-sm-2 control-label">External ID：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="externalId.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="externalId.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="externalId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
-                        <td class="col-sm-3 control-label">Cost：</td>
+                        <td class="col-sm-2 control-label">Cost：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
-                        <td class="col-sm-3 control-label">Campaign ID：</td>
+                        <td class="col-sm-2 control-label">Campaign ID：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="campaignId.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="campaignId.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="campaignId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
-                        <td class="col-sm-3 control-label">Website ID：</td>
+                        <td class="col-sm-2 control-label">Website ID：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="websiteId.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="websiteId.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="websiteId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr ng-repeat="param in params track by $index">
-                        <td class="col-sm-3 control-label">Custom variable{{$index+1}}：</td>
+                        <td class="col-sm-2 control-label">Custom variable{{$index+1}}：</td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Name"></td>
@@ -140,9 +142,9 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
         </md-button>
-        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
     </md-dialog-actions>
 
 </md-dialog>

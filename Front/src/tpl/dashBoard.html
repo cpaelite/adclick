@@ -4,83 +4,91 @@
     </div>
 </div> -->
 
-<div flex layout="column" class="cs-page-content dash-board">
-
+<div class="cs-action-bar-bg">
+    <h6>Advanced filters:</h6>
     <div class="cs-action-bar clearfix">
-        <div class="right-select">
-            <div class="cs-subform-control">
-                <md-select aria-label="select" class="cs-subform-select" ng-model="datetype">
-                    <md-option value="1">Today</md-option>
-                    <md-option value="2">Yesterday</md-option>
-                    <md-option value="3">Last 7 days</md-option>
-                    <md-option value="4">Last 14 days</md-option>
-                    <md-option value="5">This Week</md-option>
-                    <md-option value="6">Last Week</md-option>
-                    <md-option value="7">This Month</md-option>
-                    <md-option value="8">Last Month</md-option>
-                    <md-option value="9">This Year</md-option>
-                    <md-option value="10">Last Year</md-option>
-                    <md-option value="0">Custom</md-option>
-                </md-select>
-            </div>
-            <div class="cs-subform-group" ng-show="datetype==0">
-                <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
-                <div class="cs-subform-control">
-                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.fromDate"
-                            ng-max="filter.toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
-                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-                        {{filter.fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                    <select class="cs-subform-select" ng-model="filter.fromTime">
-                        <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
-                    </select>
-                </div>
-                <label class="cs-subform-label">{{'toDate' | translate}}：</label>
-                <div class="cs-subform-control">
-                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.toDate"
-                            ng-min="filter.fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
-                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-                        {{filter.toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                    <select class="cs-subform-select" ng-model="filter.toTime">
-                        <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row data-list">
+      <div class="right-select right-select-left">
+          <div class="cs-subform-control">
+              <md-select aria-label="select" class="cs-subform-select" ng-model="datetype">
+                  <md-option value="1">Today</md-option>
+                  <md-option value="2">Yesterday</md-option>
+                  <md-option value="3">Last 7 days</md-option>
+                  <md-option value="4">Last 14 days</md-option>
+                  <md-option value="5">This Week</md-option>
+                  <md-option value="6">Last Week</md-option>
+                  <md-option value="7">This Month</md-option>
+                  <md-option value="8">Last Month</md-option>
+                  <md-option value="9">This Year</md-option>
+                  <md-option value="10">Last Year</md-option>
+                  <md-option value="0">Custom</md-option>
+              </md-select>
+          </div>
+          <div class="cs-subform-group" ng-show="datetype==0">
+              <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
+              <div class="cs-subform-control">
+                  <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.fromDate"
+                          ng-max="filter.toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                          ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                      {{filter.fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                  </button>
+                  <md-select class="cs-subform-select" ng-model="filter.fromTime">
+                      <md-option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</md-option>
+                  </md-select>
+              </div>
+              <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+              <div class="cs-subform-control">
+                  <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.toDate"
+                          ng-min="filter.fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                          ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                      {{filter.toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                  </button>
+                  <md-select class="cs-subform-select" ng-model="filter.toTime">
+                      <md-option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</md-option>
+                  </md-select>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<div flex layout="column" class="cs-page-content dash-board">
+    <div class="data-list">
         <div class="col-xs-12 col-sm-12 col-md-7">
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
-                <h3>Visits</h3>
+                <i class="icon-k-01 fonts26 se-01"></i>
                 <div class="data-num">{{summary.visits || 0 | number}}</div>
+                <h3>Visits</h3>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
-                <h3>Clicks</h3>
+                <i class="icon-d-02 fonts26 se-02"></i>
                 <div class="data-num">{{summary.clicks || 0 | number}}</div>
+                <h3>Clicks</h3>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
-                <h3>Conversions</h3>
+                <i class="icon-sj-dc fonts26 se-03"></i>
                 <div class="data-num">{{summary.conversions || 0 | number}}</div>
+                <h3>Conversions</h3>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 data-list-con">
+                <i class="icon-m-10 fonts26 se-04"></i>
+                <div class="data-num"><small>$</small>{{summary.revenue || 0.00 | number}}</div>
                 <h3>Revenue</h3>
-                <div class="data-num">${{summary.revenue || 0.00 | number}}</div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-5">
             <div class="col-xs-4 col-sm-4 col-md-4 data-list-con">
+                <i class="icon-m-tg fonts26 se-05"></i>
+                <div class="data-num"><small>$</small>{{summary.cost || 0.00 | number}}</div>
                 <h3>Cost</h3>
-                <div class="data-num">${{summary.cost || 0.00 | number}}</div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 data-list-con">
+                <i class="icon-m-09 fonts26 se-06"></i>
+                <div class="data-num"><small>$</small>{{summary.profit || 0.00 | number}}</div>
                 <h3>Profit</h3>
-                <div class="data-num">${{summary.profit || 0.00 | number}}</div>
             </div>
-            <div class="col-xs-4 col-sm-4 col-md-4 data-list-con">
-                <h3>ROI</h3>
+            <div class="col-xs-4 col-sm-4 col-md-4 data-list-con data-list-con-line">
+                <i class="icon-sj-ss fonts26 se-07"></i>
                 <div class="data-num">{{summary.roi || 0.00 | number}}%</div>
+                <h3>ROI</h3>
             </div>
         </div>
     </div>
@@ -122,8 +130,8 @@
             </table>
         </div>
 
-        <div class="col-sm-12 col-md-6 chart-widget">
-            <div style="height: 350px; padding: 10px">
+        <div class="col-sm-12 col-md-7 chart-widget">
+            <div style="height:320px;float:right;width:100%; padding-left:20px;">
                 <canvas class="chart chart-line" chart-data="chart.data" chart-labels="chart.labels"
                         chart-series="chart.series" chart-options="chart.options"
                         chart-dataset-override="chart.datasetOverride"></canvas>
