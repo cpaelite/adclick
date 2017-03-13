@@ -134,7 +134,8 @@ router.get('/api/members', async function (req, res, next) {
             status: 1,
             message: 'success',
             data: {
-                members: results
+                members: results,
+                owner:req.owner
             }
         });
 
