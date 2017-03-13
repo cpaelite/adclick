@@ -138,4 +138,7 @@ angular.module('app')
   .factory('Permission', ['$resource', function($resource) {
     return $resource('/api/permission');
   }])
+  .factory('Confirmation', ['$resource', function($resource) {
+    return $resource('/user/resendconfirmation');
+  }])
 ;

@@ -134,7 +134,7 @@
       $scope.logout();
     });
 
-    $scope.logout = function () {
+    $rootScope.logout = $scope.logout = function () {
       if ($auth.isAuthenticated()) {
         $auth.logout().then(function () {
           $scope.$state.go('access.signin');

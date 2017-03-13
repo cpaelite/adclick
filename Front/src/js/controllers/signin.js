@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('SigninCtrl', [
-      '$rootScope', '$scope', '$auth', '$q', '$state', 'toastr', '$cookies', 'Profile', 'Permission',
+      '$rootScope', '$scope', '$auth', '$q', '$state', 'toastr', '$cookies', 'Profile', 'Permission', 'Confirmation',
       SigninCtrl
     ]);
 
-  function SigninCtrl($rootScope, $scope, $auth, $q, $state, toastr, $cookies, Profile, Permission) {
+  function SigninCtrl($rootScope, $scope, $auth, $q, $state, toastr, $cookies, Profile, Permission, Confirmation) {
     $scope.app.subtitle = 'Log in';
 
     var token = $cookies.get('token');
@@ -23,6 +23,16 @@
     }
 
     $scope.user = {};
+    $scope.verificationEmail = function() {
+      Confirmation.get({
+        email: $scope.user.email
+      }, function(oData) {
+        if(oData.status == 1) {
+          $scope.noVerifiedEmail = false;
+          $scope.emailHasSent = true;
+        }
+      });
+    };
     $scope.login = function() {
       $scope.loginStatus = true;
       $auth.login($scope.user, { ignoreAuthModule: true })
@@ -67,7 +77,14 @@
         })
         .catch(function(response) {
           $scope.loginStatus = false;
-          toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
+          $scope.emailHasSent = false;
+          $scope.noVerifiedEmail = false;
+          // 1010: email has not been verified.
+          if(response.data.status == '1010') {
+              $scope.noVerifiedEmail = true;
+          } else {
+            toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
+          }
         });
     };
   }

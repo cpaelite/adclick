@@ -48,7 +48,9 @@ router.post('/auth/login', async function (req, res, next) {
 
     if (rows.length > 0) {
       if (rows[0].emailVerified == 0) {
-        throw new Error("Your email has not been verified.");
+        let err=new Error("Your email has not been verified.");
+        err.code = 1010;
+        throw err;
       }
       if (rows[0].password == md5(value.password)) {
         let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
@@ -138,7 +140,6 @@ function sendActiveEmail(email, idText) {
 
       })
   };
-
   //异步发送邮件
   emailCtrl.sendMail([email], tpl);
 }
@@ -427,8 +428,9 @@ router.get('/user/resendconfirmation', async function (req, res, next) {
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
     let user = await common.query("select  `idText` from User   where email = ?", [value.email], connection);
+
     //异步发送邮件
-    if (user.length & user[0].idText) {
+    if (user.length) {
       sendActiveEmail(value.email, user[0].idText);
     }
     res.json({
