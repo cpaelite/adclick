@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<!--[if IE 6 ]> <html id="ne_wrap" class="ne_ua_ie6 ne_ua_ielte8"> <![endif]-->
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 9 ]><html id="ne_wrap" class="ne_ua_ie9"> <![endif]-->
+<!--[if (gte IE 10)|!(IE)]><!-->
+<link rel="stylesheet" href="../newbidder-bj/css/style.css">
+<html id="ne_wrap" phone="1"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newbidder</title>
+</head>
+
+<body>
+
+<h1>CSS only Responsive Tables</h1>
+<h2>Basic overflow:</h2>
+
+<table class="rtable">
+    <thead>
+    <tr>
+        <th>Browser</th>
+        <th>Sessions</th>
+        <th>Percentage</td>
+        <th>New Users</th>
+        <th>Avg. Duration</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Chrome</td>
+        <td>9,562</td>
+        <td>68.81%</td>
+        <td>7,895</td>
+        <td>01:07</td>
+    </tr>
+    <tr>
+        <td>Firefox</td>
+        <td>2,403</td>
+        <td>17.29%</td>
+        <td>2,046</td>
+        <td>00:59</td>
+    </tr>
+    <tr>
+        <td>Safari</td>
+        <td>1,089</td>
+        <td>2.63%</td>
+        <td>904</td>
+        <td>00:59</td>
+    </tr>
+    <tr>
+        <td>Internet Explorer</td>
+        <td>366</td>
+        <td>2.63%</td>
+        <td>333</td>
+        <td>01:01</td>
+    </tr>
+    <tr>
+        <td>Safari (in-app)</td>
+        <td>162</td>
+        <td>1.17%</td>
+        <td>112</td>
+        <td>00:58</td>
+    </tr>
+    <tr>
+        <td>Opera</td>
+        <td>103</td>
+        <td>0.74%</td>
+        <td>87</td>
+        <td>01:22</td>
+    </tr>
+    <tr>
+        <td>Edge</td>
+        <td>98</td>
+        <td>0.71%</td>
+        <td>69</td>
+        <td>01:18</td>
+    </tr>
+    <tr>
+        <td>Other</td>
+        <td>275</td>
+        <td>6.02%</td>
+        <td>90</td>
+        <td>N/A</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Flipped axis and overflow:</h2>
+
+<table class="rtable rtable--flip">
+    <thead>
+    <tr>
+        <th>Browser</th>
+        <th>Sessions</th>
+        <th>Percentage</td>
+        <th>New Users</th>
+        <th>Avg. Duration</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Chrome</td>
+        <td>9,562</td>
+        <td>68.81%</td>
+        <td>7,895</td>
+        <td>01:07</td>
+    </tr>
+    <tr>
+        <td>Firefox</td>
+        <td>2,403</td>
+        <td>17.29%</td>
+        <td>2,046</td>
+        <td>00:59</td>
+    </tr>
+    <tr>
+        <td>Safari</td>
+        <td>1,089</td>
+        <td>2.63%</td>
+        <td>904</td>
+        <td>00:59</td>
+    </tr>
+    <tr>
+        <td>Internet Explorer</td>
+        <td>366</td>
+        <td>2.63%</td>
+        <td>333</td>
+        <td>01:01</td>
+    </tr>
+    <tr>
+        <td>Safari (in-app)</td>
+        <td>162</td>
+        <td>1.17%</td>
+        <td>112</td>
+        <td>00:58</td>
+    </tr>
+    <tr>
+        <td>Opera</td>
+        <td>103</td>
+        <td>0.74%</td>
+        <td>87</td>
+        <td>01:22</td>
+    </tr>
+    <tr>
+        <td>Edge</td>
+        <td>98</td>
+        <td>0.71%</td>
+        <td>69</td>
+        <td>01:18</td>
+    </tr>
+    <tr>
+        <td style="min-width: 100px;">Other</td>
+        <td>275</td>
+        <td>6.02%</td>
+        <td>90</td>
+        <td>N/A</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a target="_blank" href="http://dbushell.com/2016/03/04/css-only-responsive-tables/">See my blog article for more information</a></p>
+
+<h3>Optional adjustments to suit your content:</h3>
+
+<ul>
+    <li><code>white-space: nowrap</code> is optional on the <code>&lt;table&gt;</code> element</li>
+    <li>Add <code>min-width</code> to cells to better space content</li>
+    <li>Wrap the flip CSS in a media query?</li>
+</ul>
+
+<p><strong>Please note:</strong> this CodePen has Autoprefixer enabled. You may need vendor prefixes for full CSS gradient and Flexbox support.</p>
+
+<p><strong>Supports:</strong> IOS7+, Android 4.3+</p>
+
+<p><strong>by: <a target="_blank" href="http://dbushell.com/">David Bushell</a></strong>
+
+
+</body>
+
+<script src="js/swiper.min.js"></script>
+<script src="js/TouchSlide.1.1.js"></script>
+<script>
+    var mySwiper = new Swiper('.swiper-container',{
+        slidesPerView: 'auto',
+        spaceBetween:20
+    })
+</script>
+
+<script src="js/jquery-2.1.1.min.js" type="text/javascript">
+    function onSuccess(data){}
+    // $(document).ready(function(){
+    $(".formBtn").click(function(){
+        var url = "http://52.198.230.169:3030/contact?callback=onSuccess";
+        url += "&site=" + escape($("#site").val());
+        url += "&email=" + escape($("#email").val());
+        url += "&tel=" + escape($("#tel").val());
+        url += "&msg=" + escape($("#msg").val());
+        url += "&intention="+escape($(".select span").text());
+        var script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        script.src = url;
+        document.body.appendChild(script);
+    });
+    // });
+</script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+<script>
+    $(function() {
+        $('.b-pic-one').addClass('animated shake');
+        $('.b-pic-two').addClass('animated shake');
+    });
+</script>
+<script>
+    $("body").css('padding-right','0px');
+</script>
+<script src="js/select.js"></script>
+<script src="js/jshashtable-2.1_src.min.js"></script>
+<script src="js/jquery.numberformatter-1.2.3.min.js"></script>
+<script src="js/tmpl.min.js"></script>
+<script src="js/jquery.dependClass-0.1.min.js"></script>
+<script src="js/draggable-0.1.min.js"></script>
+<script src="js/jquery.slider.min.js"></script>
+<script src="js/event-slider.js"></script>
+<!--Start of Zendesk Chat Script-->
+<script type="text/javascript">
+    window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
+            d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
+    _.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute("charset","utf-8");
+        $.src="https://v2.zopim.com/?4ccuvov3W5X4ai2mZUkHWPRhm1DeW4mz";z.t=+new Date;$.
+                type="text/javascript";e.parentNode.insertBefore($,e)})(document,"script");
+</script>
+<!--End of Zendesk Chat Script-->
+</html>
