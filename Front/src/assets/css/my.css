@@ -364,13 +364,10 @@ md-datepicker {
   margin-bottom: 0;
 }
 .change-paln-dialog .note {
-  margin: 0;
-  width: 1000px;
-  position: absolute;
-  left: 50%;
-  margin-left: -500px;
+  margin-bottom: 0;
   text-align: center;
   font-size: 12px;
+  width: 100%;
 }
 .change-paln-dialog .note a {
   color: #357cf3;

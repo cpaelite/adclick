@@ -66,6 +66,7 @@
           $scope.$emit('event:auth-loginSuccess');
         })
         .catch(function(response) {
+          // 1010: email has not been verified. 
           $scope.loginStatus = false;
           toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
         });

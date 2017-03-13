@@ -110,6 +110,11 @@
           });
         };
 
+        $scope.logout = function() {
+          $rootScope.logout();
+          $mdDialog.hide();
+        };
+
         function calculateSingleCost(val, eventsIncluded, standardCost, overageCost, plan) {
             var overagesEvents = (val - eventsIncluded);
             if (overagesEvents < 0) {
