@@ -934,7 +934,14 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        await common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
+        let updateGI = common.query('update GroupInvitation set `status` = ? where `id`=? and `userId`= ?', [3, value.id, value.userId], connection);
+        let selectUser = common.query('select gi.`groupId`,gi.`inviteeEmail`,user.`id` from GroupInvitation gi  inner join User user on user.`email`= gi.`inviteeEmail` where gi.`userId`=? and gi.`id`= ? ', [value.userId, value.id], connection);
+
+        let Results = await Promise.all([selectUser, updateGI]);
+
+        if (Results[0].length) {
+            await common.query('delete from UserGroup where `groupId`=? and `userId`= ? and `role`= 1', [Results[0][0].groupId, Results[0][0].id], connection);
+        }
 
         return res.json({
             status: 1,
@@ -1069,7 +1076,7 @@ router.get('/api/user/plan', async function (req, res, next) {
                 retentionLimit: val.retentionLimit,
                 userLimit: val.userLimit,
                 domainLimit: val.domainLimit,
-                level:val.level
+                level: val.level
             }
         }
         res.json({

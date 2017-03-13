@@ -80,9 +80,13 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Postback Url：</label>
                 <div class="col-sm-7">
-                    <input type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-show="postbackUrl">
                     <input type="text" class="form-control" ng-model="item.postbackUrl" ng-readonly="true">
                 </div>
+                <div class="col-sm-2">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="item.postbackUrl" text="item.postbackUrl" ng-click="itemUrlClick()">
+                        <i class="material-icons">content_copy</i>
+                        {{btnWord}}
+                    </md-button>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Payout<span class="star-icon">*</span>：</label>
@@ -121,6 +125,7 @@
                     </md-chips> -->
                 </div>
             </div>
+        </div>
         </form>
 
     </md-dialog-content>

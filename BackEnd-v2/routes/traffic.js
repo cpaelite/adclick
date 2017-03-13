@@ -49,7 +49,11 @@ router.post('/api/traffics', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let trafficResult = await common.insertTrafficSource(req.user.id,value.userId, value, connection);
+        //check TrafficSource name exists
+        if (await common.checkNameExists(value.userId, null, value.name, 5, connection)) {
+            throw new Error("TrafficSource name exists");
+        }
+        let trafficResult = await common.insertTrafficSource(req.user.id, value.userId, value, connection);
         delete value.userId;
         value.id = trafficResult.insertId;
 
@@ -114,9 +118,12 @@ router.post('/api/traffics/:id', async function (req, res, next) {
 
     try {
         let value = await common.validate(req.body, schema);
-
         let connection = await common.getConnection();
-        await common.updatetraffic(req.user.id,value.userId, value, connection);
+        //check TrafficSource name exists
+        if (await common.checkNameExists(value.userId, value.id, value.name, 5, connection)) {
+            throw new Error("TrafficSource name exists");
+        }
+        await common.updatetraffic(req.user.id, value.userId, value, connection);
 
         delete value.userId;
 
@@ -254,7 +261,7 @@ router.delete('/api/traffics/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deletetraffic(req.user.id,value.id, value.userId, connection);
+        let result = await common.deletetraffic(req.user.id, value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

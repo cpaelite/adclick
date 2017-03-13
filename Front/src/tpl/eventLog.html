@@ -3,16 +3,16 @@
   <p>Event log enables you to browse changes that were made in your account.
   A detailed overview of this feature can be found here.</p>
 </h1>
-<div class="form-column bot-blacklist">
+<div class="form-column bot-blacklist" ng-show="initState=='success'">
   <div class="container event-log clearfix">
     <div class="form-group bot-select" has-permission="setting.eventLog.selectUser" operation="show">
-      <md-select class="cs-subform-select" ng-model="filter.userId">
+      <md-select aria-label="User ID" class="cs-subform-select" ng-model="filter.userId">
         <md-option value="ALL">All users</md-option>
         <md-option ng-repeat="member in members" value="{{member.idText}}">{{member.email}}</md-option>
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.actionType">
+      <md-select aria-label="Action Type" class="cs-subform-select" ng-model="filter.actionType">
         <md-option value="0">All actions</md-option>
         <md-option value="1">Create</md-option>
         <md-option value="2">Change</md-option>
@@ -21,7 +21,7 @@
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.entityType">
+      <md-select aria-label="Entity Type" class="cs-subform-select" ng-model="filter.entityType">
         <md-option value="0">All entity types</md-option>
         <md-option value="1">Campaign</md-option>
         <md-option value="2">Lander</md-option>
@@ -31,7 +31,7 @@
       </md-select>
     </div>
     <div class="form-group bot-select">
-      <md-select class="cs-subform-select" ng-model="filter.datetype">
+      <md-select aria-label="Date Type" class="cs-subform-select" ng-model="filter.datetype">
         <md-option value="1">Today</md-option>
         <md-option value="2">Yesterday</md-option>
         <md-option value="3">Last 7 days</md-option>
@@ -40,6 +40,8 @@
         <md-option value="6">Last Week</md-option>
         <md-option value="7">This Month</md-option>
         <md-option value="8">Last Month</md-option>
+        <md-option value="9">This Year</md-option>
+        <md-option value="10">Last Year</md-option>
         <md-option value="0">Custom</md-option>
       </md-select>
     </div>
@@ -107,5 +109,6 @@
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
     md-total="{{items.totalRows}}" md-page-select></md-table-pagination>
   </div>
-
+  <div ng-if="initState=='init'" class="masking-loader" translate></div>
+  <div ng-class="{loader: initState=='init'}"></div>
 </div>
