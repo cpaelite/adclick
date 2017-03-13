@@ -163,7 +163,6 @@
         $scope.id = this.plan.id;
         $scope.payType = -1;
         var tempPlans = angular.copy(this.plans.plan);
-        tempPlans.shift();
         $scope.plans = tempPlans;
         $scope.btnStatus = false;
         $scope.planCommit = function(){
