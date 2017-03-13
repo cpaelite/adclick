@@ -618,7 +618,7 @@ app.post('/api/preferences', function (req, res) {
  * @apiName    check name exists
  * @apiGroup User
  * @apiParam {String} name
- * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer4:Flow
+ * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer;4:Flow;5:TrafficSource
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -2816,110 +2816,14 @@ app.get('/api/billing', function (req, res) {
  */
 app.get('/api/plans', function (req, res) {
   var result = {
-    status: 1,
-    message: 'success',
-    data: {
-      plan: [
-        {
-          id: 1,
-          desc: '<div class="p-header-box">\
-                      <h2>STARTER</h2>\
-                      <div class="p-header">\
-                          <small class="money-icon">$</small>\
-                          <span class="money-size">39</span>\
-                          <small class="money-small">/ Mon</small>\
-                      </div>\
-                      <div class="pricedesc">\
-                          <p>0.045/1000 overage</p>\
-                          <p>450000 included events</p>\
-                      </div>\
-                      <ol class="pricedesc-list">\
-                          <li>3 Traffic <b>Source RAW Report</b> (in the list)</li>\
-                          <li>Skype Support 24/7</li>\
-                          <li>3 month data <b>retention</b></li>\
-                          <li>1 custom tracking <b>domains</b></li>\
-                          <li>Newbidder DSP (event not included)</li>\
-                          <li class="hg"><em>&times;</em></li>\
-                          <li class="hg"><em>&times;</em></li>\
-                          <li class="hg"><em>&times;</em></li>\
-                      </ol>\
-                  </div>'
-        },
-        {
-          id: 2,
-          desc: '<div class="p-header-box">\
-                        <h2>PRO</h2>\
-                        <div class="p-header">\
-                            <small class="money-icon">$</small>\
-                            <span class="money-size">89</span>\
-                            <small class="money-small">/ Mon</small>\
-                        </div>\
-                        <div class="pricedesc">\
-                            <p>1000000 includedevents</p>\
-                            <p>0.035/1000 overage charge</p>\
-                        </div>\
-                        <ol class="pricedesc-list">\
-                            <li>5 Traffic <b>Source RAW Report</b></li>\
-                            <li>Skype Support 24/7</li>\
-                            <li>6 month data <b>retention</b></li>\
-                            <li>5 custom tracking <b>domains</b></li>\
-                            <li>Newbidder DSP (event not included)</li>\
-                            <li>Affiliate Network Offer <b>Management</b></li>\
-                            <li>1 additional users</li>\
-                            <li>10% volume discount</li>\
-                        </ol>\
-                    </div>'
-        },
-        {
-          id: 3,
-          desc: '<div class="p-header-box">\
-                        <h2>AGENCY</h2>\
-                        <div class="p-header">\
-                            <small class="money-icon">$</small>\
-                            <span class="money-size">299</span>\
-                            <small class="money-small">/ Mon</small>\
-                        </div>\
-                        <div class="pricedesc">\
-                            <p>10000000 included events</p>\
-                            <p>0.03/1000 overage charge</p>\
-                        </div>\
-                        <ol class="pricedesc-list">\
-                            <li>10 Traffic <b>Source RAW Report</b> (in the list,3 can be custom)</li>\
-                            <li>Skype Support 24/7</li>\
-                            <li>1 year data retention</li>\
-                            <li>10 custom <b>tracking domains</b></li>\
-                            <li>Newbidder DSP (event not included)</li>\
-                            <li>Affiliate Network Offer <b>Management</b></li>\
-                            <li>2 additional users</li>\
-                            <li>15% volume discount</li>\
-                        </ol>\
-                    </div>'
-        },
-        {
-          id: 4,
-          desc: '<div class="p-header-box">\
-                        <h2>ENTERPRISE</h2>\
-                        <div class="p-header">\
-                            <small class="money-icon">$</small>\
-                            <span class="money-size">899</span>\
-                            <small class="money-small">/ MO</small>\
-                        </div>\
-                        <div class="pricedesc">\
-                            <p>30000000 included events</p>\
-                            <p>0.025/1000 overage charge</p>\
-                        </div>\
-                        <ol class="pricedesc-list">\
-                            <li>20+ Traffic Source RAW Report (in the list,5 can be custom)</li>\
-                            <li>Skype Support 24/7</li>\
-                            <li>2 year data retention</li>\
-                            <li>30 custom <b>tracking domains</b></li>\
-                            <li>Newbidder DSP (event not included)</li>\
-                            <li>Affiliate Network Offer <b>Management</b></li>\
-                            <li>5 additional users</li>\
-                            <li>20% volume discount</li>\
-                        </ol>\
-                    </div>'
-        }
+    "status":1,
+    "message":"success",
+    "data":{
+      "plan":[
+        {"level":0,"id":6,"name":"Starter","desc":"<div class=\"p-header-box\"><h2>STARTER</h2><div class=\"p-header\"><small class=\"money-icon\">$</small><span class=\"money-size\">1</span><small class=\"money-small\">/Mon</small></div><div class=\"pricedesc\"><p>200000 included events</p><p>&nbsp;</p></div><ol class=\"pricedesc-list\"><li>Skype Support 24/7</li><li>3 month <b>data retention</b></li><li>1 <b>custom tracking domains</b></li><li>&times;</li><li>&times;</li></ol></div>"},
+        {"level":1,"id":7,"name":"Pro","desc":"<div class=\"p-header-box\"><h2>PRO</h2><div class=\"p-header\"><small class=\"money-icon\">$</small><span class=\"money-size\">49</span><small class=\"money-small\">/Mon</small></div><div class=\"pricedesc\"><p>1000000 includedevents</p><p>0.049/1000 overage charge</p></div><ol class=\"pricedesc-list\"><li>Skype Support 24/7</li><li>6 month <b>data retention</b></li><li>5 <b>custom tracking domains</b></li><li>1 additional users</li><li>10%volume discount</li></ol></div>"},
+        {"level":2,"id":8,"name":"Agency","desc":"<div class=\"p-header-box\"><h2>AGENCY</h2><div class=\"p-header\"><small class=\"money-icon\">$</small><span class=\"money-size\">199</span><small class=\"money-small\">/Mon</small></div><div class=\"pricedesc\"><p>10000000 included events</p><p>0.02/1000 overage charge</p></div><ol class=\"pricedesc-list\"><li>Skype Support 24/7</li><li>1 year <b>data retention</b></li><li>10 <b>custom tracking domains</b></li><li>2 additional users</li><li>15%volume discount</li></ol></div>"},
+        {"level":3,"id":9,"name":"Enterprise","desc":"<div class=\"p-header-box\"><h2>ENTERPRISE</h2><div class=\"p-header\"><small class=\"money-icon\">$</small><span class=\"money-size\">499</span><small class=\"money-small\">/MON</small></div><div class=\"pricedesc\"><p>30000000 included events</p><p>0.017/1000 overage charge</p></div><ol class=\"pricedesc-list\"><li>Skype Support 24/7</li><li>2 year <b>data retention</b></li><li>30 <b>custom tracking domains</b></li><li>5 additional users</li><li>20%volume discount</li></ol></div>"}
       ]
     }
   };

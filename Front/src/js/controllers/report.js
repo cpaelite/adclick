@@ -1584,6 +1584,9 @@
     var fromCampaign = $scope.$parent.$stateParams.frcpn == '1';
 
     $scope.urlPattern = new RegExp(AppConstant.URLREG, 'i');
+    $scope.checkNameParams = {
+      type: 5
+    };
     if (this.item) {
       var isDuplicate = this.duplicate;
       TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
@@ -1591,6 +1594,8 @@
         if (isDuplicate) {
           delete $scope.item.id;
           delete $scope.item.hash;
+        } else {
+          $scope.checkNameParams.id = this.item.data.trafficId;
         }
         if($scope.item.cost) {
           $scope.cost = JSON.parse($scope.item.cost);
@@ -1725,6 +1730,26 @@
       }
       $scope.editForm.postbackUrl.$setValidity('urlformat', isValid);
     };
+
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.item.name == "";
+    };
+
+    function nameRequired() {
+      if (!$scope.item.name) {
+        $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
+      } else {
+        $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
+      }
+    };
+
+    $scope.nameRequired = nameRequired;
 
     $scope.urlItem = urlParameter["traffic"];
     $scope.urlTokenClick = function(url){
