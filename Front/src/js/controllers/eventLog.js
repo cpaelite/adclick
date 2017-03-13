@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('EventLogCtrl', [
-      '$scope', '$mdDialog', 'Profile', 'Member', 'EventLog', '$q',
+      '$scope', '$mdDialog', 'Profile', 'Member', 'EventLog', '$q', 'DateRangeUtil',
       EventLogCtrl
     ]);
 
-  function EventLogCtrl($scope, $mdDialog, Profile, Member, EventLog, $q) {
+  function EventLogCtrl($scope, $mdDialog, Profile, Member, EventLog, $q, DateRangeUtil) {
     $scope.app.subtitle = "EventLog";
     $scope.initState = 'init';
     $scope.hours = [];
@@ -137,36 +137,8 @@
     };
 
     function getDateRange(value) {
-      var fromDate = moment().format('YYYY-MM-DD');
-      var toDate = moment().add(1, 'days').format('YYYY-MM-DD');
-      switch (value) {
-        case '2':
-          fromDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-          toDate = moment().format('YYYY-MM-DD');
-          break;
-        case '3':
-          fromDate = moment().subtract(6, 'days').format('YYYY-MM-DD');
-          break;
-        case '4':
-          fromDate = moment().subtract(13, 'days').format('YYYY-MM-DD');
-          break;
-        case '5':
-          fromDate = moment().day(1).format('YYYY-MM-DD');
-          break;
-        case '6':
-          fromDate = moment().day(-6).format('YYYY-MM-DD');
-          toDate = moment().day(1).format('YYYY-MM-DD');
-          break;
-        case '7':
-          fromDate = moment().startOf('month').format('YYYY-MM-DD');
-          break;
-        case '8':
-          fromDate = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
-          toDate = moment().startOf('month').format('YYYY-MM-DD');
-          break;
-      }
-      $scope.fromDate = fromDate;
-      $scope.toDate = toDate;
+      $scope.fromDate = DateRangeUtil.fromDate(value);
+      $scope.toDate = DateRangeUtil.toDate(value);
     }
   }
 
