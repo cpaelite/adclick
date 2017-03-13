@@ -210,3 +210,23 @@
     .bider-conten h3.hg{line-height:20px;}
     .bider-conten h3{max-height:66px;}
 }
+
+.signin-box .signin-message {
+  padding: 10px 30px;
+  position: relative;
+  font-size: 12px;
+}
+
+.signin-box .signin-message p {
+  margin-bottom: 0;
+}
+.signin-box .signin-message a:hover {
+  text-decoration: underline;
+}
+.signin-box .signin-message i {
+  position: absolute;
+  left: 7px;
+  margin-top: -8px;
+  top: 50%;
+  cursor: pointer;
+}
