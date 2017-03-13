@@ -9,6 +9,7 @@
 
   function EventLogCtrl($scope, $mdDialog, Profile, Member, EventLog, $q) {
     $scope.app.subtitle = "EventLog";
+    $scope.initState = 'init';
     $scope.hours = [];
     for (var i = 0; i < 24; ++i) {
       if (i < 10) {
@@ -67,8 +68,13 @@
           datetype: "1"
         };
       }
+      $scope.initState = 'success';
     }
-    $q.all(initPromise).then(initSuccess);
+
+    function initError() {
+      $scope.initState = 'error';
+    }
+    $q.all(initPromise).then(initSuccess, initError);
 
     function success(items) {
       $scope.items = items.data;

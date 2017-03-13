@@ -3,7 +3,7 @@
   <p>Event log enables you to browse changes that were made in your account.
   A detailed overview of this feature can be found here.</p>
 </h1>
-<div class="form-column bot-blacklist">
+<div class="form-column bot-blacklist" ng-show="initState=='success'">
   <div class="container event-log clearfix">
     <div class="form-group bot-select" has-permission="setting.eventLog.selectUser" operation="show">
       <md-select aria-label="User ID" class="cs-subform-select" ng-model="filter.userId">
@@ -107,5 +107,6 @@
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
     md-total="{{items.totalRows}}" md-page-select></md-table-pagination>
   </div>
-
+  <div ng-if="initState=='init'" class="masking-loader" translate></div>
+  <div ng-class="{loader: initState=='init'}"></div>
 </div>
