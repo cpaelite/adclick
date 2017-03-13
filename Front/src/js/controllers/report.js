@@ -1595,7 +1595,7 @@
           delete $scope.item.id;
           delete $scope.item.hash;
         } else {
-          $scope.checkNameParams.id = this.item.data.trafficId;
+          $scope.checkNameParams.id = $scope.item.id;
         }
         if($scope.item.cost) {
           $scope.cost = JSON.parse($scope.item.cost);

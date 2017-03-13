@@ -2997,6 +2997,7 @@ app.get('/api/members', function (req, res) {
     status: 1,
     message: 'success',
     data: {
+      owner: true,
       members: [
         {
           idText: "dji9012",

@@ -42,7 +42,7 @@
 
     var theMember;
     proms = Member.get(null, function (members) {
-      theMember = members.data.members;
+      theMember = members.data;
     }).$promise;
     initPromise.push(proms);
 
@@ -51,23 +51,22 @@
         $scope.query.tz = theProfile.timezone;
       }
 
-      $scope.members = theMember;
-      if (theMember.length > 0 && theMember[0].idText) {
-        $scope.filter = {
-          userId: theMember[0].idText,
-          actionType: 0,
-          entityType: 0,
-          datetype: "1"
-        };
-      } else {
+      $scope.members = theMember.members;
+      if (theMember.owner) {
         $scope.filter = {
           userId: 'ALL',
           actionType: 0,
           entityType: 0,
           datetype: "1"
         };
+      } else {
+        $scope.filter = {
+          userId: theMember.members[0].idText,
+          actionType: 0,
+          entityType: 0,
+          datetype: "1"
+        };
       }
-
     }
     $q.all(initPromise).then(initSuccess);
 
