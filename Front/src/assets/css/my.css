@@ -2771,3 +2771,27 @@ md-menu-content.md-menu-bar-menu.md-dense .md-button{color:#000;}
 md-menu-content.md-dense md-menu-item{min-height:32px;}
 .changeplan a{float:left;color:#000;padding:0 15px;font-size:12px;display: block;height:45px;line-height:45px;}
 .changeplan i{margin:14px 6px 0 0;width:16px;height:16px;display: inline-block;float:left;}
+
+/* change plan */
+.pay-type-box {
+  background: #eaf1fa;
+    padding: 15px;
+    border-radius: 3px;
+}
+.pay-type-box .alipay-code {
+  text-align: center;
+      margin-top: 30px;
+}
+.pay-type-box img {
+  width: 150px;
+  margin-bottom: 20px;
+}
+.pay-type-box input[type="radio"] {
+  margin-top: 2px;
+}
+.pay-type-box .pay-type-input {
+  padding: 0 15px;
+}
+.pay-type-box .my-price-select {
+  margin-bottom: 25px;
+}

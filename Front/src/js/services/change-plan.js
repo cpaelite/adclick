@@ -103,7 +103,8 @@
             controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', editChangePlanCtrl],
             focusOnOpen: false,
             locals: {
-              plan:plan
+              plan: plan,
+              plans: $scope.item
             },
             bindToController: true,
             templateUrl: 'tpl/edit-change-paln-dialog.html'
@@ -160,6 +161,10 @@
         });
 
         $scope.id = this.plan.id;
+        $scope.payType = -1;
+        var tempPlans = angular.copy(this.plans.plan);
+        tempPlans.shift();
+        $scope.plans = tempPlans;
         $scope.btnStatus = false;
         $scope.planCommit = function(){
           $scope.btnStatus = true;

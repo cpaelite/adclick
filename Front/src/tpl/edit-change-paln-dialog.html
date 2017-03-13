@@ -1,15 +1,15 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
-  <md-toolbar class="_md _md-toolbar-transitions">
+  <md-toolbar class="_md _md-toolbar-transitions hide">
     <div class="md-toolbar-tools">
       <h2>NewBidder</h2>
       <span flex="" class="flex"></span>
     </div>
   </md-toolbar>
-  <md-dialog-content class="md-dialog-content" style="padding: 15px 30px;">
+  <md-dialog-content class="md-dialog-content" style="padding:30px;">
     <div class="edit-pricing-box clearfix">
     <form name="form" ng-submit="planCommit()">
-        <ul>
-          <li class="col-md-8 my-price-l">
+        <div>
+          <div class="col-md-8 my-price-l">
             <h2>Billing details</h2>
             <ul class="p-edit">
               <li><i class="icon-circle-blank"></i><span>billing name</span><em>{{item.billingname}}</em></li>
@@ -24,18 +24,45 @@
             <ul class="p-pay">
               <li><i class="icon-circle-blank"></i><span class="p-pay-l">PayPal account</span><span class="p-pay-r">{{userItem.email}}</span></li>
             </ul> -->
-          </li>
-          <li class="col-md-4 my-price my-price-select">
+            <div class="pay-type-box">
+
+              <div class="pay-type-input">
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    ng-model="payType"
+                    value="0"
+                    name="payType"
+                  />Alipay
+                </label>
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    ng-model="payType"
+                    value="1"
+                    name="payType"
+                  />PayPal
+                </label>
+              </div>
+              <div class="alipay-code">
+                <img src="../assets/img/plan_1.jpg" ng-show="plans[0].id == id && payType == 0"/>
+                <img src="../assets/img/plan_2.jpg" ng-show="plans[1].id == id && payType == 0"/>
+                <img src="../assets/img/plan_3.jpg" ng-show="plans[2].id == id && payType == 0"/>
+              </div>
+              <p ng-show="payType == 0" style="color:#666;">Please contact the Skype: live:support_44609 to open your account after payment</p>
+            </div>
+          </div>
+          <div class="col-md-4 my-price my-price-select">
             <div style="color: #000;" ng-bind-html="desc"></div>
             <button class="btn p-btn btn-three p-btn-02" type="button" disabled><p>SELECT PLAN<i class="icon-angle-right"></i></p></button>
-          </li>
-        </ul>
+          </div>
+        </div>
     </form>
     </div>
 
   </md-dialog-content>
   <md-dialog-actions layout="row">
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
-    <md-button class="md-primary" ng-disabled="btnStatus" ng-click="planCommit()">{{'commit' | translate}}</md-button>
+    <md-button class="md-primary" ng-disabled="btnStatus" ng-click="planCommit()" ng-show="payType == 1">{{'commit' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>
