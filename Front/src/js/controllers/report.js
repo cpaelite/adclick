@@ -10,7 +10,7 @@
       editLanderCtrl
     ])
     .controller('editOfferCtrl', [
-      '$scope', '$mdDialog', '$rootScope', '$q', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache',
+      '$scope', '$mdDialog', '$rootScope', '$q', '$timeout', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache',
       editOfferCtrl
     ]);
 
@@ -1304,7 +1304,7 @@
 
   }
 
-  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant, reportCache) {
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, $timeout, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant, reportCache) {
     var prefixCountry = '', prefixAffiliate = '';
     $scope.prefix = '';
     initTags($scope, Tag, 3);
@@ -1570,6 +1570,14 @@
       cacheData.AffiliateNetworkId = $scope.affiliateId;
       reportCache.put('offer-cache', cacheData);
     }
+
+    $scope.btnWord = "Clipboard";
+    $scope.itemUrlClick = function(){
+      $scope.btnWord = "Copied";
+      $timeout(function() {
+        $scope.btnWord = "Clipboard";
+      }, 2000);
+    };
   }
 
   function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant) {
