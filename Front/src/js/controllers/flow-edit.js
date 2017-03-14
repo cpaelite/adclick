@@ -26,9 +26,12 @@
         initFlowEditCtrl(flowId, isDuplicate, fromCampaign);
       });
       $scope.$on('targetPathCountryChanged', function(event, oData) {
-        console.log('targetPathCountryChanged', oData);
+        if(!$scope.flowDataSuccess) {
+          theFlow.country = oData.country.value;
+          return;
+        }
         var oldCountry = angular.copy($scope.country);
-        if(oData !== 'ZZZ' && checkLanderAndOfferStatus(theFlow.rules, {value: oData.country})) {
+        if(oData.value !== 'ZZZ' && checkLanderAndOfferStatus(theFlow.rules, {value: oData.country.value})) {
           $mdDialog.show({
             multiple: true,
             skipHide: true,
@@ -40,14 +43,14 @@
             templateUrl: 'tpl/delete-confirm-dialog.html'
           }).then(function(result) {
             if(result.status) {
-              theFlow.rules = checkLanderAndOffer(theFlow.rules, {value: oData.country})
-              $scope.country.value = oData.country;
+              theFlow.rules = checkLanderAndOffer(theFlow.rules, {value: oData.country.value})
+              $scope.country = angular.copy(oData.country);
             } else {
               $scope.$emit('targetPathCountryReseted', {});
             }
           });
         } else {
-          $scope.country.value = oData.country;
+          $scope.country = angular.copy(oData.country);
         }
       });
     }
@@ -136,6 +139,7 @@
 
       $scope.initState = 'init';
       function initSuccess() {
+        $scope.flowDataSuccess = true;
         var offerMap = {};
         allOffers.forEach(function(offer) {
           offerMap[offer.id] = offer;
@@ -527,6 +531,7 @@
           locals.item = null;
         }
         locals.country = $scope.country;
+        console.log($scope.country);
         $mdDialog.show({
           multiple: true,
           skipHide: true,

@@ -72,7 +72,7 @@
           }
 
           $q.all(initPromises).then(initSucces);
-          toastr.success('Login success!');
+          toastr.success('Login success!', {timeOut: 2000, positionClass: 'toast-top-center'});
           $scope.$emit('event:auth-loginSuccess');
         })
         .catch(function(response) {
@@ -83,7 +83,7 @@
           if(response.data.status == '1010') {
               $scope.noVerifiedEmail = true;
           } else {
-            toastr.error(response.data.message, { timeOut: 7000, positionClass: 'toast-top-center' });
+            toastr.error(response.data.message, { timeOut: 4000, positionClass: 'toast-top-center' });
           }
         });
     };
