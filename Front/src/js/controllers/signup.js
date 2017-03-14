@@ -51,6 +51,22 @@
       }
     };
 
+    $scope.checkQQ = function(status) {
+      if(status == 'change' && !$scope.user.qq) {
+        $scope.form.qq.$setValidity('check', true);
+        return;
+      }
+      if ($scope.user.qq) {
+        if(/^[1-9][0-9]{4,}$/.test($scope.user.qq)) {
+          $scope.form.qq.$setValidity('check', true);
+        } else {
+          $scope.form.qq.$setValidity('check', false);
+        }
+      } else {
+        $scope.form.qq.$setValidity('check', true);
+      }
+    };
+
     $scope.goSignin = function() {
       $state.go('access.signin', {});
     };
