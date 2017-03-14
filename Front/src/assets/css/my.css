@@ -886,9 +886,9 @@ table .traficc-source-input input[type="checkbox"]{
     width: 16px;margin:0;
 }
 .tracking-checkbox input[type="checkbox"]:focus{box-shadow:none;}
-md-backdrop.md-dialog-backdrop:nth-child(2){
+/*md-backdrop.md-dialog-backdrop:nth-child(2){
     z-index: 81;
-}
+}*/
 .md-dialog-container:last-child{
     z-index: 85;
 }
