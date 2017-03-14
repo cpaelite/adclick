@@ -2,19 +2,20 @@
   'use strict';
 
   angular.module('app')
-  .run(['$rootScope', '$state', '$stateParams', '$auth', '$urlRouter', 'Permission', run])
-  .config(['$stateProvider', '$urlRouterProvider', config]);
+  .run(['$rootScope', '$state', '$stateParams', '$auth', '$urlRouter', 'Permission', '$window', run])
+  .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', config]);
 
   var $cookies;
   angular.injector(['ngCookies']).invoke(['$cookies', function(_$cookies_) {
     $cookies = _$cookies_;
   }]);
 
-  function run($rootScope, $state, $stateParams, $auth, $urlRouter, Permission) {
+  function run($rootScope, $state, $stateParams, $auth, $urlRouter, Permission, $window) {
+
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
 
-    if($cookies.get('token')) {
+    if($cookies.get('token') || $window.location.hash.indexOf('access') == -1) {
       Permission.get(null, function(res) {
         if (!res.status) {
           return;
@@ -240,7 +241,7 @@
         data: {}
       });
 
-      if($cookies.get('token')) {
+      if($cookies.get('token') || window.location.hash.indexOf('access') == -1) {
         $urlRouterProvider.deferIntercept();
       }
   }
