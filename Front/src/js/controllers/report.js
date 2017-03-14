@@ -813,7 +813,10 @@
 
     $scope.countryChanged = function(country, reset) {
       if(!reset) {
-        $scope.$broadcast('targetPathCountryChanged', {country: country});
+        var countryObj = $scope.countries.filter(function(c) {
+          return c.value == country;
+        });
+        $scope.$broadcast('targetPathCountryChanged', {country: countryObj[0]});
       }
       $scope.countries.forEach(function(v) {
         if(v.value == country) {
@@ -1147,7 +1150,8 @@
   }
 
   function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant) {
-    $scope.prefix = 'Global - ';
+    console.log('this.country', this.country);
+    $scope.prefix = this.country ? this.country.display + ' - ' : 'Global - ';
     initTags($scope, Tag, 2);
     $scope.checkNameParams = {
       type: 2
@@ -1341,7 +1345,7 @@
       };
       $scope.affiliateId = "0";
       this.title = "add";
-      prefixCountry = 'Global - ';
+      prefixCountry = this.country ? this.country.display + ' - ' : 'Global - ';
       $scope.prefix = $scope.item.name = $scope.oldName = prefixCountry;
       $scope.tagsFilter.options = $scope.item.tags = [];
       $scope.item.country = this.country ? this.country.value : 'ZZZ';
