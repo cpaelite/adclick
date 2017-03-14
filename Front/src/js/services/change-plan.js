@@ -112,6 +112,7 @@
         };
 
         $scope.logout = function() {
+          $rootScope.changePlanStatus = false;
           $rootScope.logout();
           $mdDialog.hide();
         };
