@@ -14,7 +14,7 @@ function fixHead($compile, $window) {
     // prevent recursive compilation
     header.clone.removeAttr('fix-head').removeAttr('ng-if');
 
-    table.clone.css({display: 'block', paddingTop: '3px', overflow: 'hidden', background: 'rgb(247, 247, 247)'}).addClass('clone');
+    table.clone.css({display: 'block', overflow: 'hidden'}).addClass('clone');
     header.clone.css('display', 'block');
     // header.original.css('visibility', 'hidden');
 

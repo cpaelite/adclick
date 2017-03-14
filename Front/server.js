@@ -269,7 +269,7 @@ app.get('/api/permission', function (req, res) {
           show: true
         },
         tsReport: {
-          show: false,
+          show: true,
           tsReportLimit: 3
         }
       },

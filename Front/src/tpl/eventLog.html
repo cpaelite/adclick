@@ -75,6 +75,7 @@
       <md-button class="md-raised add-another-btn" ng-show="false"><i class="material-icons">list</i>Details</md-button>
     </div>
     <div class="data-table">
+      <div class="">
       <table class="table">
         <thead>
           <tr>
@@ -105,6 +106,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
     md-total="{{items.totalRows}}" md-page-select></md-table-pagination>

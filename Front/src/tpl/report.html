@@ -109,7 +109,7 @@
                             {{'apply changes' | translate}}
                         </md-button>
 
-                        <md-button class="md-raised md-primary cs-compact cs-add-button red-btn"  ng-click="viewCloumnClose($event)">
+                        <md-button class="md-raised md-primary cs-compact red-btn"  ng-click="viewCloumnClose($event)">
                             <i class="icon-remove"></i>
                             {{'close' | translate}}
                         </md-button>
@@ -122,7 +122,7 @@
     </div>
 </div>
 <div flex layout="column" class="cs-page-content report">
-
+<div class="table-box">
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
@@ -185,6 +185,7 @@
             </tfoot>
         </table>
     </md-table-container>
+</div>
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
                          md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
