@@ -31,7 +31,7 @@ router.get('/api/billing', async (req, res) => {
         plan: {
           id: template_plan.id,
           name: template_plan.name,
-          price: template_plan.onSalePrice 
+          price: template_plan.onSalePrice
         },
         statistic: {
           planCode: template_plan.name,
@@ -111,7 +111,7 @@ router.get('/api/invoices', async (req, res, next) => {
 
     let template_plan = await TB.findOne({where: {id: billing.planId}});
     if (!template_plan) throw new Error('no plan')
-    balance = template_plan.normalPrice
+    balance = template_plan.onSalePrice
   } catch (e) {
     console.log(e)
   } finally {
