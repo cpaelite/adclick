@@ -1081,7 +1081,7 @@ router.get('/api/user/plan', async function (req, res, next) {
         }
         res.json({
             status: 1,
-            message: 'succes',
+            message: 'success',
             data: responseData
         });
     } catch (e) {
