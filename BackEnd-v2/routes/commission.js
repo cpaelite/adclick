@@ -10,7 +10,7 @@ async function logTocommission(paymentLogId) {
     let connect;
     try {
         connect = await common.getConnection();
-        let refResult = await common.query("select ref.`id`,ref.`percent`,ref.`acquired`,pay.`amount` from UserPaymentLog pay  inner join UserReferralLog ref on pay.`userId`= ref.`referredUserId` where pay.`id`= ?", [paymentLogId], connect);
+        let refResult = await common.query("select ref.`id`,ref.`percent`,ref.`acquired`,pay.`amount` from UserPaymentLog pay inner join TemplatePlan plan on plan.`id`= pay.`goodsId` inner join UserReferralLog ref on pay.`userId`= ref.`referredUserId` where pay.`id`= ? and plan.`hasCommission`= 1", [paymentLogId], connect);
         
         if (refResult.length) {
             //注册1年之内
