@@ -48,7 +48,7 @@ router.post('/auth/login', async function (req, res, next) {
 
     if (rows.length > 0) {
       if (rows[0].emailVerified == 0) {
-        let err=new Error("Your email has not been verified.");
+        let err = new Error("Your email has not been verified.");
         err.code = 1010;
         throw err;
       }
@@ -446,6 +446,10 @@ router.get('/user/resendconfirmation', async function (req, res, next) {
   }
 });
 
+
+router.get('/status', function (req, res) {
+  res.status(200).send('ok');
+});
 
 
 
