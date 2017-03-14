@@ -2817,10 +2817,14 @@ md-menu-content.md-default-theme .md-menu>.md-button:after, md-menu-content .md-
   margin-bottom: 20px;
 }
 .pay-type-box input[type="radio"] {
-  margin-top: 2px;
+  margin-top: 5px;
 }
 .pay-type-box .pay-type-input {
   padding: 0 15px;
+}
+.pay-type-box .pay-type-input label{
+    font-size: 18px;
+    margin-right: 20px;
 }
 .pay-type-box .my-price-select {
   margin-bottom: 25px;
