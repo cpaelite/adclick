@@ -9,33 +9,32 @@
     <i class="icon-info-sign fonts16"></i>
     <p>Email with confirmation link has been sent.</p>
   </div>
-  <div class="container w-xxl w-auto-xs w-top">
-      <div class="navbar-brand block m-t"><img src="../assets/img/logo-two.png"></div>
-      <div class="m-b-lg">
-          <form name="form" class="form-validation">
-              <div class="list-group list-group-sm">
-                  <div class="list-group-item">
-                      <i class="icon-envelope form-control-feedback small-font icon-envelope-top"></i>
-                      <input type="email" placeholder="Email" class="form-control no-border" ng-model="user.email"
-                             required>
-                  </div>
-                  <div class="list-group-item">
-                      <i class="icon-lock form-control-feedback"></i>
-                      <input type="password" placeholder="Password" class="form-control no-border"
-                             ng-model="user.password" required>
-                  </div>
-              </div>
-              <button type="submit"
-                class="btn btn-lg btn-primary btn-block"
-                ng-click="login()"
-                ng-disabled="form.$invalid || loginStatus" translate
-              >
-                {{ 'signin' | translate}}
-              </button>
-              <div class="line line-dashed"></div>
-              <p class="text-center sign-text">
-                  <small>Do not have an account?</small><a ui-sref="access.signup" class="btn signup-btn">Create an account</a>
-
+    <div class="container w-xxl w-auto-xs w-top">
+        <div class="navbar-brand block m-t"><img src="../assets/img/logo-two.png"></div>
+        <div class="m-b-lg">
+            <form name="form" class="form-validation">
+                <div class="list-group list-group-sm">
+                    <div class="list-group-item">
+                        <i class="icon-envelope form-control-feedback small-font icon-envelope-top"></i>
+                        <input type="email" placeholder="Email" class="form-control no-border" ng-model="user.email"
+                               required>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="icon-lock form-control-feedback"></i>
+                        <input type="password" placeholder="Password" class="form-control no-border"
+                               ng-model="user.password" required>
+                    </div>
+                </div>
+                <button type="submit"
+                        class="btn btn-lg btn-primary btn-block blue-btn blue-btn-h"
+                        ng-click="login()"
+                        ng-disabled="form.$invalid || loginStatus" translate
+                >
+                    {{ 'signin' | translate}}
+                </button>
+                <div class="line line-dashed"></div>
+                <p class="text-center sign-text">
+                    <small>Do not have an account?</small><a ui-sref="access.signup" class="btn signup-btn">Create an account</a>
               </p>
           </form>
       </div>

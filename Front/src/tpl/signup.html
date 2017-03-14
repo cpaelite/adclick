@@ -62,14 +62,16 @@
                     </span>
                 </div>
             </div>
+            <div class="col-sm-12 sign-input">
             <button type="submit"
-              class="btn btn-lg btn-primary btn-block sign-top"
+              class="btn btn-lg btn-primary btn-block green-btn sign-top"
               ng-click="signup()"
               ng-disabled='form.$invalid || repeatpassword!=user.password || signupStatus'
               translate
             >
               {{ 'signup' | translate }}
             </button>
+            </div>
             <div class="line line-dashed"></div>
             <p class="text-center sign-text">
                 <small>Already have an account?</small><a ui-sref="access.signin" class="btn signup-btn" translate>{{ 'signin' | translate }}</a>

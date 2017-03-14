@@ -1,6 +1,6 @@
 <md-dialog class="cs-edit-dialog" ng-cloak>
     <md-toolbar>
-        <div class="md-toolbar-tools">
+        <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}}</h2>
         </div>
     </md-toolbar>
@@ -18,7 +18,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">TS<span class="star-icon">*</span>:</label>
                 <div class="col-sm-8">
-                    <md-select name="ts" class="form-control" ng-model="formData.tsId" ng-change="tsChanged(formData.tsId)" required>
+                    <md-select name="ts" class="form-control form-control-none" ng-model="formData.tsId" ng-change="tsChanged(formData.tsId)" required>
                         <md-option value=""></md-option>
                         <md-option value="{{thirdTraffic.id}}" ng-repeat="thirdTraffic in thirdTraffics">{{thirdTraffic.name}}</md-option>
                     </md-select>

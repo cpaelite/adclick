@@ -1,20 +1,22 @@
 @font-face {
   font-family: 's-icon';
-  src:  url('../fonts/s-icon.eot?uzzle4');
-  src:  url('../fonts/s-icon.eot?uzzle4#iefix') format('embedded-opentype'),
-  url('../fonts/s-icon.ttf?uzzle4') format('truetype'),
-  url('../fonts/s-icon.woff?uzzle4') format('woff'),
-  url('../fonts/s-icon.svg?uzzle4#s-icon') format('svg');
+  src:  url('../fonts/s-icon.eot?8cx45e');
+  src:  url('../fonts/s-icon.eot?8cx45e#iefix') format('embedded-opentype'),
+  url('../fonts/s-icon.ttf?8cx45e') format('truetype'),
+  url('../fonts/s-icon.woff?8cx45e') format('woff'),
+  url('../fonts/s-icon.svg?8cx45e#s-icon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
-
 
 .icon-money-01:before {
   content: "\e991";
 }
 .icon-money-02:before {
   content: "\e992";
+}
+.icon-choose:before {
+  content: "\e993";
 }
 .icon-xl-01:before {
   content: "\e98d";
