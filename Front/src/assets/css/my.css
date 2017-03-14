@@ -350,11 +350,15 @@ md-datepicker {
     border-radius: 0;
 }
 .change-paln-dialog {
-  width: 1024px;max-width: 100%;height: 622px;
+  width: 1024px;max-width: 100%;height: 652px;
 }
 .change-paln-dialog .change-paln-dialog-content {
   padding-bottom: 5px;
-  height: 570px;
+  height: 600px;
+}
+.change-paln-dialog .change-paln-dialog-content .note {
+  margin: 0;
+  padding-top: 5px;
 }
 .change-paln-dialog .change-paln-dialog-content > .pricing-box {
   margin: 0;
