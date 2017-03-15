@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('FlowEditCtrl', [
-        '$scope', '$mdDialog', '$q', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country',
+        '$scope', '$mdDialog', '$q', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country', '$rootScope',
         FlowEditCtrl
     ]);
 
-  function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country) {
+  function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country, $rootScope) {
     var flowId, isDuplicate, fromCampaign, theFlow, tempCountryName, oldCountryName;
     $scope.flowMode = true;
     if($scope.$stateParams) {
@@ -21,7 +21,6 @@
       fromCampaign = false;
       $scope.flowMode = false;
       $scope.$on('targetPathIdChanged', function(event, oData) {
-        console.log(oData);
         flowId = oData.flowId;
         initFlowEditCtrl(flowId, isDuplicate, fromCampaign);
       });
@@ -124,11 +123,16 @@
       initPromises.push(prms);
 
       var allConditions;
-      prms = Condition.query({}, function(result) {
-        allConditions = result;
-        $scope.allConditions = allConditions;
-      }).$promise;
-      initPromises.push(prms);
+      if(!$rootScope.allConditions) {
+        prms = Condition.query({}, function(result) {
+          allConditions = result;
+          $rootScope.allConditions = $scope.allConditions = allConditions;
+        }).$promise;
+        initPromises.push(prms);
+      } else {
+        allConditions = $rootScope.allConditions;
+        $scope.allConditions = $rootScope.allConditions;
+      }
 
       var allCountries;
       prms = Country.query({}, function(result) {

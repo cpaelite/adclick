@@ -980,6 +980,7 @@
 
     function saveCacheData() {
       var cacheData = angular.copy($scope.item);
+      console.log('saveCacheData---->', cacheData);
       delete cacheData.flow;
       cacheData.trafficSourceId = $scope.trafficSourceId;
       cacheData.targetFlowId = $scope.item.flow ? $scope.item.flow.id : '';
