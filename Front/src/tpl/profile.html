@@ -22,8 +22,8 @@
         </div>
         <div class="form-group">
           <label>Default time zone</label>
-          <md-select class="cs-subform-select" ng-model="accountItem.timezone" required>
-            <md-option ng-repeat="tz in timezone" value="{{tz.utcShift}}">{{tz.detail}}</md-option>
+          <md-select aria-label="Time Zone" class="cs-subform-select" ng-model="timezone" required>
+            <md-option ng-repeat="tz in timezones" value="{{tz.id}},{{tz.utcShift}}">{{tz.detail}}</md-option>
           </md-select>
         </div>
         <div class="form-group clearfix">
