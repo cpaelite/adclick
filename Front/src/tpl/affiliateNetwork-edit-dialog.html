@@ -21,9 +21,16 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{'affiliateNetworkName' | translate}}<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7">
-                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
-                    <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
-                    <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    <input type="text" name="name" class="form-control"
+                      ng-model="item.name"
+                      ng-blur="nameRequired()"
+                      async-check-name="checkNameParams"
+                      async-validator-callback="validateCallback"
+                      post-validater-callback="postValidateCallback()"
+                    >
+                    <span style="color:red" ng-show="editForm.name.$invalid">
+                      <span ng-show="editForm.name.$error.nameRequired">Name is required.</span>
+                      <span ng-show="editForm.name.$error.asyncCheckName">Name already exists.</span>
                     </span>
                 </div>
             </div>

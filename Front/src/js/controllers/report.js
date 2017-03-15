@@ -1967,7 +1967,9 @@
 
   function editAffiliateCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
     var fromOffer = $scope.$parent.$stateParams.frcpn == '4';
-
+    $scope.checkNameParams = {
+      type: 6
+    };
     if (this.item) {
       var isDuplicate = this.duplicate;
       AffiliateNetwork.get({id: this.item.data.affiliateId}, function (affiliate) {
@@ -1975,6 +1977,8 @@
         if (isDuplicate) {
           delete $scope.item.id;
           delete $scope.item.hash;
+        } else {
+          $scope.checkNameParams.id = $scope.item.id;
         }
         if ($scope.item.ipWhiteList) {
           var ips = JSON.parse($scope.item.ipWhiteList);
@@ -2032,6 +2036,9 @@
         var ips = $scope.ipWhiteList.split("\n");
         $scope.item.ipWhiteList = JSON.stringify(ips);
       }
+      if(!nameRequired()) {
+        return;
+      }
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
@@ -2057,6 +2064,26 @@
         $scope.editForm.ipWhiteList.$setValidity('valid', isValid);
       }
     };
+
+    $scope.validateCallback = function(isValid) {
+      $scope.editForm.name.$setValidity('asyncCheckName', isValid);
+    };
+
+    $scope.postValidateCallback = function() {
+      return $scope.item.name == "";
+    };
+
+    function nameRequired() {
+      if (!$scope.item.name) {
+        $scope.editForm.name.$setValidity('nameRequired', false);
+        return 0;
+      } else {
+        $scope.editForm.name.$setValidity('nameRequired', true);
+        return 1;
+      }
+    };
+
+    $scope.nameRequired = nameRequired;
 
     $scope.trustedAffiliateNetworks = function (ev, item) {
       $mdDialog.show({
