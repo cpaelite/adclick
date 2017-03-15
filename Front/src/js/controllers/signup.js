@@ -15,6 +15,8 @@
       $scope.user = {
         refToken: refToken
       };
+    } else {
+      $scope.user = {};
     }
 
     $scope.signup = function () {
