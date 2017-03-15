@@ -228,7 +228,7 @@ app.get('/api/permission', function (req, res) {
           show: true,
           userLimit: 3
         },
-        blackList: {
+        blacklist: {
           show: true
         },
         invoice: {
