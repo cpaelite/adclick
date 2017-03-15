@@ -22,9 +22,9 @@ router.get('/api/affiliates/:id', function (req, res, next) {
         userId: Joi.number().required(),
         id: Joi.number().required()
     });
-     
+
     req.query.userId = req.parent.id;
-    req.query.id=req.params.id;
+    req.query.id = req.params.id;
     Joi.validate(req.query, schema, function (err, value) {
         if (err) {
             return next(err);
@@ -36,7 +36,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
             }
             connection.query(
                 "select  `id`,`name`,`hash`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [
-                    value.userId,value.id
+                    value.userId, value.id
                 ],
                 function (err, result) {
                     connection.release();
@@ -47,7 +47,7 @@ router.get('/api/affiliates/:id', function (req, res, next) {
                         status: 1,
                         message: "success",
                         data: {
-                            affiliates: result.length?result[0]:{}
+                            affiliates: result.length ? result[0] : {}
                         }
                     });
 
@@ -145,7 +145,11 @@ router.post('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        await common.updateAffiliates(value.userId,req.user.id, value, connection);
+        //check AffiliateNetwork name exists
+        if (await common.checkNameExists(value.userId, value.id, value.name, 6, connection)) {
+            throw new Error("AffiliateNetwork name exists");
+        }
+        await common.updateAffiliates(value.userId, req.user.id, value, connection);
         delete value.userId;
         res.json({
             status: 1,
@@ -195,8 +199,13 @@ router.post('/api/affiliates', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let affiliateResult = await common.insertAffiliates(value.userId,req.user.id, value, connection);
-        
+        //check AffiliateNetwork name exists
+        if (await common.checkNameExists(value.userId, null, value.name, 6, connection)) {
+            throw new Error("AffiliateNetwork name exists");
+        }
+
+        let affiliateResult = await common.insertAffiliates(value.userId, req.user.id, value, connection);
+
         delete value.userId;
         value.id = affiliateResult.insertId;
 
@@ -238,7 +247,7 @@ router.delete('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteAffiliate(value.id, value.userId, req.user.id,connection);
+        let result = await common.deleteAffiliate(value.id, value.userId, req.user.id, connection);
 
         res.json({
             status: 1,

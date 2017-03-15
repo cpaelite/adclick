@@ -88,13 +88,13 @@
       if (flowId) {
         prms = Flow.get({id:flowId}, function(result) {
           theFlow = result.data;
+          console.log('theFlow----->', theFlow);
           $scope.oldName = theFlow.name;
         }).$promise;
         initPromises.push(prms);
         if(!isDuplicate) {
           $scope.checkNameParams.id = flowId;
         }
-
       } else {
         var defaultRule = angular.copy(ruleSkel);
         defaultRule.name = 'Default paths';
@@ -911,6 +911,7 @@
         }
 
         $scope.onSave = true;
+        console.log('flowData----->', flowData);
         return Flow.save(flowData, function(result) {
           $scope.onSave = false;
           $scope.saveTime = new Date();
