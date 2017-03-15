@@ -1,5 +1,10 @@
-body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "\5b8b\4f53";background:#f6f8f8;font-size:16px;}
-.bidder-box{padding:20px 0;width:90%;margin:0 auto;}
+body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "\5b8b\4f53";background:#f6f8f8;}
+.bidder-box{padding:20px 0;width:90%;margin:0 auto;font-size:16px;}
+.bidder-box.bidder-box-1{font-size:15px;}
+.bidder-box.bidder-box-1 .bidder-col p{line-height:32px;margin-bottom:25px;}
+.bidder-box.bidder-box-1 .bidder-col h3{line-height:42px;}
+.bidder-box.bidder-box-1 .bidder-col img{margin:60px auto;}
+.bidder-box.bidder-box-1 .list-bg{margin:6px 20px 0 0;height:30px;line-height:30px;padding:0 12px;float:left;}
 .bidder-box .logo{width:200px;margin:0 auto 30px auto;display: block;}
 .bidder-box h1{color:#222;margin:50px 0 20px 10px;float:left;border-bottom:3px solid #666;line-height:48px;}
 .bidder-col{background:#fff;border-radius:5px;float:left;width:100%;padding:0 20px;box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 1px 0 rgba(0, 0, 0, 0.03);}
@@ -14,7 +19,8 @@ body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "
 .author{color:#999;display:block;float:right;font-size:12px;line-height:32px;}
 @media (min-width: 320px) and (max-width:768px){
     .bidder-col img.img-w{width:100%;}
-    .bidder-col img{width:95%;}
+    .bidder-col img{width:100%;}
+    .bidder-box.bidder-box-1 .bidder-col img{margin:30px auto;}
     .bidder-box h1{margin:30px 0;}
 
 }
