@@ -85,7 +85,7 @@
           async-validator-callback="validateCallback"
 
         >
-        <span class-"error-message" ng-show="flow._nameError">Name is invalid</span>
+        <span class="error-message" ng-show="flow._nameError">Name is invalid</span>
         <span style="color:red" ng-show="editFlowForm.name.$invalid">
             <span ng-show="editFlowForm.name.$error.asyncCheckName">Name already exists.</span>
             <span ng-show="editFlowForm.name.$error.nameRequired">Name is required.</span>
@@ -134,7 +134,7 @@
         <div class="form-group col-sm-8 col-md-8 name-div">
           <label class="label-name">Name:</label>
           <input type="text" class="form-control" ng-class="{error:curRule._nameError}" ng-model="curRule.name" required ng-change="validateName(curRule)">
-          <span class-"error-message" ng-show="curRule._nameError">Name is invalid</span>
+          <span class="error-message" ng-show="curRule._nameError">Name is invalid</span>
         </div>
         <div class="form-group col-sm-4 col-sm-4">
           <label class="label-name">Status:</label>
@@ -350,7 +350,7 @@
         <div class="col-sm-7 col-md-7 name-div" layout="column">
           <label class="label-name">Name:</label>
           <input type="text" class="form-control" ng-class="{error:curPath._nameError}" ng-model="curPath.name" required ng-change="validateName(curPath)">
-          <span class-"error-message" ng-show="curPath._nameError">Name is invalid</span>
+          <span class="error-message" ng-show="curPath._nameError">Name is invalid</span>
         </div>
         <div class="col-sm-3 col-md-3" layout="column">
           <label class="label-name">Weight:</label>
