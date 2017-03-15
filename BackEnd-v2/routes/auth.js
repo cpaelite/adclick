@@ -150,7 +150,9 @@ async function signup(data, next) {
     password: Joi.string().required(),
     firstname: Joi.string().required().allow(""),
     lastname: Joi.string().required().allow(""),
-    refToken: Joi.string().optional().empty("")
+    refToken: Joi.string().optional().empty(""),
+    qq: Joi.string().optional().empty(""),
+    skype: Joi.string().optional().empty("")
   });
   let connection;
   let beginTransaction = false;
@@ -167,10 +169,17 @@ async function signup(data, next) {
     let idtext = util.getRandomString(6);
     let reftoken = util.getUUID() + "." + idtext;
     //User
-    let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`) values (unix_timestamp(now()),?,?,?,?,?,?,?)";
+    let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (unix_timestamp(now()),?,?,?,?,?,?,?,?)";
+    let contact = {};
+    if (value.qq) {
+      contact.qq = value.qq;
+    }
+    if (value.skype) {
+      contact.skype = value.skype;
+    }
     let params = [
       value.firstname, value.lastname, value.email,
-      md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting)
+      md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting), JSON.stringify(contact)
     ];
     let result = await common.query(sql, params, connection);
     value.userId = result.insertId;

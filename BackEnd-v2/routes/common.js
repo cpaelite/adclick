@@ -1104,6 +1104,9 @@ async function checkNameExists(userId, id, name, type, connection) {
         case 5:
             results = await query("select `id` from TrafficSource where `userId`= ? and `name`= ?", [userId, name], connection);
             break;
+        case 6:
+            results = await query("select `id` from AffiliateNetwork where `userId`= ? and `name`= ?", [userId, name], connection);
+            break;    
         default:
             throw new Error("Paramter type error");
     }
