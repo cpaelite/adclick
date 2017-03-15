@@ -191,7 +191,7 @@ router.get('/api/profile', async function (req, res, next) {
       responseData.lastname = result[0].lastname;
       responseData.status = result[0].status;
       responseData.timezone = result[0].timezone;
-      responseData.timezoneId=result[0].responseData;
+      responseData.timezoneId=result[0].timezoneId;
       responseData.referralToken = result[0].referralToken;
       responseData.email = result[0].email;
       if (result[0].setting) {
