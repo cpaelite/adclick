@@ -369,7 +369,7 @@ md-datepicker {
 .change-paln-dialog .note {
   margin-bottom: 0;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   width: 100%;
 }
 .change-paln-dialog .note a {
@@ -2804,26 +2804,27 @@ md-menu-content.md-default-theme .md-menu>.md-button:after, md-menu-content .md-
 
 /* change plan */
 .pay-type-box {
-  background: #eaf1fa;
-    padding: 15px;
-    border-radius: 3px;
+  background:#fff;
+    padding:0;
+
+
 }
 .pay-type-box .alipay-code {
   text-align: center;
       margin-top: 30px;
 }
 .pay-type-box img {
-  width: 150px;
+  width:220px;
   margin-bottom: 20px;
 }
 .pay-type-box input[type="radio"] {
-  margin-top: 5px;
+  margin:4px 0 0 -25px;
 }
 .pay-type-box .pay-type-input {
   padding: 0 15px;
 }
 .pay-type-box .pay-type-input label{
-    font-size: 18px;
+    font-size:18px;
     margin-right: 20px;
 }
 .pay-type-box .my-price-select {

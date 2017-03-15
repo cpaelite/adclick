@@ -25,7 +25,6 @@
               <li><i class="icon-circle-blank"></i><span class="p-pay-l">PayPal account</span><span class="p-pay-r">{{userItem.email}}</span></li>
             </ul> -->
             <div class="pay-type-box">
-
               <div class="pay-type-input">
                 <label class="radio-inline">
                   <input
@@ -50,7 +49,10 @@
                 <img src="../assets/img/plan_2.jpg" ng-show="plans[2].id == id && payType == 0"/>
                 <img src="../assets/img/plan_3.jpg" ng-show="plans[3].id == id && payType == 0"/>
               </div>
-              <p ng-show="payType == 0" style="color:#666;text-align: center;">Please contact the Skype: live:support_44609 to open your account after payment</p>
+              <p ng-show="payType == 0" style="color:#666;text-align: center;">Please contact the Skype: <b>live:support_44609</b><br> to open your account after payment</p>
+              <div ng-show="payType == 1">
+                12121212
+              </div>
             </div>
           </div>
           <div class="col-md-4 my-price my-price-select">
