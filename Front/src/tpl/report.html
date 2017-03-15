@@ -122,6 +122,20 @@
     </div>
 </div>
 <div flex layout="column" class="cs-page-content report">
+
+<div ng-if="filters.length > 0">
+        <ul class="breadcrumb">
+        <li ng-repeat="filter in filters track by $index">
+            <em ng-if="$index < filters.length-1">
+                <a ng-click="removeFilter($index)"><span style="color: dodgerblue">{{filter.name}}</span></a>
+            </em>
+            <em ng-if="$index >= filters.length-1">
+                {{filter.name}}
+            </em>
+        </li>
+    </ul>
+</div>
+
 <div class="table-box">
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
