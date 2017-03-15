@@ -418,6 +418,14 @@
       });
     };
 
+    $scope.addNewCampaign = function() {
+      $scope.$state.go('app.report.campaign', {
+        'campaign': {
+          'isShowAdd': true
+        }
+      });
+    };
+
     function go(page) {
       getDateRange($scope.datetype);
       pageStatus.datetype = $scope.datetype;
