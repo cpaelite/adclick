@@ -28,7 +28,7 @@ router.get('/api/report', async function (req, res, next) {
   try {
     let result;
     result = await campaignReport(req.query);
-    return res.json({status: 1, message: 'success', data: result});
+    return res.json({ status: 1, message: 'success', data: result });
   } catch (e) {
     console.error(e)
     return next(e);
@@ -37,7 +37,7 @@ router.get('/api/report', async function (req, res, next) {
 });
 
 async function campaignReport(value) {
-  let {groupBy, limit, page} = value;
+  let { groupBy, limit, page } = value;
   // init values
   if (!mapping[groupBy]) {
     //TODO: unsupport group
@@ -66,7 +66,7 @@ async function campaignReport(value) {
 }
 
 function isListPageRequest(value) {
-  let {groupBy} = value
+  let { groupBy } = value
   let _flag = !!mapping[groupBy].listPage
   let isListPageRequest = !hasFilter(value) && _flag
   return isListPageRequest
@@ -82,7 +82,7 @@ function hasFilter(value) {
   return
 }
 
-async function fullFill({rawRows, groupBy}) {
+async function fullFill({ rawRows, groupBy }) {
   if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
     return rawRows
@@ -117,7 +117,7 @@ async function fullFill({rawRows, groupBy}) {
 }
 
 async function normalReport(values) {
-  let {userId, from, to, tz, groupBy, offset, limit, filter, order, status} = values;
+  let { userId, from, to, tz, groupBy, offset, limit, filter, order, status } = values;
 
   let sqlWhere = {};
   sqlWhere.UserID = userId
@@ -169,9 +169,9 @@ async function normalReport(values) {
     order: [orderBy]
   })
   let rawRows = rows.map(e => e.dataValues);
-  rawRows = await fullFill({rawRows, groupBy})
+  rawRows = await fullFill({ rawRows, groupBy })
   if (groupBy === "campaign") {
-    rawRows = await fullFill({rawRows, groupBy: "traffic"})
+    rawRows = await fullFill({ rawRows, groupBy: "traffic" })
   }
   rawRows = formatRows(rawRows)
   let totalRows = rawRows.length;
@@ -195,21 +195,21 @@ async function normalReport(values) {
   }
   totals.roi = totals.profit / totals.cost
   totals = formatTotals([totals])[0]
-  return {rows: rawRows, totals, totalRows}
+  return { rows: rawRows, totals, totalRows }
 }
 
 async function listPageReport(query) {
-  let {userId, groupBy, filter, order, status} = query;
+  let { userId, groupBy, filter, order, status } = query;
   let nr = await normalReport(query);
   let foreignConfig = extraConfig(groupBy);
   let _where = {
     userId,
   }
   if (groupBy === 'flow') {
-    _where['type'] = {ne: 0}
+    _where['type'] = { ne: 0 }
   }
   if (filter) {
-    _where.name = {$like: `%${filter}%`}
+    _where.name = { $like: `%${filter}%` }
   }
   if (status === "0") {
     _where.deleted = "1";
@@ -217,7 +217,7 @@ async function listPageReport(query) {
     _where.deleted = "0";
   }
 
-  let totalRows = await models[mapping[groupBy].table].count({where: _where});
+  let totalRows = await models[mapping[groupBy].table].count({ where: _where });
 
   let listData = await models[mapping[groupBy].table].findAll({
     attributes: foreignConfig.attributes,
@@ -227,8 +227,8 @@ async function listPageReport(query) {
   listData = listData.map((e) => {
     let obj = e.dataValues;
     nunberColumnForListPage.forEach(key => {
-        obj[key] = 0;
-      }
+      obj[key] = 0;
+    }
     );
     return obj;
   })
@@ -251,8 +251,27 @@ async function listPageReport(query) {
   if (order) {
     listData.sort(dynamicSort(order));
   }
+  let totals = {
+    impressions: listData.reduce((sum, row) => sum + row.impressions, 0),
+    clicks: listData.reduce((sum, row) => sum + row.clicks, 0),
+    visits: listData.reduce((sum, row) => sum + row.visits, 0),
+    conversions: listData.reduce((sum, row) => sum + row.conversions, 0),
+    revenue: listData.reduce((sum, row) => sum + row.revenue, 0),
+    cost: listData.reduce((sum, row) => sum + row.cost, 0),
+    profit: listData.reduce((sum, row) => sum + row.profit, 0),
+    cpv: listData.reduce((sum, row) => sum + row.cost, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
+    ictr: listData.reduce((sum, row) => sum + row.visits, 0) / listData.reduce((sum, row) => sum + row.impression, 0),
+    ctr: listData.reduce((sum, row) => sum + row.clicks, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
+    cr: listData.reduce((sum, row) => sum + row.conversions, 0) / listData.reduce((sum, row) => sum + row.clicks, 0),
+    cv: listData.reduce((sum, row) => sum + row.conversions, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
+    epv: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
+    epc: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce((sum, row) => sum + row.clicks, 0),
+    ap: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce((sum, row) => sum + row.conversions, 0),
+  }
+  totals.roi = totals.profit / totals.cost
+  totals = formatTotals([totals])[0];
   return {
-    totals: nr.totals,
+    totals: totals,
     totalRows,
     rows: listData
   }
