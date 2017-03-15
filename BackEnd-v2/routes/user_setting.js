@@ -49,6 +49,7 @@ router.post('/api/profile', async function (req, res, next) {
         companyname: Joi.string().optional().allow(""),
         tel: Joi.string().optional().empty(""),
         timezone: Joi.string().required(),
+        timezoneId: Joi.number().required(),
         homescreen: Joi.string().required()
     });
     req.body.userId = req.user.id;
@@ -67,6 +68,9 @@ router.post('/api/profile', async function (req, res, next) {
         }
         if (valueCopy.timezone) {
             sql += ",`timezone`='" + valueCopy.timezone + "'";
+        }
+        if (valueCopy.timezoneId !=undefined) {
+            sql += ",`timezoneId`=" + valueCopy.timezoneId;
         }
         if (valueCopy.companyname != undefined) {
             sql += ",`campanyName`='" + valueCopy.companyname + "'";

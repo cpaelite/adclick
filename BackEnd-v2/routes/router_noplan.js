@@ -182,7 +182,7 @@ router.get('/api/profile', async function (req, res, next) {
   try {
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
-    let result = await common.query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
+    let result = await common.query("select `idText`,`firstname`,`lastname`,`email`,`status`,`timezone`,`timezoneId`,`setting`,`referralToken` from User where  `id`= ?", [value.userId], connection);
 
     let responseData = {};
     if (result.length) {
@@ -191,6 +191,7 @@ router.get('/api/profile', async function (req, res, next) {
       responseData.lastname = result[0].lastname;
       responseData.status = result[0].status;
       responseData.timezone = result[0].timezone;
+      responseData.timezoneId=result[0].responseData;
       responseData.referralToken = result[0].referralToken;
       responseData.email = result[0].email;
       if (result[0].setting) {
