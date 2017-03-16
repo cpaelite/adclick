@@ -6,7 +6,7 @@ var setting = require('../config/setting');
 var Pub = require('./redis_sub_pub');
 
 
-//codition model  
+//codition model
 const conditionResult = [{
   "id": "model",
   "display": "Brand and model",
@@ -26,28 +26,28 @@ const conditionResult = [{
   "display": "Connection Type",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "select", "name": "value", "options": []
+    "type": "chips", "name": "value", "options": []
   }]
 }, {
   "id": "country",
   "display": "Country",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "select", "name": "value", "options": []
+    "type": "chips", "name": "value", "options": []
   }]
 }, {
   "id": "region",
   "display": "State / Region",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "async-select", "name": "value", "url": "/api/regions"
+    "type": "async-chips", "name": "value", "url": "/api/regions"
   }]
 }, {
   "id": "city",
   "display": "City",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "async-select", "name": "value", "url": "/api/cities"
+    "type": "async-chips", "name": "value", "url": "/api/cities"
   }]
 
 }, {
@@ -78,7 +78,7 @@ const conditionResult = [{
   "display": "Device type",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "select", "name": "value", "options": []
+    "type": "chips", "name": "value", "options": []
   }]
 }, {
   "id": "iprange",
@@ -93,7 +93,7 @@ const conditionResult = [{
   "display": "ISP",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "async-select", "name": "value", "url": "/api/isps"
+    "type": "async-chips", "name": "value", "url": "/api/isps"
   }]
 }, {
   "id": "language",
@@ -107,7 +107,7 @@ const conditionResult = [{
   "display": "Mobile Carrier",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
-    "type": "async-select", "name": "value", "url": "/api/carriers"
+    "type": "async-chips", "name": "value", "url": "/api/carriers"
   }]
 }, {
   "id": "os",
@@ -630,7 +630,7 @@ async function saveOrUpdateFlow(subId, value, connection) {
     value.id = flowId;
 
     if (value.rules && value.rules.length > 0) {
-      
+
       //解除flow下的所有rules
       await common.deleteRule2Flow(flowId, connection);
 
