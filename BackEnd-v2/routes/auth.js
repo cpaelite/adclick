@@ -186,7 +186,7 @@ async function signup(data, next) {
     value.idtext = idtext;
     //系统默认domains
     for (let index = 0; index < setting.domains.length; index++) {
-      await common.query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`) values (?,?,?,?)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0], connection);
+      await common.query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`,`verified`) values (?,?,?,?,1)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0], connection);
     }
 
     //如果refToken 不为"" 说明是从推广链接过来的
