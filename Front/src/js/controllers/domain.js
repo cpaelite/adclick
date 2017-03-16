@@ -122,6 +122,7 @@
     $scope.domainsVerify = function (domain) {
       DomainsValidatecname.get({address: domain.address}, function (result) {
         if (result.status) {
+          domain.verified = true;
           domain.btnName = "Domain setup is OK";
         } else {
           domain.verified = false;
