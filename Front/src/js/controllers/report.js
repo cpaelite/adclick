@@ -613,9 +613,8 @@
     $scope.checkNameParams = {
       type: 1
     };
-    $rootScope.isEditCampaign = true;
     if (this.cache) {
-      $rootScope.renderCampaignCachePathData = angular.copy(this.cache.flow);
+      $scope.renderCampaignCachePathData = angular.copy(this.cache.flow);
       theCampaign = this.cache;
       this.title = theCampaign.id ? 'edit' : 'add';
       if(theCampaign.id) {
@@ -992,7 +991,6 @@
       }
       reportCache.put('campaign-cache', cacheData);
       $scope.$broadcast('cacheCampaignStarted', {});
-      // $rootScope.isEditCampaign = false;
     }
 
     // cacheData success
@@ -1029,7 +1027,6 @@
     this.cancel = function() {
       if (!$scope.editForm.$dirty) {
         $mdDialog.cancel();
-        $rootScope.isEditCampaign = false;
       } else {
         closeConfirmDialog($mdDialog);
       }
@@ -2266,7 +2263,6 @@
       templateUrl: 'tpl/close-confirm-dialog.html',
     }).then(function(){
       $mdDialog.cancel();
-      $rootScope.isEditCampaign = false;
     });
     function closeConfirmCtrl($scope, $mdDialog) {
       this.title = "warnCloseTitle";

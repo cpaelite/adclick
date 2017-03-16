@@ -85,7 +85,7 @@
       };
       $scope.showContinue = false;
       $scope.editOffer = function(evt, offer, cacheOffer) {
-        if ($rootScope.isEditCampaign) {
+        if ($scope.$parent.pathRoute) {
           $scope.$emit('pathCacheDataPedding');
         }
         var locals = { perfType: 'offer' };
@@ -110,7 +110,7 @@
           targetEvent: evt,
           templateUrl: 'tpl/offer-edit-dialog.html'
         }).then(function(result) {
-          if ($rootScope.isEditCampaign) {
+          if ($scope.$parent.pathRoute) {
             $scope.$emit('pathCacheDataCancled');
           }
           var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
@@ -131,10 +131,10 @@
           }
         });
       };
-      if($rootScope.renderCampaignCachePathData) {
-        theFlow = angular.copy($rootScope.renderCampaignCachePathData);
+      if($scope.$parent.renderCampaignCachePathData) {
+        theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
         $scope.editOffer(null, null, reportCache.get('offer-cache'));
-        $rootScope.renderCampaignCachePathData = null;
+        $scope.$parent.renderCampaignCachePathData = null;
       } else if (flowId) {
         prms = Flow.get({id:flowId}, function(result) {
           theFlow = result.data;
@@ -858,7 +858,7 @@
         }
 
         theFlow.rules.forEach(function(rule) {
-          if (rule.isDeleted) {
+          if (rule.isDeleted && !isFromCampaign) {
             return;
           }
           if (rule._nameError) {
