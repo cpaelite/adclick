@@ -670,6 +670,14 @@
         });
         $scope.curRule.conditions.unshift(newCond);
       };
+
+      $scope.notInNewCondFilter = function(id) {
+        var conditions = $scope.curRule.conditions;
+        return !(conditions.some(function(condition) {
+          return condition.id == id.id;
+        }));
+      };
+
       $scope.deleteCondition = function(cond) {
         var idx = $scope.curRule.conditions.indexOf(cond);
         if (idx >= 0) {

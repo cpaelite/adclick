@@ -177,7 +177,7 @@
                         <input type="radio" ng-model="item.targetType" value="1"> Flow
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="item.targetType" value="2"> Path
+                        <input type="radio" ng-model="item.targetType" value="3"> Path
                     </label>
                     <label class="radio-inline">
                         <input type="radio" ng-model="item.targetType" value="0"> URL
@@ -334,7 +334,7 @@
               </div>
             </div>
         </form>
-        <div class="campaign-path-box row" ng-show="item.targetType == 2">
+        <div class="campaign-path-box row" ng-show="item.targetType == 3">
           <div class="col-md-offset-1 col-md-10" ng-controller="FlowEditCtrl" ng-include="pathRoute"></div>
         </div>
     </md-dialog-content>
