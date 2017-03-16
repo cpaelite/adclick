@@ -2901,7 +2901,7 @@ app.get('/api/domains', function (req, res) {
         },
         {
           address: "www.newbidder2.com",
-          main: true
+          main: false
         },
         {
           address: "www.newbidder1.com",
@@ -2910,7 +2910,8 @@ app.get('/api/domains', function (req, res) {
       custom: [
         {
           address: "www.adbund.com",
-          main: false
+          main: true,
+          verified: false
         }
       ]
     }

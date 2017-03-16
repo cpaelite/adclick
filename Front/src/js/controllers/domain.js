@@ -24,9 +24,17 @@
     prms = Domains.get(null, function (domain) {
       var domains = domain.data;
       if (domains.custom) {
+        var alter = false;
         domains.custom.forEach(function (domain) {
-            domain.btnName = "Verify DNS settings";
+          domain.btnName = "Verify DNS settings";
+          if (domain.main && !domain.verified) {
+            alter = true;
+          }
         });
+        if (alter) {
+          toastr.clear();
+          toastr.error('Main Domain CNAME validation Error!!!', {timeOut: 5000, positionClass: 'toast-top-center'});
+        }
       }
       theDomains = domains;
     }).$promise;
@@ -52,6 +60,11 @@
     $q.all(initPromises).then(initSuccess);
 
     $scope.mainClick = function (l) {
+      if (typeof(l.verified) != 'undefined' && !l.verified) {
+        toastr.clear();
+        toastr.error('Domain setup error, Please Verify DNS Setting', {timeOut: 2000, positionClass: 'toast-top-center'});
+        return;
+      }
       $scope.item['internal'].forEach(function (v) {
         v.main = false;
 
@@ -110,6 +123,7 @@
         if (result.status) {
           domain.btnName = "Domain setup is OK";
         } else {
+          domain.verified = false;
           domain.btnName = "Domain setup error";
           $mdDialog.show({
             bindToController: true,
