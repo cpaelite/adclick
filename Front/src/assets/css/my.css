@@ -1336,8 +1336,12 @@ h1.setting-title p{line-height:26px;color:#666;}
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
-    background-color: #2669d9 !important;;
+    background-color: #2669d9;
     border-color: #2669d9;
+}
+.btn-primary.add-condition{
+    background: #2669d9;
+    padding: 6px 8px;
 }
 .save-btn{
     margin-right: 5px;
@@ -1945,6 +1949,9 @@ input[type="checkbox"].th-checkbox{
     background: #a4aab1;
     top: 50%;
 }
+.tree-li.cs-is-deleted .tree-icon{
+    color: #989898;
+}
 .tree-icon{
     float: left;
     color: #989898;
@@ -1982,7 +1989,7 @@ input[type="checkbox"].th-checkbox{
 }
 .path-name{
     display: inline-block;
-    max-width: 280px;
+    max-width: 55%;
     font-size: 14px;
     margin-left: 8px;
     white-space: nowrap;
@@ -2017,7 +2024,7 @@ input[type="checkbox"].th-checkbox{
     height: 35px;
     line-height: 35px;
 }
-.weight-num em{font-size:12px; color:#000;font-style:normal;margin-left:5px;}
+.weight-num em{font-size:12px; /*color:#000;*/font-style:normal;margin-left:5px;}
 .add-box{
     font-size: 16px;
     color: #2770ea;
@@ -2027,13 +2034,14 @@ input[type="checkbox"].th-checkbox{
     font-size: 14px;
 }
 .cs-flow-content{
-    padding-left: 40px;
+    padding-left: 20px;
 }
 .form-content{
     max-width:600px;
 }
 .label-name{
     font-weight: 700;
+    padding: 0;
 }
 .label-radio{
     font-weight: 700;
@@ -2074,6 +2082,9 @@ md-content.cs-main-content{
 .editRuleForm md-switch{
     margin:0;
 }
+.editPathForm md-checkbox{
+    margin: 0 0 0 10px;
+}
 .masking{
     position: absolute;
     background: #fff;
@@ -2090,6 +2101,9 @@ md-content.cs-main-content{
     height: 35px;
     line-height: 35px;
     color: #fff;
+}
+.cs-flow-lander-header .col-sm-3.col-md-3{
+    text-align: right;
 }
 .add-lander-btn{
     float: right;
@@ -2151,6 +2165,26 @@ md-content.cs-main-content{
     border: 1px solid #cfdadd;
     line-height: 34px;
 }
+.cs-flow-content md-autocomplete,
+.cs-flow-content md-autocomplete md-autocomplete-wrap,
+.cs-flow-content md-autocomplete input:not(.md-input){
+    height: 32px;
+}
+.cs-flow-content .md-chip-input-container md-autocomplete{
+    border:none;
+}
+.cs-flow-content md-autocomplete{
+    border:1px solid #c9c9c9;
+}
+.cs-flow-content md-autocomplete md-icon{
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+}
+.cs-flow-content md-autocomplete .md-whiteframe-z1{
+    box-shadow: none;
+}
 .direct-content md-autocomplete input:not(.md-input){
     font-size: 13px;
     height: 34px;
@@ -2209,7 +2243,7 @@ md-select:not([disabled]):focus .md-select-value{
 {
     background: rgba(45, 168, 249, 0.18);
     font-size: 75%;
-    padding-left: 10px;
+    /*padding-left: 10px;*/
     height: 30px;
     line-height: 30px;
 }
@@ -2218,14 +2252,19 @@ md-select:not([disabled]):focus .md-select-value{
     border: none;
     border-radius: 4px;
 }
+.cs-condition-field .custom-input{
+    padding: 0 15px;
+}
 .condition-select-content{
     width: 45%;
-    color: #363636;
+    color: #000;
     text-shadow: none;
-    margin: 0 15px;
+    margin: 0 15px 15px 10px;
     display: inline-block;
     text-align: left;
     font-weight: normal;
+    border-radius: 4px;
+    padding-left: 15px;
 
 }
 .day-input-content{
@@ -2306,9 +2345,9 @@ md-select:not([disabled]):focus .md-select-value{
 }
 .delete-btn{
     box-shadow: none;
-    border: none;
+    border: 1px solid #ccc;
     background: #ccc;
-    margin-left: 15px;
+    margin-left: 10px;
     color: #fff !important;
 }
 .condition-select{
@@ -2323,9 +2362,6 @@ md-select:not([disabled]):focus .md-select-value{
     float: left;
     padding: 0 10px;
     font-size: 13px;
-}
-.condition-select-content{
-    margin-bottom: 15px;
 }
 .textarea-content textarea{
     width: 100%;
@@ -2393,16 +2429,20 @@ md-select:not([disabled]):focus .md-select-value{
     padding: 5px;
 }
 .chips-content .md-chips{
-    background: rgba(45, 168, 249, 0.18);
-    height: 30px;
-    border: none;
+    /*background: rgba(45, 168, 249, 0.18);*/
+    min-height: 38px;
+    border: 1px solid #c9c9c9;
     box-shadow: none !important;
-    padding:0 10px;
+    padding:0px;
+    border-radius: 4px;
 }
 .chips-content .md-chips.md-removable{
-    padding: 5px 0px;
+/*    padding: 5px 0px;
     height: 45px;
-    border-radius: 4px;
+    border-radius: 4px;*/
+}
+.md-chips .md-chip-input-container md-autocomplete input{
+    padding: 0 15px;
 }
 .md-chips md-chip{
     font-size: 70%;
@@ -2424,12 +2464,19 @@ md-select:not([disabled]):focus .md-select-value{
 .chips-content md-chips .md-chips.md-focused{
     box-shadow: none;
 }
+.md-chips .md-chip-input-container md-autocomplete, .md-chips .md-chip-input-container md-autocomplete-wrap{
+    height: auto;
+    min-height: 32px;
+}
+.md-chips .md-chip-input-container:not(:first-child){
+    margin: 0;
+}
 .md-chips .md-chip-input-container{
     font-size: 14px;
     color: #363636;
     margin: 0;
-    width: 100%;
-    padding: 0 10px;
+    /*width: 100%;*/
+    /*padding: 0 10px;*/
 }
 .chips-con,
 .country-select,
@@ -2599,7 +2646,9 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .report .right-select{float:left;width:100%}
     .cs-subform-control{padding:0;}
     .right-select2 .search-con{margin-top:-54px;}
-    .report .right-select2{margin-left:0;}.right-select{margin-top:15px;float:left;width:100%;}}
+    .report .right-select2{margin-left:0;}.right-select{margin-top:15px;float:left;width:100%;}
+    .path-name{max-width:49%;}
+}
 @media (max-width:1024px){
     .navbar-right{width:auto;}
     .fade-in-right-big{width:50%;}
@@ -2611,7 +2660,12 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .dash-board .data-list .data-list-con{padding:15px 0 15px 5px;}
     .data-list-con-r{padding-left:5px;}
 }
-@media (max-width:995px){.dash-board .data-list .data-list-con:last-child{background:transparent;}}
+@media (max-width:995px){.dash-board .data-list .data-list-con:last-child{background:transparent;}
+    .path-name{max-width: 30%;}
+}
+@media (max-width: 991px){
+    .path-name{max-width: 55%;}
+}
 @media (max-width:910px){
     .fade-in-right-big{width:50%;}
 }

@@ -1,5 +1,5 @@
 <div class="cs-page-flow clearfix" ng-click="clearOnEdit()">
-  <div class="col-sm-4 col-md-4 cs-flow-tree">
+  <div class="col-sm-6 col-md-4 col-lg-3 cs-flow-tree">
     <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li" ng-show="flowMode">
       <i class="material-icons tree-icon">album</i>
       <span class="cs-flow-name">{{flow.name}}</span>
@@ -35,7 +35,7 @@
           <span class="cs-path-name clearfix">
             <span class="path-name">{{path.name}} </span>
             <span class="weight-num">
-              {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>)
+              {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>
             </span>
           </span>
           <span class="cs-flow-restore" ng-show="path.isDeleted" ng-click="restore('path', path)">
@@ -53,7 +53,7 @@
       <span class="add-flow-rule" translate>addFlowRule</span>
     </div>
   </div>
-  <div class="col-sm-8 col-md-8 cs-flow-content">
+  <div class="col-sm-6 col-md-8 col-lg-9 cs-flow-content">
     <div class="cs-flow-top-actions">
       <div ng-hide="isDeleted || onEdit=='flow'" class="top-btn-list">
         <button class="btn btn-danger" ng-click="deleteCurrent(onEdit)">
@@ -114,8 +114,8 @@
       </div>
 
       <div class="form-group clearfix">
-        <label class="col-sm-4 control-label label-radio">Default redirect mode:</label>
-        <div class="col-sm-8">
+        <label class="col-md-12 col-lg-4 control-label label-radio">Default redirect mode:</label>
+        <div class="col-md-12 col-lg-8">
           <label class="radio-inline">
             <input type="radio" ng-model="flow.redirectMode" value="0"> 302
           </label>
@@ -145,7 +145,7 @@
       <div class="cs-conditions">
         <div class="cs-conditions-button">
           <div class="btn-group" uib-dropdown>
-            <button type="button" class="btn btn-primary" uib-dropdown-toggle>
+            <button type="button" class="btn btn-primary add-condition" uib-dropdown-toggle>
               <i class="material-icons">add</i>
               Add condition <span class="caret"></span>
             </button>
@@ -363,16 +363,18 @@
       </div>
 
       <div class="row">
-        <label class="label-name">Redirect mode:</label>
-        <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="0"> 302
-        </label>
-        <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="1"> Meta refresh
-        </label>
-        <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="2"> Double meta refresh
-        </label>
+        <label class="col-md-12 col-lg-4 label-name">Redirect mode:</label>
+        <div class="col-md-12 col-lg-8">
+          <label class="radio-inline">
+            <input type="radio" ng-model="curPath.redirectMode" value="0"> 302
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="curPath.redirectMode" value="1"> Meta refresh
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="curPath.redirectMode" value="2"> Double meta refresh
+          </label>
+        </div>
       </div>
 
       <div class="row">
@@ -381,7 +383,7 @@
       </div>
 
       <div class="form-group direct-content clearfix">
-        <div class="col-sm-12 col-md-6 lander-content" ng-hide="curPath.directLinking">
+        <div class="col-sm-12 col-md-12 col-lg-6 lander-content" ng-hide="curPath.directLinking">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Lander</div>
             <div class="col-sm-3 col-md-3">Weight</div>
@@ -438,7 +440,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 offer-content" ng-class="{'col-md-6': !curPath.directLinking}">
+        <div class="col-sm-12 col-md-12 offer-content" ng-class="{'col-lg-6': !curPath.directLinking}">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Offer</div>
             <div class="col-sm-3 col-md-3">Weight</div>
