@@ -685,7 +685,7 @@
           };
           showFlow();
         }
-        if($scope.item.targetFlowId && $scope.item.targetType == 2) {
+        if($scope.item.targetFlowId && $scope.item.targetType == 3) {
           $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId});
         } else {
           $scope.$broadcast('targetPathIdChanged', {flowId: ''});
@@ -1063,7 +1063,7 @@
     }
 
     this.save = function() {
-      if($scope.item.targetType == 2) {
+      if($scope.item.targetType == 3) {
         $scope.$broadcast('saveCampaignStarted');
       } else {
         saveCampaign();
@@ -1113,7 +1113,7 @@
       // }
 
       // path
-      if($scope.item.targetType == 2) {
+      if($scope.item.targetType == 3) {
         $scope.item['flow'] = {
           rules: pathData.rules,
           name: 'defaultName',
