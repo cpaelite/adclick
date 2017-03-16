@@ -335,6 +335,7 @@
       $scope.$watch('country', function (newValue, oldValue) {
         var preStr = newValue ? newValue.display + ' - ' : 'Global - ';
         if(newValue) {
+          $scope.flow.name = $scope.flow.name ? $scope.flow.name : '';
           $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
           $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
           $scope.prefix = preStr;

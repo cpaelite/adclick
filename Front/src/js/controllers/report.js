@@ -698,6 +698,7 @@
         }
         $scope.countries.forEach(function(v) {
           if(v.value == $scope.item.country) {
+            $scope.$broadcast('targetPathCountryChanged', {country: v});
             prefixCountry = v.display + ' - ';
             return;
           }
@@ -991,7 +992,7 @@
       }
       reportCache.put('campaign-cache', cacheData);
       $scope.$broadcast('cacheCampaignStarted', {});
-      $rootScope.isEditCampaign = false;
+      // $rootScope.isEditCampaign = false;
     }
 
     // cacheData success
