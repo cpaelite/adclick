@@ -2387,6 +2387,7 @@ md-select:not([disabled]):focus .md-select-value{
     background-color: #fff;
     opacity: 0.6;
     z-index: 10;
+    height: 100%;
 }
 .cs-conditions{
     margin-top: -10px;
