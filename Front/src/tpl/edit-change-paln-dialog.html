@@ -10,7 +10,7 @@
     <form name="form" ng-submit="planCommit()">
         <div>
           <div class="col-md-8 my-price-l">
-            <h2>Billing details</h2>
+            <!-- <h2>Billing details</h2>
             <ul class="p-edit">
               <li><i class="icon-circle-blank"></i><span>billing name</span><em>{{item.billingname}}</em></li>
               <li><i class="icon-circle-blank"></i><span>Address line 1</span><em>{{item.addressline1}}</em></li>
@@ -18,14 +18,13 @@
               <li><i class="icon-circle-blank"></i><span>ZIP / Postal code</span><em>{{item.postalcode}}</em></li>
               <li><i class="icon-circle-blank"></i><span>State /Region</span><em>{{item.stateregion}}</em></li>
               <li><i class="icon-circle-blank"></i><span>Country</span><em>{{item.country}}</em></li>
-              <!-- <li class="edit-xg"><em><a id="edit" href="#"><i class="icon-edit"></i>EDIT</a></em></li> -->
-            </ul>
+              <li class="edit-xg"><em><a id="edit" href="#"><i class="icon-edit"></i>EDIT</a></em></li>
+            </ul> -->
             <!-- <h2>Payment method detalis<a href="#"><i class="icon-edit"></i>EDIT</a></h2>
             <ul class="p-pay">
               <li><i class="icon-circle-blank"></i><span class="p-pay-l">PayPal account</span><span class="p-pay-r">{{userItem.email}}</span></li>
             </ul> -->
             <div class="pay-type-box">
-
               <div class="pay-type-input">
                 <label class="radio-inline">
                   <input
@@ -50,7 +49,10 @@
                 <img src="../assets/img/plan_2.jpg" ng-show="plans[2].id == id && payType == 0"/>
                 <img src="../assets/img/plan_3.jpg" ng-show="plans[3].id == id && payType == 0"/>
               </div>
-              <p ng-show="payType == 0" style="color:#666;text-align: center;">Please contact the Skype: live:support_44609 to open your account after payment</p>
+              <p ng-show="payType == 0" style="color:#666;text-align: center;">Please contact the Skype: <b>live:support_44609</b><br> to open your account after payment</p>
+              <div ng-show="payType == 1">
+                
+              </div>
             </div>
           </div>
           <div class="col-md-4 my-price my-price-select">
