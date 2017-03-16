@@ -2338,6 +2338,7 @@ md-select:not([disabled]):focus .md-select-value{
     background-color: #fff;
     opacity: 0.6;
     z-index: 10;
+    height: 100%;
 }
 .cs-conditions{
     margin-top: -10px;
@@ -2755,13 +2756,13 @@ input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disa
 }
 .campaign-path-box {
   position: relative;
-  height: 458px;
+  height: 530px;
 }
 .campaign-path-box .col-md-offset-1{
     height: 100%;
 }
 .campaign-path-box .cs-conditions-content{
-    max-height: 273px;
+    max-height: 300px;
 }
 .campaign-path-box .path-name{
     width: 26%;
@@ -2938,6 +2939,7 @@ md-menu-content.md-default-theme .md-menu>.md-button:after, md-menu-content .md-
 }
 .radio-inline, .checkbox-inline{line-height:22px;padding:15px 0 0 20px;}
 md-checkbox .md-icon{width:18px;height:18px;border-radius:2px;margin-top:17px;}
+.condition-checkbox md-checkbox .md-icon{margin-top: 0px;}
 md-checkbox:not([disabled]).md-primary.md-checked .md-icon{background:#2770ea;}
 .dropdown-menu > li > a:hover{background-color:#8494a2 !important;font-weight:bold;color:#fff;}
 .cs-conditions .dropdown-menu,.md-autocomplete-suggestions {border:none;border-radius:3px;background: rgba(246, 248, 248, 0.97)!important;background:#fff;
