@@ -898,7 +898,7 @@ table .traficc-source-input input[type="checkbox"]{
 .md-dialog-backdrop ~ .md-dialog-backdrop {
   z-index: 81;
 }
-.md-dialog-container:last-child{
+.md-dialog-container ~ .md-dialog-container{
     z-index: 85;
 }
 .traffic-source-template-list{

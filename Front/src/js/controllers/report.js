@@ -579,6 +579,7 @@
     }
 
     if (perfType == 'campaign') {
+      console.log('reportCache.get("campaign-cache")', reportCache.get('campaign-cache'));
       var cache = reportCache.get('campaign-cache');
       if (cache) {
         reportCache.remove('campaign-cache');
@@ -612,7 +613,9 @@
     $scope.checkNameParams = {
       type: 1
     };
+    $rootScope.isEditCampaign = true;
     if (this.cache) {
+      $rootScope.renderCampaignCachePathData = angular.copy(this.cache.flow);
       theCampaign = this.cache;
       this.title = theCampaign.id ? 'edit' : 'add';
       if(theCampaign.id) {
@@ -980,7 +983,6 @@
 
     function saveCacheData() {
       var cacheData = angular.copy($scope.item);
-      console.log('saveCacheData---->', cacheData);
       delete cacheData.flow;
       cacheData.trafficSourceId = $scope.trafficSourceId;
       cacheData.targetFlowId = $scope.item.flow ? $scope.item.flow.id : '';
@@ -988,7 +990,28 @@
         cacheData[$scope.radioTitle.toLowerCase() + 'Value'] = $scope.costModelValue;
       }
       reportCache.put('campaign-cache', cacheData);
+      $scope.$broadcast('cacheCampaignStarted', {});
+      $rootScope.isEditCampaign = false;
     }
+
+    // cacheData success
+    $scope.$on('pathCacheDataSuccessed', function(event, oData) {
+      var cacheCampaignData = reportCache.get('campaign-cache');
+      reportCache.remove('campaign-cache');
+      cacheCampaignData.flow = oData.data;
+      console.log('cacheCampaignDatacacheCampaignDatacacheCampaignData', cacheCampaignData)
+      reportCache.put('campaign-cache', cacheCampaignData);
+    });
+
+    // Path new Offer
+    $scope.$on('pathCacheDataPedding', function(event, oData) {
+      console.log('pathCacheDataPeddingpathCacheDataPeddingpathCacheDataPedding');
+      saveCacheData();
+    });
+
+    $scope.$on('pathCacheDataCancled', function(event, oData) {
+      reportCache.remove('campaign-cache');
+    });
 
     $scope.toAddFlow = function () {
       $mdDialog.hide();
@@ -1005,6 +1028,7 @@
     this.cancel = function() {
       if (!$scope.editForm.$dirty) {
         $mdDialog.cancel();
+        $rootScope.isEditCampaign = false;
       } else {
         closeConfirmDialog($mdDialog);
       }
@@ -1591,7 +1615,7 @@
         'affiliate': {
           'isShowAdd': true
         },
-        'frcpn': 4
+        'frcpn': self.frcpn ? self.frcpn : 4
       });
     }
 
@@ -1612,6 +1636,7 @@
 
   function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant) {
     var fromCampaign = $scope.$parent.$stateParams.frcpn == '1';
+    var fromFlow = $scope.$parent.$stateParams.frcpn == '2';
 
     $scope.urlPattern = new RegExp(AppConstant.URLREG, 'i');
     $scope.checkNameParams = {
@@ -1711,8 +1736,9 @@
     this.cancel = function() {
       if (fromCampaign) {
         $scope.$parent.$state.go('app.report.campaign');
+      } else if (fromFlow) {
+        $scope.$parent.$state.go('app.report.flow');
       }
-
       $mdDialog.cancel();
     };
 
@@ -1993,6 +2019,7 @@
 
   function editAffiliateCtrl($scope, $mdDialog, $timeout, AffiliateNetwork) {
     var fromOffer = $scope.$parent.$stateParams.frcpn == '4';
+    var fromCampaign = $scope.$parent.$stateParams.frcpn == '2';
     $scope.checkNameParams = {
       type: 6
     };
@@ -2036,6 +2063,8 @@
     this.cancel = function() {
       if(fromOffer) {
         $scope.$parent.$state.go('app.report.offer');
+      } else if(fromCampaign) {
+        $scope.$parent.$state.go('app.report.campaign');
       }
       $mdDialog.cancel();
     };
@@ -2048,6 +2077,9 @@
       } else {
         if(fromOffer) {
           $scope.$parent.$state.go('app.report.offer');
+          $mdDialog.cancel();
+        } else if (fromCampaign) {
+          $scope.$parent.$state.go('app.report.campaign');
           $mdDialog.cancel();
         } else {
           $mdDialog.hide(item);
@@ -2233,6 +2265,7 @@
       templateUrl: 'tpl/close-confirm-dialog.html',
     }).then(function(){
       $mdDialog.cancel();
+      $rootScope.isEditCampaign = false;
     });
     function closeConfirmCtrl($scope, $mdDialog) {
       this.title = "warnCloseTitle";
