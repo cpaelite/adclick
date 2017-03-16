@@ -57,11 +57,11 @@
     <div class="cs-flow-top-actions">
       <div ng-hide="isDeleted || onEdit=='flow'" class="top-btn-list">
         <button class="btn btn-danger" ng-click="deleteCurrent(onEdit)">
-          <i class="material-icons">delete</i>
+          <i class="icon-trash"></i>
           {{'Delete '+onEdit}}
         </button>
         <button class="btn btn-default" ng-click="duplicateCurrent(onEdit)">
-          <i class="material-icons">control_point_duplicate</i>
+          <i class="icon-copy"></i>
           {{'Duplicate '+onEdit}}
         </button>
       </div>
@@ -114,7 +114,7 @@
       </div>
 
       <div class="form-group clearfix">
-        <label class="col-md-12 col-lg-4 control-label label-radio">Default redirect mode:</label>
+        <label class="control-label label-radio">Default redirect mode:</label>
         <div class="col-md-12 col-lg-8">
           <label class="radio-inline">
             <input type="radio" ng-model="flow.redirectMode" value="0"> 302
@@ -146,8 +146,8 @@
         <div class="cs-conditions-button">
           <div class="btn-group" uib-dropdown>
             <button type="button" class="btn btn-primary add-condition" uib-dropdown-toggle>
-              <i class="material-icons">add</i>
-              Add condition <span class="caret"></span>
+              <i class="icon-plus"></i>
+              Add condition <span class="icon-angle-down"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu">
               <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'!custom'} | filter:notInNewCondFilter">
@@ -164,7 +164,7 @@
             </ul>
           </div>
           <button class="btn btn-default delete-btn" ng-click="deleteAllConditions()">
-            <i class="material-icons">close</i>
+            <i class="icon-trash"></i>
             Delete all</button>
         </div>
 
@@ -363,7 +363,7 @@
       </div>
 
       <div class="row">
-        <label class="col-md-12 col-lg-4 label-name">Redirect mode:</label>
+        <label class="label-name">Redirect mode:</label>
         <div class="col-md-12 col-lg-8">
           <label class="radio-inline">
             <input type="radio" ng-model="curPath.redirectMode" value="0"> 302
@@ -504,19 +504,19 @@
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="save()">
-        <i class="material-icons">check</i>
+        <i class="icon-ok"></i>
         Save
       </button>
       <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="saveClose()">
-        <i class="material-icons">check</i>
+        <i class="icon-ok"></i>
         Save&amp;close
       </button>
       <button class="btn btn-primary save-btn" ng-show="showContinue" ng-click="continueEdit()">
-        <i class="material-icons">check</i>
+        <i class="icon-ok"></i>
         Continue
       </button>
       <button class="btn close-btn" ng-click="close()">
-        <i class="material-icons">close</i>
+        <i class="icon-remove"></i>
         Close
       </button>
     </div>
