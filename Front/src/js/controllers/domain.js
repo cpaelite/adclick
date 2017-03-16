@@ -82,7 +82,8 @@
         $scope.item['custom'].push({
           address: '',
           main: false,
-          btnName: "Verify DNS settings"
+          btnName: "Verify DNS settings",
+          verified: false
         });
       }
       if ($scope.item['custom'].length >= $scope.domainLimit) {
