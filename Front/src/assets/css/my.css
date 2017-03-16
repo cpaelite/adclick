@@ -1976,6 +1976,15 @@ input[type="checkbox"].th-checkbox{
     right: 10px;
     color: gray;
 }
+.cs-flow-rule{
+    position: relative;
+}
+.campaign-path-box .tree-li{
+    padding: 0 15px;
+}
+.campaign-path-box .cs-page-flow li.tree-li{
+    padding: 0 40px;
+}
 .cs-flow-rule .cs-is-disabled .tree-icon{
     color: rgba(49, 46, 99, 0.41);
 }
@@ -2233,6 +2242,9 @@ md-select:not([disabled]):focus .md-select-value{
     border: none;
     border-radius: 4px;
     margin: 10px;
+}
+.cs-conditions-content .cs-condition-field .chips-con .md-chip-input-container md-autocomplete md-autocomplete-wrap md-progress-linear{
+    display: none;
 }
 .day-input-content,
 .condition-select-content,
@@ -2726,6 +2738,16 @@ input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disa
 }
 .campaign-path-box {
   position: relative;
+  height: 458px;
+}
+.campaign-path-box .col-md-offset-1{
+    height: 100%;
+}
+.campaign-path-box .cs-conditions-content{
+    max-height: 273px;
+}
+.campaign-path-box .path-name{
+    width: 26%;
 }
 .campaign-path-box .lander-content, .campaign-path-box .offer-content {
   width: 100% !important;
