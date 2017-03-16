@@ -226,7 +226,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  */
 router.get('/api/offers', function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name,country from Offer where userId = " + req.parent.id;
+    var sql = "select id, name,country from Offer where userId = " + req.parent.id + " and deleted = 0 ";
 
     if (req.query.country) {
         sql += " and `country`=" + req.query.country;

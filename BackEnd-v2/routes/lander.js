@@ -203,7 +203,7 @@ router.get('/api/landers/:id', async function (req, res, next) {
  */
 router.get('/api/landers', function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name, country from Lander where userId = " + req.parent.id;
+    var sql = "select id, name, country from Lander where userId = " + req.parent.id + " and deleted = 0 ";
 
     if (req.query.country) {
         sql += " and `country`=" + req.query.country;
