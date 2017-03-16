@@ -1341,7 +1341,11 @@ h1.setting-title p{line-height:26px;color:#333;font-weight:normal;margin-bottom:
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
+<<<<<<< cd95cdbe9efb1c45c9426bc9fb6b8ea16c1c3819
     background-color: #2770ea !important;
+=======
+    background-color: #2770ea;
+>>>>>>> “flow样式修改”
     border-color: #2669d9;
 }
 .btn-primary.add-condition{
@@ -1928,7 +1932,10 @@ input[type="checkbox"].th-checkbox{
 }
 .cs-flow-tree{
     background:#f1f2f7;
+<<<<<<< cd95cdbe9efb1c45c9426bc9fb6b8ea16c1c3819
     border:1px solid #e8e8e8;
+=======
+>>>>>>> “flow样式修改”
     padding:0;
     border-radius:3px;
     overflow: auto;
@@ -2100,7 +2107,8 @@ input[type="checkbox"].th-checkbox{
 }
 .label-radio{
     font-weight:600;
-    padding-left: 0;padding-top:17px;
+    padding-left: 0;
+    padding-top:17px;
 }
 .close-btn{
     background:#8494A5;height:32px;line-height:32px;font-weight:bold;
@@ -2404,7 +2412,8 @@ md-select:not([disabled]):focus .md-select-value{
     box-shadow: none;
     margin-right: 12px;
     border: none;
-    font-weight:bold;font-size:12px;
+    font-weight:bold;
+    font-size:12px;
     background: #a8afc1!important;
 }
 .btn-group.is-btn.flow-condition label.active {
@@ -2415,6 +2424,10 @@ md-select:not([disabled]):focus .md-select-value{
   border: 1px solid #f94c47!important;
 }
 .btn-group.is-btn.flow-condition label:last-child,
+.btn-default.delete-btn:hover{
+    background: #8494A5;border: 1px solid #8494A5;color: #fff !important;
+}
+.btn-group.is-btn label:last-child,
 .btn-default.delete-btn:hover{
     background: #8494A5;border: 1px solid #8494A5;color: #fff !important;
 }
@@ -3029,3 +3042,4 @@ md-autocomplete .md-show-clear-button button{width:22px;height:22px;margin:auto 
   left: 0;
   font-size: 16px;
 }
+
