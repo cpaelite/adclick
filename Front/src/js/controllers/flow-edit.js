@@ -34,6 +34,7 @@
           $mdDialog.show({
             multiple: true,
             skipHide: true,
+            escapeToClose: false,
             clickOutsideToClose: false,
             controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
             controllerAs: 'ctrl',
@@ -96,11 +97,12 @@
         } else {
           locals.item = null;
         }
-        locals.frcpn = 2;
+        locals.frcpn = $scope.$parent.pathRoute ? 1 : 2;
         locals.country = $scope.country;
         $mdDialog.show({
           multiple: true,
           skipHide: true,
+          escapeToClose: false,
           clickOutsideToClose: false,
           controller: 'editOfferCtrl',
           controllerAs: 'ctrl',
@@ -133,7 +135,10 @@
       };
       if($scope.$parent.renderCampaignCachePathData) {
         theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
-        $scope.editOffer(null, null, reportCache.get('offer-cache'));
+        if(reportCache.get('offer-cache')) {
+          $scope.editOffer(null, null, reportCache.get('offer-cache'));
+          reportCache.remove('offer-cache');
+        }
         $scope.$parent.renderCampaignCachePathData = null;
       } else if (flowId) {
         prms = Flow.get({id:flowId}, function(result) {
@@ -496,6 +501,7 @@
             $mdDialog.show({
               multiple: true,
               skipHide: true,
+              escapeToClose: false,
               clickOutsideToClose: false,
               controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
               controllerAs: 'ctrl',
@@ -595,6 +601,7 @@
         $mdDialog.show({
           multiple: true,
           skipHide: true,
+          escapeToClose: false,
           clickOutsideToClose: false,
           controller: 'editLanderCtrl',
           controllerAs: 'ctrl',
@@ -825,6 +832,7 @@
        * @param: {bool} isFromCampaign: false(flow页面的数据)、true(campaign页面path的数据)
        */
       function handleData(isFromCampaign) {
+        console.log('theFlow.rules', theFlow.rules);
         $scope.saveErrors.length = 0;
         $scope.showErrors = false;
         // clean up before save
@@ -894,7 +902,7 @@
             delete ruleData.conditions;
           }
           rule.paths.forEach(function(path) {
-            if (path.isDeleted) {
+            if (path.isDeleted && !isFromCampaign) {
               return;
             }
             if (path._nameError) {
