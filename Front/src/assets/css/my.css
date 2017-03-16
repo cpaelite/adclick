@@ -2832,3 +2832,9 @@ md-menu-content.md-default-theme .md-menu>.md-button:after, md-menu-content .md-
 .form-control.form-control-none .md-select-value{height:32px;}
 .form-validation .form-control.ng-dirty.ng-invalid{border-color:#d5dce4;}
 .error-message {color: red;}
+
+.breadcrumb > li + li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: ">\00a0";
+}

@@ -2579,6 +2579,7 @@ app.get('/timezones', function (req, res) {
           lastname:'test',
           companyname: 'zheng',
           tel: '13120663670',
+          timezoneId: 5,
           timezone:'+08:00',
           homescreen:'dashboard',  // or campaignList
           referralToken:"",
@@ -2598,6 +2599,7 @@ app.get('/api/profile', function (req, res) {
       companyname: 'zheng',
       email: 'zhengshuo@qq.com',
       tel: '13120663670',
+      timezoneId: 5,
       timezone: '-08:00',
       homescreen: 'dashboard', // or campaignList
       referralToken: "wkllehZbEjXRk7nJfatdCWjjhKRKyo+jqdyL8ZHuIAZYrDTZ+0kW1A3BiAWGBrDZ",
@@ -2899,7 +2901,7 @@ app.get('/api/domains', function (req, res) {
         },
         {
           address: "www.newbidder2.com",
-          main: true
+          main: false
         },
         {
           address: "www.newbidder1.com",
@@ -2908,7 +2910,8 @@ app.get('/api/domains', function (req, res) {
       custom: [
         {
           address: "www.adbund.com",
-          main: false
+          main: true,
+          verified: false
         }
       ]
     }

@@ -98,8 +98,15 @@
       if (val) {
         var cacheKey = gb.value + ':' + val;
         // todo: get name from server if not in cache
-        var cacheName = reportCache.get(cacheKey) || val;
-        $scope.filters.push({ key: gb.value, val: val, name: cacheName });
+        var cache = reportCache.get(cacheKey);
+        var cacheName = val;
+        // filter顺序
+        var level = 0;
+        if (cache) {
+          cacheName = cache.name;
+          level = cache.level;
+        }
+        $scope.filters.splice(level-1, 0, { key: gb.value, val: val, name: cacheName });
       }
     });
 
@@ -404,14 +411,24 @@
         return;
 
       var group = pageStatus.groupBy[0];
-
-      var cacheKey = group + ':' + row.id;
-      reportCache.put(cacheKey, row.name);
-
       $scope.filters.push({ key: group, val: row.id });
+      var cacheKey = group + ':' + row.id;
+      reportCache.put(cacheKey, {level: $scope.filters.length, name: row.name});
 
       go(gb.value);
     };
+
+    $scope.removeFilter = function (idx) {
+      var page = $scope.filters[idx+1].key;
+      for (var i = idx+1; i < $scope.filters.length; i++) {
+        var filter = $scope.filters[i];
+        var cacheKey = filter.key + ":" + filter.val;
+        reportCache.remove(cacheKey);
+      }
+      $scope.filters.splice(idx+1);
+      go(page);
+    };
+
     $scope.goTSReport = function(item) {
       $scope.$state.go('app.report.tsreport', {
         trafficId: item.id

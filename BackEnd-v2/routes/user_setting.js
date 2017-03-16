@@ -10,7 +10,7 @@ var _ = require('lodash');
 var emailCtrl = require('../util/email');
 var uuidV4 = require('uuid/v4');
 var moment = require('moment');
-
+var Pub = require('./redis_sub_pub');
 
 
 /**
@@ -49,6 +49,7 @@ router.post('/api/profile', async function (req, res, next) {
         companyname: Joi.string().optional().allow(""),
         tel: Joi.string().optional().empty(""),
         timezone: Joi.string().required(),
+        timezoneId: Joi.number().required(),
         homescreen: Joi.string().required()
     });
     req.body.userId = req.user.id;
@@ -67,6 +68,9 @@ router.post('/api/profile', async function (req, res, next) {
         }
         if (valueCopy.timezone) {
             sql += ",`timezone`='" + valueCopy.timezone + "'";
+        }
+        if (valueCopy.timezoneId != undefined) {
+            sql += ",`timezoneId`=" + valueCopy.timezoneId;
         }
         if (valueCopy.companyname != undefined) {
             sql += ",`campanyName`='" + valueCopy.companyname + "'";
@@ -380,13 +384,13 @@ router.get('/api/domains', async function (req, res, next) {
             internal: [],
             custom: []
         }
-        let sql = "select `domain` as address,`main`,`customize` from UserDomain where `userId`= ? and `deleted`=0 ";
+        let sql = "select `domain` as address,`main`,`customize`,`verified` from UserDomain where `userId`= ? and `deleted`=0 ";
         let userDomians = await common.query(sql, [value.userId], connection);
         for (let index = 0; index < userDomians.length; index++) {
             if (userDomians[index].customize == 0) {
                 result.internal.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
             } else {
-                result.custom.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
+                result.custom.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false, verified: userDomians[index].verified == 1 ? true : false });
             }
         }
         res.json({
@@ -446,7 +450,8 @@ router.post('/api/domains', async function (req, res, next) {
         }).required().length(3),
         custom: Joi.array().items({
             address: Joi.string().required(),
-            main: Joi.boolean().required()
+            main: Joi.boolean().required(),
+            verified: Joi.boolean().required()
         }).required()
     });
     req.body.userId = req.user.id;
@@ -454,6 +459,7 @@ router.post('/api/domains', async function (req, res, next) {
     try {
         let insertData = [];
         let value = await common.validate(req.body, schema);
+        let verfiedMainDomain;
         //check params
         let passCheck = false;
         let mainDomianNumber = 0;
@@ -461,28 +467,39 @@ router.post('/api/domains', async function (req, res, next) {
             if (value.internal[index].main) {
                 mainDomianNumber++;
             }
-            insertData.push({ domain: value.internal[index].address, main: value.internal[index].main ? 1 : 0, customize: 0 });
+            insertData.push({ domain: value.internal[index].address, main: value.internal[index].main ? 1 : 0, customize: 0, verified: 1 });
 
         }
         for (let index = 0; index < value.custom.length; index++) {
             if (value.custom[index].main) {
                 mainDomianNumber++;
             }
-            insertData.push({ domain: value.custom[index].address, main: value.custom[index].main ? 1 : 0, customize: 1 });
+            let data = { domain: value.custom[index].address, main: value.custom[index].main ? 1 : 0, customize: 1, verified: value.custom[index].verified ? 1 : 0 };
+            insertData.push(data);
+            //main domain verfied
+            if (value.custom[index].main && value.custom[index].verified) {
+                verfiedMainDomain = data;
+            }
         }
         if (mainDomianNumber !== 1) {
             throw new Error("please reset mian domian correctly");
         }
 
         connection = await common.getConnection();
-        await common.query("update UserDomain set `deleted` = 1 where `userId`= ? ", [value.userId], connection);
-
+        await common.query("delete from  UserDomain  where `userId`= ? ", [value.userId], connection);
+        if (verfiedMainDomain) {
+            await common.query('update UserDomain set `verified`= 0 where `domain`= ? and `customize` = 1 ', [verfiedMainDomain.address], connection);
+        }
         for (let index = 0; index < insertData.length; index++) {
             let sql = "insert into UserDomain (`domain`,`main`,`customize`,`userId`) values (?,?,?,?)";
             await common.query(sql, [insertData[index].domain, insertData[index].main, insertData[index].customize, value.userId], connection);
         }
         delete value.userId;
-        res.json({
+
+        //redis publish
+        new Pub(true).publish(setting.redis.channel, value.userId + ".update.user." + value.userId, "userUpdate");
+
+        return res.json({
             status: 1,
             message: 'succes',
             data: value

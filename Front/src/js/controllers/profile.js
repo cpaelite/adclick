@@ -11,11 +11,12 @@
     $scope.app.subtitle = 'Profile';
 
     Timezone.get(null, function (timezone) {
-      $scope.timezone = timezone.data.timezones;
+      $scope.timezones = timezone.data.timezones;
     });
 
     Profile.get(null, function (user) {
       $scope.accountItem = user.data;
+      $scope.timezone = $scope.accountItem.timezoneId + "," + $scope.accountItem.timezone;
       $scope.emailItem = {
         email: $scope.accountItem.email
       };
@@ -27,9 +28,11 @@
       delete $scope.accountItem.idText;
       delete $scope.accountItem.status;
       delete $scope.accountItem.referralToken;
-
+      var tzArr = $scope.timezone.split(',');
+      $scope.accountItem.timezoneId = tzArr[0];
+      $scope.accountItem.timezone = tzArr[1];
       Profile.save($scope.accountItem, function (response) {
-        $scope.accountSaveStatus = false;;
+        $scope.accountSaveStatus = false;
         if (response.status) {
           toastr.success('Your account data save success!');
           $localStorage.currentUser.firstname = $scope.accountItem.firstname;
