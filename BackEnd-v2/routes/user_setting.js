@@ -492,13 +492,11 @@ router.post('/api/domains', async function (req, res, next) {
         }
         for (let index = 0; index < insertData.length; index++) {
             let sql = "insert into UserDomain (`domain`,`main`,`customize`,`userId`,`verified`) values (?,?,?,?,?)";
-            await common.query(sql, [insertData[index].domain, insertData[index].main, insertData[index].customize, value.userId,insertData[index].verified], connection);
+            await common.query(sql, [insertData[index].domain, insertData[index].main, insertData[index].customize, value.userId, insertData[index].verified], connection);
         }
-        delete value.userId;
-
         //redis publish
         new Pub(true).publish(setting.redis.channel, value.userId + ".update.user." + value.userId, "userUpdate");
-
+        delete value.userId;
         return res.json({
             status: 1,
             message: 'succes',
