@@ -1,6 +1,7 @@
 import express from 'express';
 var router = express.Router();
 var common = require('./common');
+var moment = require('moment');
 import _ from 'lodash';
 import sequelize from 'sequelize';
 import {
@@ -121,14 +122,16 @@ async function normalReport(values) {
 
   let sqlWhere = {};
   sqlWhere.UserID = userId
-  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
 
   let attrs = Object.keys(values);
   _.forEach(attrs, (attr) => {
     if (attr === 'day') {
+      let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
+      let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       sqlWhere.Timestamp = sequelize.and(
-        sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${values.day.trim()}T00:00','${tz}', '+00:00')) * 1000)`),
-        sequelize.literal(`AdStatis.Timestamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${values.day.trim()}T23:59','${tz}', '+00:00')) * 1000)`)
+        sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000)`),
+        sequelize.literal(`AdStatis.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`)
       );
     } else if (mapping[attr]) {
       sqlWhere[mapping[attr].dbKey] = values[attr];
@@ -153,13 +156,15 @@ async function normalReport(values) {
     }
   }
 
+  
+
   // group by day
   let finalAttribute = attributes
   if (groupBy.toLowerCase() === 'day') {
-    finalAttribute = [[sequelize.literal('DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((Timestamp/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL 8 HOUR), "%Y-%m-%d")'), 'day'], ...attributes]
+    finalAttribute = [[sequelize.literal(`DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(Timestamp/1000), '${tz}','+00:00'),"%Y-%m-%d")`), 'day'], ...attributes]
   }
 
-  console.info(sqlWhere)
+ 
   let rows = await models.AdStatis.findAll({
     where: sqlWhere,
     limit,
