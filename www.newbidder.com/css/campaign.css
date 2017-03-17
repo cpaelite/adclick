@@ -4,7 +4,7 @@ body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "
 .bidder-box.bidder-box-1 .bidder-col p{line-height:32px;margin-bottom:25px;}
 .bidder-box.bidder-box-1 .bidder-col h3{line-height:42px;}
 .bidder-box.bidder-box-1 .bidder-col img{margin:60px auto;}
-.bidder-box.bidder-box-1 .bidder-col .sm-img{width:58%}
+.bidder-box.bidder-box-1 .bidder-col .sm-img,.bidder-box .bidder-col .sm-img{width:58%}
 .bidder-box.bidder-box-1 .list-bg{margin:6px 20px 0 0;height:30px;line-height:30px;padding:0 12px;float:left;}
 .bidder-box .logo{width:200px;margin:0 auto 30px auto;display: block;}
 .bidder-box h1{color:#222;margin:50px 0 20px 10px;float:left;border-bottom:3px solid #666;line-height:48px;}
@@ -19,7 +19,7 @@ body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "
 .switching{font-size:32px;font-weight:bold;margin:25px 0 35px 0;line-height:48px;text-align:center;}
 .author{color:#999;display:block;float:right;font-size:12px;line-height:32px;}
 @media (min-width: 320px) and (max-width:768px){
-    .bidder-col img.img-w,.bidder-box.bidder-box-1 .bidder-col .sm-img{width:100%;}
+    .bidder-col img.img-w,.bidder-box.bidder-box-1 .bidder-col .sm-img,.bidder-box .bidder-col .sm-img{width:100%;}
     .bidder-col img{width:100%;}
     .bidder-box.bidder-box-1 .bidder-col img{margin:30px auto;}
     .bidder-box h1{margin:30px 0;}
