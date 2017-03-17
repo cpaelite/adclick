@@ -2361,15 +2361,23 @@ md-select:not([disabled]):focus .md-select-value{
     margin-top: -2px;
     font-size: 18px;
 }
-.btn-group.is-btn label{
+.btn-group.is-btn label {
     display: inline-block;
     min-width: 100px;
     box-shadow: none;
     margin-right: 12px;
     border: none;
     font-weight:bold;font-size:12px;
+    background: #a8afc1!important;
 }
-.btn-group.is-btn label:last-child,
+.btn-group.is-btn.flow-condition label.active {
+  background: #29af61!important;
+}
+.btn-group.is-btn.flow-condition label.active:last-child {
+  background: #f94c47!important;
+  border: 1px solid #f94c47!important;
+}
+.btn-group.is-btn.flow-condition label:last-child,
 .btn-default.delete-btn:hover{
     background: #8494A5;border: 1px solid #8494A5;color: #fff !important;
 }

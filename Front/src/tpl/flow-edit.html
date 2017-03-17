@@ -172,7 +172,7 @@
           <li ng-repeat="cdt in curRule.conditions" class="clearfix">
             <i class="material-icons tree-icon">album</i>
             <span class="label label-default condition-select-content">{{cdt._def.display}} <em ng-click="deleteCondition(cdt)" class="em-close">x</em></span>
-            <div class="btn-group is-btn">
+            <div class="btn-group is-btn flow-condition">
               <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="cdt._def.operands[0].value">{{cdt._def.operands[0].display}}</label>
               <label class="btn btn-primary" ng-model="cdt.operand" uib-btn-radio="cdt._def.operands[1].value">{{cdt._def.operands[1].display}}</label>
             </div>
