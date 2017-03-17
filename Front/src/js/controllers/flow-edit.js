@@ -25,6 +25,7 @@
         initFlowEditCtrl();
       });
       $scope.$on('targetPathCountryChanged', function(event, oData) {
+        if(!theFlow) return;
         if(!$scope.flowDataSuccess) {
           theFlow.country = oData.country.value;
           return;
@@ -135,6 +136,10 @@
       };
       if($scope.$parent.renderCampaignCachePathData) {
         theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
+        // TODO
+        $scope.onEdit = theFlow.onEdit;
+        $scope.curRule = theFlow.curRule;
+        $scope.curPath = theFlow.curPath;
         if(reportCache.get('offer-cache')) {
           $scope.editOffer(null, null, reportCache.get('offer-cache'));
           reportCache.remove('offer-cache');
@@ -829,7 +834,7 @@
        * @name: handle data
        * @param: {bool} isFromCampaign: false(flow页面的数据)、true(campaign页面path的数据)
        */
-      function handleData(isFromCampaign) {
+      function handleData(isFromCampaign, isCacheData) {
         console.log('theFlow.rules', theFlow.rules);
         $scope.saveErrors.length = 0;
         $scope.showErrors = false;
@@ -864,7 +869,7 @@
         }
 
         theFlow.rules.forEach(function(rule) {
-          if (rule.isDeleted) {
+          if (rule.isDeleted && !isCacheData) {
             return;
           }
           if (rule._nameError) {
@@ -900,17 +905,15 @@
           if (!rule.isDefault && ruleData.conditions.length == 0) {
             $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
           }
-          if(!fromCampaign) {
-            if (ruleData.isDefault) {
-              delete ruleData.name;
-              delete ruleData.enabled;
-              delete ruleData.conditions;
-            } else if (ruleData.conditions.length == 0) {
-              delete ruleData.conditions;
-            }
+          if (ruleData.isDefault && !isCacheData) {
+            delete ruleData.name;
+            delete ruleData.enabled;
+            delete ruleData.conditions;
+          } else if (ruleData.conditions.length == 0) {
+            delete ruleData.conditions;
           }
           rule.paths.forEach(function(path) {
-            if (path.isDeleted) {
+            if (path.isDeleted && !isCacheData) {
               return;
             }
             if (path._nameError) {
@@ -926,6 +929,9 @@
               landers: [],
               offers: []
             };
+            if(isCacheData) {
+              pathData['isDeleted'] = path.isDeleted;
+            }
             if (path.landers) {
               path.landers.forEach(function(lander) {
                 if (lander._def)
@@ -958,6 +964,9 @@
 
         return {
           flowData: flowData,
+          onEdit: $scope.onEdit,
+          curRule: $scope.curRule,
+          curPath: $scope.curPath
         };
       }
 
@@ -1014,11 +1023,14 @@
 
       // campaign cache data
       $scope.$on('cacheCampaignStarted', function() {
-        var oData = handleData(true), flowData = oData.flowData;
+        var oData = handleData(true, true), flowData = oData.flowData;
         console.log('oData---->', oData);
         $scope.$emit('pathCacheDataSuccessed', {
           status: 1,
-          data: flowData
+          data: flowData,
+          onEdit: $scope.onEdit,
+          curRule: $scope.curRule,
+          curPath: $scope.curPath
         });
       });
 

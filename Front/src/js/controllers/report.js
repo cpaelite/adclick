@@ -1000,13 +1000,14 @@
       var cacheCampaignData = reportCache.get('campaign-cache');
       reportCache.remove('campaign-cache');
       cacheCampaignData.flow = oData.data;
-      console.log('cacheCampaignDatacacheCampaignDatacacheCampaignData', cacheCampaignData)
+      cacheCampaignData.flow.onEdit = oData.onEdit;
+      cacheCampaignData.flow.curRule = oData.curRule;
+      cacheCampaignData.flow.curPath = oData.curPath;
       reportCache.put('campaign-cache', cacheCampaignData);
     });
 
     // Path new Offer
     $scope.$on('pathCacheDataPedding', function(event, oData) {
-      console.log('pathCacheDataPeddingpathCacheDataPeddingpathCacheDataPedding');
       saveCacheData();
     });
 
