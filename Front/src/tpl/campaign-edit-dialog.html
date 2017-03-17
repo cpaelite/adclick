@@ -340,10 +340,10 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary disabled-btn" ng-hide="campaignAddStatus" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
         </md-button>
-        <md-button class="md-primary red-btn" ng-hide="campaignAddStatus" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
-        <md-button class="md-primary red-btn" ng-show="campaignAddStatus" ng-click="ctrl.close()">{{'close' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+        <!-- <md-button class="md-primary red-btn" ng-show="campaignAddStatus" ng-click="ctrl.close()">{{'close' | translate}}</md-button> -->
 
     </md-dialog-actions>
 
