@@ -99,7 +99,7 @@
         controllerAs: 'ctrl',
         focusOnOpen: false,
         bindToController: true,
-        locals: {item: angular.copy(item), thirdTraffics: $scope.thirdTraffics},
+        locals: {item: angular.copy(item), thirdTraffics: $scope.thirdTraffics, tsReferences: $scope.tsReferences},
         templateUrl: 'tpl/ts-reference-dialog.html'
       }).then(function() {
         getList();
@@ -174,13 +174,17 @@
 
     function tsReferenceCtrl($mdDialog, $scope, TsReference) {
       var self = this;
-
+      var tsReferences = this.tsReferences;
       this.title = this.item ? 'edit' : 'add';
       this.cancel = $mdDialog.cancel;
       if(this.item) {
         this.item.tsId = this.item.tsId.toString();
         $scope.formData = this.item;
       }
+
+      $scope.checkName = function(name) {
+        $scope.editForm.name.$setValidity('checkName', !(tsReferences.indexOf(name) > -1));
+      };
 
       $scope.thirdTraffics = this.thirdTraffics;
 
@@ -198,17 +202,20 @@
       // };
 
       this.save = function() {
-        $scope.saveStatus = true;
-        if(self.item) {
-          TsReference.update({id: self.item.id}, $scope.formData, function(oData) {
-            $mdDialog.hide();
-            $scope.saveStatus = false;
-          });
-        } else {
-          TsReference.save($scope.formData, function(oData) {
-            $mdDialog.hide();
-            $scope.saveStatus = false;
-          });
+        $scope.editForm.$setSubmitted();
+        if($scope.editForm.$valid) {
+          $scope.saveStatus = true;
+          if(self.item) {
+            TsReference.update({id: self.item.id}, $scope.formData, function(oData) {
+              $mdDialog.hide();
+              $scope.saveStatus = false;
+            });
+          } else {
+            TsReference.save($scope.formData, function(oData) {
+              $mdDialog.hide();
+              $scope.saveStatus = false;
+            });
+          }
         }
       };
     }
