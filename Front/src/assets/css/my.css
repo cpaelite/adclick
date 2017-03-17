@@ -1341,11 +1341,7 @@ h1.setting-title p{line-height:26px;color:#333;font-weight:normal;margin-bottom:
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
-<<<<<<< cd95cdbe9efb1c45c9426bc9fb6b8ea16c1c3819
     background-color: #2770ea !important;
-=======
-    background-color: #2770ea;
->>>>>>> “flow样式修改”
     border-color: #2669d9;
 }
 .btn-primary.add-condition{
@@ -1932,10 +1928,7 @@ input[type="checkbox"].th-checkbox{
 }
 .cs-flow-tree{
     background:#f1f2f7;
-<<<<<<< cd95cdbe9efb1c45c9426bc9fb6b8ea16c1c3819
     border:1px solid #e8e8e8;
-=======
->>>>>>> “flow样式修改”
     padding:0;
     border-radius:3px;
     overflow: auto;
@@ -3044,3 +3037,10 @@ md-autocomplete .md-show-clear-button button{width:22px;height:22px;margin:auto 
   font-size: 16px;
 }
 
+.cs-save-errors{margin:10px 0;padding:10px 0 15px 0;border-radius:2px;
+color: #e50000;
+background: #fffed5;
+text-align: center;
+font-size: 13px;float:left;width:100%;
+border: 1px solid #e4e3ba;}
+.cs-save-errors span{color:#222;font-size:22px;font-weight: normal;}
