@@ -962,6 +962,16 @@
           flowData.rules.push(ruleData);
         });
 
+        var notAllPathDisabled = flowData.rules.some(function(rule) {
+          return (rule.paths.some(function(path) {
+            return path.enabled == true;
+          }));
+        });
+
+        if(!notAllPathDisabled) {
+          $scope.saveErrors.push('At least one path must be active.');
+        }
+
         return {
           flowData: flowData,
           onEdit: $scope.onEdit,
