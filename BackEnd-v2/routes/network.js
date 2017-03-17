@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
+var setting = require('../config/setting');
 
 /**
  * @api {get} /api/affiliates/:id  获取用户所有affilatenetworks
@@ -17,43 +18,63 @@ var common = require('./common');
  *     }
  *
  */
-router.get('/api/affiliates/:id', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required(),
-        id: Joi.number().required()
-    });
-
-    req.query.userId = req.parent.id;
-    req.query.id = req.params.id;
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query(
-                "select  `id`,`name`,`hash`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [
-                    value.userId, value.id
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: "success",
-                        data: {
-                            affiliates: result.length ? result[0] : {}
-                        }
-                    });
-
-                });
+router.get('/api/affiliates/:id', async function (req, res, next) {
+    let connection;
+    try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            id: Joi.number().required()
         });
-    });
+        req.query.userId = req.parent.id;
+        req.query.id = req.params.id;
+
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.userId], connection);
+        let resultsql = common.query("select  `id`,`name`,`hash`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [value.userId, value.id], connection);
+        let results = await Promise.all([resultsql, mainDomain]);
+        let result = results[0];
+        let domainResult = results[1];
+        let defaultDomain;
+        let affiliate = {};
+        if (result.length) {
+            //修改postbackurl
+            //如果自己定义了main domain 优先
+            if (domainResult.length) {
+                if (domainResult[0].customize == 1) {
+                    defaultDomain = domainResult[0].domain;
+                } else {
+                    defaultDomain = req.parent.idText + "." + domainResult[0].domain;
+                }
+            } else {
+                //默认使用系统配置
+                for (let index = 0; index < setting.domains.length; index++) {
+                    if (setting.domains[index].postBackDomain) {
+                        defaultDomain = req.parent.idText + "." + setting.domains[index].address;
+                    }
+                }
+            }
+            let index = result[0].postbackUrl.indexOf('?');
+            if (result[0].postbackUrl && index >= 0) {
+                result[0].postbackUrl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + result[0].postbackUrl.substring(index);
+            }
+            affiliate = result[0];
+        }
+        res.json({
+            status: 1,
+            message: "success",
+            data: {
+                affiliates: affiliate
+            }
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
@@ -71,40 +92,64 @@ router.get('/api/affiliates/:id', function (req, res, next) {
  *     }
  *
  */
-router.get('/api/affiliates', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.number().required()
-    });
-    req.query.userId = req.parent.id;
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.status = 303
-                return next(err);
-            }
-            connection.query(
-                "select  `id`,`name` from AffiliateNetwork where `userId` = ? and `deleted` =0 ", [
-                    value.userId
-                ],
-                function (err, result) {
-                    connection.release();
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({
-                        status: 1,
-                        message: "success",
-                        data: {
-                            affiliates: result
-                        }
-                    });
+router.get('/api/affiliates', async function (req, res, next) {
 
-                });
+    let connection;
+    try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required()
         });
-    });
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.userId], connection);
+        let resultsql = common.query("select  `id`,`name`,`postbackUrl` from AffiliateNetwork where `userId` = ? and `deleted` =0 ", [value.userId], connection);
+        let results = await Promise.all([resultsql, mainDomain]);
+        let result = results[0];
+        let domainResult = results[1];
+        let defaultDomain;
+        let affiliates = [];
+        if (result.length) {
+            //修改postbackurl
+            //如果自己定义了main domain 优先
+            if (domainResult.length) {
+                if (domainResult[0].customize == 1) {
+                    defaultDomain = domainResult[0].domain;
+                } else {
+                    defaultDomain = req.parent.idText + "." + domainResult[0].domain;
+                }
+            } else {
+                //默认使用系统配置
+                for (let index = 0; index < setting.domains.length; index++) {
+                    if (setting.domains[index].postBackDomain) {
+                        defaultDomain = req.parent.idText + "." + setting.domains[index].address;
+                    }
+                }
+            }
+            for (let i = 0; i < result.length; i++) {
+                let index = result[i].postbackUrl.indexOf('?');
+                if (result[i].postbackUrl && index >= 0) {
+                    result[i].postbackUrl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + result[i].postbackUrl.substring(index);
+                }
+                affiliates.push(result[i]);
+            }
+
+        }
+        res.json({
+            status: 1,
+            message: "success",
+            data: {
+                affiliates: affiliates
+            }
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 /**
