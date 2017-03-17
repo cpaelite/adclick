@@ -1339,7 +1339,7 @@ h1.setting-title p{line-height:26px;color:#333;font-weight:normal;margin-bottom:
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary{
     color: #ffffff !important;
-    background-color: #2770ea;
+    background-color: #2770ea !important;
     border-color: #2669d9;
 }
 .btn-primary.add-condition{
