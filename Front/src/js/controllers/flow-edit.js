@@ -143,7 +143,6 @@
       } else if (flowId) {
         prms = Flow.get({id:flowId}, function(result) {
           theFlow = result.data;
-          console.log('theFlow----->', theFlow);
           $scope.oldName = theFlow.name;
         }).$promise;
         initPromises.push(prms);
@@ -192,7 +191,6 @@
 
       var allCountries;
       prms = Country.query({}, function(result) {
-        //console.log(result);
         allCountries = result;
       }).$promise;
       initPromises.push(prms);
@@ -866,7 +864,7 @@
         }
 
         theFlow.rules.forEach(function(rule) {
-          if (rule.isDeleted && !isFromCampaign) {
+          if (rule.isDeleted) {
             return;
           }
           if (rule._nameError) {
@@ -888,21 +886,31 @@
                   conData[key] = condition[key];
                 }
               });
+              condition._def.fields.forEach(function(field) {
+                if(field.type == 'async-chips') {
+                  conData['_'+field.name] = {};
+                  conData[field.name].forEach(function(value) {
+                    conData['_'+field.name][value] = field._v2n ? (field._v2n[value] ? field._v2n[value] : value) : value;
+                  });
+                }
+              });
               ruleData.conditions.push(conData);
             });
           }
           if (!rule.isDefault && ruleData.conditions.length == 0) {
             $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
           }
-          if (ruleData.isDefault) {
-            delete ruleData.name;
-            delete ruleData.enabled;
-            delete ruleData.conditions;
-          } else if (ruleData.conditions.length == 0) {
-            delete ruleData.conditions;
+          if(!fromCampaign) {
+            if (ruleData.isDefault) {
+              delete ruleData.name;
+              delete ruleData.enabled;
+              delete ruleData.conditions;
+            } else if (ruleData.conditions.length == 0) {
+              delete ruleData.conditions;
+            }
           }
           rule.paths.forEach(function(path) {
-            if (path.isDeleted && !isFromCampaign) {
+            if (path.isDeleted) {
               return;
             }
             if (path._nameError) {
@@ -925,6 +933,9 @@
               });
               if (pathData.landers.length == 0) {
                 delete pathData.landers;
+                if (!path.directLinking) {
+                  $scope.saveErrors.push('Path ' + path.name + ' must contain at least 1 lander');
+                }
               }
             }
             if (path.offers) {
@@ -939,6 +950,9 @@
             }
             ruleData.paths.push(pathData);
           });
+          if(ruleData.paths.length == 0) {
+            $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 path');
+          }
           flowData.rules.push(ruleData);
         });
 
