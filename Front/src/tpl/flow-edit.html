@@ -1,5 +1,5 @@
 <div class="cs-page-flow clearfix" ng-click="clearOnEdit()">
-  <div class="col-sm-4 col-md-4 cs-flow-tree">
+  <div class="col-sm-3 col-md-3 cs-flow-tree">
     <div ng-click="editFlow()" ng-class="{'cs-flow-active':onEdit=='flow'}" class="tree-li" ng-show="flowMode">
       <i class="material-icons tree-icon">album</i>
       <span class="cs-flow-name">{{flow.name}}</span>
@@ -35,7 +35,7 @@
           <span class="cs-path-name clearfix">
             <span class="path-name">{{path.name}} </span>
             <span class="weight-num">
-              {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>)
+              {{path.weight}}<em ng-show="path.relativeWeight>0">({{path.relativeWeight | number:2}}%)</em><em ng-show="path.relativeWeight<=0">(N/A)</em>
             </span>
           </span>
           <span class="cs-flow-restore" ng-show="path.isDeleted" ng-click="restore('path', path)">
@@ -53,15 +53,15 @@
       <span class="add-flow-rule" translate>addFlowRule</span>
     </div>
   </div>
-  <div class="col-sm-8 col-md-8 cs-flow-content">
+  <div class="col-sm-6 col-md-8 col-lg-9 cs-flow-content">
     <div class="cs-flow-top-actions">
       <div ng-hide="isDeleted || onEdit=='flow'" class="top-btn-list">
         <button class="btn btn-danger" ng-click="deleteCurrent(onEdit)">
-          <i class="material-icons">delete</i>
+          <i class="icon-trash"></i>
           {{'Delete '+onEdit}}
         </button>
         <button class="btn btn-default" ng-click="duplicateCurrent(onEdit)">
-          <i class="material-icons">control_point_duplicate</i>
+          <i class="icon-copy"></i>
           {{'Duplicate '+onEdit}}
         </button>
       </div>
@@ -114,8 +114,8 @@
       </div>
 
       <div class="form-group clearfix">
-        <label class="col-sm-4 control-label label-radio">Default redirect mode:</label>
-        <div class="col-sm-8">
+        <label class="control-label label-radio">Default redirect mode:</label>
+        <div class="col-md-12 col-lg-8">
           <label class="radio-inline">
             <input type="radio" ng-model="flow.redirectMode" value="0"> 302
           </label>
@@ -129,7 +129,7 @@
       </div>
     </form>
 
-    <form name="editRuleForm" method="post" ng-submit="$event.preventDefault()" class="editRuleForm" ng-if="onEdit=='rule'">
+    <div name="editRuleForm" method="post" ng-submit="$event.preventDefault()" class="editRuleForm" ng-if="onEdit=='rule'">
       <div class="row">
         <div class="form-group col-sm-8 col-md-8 name-div">
           <label class="label-name">Name:</label>
@@ -145,18 +145,18 @@
       <div class="cs-conditions">
         <div class="cs-conditions-button">
           <div class="btn-group" uib-dropdown>
-            <button type="button" class="btn btn-primary" uib-dropdown-toggle>
-              <i class="material-icons">add</i>
-              Add condition <span class="caret"></span>
+            <button type="button" class="btn btn-primary add-condition" uib-dropdown-toggle>
+              <i class="icon-plus"></i>
+              Add condition <span class="icon-angle-down"></span>
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-              <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'!custom'}">
+              <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'!custom'} | filter:notInNewCondFilter">
                 <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
               </li>
               <li class="dropdown-submenu">
                 <a>Custom variables...</a>
                 <ul class="dropdown-menu">
-                  <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'custom'}">
+                  <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'custom'} | filter:notInNewCondFilter">
                     <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
                   </li>
                 </ul>
@@ -164,7 +164,7 @@
             </ul>
           </div>
           <button class="btn btn-default delete-btn" ng-click="deleteAllConditions()">
-            <i class="material-icons">close</i>
+            <i class="icon-trash"></i>
             Delete all</button>
         </div>
 
@@ -343,9 +343,9 @@
           </li>
         </ul>
       </div>
-    </form>
+    </div>
 
-    <form name="editPathForm" method="post" ng-submit="$event.preventDefault()" class="editPathForm" ng-if="onEdit=='path'">
+    <div name="editPathForm" method="post" ng-submit="$event.preventDefault()" class="editPathForm" ng-if="onEdit=='path'">
       <div class="row path-top">
         <div class="col-sm-7 col-md-7 name-div" layout="column">
           <label class="label-name">Name:</label>
@@ -364,15 +364,17 @@
 
       <div class="row">
         <label class="label-name">Redirect mode:</label>
-        <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="0"> 302
-        </label>
-        <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="1"> Meta refresh
-        </label>
-        <label class="radio-inline">
-          <input type="radio" ng-model="curPath.redirectMode" value="2"> Double meta refresh
-        </label>
+        <div class="col-md-12 col-lg-8">
+          <label class="radio-inline">
+            <input type="radio" ng-model="curPath.redirectMode" value="0"> 302
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="curPath.redirectMode" value="1"> Meta refresh
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="curPath.redirectMode" value="2"> Double meta refresh
+          </label>
+        </div>
       </div>
 
       <div class="row">
@@ -381,7 +383,7 @@
       </div>
 
       <div class="form-group direct-content clearfix">
-        <div class="col-sm-12 col-md-6 lander-content" ng-hide="curPath.directLinking">
+        <div class="col-sm-12 col-md-12 col-lg-6 lander-content" ng-hide="curPath.directLinking">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Lander</div>
             <div class="col-sm-3 col-md-3">Weight</div>
@@ -438,7 +440,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 offer-content" ng-class="{'col-md-6': !curPath.directLinking}">
+        <div class="col-sm-12 col-md-12 offer-content" ng-class="{'col-lg-6': !curPath.directLinking}">
           <div class="cs-flow-lander-header clearfix">
             <div class="col-sm-9 col-md-9">Offer</div>
             <div class="col-sm-3 col-md-3">Weight</div>
@@ -494,27 +496,26 @@
             </button>
           </div>
         </div>
-
       </div>
-    </form>
+    </div>
 
     <div class="cs-flow-bottom-actions clearfix" ng-show="flowMode">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>
       <span class="cs-save-time" ng-show="saveTime">Saved at {{saveTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="save()">
-        <i class="material-icons">check</i>
+        <i class="icon-ok"></i>
         Save
       </button>
       <button class="btn btn-primary save-btn" ng-disabled="onSave" ng-hide="showContinue" ng-click="saveClose()">
-        <i class="material-icons">check</i>
+        <i class="icon-ok"></i>
         Save&amp;close
       </button>
       <button class="btn btn-primary save-btn" ng-show="showContinue" ng-click="continueEdit()">
-        <i class="material-icons">check</i>
+        <i class="icon-ok"></i>
         Continue
       </button>
       <button class="btn close-btn" ng-click="close()">
-        <i class="material-icons">close</i>
+        <i class="icon-remove"></i>
         Close
       </button>
     </div>

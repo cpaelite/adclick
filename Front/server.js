@@ -2788,7 +2788,7 @@ app.get('/api/billing', function (req, res) {
     message: 'success',
     data: {
       plan: {
-        id: 1,
+        id: 7,
         name: "Agency",
         price: 399
       },
@@ -3377,8 +3377,9 @@ app.get('/api/user/plan', function (req, res) {
     message: 'success',
     data: {
       plan: {
-        id: 1,
+        id: 7,
         name: 'plan1',
+        level: 1,
         price: 399,
         eventsLimit: 100,
         overageCPM: 0.5,

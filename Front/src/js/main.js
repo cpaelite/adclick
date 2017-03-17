@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -113,6 +113,12 @@
             }
           });
         });
+
+        if(!$rootScope.allConditions) {
+          Condition.query({}, function(result) {
+            $rootScope.allConditions = result;
+          });
+        }
       }
     });
 
