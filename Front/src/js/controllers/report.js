@@ -1215,7 +1215,10 @@
       var isDuplicate = this.duplicate;
       Lander.get({id: this.item.data.landerId}, function (lander) {
         $scope.item = angular.copy(lander.data);
-        if (isDuplicate) delete $scope.item.id;
+        if (isDuplicate) {
+          delete $scope.item.id;
+          delete $scope.item.hash;
+        }
         $scope.item.tags.forEach(function(v) {
           $scope.tags.push(v.name);
         });
@@ -1386,7 +1389,10 @@
       var theOffer;
       prms = Offer.get({id: this.item.data.offerId}, function(offer) {
         theOffer = offer.data;
-        if (isDuplicate) delete theOffer.id;
+        if (isDuplicate) {
+          delete theOffer.id;
+          delete theOffer.hash;
+        }
       }).$promise;
       initPromises.push(prms);
 
