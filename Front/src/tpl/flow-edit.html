@@ -129,7 +129,7 @@
       </div>
     </form>
 
-    <form name="editRuleForm" method="post" ng-submit="$event.preventDefault()" class="editRuleForm" ng-if="onEdit=='rule'">
+    <div name="editRuleForm" method="post" ng-submit="$event.preventDefault()" class="editRuleForm" ng-if="onEdit=='rule'">
       <div class="row">
         <div class="form-group col-sm-8 col-md-8 name-div">
           <label class="label-name">Name:</label>
@@ -343,9 +343,9 @@
           </li>
         </ul>
       </div>
-    </form>
+    </div>
 
-    <form name="editPathForm" method="post" ng-submit="$event.preventDefault()" class="editPathForm" ng-if="onEdit=='path'">
+    <div name="editPathForm" method="post" ng-submit="$event.preventDefault()" class="editPathForm" ng-if="onEdit=='path'">
       <div class="row path-top">
         <div class="col-sm-7 col-md-7 name-div" layout="column">
           <label class="label-name">Name:</label>
@@ -496,9 +496,8 @@
             </button>
           </div>
         </div>
-
       </div>
-    </form>
+    </div>
 
     <div class="cs-flow-bottom-actions clearfix" ng-show="flowMode">
       <span class="cs-on-save" ng-show="onSave">Saving...</span>

@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('FlowEditCtrl', [
-        '$scope', '$mdDialog', '$q', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country',
+        '$scope', '$mdDialog', '$q', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country', '$rootScope', 'reportCache',
         FlowEditCtrl
     ]);
 
-  function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country) {
+  function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country, $rootScope, reportCache) {
     var flowId, isDuplicate, fromCampaign, theFlow, tempCountryName, oldCountryName;
     $scope.flowMode = true;
     if($scope.$stateParams) {
@@ -14,18 +14,18 @@
       flowId = $scope.$stateParams.id;
       isDuplicate = $scope.$stateParams.dup == '1';
       fromCampaign = $scope.$stateParams.frcpn == '1';
-      initFlowEditCtrl(flowId, isDuplicate, fromCampaign);
+      initFlowEditCtrl();
     } else {
       flowId = '';
       isDuplicate = false;
       fromCampaign = false;
       $scope.flowMode = false;
       $scope.$on('targetPathIdChanged', function(event, oData) {
-        console.log(oData);
         flowId = oData.flowId;
-        initFlowEditCtrl(flowId, isDuplicate, fromCampaign);
+        initFlowEditCtrl();
       });
       $scope.$on('targetPathCountryChanged', function(event, oData) {
+        if(!theFlow) return;
         if(!$scope.flowDataSuccess) {
           theFlow.country = oData.country.value;
           return;
@@ -35,6 +35,7 @@
           $mdDialog.show({
             multiple: true,
             skipHide: true,
+            escapeToClose: false,
             clickOutsideToClose: false,
             controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
             controllerAs: 'ctrl',
@@ -85,10 +86,68 @@
         type: 4
       };
       $scope.showContinue = false;
-      if (flowId) {
+      $scope.editOffer = function(evt, offer, cacheOffer) {
+        if ($scope.$parent.pathRoute) {
+          $scope.$emit('pathCacheDataPedding');
+        }
+        var locals = { perfType: 'offer' };
+        if(cacheOffer) {
+          locals.cache = cacheOffer;
+        } else if (offer) {
+          locals.item = {data: {offerId: offer._def.id}};
+        } else {
+          locals.item = null;
+        }
+        locals.frcpn = $scope.$parent.pathRoute ? 1 : 2;
+        locals.country = $scope.country;
+        $mdDialog.show({
+          multiple: true,
+          skipHide: true,
+          escapeToClose: false,
+          clickOutsideToClose: false,
+          controller: 'editOfferCtrl',
+          controllerAs: 'ctrl',
+          focusOnOpen: false,
+          locals: locals,
+          bindToController: true,
+          targetEvent: evt,
+          templateUrl: 'tpl/offer-edit-dialog.html'
+        }).then(function(result) {
+          if ($scope.$parent.pathRoute) {
+            $scope.$emit('pathCacheDataCancled');
+          }
+          var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
+          allOffers.unshift(newOffer);
+          if (offer) {
+            var idx = allOffers.indexOf(offer._def);
+            if (idx >= 0) {
+              allOffers.splice(idx, 1);
+            }
+            offer._def = newOffer;
+          } else {
+            $scope.curPath.offers.push({
+              weight: 100,
+              relativeWeight: -1,
+              _def: newOffer,
+              _onEdit: true
+            });
+          }
+        });
+      };
+      if($scope.$parent.renderCampaignCachePathData) {
+        theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
+        // TODO
+        $scope.onEdit = theFlow.onEdit;
+        $scope.curRule = theFlow.curRule;
+        $scope.curPath = theFlow.curPath;
+        if(reportCache.get('offer-cache')) {
+          $scope.editOffer(null, null, reportCache.get('offer-cache'));
+          reportCache.remove('offer-cache');
+        }
+        $scope.$parent.renderCampaignCachePathData = null;
+      } else if (flowId) {
         prms = Flow.get({id:flowId}, function(result) {
           theFlow = result.data;
-          console.log('theFlow----->', theFlow);
           $scope.oldName = theFlow.name;
         }).$promise;
         initPromises.push(prms);
@@ -124,15 +183,19 @@
       initPromises.push(prms);
 
       var allConditions;
-      prms = Condition.query({}, function(result) {
-        allConditions = result;
-        $scope.allConditions = allConditions;
-      }).$promise;
-      initPromises.push(prms);
+      if(!$rootScope.allConditions) {
+        prms = Condition.query({}, function(result) {
+          allConditions = result;
+          $rootScope.allConditions = $scope.allConditions = allConditions;
+        }).$promise;
+        initPromises.push(prms);
+      } else {
+        allConditions = $rootScope.allConditions;
+        $scope.allConditions = $rootScope.allConditions;
+      }
 
       var allCountries;
       prms = Country.query({}, function(result) {
-        //console.log(result);
         allCountries = result;
       }).$promise;
       initPromises.push(prms);
@@ -280,6 +343,7 @@
       $scope.$watch('country', function (newValue, oldValue) {
         var preStr = newValue ? newValue.display + ' - ' : 'Global - ';
         if(newValue) {
+          $scope.flow.name = $scope.flow.name ? $scope.flow.name : '';
           $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
           $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
           $scope.prefix = preStr;
@@ -440,6 +504,7 @@
             $mdDialog.show({
               multiple: true,
               skipHide: true,
+              escapeToClose: false,
               clickOutsideToClose: false,
               controller: ['$scope', '$mdDialog', confirmResetLanderAndOfferCtrl],
               controllerAs: 'ctrl',
@@ -451,7 +516,11 @@
               if(result.status) {
                 theFlow.rules = checkLanderAndOffer(theFlow.rules, country)
               } else {
-                $scope.country = result.oldCountryName;
+                if(result.oldCountryName.value == $scope.country.value) {
+                  $scope.country = {value: 'ZZZ', display: 'Global'};
+                } else {
+                  $scope.country = result.oldCountryName;
+                }
               }
             });
           }
@@ -535,6 +604,7 @@
         $mdDialog.show({
           multiple: true,
           skipHide: true,
+          escapeToClose: false,
           clickOutsideToClose: false,
           controller: 'editLanderCtrl',
           controllerAs: 'ctrl',
@@ -598,45 +668,7 @@
           calculateRelativeWeight($scope.curPath.offers, function(item) { return !!item._def; });
         }
       }, true);
-      $scope.editOffer = function(evt, offer) {
-        var locals = { perfType: 'offer' };
-        if (offer) {
-          locals.item = {data: {offerId: offer._def.id}};
-        } else {
-          locals.item = null;
-        }
-        locals.country = $scope.country;
-        console.log('locals.country', locals.country);
-        $mdDialog.show({
-          multiple: true,
-          skipHide: true,
-          clickOutsideToClose: false,
-          controller: 'editOfferCtrl',
-          controllerAs: 'ctrl',
-          focusOnOpen: false,
-          locals: locals,
-          bindToController: true,
-          targetEvent: evt,
-          templateUrl: 'tpl/offer-edit-dialog.html'
-        }).then(function(result) {
-          var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
-          allOffers.unshift(newOffer);
-          if (offer) {
-            var idx = allOffers.indexOf(offer._def);
-            if (idx >= 0) {
-              allOffers.splice(idx, 1);
-            }
-            offer._def = newOffer;
-          } else {
-            $scope.curPath.offers.push({
-              weight: 100,
-              relativeWeight: -1,
-              _def: newOffer,
-              _onEdit: true
-            });
-          }
-        });
-      };
+
 
       $scope.setEdit = function(evt, item) {
         item._onEdit = true;
@@ -798,39 +830,46 @@
         }
       };
 
-      // save
-      $scope.saveErrors = [];
-      $scope.save = function() {
+      /*
+       * @name: handle data
+       * @param: {bool} isFromCampaign: false(flow页面的数据)、true(campaign页面path的数据)
+       */
+      function handleData(isFromCampaign, isCacheData) {
+        console.log('theFlow.rules', theFlow.rules);
         $scope.saveErrors.length = 0;
         $scope.showErrors = false;
-        nameRequired();
-
         // clean up before save
-        var flowData = {
-          name: theFlow.name,
-          country: $scope.country ? $scope.country.value : 'ZZZ',
-          redirectMode: theFlow.redirectMode | 0,
-          rules: []
-        };
+        var flowData;
+        if (isFromCampaign) {
+          flowData = {
+            rules: []
+          };
+        } else {
+          nameRequired();
+          flowData = {
+            name: theFlow.name,
+            country: $scope.country ? $scope.country.value : 'ZZZ',
+            redirectMode: theFlow.redirectMode | 0,
+            rules: []
+          };
+          if($scope.editFlowForm.name.$error.asyncCheckName) {
+            $scope.saveErrors.push('Name already exists.');
+          }
+          if($scope.editFlowForm.name.$error.nameRequired) {
+            $scope.saveErrors.push('Flow name ' + theFlow.name + ' already exists.');
+          }
+          if (theFlow._nameError) {
+            $scope.saveErrors.push('Flow name ' + theFlow.name + ' is invalid');
+          }
+          $scope.saveTime = null;
+        }
+
         if (theFlow.id) {
           flowData.id = theFlow.id;
         }
 
-        if($scope.editFlowForm.name.$error.asyncCheckName) {
-          $scope.saveErrors.push('Name already exists.');
-        }
-
-        if($scope.editFlowForm.name.$error.nameRequired) {
-          $scope.saveErrors.push('Flow name ' + theFlow.name + ' already exists.');
-        }
-
-        if (theFlow._nameError) {
-          $scope.saveErrors.push('Flow name ' + theFlow.name + ' is invalid');
-        }
-
-        $scope.saveTime = null;
         theFlow.rules.forEach(function(rule) {
-          if (rule.isDeleted) {
+          if (rule.isDeleted && !isCacheData) {
             return;
           }
           if (rule._nameError) {
@@ -844,7 +883,6 @@
             conditions: [],
             paths: [],
           };
-
           if (rule.conditions) {
             rule.conditions.forEach(function(condition) {
               conData = {};
@@ -853,23 +891,29 @@
                   conData[key] = condition[key];
                 }
               });
+              condition._def.fields.forEach(function(field) {
+                if(field.type == 'async-chips') {
+                  conData['_'+field.name] = {};
+                  conData[field.name].forEach(function(value) {
+                    conData['_'+field.name][value] = field._v2n ? (field._v2n[value] ? field._v2n[value] : value) : value;
+                  });
+                }
+              });
               ruleData.conditions.push(conData);
             });
           }
           if (!rule.isDefault && ruleData.conditions.length == 0) {
             $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
           }
-
-          if (ruleData.isDefault) {
+          if (ruleData.isDefault && !isCacheData) {
             delete ruleData.name;
             delete ruleData.enabled;
             delete ruleData.conditions;
           } else if (ruleData.conditions.length == 0) {
             delete ruleData.conditions;
           }
-
           rule.paths.forEach(function(path) {
-            if (path.isDeleted) {
+            if (path.isDeleted && !isCacheData) {
               return;
             }
             if (path._nameError) {
@@ -885,7 +929,9 @@
               landers: [],
               offers: []
             };
-
+            if(isCacheData) {
+              pathData['isDeleted'] = path.isDeleted;
+            }
             if (path.landers) {
               path.landers.forEach(function(lander) {
                 if (lander._def)
@@ -893,9 +939,11 @@
               });
               if (pathData.landers.length == 0) {
                 delete pathData.landers;
+                if (!path.directLinking) {
+                  $scope.saveErrors.push('Path ' + path.name + ' must contain at least 1 lander');
+                }
               }
             }
-
             if (path.offers) {
               path.offers.forEach(function(offer) {
                 if (offer._def)
@@ -906,18 +954,31 @@
                 $scope.saveErrors.push('Path ' + path.name + ' must contain at least 1 offer');
               }
             }
-
             ruleData.paths.push(pathData);
           });
-
+          if(ruleData.paths.length == 0) {
+            $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 path');
+          }
           flowData.rules.push(ruleData);
         });
+
+        return {
+          flowData: flowData,
+          onEdit: $scope.onEdit,
+          curRule: $scope.curRule,
+          curPath: $scope.curPath
+        };
+      }
+
+      // Flow save
+      $scope.saveErrors = [];
+      $scope.save = function() {
+        var oData = handleData(false), flowData = oData.flowData;
         $scope.editFlowForm.$setSubmitted();
         if ($scope.saveErrors.length > 0) {
           $scope.showErrors = true;
           return $q.reject('error occurs');
         }
-
         $scope.onSave = true;
         console.log('flowData----->', flowData);
         return Flow.save(flowData, function(result) {
@@ -941,100 +1002,9 @@
         }).$promise;
       };
 
-      $scope.$on('saveCampaignStarted', function(oData) {
-        $scope.saveErrors.length = 0;
-        $scope.showErrors = false;
-        // clean up before save
-        var flowData = {
-          rules: []
-        };
-        if (theFlow.id) {
-          flowData.id = theFlow.id;
-        }
-
-        theFlow.rules.forEach(function(rule) {
-          if (rule.isDeleted) {
-            return;
-          }
-          if (rule._nameError) {
-            $scope.saveErrors.push('Rule name ' + rule.name + ' is invalid');
-          }
-          var ruleData = {
-            id: rule.id || null,
-            name: rule.name,
-            enabled: rule.enabled,
-            isDefault: rule.isDefault,
-            conditions: [],
-            paths: [],
-          };
-
-          if (rule.conditions) {
-            rule.conditions.forEach(function(condition) {
-              conData = {};
-              Object.keys(condition).forEach(function(key) {
-                if (key.indexOf('_') != 0) {
-                  conData[key] = condition[key];
-                }
-              });
-              ruleData.conditions.push(conData);
-            });
-          }
-          if (!rule.isDefault && ruleData.conditions.length == 0) {
-            $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
-          }
-
-          if (ruleData.isDefault) {
-            delete ruleData.name;
-            delete ruleData.enabled;
-            delete ruleData.conditions;
-          } else if (ruleData.conditions.length == 0) {
-            delete ruleData.conditions;
-          }
-
-          rule.paths.forEach(function(path) {
-            if (path.isDeleted) {
-              return;
-            }
-            if (path._nameError) {
-              $scope.saveErrors.push('Path name ' + path.name + ' is invalid');
-            }
-            pathData = {
-              id: path.id || null,
-              name: path.name,
-              enabled: path.enabled,
-              weight: path.weight,
-              redirectMode: path.redirectMode | 0,
-              directLinking: path.directLinking,
-              landers: [],
-              offers: []
-            };
-
-            if (path.landers) {
-              path.landers.forEach(function(lander) {
-                if (lander._def)
-                  pathData.landers.push({id: lander._def.id, weight: lander.weight});
-              });
-              if (pathData.landers.length == 0) {
-                delete pathData.landers;
-              }
-            }
-
-            if (path.offers) {
-              path.offers.forEach(function(offer) {
-                if (offer._def)
-                  pathData.offers.push({id: offer._def.id, weight: offer.weight});
-              });
-              if (pathData.offers.length == 0) {
-                delete pathData.offers;
-                $scope.saveErrors.push('Path ' + path.name + ' must contain at least 1 offer');
-              }
-            }
-
-            ruleData.paths.push(pathData);
-          });
-
-          flowData.rules.push(ruleData);
-        });
+      // 监听campaign save操作，获取数据
+      $scope.$on('saveCampaignStarted', function() {
+        var oData = handleData(true), flowData = oData.flowData;
         // $scope.editFlowForm.$setSubmitted();
         if ($scope.saveErrors.length > 0) {
           $scope.showErrors = true;
@@ -1048,6 +1018,19 @@
         $scope.$emit('pathDataSuccessed', {
           status: 1,
           data: flowData
+        });
+      });
+
+      // campaign cache data
+      $scope.$on('cacheCampaignStarted', function() {
+        var oData = handleData(true, true), flowData = oData.flowData;
+        console.log('oData---->', oData);
+        $scope.$emit('pathCacheDataSuccessed', {
+          status: 1,
+          data: flowData,
+          onEdit: $scope.onEdit,
+          curRule: $scope.curRule,
+          curPath: $scope.curPath
         });
       });
 
