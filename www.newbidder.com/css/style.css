@@ -15,6 +15,7 @@ body{font-family:Helvetica, Verdana,Tahoma, Arial, "\5b8b\4f53", sans-serif;}
     -o-transform-origin:0 0;        /* Opera */
 }
 .container.compare-table{overflow-x:auto;}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form,.navbar-default{border:none;}
 *{margin:0;padding:0;list-style:none;}
 a{color:#222;}
 a:hover,a:focus{text-decoration:none;color:#357cf4;}
@@ -271,7 +272,8 @@ textarea{width:100%;max-height:60px;border:none;line-height:26px;margin-bottom:1
 .contant-form input:focus,textarea:focus{outline:0;}
 .formBtn{background:#357cf3;color:#fff;border:none;width:128px;height:32px;line-height:32px;}
 .formBtn:focus{outline:0;}
-.navbar-toggle{padding:6px;margin-top:12px;}
+.navbar-toggle{padding:12px;border-radius:3px;margin-top:30px;}
+
 .swiper-container {margin:0 auto 20px auto;}
 .swiper-container li{width:24%;}
 .swiper-container .swiper-slide .thumbnail{border:none;margin-bottom:0;}
@@ -291,7 +293,7 @@ textarea{width:100%;max-height:60px;border:none;line-height:26px;margin-bottom:1
     align-items: center;
 }
 .swiper-slide a.active:hover .font-orange,.swiper-slide a.active:focus .font-orange,.swiper-slide a.active:active .font-orange{color:#ff8c00;}
-.navbar-default .navbar-toggle .icon-bar{background-color:#222;}
+.navbar-default .navbar-toggle .icon-bar{background-color:#357cf3;height:2px;}
 .swiper-container-horizontal>.swiper-scrollbar{display:none;}
 .xz-icon li{width:60px;background-size:100%;background-color:transparent;font-weight:normal;display:block;}
 .xz-icon li h6{margin:10px 0 4px 0;}
@@ -409,6 +411,9 @@ input {outline: none;}
 #compare b, #compare tr+tr td:first-child{font-weight:500;}
 #compare tr:hover td, #compare col:hover{background:#f3f3f3;}
 #compare tr{border:1px solid #fff;}
+.sign-box{display:none;}
+.nav-box ul.sign-box{margin:50px -10px 0 0;}
+.nav-box ul.sign-box li a{height:38px;line-height:38px;padding:0 15px;}
 @-webkit-keyframes animate-positive{0% {width: 0;}}
 @keyframes animate-positive{0% {width: 0;}}
 @media only screen and (max-width:1200px){.banner-col h1,.banner-col-r{padding-right:90px;}}
@@ -441,6 +446,8 @@ input {outline: none;}
     .trk-img{display: block;}
     .banner-col-r ul{width:80%;}
     .banner-col{background-size:125%;background-position:-15px bottom;padding-bottom:0;}
+    .sign-box{display:block;}.nav li.sign-in,.nav li.sign-up{display:none;}
+    .nav-box ul{margin-top:20px;}.navbar-nav{margin:0 -30px;}
 }
 @media only screen and (max-width:640px){.pricing-box .w-md3{width:100%;}}
 @media only screen and (max-width:540px){
