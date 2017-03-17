@@ -47,32 +47,29 @@ router.get('/api/tsreference', async (req, res, next) => {
 async function upsert(req, res, next) {
   try {
     let {id: userId} = req.user;
-    let {token, tsId, name} = req.body;
+    let {id, token, tsId, name} = req.body;
     let provider = await Provider.findById(tsId);
     if (!provider) throw new Error('provider not found');
 
+    if (!id) id = 0;
 
-
-    let apiToken = await ApiToken.findOne({
-      where: {
-        provider_id: tsId,
-        userId,
-        name
-      }
-    })
+    let apiToken = await ApiToken.findById(id)
 
     if (apiToken) {
-      if (apiToken.token !== token) {
-        await apiToken.destroy()
+      if (apiToken.token === token && apiToken.provider_id !== parseInt(tsId)) {
+        apiToken.name = name;
+        await apiToken.save()
       }
     } else {
-      await ApiToken.create({
-        provider_id: tsId,
-        userId,
-        name,
-        token
-      })
+      await apiToken.destroy()
     }
+
+    await ApiToken.create({
+      provider_id: tsId,
+      userId,
+      name,
+      token
+    })
 
     res.json({
       status: 1,
