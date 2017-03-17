@@ -958,6 +958,14 @@ etag@~1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.0.tgz#6f631aef336d6c46362b51764044ce216be3c051"
 
+exoclick@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/exoclick/-/exoclick-1.0.0.tgz#d86a1ce232b6f4fadc838ecc17b4cbe5c9365535"
+  dependencies:
+    bluebird "^3.4.7"
+    superagent "^3.3.2"
+    superagent-promise "^1.1.0"
+
 expand-brackets@^0.1.4:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/expand-brackets/-/expand-brackets-0.1.5.tgz#df07284e342a807cd733ac5af72411e581d1177b"

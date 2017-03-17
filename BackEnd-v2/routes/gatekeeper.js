@@ -157,10 +157,12 @@ router.get('/api/tsreport', async (req, res, next) => {
 
 import popads from 'popads';
 import zeropark from 'zeropark';
+import exoclick from 'exoclick';
 
 const providers = {
   popads,
-  zeropark
+  zeropark,
+  exoclick
 }
 
 router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
@@ -205,8 +207,6 @@ router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
       message: 'success'
     });
   } catch (e) {
-    console.log(e)
-
     if (!record) return next(e);
 
     if(e.status === 500 && record.Provider.name === 'popads') {
