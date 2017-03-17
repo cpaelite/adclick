@@ -168,6 +168,34 @@ app.post('/account/check', function (req, res) {
 });
 
 /**
+ * @apiName 用户忘记密码
+ *
+ */
+app.post('/api/forgot/pwd', function (req, res) {
+  var result = {
+    status: 1,
+    message: "success",
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 用户重置密码
+ *
+ * @apiParam {String} newPassword,email,code
+ */
+app.post('/api/reset/pwd', function (req, res) {
+  var result = {
+    status: 1,
+    message: "success",
+    data:{
+
+    }
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 获取tags
  *
  * @apiParam {number} type 1:campaign; 2:lander; 3:offer

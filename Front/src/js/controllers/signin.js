@@ -87,5 +87,9 @@
           }
         });
     };
+
+    $scope.resetPassword = function(){
+      $state.go('access.reset-password');
+    };
   }
 })();

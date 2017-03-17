@@ -947,6 +947,19 @@ table .traficc-source-input input[type="checkbox"]{
     padding: 5px;
     color: #fff;
 }
+.forgot-pwd,
+.go-back{
+    font-size: 13px;
+    color: #999;
+    display: block;
+    line-height: 35px;
+    text-align: center;
+}
+.go-back:hover,
+.forgot-pwd:hover{
+    color: #999;
+    text-decoration: underline;
+}
 .panel-list .material-icons{
     float: right;
     height: 50px;

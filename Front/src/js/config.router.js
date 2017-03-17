@@ -163,6 +163,16 @@
         templateUrl: 'tpl/signin.html',
         controller: 'SigninCtrl'
       })
+      .state('access.reset-password', {
+        url: '/reset-password',
+        templateUrl: 'tpl/reset-password.html',
+        controller: 'ResetPasswordCtrl'
+      })
+      .state('access.reset-password-info', {
+        url: '/reset-password-info',
+        templateUrl: 'tpl/reset-password-info.html',
+        controller: 'ResetPasswordInfoCtrl'
+      })
       .state('access.signup', {
         url: '/signup',
         templateUrl: 'tpl/signup.html',
