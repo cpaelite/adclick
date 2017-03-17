@@ -74,6 +74,8 @@
 </div>
 
 <div flex layout="column" class="cs-page-content report">
+           <div class="table-box">
+
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order">
@@ -104,7 +106,9 @@
                 </tr>
             </tfoot>
         </table>
+
     </md-table-container>
+    </div>
     <md-table-pagination
         md-limit="query.limit"
         md-limit-options="[50, 100, 200, 500, 1000]"

@@ -651,7 +651,7 @@ table tbody tr:nth-child(2n+2){background:#f5f5f5;border-width:1px 0 1px 0;borde
 
 table{border-radius:3px 3px 0 0;float:left;width:100%;height:auto;}
 md-table-container {max-height:430px;overflow-y:auto;border-radius:0 0 3px 3px;float:left;width:100%;}
-.table-box{border:1px solid #d7d7d7;border-radius:3px;}
+.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;}
 .md-table-pagination{color:#000;}
 .md-table-pagination .label {
     font-size: 12px;
@@ -1272,14 +1272,14 @@ table.md-table tr.md-row.first-tree td.md-cell:first-child{
 /*Start setting Style*/
 h1.setting-title{
     background:#f1f2f7;
-    padding:40px 0;
+    padding:35px 0;
     text-align: center;
     font-size: 22px;
     font-weight:600;
     color: #363636;
     margin:0;
 }
-h1.setting-title p{line-height:26px;color:#333;font-weight:normal;}
+h1.setting-title p{line-height:26px;color:#333;font-weight:normal;margin-bottom:0;}
 .basic-form .cs-subform-select{
     width: 100%;
     margin: 0;
@@ -1532,16 +1532,16 @@ h1.setting-title p{line-height:26px;color:#333;font-weight:normal;}
     background: #8992aa !important;
 }
 .copy-btn.domain-btn{
-    background: #253c75;border-radius:2px;
+    background:#425fa5 !important;border-radius:3px;font-weight:normal;
 }
 .copy-btn.domain-btn.main-domain{
-    background: #2f9be1 !important;
+    background: #2770ea !important;
 }
 .copy-btn.domain-btn.main-domain:hover{
-    background: #2da8f9 !important;
+    background: #2770ea !important;
 }
 .copy-btn.domain-btn:hover{
-    background:#425fa5!important;
+    background:#2770ea!important;
 }
 .copy-btn.domain-btn{border-radius:3px;  }
 
@@ -2066,7 +2066,7 @@ input[type="checkbox"].th-checkbox{
 }
 .label-radio{
     font-weight:600;
-    padding-left: 0;
+    padding-left: 0;padding-top:17px;
 }
 .close-btn{
     background:#8494A5;height:32px;line-height:32px;font-weight:bold;
@@ -2561,7 +2561,7 @@ md-icon.md-default-theme, md-icon{color:#fff;}
 .boot-bg{margin:0;padding-top:10px;font-size:12px;}
 .boot-bg .text-muted {
     color: #999;}
-.control-label{color:#000;float:left;line-height:22px;padding:15px 0 0 0;}
+.control-label{color:#000;float:left;}
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{background:#fff;}
 .signup-btn{border:none;box-shadow:none;vertical-align:inherit;}
 .sign-text{color:#666;font-size:12px;}
@@ -2611,6 +2611,8 @@ md-toolbar.md-default-theme:not(.md-menu-toolbar), md-toolbar:not(.md-menu-toolb
 .md-toolbar-tools{height:46px;}
 md-dialog.md-transition-in{border-radius:4px;}
 .md-toolbar-tools h1, .md-toolbar-tools h2, .md-toolbar-tools h3{font-size:18px;font-weight:600;margin-left:10px;}
+.md-toolbar-tools h1 a{border:none;height:auto;line-height:normal;}
+.md-toolbar-tools h1 a:hover{background:transparent;}
 .material-icons{font-size:15px;}
 table{border-collapse:collapse;}
 md-select:not([disabled]):focus .md-select-value{border:1px solid #c9c9cf;border-radius:3px;}
@@ -2790,7 +2792,7 @@ input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disa
 .nav-col i.mtop2{margin:16px 5px 0 0;}
 
 .navbar-box{min-height:46px;height:46px;}
-.navbar-box a{line-height:41px;height:45px;margin-top:-1px;border-left:1px solid #d5d5d5;background:#fff;}
+.navbar-box a{line-height:45px;height:45px;margin-top:-1px;border-left:1px solid #d5d5d5;background:#fff;}
 .navbar-box a:hover{
     background: #f6f8f8;
     background: -moz-linear-gradient(top, #e9e9e9 0, #fff 100%);

@@ -16,6 +16,7 @@
       </div>
     </div>
     <div class="data-table">
+      <div class="table-box">
       <table md-table multiple class="table">
         <thead md-head md-order="query.order">
           <tr md-row>
@@ -49,8 +50,9 @@
         </tfoot>
       </table>
     </div>
-
+  </div>
       <md-table-pagination md-limit="query.limit" md-page="query.page"
                            md-total="{{item.totals.count}}" md-on-paginate="getList" md-page-select></md-table-pagination>
   </div>
+
 </div>
