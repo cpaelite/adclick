@@ -461,7 +461,7 @@ router.get('/status', function (req, res) {
 });
 
 router.get('/robot.txt', function (req, res) {
-  res.status(200).send('User-agent: *\nDisallow:');
+  res.status(200).send('User-agent: *\nDisallow: /');
 });
 
 
