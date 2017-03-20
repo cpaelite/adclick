@@ -11,19 +11,19 @@
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
+                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <!--<option value="">Choose grouping</option>-->
                     <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose Grouping" ng-change="changeGroupby(1)">
+                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose Grouping" ng-change="changeGroupby(1)">
                     <md-option value="">Choose Grouping</md-option>
                     <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose Grouping">
+                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose Grouping">
                     <md-option value="">Choose Grouping</md-option>
                     <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}</md-option>
                 </md-select>
@@ -57,7 +57,7 @@
                             ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
                         {{fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                     </button>
-                    <md-select class="cs-subform-select " ng-model="fromTime">
+                    <md-select aria-label="From Time" class="cs-subform-select " ng-model="fromTime">
                         <md-option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</md-option>
                     </md-select>
                 </div>
@@ -68,7 +68,7 @@
                             ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
                         {{toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                     </button>
-                    <md-select class="cs-subform-select" ng-model="toTime">
+                    <md-select aria-label="To Time" class="cs-subform-select" ng-model="toTime">
                         <md-option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</md-option>
                     </md-select>
                 </div>
@@ -161,15 +161,15 @@
                     ng-repeat="column in columns"
                     ng-show="preferences.reportViewColumns[column.key].visible  || column.role=='name'">
                     <!--ng-click="openMenu($event, row, column.role)"-->
-                  <span ng-if="column.role=='name' && treeLevel==1">
-                    <md-menu-bar style="padding: 0;">
+                  <span ng-if="column.role=='name'">
+                    <md-menu-bar style="padding: 0;" ng-if="canEdit(row)">
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">{{row.data[column.key]}}</a>
                             <md-menu-content width="3">
-                                <md-menu-item ng-if="canEdit"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
-                                <md-menu-item ng-if="canEdit"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
-                                <md-menu-item ng-if="canEdit"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
-                                <md-menu-item>
+                                <md-menu-item ng-if="canEdit(row)"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row)"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row)"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="treeLevel == 1">
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
                                         <md-menu-content width="3">
@@ -182,8 +182,11 @@
                             </md-menu-content>
                         </md-menu>
                     </md-menu-bar>
+                    <em ng-if="!canEdit(row)">
+                        {{row.data[column.key]}}
+                    </em>
                   </span>
-                  <span ng-if="column.role!='name' || treeLevel>1">
+                  <span ng-if="column.role!='name'">
                     {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
                   </span>
                 </td>

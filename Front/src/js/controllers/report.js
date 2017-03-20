@@ -385,7 +385,10 @@
         $scope.menuStatus.isopen = true;
       }
     };
-    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
+    //$scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
+    $scope.canEdit = function (row) {
+      return ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0 && row.treeLevel == 1;
+    };
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
@@ -400,6 +403,9 @@
 
     $scope.menuOpen = function (mdMenu, row) {
       mdMenu.open();
+      if ($scope.treeLevel > 1)
+        return;
+
       var id = 0;
       if (perfType == "campaign") {
         id = row.data.trafficId;
