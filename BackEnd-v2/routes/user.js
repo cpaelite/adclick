@@ -190,33 +190,51 @@ router.post('/api/names', async function (req, res, next) {
  *
  */
 
-router.get('/api/postbackurl', function (req, res, next) {
-    var schema = Joi.object().keys({
-        userId: Joi.string().required()
-    });
-    req.query.userId = req.parent.idText;
-    Joi.validate(req.query, schema, function (err, value) {
-        if (err) {
-            return next(err);
-        }
-        try {
-            let defaultDomain;
+router.get('/api/postbackurl', async function (req, res, next) {
+    let connection;
+    try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            idText: Joi.string().required()
+        });
+        req.query.userId = req.parent.id;
+        req.query.idText = req.parent.idText;
+        let value = await common.validate(req.query, schema);
+        let mainDomainsql = "select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0";
+        connection = await common.getConnection();
+        let domainResult = await common.query(mainDomainsql, [value.userId], connection);
+        let defaultDomain;
+        //如果自己定义了main domain 优先
+        if (domainResult.length) {
+            if (domainResult[0].customize == 1) {
+                defaultDomain = domainResult[0].domain;
+            } else {
+                defaultDomain = value.idText + "." + domainResult[0].domain;
+            }
+        } else {
+            //默认使用系统配置
             for (let index = 0; index < setting.domains.length; index++) {
                 if (setting.domains[index].postBackDomain) {
-                    defaultDomain = setting.domains[index].address;
+                    defaultDomain = value.idText + "." + setting.domains[index].address;
                 }
             }
-            res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    defaultPostBackUrl: setting.newbidder.httpPix + value.userId + "." + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
-                }
-            })
-        } catch (e) {
-            next(e);
         }
-    });
+
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                defaultPostBackUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+            }
+        })
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 
