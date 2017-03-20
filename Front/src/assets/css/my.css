@@ -2072,7 +2072,7 @@ input[type="checkbox"].th-checkbox{
     color: #fff;
 }
 md-content.cs-main-content{
-    height: 85%;
+    height: calc(100% - 93px);
 }
 .cs-page-flow,
 .cs-flow-content{
