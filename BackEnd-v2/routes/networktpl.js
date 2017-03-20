@@ -76,8 +76,8 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
     try {
         connection = await common.getConnection();
         let tpl = common.query("select `id`,`name`,`postbackParams`,`desc` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
-        let mainDomain =  common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0",[req.parent.id],connection);
-        let result=[];
+        let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [req.parent.id], connection);
+        let result = [];
         let resultsPro = await Promise.all([tpl, mainDomain]);
         let domainResult = resultsPro[1];
         let results = resultsPro[0]
@@ -99,7 +99,6 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
                     }
                 }
             }
-
             for (let i = 0; i < results.length; i++) {
                 if (results[i].postbackParams) {
                     let value = {
@@ -108,8 +107,16 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
                         desc: results[i].desc
                     }
                     let params = JSON.parse(results[i].postbackParams);
-                    let param = "?" + querystring.stringify(params, { encodeURIComponent: uri => uri });
-                    value.postbackurl = querystring.unescape(setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + param);
+                    let param = "?"; 
+                    let sum = 0;
+                    for (let i in params) {
+                        param += `${i}=${params[i]}`
+                        if (sum !== (Object.keys(params).length - 1)) {
+                            param += "&"
+                        }
+                        sum++;
+                    }
+                    value.postbackurl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + param;
                     result.push(value);
                 }
             }
