@@ -2,6 +2,7 @@ import express from 'express';
 var router = express.Router();
 var common = require('./common');
 var moment = require('moment');
+var json2csv = require('json2csv');
 import _ from 'lodash';
 import sequelize from 'sequelize';
 import {
@@ -22,19 +23,27 @@ import {
  *
  */
 
-//from   to tz  sort  direction columns=[]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
-
+//from   to tz  sort  direction  ]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
+//dataType csv   columns=offerName,offerHash
 router.get('/api/report', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
     result = await campaignReport(req.query);
+    if (req.query.dataType == "csv") {
+      let fields = req.query.columns ? req.query.columns.split(',') : [];
+      let csvData = json2csv({ data: result.rows, fields: fields });
+      res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
+      res.setHeader('Expires', '0');
+      res.setHeader('Cache-Control', 'must-revalidate');
+      return res.send(csvData);
+    }
     return res.json({ status: 1, message: 'success', data: result });
   } catch (e) {
     console.error(e)
     return next(e);
   }
-
 });
 
 async function campaignReport(value) {
@@ -156,7 +165,7 @@ async function normalReport(values) {
     }
   }
 
-  
+
 
   // group by day
   let finalAttribute = attributes
@@ -164,15 +173,19 @@ async function normalReport(values) {
     finalAttribute = [[sequelize.literal(`DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(Timestamp/1000), '${tz}','+00:00'),"%Y-%m-%d")`), 'day'], ...attributes]
   }
 
- 
-  let rows = await models.AdStatis.findAll({
+  let conditions = {
     where: sqlWhere,
     limit,
     offset,
     attributes: finalAttribute,
     group: `${mapping[groupBy].dbGroupBy}`,
     order: [orderBy]
-  })
+  }
+  if (values.dataType && values.dataType == "csv") {
+    delete conditions.limit;
+    delete conditions.offset;
+  }
+  let rows = await models.AdStatis.findAll(conditions)
   let rawRows = rows.map(e => e.dataValues);
   rawRows = await fullFill({ rawRows, groupBy })
   if (groupBy === "campaign") {
