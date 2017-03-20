@@ -25,7 +25,7 @@ qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
 
   let tradeNo = `${new Date().getTime()}_${userId}`;
   let timestamp = (new Date()).getTime();
-  let amount = parseFloat((template_plan.onSalePrice * month).toFixed(2));
+  let amount = parseFloat((template_plan.onSalePrice * month * 6.9).toFixed(2));
 
   let createReq = {
     tradeNo,
