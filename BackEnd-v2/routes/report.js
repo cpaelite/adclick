@@ -47,7 +47,7 @@ router.get('/api/report', async function (req, res, next) {
 });
 
 async function campaignReport(value) {
-  let { groupBy, limit, page } = value;
+  let { groupBy, limit, page, source } = value;
   // init values
   if (!mapping[groupBy]) {
     //TODO: unsupport group
@@ -63,6 +63,11 @@ async function campaignReport(value) {
   if (!offset)
     offset = 0
   value.offset = offset
+
+  if (source && source == "dashboard") {
+    console.info("normal process")
+    return normalReport(value)
+  }
 
 
   console.info("------------", isListPageRequest(value))
