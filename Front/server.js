@@ -3534,6 +3534,46 @@ app.post('/api/user/coupon', function (req, res) {
   }, 5000);
 });
 
+/**
+ * @api {post} /api/qrpay/create 支付URL
+ * @apiName 用户支付URL
+ * @apiGroup qrpay
+ *
+ * @apiParam {String} planId
+ */
+app.post('/api/qrpay/create', function (req, res) {
+  var result = {
+    status: 1,
+    data: {
+      id: '123',
+      url: 'http://baidu.com'
+    }
+  };
+  setTimeout(function () {
+    res.send(result);
+  }, 5000);
+});
+
+/**
+ * @api {post} /api/qrpay/status 支付状态
+ * @apiName 用户支付状态
+ * @apiGroup qrpay
+ *
+ * @apiParam {String} id
+ */
+app.post('/api/qrpay/status', function (req, res) {
+  var result = {
+    status: 1,
+    data: {
+      status: true
+    }
+  };
+  setTimeout(function () {
+    res.send(result);
+  }, 5000);
+});
+
+
 app.listen(51500, function () {
   console.log('server started success port : 51500');
 });
