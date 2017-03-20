@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource', 'FileDownload',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -48,7 +48,7 @@
     }
   }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource, FileDownload) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
@@ -136,6 +136,16 @@
       cols[0].name = 'Name';
     }
     $scope.columns = cols;
+
+    // 处理下载报表的列
+    var downloadCols = '';
+    cols.forEach(function (col) {
+      if ($scope.preferences.reportViewColumns[col.key].visible) {
+        downloadCols += col.key + ',';
+      }
+    });
+    $scope.downloadReportCols = downloadCols;
+
     $scope.filterColumns = function(item) {
       return item.role != 'name';
     };
@@ -184,7 +194,7 @@
       return !!val;
     }
 
-    function getList(parentRow) {
+    function getList(parentRow, dataType) {
       var params = {};
       $scope.filters.forEach(function(f) { params[f.key] = f.val });
       angular.extend(params, $scope.query, pageStatus);
@@ -209,7 +219,17 @@
         params.groupBy = pageStatus.groupBy[0];
       }
 
-      $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
+      if (dataType) {
+        params.dataType = dataType;
+        params.columns = $scope.downloadReportCols;
+        Report.download(params, function (report) {
+          FileDownload.downloadFile(report, "application/octet-stream", "download.csv");
+          return;
+        });
+
+      } else {
+        $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
+      }
     };
 
     function watchFilter() {
@@ -300,7 +320,7 @@
       }
     }
 
-    $scope.applySearch = function(evt) {
+    $scope.applySearch = function() {
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
       if ($scope.treeLevel == 0) {
         $mdDialog.show(
@@ -336,6 +356,10 @@
         $scope.columns[0].key = $scope.columns[0].origKey;
         $scope.columns[0].name = $scope.columns[0].origName;
       }
+    };
+
+    $scope.downLoad = function () {
+      getList(null, 'csv');
     };
 
     $scope.toggleRow = function(row) {
