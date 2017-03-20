@@ -55,21 +55,28 @@ async function upsert(req, res, next) {
 
     let apiToken = await ApiToken.findById(id)
 
-    if (apiToken) {
-      if (apiToken.token === token && apiToken.provider_id !== parseInt(tsId)) {
-        apiToken.name = name;
-        await apiToken.save()
-      }
-    } else {
-      await apiToken.destroy()
+    let makeToken = async ()=> {
+      await ApiToken.create({
+        provider_id: tsId,
+        userId,
+        name,
+        token
+      })
     }
 
-    await ApiToken.create({
-      provider_id: tsId,
-      userId,
-      name,
-      token
-    })
+    if (apiToken) {
+      if (apiToken.token === token && apiToken.provider_id === parseInt(tsId)) {
+        apiToken.name = name;
+        await apiToken.save()
+      } else {
+        await apiToken.destroy()
+        await makeToken()
+      }
+    } else {
+      await makeToken()
+    }
+
+
 
     res.json({
       status: 1,
@@ -103,8 +110,8 @@ router.get('/api/third-traffics', async (req, res, next) => {
 router.get('/api/tsreport', async (req, res, next) => {
   try {
     let {id: userId} = req.user;
-    let {from, to, tsReferenceId: provider_id} = req.query;
-    let apiToken = await ApiToken.findOne({where: {userId, provider_id}});
+    let {from, to, tsReferenceId: id} = req.query;
+    let apiToken = await ApiToken.findById(id);
     if (!apiToken) throw new Error('no api token found');
 
     let rows = await Statistic.findAll({
@@ -125,7 +132,7 @@ router.get('/api/tsreport', async (req, res, next) => {
         }
       ],
       where: {
-        provider_id,
+        provider_id: apiToken.provider_id,
         api_token_id: apiToken.id,
         $and: [
           {date: {$gte: from}},
@@ -203,7 +210,6 @@ router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
     let api = new Api(record.token);
     if (!api.campaign[action]) throw new Error('wrong action');
     let result = await api.campaign[action]({campaign_id: campaign_identity});
-
     res.json({
       status: 1,
       message: 'success'

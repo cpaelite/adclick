@@ -12,7 +12,7 @@
                     <input type="text" name="name" class="form-control"
                       ng-model="formData.name"
                       required
-                      ng-blur="checkName(formData.name)"
+                      ng-blur="checkName(formData.name, formData.id)"
                     />
                     <span class="text-danger" ng-show="(editForm.name.$touched || editForm.$submitted)&& editForm.name.$invalid">
                         <span ng-show="editForm.name.$error.required">Name is required.</span>

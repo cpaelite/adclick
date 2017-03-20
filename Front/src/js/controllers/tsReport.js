@@ -88,7 +88,7 @@
     $scope.addOrEditTsReference = function(tsId) {
       var item;
       $scope.tsReferences.forEach(function(v) {
-        if(v.id = tsId) {
+        if(v.id == tsId) {
           item = v;
           return;
         }
@@ -130,7 +130,7 @@
       TsReference.get(null, function(oData) {
         $scope.tsReferences = oData.data.tsreferences;
         if(!$scope.query.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
-          $scope.query.tsReferenceId = $scope.tsReferences[0].tsId;
+          $scope.query.tsReferenceId = $scope.tsReferences[0].id;
         }
       });
     }
@@ -182,8 +182,13 @@
         $scope.formData = this.item;
       }
 
-      $scope.checkName = function(name) {
-        $scope.editForm.name.$setValidity('checkName', !(tsReferences.indexOf(name) > -1));
+      $scope.checkName = function(name, id) {
+        $scope.editForm.name.$setValidity('checkName', !(tsReferences.some(function(tsReference) {
+          if(id && id == tsReference.id) {
+            return false;
+          }
+          return tsReference.name == name;
+        })));
       };
 
       $scope.thirdTraffics = this.thirdTraffics;
