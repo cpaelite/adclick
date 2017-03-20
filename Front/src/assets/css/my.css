@@ -2054,6 +2054,40 @@ input[type="checkbox"].th-checkbox{
     padding-left: 20px;
     position: relative;
 }
+
+.cs-flow-content .cs-on-save, .cs-flow-content .cs-save-time {
+  float: left;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 15px;
+  margin-right: 15px;
+}
+.cs-flow-content .cs-save-time {
+  background: #fffed5;
+  border: 1px solid #e4e3ba;
+}
+
+.cs-flow-content .cs-save-time i {
+  color: #d40000;
+}
+.cs-flow-content .cs-on-save .glyphicon-refresh-animate {
+    -animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+.cs-flow-content .cs-on-save .glyphicon-refresh-animate {
+  top: 2px;
+  margin-right: 5px;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
 .form-content{
     max-width:auto;
 }
