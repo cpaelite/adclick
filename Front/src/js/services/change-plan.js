@@ -196,6 +196,9 @@
                 if (res.status == 1) {
                   $rootScope.permissions = res.data;
                   $state.reload();
+                  $mdDialog.hide({
+                    qrpayStatus: true
+                  });
                 }
               });
             } else if(oData.status == 0 || !oData.data.status){
