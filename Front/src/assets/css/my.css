@@ -3003,3 +3003,21 @@ md-autocomplete .md-show-clear-button button{width:22px;height:22px;margin:auto 
 .md-whiteframe-z1{border-radius:3px;border:1px solid #c9c9cf;box-shadow:none;}
 .md-button.md-default-theme.md-raised:not([disabled]):hover, .md-button.md-raised:not([disabled]):hover{background:#2770ea;}
 .w-xxl{width:400px;}
+
+.alipay-box {
+  position: relative;
+  display: inline-block;
+}
+
+.alipay-box qr {
+  position: absolute;
+  top: 122px;
+  left: 50%;
+  margin-left: -60px;
+  width: 120px;
+}
+
+.alipay-box qr img {
+  width: 120px;
+}
+>>>>>>> add qrcode

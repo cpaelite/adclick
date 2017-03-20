@@ -161,6 +161,8 @@
           $scope.userItem = user.data;
         });
 
+        // $scope.planUrl = 'http://baidu.com';
+
         $scope.id = this.plan.id;
         $scope.payType = "1";
         var tempPlans = angular.copy(this.plans.plan);

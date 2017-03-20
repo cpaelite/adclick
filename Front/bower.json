@@ -43,9 +43,10 @@
     "angular-selectize2": "^3.0.1",
     "angular-awesome-slider": "^2.4.4",
     "angular-momentjs": "^0.2.2",
-    "angular-permission": "^5.2.1"
+    "angular-permission": "^5.2.1",
+    "angular-qr": "latest",
+    "qrcode.js": "qrcode#^1.0.2"
   },
-  "devDependencies": {},
   "resolutions": {
     "angular": "^1.4.0"
   }
