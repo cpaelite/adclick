@@ -6,10 +6,7 @@ export default function(sequelize, DataTypes) {
     userId: {
       type: DataTypes.STRING
     },
-    username: {
-      type: DataTypes.STRING
-    },
-    password: {
+    name: {
       type: DataTypes.STRING
     },
     provider_id: {

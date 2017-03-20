@@ -3,6 +3,7 @@ var router = express.Router();
 var Joi = require('joi');
 var setting = require('../config/setting');
 const querystring = require('querystring');
+var common = require('./common');
 
 /**
  * @api {post} /affilate/tpl  networktpl add
@@ -70,60 +71,72 @@ router.post('/affiliate/tpl', function (req, res, next) {
  *     }
  *
  */
-router.get('/api/affilate/tpl', function (req, res, next) {
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            err.status = 303
-            return next(err);
-        }
-        connection.query(
-            "select `id`,`name`,`postbackParams`,`desc` from TemplateAffiliateNetwork where `deleted`=?", [
-                0
-            ],
-            function (err, results) {
-                connection.release();
-                if (err) {
-                    return next(err);
+router.get('/api/affilate/tpl', async function (req, res, next) {
+    let connection;
+    try {
+        connection = await common.getConnection();
+        let tpl = common.query("select `id`,`name`,`postbackParams`,`desc` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
+        let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [req.parent.id], connection);
+        let result = [];
+        let resultsPro = await Promise.all([tpl, mainDomain]);
+        let domainResult = resultsPro[1];
+        let results = resultsPro[0]
+        let defaultDomain;
+
+        if (results.length) {
+            //如果自己定义了main domain 优先
+            if (domainResult.length) {
+                if (domainResult[0].customize == 1) {
+                    defaultDomain = domainResult[0].domain;
+                } else {
+                    defaultDomain = req.parent.idText + "." + domainResult[0].domain;
                 }
-                try {
-                    let result = [];
-
-                    if (results.length) {
-                        //获取默认postback domain 
-                        let defaultDomain;
-                        for (let index = 0; index < setting.domains.length; index++) {
-                            if (setting.domains[index].postBackDomain) {
-                                defaultDomain = setting.domains[index].address;
-                            }
-                        }
-
-                        for (let i = 0; i < results.length; i++) {
-                            if (results[i].postbackParams) {
-                                let value = {
-                                    id: results[i].id,
-                                    name: results[i].name,
-                                    desc: results[i].desc
-                                }
-                                let params = JSON.parse(results[i].postbackParams);
-                                let param = "?" + querystring.stringify(params,{encodeURIComponent:uri => uri});
-                                value.postbackurl = querystring.unescape(setting.newbidder.httpPix + req.parent.idText + "." + defaultDomain + setting.newbidder.postBackRouter + param);
-                                result.push(value);
-                            }
-                        }
+            } else {
+                //默认使用系统配置
+                for (let index = 0; index < setting.domains.length; index++) {
+                    if (setting.domains[index].postBackDomain) {
+                        defaultDomain = req.parent.idText + "." + setting.domains[index].address;
                     }
-
-                    res.json({
-                        status: 1,
-                        message: 'success',
-                        data: {
-                            lists: result
-                        }
-                    });
-                } catch (e) {
-                    next(e);
                 }
-            });
-    });
+            }
+            for (let i = 0; i < results.length; i++) {
+                if (results[i].postbackParams) {
+                    let value = {
+                        id: results[i].id,
+                        name: results[i].name,
+                        desc: results[i].desc
+                    }
+                    let params = JSON.parse(results[i].postbackParams);
+                    let param = "?"; 
+                    let sum = 0;
+                    for (let i in params) {
+                        param += `${i}=${params[i]}`
+                        if (sum !== (Object.keys(params).length - 1)) {
+                            param += "&"
+                        }
+                        sum++;
+                    }
+                    value.postbackurl = setting.newbidder.httpPix + defaultDomain + setting.newbidder.postBackRouter + param;
+                    result.push(value);
+                }
+            }
+        }
+
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                lists: result
+            }
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
 });
 
 

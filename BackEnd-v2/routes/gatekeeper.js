@@ -27,7 +27,7 @@ router.get('/api/tsreference', async (req, res, next) => {
     let result = apiTokens.map((apiToken) => {
       return {
         id: apiToken.id,
-        name: apiToken.Provider.name,
+        name: apiToken.name,
         token: apiToken.token,
         tsId: apiToken.provider_id
       }
@@ -47,27 +47,36 @@ router.get('/api/tsreference', async (req, res, next) => {
 async function upsert(req, res, next) {
   try {
     let {id: userId} = req.user;
-    let {token, tsId} = req.body;
+    let {id, token, tsId, name} = req.body;
     let provider = await Provider.findById(tsId);
     if (!provider) throw new Error('provider not found');
 
-    let apiToken = await ApiToken.findOne({
-      where: {
-        provider_id: tsId,
-        userId
-      }
-    })
+    if (!id) id = 0;
 
-    if (apiToken) {
-      apiToken.token = token;
-      await apiToken.save()
-    } else {
+    let apiToken = await ApiToken.findById(id)
+
+    let makeToken = async ()=> {
       await ApiToken.create({
         provider_id: tsId,
         userId,
+        name,
         token
       })
     }
+
+    if (apiToken) {
+      if (apiToken.token === token && apiToken.provider_id === parseInt(tsId)) {
+        apiToken.name = name;
+        await apiToken.save()
+      } else {
+        await apiToken.destroy()
+        await makeToken()
+      }
+    } else {
+      await makeToken()
+    }
+
+
 
     res.json({
       status: 1,
@@ -101,8 +110,8 @@ router.get('/api/third-traffics', async (req, res, next) => {
 router.get('/api/tsreport', async (req, res, next) => {
   try {
     let {id: userId} = req.user;
-    let {from, to, tsReferenceId: provider_id} = req.query;
-    let apiToken = await ApiToken.findOne({where: {userId, provider_id}});
+    let {from, to, tsReferenceId: id} = req.query;
+    let apiToken = await ApiToken.findById(id);
     if (!apiToken) throw new Error('no api token found');
 
     let rows = await Statistic.findAll({
@@ -123,7 +132,7 @@ router.get('/api/tsreport', async (req, res, next) => {
         }
       ],
       where: {
-        provider_id,
+        provider_id: apiToken.provider_id,
         api_token_id: apiToken.id,
         $and: [
           {date: {$gte: from}},
@@ -157,10 +166,12 @@ router.get('/api/tsreport', async (req, res, next) => {
 
 import popads from 'popads';
 import zeropark from 'zeropark';
+import exoclick from 'exoclick';
 
 const providers = {
   popads,
-  zeropark
+  zeropark,
+  exoclick
 }
 
 router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
@@ -199,14 +210,11 @@ router.post('/api/tsCampaign/:campaignId', async (req, res, next) => {
     let api = new Api(record.token);
     if (!api.campaign[action]) throw new Error('wrong action');
     let result = await api.campaign[action]({campaign_id: campaign_identity});
-
     res.json({
       status: 1,
       message: 'success'
     });
   } catch (e) {
-    console.log(e)
-
     if (!record) return next(e);
 
     if(e.status === 500 && record.Provider.name === 'popads') {
