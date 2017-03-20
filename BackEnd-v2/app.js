@@ -45,7 +45,7 @@ var route_noplan= require('./routes/router_noplan');
 import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
-import qrpay from './routes/qrpay';
+import {qrpayRouter, qrpayCallbackRouter} from './routes/qrpay';
 
 import gatekeeper from './routes/gatekeeper'
 
@@ -100,7 +100,7 @@ app.get('/', function(req, res) {
 });
 
 
-app.use(paypal, qrpay);
+app.use(paypal, qrpayCallbackRouter, qrpayRouter);
 app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon);
 app.use('/', auth);
 
