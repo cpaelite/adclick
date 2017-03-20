@@ -7,8 +7,8 @@ body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "
 .bidder-box.bidder-box-1 .bidder-col .sm-img,.bidder-box .bidder-col .sm-img{width:58%}
 .bidder-box.bidder-box-1 .list-bg{margin:6px 20px 0 0;height:30px;line-height:30px;padding:0 12px;float:left;}
 .bidder-box .logo{width:200px;margin:0 auto 30px auto;display: block;}
-.bidder-box h1{color:#222;margin:50px 0 20px 10px;float:left;border-bottom:3px solid #666;line-height:48px;}
-.bidder-col{background:#fff;border-radius:5px;float:left;width:100%;padding:0 20px;box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 1px 0 rgba(0, 0, 0, 0.03);}
+.bidder-box h1{color:#222;margin:50px 0 20px 0;float:left;border-bottom:3px solid #666;line-height:48px;}
+.bidder-col,.tutorial-box{background:#fff;border-radius:5px;float:left;width:100%;padding:0 20px;box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 1px 0 rgba(0, 0, 0, 0.03), 0 1px 1px 0 rgba(0, 0, 0, 0.03);}
 .bidder-col img{width:85%;text-align:center;margin:30px auto;}
 .bidder-col img.img-w{width:50%;float:left;text-align:left;margin:0 0 30px 0;}
 .bidder-col h3{margin:30px 0;}
@@ -18,9 +18,17 @@ body{font-family:"Helvetica Neue", Helvetica,sans-serif,Verdana,Tahoma, Arial, "
 .com-title{border-left:5px solid #222;padding-left:25px;height:22px;line-height:22px;margin:30px auto;}
 .switching{font-size:32px;font-weight:bold;margin:25px 0 35px 0;line-height:48px;text-align:center;}
 .author{color:#999;display:block;float:right;font-size:12px;line-height:32px;}
+.tutorial-col{display:block;float:left;width:100%;font-size:17px;padding-bottom:30px;}
+.tutorial-col h3{border-left:5px solid #2770ea;padding-left:18px;height:20px;line-height:20px;margin:30px 0;}
+.tutorial-col b{font-size:20px;font-weight:800;}
+.tutorial-col ol li{line-height:28px;padding:10px 0;}
+.tutorial-col img{width:65%;text-align:left;margin:30px 0 40px 3px;}
+.tutorial-col p{line-height:32px;margin-bottom:15px;}
+.tutorial-textarea textarea{width:100%;background:#f6f8f8;border:1px solid #e3e3e3;padding:15px 20px;border-radius:3px;}
+.tutorial-textarea textarea:focus{outline:0;border:1px solid #2770ea;}
 @media (min-width: 320px) and (max-width:768px){
     .bidder-col img.img-w,.bidder-box.bidder-box-1 .bidder-col .sm-img,.bidder-box .bidder-col .sm-img{width:100%;}
-    .bidder-col img{width:100%;}
+    .bidder-col img,.tutorial-col img{width:100%;}
     .bidder-box.bidder-box-1 .bidder-col img{margin:30px auto;}
     .bidder-box h1{margin:30px 0;}
 }
