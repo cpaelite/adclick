@@ -312,7 +312,10 @@ md-select .md-select-value,md-select.md-table-select > .md-select-value{
     height: 34px;
 }
 .cs-add-button:hover {
-   background:#5089e8 !important;
+     background:#5089e8 !important;
+ }
+.cs-add-button.green-btn:hover {
+    background:#16a919 !important;
 }
 .cs-input-label {
     line-height: 20px;
