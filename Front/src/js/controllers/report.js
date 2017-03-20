@@ -6,7 +6,7 @@
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
-      '$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant',
+      '$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant', 'Setup', '$timeout',
       editLanderCtrl
     ])
     .controller('editOfferCtrl', [
@@ -1204,12 +1204,22 @@
 
   }
 
-  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant) {
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant, Setup, $timeout) {
     console.log('this.country', this.country);
     $scope.prefix = this.country ? this.country.display + ' - ' : 'Global - ';
     initTags($scope, Tag, 2);
     $scope.checkNameParams = {
       type: 2
+    };
+    Setup.get(null, function (setup) {
+      $scope.clickUrl = setup.data.clickUrl;
+    });
+    $scope.btnWord = "Clipboard";
+    $scope.itemUrlClick = function(){
+      $scope.btnWord = "Copied";
+      $timeout(function() {
+        $scope.btnWord = "Clipboard";
+      }, 2000);
     };
     if (this.item) {
       var isDuplicate = this.duplicate;

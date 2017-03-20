@@ -5,6 +5,11 @@
         </div>
     </md-toolbar>
 
+    <div class="offer-remind">
+        <i class="material-icons">info_outline</i>
+        If your landing page has a offer placement，use the "Click URL".
+    </div>
+
     <md-dialog-content class="md-dialog-content">
         <div uib-alert class="alert-danger error-message" ng-show="errMessage" close="errMessage = ''">
             <p ng-repeat="(key, message) in errMessage" style="margin:0;">{{message}}</p>
@@ -71,6 +76,18 @@
                     >
                         <md-option value="{{country.value}}" ng-repeat="country in countries">{{country.display}}</md-option>
                     </md-select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Click Url：</label>
+                <div  class="col-sm-7">
+                    <input type="text" class="form-control" ng-model="clickUrl" readonly>
+                </div>
+                <div class="col-sm-2">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="clickUrl" text="clickUrl" ng-click="itemUrlClick()">
+                        <i class="material-icons">content_copy</i>
+                        {{btnWord}}
+                    </md-button>
                 </div>
             </div>
             <div class="form-group">
