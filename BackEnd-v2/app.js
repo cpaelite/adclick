@@ -100,8 +100,8 @@ app.get('/', function(req, res) {
 });
 
 
-app.use(paypal, qrpayCallbackRouter, qrpayRouter);
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon);
+app.use(paypal, qrpayCallbackRouter);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon, qrpayRouter);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler

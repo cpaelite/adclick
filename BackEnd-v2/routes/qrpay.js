@@ -16,8 +16,7 @@ const {
 } = models;
 
 qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
-  // let {id: userId} = req.user;
-  let userId = 71;
+  let {id: userId} = req.user;
   let {planId, month = 1} = req.body;
   month = parseInt(month)
   let template_plan = await TP.findById(planId);
@@ -72,7 +71,9 @@ qrpayRouter.post('/api/qrpay/status', async (req, res, next) => {
   let qrpay = await QRPay.findById(id);
   res.json({
     status: 1,
-    data: qrpay.status === 3
+    data: {
+      status: qrpay.status === 3
+    }
   })
 })
 
@@ -104,6 +105,10 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
 
 
     await UB.sequelize.transaction(async (transaction) => {
+
+      qrpay.status = 3;
+      qrpay.save({transaction});
+
       let old_ub = await UB.findOne({
         where: {
           userId: qrpay.userId,
