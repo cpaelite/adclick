@@ -27,6 +27,7 @@
     "express": "^4.14.0",
     "express-cluster": "0.0.4",
     "joi": "^10.1.0",
+    "json2csv": "^3.7.3",
     "jwt-simple": "^0.5.1",
     "log4js": "^1.1.0",
     "md5": "^2.2.1",
