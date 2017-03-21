@@ -119,8 +119,9 @@ async function fullFill({ rawRows, groupBy }) {
   let rawForeignRows = foreignRows.map(e => e.dataValues);
 
   let totalRows = rawRows.length;
-  for (let i = 0; i < rawForeignRows.length; i++) {
-    let rawForeignRow = rawForeignRows[i];
+  //for (let i = 0; i < rawForeignRows.length; i++) {
+    //let rawForeignRow = rawForeignRows[i];
+     let rawForeignRow = rawForeignRows[0];
     for (let j = 0; j < totalRows; j++) {
       let rawRow = rawRows[j];
       if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
@@ -132,7 +133,7 @@ async function fullFill({ rawRows, groupBy }) {
         break;
       }
     }
-  }
+  //}
   return rawRows;
 }
 
@@ -150,12 +151,11 @@ async function csvfullFill({ rawRows, groupBy }) {
     attributes: foreignConfig.attributes
   });
   let rawForeignRows = foreignRows.map(e => e.dataValues);
-  rawRows = _.merge(rawRows, rawForeignRows, function (oldValue, newValue) {
-    if (oldValue[foreignConfig.foreignKey] == newValue.id) {
-      return _.assign(oldValue, newValue)
-    }
-  });
-  return rawRows;
+  let results=[];
+  for(let index=0;index<rawRows.length;index++){
+     results.push(_.assign(rawRows[index], rawForeignRows[0]))
+  } 
+  return results;
 }
 
 
