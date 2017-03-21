@@ -3020,4 +3020,12 @@ md-autocomplete .md-show-clear-button button{width:22px;height:22px;margin:auto 
 .alipay-box qr img {
   width: 120px;
 }
->>>>>>> add qrcode
+
+.alipay-box .amount {
+  position: absolute;
+  width: 100%;
+  bottom: 78px;
+  text-align: center;
+  left: 0;
+  font-size: 16px;
+}

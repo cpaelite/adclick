@@ -173,6 +173,7 @@
         QrpayUrl.save({planId: this.plan.id}, function(oData) {
           if(oData.status == 1) {
             $scope.planUrl = oData.data.url;
+            $scope.amount = oData.data.amount;
             getQrpayStatus(oData.data.id);
           }
         });

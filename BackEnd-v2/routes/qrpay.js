@@ -57,7 +57,8 @@ qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
       status: 1,
       data: {
         id: qrpay.id,
-        url: createResp.qr_code
+        url: createResp.qr_code,
+        amount
       }
     });
   } catch (e) {

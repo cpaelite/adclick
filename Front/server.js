@@ -3565,7 +3565,7 @@ app.post('/api/qrpay/status', function (req, res) {
   var result = {
     status: 1,
     data: {
-      status: true
+      status: false 
     }
   };
   setTimeout(function () {
