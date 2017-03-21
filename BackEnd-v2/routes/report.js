@@ -44,6 +44,9 @@ router.get('/api/export', async function (req, res, next) {
   try {
     let result;
     let fieldsCol = [];
+    if(req.query.groupBy){
+      fieldsCol.push(req.query.groupBy);
+    }
     req.query.dataType = "csv";
     result = await campaignReport(req.query);
     let rawRows = result.rows;
@@ -65,6 +68,7 @@ router.get('/api/export', async function (req, res, next) {
     }
     let queryClo = req.query.columns ? req.query.columns.split(',') : [];
     let fields = _.union(fieldsCol, queryClo);
+     
     let csvData = json2csv({ data: rawRows, fields: fields });
     res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
     res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);

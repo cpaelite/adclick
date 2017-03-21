@@ -7,18 +7,18 @@ export const mapping = {
     listPage: true,
     table: "TrackingCampaign",
     dbFilter: "CampaignName",
-    group:"campaign"
+    group: "campaign"
   },
-  flow: {dbKey: "FlowID", dbGroupBy: "FlowID", listPage: true, table: "Flow", dbFilter: "FlowName",group:"flow"},
-  lander: {dbKey: "LanderID", dbGroupBy: "LanderID", listPage: true, table: "Lander", dbFilter: "LanderName",group:"lander"},
-  offer: {dbKey: "OfferID", dbGroupBy: "OfferID", listPage: true, table: "Offer", dbFilter: "OfferName",group:"offer"},
+  flow: { dbKey: "FlowID", dbGroupBy: "FlowID", listPage: true, table: "Flow", dbFilter: "FlowName", group: "flow" },
+  lander: { dbKey: "LanderID", dbGroupBy: "LanderID", listPage: true, table: "Lander", dbFilter: "LanderName", group: "lander" },
+  offer: { dbKey: "OfferID", dbGroupBy: "OfferID", listPage: true, table: "Offer", dbFilter: "OfferName", group: "offer" },
   affiliate: {
     dbKey: "AffiliateNetworkID",
     dbGroupBy: "AffiliateNetworkID",
     listPage: true,
     table: "AffiliateNetwork",
     dbFilter: "AffiliateNetworkName",
-    group:"affiliate"
+    group: "affiliate"
   },
   traffic: {
     dbKey: "TrafficSourceID",
@@ -26,42 +26,42 @@ export const mapping = {
     listPage: true,
     table: "TrafficSource",
     dbFilter: "TrafficSourceName",
-    group:"traffic"
+    group: "traffic"
   },
-  language: {dbKey: "Language", dbGroupBy: "Language", listPage: false},
-  model: {dbKey: "Model", dbGroupBy: "Model", listPage: false},
-  country: {dbKey: "Country", dbGroupBy: "Country", listPage: false},
-  city: {dbKey: "City", dbGroupBy: "City", listPage: false},
-  region: {dbKey: "Region", dbGroupBy: "Region", listPage: false},
-  isp: {dbKey: "ISP", dbGroupBy: "ISP", listPage: false},
-  mobileCarrier: {dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false},
-  domain: {dbKey: "Domain", dbGroupBy: "Domain", listPage: false},
-  deviceType: {dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false},
-  brand: {dbKey: "Brand", dbGroupBy: "Brand", listPage: false},
-  os: {dbKey: "OS", dbGroupBy: "OS", listPage: false},
-  osVersion: {dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false},
-  browser: {dbKey: "Browser", dbGroupBy: "Browser", listPage: false},
-  browserVersion: {dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false},
-  connectionType: {dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false},
-  timestamp: {dbKey: "Timestamp", dbGroupBy: "Timestamp", listPage: false},
-  visits: {dbKey: "Visits", dbGroupBy: "Visits", listPage: false},
-  clicks: {dbKey: "Clicks", dbGroupBy: "Clicks", listPage: false},
-  conversions: {dbKey: "Conversions", dbGroupBy: "Conversions", listPage: false},
-  cost: {dbKey: "Cost", dbGroupBy: "Cost", listPage: false},
-  revenue: {dbKey: "Revenue", dbGroupBy: "Revenue", listPage: false},
-  impressions: {dbKey: "Impressions", dbGroupBy: "Impressions", listPage: false},
-  v1: {dbKey: "V1", dbGroupBy: "V1", listPage: false},
-  v2: {dbKey: "V2", dbGroupBy: "V2", listPage: false},
-  v3: {dbKey: "V3", dbGroupBy: "V3", listPage: false},
-  v4: {dbKey: "V4", dbGroupBy: "V4", listPage: false},
-  v5: {dbKey: "V5", dbGroupBy: "V5", listPage: false},
-  v6: {dbKey: "V6", dbGroupBy: "V6", listPage: false},
-  v7: {dbKey: "V7", dbGroupBy: "V7", listPage: false},
-  v8: {dbKey: "V8", dbGroupBy: "V8", listPage: false},
-  v9: {dbKey: "V9", dbGroupBy: "V9", listPage: false},
-  v10: {dbKey: "V10", dbGroupBy: "V10", listPage: false},
-  day: {dbKey: "day", dbGroupBy: "day", listPage: false},
-  tsWebsiteId: {dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false},
+  language: { dbKey: "Language", dbGroupBy: "Language", listPage: false },
+  model: { dbKey: "Model", dbGroupBy: "Model", listPage: false },
+  country: { dbKey: "Country", dbGroupBy: "Country", listPage: false },
+  city: { dbKey: "City", dbGroupBy: "City", listPage: false },
+  region: { dbKey: "Region", dbGroupBy: "Region", listPage: false },
+  isp: { dbKey: "ISP", dbGroupBy: "ISP", listPage: false },
+  mobileCarrier: { dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false },
+  domain: { dbKey: "Domain", dbGroupBy: "Domain", listPage: false },
+  deviceType: { dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false },
+  brand: { dbKey: "Brand", dbGroupBy: "Brand", listPage: false },
+  os: { dbKey: "OS", dbGroupBy: "OS", listPage: false },
+  osVersion: { dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false },
+  browser: { dbKey: "Browser", dbGroupBy: "Browser", listPage: false },
+  browserVersion: { dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false },
+  connectionType: { dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false },
+  timestamp: { dbKey: "Timestamp", dbGroupBy: "Timestamp", listPage: false },
+  visits: { dbKey: "Visits", dbGroupBy: "Visits", listPage: false },
+  clicks: { dbKey: "Clicks", dbGroupBy: "Clicks", listPage: false },
+  conversions: { dbKey: "Conversions", dbGroupBy: "Conversions", listPage: false },
+  cost: { dbKey: "Cost", dbGroupBy: "Cost", listPage: false },
+  revenue: { dbKey: "Revenue", dbGroupBy: "Revenue", listPage: false },
+  impressions: { dbKey: "Impressions", dbGroupBy: "Impressions", listPage: false },
+  v1: { dbKey: "V1", dbGroupBy: "V1", listPage: false },
+  v2: { dbKey: "V2", dbGroupBy: "V2", listPage: false },
+  v3: { dbKey: "V3", dbGroupBy: "V3", listPage: false },
+  v4: { dbKey: "V4", dbGroupBy: "V4", listPage: false },
+  v5: { dbKey: "V5", dbGroupBy: "V5", listPage: false },
+  v6: { dbKey: "V6", dbGroupBy: "V6", listPage: false },
+  v7: { dbKey: "V7", dbGroupBy: "V7", listPage: false },
+  v8: { dbKey: "V8", dbGroupBy: "V8", listPage: false },
+  v9: { dbKey: "V9", dbGroupBy: "V9", listPage: false },
+  v10: { dbKey: "V10", dbGroupBy: "V10", listPage: false },
+  day: { dbKey: "day", dbGroupBy: "day", listPage: false },
+  tsWebsiteId: { dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false },
 }
 
 export const sumShorts = {
@@ -335,34 +335,36 @@ export function csvextraConfig(groupBy) {
   return answer;
 }
 
-export function csvCloums(groupBy){
-    let answer;
+export function csvCloums(groupBy) {
+  let answer;
   switch (groupBy) {
     case 'campaign':
-      answer = ['campaignId','campaignName','campaignHash','trafficId','trafficName'];
-      
+      answer = ['campaignId', 'campaignName', 'campaignHash', 'trafficId', 'trafficName'];
+
       break;
     case 'flow':
-      answer = ['flowId','flowName','flowHash'];
-      
+      answer = ['flowId', 'flowName', 'flowHash'];
+
       break;
     case 'lander':
-      answer = ['landerId','landerName','landerHash'];
-      
-       
+      answer = ['landerId', 'landerName', 'landerHash'];
+
+
       break;
     case 'offer':
-      answer = ['offerId','offerName','offerHash','offerPayout'];
-      
-       
+      answer = ['offerId', 'offerName', 'offerHash', 'offerPayout'];
+
+
       break;
     case 'traffic':
-      answer = ['trafficId','trafficName','trafficHash'];
-      
+      answer = ['trafficId', 'trafficName', 'trafficHash'];
+
       break;
     case 'affiliate':
-      answer = ['affiliateId','affiliateName','affiliateHash'];
-    
+      answer = ['affiliateId', 'affiliateName', 'affiliateHash'];
+      break;
+    default:
+      answer=[groupBy];
       break;
   }
 
