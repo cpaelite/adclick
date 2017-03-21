@@ -346,6 +346,7 @@ app.get('/api/preferences', function (req, res) {
         "cpc": {"visible": false},
         "cpm": {"visible": false},
         "clickId": {"visible": false},
+        "tsWebsiteId": {"visible": false},
         "v1": {"visible": true},
         "v2": {"visible": true},
         "v3": {"visible": true},
