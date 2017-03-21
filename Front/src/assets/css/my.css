@@ -2814,9 +2814,13 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
   margin-bottom:50px;
 }
 .sign-up-success .btn-box .md-button {
-    margin-top:20px;
-  padding:2px 22px;
-    border-radius:2px;text-transform : capitalize;font-size:14px;
+  margin-top: 20px;
+  padding: 0 22px;
+  height: 36px;
+  line-height: 36px;
+  border-radius: 2px;
+  text-transform: capitalize;
+  font-size:14px;
 }
 .sign-up-success .sign-up-detail .i-box {
   font-size: 26px;
