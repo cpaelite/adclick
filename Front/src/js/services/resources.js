@@ -141,4 +141,10 @@ angular.module('app')
   .factory('Confirmation', ['$resource', function($resource) {
     return $resource('/user/resendconfirmation');
   }])
+  .factory('QrpayUrl', ['$resource', function($resource) {
+    return $resource('/api/qrpay/create');
+  }])
+  .factory('QrpayStatus', ['$resource', function($resource) {
+    return $resource('/api/qrpay/status');
+  }])
 ;

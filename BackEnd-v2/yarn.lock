@@ -20,6 +20,12 @@ ajv@^4.9.1:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
+alipay-ftof@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/alipay-ftof/-/alipay-ftof-0.0.2.tgz#5071d3ab1ea42b5707e05226f90b8174d2e53730"
+  dependencies:
+    request "^2.79.0"
+
 ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"

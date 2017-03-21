@@ -1,9 +1,9 @@
 (function() {
   'use strict';
 
-  angular.module('app').factory('ChangePlan', ['$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', 'Group', changePlan]);
+  angular.module('app').factory('ChangePlan', ['$rootScope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', 'Group', 'QrpayUrl', 'QrpayStatus', '$state', '$timeout', 'Permission', changePlan]);
 
-  function changePlan($rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo, Group) {
+  function changePlan($rootScope, $mdDialog, Profile, Billing, Plans, BillingInfo, Group, QrpayUrl, QrpayStatus, $state, $timeout, Permission) {
     return {
       showDialog: showDialog,
       hideDialog: hideDialog
@@ -100,14 +100,19 @@
             skipHide: true,
             clickOutsideToClose: false,
             controllerAs: 'ctrl',
-            controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', editChangePlanCtrl],
+            controller: ['$scope', '$mdDialog', 'Profile', 'Billing', 'Plans', 'BillingInfo', 'QrpayUrl', 'QrpayStatus', '$state', '$timeout', 'Permission', '$rootScope', editChangePlanCtrl],
             focusOnOpen: false,
             locals: {
               plan: plan,
               plans: $scope.item
             },
             bindToController: true,
-            templateUrl: 'tpl/edit-change-paln-dialog.html'
+            templateUrl: 'tpl/edit-change-paln-dialog.html',
+            escapeToClose: false
+          }).then(function(oData) {
+            if(oData.qrpayStatus) {
+              $mdDialog.hide();
+            }
           });
         };
 
@@ -149,9 +154,13 @@
         }
       }
 
-      function editChangePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo){
-        var self = this;
-        this.cancel = $mdDialog.cancel;
+      function editChangePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo, QrpayUrl, QrpayStatus, $state, $timeout, Permission, $rootScope){
+        var self = this, quitQrpayStatus = true;
+
+        this.cancel = function() {
+          quitQrpayStatus = false;
+          $mdDialog.cancel();
+        };
 
         BillingInfo.get(null,function(info){
           $scope.item = info.data;
@@ -159,6 +168,14 @@
 
         Profile.get(null,function(user){
           $scope.userItem = user.data;
+        });
+        $scope.planUrl = '';
+        QrpayUrl.save({planId: this.plan.id}, function(oData) {
+          if(oData.status == 1) {
+            $scope.planUrl = oData.data.url;
+            $scope.amount = oData.data.amount;
+            getQrpayStatus(oData.data.id);
+          }
         });
 
         $scope.id = this.plan.id;
@@ -176,6 +193,27 @@
           });
         };
         $scope.desc = this.plan.desc;
+
+        function getQrpayStatus(id) {
+          QrpayStatus.save({id: id}, function(oData) {
+            if(oData.status == 1 && oData.data.status) {
+              quitQrpayStatus = false;
+              Permission.get(null, function(res) {
+                if (res.status == 1) {
+                  $rootScope.permissions = res.data;
+                  $state.reload();
+                  $mdDialog.hide({
+                    qrpayStatus: true
+                  });
+                }
+              });
+            } else if((oData.status == 0 || !oData.data.status) && quitQrpayStatus){
+              $timeout(function() {
+                getQrpayStatus(id);
+              }, 3000);
+            }
+          });
+        }
       }
     }
 

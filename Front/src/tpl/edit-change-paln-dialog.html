@@ -44,14 +44,18 @@
                 </label>
               </div>
               <div class="alipay-code">
-                <img src="../assets/img/plan_0.jpg" ng-show="plans[0].id == id && payType == 0"/>
-                <img src="../assets/img/plan_1.jpg" ng-show="plans[1].id == id && payType == 0"/>
+                <div class="alipay-box" ng-show="payType == 0">
+                  <img src="../assets/img/plan_0.jpg"/>
+                  <qr type-number="8" correction-level="'H'" size="100" text="planUrl" image="true" ng-show="planUrl"></qr>
+                  <span class="amount" ng-show="planUrl">¥ {{amount}}</span>
+                </div>
+                <!-- <img src="../assets/img/plan_1.jpg" ng-show="plans[1].id == id && payType == 0"/>
                 <img src="../assets/img/plan_2.jpg" ng-show="plans[2].id == id && payType == 0"/>
-                <img src="../assets/img/plan_3.jpg" ng-show="plans[3].id == id && payType == 0"/>
+                <img src="../assets/img/plan_3.jpg" ng-show="plans[3].id == id && payType == 0"/> -->
               </div>
-              <p ng-show="payType == 0" style="color:#666;text-align: center;">Please contact the Skype: <b>live:support_44609</b><br> to open your account after payment</p>
+              <p ng-show="payType == 0" style="color: rgb(102, 102, 102); text-align: center;" aria-hidden="false" class="">Please contact the Skype: <b>live:support_44609</b><br> to open your account after payment</p>
               <div ng-show="payType == 1">
-                
+
               </div>
             </div>
           </div>

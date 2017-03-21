@@ -45,6 +45,7 @@ var route_noplan= require('./routes/router_noplan');
 import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
+import {qrpayRouter, qrpayCallbackRouter} from './routes/qrpay';
 
 import gatekeeper from './routes/gatekeeper'
 
@@ -99,8 +100,8 @@ app.get('/', function(req, res) {
 });
 
 
-app.use(paypal);
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon);
+app.use(paypal, qrpayCallbackRouter);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,billing, plan, gatekeeper,util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon, qrpayRouter);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
