@@ -12,7 +12,8 @@ import {
   nunberColumnForListPage,
   formatRows,
   formatTotals,
-  extraConfig
+  extraConfig,
+  csvextraConfig
 } from '../util/report'
 
 /**
@@ -118,7 +119,6 @@ async function fullFill({ rawRows, groupBy }) {
   let rawForeignRows = foreignRows.map(e => e.dataValues);
 
   let totalRows = rawRows.length;
-
   for (let i = 0; i < rawForeignRows.length; i++) {
     let rawForeignRow = rawForeignRows[i];
     for (let j = 0; j < totalRows; j++) {
@@ -135,6 +135,29 @@ async function fullFill({ rawRows, groupBy }) {
   }
   return rawRows;
 }
+
+async function csvfullFill({ rawRows, groupBy }) {
+  if (!mapping[groupBy].table) {
+    // don't belong to group by model, do nothing
+    return rawRows
+  }
+  let foreignConfig = csvextraConfig(groupBy);
+  let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
+  let foreignRows = await models[mapping[groupBy].table].findAll({
+    where: {
+      id: foreignKeys
+    },
+    attributes: foreignConfig.attributes
+  });
+  let rawForeignRows = foreignRows.map(e => e.dataValues);
+  rawRows = _.merge(rawRows, rawForeignRows, function (oldValue, newValue) {
+    if (oldValue[foreignConfig.foreignKey] == newValue.id) {
+      return _.assign(oldValue, newValue)
+    }
+  });
+  return rawRows;
+}
+
 
 async function normalReport(values) {
   let { userId, from, to, tz, groupBy, offset, limit, filter, order, status } = values;
@@ -206,7 +229,7 @@ async function normalReport(values) {
   }
   if (values.dataType && values.dataType == "csv") {
     for (let index = 0; index < csvFullfill.length; index++) {
-      rawRows = await fullFill({ rawRows, groupBy: csvFullfill[index].group })
+      rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group })
     }
   }
   rawRows = formatRows(rawRows)
