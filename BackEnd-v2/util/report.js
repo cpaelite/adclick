@@ -256,3 +256,81 @@ export function extraConfig(groupBy) {
 
   return answer;
 }
+
+
+export function csvextraConfig(groupBy) {
+  let answer;
+  switch (groupBy) {
+    case 'campaign':
+      answer = {
+        foreignKey: 'campaignId',
+        attributes: [
+          'id',
+          ['id', 'campaignId'],
+          ['name', 'campaignName'],
+          ['hash', 'campaignHash'],
+          ['trafficSourceId', 'trafficId'],
+          ['trafficSourceName', 'trafficName'],
+        ]
+      }
+      break;
+    case 'flow':
+      answer = {
+        foreignKey: 'flowId',
+        attributes: [
+          'id',
+          ['id', 'flowId'],
+          ['name', 'flowName'],
+          ['hash', 'flowHash'],
+        ]
+      }
+      break;
+    case 'lander':
+      answer = {
+        foreignKey: 'landerId',
+        attributes: [
+          'id',
+          ['id', 'landerId'],
+          ['name', 'landerName'],
+          ['hash', 'landerHash']
+        ]
+      }
+      break;
+    case 'offer':
+      answer = {
+        foreignKey: 'offerId',
+        attributes: [
+          'id',
+          ['id', 'offerId'],
+          ['name', 'offerName'],
+          ['hash', 'offerHash'],
+          ['payoutValue', 'offerPayout'],
+        ]
+      }
+      break;
+    case 'traffic':
+      answer = {
+        foreignKey: 'trafficId',
+        attributes: [
+          'id',
+          ['id', 'trafficId'],
+          ['name', 'trafficName'],
+          ['hash', 'trafficHash']
+        ]
+      }
+      break;
+    case 'affiliate':
+      answer = {
+        foreignKey: 'affiliateId',
+        attributes: [
+          'id',
+          ['id', 'affiliateId'],
+          ['name', 'affiliateName'],
+          ['hash', 'affiliateHash'],
+        ]
+      }
+      break;
+  }
+
+  return answer;
+}
