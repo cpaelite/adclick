@@ -30,21 +30,31 @@ router.get('/api/report', async function (req, res, next) {
   try {
     let result;
     result = await campaignReport(req.query);
-    if (req.query.dataType == "csv") {
-      let fields = Object.keys(_.omit(result.rows[0], ['id']));//req.query.columns ? req.query.columns.split(',') : [];
-      let csvData = json2csv({ data: result.rows, fields: fields });
-      res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
-      res.setHeader('Expires', '0');
-      res.setHeader('Cache-Control', 'must-revalidate');
-      return res.send(csvData);
-    }
     return res.json({ status: 1, message: 'success', data: result });
   } catch (e) {
     console.error(e)
     return next(e);
   }
 });
+
+router.get('/api/export', async function (req, res, next) {
+  req.query.userId = req.parent.id;
+  try {
+    let result;
+    req.query.dataType = "csv";
+    result = await campaignReport(req.query);
+    let fields = Object.keys(_.omit(result.rows[0], ['id', 'UserID']));//req.query.columns ? req.query.columns.split(',') : [];
+    let csvData = json2csv({ data: result.rows, fields: fields });
+    res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
+    res.setHeader('Expires', '0');
+    res.setHeader('Cache-Control', 'must-revalidate');
+    return res.send(csvData);
+  } catch (e) {
+    console.error(e)
+    return next(e);
+  }
+})
 
 async function campaignReport(value) {
   let { groupBy, limit, page } = value;
@@ -145,7 +155,6 @@ async function normalReport(values) {
     } else if (mapping[attr]) {
       sqlWhere[mapping[attr].dbKey] = values[attr];
       let mapKey = {}
-      mapKey[mapping[attr].dbKey] = values[attr];
       mapKey['group'] = mapping[attr].group;
       csvFullfill.push(mapKey)
     }
