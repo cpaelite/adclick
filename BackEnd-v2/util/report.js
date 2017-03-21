@@ -334,3 +334,37 @@ export function csvextraConfig(groupBy) {
 
   return answer;
 }
+
+export function csvCloums(groupBy){
+    let answer;
+  switch (groupBy) {
+    case 'campaign':
+      answer = ['campaignId','campaignName','campaignHash','trafficId','trafficName'];
+      
+      break;
+    case 'flow':
+      answer = ['flowId','flowName','flowHash'];
+      
+      break;
+    case 'lander':
+      answer = ['landerId','landerName','landerHash'];
+      
+       
+      break;
+    case 'offer':
+      answer = ['offerId','offerName','offerHash','offerPayout'];
+      
+       
+      break;
+    case 'traffic':
+      answer = ['trafficId','trafficName','trafficHash'];
+      
+      break;
+    case 'affiliate':
+      answer = ['affiliateId','affiliateName','affiliateHash'];
+    
+      break;
+  }
+
+  return answer;
+}

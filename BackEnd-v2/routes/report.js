@@ -13,7 +13,8 @@ import {
   formatRows,
   formatTotals,
   extraConfig,
-  csvextraConfig
+  csvextraConfig,
+  csvCloums
 } from '../util/report'
 
 /**
@@ -42,10 +43,29 @@ router.get('/api/export', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
+    let fieldsCol = [];
     req.query.dataType = "csv";
     result = await campaignReport(req.query);
-    let fields = Object.keys(_.omit(result.rows[0], ['id', 'UserID']));//req.query.columns ? req.query.columns.split(',') : [];
-    let csvData = json2csv({ data: result.rows, fields: fields });
+    let rawRows = result.rows;
+    let csvFullfill = [];//缓存csv 要fullfill的关系数据
+    let attrs = Object.keys(req.query);
+    _.forEach(attrs, (attr) => {
+      if (mapping[attr]) {
+        let mapKey = {}
+        mapKey['group'] = mapping[attr].group;
+        csvFullfill.push(mapKey)
+      }
+    });
+
+    for (let index = 0; index < csvFullfill.length; index++) {
+      rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group });
+      for (let j = 0; j < csvCloums(csvFullfill[index].group).length; j++) {
+        fieldsCol.push(csvCloums(csvFullfill[index].group)[j]);
+      }
+    }
+    let queryClo = req.query.columns ? req.query.columns.split(',') : [];
+    let fields = _.union(fieldsCol, queryClo);
+    let csvData = json2csv({ data: rawRows, fields: fields });
     res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
     res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
     res.setHeader('Expires', '0');
@@ -120,19 +140,19 @@ async function fullFill({ rawRows, groupBy }) {
 
   let totalRows = rawRows.length;
   //for (let i = 0; i < rawForeignRows.length; i++) {
-    //let rawForeignRow = rawForeignRows[i];
-     let rawForeignRow = rawForeignRows[0];
-    for (let j = 0; j < totalRows; j++) {
-      let rawRow = rawRows[j];
-      if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
-        let keys = Object.keys(rawForeignRow);
-        keys.forEach(key => {
-          if (key === 'id') return;
-          rawRow[key] = rawForeignRow[key]
-        })
-        break;
-      }
+  //let rawForeignRow = rawForeignRows[i];
+  let rawForeignRow = rawForeignRows[0];
+  for (let j = 0; j < totalRows; j++) {
+    let rawRow = rawRows[j];
+    if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
+      let keys = Object.keys(rawForeignRow);
+      keys.forEach(key => {
+        if (key === 'id') return;
+        rawRow[key] = rawForeignRow[key]
+      })
+      break;
     }
+  }
   //}
   return rawRows;
 }
@@ -151,10 +171,10 @@ async function csvfullFill({ rawRows, groupBy }) {
     attributes: foreignConfig.attributes
   });
   let rawForeignRows = foreignRows.map(e => e.dataValues);
-  let results=[];
-  for(let index=0;index<rawRows.length;index++){
-     results.push(_.assign(rawRows[index], rawForeignRows[0]))
-  } 
+  let results = [];
+  for (let index = 0; index < rawRows.length; index++) {
+    results.push(_.assign(rawRows[index], rawForeignRows[0]))
+  }
   return results;
 }
 
@@ -165,7 +185,7 @@ async function normalReport(values) {
   let sqlWhere = {};
   sqlWhere.UserID = userId
   sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
-  let csvFullfill = [];//缓存csv 要fullfill的关系数据
+
   let attrs = Object.keys(values);
   _.forEach(attrs, (attr) => {
     if (attr === 'day') {
@@ -177,9 +197,7 @@ async function normalReport(values) {
       );
     } else if (mapping[attr]) {
       sqlWhere[mapping[attr].dbKey] = values[attr];
-      let mapKey = {}
-      mapKey['group'] = mapping[attr].group;
-      csvFullfill.push(mapKey)
+
     }
   })
 
@@ -227,11 +245,7 @@ async function normalReport(values) {
   if (groupBy === "campaign") {
     rawRows = await fullFill({ rawRows, groupBy: "traffic" })
   }
-  if (values.dataType && values.dataType == "csv") {
-    for (let index = 0; index < csvFullfill.length; index++) {
-      rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group })
-    }
-  }
+
   rawRows = formatRows(rawRows)
   let totalRows = rawRows.length;
   let totals = {
