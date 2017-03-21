@@ -659,68 +659,25 @@ app.post('/api/names', function (req, res) {
  */
 app.get('/api/report', function (req, res) {
   var groupBy = req.query.groupBy;
-  var result = {
-    "status": 1,
-    "messages": "",
-    data: {
-      "totalRows": 3700,
-      "totals": {
-        "ap": 0.0,
-        "bids": 0,
-        "clicks": 4368,
-        "conversions": 1,
-        "cost": 0.0,
-        "cpv": 0.0,
-        "cr": 0.022894,
-        "ctr": 122.28,
-        "cv": 0.027996,
-        "epc": 0.0,
-        "epv": 0.0,
-        "errors": 0,
-        "ictr": 0.0,
-        "impressions": 0,
-        "profit": 0.0,
-        "revenue": 0.0,
-        "roi": 0.0,
-        "visits": 3572
-      },
-      rows: [
-        {
-          [groupBy + "Name"]: groupBy + " 1",
-          [groupBy + "Id"]: "1",
-          [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
-          [groupBy]: groupBy + " 1",
-          trafficId: 1,
+  var result;
+  if (req.query.dataType == 'csv') {
+    result = '"popads.com - Thailand - TH 4877008 C726 DTAC LP Cool Clip","popads.com",0,0,0,0,0,0,0,0,0,0,0,0,0,0,,';
+    res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment;filename="NewBidder-123.csv"`);
+    res.setHeader('Expires', '0');
+    res.setHeader('Cache-Control', 'must-revalidate');
+  } else {
+    result = {
+      "status": 1,
+      "messages": "",
+      data: {
+        "totalRows": 3700,
+        "totals": {
           "ap": 0.0,
           "bids": 0,
           "clicks": 4368,
-          "conversions": 1000,
-          "cost": 0.5,
-          "cpv": 0.0,
-          "cr": 0.022894,
-          "ctr": 122.28,
-          "cv": 0.027996,
-          "epc": 0.0,
-          "epv": 0.0,
-          "errors": 0,
-          "ictr": 0.0,
-          "impressions": 13430,
-          "profit": 1.1,
-          "revenue": 3.5,
-          "roi": 0.0,
-          "visits": 3072,
-          "date": "2017-02-20"
-        }, {
-          [groupBy + "Name"]: groupBy + " 2",
-          [groupBy + "Id"]: "2",
-          [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
-          [groupBy]: groupBy + " 2",
-          trafficId: 1,
-          "ap": 0.0,
-          "bids": 0,
-          "clicks": 4868,
-          "conversions": 2000,
-          "cost": 0.7,
+          "conversions": 1,
+          "cost": 0.0,
           "cpv": 0.0,
           "cr": 0.022894,
           "ctr": 122.28,
@@ -730,40 +687,92 @@ app.get('/api/report', function (req, res) {
           "errors": 0,
           "ictr": 0.0,
           "impressions": 0,
-          "profit": 0.6,
-          "revenue": 2.6,
+          "profit": 0.0,
+          "revenue": 0.0,
           "roi": 0.0,
-          "visits": 1572,
-          "date": "2017-02-21"
-        }, {
-          [groupBy + "Name"]: groupBy + " 3",
-          [groupBy + "Id"]: "3",
-          [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
-          [groupBy]: groupBy + " 3",
-          trafficId: 1,
-          "ap": 0.0,
-          "bids": 0,
-          "clicks": 5135,
-          "conversions": 3000,
-          "cost": 0.9,
-          "cpv": 0.0,
-          "cr": 0.022894,
-          "ctr": 122.28,
-          "cv": 0.027996,
-          "epc": 0.0,
-          "epv": 0.0,
-          "errors": 0,
-          "ictr": 0.0,
-          "impressions": 0,
-          "profit": 3.2,
-          "revenue": 6.1,
-          "roi": 0.0,
-          "visits": 5572,
-          "date": "2017-02-22"
-        }
-      ]
-    }
-  };
+          "visits": 3572
+        },
+        rows: [
+          {
+            [groupBy + "Name"]: groupBy + " 1",
+            [groupBy + "Id"]: "1",
+            [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
+            [groupBy]: groupBy + " 1",
+            trafficId: 1,
+            "ap": 0.0,
+            "bids": 0,
+            "clicks": 4368,
+            "conversions": 1000,
+            "cost": 0.5,
+            "cpv": 0.0,
+            "cr": 0.022894,
+            "ctr": 122.28,
+            "cv": 0.027996,
+            "epc": 0.0,
+            "epv": 0.0,
+            "errors": 0,
+            "ictr": 0.0,
+            "impressions": 13430,
+            "profit": 1.1,
+            "revenue": 3.5,
+            "roi": 0.0,
+            "visits": 3072,
+            "date": "2017-02-20"
+          }, {
+            [groupBy + "Name"]: groupBy + " 2",
+            [groupBy + "Id"]: "2",
+            [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
+            [groupBy]: groupBy + " 2",
+            trafficId: 1,
+            "ap": 0.0,
+            "bids": 0,
+            "clicks": 4868,
+            "conversions": 2000,
+            "cost": 0.7,
+            "cpv": 0.0,
+            "cr": 0.022894,
+            "ctr": 122.28,
+            "cv": 0.027996,
+            "epc": 0.0,
+            "epv": 0.0,
+            "errors": 0,
+            "ictr": 0.0,
+            "impressions": 0,
+            "profit": 0.6,
+            "revenue": 2.6,
+            "roi": 0.0,
+            "visits": 1572,
+            "date": "2017-02-21"
+          }, {
+            [groupBy + "Name"]: groupBy + " 3",
+            [groupBy + "Id"]: "3",
+            [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
+            [groupBy]: groupBy + " 3",
+            trafficId: 1,
+            "ap": 0.0,
+            "bids": 0,
+            "clicks": 5135,
+            "conversions": 3000,
+            "cost": 0.9,
+            "cpv": 0.0,
+            "cr": 0.022894,
+            "ctr": 122.28,
+            "cv": 0.027996,
+            "epc": 0.0,
+            "epv": 0.0,
+            "errors": 0,
+            "ictr": 0.0,
+            "impressions": 0,
+            "profit": 3.2,
+            "revenue": 6.1,
+            "roi": 0.0,
+            "visits": 5572,
+            "date": "2017-02-22"
+          }
+        ]
+      }
+    };
+  }
   res.send(result);
 });
 

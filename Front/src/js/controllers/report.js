@@ -222,11 +222,7 @@
       if (dataType) {
         params.dataType = dataType;
         params.columns = $scope.downloadReportCols;
-        Report.download(params, function (report) {
-          FileDownload.downloadFile(report, "application/octet-stream", "download.csv");
-          return;
-        });
-
+        FileDownload.download(params);
       } else {
         $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
       }
