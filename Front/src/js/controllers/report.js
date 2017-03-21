@@ -6,47 +6,13 @@
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
-      '$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant', 'Setup', '$timeout',
+      '$scope', '$rootScope', '$mdDialog', 'Lander', 'urlParameter', 'Tag', 'AppConstant', 'Setup', '$timeout', 'UrlValidate',
       editLanderCtrl
     ])
     .controller('editOfferCtrl', [
-      '$scope', '$mdDialog', '$rootScope', '$q', '$timeout', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache',
+      '$scope', '$mdDialog', '$rootScope', '$q', '$timeout', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache', 'UrlValidate',
       editOfferCtrl
     ]);
-
-  angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
-    return {
-      link: function (scope, element) {
-        $rootScope.$on('add', function (e, val, attriName) {
-          var domElement = element[0];
-
-          if (document.selection) {
-            domElement.focus();
-            var sel = document.selection.createRange();
-            sel.text = val;
-            domElement.focus();
-          } else if (domElement.selectionStart || domElement.selectionStart === 0) {
-            var startPos = domElement.selectionStart;
-            var endPos = domElement.selectionEnd;
-            var scrollTop = domElement.scrollTop;
-            if (domElement.value.indexOf(val) == -1) {
-              //domElement.value = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
-              scope.item[attriName] = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
-              domElement.selectionStart = startPos + val.length;
-              domElement.selectionEnd = startPos + val.length;
-              domElement.scrollTop = scrollTop;
-            }
-            domElement.focus();
-          } else {
-            //domElement.value += val;
-            scope.item[attriName] += val;
-            domElement.focus();
-          }
-
-        });
-      }
-    }
-  }]);
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource, FileDownload) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
@@ -385,7 +351,10 @@
         $scope.menuStatus.isopen = true;
       }
     };
-    $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
+    //$scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
+    $scope.canEdit = function (row) {
+      return ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0 && row.treeLevel == 1;
+    };
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
@@ -400,6 +369,9 @@
 
     $scope.menuOpen = function (mdMenu, row) {
       mdMenu.open();
+      if ($scope.treeLevel > 1)
+        return;
+
       var id = 0;
       if (perfType == "campaign") {
         id = row.data.trafficId;
@@ -494,7 +466,7 @@
       var controller;
       // 不同功能的编辑请求做不同的操作
       if (perfType == 'campaign') {
-        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', 'Tag', 'AppConstant', 'reportCache', editCampaignCtrl];
+        controller = ['$scope', '$rootScope', '$mdDialog', '$timeout', '$q', 'reportCache', 'Campaign', 'Flow', 'TrafficSource', 'urlParameter', 'Tag', 'AppConstant', 'reportCache', 'UrlValidate', editCampaignCtrl];
       } else if (perfType == 'flow') {
         var params = {};
         if (item) {
@@ -509,7 +481,7 @@
       } else if (perfType == 'offer') {
         controller = 'editOfferCtrl';
       } else if (perfType == 'traffic') {
-        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', 'AppConstant', editTrafficSourceCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', 'AppConstant', 'UrlValidate', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
         controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
@@ -624,7 +596,7 @@
     }
   }
 
-  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant, reportCache) {
+  function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant, reportCache, UrlValidate) {
     $scope.pathRoute = 'tpl/flow-edit.html'
     var prefixCountry = '', prefixTraffic = '';
     $scope.prefix = '';
@@ -1071,18 +1043,7 @@
     }
 
     $scope.validateUrl = function () {
-      var isValid = true;
-      if (!$scope.item.targetUrl) {
-        return;
-      }
-      if ($scope.item.targetUrl.indexOf('http://') == -1 && $scope.item.targetUrl.indexOf('https://') == -1) {
-        $scope.item.targetUrl = "http://" + $scope.item.targetUrl;
-      }
-      var strRegex = AppConstant.URLREG; // '^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
-      var re=new RegExp(strRegex, 'i');
-      if (!re.test($scope.item.targetUrl)) {
-        isValid = false;
-      }
+      var isValid = UrlValidate.validate($scope.item.targetUrl);
       $scope.editForm.targetUrl.$setValidity('urlformat', isValid);
     };
 
@@ -1224,8 +1185,7 @@
 
   }
 
-  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant, Setup, $timeout) {
-    console.log('this.country', this.country);
+  function editLanderCtrl($scope, $rootScope, $mdDialog, Lander, urlParameter, Tag, AppConstant, Setup, $timeout, UrlValidate) {
     $scope.prefix = this.country ? this.country.display + ' - ' : 'Global - ';
     initTags($scope, Tag, 2);
     $scope.checkNameParams = {
@@ -1379,24 +1339,13 @@
     };
 
     $scope.validateUrl = function () {
-      var isValid = true;
-      if (!$scope.item.url) {
-        return;
-      }
-      if ($scope.item.url.indexOf('http://') == -1 && $scope.item.url.indexOf('https://') == -1) {
-        $scope.item.url = "http://" + $scope.item.url;
-      }
-      var strRegex = AppConstant.URLREG;
-      var re=new RegExp(strRegex, 'i');
-      if (!re.test($scope.item.url)) {
-        isValid = false;
-      }
+      var isValid = UrlValidate.validate($scope.item.url);
       $scope.editForm.url.$setValidity('urlformat', isValid);
     };
 
   }
 
-  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, $timeout, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant, reportCache) {
+  function editOfferCtrl($scope, $mdDialog, $rootScope, $q, $timeout, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant, reportCache, UrlValidate) {
     var prefixCountry = '', prefixAffiliate = '';
     $scope.prefix = '';
     initTags($scope, Tag, 3);
@@ -1590,18 +1539,7 @@
     this.cancel = $mdDialog.cancel;
 
     $scope.validateUrl = function () {
-      var isValid = true;
-      if (!$scope.item.url) {
-        return;
-      }
-      if ($scope.item.url.indexOf('http://') == -1 && $scope.item.url.indexOf('https://') == -1) {
-        $scope.item.url = "http://" + $scope.item.url;
-      }
-      var strRegex = AppConstant.URLREG;
-      var re=new RegExp(strRegex, 'i');
-      if (!re.test($scope.item.url)) {
-        isValid = false;
-      }
+      var isValid = UrlValidate.validate($scope.item.url);
       $scope.editForm.url.$setValidity('urlformat', isValid);
     };
 
@@ -1675,7 +1613,7 @@
     };
   }
 
-  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant) {
+  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant, UrlValidate) {
     var fromCampaign = $scope.$parent.$stateParams.frcpn == '1';
     var fromFlow = $scope.$parent.$stateParams.frcpn == '2';
 
@@ -1813,18 +1751,7 @@
     };
 
     $scope.validateUrl = function () {
-      var isValid = true;
-      if (!$scope.item.postbackUrl) {
-        return;
-      }
-      if ($scope.item.postbackUrl.indexOf('http://') == -1 && $scope.item.postbackUrl.indexOf('https://') == -1) {
-        $scope.item.postbackUrl = "http://" + $scope.item.postbackUrl;
-      }
-      var strRegex = AppConstant.URLREG;//'^(http://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*([a-zA-Z0-9\&%_\./-~-]*)?$';
-      var re=new RegExp(strRegex, 'i');
-      if (!re.test($scope.item.postbackUrl)) {
-        isValid = false;
-      }
+      var isValid = UrlValidate.validate($scope.item.postbackUrl);
       $scope.editForm.postbackUrl.$setValidity('urlformat', isValid);
     };
 
