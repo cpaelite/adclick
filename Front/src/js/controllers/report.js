@@ -93,6 +93,8 @@
 
     // columns
     var cols = angular.copy(columnDefinition[perfType].concat(columnDefinition['common']));
+    // 导出报表列
+    $scope.downloadColumns = angular.copy(cols);
     // dirty fix tree view name column
     cols[0].role = 'name';
     cols[0].origKey = cols[0].key;
@@ -102,15 +104,6 @@
       cols[0].name = 'Name';
     }
     $scope.columns = cols;
-
-    // 处理下载报表的列
-    var downloadCols = '';
-    cols.forEach(function (col) {
-      if ($scope.preferences.reportViewColumns[col.key].visible) {
-        downloadCols += col.key + ',';
-      }
-    });
-    $scope.downloadReportCols = downloadCols;
 
     $scope.filterColumns = function(item) {
       return item.role != 'name';
@@ -223,6 +216,15 @@
           $scope.activeStatus = newVal.entityType;
           pageStatus.status = newVal.entityType;
         }
+
+        // 处理下载报表的列
+        var downloadCols = '';
+        $scope.downloadColumns.forEach(function (col) {
+          if ($scope.reportViewColumns[col.key].visible) {
+            downloadCols += col.key + ',';
+          }
+        });
+        $scope.downloadReportCols = downloadCols;
 
         unwatch();
         unwatch = null;
