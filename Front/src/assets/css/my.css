@@ -2093,10 +2093,15 @@ input[type="checkbox"].th-checkbox{
 .form-content{
     max-width:auto;
 }
+.editRuleForm .label-name{
+    display: block;
+    float: none;
+}
 .label-name{
     font-weight:600;
     display: inline-block;
-    float: left;padding-top:17px;
+    float: left;
+    padding-top:17px;
 }
 .label-radio{
     font-weight:600;
@@ -2261,6 +2266,7 @@ md-content.cs-main-content{
 .direct-content md-autocomplete{
     height: 32px;
     float: left;
+    width: 90%;
 }
 .direct-content md-icon{
     width: 20px;
@@ -2311,7 +2317,7 @@ md-select:not([disabled]):focus .md-select-value{
 .custom-input
 {
     background: rgba(45, 168, 249, 0.18);
-    font-size: 75%;
+    font-size: 14px;
     /*padding-left: 10px;*/
     height: 30px;
     line-height: 30px;
@@ -2389,6 +2395,9 @@ md-select:not([disabled]):focus .md-select-value{
     max-height: 400px;
     overflow: auto;
 }
+.cs-conditions .cs-conditions-button .btn-default.delete-btn:active{
+    color: #fff !important;
+}
 .cs-conditions-content li{
     margin:15px 0;
 }
@@ -2407,7 +2416,7 @@ md-select:not([disabled]):focus .md-select-value{
     margin-right: 12px;
     border: none;
     font-weight:bold;
-    font-size:12px;
+    font-size:14px;
     background: #a8afc1!important;
 }
 .btn-group.is-btn.flow-condition label.active {
@@ -2420,6 +2429,7 @@ md-select:not([disabled]):focus .md-select-value{
 .btn-group.is-btn.flow-condition label:last-child,
 .btn-default.delete-btn:hover{
     background: #8494A5;border: 1px solid #8494A5;color: #fff !important;
+    font-size:14px;
 }
 .btn-group.is-btn label:last-child,
 .btn-default.delete-btn:hover{
@@ -2468,6 +2478,9 @@ md-select:not([disabled]):focus .md-select-value{
     box-shadow:0 1px 1px 0 rgba(0, 0, 0, 0.1),
     0 1px 1px 0 rgba(0, 0, 0, 0.1),
     0 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+.cs-select-content .options-list md-checkbox .md-container{
+    top: -5px;
 }
 .cs-l2select-l1panel,
 .cs-l2select-l2panel{
@@ -2531,7 +2544,7 @@ md-select:not([disabled]):focus .md-select-value{
     height: 45px;
     border-radius: 4px;*/
 }
-.md-chips .md-chip-input-container md-autocomplete input{
+.md-chips .md-chip-input-container md-autocomplete input[type="search"]{
     padding: 0;
 }
 .md-chips md-chip{
