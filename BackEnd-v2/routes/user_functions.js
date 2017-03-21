@@ -3,10 +3,8 @@ const moment = require('moment');
 var log4js = require('log4js');
 var log = log4js.getLogger('userFunctions');
 
-export const logToUserFunctions= async function (paymentLogId) {
-    let connection;
+export const logToUserFunctions= async function (paymentLogId,connection) {
     try {
-        connection = await common.getConnection();
         let planSlice = await common.query("select log.`userId`,plan.`domainLimit`,plan.`userLimit`,plan.`tsReportLimit`,plan.`retentionLimit` from UserPaymentLog log inner join TemplatePlan plan on log.`goodsId`=plan.`id` where log.`id`=?", [paymentLogId], connection);
         if (planSlice.length == 0) {
             throw new Error("paymentLogId error")
@@ -16,11 +14,7 @@ export const logToUserFunctions= async function (paymentLogId) {
     } catch (e) {
         log.error("[user_functions.js][logToUserFunctions][error]:", JSON.stringify(e));
         throw e;
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
+    }  
     return true;
 }
 
