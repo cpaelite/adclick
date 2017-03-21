@@ -6,24 +6,27 @@ export const mapping = {
     dbGroupBy: "CampaignID",
     listPage: true,
     table: "TrackingCampaign",
-    dbFilter: "CampaignName"
+    dbFilter: "CampaignName",
+    group:"campaign"
   },
-  flow: {dbKey: "FlowID", dbGroupBy: "FlowID", listPage: true, table: "Flow", dbFilter: "FlowName"},
-  lander: {dbKey: "LanderID", dbGroupBy: "LanderID", listPage: true, table: "Lander", dbFilter: "LanderName"},
-  offer: {dbKey: "OfferID", dbGroupBy: "OfferID", listPage: true, table: "Offer", dbFilter: "OfferName"},
+  flow: {dbKey: "FlowID", dbGroupBy: "FlowID", listPage: true, table: "Flow", dbFilter: "FlowName",group:"flow"},
+  lander: {dbKey: "LanderID", dbGroupBy: "LanderID", listPage: true, table: "Lander", dbFilter: "LanderName",group:"lander"},
+  offer: {dbKey: "OfferID", dbGroupBy: "OfferID", listPage: true, table: "Offer", dbFilter: "OfferName",group:"offer"},
   affiliate: {
     dbKey: "AffiliateNetworkID",
     dbGroupBy: "AffiliateNetworkID",
     listPage: true,
     table: "AffiliateNetwork",
-    dbFilter: "AffiliateNetworkName"
+    dbFilter: "AffiliateNetworkName",
+    group:"affiliate"
   },
   traffic: {
     dbKey: "TrafficSourceID",
     dbGroupBy: "TrafficSourceID",
     listPage: true,
     table: "TrafficSource",
-    dbFilter: "TrafficSourceName"
+    dbFilter: "TrafficSourceName",
+    group:"traffic"
   },
   language: {dbKey: "Language", dbGroupBy: "Language", listPage: false},
   model: {dbKey: "Model", dbGroupBy: "Model", listPage: false},

@@ -31,7 +31,7 @@ router.get('/api/report', async function (req, res, next) {
     let result;
     result = await campaignReport(req.query);
     if (req.query.dataType == "csv") {
-      let fields = req.query.columns ? req.query.columns.split(',') : [];
+      let fields = Object.keys(_.omit(result.rows[0], ['id']));//req.query.columns ? req.query.columns.split(',') : [];
       let csvData = json2csv({ data: result.rows, fields: fields });
       res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
       res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
@@ -132,7 +132,7 @@ async function normalReport(values) {
   let sqlWhere = {};
   sqlWhere.UserID = userId
   sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
-
+  let csvFullfill = [];//缓存csv 要fullfill的关系数据
   let attrs = Object.keys(values);
   _.forEach(attrs, (attr) => {
     if (attr === 'day') {
@@ -144,6 +144,10 @@ async function normalReport(values) {
       );
     } else if (mapping[attr]) {
       sqlWhere[mapping[attr].dbKey] = values[attr];
+      let mapKey = {}
+      mapKey[mapping[attr].dbKey] = values[attr];
+      mapKey['group'] = mapping[attr].group;
+      csvFullfill.push(mapKey)
     }
   })
 
@@ -190,6 +194,11 @@ async function normalReport(values) {
   rawRows = await fullFill({ rawRows, groupBy })
   if (groupBy === "campaign") {
     rawRows = await fullFill({ rawRows, groupBy: "traffic" })
+  }
+  if (values.dataType && values.dataType == "csv") {
+    for (let index = 0; index < csvFullfill.length; index++) {
+      rawRows = await fullFill({ rawRows, groupBy: csvFullfill[index].group })
+    }
   }
   rawRows = formatRows(rawRows)
   let totalRows = rawRows.length;
