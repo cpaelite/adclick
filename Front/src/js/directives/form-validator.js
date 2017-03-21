@@ -85,3 +85,52 @@ angular.module('app')
     }
   };
 }]);
+
+angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
+  return {
+    link: function (scope, element) {
+      $rootScope.$on('add', function (e, val, attriName) {
+        var domElement = element[0];
+        var url;
+        if (domElement.selectionStart || domElement.selectionStart === 0) {
+          var startPos = domElement.selectionStart;
+          var endPos = domElement.selectionEnd;
+          var scrollTop = domElement.scrollTop;
+          if (domElement.value.indexOf(val) == -1) {
+            //scope.item[attriName] = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+            url = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+            domElement.selectionStart = startPos + val.length;
+            domElement.selectionEnd = startPos + val.length;
+            domElement.scrollTop = scrollTop;
+          }
+          domElement.focus();
+        } else {
+          //scope.item[attriName] += val;
+          url += val;
+          domElement.focus();
+        }
+        if (url && url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
+          url = "http://" + url;
+        }
+        scope.item[attriName] = url;
+      });
+    }
+  }
+}]);
+
+angular.module('app').factory('UrlValidate', ['AppConstant', function(AppConstant) {
+  return {
+    validate: function(url) {
+      var isValid = true;
+      if (!url) {
+        return isValid;
+      }
+      var strRegex = AppConstant.URLREG;
+      var re=new RegExp(strRegex, 'i');
+      if (!re.test(url)) {
+        isValid = false;
+      }
+      return isValid;
+    }
+  }
+}])
