@@ -44,8 +44,7 @@
     "angular-awesome-slider": "^2.4.4",
     "angular-momentjs": "^0.2.2",
     "angular-permission": "^5.2.1",
-    "angular-qr": "latest",
-    "qrcode.js": "qrcode#^1.0.2"
+    "angular-qr": "0.2.0"
   },
   "resolutions": {
     "angular": "^1.4.0"

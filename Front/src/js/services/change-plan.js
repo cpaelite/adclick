@@ -155,8 +155,12 @@
       }
 
       function editChangePlanCtrl($scope, $mdDialog, Profile, Billing, Plans, BillingInfo, QrpayUrl, QrpayStatus, $state, $timeout, Permission, $rootScope){
-        var self = this;
-        this.cancel = $mdDialog.cancel;
+        var self = this, quitQrpayStatus = true;
+
+        this.cancel = function() {
+          quitQrpayStatus = false;
+          $mdDialog.cancel();
+        };
 
         BillingInfo.get(null,function(info){
           $scope.item = info.data;
@@ -192,6 +196,7 @@
         function getQrpayStatus(id) {
           QrpayStatus.save({id: id}, function(oData) {
             if(oData.status == 1 && oData.data.status) {
+              quitQrpayStatus = false;
               Permission.get(null, function(res) {
                 if (res.status == 1) {
                   $rootScope.permissions = res.data;
@@ -201,7 +206,7 @@
                   });
                 }
               });
-            } else if(oData.status == 0 || !oData.data.status){
+            } else if((oData.status == 0 || !oData.data.status) && quitQrpayStatus){
               $timeout(function() {
                 getQrpayStatus(id);
               }, 3000);
