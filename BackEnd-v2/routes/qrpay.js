@@ -132,7 +132,7 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
       upl = await UPL.create({
         userId: qrpay.userId,
         paymentMethod: upm.id,
-        amount: qrpay.amount,
+        amount: parseInt(qrpay.amount / 6.9),
         tax: 0,
         goodsType: qrpay.goodsType,
         goodsId: qrpay.goodsId,
