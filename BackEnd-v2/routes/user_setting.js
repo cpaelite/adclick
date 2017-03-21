@@ -6,7 +6,6 @@ var md5 = require('md5');
 var _ = require('lodash');
 var dns = require("dns");
 var setting = require('../config/setting');
-var _ = require('lodash');
 var emailCtrl = require('../util/email');
 var uuidV4 = require('uuid/v4');
 var moment = require('moment');

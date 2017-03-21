@@ -13,6 +13,7 @@ const {
   UserBilling: UB,
   UserPaymentLog: UPL,
   UserPaymentMethod: UPM,
+  User
 } = models;
 
 qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
@@ -109,6 +110,10 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
 
       qrpay.status = 3;
       qrpay.save({transaction});
+
+      let user = await User.findById(qrpay.userId);
+      user.status = 1;
+      await user.save({ transaction })
 
       let old_ub = await UB.findOne({
         where: {
