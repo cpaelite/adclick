@@ -54,6 +54,14 @@
     </div>
   </div>
   <div class="col-sm-6 col-md-8 col-lg-9 cs-flow-content">
+
+    <div class="cs-save-errors" ng-show="showErrors">
+      <span class="cs-hide-errors" ng-click="hideErrors()"><i class="icon-remove"></i></span>
+      <ul>
+        <li ng-repeat="err in saveErrors track by $index">{{err}}</li>
+      </ul>
+    </div>
+
     <div class="cs-flow-top-actions">
       <div ng-hide="isDeleted || onEdit=='flow'" class="top-btn-list">
         <button class="btn btn-danger" ng-click="deleteCurrent(onEdit)">
@@ -242,13 +250,15 @@
                           <md-checkbox aria-label="Select All"
                                        ng-checked="l2allIsChecked(cdt, f.name)"
                                        md-indeterminate="l2IsIndeterminate(cdt, f.name)"
-                                       ng-click="l2toggleAll(cdt, f.name)">
+                                       ng-click="l2toggleAll(cdt, f.name)"
+                                       class="md-primary">
                             Select All
                           </md-checkbox>
                         </div>
                         <div ng-repeat="o in cdt._l1selected.suboptions | filter:cdt._t2">
                           <md-checkbox ng-checked="l2isChecked(o.value, cdt, f.name)"
-                                       ng-click="l2toggle(o.value, cdt, f.name)">
+                                       ng-click="l2toggle(o.value, cdt, f.name)"
+                                       class="md-primary">
                             {{o.display}}
                           </md-checkbox>
                         </div>
@@ -519,12 +529,6 @@
         Close
       </button>
     </div>
-  </div>
-  <div class="cs-save-errors" ng-show="showErrors">
-    <span class="cs-hide-errors" ng-click="hideErrors()">x</span>
-    <ul>
-      <li ng-repeat="err in saveErrors track by $index">{{err}}</li>
-    </ul>
   </div>
   <div ng-if="initState=='init'" class="masking-loader" translate></div>
   <div ng-class="{loader: initState=='init'}"></div>
