@@ -2068,7 +2068,7 @@
           $scope.$parent.$state.go('app.report.campaign');
           $mdDialog.cancel();
         } else if (fromFlow) {
-          $scope.$parent.$state.go('app.rule');
+          $scope.$parent.$state.go('app.flow');
           $mdDialog.cancel();
         } else {
           $mdDialog.hide(item);
