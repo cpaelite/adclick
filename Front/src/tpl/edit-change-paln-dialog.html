@@ -28,19 +28,19 @@
               <div class="pay-type-input">
                 <label class="radio-inline">
                   <input
-                    type="radio"
-                    ng-model="payType"
-                    value="0"
-                    name="payType"
-                  />Alipay
+                  type="radio"
+                  ng-model="payType"
+                  value="1"
+                  name="payType"
+                  />PayPal
                 </label>
                 <label class="radio-inline">
                   <input
                     type="radio"
                     ng-model="payType"
-                    value="1"
+                    value="0"
                     name="payType"
-                  />PayPal
+                  />Alipay
                 </label>
               </div>
               <div class="alipay-code">
@@ -53,7 +53,12 @@
                 <img src="../assets/img/plan_2.jpg" ng-show="plans[2].id == id && payType == 0"/>
                 <img src="../assets/img/plan_3.jpg" ng-show="plans[3].id == id && payType == 0"/> -->
               </div>
-              <p ng-show="payType == 0" style="color: rgb(102, 102, 102); text-align: center;" aria-hidden="false" class="">Please contact the Skype: <b>live:support_44609</b><br> to open your account after payment</p>
+              <p ng-show="payType == 0" style="color: rgb(102, 102, 102); text-align: center;" aria-hidden="false" class="">
+                Please contact the Skype: <b>live:support_44609</b>
+                <br> to open your account after payment
+                <br> Please send us your alipay account and newbidder account for refund.
+                <br> To: <b>finance@newbidder.com</b>
+              </p>
               <div ng-show="payType == 1">
 
               </div>
