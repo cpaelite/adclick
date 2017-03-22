@@ -1045,6 +1045,7 @@
     }
 
     $scope.validateUrl = function () {
+      $scope.item.targetUrl = UrlValidate.addHttp($scope.item.targetUrl);
       var isValid = UrlValidate.validate($scope.item.targetUrl);
       $scope.editForm.targetUrl.$setValidity('urlformat', isValid);
     };
@@ -1341,6 +1342,7 @@
     };
 
     $scope.validateUrl = function () {
+      $scope.item.url = UrlValidate.addHttp($scope.item.url);
       var isValid = UrlValidate.validate($scope.item.url);
       $scope.editForm.url.$setValidity('urlformat', isValid);
     };
@@ -1541,6 +1543,7 @@
     this.cancel = $mdDialog.cancel;
 
     $scope.validateUrl = function () {
+      $scope.item.url = UrlValidate.addHttp($scope.item.url);
       var isValid = UrlValidate.validate($scope.item.url);
       $scope.editForm.url.$setValidity('urlformat', isValid);
     };
@@ -1753,6 +1756,7 @@
     };
 
     $scope.validateUrl = function () {
+      $scope.item.postbackUrl = UrlValidate.addHttp($scope.item.postbackUrl);
       var isValid = UrlValidate.validate($scope.item.postbackUrl);
       $scope.editForm.postbackUrl.$setValidity('urlformat', isValid);
     };
