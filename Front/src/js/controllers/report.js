@@ -956,11 +956,12 @@
 
     function showFlow() {
       $scope.ztreeShow = true;
+      if(!$scope.item.flow.id) return;
       // Get Flow by Id
       Flow.get({id: $scope.item.flow.id}, function (flow) {
         $scope.flow = flow.data;
 
-        $scope.flow.rules.forEach(function(rule) {
+        $scope.flow.rules && $scope.flow.rules.forEach(function(rule) {
           calculateRelativeWeight(rule.paths, function(item) { return item; });
 
           rule.paths.forEach(function(path) {
@@ -1117,6 +1118,13 @@
       delete $scope.item['cpcValue'];
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
+
+      if ($scope.item.targetType !== 3 && $scope.item.flow) {
+        delete $scope.item.flow.curPath;
+        delete $scope.item.flow.curRule;
+        delete $scope.item.flow.onEdit;
+        delete $scope.item.flow.rules;
+      }
 
       // if (!$scope.item['flow']) {
       //   $scope.item['flow'] = {
