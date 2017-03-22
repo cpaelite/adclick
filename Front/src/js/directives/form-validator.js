@@ -109,9 +109,6 @@ angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
           url += val;
           domElement.focus();
         }
-        if (url && url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
-          url = "http://" + url;
-        }
         scope.item[attriName] = url;
       });
     }
@@ -120,6 +117,11 @@ angular.module('app').directive('myText', ['$rootScope', function ($rootScope) {
 
 angular.module('app').factory('UrlValidate', ['AppConstant', function(AppConstant) {
   return {
+    addHttp: function(url) {
+      if (url && url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
+        url = "http://" + url;
+      }
+    },
     validate: function(url) {
       var isValid = true;
       if (!url) {
