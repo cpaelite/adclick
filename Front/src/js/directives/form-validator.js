@@ -121,6 +121,7 @@ angular.module('app').factory('UrlValidate', ['AppConstant', function(AppConstan
       if (url && url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
         url = "http://" + url;
       }
+      return url;
     },
     validate: function(url) {
       var isValid = true;
