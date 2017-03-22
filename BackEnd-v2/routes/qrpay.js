@@ -88,26 +88,31 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
     var tradeNo = req.body["out_trade_no"];
     var tradeStatus = req.body["trade_status"];
 
-    let qrpay = await QRPay.findOne({where: {
-      tradeNumber: tradeNo
-    }})
-
-    if (!qrpay) {
-      return res.send('success');
-    }
-
-    if(tradeStatus !== "TRADE_SUCCESS") {
-      return res.send("success");
-    }
-
-    let template_plan = await TP.findById(qrpay.goodsId);
     let upl;
     await UB.sequelize.transaction(async (transaction) => {
+
+      let qrpay = await QRPay.findOne({where: {
+        tradeNumber: tradeNo
+      }})
+
+      if (!qrpay) {
+        return res.send('success');
+      }
+
+      if (!qrpay.status === 3) {
+        return res.send('success');
+      }
+
+      if(tradeStatus !== "TRADE_SUCCESS") {
+        return res.send("success");
+      }
 
       qrpay.status = 3;
       qrpay.callback = JSON.stringify(req.body)
       qrpay.callbackAt = moment().unix()
       qrpay.save({transaction});
+
+      let template_plan = await TP.findById(qrpay.goodsId);
 
       let user = await User.findById(qrpay.userId);
       user.status = 1;
@@ -163,11 +168,10 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
         nextPaymentMethod: 0,
         expired: 0
       }, transaction)
-
     })
-
-    await paymentFollowupWork(upl.id);
-
+    if (upl && upl.id) {
+      await paymentFollowupWork(upl.id);
+    }
   } catch (e) {
     console.log(e);
   }
