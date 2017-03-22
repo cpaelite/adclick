@@ -77,6 +77,8 @@
         isDeleted: false
       };
 
+      $scope.saveErrors = [];
+
       // init load data
       var initPromises = [],
       prms;
@@ -89,6 +91,14 @@
       $scope.editOffer = function(evt, offer, cacheOffer) {
         if ($scope.$parent.pathRoute) {
           $scope.$emit('pathCacheDataPedding');
+        } else {
+          var oData = handleData(false, true);
+          var flowData = oData.flowData;
+          flowData.onEdit = oData.onEdit;
+          flowData.curRule = oData.curRule;
+          flowData.curPath = oData.curPath;
+
+          reportCache.put('flow-cache', flowData);
         }
         var locals = { perfType: 'offer' };
         if(cacheOffer) {
@@ -115,6 +125,8 @@
         }).then(function(result) {
           if ($scope.$parent.pathRoute) {
             $scope.$emit('pathCacheDataCancled');
+          } else {
+
           }
           var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
           allOffers.unshift(newOffer);
@@ -134,7 +146,18 @@
           }
         });
       };
-      if($scope.$parent.renderCampaignCachePathData) {
+      if(reportCache.get('flow-cache')) {
+        console.log("reportCache.get('flow-cache') --- >", reportCache.get('flow-cache'));
+        theFlow = angular.copy(reportCache.get('flow-cache'));
+        $scope.oldName = theFlow.name;
+        $scope.onEdit = theFlow.onEdit;
+        $scope.curRule = theFlow.curRule;
+        $scope.curPath = theFlow.curPath;
+        if(reportCache.get('offer-cache')) {
+          $scope.editOffer(null, null, reportCache.get('offer-cache'));
+          reportCache.remove('offer-cache');
+        }
+      } else if($scope.$parent.renderCampaignCachePathData) {
         theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
         // TODO
         $scope.onEdit = theFlow.onEdit;
@@ -345,7 +368,7 @@
         if(newValue) {
           $scope.flow.name = $scope.flow.name ? $scope.flow.name : '';
           $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
-          $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+          $scope.oldName = preStr + ($scope.oldName ? $scope.oldName.substr($scope.prefix.length) : $scope.flow.name.substr($scope.prefix.length));
           $scope.prefix = preStr;
         }
       });
@@ -513,6 +536,9 @@
               bindToController: true,
               templateUrl: 'tpl/delete-confirm-dialog.html'
             }).then(function(result) {
+              if(reportCache.get('flow-cache')) {
+                reportCache.remove('flow-cache');
+              }
               if(result.status) {
                 theFlow.rules = checkLanderAndOffer(theFlow.rules, country)
               } else {
@@ -845,13 +871,16 @@
             rules: []
           };
         } else {
-          nameRequired();
           flowData = {
             name: theFlow.name,
             country: $scope.country ? $scope.country.value : 'ZZZ',
             redirectMode: theFlow.redirectMode | 0,
             rules: []
           };
+        }
+
+        if(!isCacheData) {
+          nameRequired();
           if($scope.editFlowForm.name.$error.asyncCheckName) {
             $scope.saveErrors.push('Name already exists.');
           }
@@ -981,7 +1010,7 @@
       }
 
       // Flow save
-      $scope.saveErrors = [];
+
       $scope.save = function() {
         var oData = handleData(false), flowData = oData.flowData;
         $scope.editFlowForm.$setSubmitted();
