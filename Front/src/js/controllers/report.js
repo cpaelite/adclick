@@ -1549,7 +1549,9 @@
 
     this.titleType = angular.copy(this.perfType);
 
-    this.cancel = $mdDialog.cancel;
+    this.cancel = function() {
+      $mdDialog.hide();
+    };
 
     $scope.validateUrl = function () {
       $scope.item.url = UrlValidate.addHttp($scope.item.url);
