@@ -956,11 +956,12 @@
 
     function showFlow() {
       $scope.ztreeShow = true;
+      if(!$scope.item.flow.id) return;
       // Get Flow by Id
       Flow.get({id: $scope.item.flow.id}, function (flow) {
         $scope.flow = flow.data;
 
-        $scope.flow.rules.forEach(function(rule) {
+        $scope.flow.rules && $scope.flow.rules.forEach(function(rule) {
           calculateRelativeWeight(rule.paths, function(item) { return item; });
 
           rule.paths.forEach(function(path) {
@@ -1045,6 +1046,7 @@
     }
 
     $scope.validateUrl = function () {
+      $scope.item.targetUrl = UrlValidate.addHttp($scope.item.targetUrl);
       var isValid = UrlValidate.validate($scope.item.targetUrl);
       $scope.editForm.targetUrl.$setValidity('urlformat', isValid);
     };
@@ -1116,6 +1118,13 @@
       delete $scope.item['cpcValue'];
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
+
+      if ($scope.item.targetType !== 3 && $scope.item.flow) {
+        delete $scope.item.flow.curPath;
+        delete $scope.item.flow.curRule;
+        delete $scope.item.flow.onEdit;
+        delete $scope.item.flow.rules;
+      }
 
       // if (!$scope.item['flow']) {
       //   $scope.item['flow'] = {
@@ -1341,6 +1350,7 @@
     };
 
     $scope.validateUrl = function () {
+      $scope.item.url = UrlValidate.addHttp($scope.item.url);
       var isValid = UrlValidate.validate($scope.item.url);
       $scope.editForm.url.$setValidity('urlformat', isValid);
     };
@@ -1541,6 +1551,7 @@
     this.cancel = $mdDialog.cancel;
 
     $scope.validateUrl = function () {
+      $scope.item.url = UrlValidate.addHttp($scope.item.url);
       var isValid = UrlValidate.validate($scope.item.url);
       $scope.editForm.url.$setValidity('urlformat', isValid);
     };
@@ -1753,6 +1764,7 @@
     };
 
     $scope.validateUrl = function () {
+      $scope.item.postbackUrl = UrlValidate.addHttp($scope.item.postbackUrl);
       var isValid = UrlValidate.validate($scope.item.postbackUrl);
       $scope.editForm.postbackUrl.$setValidity('urlformat', isValid);
     };
@@ -2056,7 +2068,7 @@
           $scope.$parent.$state.go('app.report.campaign');
           $mdDialog.cancel();
         } else if (fromFlow) {
-          $scope.$parent.$state.go('app.rule');
+          $scope.$parent.$state.go('app.flow');
           $mdDialog.cancel();
         } else {
           $mdDialog.hide(item);
