@@ -314,6 +314,7 @@ md-select .md-select-value,md-select.md-table-select > .md-select-value{
 .cs-add-button:hover {
      background:#5089e8 !important;
  }
+.cs-add-button.down-btn:hover{background: rgb(242, 116, 119) !important;}
 .cs-add-button.green-btn:hover {
     background:#16a919 !important;
 }
@@ -2661,7 +2662,7 @@ md-icon.md-default-theme, md-icon{color:#fff;}
 .md-primary.save-btn span{color:#fff;font-size:12px;}
 .md-primary.cancel-btn{background:#f6f8f8;color:#000;font-size:12px;}
 .md-primary.cancel-btn:hover{background:#f6f8f8;}
-.form-control{height:40px;border-radius:3px;border:1px solid #c9c9cf;font-size:14px;}
+.form-control{height:32px;border-radius:3px;border:1px solid #c9c9cf;font-size:14px;}
 .selectize-input{border:1px solid #c9c9cf;border-radius:3px;min-height:32px;line-height:32px;padding:0;color:#000;}
 .selectize-control.multi .selectize-input > div{line-height:normal;color:#fff;padding:2px 5px;background:#8494a2;}
 .selectize-control.multi .selectize-input.has-items{padding:0 5px 3px 5px;}
@@ -2904,6 +2905,19 @@ md-content.md-default-theme, md-content{color:#000;}
 .cs-add-button{ box-shadow:0 1px 1px 0 rgba(0, 0, 0, 0.1),
 0 1px 1px 0 rgba(0, 0, 0, 0.1),
 0 1px 1px 0 rgba(0, 0, 0, 0.1);}
+.md-button.md-primary.md-raised.down-btn{
+    line-height: 30px;
+    height: 32px;
+    color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.2) 0 1px 1px 0;
+    background: linear-gradient(rgb(252, 126, 132) 0px, rgb(240, 80, 83) 100%);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(223, 76, 79);
+    border-image: initial;
+    border-radius: 3px;
+    transition: color 300ms ease-in-out;}
+.md-button.md-primary.md-raised.down-btn i{margin-right:5px;}
 .btn.btn-primary.blue-btn{padding:0 12px;font-weight:bold;font-size:13px;}
 .btn.btn-primary.blue-btn i{margin-right:6px;font-size:12px;}
 .btn.btn-primary.blue-btn.blue-btn-h{height:42px;line-height:42px;font-size:16px;}
