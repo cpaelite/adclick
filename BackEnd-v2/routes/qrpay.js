@@ -24,7 +24,6 @@ qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
   if (!template_plan) throw new Error('Not Found');
 
   let tradeNo = `${new Date().getTime()}_${userId}`;
-  let timestamp = (new Date()).getTime();
   let amount = parseFloat((template_plan.onSalePrice * month * 6.9).toFixed(2));
 
   let createReq = {
@@ -48,7 +47,7 @@ qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
       goodsVolume: month,
       amount: amount,
       status: 0,
-      createdAt: timestamp,
+      createdAt: moment().unix(),
       createReq: JSON.stringify(createReq),
       createResp: JSON.stringify(createResp),
       callbackAt: 0,
@@ -102,13 +101,12 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
     }
 
     let template_plan = await TP.findById(qrpay.goodsId);
-
     let upl;
-
-
     await UB.sequelize.transaction(async (transaction) => {
 
       qrpay.status = 3;
+      qrpay.callback = JSON.stringify(req.body)
+      qrpay.callbackAt = moment().unix()
       qrpay.save({transaction});
 
       let user = await User.findById(qrpay.userId);
