@@ -130,8 +130,6 @@ export async function updatePlan() {
         await ub.save();
         await user.save();
       }
-
-
     })
   })
 

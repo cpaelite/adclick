@@ -15,7 +15,7 @@ body{font-family:Helvetica, Verdana,Tahoma, Arial, "\5b8b\4f53", sans-serif;}
     -o-transform-origin:0 0;        /* Opera */
 }
 .container.compare-table{overflow-x:auto;}
-.navbar-default .navbar-collapse, .navbar-default .navbar-form,.navbar-default{border:none;}
+.navbar-default .navbar-collapse,.navbar-default .navbar-form,.navbar-default{border:none;}
 *{margin:0;padding:0;list-style:none;}
 a{color:#222;}
 a:hover,a:focus{text-decoration:none;color:#357cf4;}

@@ -24,7 +24,6 @@ qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
   if (!template_plan) throw new Error('Not Found');
 
   let tradeNo = `${new Date().getTime()}_${userId}`;
-  let timestamp = (new Date()).getTime();
   let amount = parseFloat((template_plan.onSalePrice * month * 6.9).toFixed(2));
 
   let createReq = {
@@ -48,7 +47,7 @@ qrpayRouter.post('/api/qrpay/create', async (req, res, next) => {
       goodsVolume: month,
       amount: amount,
       status: 0,
-      createdAt: timestamp,
+      createdAt: moment().unix(),
       createReq: JSON.stringify(createReq),
       createResp: JSON.stringify(createResp),
       callbackAt: 0,
@@ -89,27 +88,31 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
     var tradeNo = req.body["out_trade_no"];
     var tradeStatus = req.body["trade_status"];
 
-    let qrpay = await QRPay.findOne({where: {
-      tradeNumber: tradeNo
-    }})
-
-    if (!qrpay) {
-      return res.send('success');
-    }
-
-    if(tradeStatus !== "TRADE_SUCCESS") {
-      return res.send("success");
-    }
-
-    let template_plan = await TP.findById(qrpay.goodsId);
-
     let upl;
-
-
     await UB.sequelize.transaction(async (transaction) => {
 
+      let qrpay = await QRPay.findOne({where: {
+        tradeNumber: tradeNo
+      }})
+
+      if (!qrpay) {
+        return res.send('success');
+      }
+
+      if (!qrpay.status === 3) {
+        return res.send('success');
+      }
+
+      if(tradeStatus !== "TRADE_SUCCESS") {
+        return res.send("success");
+      }
+
       qrpay.status = 3;
+      qrpay.callback = JSON.stringify(req.body)
+      qrpay.callbackAt = moment().unix()
       qrpay.save({transaction});
+
+      let template_plan = await TP.findById(qrpay.goodsId);
 
       let user = await User.findById(qrpay.userId);
       user.status = 1;
@@ -131,7 +134,7 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
         userId: qrpay.userId,
         type: 3,
         paypalAgreementId: 0,
-        info: `pay with alipay`,
+        info: `pay with alipay ${qrpay.tradeNumber}`,
         changedAt: moment().unix()
       }, {transaction})
 
@@ -165,11 +168,10 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
         nextPaymentMethod: 0,
         expired: 0
       }, transaction)
-
     })
-
-    await paymentFollowupWork(upl.id);
-
+    if (upl && upl.id) {
+      await paymentFollowupWork(upl.id);
+    }
   } catch (e) {
     console.log(e);
   }
