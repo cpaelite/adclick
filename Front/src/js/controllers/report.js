@@ -1135,7 +1135,7 @@
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
 
-      if ($scope.item.targetType !== 3 && $scope.item.flow) {
+      if ($scope.item.targetType != 3 && $scope.item.flow) {
         delete $scope.item.flow.curPath;
         delete $scope.item.flow.curRule;
         delete $scope.item.flow.onEdit;
