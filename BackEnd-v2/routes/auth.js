@@ -488,7 +488,9 @@ router.get('/user/resetpassword', async function (req, res, next) {
     connection = await common.getConnection();
     let user = await common.query("select  `id`,`idText` from User   where email = ?", [value.email], connection);
     if (user.length == 0) {
-      throw new Error('email error');
+       let err=new Error('email error');
+       err.status=200;
+       throw err;
     }
     let codeSlice = await common.query("select `code`,`expireAt`,`status` from UserResetCode where `userId`=? and `expireAt`> ? and `status`= ?", [user[0].id, moment().unix(), 0], connection);
     if (codeSlice.length) {
@@ -526,6 +528,7 @@ router.post('/user/resetpassword', async function (req, res, next) {
   });
   let connection;
   let key;
+  let err = new Error();
   try {
     let value = await common.validate(req.body, schema);
     //解析code
@@ -534,21 +537,29 @@ router.post('/user/resetpassword', async function (req, res, next) {
       key = decipher.update(value.code, 'hex', 'utf8')
       key += decipher.final('utf8')
     } catch (e) {
-      return next(new Error("code error"))
+      err.message = "code error";
+      err.status = 200;
+      throw err;
     }
 
     if (!key) {
-      return next(new Error("code error"));
+      err.message = "code error";
+      err.status = 200;
+      throw err;
     }
     connection = await common.getConnection();
     let result = await common.query("select `userId`,`expireAt`,`status` from UserResetCode where `code`=?", [key], connection);
 
     if (result.length == 0) {
-      return next(new Error("code error"));
+      err.message = "code error";
+      err.status = 200;
+      throw err;
     }
 
     if (result[0].status !== 0 || result[0].expireAt < moment().unix()) {
-      return next(new Error('code expired'));
+      err.message = 'code expired';
+      err.status = 200;
+      throw err;
     }
 
     let updateUser = common.query("update User set `password`=? where `id`=?", [md5(value.password), result[0].userId], connection);
