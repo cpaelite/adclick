@@ -576,7 +576,6 @@
     }
 
     if (perfType == 'campaign') {
-      console.log('reportCache.get("campaign-cache")', reportCache.get('campaign-cache'));
       var cache = reportCache.get('campaign-cache');
       if (cache) {
         reportCache.remove('campaign-cache');
@@ -618,7 +617,7 @@
         $scope.checkNameParams.id = theCampaign.id;
       }
     } else if (this.item) {
-      var isDuplicate = this.duplicate;
+      var isDuplicate = $scope.isDuplicate = this.duplicate;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         theCampaign = campaign.data;
         if (isDuplicate) delete theCampaign.id;
@@ -685,7 +684,7 @@
           showFlow();
         }
         if($scope.item.targetFlowId && $scope.item.targetType == 3) {
-          $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId});
+          $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId, isDuplicate: $scope.isDuplicate});
         } else {
           $scope.$broadcast('targetPathIdChanged', {flowId: ''});
         }
@@ -1086,12 +1085,10 @@
     };
 
     $scope.$on('pathDataSuccessed', function(event, oData) {
-      console.log(oData);
       if(oData.status) {
         saveCampaign(oData.data);
       } else {
         // TODO show error
-        console.log(oData.data);
       }
       reportCache.remove('campaign-cache');
     });
@@ -1111,6 +1108,21 @@
         }
       });
 
+      // path
+      var tempFlowId;
+      if($scope.item.targetType == 3) {
+        $scope.item['flow'] = {
+          rules: pathData.rules,
+          name: 'defaultName',
+          type: 0,
+          redirectMode: $scope.item.redirectMode,
+          country: $scope.item.country
+        };
+        if($scope.item.targetFlowId) {
+          tempFlowId = $scope.item.targetFlowId;
+        }
+      }
+
       delete $scope.item.trafficSourceId;
       delete $scope.item.targetFlowId;
       delete $scope.item.trafficSourceName;
@@ -1120,7 +1132,7 @@
       delete $scope.item['cpaValue'];
       delete $scope.item['cpmValue'];
 
-      if ($scope.item.targetType !== 3 && $scope.item.flow) {
+      if ($scope.item.targetType != 3 && $scope.item.flow) {
         delete $scope.item.flow.curPath;
         delete $scope.item.flow.curRule;
         delete $scope.item.flow.onEdit;
@@ -1134,22 +1146,14 @@
       //     redirectMode: 0
       //   };
       // }
-
-      // path
-      if($scope.item.targetType == 3) {
-        $scope.item['flow'] = {
-          rules: pathData.rules,
-          name: 'defaultName',
-          type: 0,
-          redirectMode: $scope.item.redirectMode,
-          country: $scope.item.country
-        };
-      }
-
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
-        Campaign.save($scope.item, success);
+        var item = angular.copy($scope.item);
+        if (tempFlowId && !$scope.isDuplicate) {
+          item['flow'].id = tempFlowId;
+        }
+        Campaign.save(item, success);
       }
     };
 
@@ -1549,7 +1553,9 @@
 
     this.titleType = angular.copy(this.perfType);
 
-    this.cancel = $mdDialog.cancel;
+    this.cancel = function() {
+      $mdDialog.hide();
+    };
 
     $scope.validateUrl = function () {
       $scope.item.url = UrlValidate.addHttp($scope.item.url);
@@ -2212,7 +2218,6 @@
     };
 
     function success(oData) {
-      console.log("success delete");
       self.onprocess = false;
       if(oData.status == 0) {
         self.error = oData.message || 'Error occured when delete.';

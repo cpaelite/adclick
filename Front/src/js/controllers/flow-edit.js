@@ -7,7 +7,7 @@
     ]);
 
   function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country, $rootScope, reportCache) {
-    var flowId, isDuplicate, fromCampaign, theFlow, tempCountryName, oldCountryName;
+    var flowId, isDuplicate, fromCampaign, theFlow, tempCountryName, oldCountryName, fromPath;
     $scope.flowMode = true;
     if($scope.$stateParams) {
       $scope.app.subtitle = 'Flow';
@@ -21,6 +21,8 @@
       fromCampaign = false;
       $scope.flowMode = false;
       $scope.$on('targetPathIdChanged', function(event, oData) {
+        fromPath = true;
+        isDuplicate = !!oData.isDuplicate;
         flowId = oData.flowId;
         initFlowEditCtrl();
       });
@@ -77,6 +79,8 @@
         isDeleted: false
       };
 
+      $scope.saveErrors = [];
+
       // init load data
       var initPromises = [],
       prms;
@@ -87,8 +91,17 @@
       };
       $scope.showContinue = false;
       $scope.editOffer = function(evt, offer, cacheOffer) {
-        if ($scope.$parent.pathRoute) {
-          $scope.$emit('pathCacheDataPedding');
+        if(!reportCache.get('flow-cache')) {
+          if ($scope.$parent.pathRoute) {
+              $scope.$emit('pathCacheDataPedding');
+          } else {
+            var oData = handleData(false, true);
+            var flowData = oData.flowData;
+            flowData.onEdit = oData.onEdit;
+            flowData.curRule = oData.curRule;
+            flowData.curPath = oData.curPath;
+            reportCache.put('flow-cache', flowData);
+          }
         }
         var locals = { perfType: 'offer' };
         if(cacheOffer) {
@@ -115,6 +128,12 @@
         }).then(function(result) {
           if ($scope.$parent.pathRoute) {
             $scope.$emit('pathCacheDataCancled');
+          } else if(cacheOffer) {
+            reportCache.remove('flow-cache');
+            reportCache.remove('offer-cache');
+          }
+          if(!result) {
+            return;
           }
           var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
           allOffers.unshift(newOffer);
@@ -134,12 +153,49 @@
           }
         });
       };
-      if($scope.$parent.renderCampaignCachePathData) {
-        theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
-        // TODO
+      if(reportCache.get('flow-cache')) {
+        theFlow = angular.copy(reportCache.get('flow-cache'));
+        // reportCache.remove('flow-cache')
+        $scope.oldName = theFlow.name;
         $scope.onEdit = theFlow.onEdit;
-        $scope.curRule = theFlow.curRule;
-        $scope.curPath = theFlow.curPath;
+
+        theFlow.rules.some(function(rule) {
+          if(rule.name == theFlow.curRule.name) {
+            $scope.curRule = rule;
+            rule.paths.some(function(path) {
+              if(path.name == theFlow.curPath.name) {
+                $scope.curPath = path;
+                return true;
+              } else {
+                return false;
+              }
+            });
+          } else {
+            return false;
+          }
+        });
+        if(reportCache.get('offer-cache')) {
+          $scope.editOffer(null, null, reportCache.get('offer-cache'));
+          reportCache.remove('offer-cache');
+        }
+      } else if($scope.$parent.renderCampaignCachePathData) {
+        theFlow = angular.copy($scope.$parent.renderCampaignCachePathData);
+        $scope.onEdit = theFlow.onEdit;
+        theFlow.rules.some(function(rule) {
+          if(rule.name == theFlow.curRule.name) {
+            $scope.curRule = rule;
+            rule.paths.some(function(path) {
+              if(path.name == theFlow.curPath.name) {
+                $scope.curPath = path;
+                return true;
+              } else {
+                return false;
+              }
+            });
+          } else {
+            return false;
+          }
+        });
         if(reportCache.get('offer-cache')) {
           $scope.editOffer(null, null, reportCache.get('offer-cache'));
           reportCache.remove('offer-cache');
@@ -148,6 +204,10 @@
       } else if (flowId) {
         prms = Flow.get({id:flowId}, function(result) {
           theFlow = result.data;
+          if(fromPath) {
+            $scope.curPath = theFlow.rules[0].paths[0];
+            $scope.curRule = theFlow.rules[0];
+          }
           $scope.oldName = theFlow.name;
         }).$promise;
         initPromises.push(prms);
@@ -166,6 +226,11 @@
           redirectMode: '0',
           rules: [ defaultRule ]
         };
+
+        if(fromPath) {
+          $scope.curPath = theFlow.rules[0].paths[0];
+          $scope.curRule = theFlow.rules[0];
+        }
 
         $scope.prefix = $scope.oldName = 'Global - ';
       }
@@ -297,9 +362,9 @@
         });
 
         $scope.flow = theFlow;
-        if(!$scope.flowMode) {
-          $scope.editPath($scope.flow.rules[0], $scope.flow.rules[0].paths[0]);
-        }
+        // if(!$scope.flowMode && fromCampaign) {
+        //   $scope.editPath($scope.flow.rules[0], $scope.flow.rules[0].paths[0]);
+        // }
         $scope.initState = 'success';
       }
       function initError() {
@@ -323,10 +388,10 @@
         });
       }
 
-      $scope.onEdit = $scope.flowMode ? 'flow' : 'path';
+      $scope.onEdit = $scope.onEdit ? $scope.onEdit : ($scope.flowMode ? 'flow' : 'path');
       $scope.isDeleted = false;
-      $scope.curRule = null;
-      $scope.curPath = null;
+      $scope.curRule = $scope.curRule ? $scope.curRule : null;
+      $scope.curPath = $scope.curPath ? $scope.curPath : null;
 
       $scope.$watch('onEdit', function (newVal, oldVal) {
         if (newVal != oldVal)
@@ -345,7 +410,7 @@
         if(newValue) {
           $scope.flow.name = $scope.flow.name ? $scope.flow.name : '';
           $scope.flow.name = preStr + $scope.flow.name.substr($scope.prefix.length);
-          $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+          $scope.oldName = preStr + ($scope.oldName ? $scope.oldName.substr($scope.prefix.length) : $scope.flow.name.substr($scope.prefix.length));
           $scope.prefix = preStr;
         }
       });
@@ -372,6 +437,10 @@
       function duplicateRule() {
         var newRule = angular.copy($scope.curRule);
         //newRule.name = 'Rule ' + $scope.flow.rules.length;
+        delete newRule.id;
+        newRule.paths.forEach(function(path) {
+          delete path.id;
+        });
         $scope.flow.rules.push(newRule);
         $scope.editRule(newRule);
       }
@@ -393,6 +462,7 @@
       function duplicatePath() {
         var newPath = angular.copy($scope.curPath);
         //newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
+        delete newPath.id;
         $scope.curRule.paths.push(newPath);
         $scope.editPath($scope.curRule, newPath);
       }
@@ -428,7 +498,7 @@
 
       $scope.$watch(function() {
         if ($scope.curRule == null) return [];
-        return $scope.curRule.paths.map(function(item) {
+        return $scope.curRule.paths && $scope.curRule.paths.map(function(item) {
           return item.isDeleted ? -1 : item.weight | 0;
         });
       }, function(newVal, oldVal) {
@@ -513,6 +583,9 @@
               bindToController: true,
               templateUrl: 'tpl/delete-confirm-dialog.html'
             }).then(function(result) {
+              if(reportCache.get('flow-cache')) {
+                reportCache.remove('flow-cache');
+              }
               if(result.status) {
                 theFlow.rules = checkLanderAndOffer(theFlow.rules, country)
               } else {
@@ -584,7 +657,7 @@
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
-        return $scope.curPath.landers.map(function(item) {
+        return $scope.curPath.landers && $scope.curPath.landers.map(function(item) {
           return item._def ? item.weight | 0 : -1;
         });
       }, function(newVal, oldVal) {
@@ -600,7 +673,6 @@
           locals.item = null;
         }
         locals.country = $scope.country;
-        console.log($scope.country);
         $mdDialog.show({
           multiple: true,
           skipHide: true,
@@ -660,7 +732,7 @@
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
-        return $scope.curPath.offers.map(function(item) {
+        return $scope.curPath.offers && $scope.curPath.offers.map(function(item) {
           return item._def ? item.weight | 0 : -1;
         });
       }, function(newVal, oldVal) {
@@ -835,7 +907,6 @@
        * @param: {bool} isFromCampaign: false(flow页面的数据)、true(campaign页面path的数据)
        */
       function handleData(isFromCampaign, isCacheData) {
-        console.log('theFlow.rules', theFlow.rules);
         $scope.saveErrors.length = 0;
         $scope.showErrors = false;
         // clean up before save
@@ -845,13 +916,18 @@
             rules: []
           };
         } else {
-          nameRequired();
           flowData = {
             name: theFlow.name,
             country: $scope.country ? $scope.country.value : 'ZZZ',
             redirectMode: theFlow.redirectMode | 0,
             rules: []
           };
+        }
+
+        if(!isFromCampaign && !isCacheData) {
+          nameRequired();
+        }
+        if(!isCacheData && !isFromCampaign) {
           if($scope.editFlowForm.name.$error.asyncCheckName) {
             $scope.saveErrors.push('Name already exists.');
           }
@@ -876,13 +952,16 @@
             $scope.saveErrors.push('Rule name ' + rule.name + ' is invalid');
           }
           var ruleData = {
-            id: rule.id || null,
             name: rule.name,
             enabled: rule.enabled,
             isDefault: rule.isDefault,
             conditions: [],
             paths: [],
           };
+
+          if(rule.id) {
+            ruleData.id = rule.id;
+          }
           if (rule.conditions) {
             rule.conditions.forEach(function(condition) {
               conData = {};
@@ -920,7 +999,6 @@
               $scope.saveErrors.push('Path name ' + path.name + ' is invalid');
             }
             pathData = {
-              id: path.id || null,
               name: path.name,
               enabled: path.enabled,
               weight: path.weight,
@@ -929,6 +1007,9 @@
               landers: [],
               offers: []
             };
+            if(path.id) {
+              pathData.id = path.id;
+            }
             if(isCacheData) {
               pathData['isDeleted'] = path.isDeleted;
             }
@@ -981,7 +1062,7 @@
       }
 
       // Flow save
-      $scope.saveErrors = [];
+
       $scope.save = function() {
         var oData = handleData(false), flowData = oData.flowData;
         $scope.editFlowForm.$setSubmitted();
@@ -990,7 +1071,6 @@
           return $q.reject('error occurs');
         }
         $scope.onSave = true;
-        console.log('flowData----->', flowData);
         return Flow.save(flowData, function(result) {
           $scope.onSave = false;
           $scope.saveTime = new Date();
@@ -1034,7 +1114,6 @@
       // campaign cache data
       $scope.$on('cacheCampaignStarted', function() {
         var oData = handleData(true, true), flowData = oData.flowData;
-        console.log('oData---->', oData);
         $scope.$emit('pathCacheDataSuccessed', {
           status: 1,
           data: flowData,
@@ -1045,10 +1124,12 @@
       });
 
       $scope.close = function() {
-        if (fromCampaign)
+        if (fromCampaign) {
           $scope.$state.go('app.report.campaign');
-        else
+        } else {
           $scope.$state.go('app.report.flow');
+        }
+        reportCache.remove('flow-cache');
       };
 
       $scope.saveClose = function() {
@@ -1069,7 +1150,6 @@
     }
 
     function confirmResetLanderAndOfferCtrl($scope, $mdDialog) {
-      console.log('self.oldCountryName', this.oldCountryName);
       var self = this;
       this.title = '';
       this.content = 'changeCountryConfirm';
