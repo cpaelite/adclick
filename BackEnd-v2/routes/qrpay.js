@@ -134,7 +134,7 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
         userId: qrpay.userId,
         type: 3,
         paypalAgreementId: 0,
-        info: `pay with alipay`,
+        info: `pay with alipay ${qrpay.tradeNumber}`,
         changedAt: moment().unix()
       }, {transaction})
 
