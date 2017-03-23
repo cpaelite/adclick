@@ -181,7 +181,7 @@ header .home:hover{
     background:#0055bf;
 }
 .navi ul.nav li.active a i,.navi ul.nav li.active a:hover i{color:#fff;}
-.navi ul.nav li a{color:#fff;height:42px;line-height:42px;padding:0 17px;}
+.navi ul.nav li a{color:#fff;height:42px;line-height:42px;padding:0 17px;font-weight:bold;font-size:14px;}
 .navi ul.nav li a:hover{background:#0055bf;}
 .navi ul.nav li a i{color:#fff}
 .navi ul.nav li a:hover i{color:#fff}
@@ -2743,7 +2743,7 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     border-radius:2px;height:30px;line-height:30px;border:1px solid #d7d7d7;padding:0 10px 0 0;font-size:12px;}
 .coupon-btn a{font-size:11px;display:block;padding:8px 15px 0 15px;color:#000;}
 .coupon-btn .coupon-icon{width:14px;height:14px;background:url("../../assets/img/coupon-icon.png") no-repeat center;background-size:13px;float:left;margin:7px 10px 0 7px;}
-@media (max-width:1124px){.right-select .search-con{margin-right:5px;
+@media (max-width:1360px){.right-select .search-con{margin-right:5px;
     padding: 0 2px;
     margin-top: -47px;
     border-radius: 2px;
