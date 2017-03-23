@@ -602,7 +602,7 @@ router.delete('/api/flows/:id', async function (req, res, next) {
 
 
 async function saveOrUpdateFlow(subId, value, connection) {
-
+  let flowIsInsert = false; // 当flow是新增 rule path 也必须是新增
   let beginTransaction = false;
   try {
     //check flow name exists
@@ -617,6 +617,7 @@ async function saveOrUpdateFlow(subId, value, connection) {
     beginTransaction = true;
     //Flow
     if (!value.id) {
+      flowIsInsert = true;
       flowResult = await common.insertFlow(value.userId, value, connection)
     } else if (value && value.id) {
       await common.updateFlow(value.userId, value, connection)
@@ -643,6 +644,9 @@ async function saveOrUpdateFlow(subId, value, connection) {
         }
         try {
           let ruleResult;
+          if (flowIsInsert) {
+            if (value.rules[i].id) delete value.rules[i].id;
+          }
           //RULE
           if (!value.rules[i].id) {
             ruleResult = await common.insetRule(value.userId, value.rules[i], connection);
@@ -667,6 +671,9 @@ async function saveOrUpdateFlow(subId, value, connection) {
           if (value.rules[i].paths && value.rules[i].paths.length > 0) {
             for (let j = 0; j < value.rules[i].paths.length; j++) {
               let pathResult;
+              if(flowIsInsert){
+                 if(value.rules[i].paths[j].id) delete value.rules[i].paths[j].id;
+              }
               if (!value.rules[i].paths[j].id) {
                 pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
               } else {
