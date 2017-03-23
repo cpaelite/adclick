@@ -618,7 +618,7 @@
         $scope.checkNameParams.id = theCampaign.id;
       }
     } else if (this.item) {
-      var isDuplicate = this.duplicate;
+      var isDuplicate = $scope.isDuplicate = this.duplicate;
       prms = Campaign.get({id: this.item.data.campaignId}, function(campaign) {
         theCampaign = campaign.data;
         if (isDuplicate) delete theCampaign.id;
@@ -685,7 +685,7 @@
           showFlow();
         }
         if($scope.item.targetFlowId && $scope.item.targetType == 3) {
-          $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId});
+          $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId, isDuplicate: $scope.isDuplicate});
         } else {
           $scope.$broadcast('targetPathIdChanged', {flowId: ''});
         }
