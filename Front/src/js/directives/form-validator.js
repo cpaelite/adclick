@@ -130,6 +130,7 @@ angular.module('app').factory('UrlValidate', ['AppConstant', function(AppConstan
       }
       var strRegex = AppConstant.URLREG;
       var re=new RegExp(strRegex, 'i');
+      re.compile();
       if (!re.test(url)) {
         isValid = false;
       }

@@ -521,6 +521,7 @@ angular.module('app').value('columnDefinition', {
   ]
 });
 angular.module('app').value('groupByOptions', [
+  {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteId"},
   {value: "campaign", display: "Campaign", idKey: "campaignId", nameKey: "campaignName"},
   {value: "flow", display: "Flow", idKey: "flowId", nameKey: "flowName"},
   {value: "brand", display: "Brands", idKey: "brand", nameKey: "brand"},
@@ -550,7 +551,6 @@ angular.module('app').value('groupByOptions', [
   {value: "domain", display: "Referrer domain", idKey: "domain", nameKey: "domain"},
   {value: "region", display: "State / Region", idKey: "region", nameKey: "region"},
   {value: "traffic", display: "Traffic Source", idKey: "trafficId", nameKey: "trafficName"},
-  {value: "tsWebsiteId", display: "WebSite ID", idKey: "tsWebsiteId", nameKey: "tsWebsiteId"},
   {value: "v1", display: "V1", idKey: "v1", nameKey: "v1", paramValue: "", role: 'campaign'},
   {value: "v2", display: "V2", idKey: "v2", nameKey: "v2", paramValue: "", role: 'campaign'},
   {value: "v3", display: "V3", idKey: "v3", nameKey: "v3", paramValue: "", role: 'campaign'},

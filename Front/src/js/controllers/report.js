@@ -60,7 +60,7 @@
 
     $scope.filters = [];
     groupByOptions.forEach(function(gb) {
-      var val = stateParams[gb.value];
+      var val = stateParams.filters[gb.value];
       if (val) {
         var cacheKey = gb.value + ':' + val;
         // todo: get name from server if not in cache
@@ -451,8 +451,9 @@
         delete params.from;
         delete params.to;
       }
+      params.filters = {};
       $scope.filters.forEach(function(f) {
-        params[f.key] = f.val;
+        params.filters[f.key] = f.val;
       });
       $scope.$state.go('app.report.' + page, params);
     }

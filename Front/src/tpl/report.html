@@ -162,7 +162,7 @@
                     ng-show="preferences.reportViewColumns[column.key].visible  || column.role=='name'">
                     <!--ng-click="openMenu($event, row, column.role)"-->
                   <span ng-if="column.role=='name'">
-                    <md-menu-bar style="padding: 0;" ng-if="canEdit(row)">
+                    <md-menu-bar style="padding: 0;">
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">{{row.data[column.key]}}</a>
                             <md-menu-content width="3">
@@ -182,9 +182,6 @@
                             </md-menu-content>
                         </md-menu>
                     </md-menu-bar>
-                    <em ng-if="!canEdit(row)">
-                        {{row.data[column.key]}}
-                    </em>
                   </span>
                   <span ng-if="column.role!='name'">
                     {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
