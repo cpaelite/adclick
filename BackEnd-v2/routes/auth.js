@@ -477,7 +477,7 @@ router.get('/user/resendconfirmation', async function (req, res, next) {
 });
 
 
-router.get('/user/resentpassword', async function (req, res, next) {
+router.get('/user/resetpassword', async function (req, res, next) {
   var schema = Joi.object().keys({
     email: Joi.string().trim().required()
   });
@@ -519,7 +519,7 @@ router.get('/user/resentpassword', async function (req, res, next) {
 });
 
 
-router.post('/user/resentpassword', async function (req, res, next) {
+router.post('/user/resetpassword', async function (req, res, next) {
   var schema = Joi.object().keys({
     code: Joi.string().trim().required(),
     password: Joi.string().trim().required()
