@@ -79,10 +79,11 @@ qrpayRouter.post('/api/qrpay/status', async (req, res, next) => {
 })
 
 qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
+  res.send("success")
   try {
     var signStatus = alipay.verifyCallback(req.body);
     if(signStatus === false) {
-      return res.error("回调签名验证未通过");
+      throw new Error("回调签名验证未通过");
     }
 
     var tradeNo = req.body["out_trade_no"];
@@ -96,15 +97,15 @@ qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
       }})
 
       if (!qrpay) {
-        return res.send('success');
+        return
       }
 
-      if (!qrpay.status === 3) {
-        return res.send('success');
+      if (qrpay.status === 3) {
+        return
       }
 
       if(tradeStatus !== "TRADE_SUCCESS") {
-        return res.send("success");
+        return
       }
 
       qrpay.status = 3;
