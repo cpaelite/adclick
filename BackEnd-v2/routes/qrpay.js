@@ -81,6 +81,7 @@ qrpayRouter.post('/api/qrpay/status', async (req, res, next) => {
 qrpayCallbackRouter.post('/alipay/callback', async (req, res, next) => {
   res.send("success")
   try {
+    console.log(moment(), req.body)
     var signStatus = alipay.verifyCallback(req.body);
     if(signStatus === false) {
       throw new Error("回调签名验证未通过");
