@@ -439,6 +439,9 @@
         var newRule = angular.copy($scope.curRule);
         //newRule.name = 'Rule ' + $scope.flow.rules.length;
         delete newRule.id;
+        newRule.paths.forEach(function(path) {
+          delete path.id;
+        });
         $scope.flow.rules.push(newRule);
         $scope.editRule(newRule);
       }
