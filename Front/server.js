@@ -171,10 +171,13 @@ app.post('/account/check', function (req, res) {
  * @apiName 用户忘记密码
  *
  */
-app.post('/api/forgot/pwd', function (req, res) {
+app.get('/user/resetpassword', function (req, res) {
   var result = {
     status: 1,
     message: "success",
+    data:{
+      email:'111@qq.com'
+    }
   };
   res.send(result);
 });
@@ -184,12 +187,13 @@ app.post('/api/forgot/pwd', function (req, res) {
  *
  * @apiParam {String} newPassword,email,code
  */
-app.post('/api/reset/pwd', function (req, res) {
+app.post('/user/resetpassword', function (req, res) {
   var result = {
     status: 1,
     message: "success",
     data:{
-
+      newpassword:'1111',
+      code:'123'
     }
   };
   res.send(result);
