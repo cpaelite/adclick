@@ -537,7 +537,7 @@ angular.module('app').value('groupByOptions', [
   {value: "deviceType", display: "Device Type", idKey: "deviceType", nameKey: "deviceType"},
   // {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},
   // {value: "timeOfDay", display: "Time of day", idKey: "todId", nameKey: "TimeOfDay"},
-  {value: "ip", display: "IP and IP range", idKey: "ip", nameKey: "ip"},
+  //{value: "ip", display: "IP and IP range", idKey: "ip", nameKey: "ip"},
   {value: "isp", display: "ISP / Carrier", idKey: "isp", nameKey: "isp"},
   {value: "lander", display: "Landers", idKey: "landerId", nameKey: "landerName"},
   {value: "language", display: "Language", idKey: "language", nameKey: "language"},
