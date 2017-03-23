@@ -1112,6 +1112,7 @@
       });
 
       // path
+      var tempFlowId;
       if($scope.item.targetType == 3) {
         $scope.item['flow'] = {
           rules: pathData.rules,
@@ -1121,7 +1122,7 @@
           country: $scope.item.country
         };
         if($scope.item.targetFlowId) {
-          $scope.item['flow'].id = $scope.item.targetFlowId;
+          tempFlowId = $scope.item.targetFlowId;
         }
       }
 
@@ -1151,7 +1152,12 @@
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
-        Campaign.save($scope.item, success);
+        var item = angular.copy($scope.item);
+        console.log('$scope.isDuplicate$scope.isDuplicate$scope.isDuplicate', $scope.isDuplicate)
+        if (tempFlowId && !$scope.isDuplicate) {
+          item['flow'].id = tempFlowId;
+        }
+        Campaign.save(item, success);
       }
     };
 
