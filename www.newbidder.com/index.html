@@ -38,13 +38,12 @@
         </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul id="myScrollspy" class="nav navbar-nav">
-            <li><a class="dome-btn" href="#section-4">Dome</a></li>
+            <li><a class="dome-btn" href="#section-4">Demo</a></li>
             <li><a href="#section-2">Feature</a></li>
             <li><a href="#section-1">
                 Pricing</a></li>
             <li><a href="#section-3">
                 Contact
-
             </a>
             </li>
             <li class="sign-in"><a href="http://panel.newbidder.com/#/access/signin">
@@ -67,6 +66,26 @@
         </ul>
     </div>
 </div>
+</div>
+<div class="jumbo-box">
+    <a href="#" class="jumbo">
+        <div class="jumbo-text-box">
+            <h1><b>1000000</b> E1vents Tracked Daily</h1>
+            <div class="jumbo-text">
+                <div class="jumbo-text-top">
+                    <b>50</b>
+                    <span class="jump-off">% <em>OFF</em></span>
+                    <span>sitewide</span>
+                </div>
+                <button class="jumbo-btn"><i class="icon-time"></i>9 Days Left</button>
+
+            </div>
+        </div>
+        <div class="jumbo-pic" style="background-image:url('img/jump-ad-00.png')">
+        </div>
+        <div class="jumbo-hover-box"></div>
+
+    </a>
 </div>
 <div class="bider-menu-nr">
     <div class="container">
@@ -480,7 +499,8 @@
         </tbody>
     </table>
 </div>
-
+<div id="googleMap">
+</div>
 <footer class="footer-box" id="section-3">
     <div class="container">
         <div class="row">
@@ -536,8 +556,7 @@
     <div class="bottom-box">© Copyright newbidder. 2017 All rights reserved</div>
 
 </footer>
-<div><iframe src="http://www.google.cn/maps/embed?pb=!1m26!1m12!1m3!1d3412.561192617777!2d121.59907430050727!3d31.205178081384016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m11!3e6!4m3!3m2!1d31.2058976!2d121.60016759999999!4m5!1s0x35b277b967422e91%3A0xc66f20ccbd565222!2z5LiK5rW35biC5rWm5Lic5paw5Yy656WW5Yay5LmL6Lev6YeR56eR6Lev6ZW_5rOw5Zu96ZmF5bm_5Zy6IOmCruaUv-e8lueggTogMjAxMjAz!3m2!1d31.206127!2d121.6020344!5e0!3m2!1szh-CN!2scn!4v1490253301567" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-    </div>
+
 </div>
 
 </body>
@@ -568,7 +587,10 @@
     });
     // });
 </script>
-<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBmBABCOpmHVA-e2EhOjKO3AJF5Rn8opYc&sensor=false&callback=initialize&language=en-DE"></script>
+<script src="js/map.js"></script>
+<script src="js/jquery.fullPage.min.js" type="text/javascript"></script><script src="js/bootstrap.min.js"></script>
+
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
@@ -591,6 +613,7 @@
 <script src="js/draggable-0.1.min.js"></script>
 <script src="js/jquery.slider.min.js"></script>
 <script src="js/event-slider.js"></script>
+
 <!--Start of Zendesk Chat Script-->
 <script type="text/javascript">
     window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
