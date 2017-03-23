@@ -12,6 +12,8 @@ var Pub = require('./redis_sub_pub');
 var uuidV4 = require('uuid/v4');
 var emailCtrl = require('../util/email');
 const _ = require('lodash');
+var crypto = require('crypto');
+const codeKey = '^niu1bi&#$285'; //密匙
 // var trial = require('../util/billing');
 
 /**
@@ -137,6 +139,25 @@ function sendActiveEmail(email, idText) {
             <p>Best regards,</p>
             <p>Newbidder Team </p>`)({
         href: setting.activateRouter + "?key=" + idText,
+
+      })
+  };
+  //异步发送邮件
+  emailCtrl.sendMail([email], tpl);
+}
+
+function sendforgetPwdEmail(email, code) {
+  let tpl = {
+    subject: 'Newbidder Password Reset', // Subject line
+    text: ``, // plain text body
+    html: _.template(` <p>Hello,</p>
+
+            <p>We have received your request to reset your password for your Newbidder account.</p>
+            <p>To change your password, please <a href="<%=href%>">click here</a>.</p>
+
+            <p>Best regards,</p>
+            <p>Newbidder Team </p>`)({
+        href: setting.forgetPwdRouter + "?code=" + code,
 
       })
   };
@@ -455,6 +476,99 @@ router.get('/user/resendconfirmation', async function (req, res, next) {
   }
 });
 
+
+router.get('/user/resentpassword', async function (req, res, next) {
+  var schema = Joi.object().keys({
+    email: Joi.string().trim().required()
+  });
+  let connection;
+  let code;
+  try {
+    let value = await common.validate(req.query, schema);
+    connection = await common.getConnection();
+    let user = await common.query("select  `id`,`idText` from User   where email = ?", [value.email], connection);
+    if (user.length == 0) {
+      throw new Error('email error');
+    }
+    let codeSlice = await common.query("select `code`,`expireAt`,`status` from UserResetCode where `userId`=? and `expireAt`> ? and `status`= ?", [user[0].id, moment().unix(), 0], connection);
+    if (codeSlice.length) {
+      code = codeSlice[0].code;
+    } else {
+      code = util.getUUID() + "." + user[0].idText;
+      await common.query("insert into UserResetCode (`userId`,`code`,`expireAt`) values(?,?,?)", [user[0].id, code, moment().unix() + 30 * 60], connection);
+    }
+    var cipher = crypto.createCipher('aes-256-cbc', codeKey)
+    var crypted = cipher.update(code, 'utf8', 'hex')
+    crypted += cipher.final('hex')
+    //异步发送邮件
+    if (user.length) {
+      sendforgetPwdEmail(value.email, crypted);
+    }
+
+    res.json({
+      status: 1,
+      message: 'success'
+    });
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+});
+
+
+router.post('/user/resentpassword', async function (req, res, next) {
+  var schema = Joi.object().keys({
+    code: Joi.string().trim().required(),
+    password: Joi.string().trim().required()
+  });
+  let connection;
+  let key;
+  try {
+    let value = await common.validate(req.body, schema);
+    //解析code
+    try {
+      var decipher = crypto.createDecipher('aes-256-cbc', codeKey)
+      key = decipher.update(value.code, 'hex', 'utf8')
+      key += decipher.final('utf8')
+    } catch (e) {
+      return next(new Error("code error"))
+    }
+
+    if (!key) {
+      return next(new Error("code error"));
+    }
+    connection = await common.getConnection();
+    let result = await common.query("select `userId`,`expireAt`,`status` from UserResetCode where `code`=?", [key], connection);
+
+    if (result.length == 0) {
+      return next(new Error("code error"));
+    }
+
+    if (result[0].status !== 0 || result[0].expireAt < moment().unix()) {
+      return next(new Error('code expired'));
+    }
+
+    let updateUser = common.query("update User set `password`=? where `id`=?", [md5(value.password), result[0].userId], connection);
+    let updateUserCode = common.query("update UserResetCode set `status`=? where `userId`=? and `code`=?", [1, result[0].userId, key], connection);
+
+    await Promise.all([updateUser, updateUserCode]);
+
+    return res.json({
+      status: 1,
+      message: 'success'
+    });
+
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+})
 
 router.get('/status', function (req, res) {
   res.status(200).send('ok');
