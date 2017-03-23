@@ -438,6 +438,7 @@
       function duplicateRule() {
         var newRule = angular.copy($scope.curRule);
         //newRule.name = 'Rule ' + $scope.flow.rules.length;
+        delete newRule.id;
         $scope.flow.rules.push(newRule);
         $scope.editRule(newRule);
       }
@@ -460,6 +461,7 @@
       function duplicatePath() {
         var newPath = angular.copy($scope.curPath);
         //newPath.name = 'Path ' + ($scope.curRule.paths.length + 1);
+        delete newPath.id;
         $scope.curRule.paths.push(newPath);
         $scope.editPath($scope.curRule, newPath);
       }
