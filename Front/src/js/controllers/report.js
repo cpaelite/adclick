@@ -1111,6 +1111,20 @@
         }
       });
 
+      // path
+      if($scope.item.targetType == 3) {
+        $scope.item['flow'] = {
+          rules: pathData.rules,
+          name: 'defaultName',
+          type: 0,
+          redirectMode: $scope.item.redirectMode,
+          country: $scope.item.country
+        };
+        if($scope.item.targetFlowId) {
+          $scope.item['flow'].id = $scope.item.targetFlowId;
+        }
+      }
+
       delete $scope.item.trafficSourceId;
       delete $scope.item.targetFlowId;
       delete $scope.item.trafficSourceName;
@@ -1134,18 +1148,6 @@
       //     redirectMode: 0
       //   };
       // }
-
-      // path
-      if($scope.item.targetType == 3) {
-        $scope.item['flow'] = {
-          rules: pathData.rules,
-          name: 'defaultName',
-          type: 0,
-          redirectMode: $scope.item.redirectMode,
-          country: $scope.item.country
-        };
-      }
-
       $scope.editForm.$setSubmitted();
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
