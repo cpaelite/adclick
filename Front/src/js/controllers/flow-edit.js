@@ -154,7 +154,6 @@
         });
       };
       if(reportCache.get('flow-cache')) {
-        console.log("reportCache.get('flow-cache') --- >", reportCache.get('flow-cache'));
         theFlow = angular.copy(reportCache.get('flow-cache'));
         // reportCache.remove('flow-cache')
         $scope.oldName = theFlow.name;
@@ -448,7 +447,6 @@
 
       // operation on path
       $scope.editPath = function(rule, path) {
-        console.log('rule----path---', rule, path);
         $scope.onEdit = 'path';
         $scope.isDeleted = path.isDeleted;
         $scope.curRule = rule;
@@ -675,7 +673,6 @@
           locals.item = null;
         }
         locals.country = $scope.country;
-        console.log($scope.country);
         $mdDialog.show({
           multiple: true,
           skipHide: true,
@@ -910,7 +907,6 @@
        * @param: {bool} isFromCampaign: false(flow页面的数据)、true(campaign页面path的数据)
        */
       function handleData(isFromCampaign, isCacheData) {
-        console.log('theFlow.rules', theFlow.rules);
         $scope.saveErrors.length = 0;
         $scope.showErrors = false;
         // clean up before save
@@ -1075,7 +1071,6 @@
           return $q.reject('error occurs');
         }
         $scope.onSave = true;
-        console.log('flowData----->', flowData);
         return Flow.save(flowData, function(result) {
           $scope.onSave = false;
           $scope.saveTime = new Date();
@@ -1119,7 +1114,6 @@
       // campaign cache data
       $scope.$on('cacheCampaignStarted', function() {
         var oData = handleData(true, true), flowData = oData.flowData;
-        console.log('oData---->', oData);
         $scope.$emit('pathCacheDataSuccessed', {
           status: 1,
           data: flowData,
@@ -1156,7 +1150,6 @@
     }
 
     function confirmResetLanderAndOfferCtrl($scope, $mdDialog) {
-      console.log('self.oldCountryName', this.oldCountryName);
       var self = this;
       this.title = '';
       this.content = 'changeCountryConfirm';

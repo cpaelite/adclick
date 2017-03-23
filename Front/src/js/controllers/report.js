@@ -576,7 +576,6 @@
     }
 
     if (perfType == 'campaign') {
-      console.log('reportCache.get("campaign-cache")', reportCache.get('campaign-cache'));
       var cache = reportCache.get('campaign-cache');
       if (cache) {
         reportCache.remove('campaign-cache');
@@ -1086,12 +1085,10 @@
     };
 
     $scope.$on('pathDataSuccessed', function(event, oData) {
-      console.log(oData);
       if(oData.status) {
         saveCampaign(oData.data);
       } else {
         // TODO show error
-        console.log(oData.data);
       }
       reportCache.remove('campaign-cache');
     });
@@ -1153,7 +1150,6 @@
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
         var item = angular.copy($scope.item);
-        console.log('$scope.isDuplicate$scope.isDuplicate$scope.isDuplicate', $scope.isDuplicate)
         if (tempFlowId && !$scope.isDuplicate) {
           item['flow'].id = tempFlowId;
         }
@@ -2222,7 +2218,6 @@
     };
 
     function success(oData) {
-      console.log("success delete");
       self.onprocess = false;
       if(oData.status == 0) {
         self.error = oData.message || 'Error occured when delete.';
