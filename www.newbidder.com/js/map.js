@@ -2,9 +2,9 @@
  * Created by Administrator on 2016/7/18.
  */
 $(document).ready(function () {
-    if (!os.isPc && !os.isIpad) {
-        window.location.href = "./iphone/iphone.html";
-    }
+    // if (!os.isPc && !os.isIpad) {
+    //     window.location.href = "./iphone/iphone.html";
+    // }
     //取消加载动画
     function loading() {
         var googleMapUrl = "http://maps.googleapis.com/maps/api/js?key=AIzaSyBmBABCOpmHVA-e2EhOjKO3AJF5Rn8opYc&sensor=false&callback=initialize&language=en-DE";
