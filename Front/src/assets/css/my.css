@@ -2150,9 +2150,9 @@ input[type="checkbox"].th-checkbox{
 .close-btn:hover{
     color: #fff;
 }
-/*md-content.cs-main-content{
+md-content.cs-main-content{
     height: calc(100% - 93px);
-}*/
+}
 .cs-page-flow,
 .cs-flow-content{
     height: 100%;
