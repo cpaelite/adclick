@@ -57,7 +57,7 @@ function initialize() {
         zoom: 15,
         DomContainer: document.getElementById("googleMap"),
         center: new google.maps.LatLng(31.2061189,121.5999203),
-        mapName: 'Adbund',
+        mapName: 'newbidder',
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(mapProp.DomContainer, mapProp);
