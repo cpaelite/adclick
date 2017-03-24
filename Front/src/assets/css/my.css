@@ -1212,6 +1212,9 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
     color: #2abf2a;
 }
 .data-num small{font-weight:600;;margin:-2px 3px 0 0;line-height:32px;float:left;}
+.data-tables-chart-container .table thead{background: #2770ea;color: #fff;}
+.data-tables-chart-container .table thead tr th:last-child{width: 18%;}
+.data-tables-chart-container .table thead tr th:first-child{width: 40px;}
 .data-tables-chart-container .table > thead > tr > th,
 .data-tables-chart-container .table > tbody > tr > td{
     border: none;
