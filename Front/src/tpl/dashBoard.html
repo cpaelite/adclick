@@ -100,7 +100,7 @@
             <div class="col-xs-4 col-sm-4 col-md-4 data-list-con data-list-con-line">
                 <i class="icon-sj-ss fonts26 se-07"></i>
                 <div class="data-list-con-r">
-                <div class="data-num">{{summary.roi || 0.00 | number}}%</div>
+                <div class="data-num" ng-class="{'red': summary.roi > 0 ,'green': summary.roi < 0}">{{summary.roi || 0.00 | number}}%</div>
                 <h3>ROI</h3>
                     </div>
             </div>

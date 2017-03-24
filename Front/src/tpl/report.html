@@ -159,7 +159,8 @@
                      ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
                 <td md-cell
                     ng-repeat="column in columns"
-                    ng-show="preferences.reportViewColumns[column.key].visible  || column.role=='name'">
+                    ng-show="preferences.reportViewColumns[column.key].visible  || column.role=='name'"
+                    ng-class="{'red':row.data[column.key] > 0 && column.key == 'roi','green':row.data[column.key] < 0 && column.key == 'roi'}">
                     <!--ng-click="openMenu($event, row, column.role)"-->
                   <span ng-if="column.role=='name'">
                     <md-menu-bar style="padding: 0;">
@@ -183,17 +184,22 @@
                         </md-menu>
                     </md-menu-bar>
                   </span>
+<<<<<<< HEAD
                   <span ng-if="column.role!='name'">
                     {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
+=======
+                  <span ng-if="column.role!='name' || treeLevel>1">
+                  {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
+>>>>>>> bug update
                   </span>
                 </td>
               </tr>
             </tbody>
-            <tfoot md-body>
+            <tfoot md-body fix-foot>
               <tr md-row>
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
-                <td md-cell ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
+                <td md-cell ng-class="{'red':report.totals[column.key] > 0 && column.key == 'roi','red':report.totals[column.key] < 0 && column.key == 'roi'}" ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
                   {{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? ((report.totals[column.key] || 0) + '%') : report.totals[column.key])}}
                 </td>
                 <!-- <td md-cell></td> -->
@@ -205,3 +211,4 @@
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
                          md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
+
