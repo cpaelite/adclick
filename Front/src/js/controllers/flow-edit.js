@@ -2,11 +2,11 @@
 
   angular.module('app')
     .controller('FlowEditCtrl', [
-        '$scope', '$mdDialog', '$q', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country', '$rootScope', 'reportCache',
+        '$scope', '$mdDialog', '$q', '$timeout', '$http', 'Flow', 'Lander', 'Offer', 'Condition', 'Country', '$rootScope', 'reportCache',
         FlowEditCtrl
     ]);
 
-  function FlowEditCtrl($scope, $mdDialog, $q, $http, Flow, Lander, Offer, Condition, Country, $rootScope, reportCache) {
+  function FlowEditCtrl($scope, $mdDialog, $q, $timeout, $http, Flow, Lander, Offer, Condition, Country, $rootScope, reportCache) {
     var flowId, isDuplicate, fromCampaign, theFlow, tempCountryName, oldCountryName, fromPath;
     $scope.flowMode = true;
     if($scope.$stateParams) {
@@ -646,14 +646,18 @@
         }
       };
       $scope.queryLanders = function(query) {
-        if (allLanders) {
-          var filtered = allLanders.filter(function(lander) {
-            return $scope.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == $scope.country.value;
-          }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
-          return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
-        } else {
-          return [];
-        }
+        var deferred = $q.defer();
+        $timeout(function() {
+          if (allLanders) {
+            var filtered = allLanders.filter(function(lander) {
+              return $scope.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == $scope.country.value;
+            }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
+            deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
+          } else {
+            deferred.resolve([]);
+          }
+        });
+        return deferred.promise;
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
@@ -721,14 +725,18 @@
         }
       };
       $scope.queryOffers = function(query) {
-        if (allOffers) {
-          var filtered = allOffers.filter(function(offer) {
-            return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
-          }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
-          return query ? filtered.filter(createFilterFor(query, "name")) : filtered;
-        } else {
-          return [];
-        }
+        var deferred = $q.defer();
+        $timeout(function() {
+          if (allOffers) {
+            var filtered = allOffers.filter(function(offer) {
+              return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
+            }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
+            deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
+          } else {
+            deferred.resolve([]);
+          }
+        });
+        return deferred.promise;
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
