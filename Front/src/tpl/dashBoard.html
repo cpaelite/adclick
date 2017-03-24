@@ -126,13 +126,18 @@
             <table class="table table-hover" ng-repeat="tbl in tables">
               <thead>
                 <tr>
-                  <th width="40"></th>
+                  <th></th>
                   <th>{{tbl | ucfirst}}</th>
-                  <th width="18%">{{sortby | ucfirst}}</th>
+                  <th>{{sortby | ucfirst}}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in tableData[tbl]">
+                <tr ng-if="!tableData[tbl]">
+                  <td colspan="3" rowspan="5" class="loading">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                  </td>
+                </tr>
+                <tr ng-if="tableData[tbl]" ng-repeat="row in tableData[tbl]">
                   <td>{{$index+1}}</td>
                   <td>
                       <em ng-show="row[tbl+'Name']">{{row[tbl+'Name']}}</em>

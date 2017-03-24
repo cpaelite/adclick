@@ -68,6 +68,16 @@
           p.groupBy = tbl;
           Report.get(p, function (result) {
             $scope.tableData[tbl] = result.data.rows;
+            var rowsLen = result.data.rows.length;
+            if(rowsLen == 0) {
+              for(var i = 0; i < 5; i++) {
+                $scope.tableData[tbl].push({});
+              }
+            } else if (rowsLen < 5){
+              for(var i = 0; i < (5 - rowsLen); i++) {
+                $scope.tableData[tbl].push({});
+              }
+            }
           });
         });
       }
@@ -164,8 +174,19 @@
       $scope.tables.forEach(function (tbl) {
         var p = angular.copy(params);
         p.groupBy = tbl;
+        $scope.tableData[tbl] = null;
         Report.get(p, function (result) {
           $scope.tableData[tbl] = result.data.rows;
+          var rowsLen = result.data.rows.length;
+          if(rowsLen == 0) {
+            for(var i = 0; i < 5; i++) {
+              $scope.tableData[tbl].push({});
+            }
+          } else if (rowsLen < 5){
+            for(var i = 0; i < (5 - rowsLen); i++) {
+              $scope.tableData[tbl].push({});
+            }
+          }
         });
       });
     }
