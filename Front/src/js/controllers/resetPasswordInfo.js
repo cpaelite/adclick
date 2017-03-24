@@ -12,7 +12,7 @@
 
     var code = $location.$$search.code;
     $scope.resetPwd = function(){
-      ResetPwd.save({'newpassword':$scope.user,'code':code},function(result){
+      ResetPwd.save({'password':$scope.user.password,'code':code},function(result){
         if(result.status){
           toastr.success('Password reset success!', {timeOut: 2000, positionClass: 'toast-top-center'});
           $state.go('access.signin',{});

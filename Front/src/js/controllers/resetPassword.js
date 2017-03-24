@@ -11,7 +11,7 @@
     $scope.app.subtitle = 'Sign up';
     
     $scope.resetPwd = function(){
-      ResetPwd.get({'email':$scope.user},function(result){
+      ResetPwd.get({'email':$scope.email},function(result){
         if(result.status){
           toastr.success('Please go to the mailbox to view!', {timeOut: 2000, positionClass: 'toast-top-center'});
         }
