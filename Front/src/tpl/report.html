@@ -211,10 +211,4 @@
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
                          md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
-<script>
-$(function(){
-    console.log($('.cs-app').height()+";"+$('header').height()+";"+$('nav').height());
-    console.log($(window).height() - $('header').height() - $('nav').height());
-    $('md-content').height($(window).height() - $('header').height() - $('nav').height());
-});
-</script>
+
