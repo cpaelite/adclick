@@ -184,13 +184,8 @@
                         </md-menu>
                     </md-menu-bar>
                   </span>
-<<<<<<< HEAD
                   <span ng-if="column.role!='name'">
                     {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
-=======
-                  <span ng-if="column.role!='name' || treeLevel>1">
-                  {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
->>>>>>> bug update
                   </span>
                 </td>
               </tr>
