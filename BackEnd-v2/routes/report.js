@@ -3,6 +3,7 @@ var router = express.Router();
 var common = require('./common');
 var moment = require('moment');
 var json2csv = require('json2csv');
+var Joi = require('joi');
 import _ from 'lodash';
 import sequelize from 'sequelize';
 import {
@@ -31,7 +32,11 @@ router.get('/api/report', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
-    result = await campaignReport(req.query);
+    if (req.query.groupBy && req.query.groupBy == "ip") {
+      result = await IPReport(req);
+    } else {
+      result = await campaignReport(req.query);
+    }
     return res.json({ status: 1, message: 'success', data: result });
   } catch (e) {
     console.error(e)
@@ -365,6 +370,97 @@ function dynamicSort(property) {
   return function (a, b) {
     var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
     return result * sortOrder;
+  }
+}
+
+
+async function IPReport(req) {
+  var schema = Joi.object().keys({
+    campaign: Joi.number().required(),
+    from: Joi.string().required(),
+    to: Joi.string().required(),
+    limit: Joi.number().required().min(0),
+    page: Joi.number().required(),
+    order: Joi.string().required(),
+    groupBy: Joi.string().required(),
+    tz: Joi.string().required(),
+    userId: Joi.number().required()
+  });
+  let connection;
+
+  try {
+
+    let value = await common.validate(req.query, schema);
+    let {
+      campaign,
+      limit,
+      page,
+      from,
+      to,
+      tz,
+      order,
+      userId
+        } = value;
+    limit = parseInt(limit)
+    page = parseInt(page)
+    let offset = (page - 1) * limit;
+    let dir = "asc";
+
+    let sql = `select IP as ip,Impressions as impressions,Visits as visits,Clicks as clicks,Conversions as conversions,
+                  round(Cost/1000000,2) as cost,
+                  round(Revenue/1000000,2) as revenue,
+                  round(Revenue/1000000-Cost/1000000,2) as profit,
+                  IFNULL(round(Cost/Visits/1000000,4),0.0000) as cpv,
+                  IFNULL(round(Visits/Impressions,2),0.00) as ictr,
+                  IFNULL(round(Clicks/Visits,2),0.00) as ctr,
+                  IFNULL(round(Conversions/Clicks,2),0.00) as cr,
+                  IFNULL(round(Conversions/Visits,2),0.00) as cv,
+                  IFNULL(round((Revenue-Cost)/Cost,2),0.00) as roi,
+                  IFNULL(round(Revenue/Visits/1000000,4),0.0000) as epv,
+                  IFNULL(round(Revenue/Clicks/1000000,2),0.00) as epc,
+                  IFNULL(round(Revenue/Conversions/1000000,2),0.00) as ap
+                  from AdIPStatis where UserID=${userId} and CampaignID=${campaign} 
+                  and Timestamp >=(UNIX_TIMESTAMP(CONVERT_TZ('${from}', '+00:00','${tz}'))*1000)  
+                  and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '+00:00','${tz}'))*1000)`;
+
+
+    let countSql = `select COUNT(*) as total,sum(impressions) as impressions,sum(visits) as visits, 
+                    sum(clicks) as clicks,sum(conversions) as conversions,
+                    sum(cost) as cost,sum(revenue) as revenue,sum(profit) as profit, 
+                    IFNULL(round(sum(cost)/sum(visits),4),0.0000) as cpv,
+                    IFNULL(round(sum(visits)/sum(impressions),2),0.00) as ictr,
+                    IFNULL(round(sum(clicks)/sum(visits),2),0.00) as ctr,
+                    IFNULL(round(sum(conversions)/sum(clicks),2),0.00) as cr,
+                    IFNULL(round(sum(conversions)/sum(visits),2),0.00) as cv,
+                    IFNULL(round((sum(revenue)-sum(cost))/sum(cost),2),0.00) as roi,
+                    IFNULL(round(sum(revenue)/sum(visits),4),0.0000) as epv,
+                    IFNULL(round(sum(revenue)/sum(clicks),2),0.00) as epc,
+                    IFNULL(round(sum(revenue)/sum(conversions),2),0.00) as ap
+                    from (( ${sql} ) as T)`;
+
+    if (order.indexOf('-') >= 0) {
+      dir = "desc";
+      order = order.replace(new RegExp(/-/g), '');
+    }
+
+    sql += " order by " + order + " " + dir + "  limit " + offset + "," + limit;
+    
+    connection = await common.getConnection();
+    let result = await Promise.all([common.query(sql, [], connection), common.query(countSql, [], connection)]);
+    let rows = result[0];
+    let total = result[1][0];
+    return {
+      totalRows: total.total,
+      totals: _.omit(total, 'total'),
+      rows: rows
+    }
+  } catch (e) {
+    throw e;
+  }
+  finally {
+    if (connection) {
+      connection.release();
+    }
   }
 }
 
