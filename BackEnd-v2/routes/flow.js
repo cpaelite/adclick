@@ -671,8 +671,8 @@ async function saveOrUpdateFlow(subId, value, connection) {
           if (value.rules[i].paths && value.rules[i].paths.length > 0) {
             for (let j = 0; j < value.rules[i].paths.length; j++) {
               let pathResult;
-              if(flowIsInsert){
-                 if(value.rules[i].paths[j].id) delete value.rules[i].paths[j].id;
+              if (flowIsInsert) {
+                if (value.rules[i].paths[j].id) delete value.rules[i].paths[j].id;
               }
               if (!value.rules[i].paths[j].id) {
                 pathResult = await common.insertPath(value.userId, value.rules[i].paths[j], connection);
@@ -1070,10 +1070,14 @@ async function loadMobileCarrierFromDB(name, connection) {
 }
 
 async function loadTimezoneFromDB(connection) {
-  var sql = "select utcShift as value, detail as display from Timezones"
+  var sql = "select id,utcShift as value, detail as display from Timezones"
   var r = [];
   r = await query(sql, [], connection);
-  return r;
+  let result = [];
+  for (let index = 0; index < r.length; index++) {
+    result.push({ value: r[index].value + ":" + r[index].id, display: r[index].display })
+  }
+  return result;
 }
 
 //TODO: update the values
@@ -1211,6 +1215,9 @@ function formatWeekDay(id, operand, tz, weekday) {
   } else {
     r.push("weekday not in")
   }
+  if (tz && tz.indexOf(":") > 0) {
+    tz = tz.slice(0, tz.indexOf(":"))
+  }
   r.push(tz)
   if (isArray(weekday))
     weekday.forEach(function (v) {
@@ -1228,6 +1235,9 @@ function formatTime(id, operand, tz, startTime, endTime) {
     r.push("time between")
   } else {
     r.push("time not between")
+  }
+  if (tz && tz.indexOf(":") > 0) {
+    tz = tz.slice(0, tz.indexOf(":"))
   }
   r.push(tz)
   r.push(startTime)
