@@ -50,6 +50,7 @@ module.exports = {
   invitationRouter: "http://localhost:5000/invitation",
   invitationredirect: "http://localhost:5000",
   freetrialRedirect:"http://localhost:5000/#/access/signup",
+  forgetPwdRouter:"http://localhost:5000/#/access/reset-password-info",
   defaultSetting: {
       "reportViewLimit": 500,
       "entityType": 1,
