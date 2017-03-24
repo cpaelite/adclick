@@ -168,6 +168,38 @@ app.post('/account/check', function (req, res) {
 });
 
 /**
+ * @apiName 用户忘记密码
+ *
+ */
+app.get('/user/resetpassword', function (req, res) {
+  var result = {
+    status: 1,
+    message: "success",
+    data:{
+      email:'111@qq.com'
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 用户重置密码
+ *
+ * @apiParam {String} newPassword,email,code
+ */
+app.post('/user/resetpassword', function (req, res) {
+  var result = {
+    status: 1,
+    message: "success",
+    data:{
+      newpassword:'1111',
+      code:'123'
+    }
+  };
+  res.send(result);
+});
+
+/**
  * @apiName 获取tags
  *
  * @apiParam {number} type 1:campaign; 2:lander; 3:offer

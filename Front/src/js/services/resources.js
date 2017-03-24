@@ -10,6 +10,9 @@ angular.module('app')
       'update': {method:'PUT'}
     });
   }])
+  .factory('ResetPwd', ['$resource', function ($resource) {
+    return $resource('/user/resetpassword');
+  }])
   .factory('Campaign', ['$resource', function ($resource) {
     return $resource('/api/campaigns/:id', {id: '@id'});
   }])
