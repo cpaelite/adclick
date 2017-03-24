@@ -1209,7 +1209,7 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.red{
 .data-num.green,
 table.md-table td.md-cell.green,
 table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
-    color: green;
+    color: #2abf2a;
 }
 .data-num small{font-weight:600;;margin:-2px 3px 0 0;line-height:32px;float:left;}
 .data-tables-chart-container .table > thead > tr > th,
