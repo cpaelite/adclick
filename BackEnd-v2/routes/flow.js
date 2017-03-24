@@ -1070,7 +1070,7 @@ async function loadMobileCarrierFromDB(name, connection) {
 }
 
 async function loadTimezoneFromDB(connection) {
-  var sql = "select `id` as value, detail as display from Timezones"
+  var sql = "select utcShift as value, detail as display from Timezones"
   var r = [];
   r = await query(sql, [], connection);
   return r;
