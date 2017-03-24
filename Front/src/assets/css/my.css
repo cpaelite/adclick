@@ -1212,6 +1212,10 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
     color: #2abf2a;
 }
 .data-num small{font-weight:600;;margin:-2px 3px 0 0;line-height:32px;float:left;}
+.data-tables-chart-container .table {margin-bottom: 15px;}
+.data-tables-chart-container .table thead{background: #2770ea;color: #fff;}
+.data-tables-chart-container .table thead tr th:last-child{width: 18%;}
+.data-tables-chart-container .table thead tr th:first-child{width: 40px;}
 .data-tables-chart-container .table > thead > tr > th,
 .data-tables-chart-container .table > tbody > tr > td{
     border: none;
@@ -1221,6 +1225,13 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
 .data-tables-chart-container .table > tbody > tr:hover > td{color:#fff;}
 .data-tables-chart-container .table > tbody > tr:nth-child(2n+2){
     background: #f5f5f5;
+}
+.data-tables-chart-container table>tbody>tr>td.loading {height: 165px;background: #fff}
+.data-tables-chart-container table>tbody>tr>td.loading:hover {background: #fff;}
+.data-tables-chart-container .glyphicon {color: #333;}
+.data-tables-chart-container .glyphicon-refresh-animate {
+    -animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
 }
 .data-tables-chart-container .table-hover > tbody > tr:hover{
     background-color: #8494a2;
@@ -1255,7 +1266,7 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
     font-weight: lighter;
 }
 .data-tables-chart-container table tbody td:first-child{
-    background:transparent;width:32px;float:left;
+    background:transparent;
     text-align: center;
     font-size: 12px;
     vertical-align: middle;
