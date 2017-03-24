@@ -161,6 +161,13 @@
       $scope.$state.go('setApp.subscriptions');
     };
 
+    $scope.emailCon = 'support@newbidder.com';
+    $scope.skypeCon = 'live:support_44609';
+    $scope.qqCon = '490922827';    
+    $scope.copyCon = function(){
+      toastr.success('copy success',{ timeOut: 4000, positionClass: 'toast-top-center' });
+    };
+
   }
 
 })();
