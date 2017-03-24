@@ -1075,7 +1075,7 @@ async function loadTimezoneFromDB(connection) {
   r = await query(sql, [], connection);
   let result = [];
   for (let index = 0; index < r.length; index++) {
-    result.push({ value: r[index].value + ":" + r[index].id, display: r[index].display })
+    result.push({ value: r[index].value + "_" + r[index].id, display: r[index].display })
   }
   return result;
 }
@@ -1215,8 +1215,8 @@ function formatWeekDay(id, operand, tz, weekday) {
   } else {
     r.push("weekday not in")
   }
-  if (tz && tz.indexOf(":") > 0) {
-    tz = tz.slice(0, tz.indexOf(":"))
+  if (tz && tz.indexOf("_") > 0) {
+    tz = tz.slice(0, tz.indexOf("_"))
   }
   r.push(tz)
   if (isArray(weekday))
@@ -1236,8 +1236,8 @@ function formatTime(id, operand, tz, startTime, endTime) {
   } else {
     r.push("time not between")
   }
-  if (tz && tz.indexOf(":") > 0) {
-    tz = tz.slice(0, tz.indexOf(":"))
+  if (tz && tz.indexOf("_") > 0) {
+    tz = tz.slice(0, tz.indexOf("_"))
   }
   r.push(tz)
   r.push(startTime)
