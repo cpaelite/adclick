@@ -17,7 +17,7 @@
                 </md-select>
             </div>
             <div class="cs-subform-control">
-                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0]" placeholder="Choose Grouping" ng-change="changeGroupby(1)">
+                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0] || groupBy[0]=='ip'" placeholder="Choose Grouping" ng-change="changeGroupby(1)">
                     <md-option value="">Choose Grouping</md-option>
                     <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</md-option>
                 </md-select>

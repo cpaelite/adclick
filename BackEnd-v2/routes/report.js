@@ -384,7 +384,8 @@ async function IPReport(req) {
     order: Joi.string().required(),
     groupBy: Joi.string().required(),
     tz: Joi.string().required(),
-    userId: Joi.number().required()
+    userId: Joi.number().required(),
+    status: Joi.number().optional()
   });
   let connection;
 
