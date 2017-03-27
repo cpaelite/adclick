@@ -301,7 +301,6 @@ md-select .md-select-value,md-select.md-table-select > .md-select-value{
 }
 .cs-add-button {
     -moz-user-select: none;
-    box-shadow:0 1px 1px 0 rgba(0, 0, 0, 0.3) !important;
     font-size: 13px;
     font-weight: bold;
     color: #fff;
@@ -314,9 +313,9 @@ md-select .md-select-value,md-select.md-table-select > .md-select-value{
 .cs-add-button:hover {
      background:#5089e8 !important;
  }
-.cs-add-button.down-btn:hover{background: rgb(242, 116, 119) !important;}
+.cs-add-button.add-btn:hover{background: rgb(242, 116, 119) !important;}
 .cs-add-button.green-btn:hover {
-    background:#16a919 !important;
+    background:#12B610 !important;
 }
 .cs-input-label {
     line-height: 20px;
@@ -631,8 +630,7 @@ table.md-table th.md-column.md-active, table.md-table th.md-column.md-active md-
     background: -ms-linear-gradient(top, #f8f8f8 0, #e9e9e9 100%);
     background: linear-gradient(to bottom, #f8f8f8 0, #e9e9e9 100%);
     color:#000;font-weight:bold;}
-.md-table tfoot.md-body{line-height:20px;}
-md-table-container .md-table tfoot.md-body{}
+.md-table tfoot.md-body{line-height:20px;border-top:1px solid #d7d7d7;}
 table.md-table th.md-column {
     border-right:1px solid #d7d7d7;
 }
@@ -654,7 +652,7 @@ table.md-table tbody.md-body > tr.md-row:hover, table.md-table tfoot.md-foot > t
 table tbody tr{background: #fff;}
 table tbody tr:nth-child(2n+2){background:#f5f5f5;border-width:1px 0 1px 0;border-color:#ededed;border-style:solid;}
 
-table{border-radius:3px 3px 0 0;float:left;width:100%;height:auto;}
+table{border-radius:0;float:left;width:100%;height:auto;}
 md-table-container {max-height:430px;min-height:430px;overflow-y:auto;border-radius:0 0 3px 3px;float:left;width:100%;background: rgb(241, 242, 247);}
 .table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;}
 .md-table-pagination{color:#000;}
@@ -2943,43 +2941,29 @@ md-content.md-default-theme, md-content{color:#000;}
 .cs-add-button{ box-shadow:0 1px 1px 0 rgba(0, 0, 0, 0.1),
 0 1px 1px 0 rgba(0, 0, 0, 0.1),
 0 1px 1px 0 rgba(0, 0, 0, 0.1);}
-.md-button.md-primary.md-raised.down-btn{
+.md-button.md-primary.md-raised.add-btn{
     line-height: 30px;
     height: 32px;
     color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0.2) 0 1px 1px 0;
-    background: linear-gradient(rgb(252, 126, 132) 0px, rgb(240, 80, 83) 100%);
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(223, 76, 79);
+    box-shadow:none;
+    background:#e94b55;
+    border:1px solid #cc323a;
     border-image: initial;
     border-radius: 3px;
     transition: color 300ms ease-in-out;}
-.md-button.md-primary.md-raised.down-btn i{margin-right:5px;}
+.md-button.md-primary.md-raised.green-btn i{margin-right:5px;}
 .btn.btn-primary.blue-btn{padding:0 12px;font-weight:bold;font-size:13px;}
 .btn.btn-primary.blue-btn i{margin-right:6px;font-size:12px;}
 .btn.btn-primary.blue-btn.blue-btn-h{height:42px;line-height:42px;font-size:16px;}
 .md-button.md-primary.md-raised.blue-btn,.view_column.blue-btn,.btn.btn-primary.blue-btn,.md-raised.copied-btn,.flow-actions li.new-flow,.traffic-source-templates,
 .md-button.traffic-source-templates.md-focused,.copy-btn.domain-btn.main-domain,.save-btn
-{ background: #266fe9;
- background: -moz-linear-gradient(top, #357cf4 0, #266fe9 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #357cf4), color-stop(100%, #266fe9));
-    background: -webkit-linear-gradient(top, #357cf4 0, #266fe9 100%);
-    background: -o-linear-gradient(top, #357cf4 0, #266fe9 100%);
-    background: -ms-linear-gradient(top, #357cf4 0, #266fe9 100%);
-    background: linear-gradient(to bottom, #357cf4 0, #266fe9 100%);
-    border:1px solid #2669d9;line-height:30px;height:32px;
+{ background:#357CF4;
+    border:1px solid #2564CF;line-height:30px;height:32px;
     border-radius:3px;color:#fff;
-    box-shadow:0 1px 1px 0 rgba(0, 0, 0, 0.3) !important;
     transition:color 300ms ease-in-out;
 }
-.green-btn{background: #16a919;
-    background: -moz-linear-gradient(top, #21b724 0, #16a919 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #21b724), color-stop(100%, #16a919));
-    background: -webkit-linear-gradient(top, #21b724 0, #16a919 100%);
-    background: -o-linear-gradient(top, #21b724 0, #16a919 100%);
-    background: -ms-linear-gradient(top, #21b724 0, #16a919 100%);
-    background: linear-gradient(to bottom, #21b724 0, #16a919 100%);border:1px solid #159f18;line-height:30px;height:32px;
+.green-btn{background:#09A507 !important;
+    border:1px solid #098E08;line-height:30px;height:32px;
     border-radius:3px;color:#fff;text-transform:capitalize;}
 .traffic-source-templates,
 .md-button.traffic-source-templates.md-focused{text-transform:none;padding:0 12px;}
