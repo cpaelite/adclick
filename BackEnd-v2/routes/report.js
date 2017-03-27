@@ -424,9 +424,10 @@ async function IPReport(req) {
                   and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '+00:00','${tz}'))*1000)`;
 
 
-    let countSql = `select COUNT(*) as total,sum(impressions) as impressions,sum(visits) as visits, 
-                    sum(clicks) as clicks,sum(conversions) as conversions,
-                    sum(cost) as cost,sum(revenue) as revenue,sum(profit) as profit, 
+    let countSql = `select COUNT(*) as total,IFNULL(sum(impressions),0) as impressions,IFNULL(sum(visits),0) as visits, 
+                    IFNULL(sum(clicks),0) as clicks,IFNULL(sum(conversions),0) as conversions,
+                    IFNULL(sum(cost),0) as cost,IFNULL(sum(revenue),0) as revenue,
+                    IFNULL(sum(profit),0) as profit, 
                     IFNULL(round(sum(cost)/sum(visits),4),0.0000) as cpv,
                     IFNULL(round(sum(visits)/sum(impressions),2),0.00) as ictr,
                     IFNULL(round(sum(clicks)/sum(visits),2),0.00) as ctr,

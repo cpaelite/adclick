@@ -351,12 +351,17 @@ router.get('/invitation', async function (req, res, next) {
     if (userSlice.length == 0) {
       throw new Error("code error");
     }
+    let config_user = await Promise.all([common.query("select `config` from RolePrivilege where `role`=?", [1], connection), common.query("select  `id`,`idText`,`firstname` from User where `email` = ?", [userSlice[0].inviteeEmail], connection)]);
+    let users = config_user[1];
+    let configSlice = config_user[0]
+    if (configSlice == 0) {
+      throw new Error('role config error');
+    }
 
-    let users = await common.query("select  `id`,`idText`,`firstname` from User where `email` = ?", [userSlice[0].inviteeEmail], connection);
     if (users.length) {
       //加入用户组
       if (users[0].id != userSlice[0].userId) {//排除自身
-        await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`) values(?,?,?,unix_timestamp(now())) ON DUPLICATE KEY UPDATE `role` = 1", [userSlice[0].groupId, users[0].id, 1], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
+        await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?) ON DUPLICATE KEY UPDATE `privilege` = ?", [userSlice[0].groupId, users[0].id, 1,configSlice[0].config,configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
       }
       res.redirect(setting.invitationredirect);
     } else {
@@ -397,10 +402,7 @@ router.get('/invitation', async function (req, res, next) {
       }
       //异步发送邮件
       emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
-      let configSlice = await common.query("select `config` from RolePrivilege where `role`=?", [1], connection);
-      if (configSlice == 0) {
-        throw new Error('role config error');
-      }
+
       await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [userSlice[0].groupId, user.userId, 1, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection), common.query("update User set emailVerified= ? where id= ?", [1, user.userId], connection)]);
 
       var expires = moment().add(200, 'days').valueOf();
@@ -488,9 +490,9 @@ router.get('/user/resetpassword', async function (req, res, next) {
     connection = await common.getConnection();
     let user = await common.query("select  `id`,`idText` from User   where email = ?", [value.email], connection);
     if (user.length == 0) {
-       let err=new Error('email error');
-       err.status=200;
-       throw err;
+      let err = new Error('email error');
+      err.status = 200;
+      throw err;
     }
     let codeSlice = await common.query("select `code`,`expireAt`,`status` from UserResetCode where `userId`=? and `expireAt`> ? and `status`= ?", [user[0].id, moment().unix(), 0], connection);
     if (codeSlice.length) {
