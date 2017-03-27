@@ -50,7 +50,17 @@ $(document).ready(function () {
         });
     }
 });
-
+//图片预加载
+function imgLoad(imgSrc, fn) {
+    var img = new Image();
+    var baseSrc = "img/";
+    img.src = baseSrc + imgSrc;
+    console.log(img);
+    img.onload = function () {
+        fn();
+        console.log(img + "加载完成");
+    }
+}
 //google地图
 function initialize() {
     var mapProp = {
