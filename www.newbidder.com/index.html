@@ -647,12 +647,10 @@
         var month = date.getMonth() + 1;
         var strDate = date.getDate();
         if (month == 3) {
-            var leftDays = 31 - strDate + 1;
-            if (leftDays<=0) {
-                $(".jumbo-text").text("");
-            } else {
-                $("#jumbo-btn").text(leftDays + " Days Left");
-            }
+            var leftDays = 31 - strDate + 1;
+            $(".jumbo-btn").text(leftDays + " Days Left");
+        } else {
+            $(".jumbo-text").text("");
         }
     }
 </script>
