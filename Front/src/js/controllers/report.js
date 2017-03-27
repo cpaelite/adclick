@@ -529,6 +529,25 @@
       });
     };
 
+    $scope.restoreItem = function (ev, item) {
+      if (!$scope.canEdit) {
+        return;
+      }
+      $mdDialog.show({
+        clickOutsideToClose: true,
+        escapeToClose: false,
+        controller: ['$mdDialog', '$injector', restoreCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        targetEvent: ev,
+        locals: {type: perfType, item: item.data},
+        bindToController: true,
+        templateUrl: 'tpl/delete-confirm-dialog.html'
+      }).then(function () {
+        getList();
+      });
+    };
+
     $scope.viewColumnIsShow = false;
     $scope.viewColumnClick = function () {
       $scope.viewColumnIsShow = !$scope.viewColumnIsShow;
@@ -2235,6 +2254,47 @@
     function error() {
       self.onprocess = false;
       self.error = 'Error occurred when delete.';
+    }
+  }
+
+  function restoreCtrl($mdDialog, $injector) {
+    var self = this;
+    this.title = "restore";
+    this.content = 'warnRestore';
+    this.cancel = $mdDialog.cancel;
+
+    var type = this.type;
+    var resourceName;
+    if (type == 'affiliate') {
+      resourceName = 'AffiliateNetwork';
+    } else if (type == 'traffic') {
+      resourceName = 'TrafficSource';
+    } else {
+      resourceName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+    }
+
+    function restoreItem(item) {
+      return $injector.get(resourceName).save({id: item[type+"Id"], deleted: item['deleted'], errorFn: true}).$promise;
+    }
+
+    this.onprocess = false;
+    this.ok = function () {
+      self.onprocess = true;
+      restoreItem(this.item).then(success, error);
+    };
+
+    function success(oData) {
+      self.onprocess = false;
+      if(oData.status == 0) {
+        self.error = oData.message || 'Error occured when restore.';
+      } else {
+        $mdDialog.hide();
+      }
+    }
+
+    function error() {
+      self.onprocess = false;
+      self.error = 'Error occurred when restore.';
     }
   }
 
