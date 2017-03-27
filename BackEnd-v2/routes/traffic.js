@@ -56,7 +56,7 @@ router.post('/api/traffics', async function (req, res, next) {
         let trafficResult = await common.insertTrafficSource(req.user.id, value.userId, value, connection);
         delete value.userId;
         value.id = trafficResult.insertId;
-
+        value.deleted = 0;
         res.json({
             status: 1,
             message: 'success',
@@ -100,7 +100,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name: Joi.string().required(),
+        name: Joi.string().optional(),
         postbackUrl: Joi.string().regex(util.regWebURL, 'postbackUrl').optional().allow(""),
         pixelRedirectUrl: Joi.string().regex(util.regWebURL, 'pixelRedirectUrl').optional().allow(""),
         impTracking: Joi.number().optional(),
@@ -109,7 +109,8 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         campaignId: Joi.string().optional().allow(""),
         websiteId: Joi.string().optional().allow(""),
         params: Joi.string().optional().allow(""),
-        hash: Joi.string().required()
+        hash: Joi.string().optional(),
+        deleted:Joi.number().optional()
     });
 
     req.body.userId = req.parent.id

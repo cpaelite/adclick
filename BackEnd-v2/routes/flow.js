@@ -496,6 +496,7 @@ router.post('/api/flows', async function (req, res, next) {
     connection = await common.getConnection();
     let data = await saveOrUpdateFlow(req.user.id, value, connection);
     delete data.userId;
+    data.deleted = 0;
     res.json({
       status: 1,
       message: 'success',
@@ -521,16 +522,17 @@ router.post('/api/flows', async function (req, res, next) {
  */
 router.post('/api/flows/:id', async function (req, res, next) {
   var schema = Joi.object().keys({
-    rules: Joi.array().required(),
+    id: Joi.number().required(),
+    rules: Joi.array(),
     hash: Joi.string(),
     type: Joi.number(),
-    id: Joi.number().required(),
-    name: Joi.string().required(),
+    name: Joi.string(),
     country: Joi.string(),
     redirectMode: Joi.number(),
     userId: Joi.number().required(),
-    idText: Joi.string().required()
-  }).optionalKeys('hash', 'type', 'country', 'redirectMode');
+    idText: Joi.string().required(),
+    deleted: Joi.number()
+  }).optionalKeys('rules','name','hash', 'type', 'country', 'redirectMode', 'deleted');
   let connection;
   try {
     req.body.userId = req.parent.id;
