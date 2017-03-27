@@ -736,7 +736,7 @@
       var params = JSON.parse(traffic.params);
       var impParam = "";
       params.forEach(function (param) {
-        if (param.Placeholder) {
+        if (param.Placeholder && param.Track) {
           impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
         }
       });
