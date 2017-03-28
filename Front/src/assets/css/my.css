@@ -652,9 +652,9 @@ table.md-table tbody.md-body > tr.md-row:hover, table.md-table tfoot.md-foot > t
 table tbody tr{background: #fff;}
 table tbody tr:nth-child(2n+2){background:#f5f5f5;border-width:1px 0 1px 0;border-color:#ededed;border-style:solid;}
 
-table{border-radius:0;float:left;width:100%;height:auto;}
-md-table-container {max-height:430px;min-height:430px;overflow-y:auto;border-radius:0 0 3px 3px;float:left;width:100%;background: rgb(241, 242, 247);}
-.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;}
+table{border-radius:3px 3px 0 0;float:left;width:100%;height:auto;}
+md-table-container {overflow-y:auto;border-radius:0 0 3px 3px;float:left;width:100%;background: rgb(241, 242, 247);min-height: 100px;}
+.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;height: 94%;}
 .md-table-pagination{color:#000;}
 .md-table-pagination .label {
     font-size: 12px;
@@ -2149,7 +2149,7 @@ input[type="checkbox"].th-checkbox{
     color: #fff;
 }
 md-content.cs-main-content{
-    height: calc(100% - 93px);
+    /*height: calc(100% - 93px);*/
 }
 .cs-page-flow,
 .cs-flow-content{
@@ -2666,7 +2666,23 @@ md-icon.md-default-theme, md-icon{color:#fff;}
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{background:#fff;}
 .signup-btn{border:none;box-shadow:none;vertical-align:inherit;}
 .sign-text{color:#666;}
+.sign-text small{
+    font-family: sans-serif;
+}
 .sign-text a{color:#000;font-size:15px;}
+.sign-text a.signup-btn{    display: block;
+    background: #253c75;
+    width: 42%;
+    margin: 15px auto;
+    color: #fff;}
+.return{    display: block;
+    text-align: right;
+    margin-right: 20px;
+    color: #999;}
+.sign-text a.signup-btn:hover{
+    color: #fff;
+    background: rgba(37, 60, 117, 0.77);
+    }
 .sign-text a:hover{color:#2770ea;background:transparent;box-shadow: none;}
 .sign-top{margin:15px 0;}
 .list-group-item{border:none;}
@@ -2953,6 +2969,14 @@ md-content.md-default-theme, md-content{color:#000;}
     transition: color 300ms ease-in-out;}
 .md-button.md-primary.md-raised.green-btn i{margin-right:5px;}
 .btn.btn-primary.blue-btn{padding:0 12px;font-weight:bold;font-size:13px;}
+.blue-btn.apply-change-btn.apply-btn{
+    background: #16a919 !important;
+    border:1px solid #16a919 !important;
+}
+.blue-btn.apply-change-btn.apply-btn:hover{
+    background: rgba(22, 169, 25, 0.55) !important;
+    border:1px solid #159f18;
+}
 .btn.btn-primary.blue-btn i{margin-right:6px;font-size:12px;}
 .btn.btn-primary.blue-btn.blue-btn-h{height:42px;line-height:42px;font-size:16px;}
 .md-button.md-primary.md-raised.blue-btn,.view_column.blue-btn,.btn.btn-primary.blue-btn,.md-raised.copied-btn,.flow-actions li.new-flow,.traffic-source-templates,

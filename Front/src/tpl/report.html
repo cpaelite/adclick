@@ -82,7 +82,7 @@
                     <md-option value="2">All</md-option>
                 </md-select>
             </div>
-            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="applySearch()" translate>apply</md-button>
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-model="btnName" ng-click="applySearch()" translate>{{btnName}}</md-button>
 
             <md-button class="md-raised md-primary cs-compact cs-add-button green-btn" ng-click="downLoad($event)" translate><i class="icon-download-alt"></i>Export CSV</md-button>
 
@@ -139,7 +139,7 @@
 </div>
 
 <div class="table-box">
-    <md-table-container>
+    <md-table-container resize>
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
