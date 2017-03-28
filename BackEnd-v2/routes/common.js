@@ -271,6 +271,7 @@ async function updateCampaign(subId, value, connection) {
 
     }
     if (value.deleted != undefined) {
+        sqlCampaign += ",`deleted`=?";
         params.push(value.deleted);
     }
 
@@ -414,8 +415,8 @@ async function updateFlow(userId, flow, connection) {
         sqlFlow += ",`redirectMode`= ?";
         params.push(flow.redirectMode);
     }
-   
-   if (flow.deleted != undefined) {
+
+    if (flow.deleted != undefined) {
         sqlFlow += ",`deleted`= ?";
         params.push(flow.deleted);
     }
