@@ -363,6 +363,9 @@
       if (perfType != 'campaign' && perfType != 'traffic' && item.role == 'campaign') {
         exclude.push(item.value);
       }
+      if (perfType != 'campaign' && item.role == 'ip') {
+        exclude.push(item.value);
+      }
       $scope.filters.forEach(function(f) {
         exclude.push(f.key);
       });
@@ -370,6 +373,9 @@
     };
 
     $scope.menuOpen = function (mdMenu, row) {
+      if (perfType == 'ip') {
+        return;
+      }
       mdMenu.open();
       if ($scope.treeLevel > 1)
         return;
@@ -736,7 +742,7 @@
       var params = JSON.parse(traffic.params);
       var impParam = "";
       params.forEach(function (param) {
-        if (param.Placeholder) {
+        if (param.Placeholder && param.Track) {
           impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
         }
       });
