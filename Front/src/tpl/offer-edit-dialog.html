@@ -61,7 +61,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-7 my-select">
-                    <md-select class="cs-subform-select" name="country" ng-model="item.country" ng-change="countryChanged(item.country)" ng-disabled="countryInputDisabled">
+                    <md-select class="cs-subform-select" aria-label="Country" name="country" ng-model="item.country" ng-change="countryChanged(item.country)" ng-disabled="countryInputDisabled">
 
                         <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
                     </md-select>
@@ -70,7 +70,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-7 my-select">
-                    <md-select name="AffiliateNetworkId" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
+                    <md-select name="AffiliateNetworkId" aria-label="Affiliate Network" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
                         <md-option value="0"></md-option>
                         <md-option value="{{affiliate.id}}" ng-repeat="affiliate in affiliates track by $index">{{affiliate.name}}</md-option>
                     </md-select>
