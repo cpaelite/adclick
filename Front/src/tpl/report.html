@@ -143,6 +143,7 @@
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
+                <th md-column style="padding: 0 10px" class="row-action"><i class="icon-circle"></i></th>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
                     ng-show="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{item.name}}
@@ -152,7 +153,21 @@
             <tbody md-body>
               <tr md-row
                   ng-repeat="row in report.rows" ng-show="row.parentRow.expanded"
-                  ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1 }">
+                  ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
+                <td class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
+                    <md-menu-bar style="padding: 0;" ng-show="row.treeLevel==1">
+                        <md-menu>
+                            <a ng-click="menuOpen($mdMenu, row)">
+                              <i class="icon-remove" ng-show="row.data.deleted==1"></i>
+                              <i class="icon-circle" ng-show="row.data.deleted==0"></i>
+                            </a>
+                            <md-menu-content width="3">
+                                <md-menu-item ng-if="row.data.deleted==0"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="row.data.deleted==1"><md-button ng-click="restoreItem($event, row)">Restore</md-button></md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </md-menu-bar>
+                </td>
                 <td md-cell ng-if="treeLevel>1">
                   <i class="material-icons table-arrow-down" ng-class="{active:row.expanded}"
                      ng-if="row.treeLevel<treeLevel"
@@ -167,9 +182,9 @@
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">{{row.data[column.key]}}</a>
                             <md-menu-content width="3">
-                                <md-menu-item ng-if="canEdit(row)"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
-                                <md-menu-item ng-if="canEdit(row)"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
-                                <md-menu-item ng-if="canEdit(row)"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
                                 <md-menu-item ng-if="treeLevel == 1">
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
@@ -192,6 +207,7 @@
             </tbody>
             <tfoot md-body fix-foot>
               <tr md-row>
+                <td></td>
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
                 <td md-cell ng-class="{'red':report.totals[column.key] < 0 && column.key == 'roi','green':report.totals[column.key] > 0 && column.key == 'roi'}" ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
@@ -206,4 +222,3 @@
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
                          md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
-

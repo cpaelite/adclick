@@ -70,6 +70,7 @@ router.post('/api/offers', async function (req, res, next) {
         delete value.userId;
         delete value.idText;
         value.id = landerResult.insertId;
+        value.deleted =0;
         res.json({
             status: 1,
             message: 'success',
@@ -115,10 +116,10 @@ router.post('/api/offers/:id', async function (req, res, next) {
         hash: Joi.string().optional(),
         userId: Joi.number().required(),
         idText: Joi.string().required(),
-        name: Joi.string().required(),
-        url: Joi.string().required().regex(util.regWebURL,'url'),
+        name: Joi.string().optional(),
+        url: Joi.string().optional().regex(util.regWebURL,'url'),
         country: Joi.string().optional().allow(""),
-        payoutMode: Joi.number().required(),
+        payoutMode: Joi.number().optional(),
         affiliateNetwork: Joi.object().optional().keys({
             id: Joi.number().required(),
             name: Joi.string().required(),
@@ -126,7 +127,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         }),
         payoutValue: Joi.number().optional(),
         tags: Joi.array().optional(),
-        deleted: Joi.number().optional(),
+        deleted: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id;

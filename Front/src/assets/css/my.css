@@ -3097,3 +3097,33 @@ text-align: center;
 font-size: 13px;float:left;width:100%;
 border: 1px solid #e4e3ba;position: relative;z-index: 11;}
 .cs-save-errors span{color:#222;font-size:22px;font-weight: normal;}
+
+.table-box th.row-action {
+  text-align: center;
+}
+.table-box th.row-action i {
+  color: #999;
+  font-size: 10px;
+}
+.table-box td.row-action.enabled {
+  text-align: center;
+}
+.table-box td.row-action.enabled i {
+  color: #09A507;
+  position: relative;
+  top: 1px;
+  font-size: 10px;
+}
+.table-box td.row-action.deleted {
+  text-align: center;
+}
+.table-box td.row-action.deleted i {
+  color: #EA545D;
+  position: relative;
+  top: 1px;
+  font-size: 10px;
+}
+
+table.md-table tr.row-deleted td.md-cell {
+  color: #8d8d8d;
+}

@@ -59,7 +59,9 @@
     .config(['$httpProvider', function($httpProvider) {
       $httpProvider.interceptors.push('HttpInterceptor');
     }])
-
+    .config(['$mdAriaProvider', function($mdAriaProvider) {
+      $mdAriaProvider.disableWarnings();
+    }])
     .config(['ChartJsProvider', function (ChartJsProvider) {
       // Configure all charts
       ChartJsProvider.setOptions({

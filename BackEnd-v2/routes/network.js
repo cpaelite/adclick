@@ -31,7 +31,7 @@ router.get('/api/affiliates/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [value.userId], connection);
-        let resultsql = common.query("select  `id`,`name`,`hash`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList` from AffiliateNetwork where `userId` = ? and `id` =? ", [value.userId, value.id], connection);
+        let resultsql = common.query("select  `id`,`name`,`hash`,`postbackUrl`,`appendClickId`,`duplicatedPostback`,`ipWhiteList`,`deleted` from AffiliateNetwork where `userId` = ? and `id` =? ", [value.userId, value.id], connection);
         let results = await Promise.all([resultsql, mainDomain]);
         let result = results[0];
         let domainResult = results[1];
@@ -181,7 +181,8 @@ router.post('/api/affiliates/:id', async function (req, res, next) {
         appendClickId: Joi.number().optional(),
         duplicatedPostback: Joi.number().optional(),
         ipWhiteList: Joi.string().optional().empty(""),
-        hash: Joi.string().optional().empty("")
+        hash: Joi.string().optional().empty(""),
+        deleted: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id;
@@ -253,7 +254,7 @@ router.post('/api/affiliates', async function (req, res, next) {
 
         delete value.userId;
         value.id = affiliateResult.insertId;
-
+        value.deleted = 0;
         res.json({
             status: 1,
             message: 'success',

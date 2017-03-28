@@ -72,6 +72,7 @@ router.post('/api/campaigns', async function (req, res, next) {
         targetFlowId: Joi.number().optional(),
         postbackUrl: Joi.string().optional().empty(""),
         pixelRedirectUrl: Joi.string().optional().empty(""),
+        deleted:Joi.number().optional()
     });
     let connection;
     try {
@@ -80,6 +81,7 @@ router.post('/api/campaigns', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         let data = await start(req.user.id, value, connection);
+        data.deleted = 0;
         res.json({
             status: 1,
             message: 'success',
@@ -132,12 +134,12 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         idText: Joi.string().required(),
-        name: Joi.string().required(),
-        trafficSource: Joi.object().required(),
-        costModel: Joi.number().required(),
-        redirectMode: Joi.number().required(),
-        targetType: Joi.number().required(),
-        status: Joi.number().required(),
+        name: Joi.string().optional(),
+        trafficSource: Joi.object().optional(),
+        costModel: Joi.number().optional(),
+        redirectMode: Joi.number().optional(),
+        targetType: Joi.number().optional(),
+        status: Joi.number().optional(),
         flow: Joi.object().optional().keys({
             rules: Joi.array(),
             hash: Joi.string(),
@@ -158,8 +160,8 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         targetUrl: Joi.string().regex(util.regWebURL, 'targetUrl').optional().allow(""),
         targetFlowId: Joi.number().optional(),
         postbackUrl: Joi.string().optional().empty(""),
-        pixelRedirectUrl: Joi.string().optional().empty("")
-
+        pixelRedirectUrl: Joi.string().optional().empty(""),
+        deleted: Joi.number().optional()
     });
     let connection;
     try {

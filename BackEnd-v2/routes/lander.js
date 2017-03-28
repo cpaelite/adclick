@@ -57,7 +57,7 @@ router.post('/api/landers', async function (req, res, next) {
 
         delete value.userId;
         value.id = landerResult.insertId;
-
+        value.deleted=0;
         res.json({
             status: 1,
             message: 'success',
@@ -96,12 +96,13 @@ router.post('/api/landers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
-        name: Joi.string().required(),
-        url: Joi.string().required().regex(util.regWebURL, 'url'),
+        name: Joi.string().optional(),
+        url: Joi.string().optional().regex(util.regWebURL, 'url'),
         country: Joi.string().optional().allow(""),
-        numberOfOffers: Joi.number().required(),
+        numberOfOffers: Joi.number().optional(),
         tags: Joi.array().optional(),
-        hash: Joi.string().optional()
+        hash: Joi.string().optional(),
+        deleted: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id

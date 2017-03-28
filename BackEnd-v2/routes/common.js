@@ -193,8 +193,9 @@ async function updateCampaign(subId, value, connection) {
     params.push(value.id);
     if (value.name) {
         sqlCampaign += ",`name`=?";
+        params.push(value.name);
     }
-    params.push(value.name);
+
     if (value.url) {
         sqlCampaign += ",`url`=?";
         params.push(value.url);
@@ -269,6 +270,10 @@ async function updateCampaign(subId, value, connection) {
         params.push(value.flow.id);
 
     }
+    if (value.deleted != undefined) {
+        sqlCampaign += ",`deleted`=?";
+        params.push(value.deleted);
+    }
 
     sqlCampaign += " where `id`= ? and `userId`= ?";
 
@@ -288,12 +293,12 @@ async function updateCampaign(subId, value, connection) {
 async function getCampaign(id, userId, idText, connection) {
 
     let sqlCampaign = "select `id`,`name`,`hash`,`url`,`impPixelUrl`,`trafficSourceId`,`trafficSourceName`,`country`," +
-        "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status` from `TrackingCampaign` where `userId`=? and `id`=? and `deleted`=?"
+        "`costModel`,`cpcValue`,`cpaValue`,`cpmValue`,`redirectMode`,`targetType`,`targetFlowId`,`targetUrl`,`status`,`deleted`   from `TrackingCampaign` where `userId`=? and `id`=? "
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
     let mainDomainsql = "select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0";
 
-    let results = await Promise.all([query(sqlCampaign, [userId, id, 0], connection), query(sqltag, [userId, id, 1, 0], connection), query(mainDomainsql, [userId], connection)]);
+    let results = await Promise.all([query(sqlCampaign, [userId, id], connection), query(sqltag, [userId, id, 1, 0], connection), query(mainDomainsql, [userId], connection)]);
     let camResult = results[0];
     let tagsResult = results[1];
     let domainResult = results[2];
@@ -411,6 +416,10 @@ async function updateFlow(userId, flow, connection) {
         params.push(flow.redirectMode);
     }
 
+    if (flow.deleted != undefined) {
+        sqlFlow += ",`deleted`= ?";
+        params.push(flow.deleted);
+    }
 
     sqlFlow += " where `id`= ? and `userId`= ?";
     params.push(flow.id);
@@ -591,6 +600,11 @@ async function updateLander(subId, userId, lander, connection) {
         params.push(lander.numberOfOffers);
     }
 
+    if (lander.deleted != undefined) {
+        sqlUpdateLander += ",`deleted`= ?";
+        params.push(lander.deleted);
+    }
+
     sqlUpdateLander += " where `id`= ?  and `userId`= ? ";
     params.push(lander.id);
     params.push(userId);
@@ -606,10 +620,10 @@ async function updateLander(subId, userId, lander, connection) {
 }
 
 async function getLanderDetail(id, userId, connection) {
-    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`numberOfOffers` from `Lander` where `userId`=? and `deleted`=? and `id`=?";
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`numberOfOffers`,`deleted` from `Lander` where `userId`=?  and `id`=?";
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
-    let result = await Promise.all([query(sqlLander, [userId, 0, id], connection), query(sqltag, [userId, id, 2, 0], connection)]);
+    let result = await Promise.all([query(sqlLander, [userId, id], connection), query(sqltag, [userId, id, 2, 0], connection)]);
     let lander = result[0];
     let tagsResult = result[1];
     let tags = [];
@@ -766,6 +780,10 @@ async function updateOffer(subId, userId, offer, connection) {
         sqlUpdateOffer += ",`payoutMode`= ? ";
         params.push(offer.payoutMode);
     }
+    if (offer.deleted != undefined) {
+        sqlUpdateOffer += ",`deleted`= ? ";
+        params.push(offer.deleted);
+    }
     sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
     params.push(userId);
     params.push(offer.id);
@@ -783,7 +801,7 @@ async function updateOffer(subId, userId, offer, connection) {
 }
 
 async function getOfferDetail(id, userId, connection) {
-    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue` from `Offer` where `userId`=? and `id`=?";
+    let sqlLander = "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue`,`deleted` from `Offer` where `userId`=? and `id`=?";
     let sqltag = "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
     let results = await Promise.all([query(sqlLander, [userId, id], connection), query(sqltag, [userId, id, 3, 0], connection)]);
@@ -977,6 +995,10 @@ async function updatetraffic(subId, userId, traffic, connection) {
         sqlUpdateOffer += ",`params`=?";
         params.push(traffic.params);
     }
+    if (traffic.deleted != undefined) {
+        sqlUpdateOffer += ",`deleted`=?";
+        params.push(traffic.deleted);
+    }
     sqlUpdateOffer += " where `userId`= ?  and `id`= ? ";
     params.push(userId);
     params.push(traffic.id);
@@ -989,7 +1011,7 @@ async function updatetraffic(subId, userId, traffic, connection) {
 }
 
 async function gettrafficDetail(id, userId, connection) {
-    let result = await query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`campaignId`,`websiteId`,`params` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], connection);
+    let result = await query("select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`campaignId`,`websiteId`,`params`,`deleted` from `TrafficSource` where `userId`=? and `id`=? ", [userId, id], connection);
     return result;
 }
 
@@ -1060,6 +1082,10 @@ async function updateAffiliates(userId, subId, affiliate, connection) {
         sql += ",`ipWhiteList`=?";
         params.push(affiliate.ipWhiteList);
     }
+    if (affiliate.deleted != undefined) {
+        sql += ",`deleted`=?";
+        params.push(affiliate.deleted);
+    }
 
     sql += " where `userId`= ? and `id`= ?";
 
@@ -1106,7 +1132,7 @@ async function checkNameExists(userId, id, name, type, connection) {
             break;
         case 6:
             results = await query("select `id` from AffiliateNetwork where `userId`= ? and `name`= ?", [userId, name], connection);
-            break;    
+            break;
         default:
             throw new Error("Paramter type error");
     }
