@@ -153,17 +153,17 @@
             <tbody md-body>
               <tr md-row
                   ng-repeat="row in report.rows" ng-show="row.parentRow.expanded"
-                  ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.deleted }">
-                <td class="row-action" ng-class="{'deleted': row.deleted, 'enabled': !row.deleted}">
+                  ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
+                <td class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
                     <md-menu-bar style="padding: 0;" ng-show="row.treeLevel==1">
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">
-                              <i class="icon-remove" ng-show="row.deleted"></i>
-                              <i class="icon-circle" ng-show="!row.deleted"></i>
+                              <i class="icon-remove" ng-show="row.data.deleted==1"></i>
+                              <i class="icon-circle" ng-show="row.data.deleted==0"></i>
                             </a>
                             <md-menu-content width="3">
-                                <md-menu-item ng-if="!row.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
-                                <md-menu-item ng-if="row.deleted"><md-button ng-click="restoreItem($event, row)">Restore</md-button></md-menu-item>
+                                <md-menu-item ng-if="row.data.deleted==0"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="row.data.deleted==1"><md-button ng-click="restoreItem($event, row)">Restore</md-button></md-menu-item>
                             </md-menu-content>
                         </md-menu>
                     </md-menu-bar>
@@ -182,9 +182,9 @@
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">{{row.data[column.key]}}</a>
                             <md-menu-content width="3">
-                                <md-menu-item ng-if="canEdit(row) && !row.deleted"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
-                                <md-menu-item ng-if="canEdit(row) && !row.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
-                                <md-menu-item ng-if="canEdit(row) && !row.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
                                 <md-menu-item ng-if="treeLevel == 1">
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>

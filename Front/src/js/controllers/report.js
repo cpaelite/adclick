@@ -2274,7 +2274,7 @@
     }
 
     function restoreItem(item) {
-      return $injector.get(resourceName).save({id: item[type+"Id"], deleted: item['deleted'], errorFn: true}).$promise;
+      return $injector.get(resourceName).save({errorFn: true}, {id: item[type+"Id"], deleted: item['deleted']}).$promise;
     }
 
     this.onprocess = false;
