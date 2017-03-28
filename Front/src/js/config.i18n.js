@@ -61,7 +61,9 @@
       impressions: 'Impressions'
     },
     conversionUpload: 'Conversion Upload',
-    changeCountryConfirm: 'Changing country will remove landers and offers within paths. Are your sure?'
+    changeCountryConfirm: 'Changing country will remove landers and offers within paths. Are your sure?',
+    restore: 'Restore',
+    warnRestore: 'Are you sure you want to restore this item? '
   };
   var i18n_zh = {
     ok: '确定',
@@ -91,5 +93,4 @@
       // Enable escaping of HTML
       $translateProvider.useSanitizeValueStrategy('escape');
     }]);
-
 })();

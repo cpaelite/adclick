@@ -189,6 +189,7 @@ export function extraConfig(groupBy) {
           ['country', 'campaignCountry'],
           ['trafficSourceId', 'trafficId'],
           ['trafficSourceName', 'trafficName'],
+          'deleted'
         ]
       }
       break;
@@ -200,6 +201,7 @@ export function extraConfig(groupBy) {
           ['id', 'flowId'],
           ['name', 'flowName'],
           ['hash', 'flowHash'],
+          'deleted'
         ]
       }
       break;
@@ -213,6 +215,7 @@ export function extraConfig(groupBy) {
           ['hash', 'landerHash'],
           ['country', 'landerCountry'],
           ['url', 'landerUrl'],
+          'deleted'
         ]
       }
       break;
@@ -227,6 +230,7 @@ export function extraConfig(groupBy) {
           ['url', 'offerUrl'],
           ['country', 'offerCountry'],
           ['payoutValue', 'offerPayout'],
+          'deleted'
         ]
       }
       break;
@@ -237,7 +241,8 @@ export function extraConfig(groupBy) {
           'id',
           ['id', 'trafficId'],
           ['name', 'trafficName'],
-          ['hash', 'trafficHash']
+          ['hash', 'trafficHash'],
+          'deleted'
         ]
       }
       break;
@@ -249,6 +254,7 @@ export function extraConfig(groupBy) {
           ['id', 'affiliateId'],
           ['name', 'affiliateName'],
           ['hash', 'affiliateHash'],
+          'deleted'
         ]
       }
       break;

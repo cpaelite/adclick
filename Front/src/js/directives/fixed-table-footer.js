@@ -21,7 +21,8 @@ function fixHead($compile, $window) {
 
     table.clone.css({display: 'block', overflow: 'hidden'}).addClass('clone');
     header.clone.css('display', 'table');
-    header.original.css('visibility', 'hidden');
+    header.original.css({'visibility': 'hidden', 'height': 0, 'lineHeight': 0});
+    header.original.find('td').css('padding', 0);
 
     return function postLink(scope) {
       var scrollContainer = table.original.parent();
