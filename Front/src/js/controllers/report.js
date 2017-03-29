@@ -1516,6 +1516,38 @@
     // Country
     $scope.countries = $scope.$root.countries;
 
+    this.allContacts = loadContacts();
+    this.contacts = [this.allContacts[0]];
+    //self.filterSelected = true;
+
+    this.querySearch = querySearch;
+
+    function querySearch (criteria) {
+      return criteria ? this.allContacts.filter(createFilterFor(criteria)) : [];
+    }
+
+    function createFilterFor(query) {
+      var lowercaseQuery = angular.lowercase(query);
+
+      return function filterFn(contact) {
+        return (contact._lowercode.indexOf(lowercaseQuery) != -1 || contact._lowername.indexOf(lowercaseQuery) != -1);
+      };
+
+    }
+
+    function loadContacts() {
+      var contacts = $scope.$root.countries;
+      return contacts.map(function (c, index) {
+        var contact = {
+          code: c.value,
+          name: c.display
+        };
+        contact._lowercode = contact.code.toLowerCase();
+        contact._lowername = contact.name.toLowerCase();
+        return contact;
+      });
+    }
+
     var defaultPostBackUrl;
     prms = DefaultPostBackUrl.get(null, function (postbackUrl) {
       defaultPostBackUrl = postbackUrl.data.defaultPostBackUrl;

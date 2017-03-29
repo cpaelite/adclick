@@ -68,6 +68,17 @@
                 </div>
             </div>
             <div class="form-group">
+                <md-contact-chips
+                    ng-model="ctrl.contacts"
+                    md-contacts="ctrl.querySearch($query)"
+                    md-contact-name="name"
+                    md-contact-code="code"
+                    md-require-match="true"
+                    md-highlight-flags="i"
+                    placeholder="To">
+                </md-contact-chips>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-3 control-label">Affiliate network: </label>
                 <div class="col-sm-7 my-select">
                     <md-select name="AffiliateNetworkId" aria-label="Affiliate Network" class="cs-subform-select" ng-model="affiliateId" ng-change="affiliateChanged(affiliateId)">
