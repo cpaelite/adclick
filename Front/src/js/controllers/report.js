@@ -41,7 +41,7 @@
             scope.pageHeight = newVal.page_h;
 
             angular.element(element).css({
-              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - 5) + 'px'
+              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - 10) + 'px'
             })
 
           })

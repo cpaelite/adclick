@@ -1967,6 +1967,7 @@ input[type="checkbox"].th-checkbox{
     border-radius:3px;
     overflow: auto;
     height: 100%;
+    min-width: 300px;
 }
 .tree-li{
     height: 38px;
@@ -2149,7 +2150,8 @@ input[type="checkbox"].th-checkbox{
     color: #fff;
 }
 md-content.cs-main-content{
-    /*height: calc(100% - 93px);*/
+    height: calc(100% - 93px);
+    overflow-y: hidden;
 }
 .cs-page-flow,
 .cs-flow-content{
@@ -2806,6 +2808,11 @@ md-dialog md-dialog-content.botblack-height{overflow:initial;}
     .right-select2 .search-con{margin-top:-54px;}
     .report .right-select2{margin-left:0;}.right-select{margin-top:15px;float:left;width:100%;}
     .path-name{max-width:49%;}
+}
+@media (max-width: 1200px){
+    md-content.cs-main-content{
+        height: calc(100% - 130px);
+    }
 }
 @media (max-width:1024px){
     .navbar-right{width:auto;}
