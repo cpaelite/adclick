@@ -12,7 +12,48 @@
     .controller('editOfferCtrl', [
       '$scope', '$mdDialog', '$rootScope', '$q', '$timeout', 'Offer', 'AffiliateNetwork', 'urlParameter', 'DefaultPostBackUrl', 'Tag', 'AppConstant', 'reportCache', 'UrlValidate',
       editOfferCtrl
-    ]);
+    ])
+    .directive('resize',['$timeout','$q',function($timeout,$q){
+      return function(scope, element) {
+        var timeout;
+        var w_h = $(window);
+        var nav_h = $('nav');
+        var filter_h = $('.cs-action-bar-bg');
+        var page_h = $('md-table-pagination');
+        function getHeight() {
+          var deferred = $q.defer();
+          $timeout(function() {
+            deferred.resolve({
+              'w_h': w_h.height(),
+              'nav_h': nav_h.height(),
+              'filter_h':filter_h.outerHeight(true),
+              'page_h':page_h.height()
+            });
+          });
+          return deferred.promise;
+        }
+
+        function heightResize() {
+          getHeight().then(function(newVal) {
+            scope.windowHeight = newVal.w_h;
+            scope.navHeight = newVal.nav_h;
+            scope.filterHeight = newVal.filter_h;
+            scope.pageHeight = newVal.page_h;
+
+            angular.element(element).css({
+              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - 5) + 'px'
+            })
+
+          })
+        }
+
+        heightResize();
+
+        w_h.bind('resize', function() {
+          heightResize();
+        });
+      }
+    }]);
 
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource, FileDownload) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
@@ -25,7 +66,6 @@
     var pageStatus = {};
 
     var stateParams = $scope.$stateParams;
-    //console.log(stateParams);
 
     if (stateParams.extgrpby) {
       var egb = (stateParams.extgrpby+',').split(',');
@@ -109,6 +149,7 @@
       return item.role != 'name';
     };
 
+    $scope.btnName = 'Refresh';
     function buildSuccess(parentRow) {
       return function success(result) {
         if (result.status == 1) {
@@ -146,6 +187,14 @@
             $scope.report.rows = rows;
           }
         }
+
+        $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus ', function(newVal, oldVal) {
+          if (newVal != oldVal) {
+            $('.blue-btn.apply-btn').css({'background':'#16a919','border':'1px solid #16a919'});
+            $('.apply-change-btn').addClass('apply-btn');
+            $scope.btnName = 'apply';
+          }
+        }, true);
       };
     }
 
@@ -1066,7 +1115,7 @@
         costModel: 0,
         redirectMode: 0,
         targetType: 1,
-        status: '1',
+        status: 1,
       };
     }
 
