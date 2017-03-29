@@ -52,8 +52,8 @@ router.post('/api/third/affiliates', async function (req, res, next) {
         connection = await common.getConnection();
         let sql = `insert into ThirdPartyAffiliatNetwork (userId,trustedANId,name,token,userName,password,createdAt) values (?,?,?,?,?,?,?)`;
         let params = [value.userId, value.affiliateId, value.name, value.token ? value.token : "", value.account ? value.account : "", value.password ? value.password : "", moment().unix()];
-        let key = "insertId";
-        let { [key]: id } = await common.query(sql, params, connection);
+
+        let { insertId: id } = await common.query(sql, params, connection);
         value.id = id;
         delete value.userId;
         return res.json({
@@ -61,7 +61,6 @@ router.post('/api/third/affiliates', async function (req, res, next) {
             message: 'success',
             data: value
         });
-
     } catch (e) {
         next(e);
     } finally {
@@ -88,20 +87,22 @@ router.post('/api/third/affiliates', async function (req, res, next) {
  */
 router.get('/api/third/affiliates/:id', async function (req, res, next) {
     let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
     let connection;
     try {
-        let value = await common.validate();
+        req.query.id = req.params.id;
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-
-        return res.json();
-
+        let sql = `select name,token,userName as account,password,trustedANId as affiliateId where id = ? and userId = ?`;
+        let [result] = await common.query(sql, [value.id, value.userId], connection);
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: result ? result : {}
+        });
     } catch (e) {
         next(e);
     } finally {
@@ -127,22 +128,22 @@ router.get('/api/third/affiliates/:id', async function (req, res, next) {
  *
  */
 router.delete('/api/third/affiliates/:id', async function (req, res, next) {
-    //TODO 验证可以新建几个
     let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
     let connection;
     try {
-        let value = await common.validate();
+        req.query.id = req.params.id;
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-
-        return res.json();
-
+        let sql = `update ThirdPartyAffiliatNetwork set deleted=? where id=? and userId= ?`;
+        await common.query(sql, [1, value.id, value.userId], connection);
+        return res.json({
+            status: 1,
+            message: 'success'
+        });
     } catch (e) {
         next(e);
     } finally {
@@ -157,70 +158,48 @@ router.delete('/api/third/affiliates/:id', async function (req, res, next) {
  * @api {post} /api/third/tasks  新建OfferSyncTask
  * @apiName   新建OfferSyncTask
  * @apiGroup ThirdParty
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success"
- *     }
- *
- */
-router.post('/api/third/tasks', async function (req, res, next) {
-    //TODO 验证可以新建几个
-    let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
-    let connection;
-    try {
-        let value = await common.validate();
-        connection = await common.getConnection();
-
-        return res.json();
-
-    } catch (e) {
-        next(e);
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-});
-
-/**
- * @api {get} /api/third/tasks/:id  获取OfferSyncTask状态
- * @apiName   获取OfferSyncTask状态
- * @apiGroup ThirdParty
+ * 
+ * @apiParam {Number} thirdPartyANId 
+ * 
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "status": 1,
  *       "message": "success",
- *       "data":{progress:1,error:""} //0:新建;1:运行中;2:出错;3:完成
+ *       "data":{
+ *           id:1,
+ *           thirdPartyANId:2
+ *        }
  *     }
  *
  */
-router.get('/api/third/tasks/:id', async function (req, res, next) {
+router.post('/api/third/tasks', async function (req, res, next) {
     let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
+        thirdPartyANId: Joi.number().required(),
+        userId: Joi.number().required()
+    });
     let connection;
     try {
-        let value = await common.validate();
+        req.body.userId = req.parent.id;
+        let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-
-        return res.json();
+        //check exist one task is running 
+        let [{ total: count }] = await common.query('select count(*) as total from OfferSyncTask where thirdPartyANId=? and userId =? and deleted=0 and status in (?)', [value.thirdPartyANId, value.userId, [0, 1]], connection);
+        if (count > 0) {
+            let err = new Error("one task is running");
+            err.status = 200;
+            throw err;
+        }
+        let sql = `insert into OfferSyncTask (userId,thirdPartyANId,status,createdAt) values(?,?,?,?)`
+        let { insertId: id } = await common.query(sql, [value.userId, value.thirdPartyANId, 0, moment().unix()], connection);
+        value.id = id;
+        delete value.userId;
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
 
     } catch (e) {
         next(e);
@@ -230,6 +209,54 @@ router.get('/api/third/tasks/:id', async function (req, res, next) {
         }
     }
 });
+
+
+/**
+ * @api {get} /api/third/tasks  获取OfferSyncTask id
+ * @apiName   获取OfferSyncTask id
+ * @apiGroup ThirdParty
+ *
+ * @apiParam {Number} thirdPartyANId
+ *  
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{tasks:[]}  //0:新建;1:运行中;2:出错;3:完成
+ *     }
+ *
+ */
+router.get('/api/third/tasks', async function (req, res, next) {
+    let schema = Joi.object().keys({
+        thirdPartyANId: Joi.number().required(),
+        userId: Joi.number().required()
+    });
+    let connection;
+    try {
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let sql = `select id,status,message from OfferSyncTask where thirdPartyANId=? and userId=? and deleted=0`;
+        let result = await common.query(sql, [value.thirdPartyANId, value.userId], connection);
+
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: result
+        });
+
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+
 
 /**
  * @api {get} /api/third/offers/:id  获取第三方offer detail
@@ -247,19 +274,22 @@ router.get('/api/third/tasks/:id', async function (req, res, next) {
  */
 router.get('/api/third/offers/:id', async function (req, res, next) {
     let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
+        id: Joi.number().required(),
+        userId: Joi.number().required()
+    });
     let connection;
     try {
-        let value = await common.validate();
+        req.query.id = req.params.id;
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-
-        return res.json();
+        let sql = `select detail from ThirdPartyOffer where userId=? and id=?`;
+        let [{ detail: resultString }] = await common.query(sql, [value.userId, value.id], connection);
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: resultString ? JSON.parse(resultString) : {}
+        });
 
     } catch (e) {
         next(e);
@@ -284,7 +314,9 @@ router.get('/api/third/offers/:id', async function (req, res, next) {
  *     {
  *       "status": 1,
  *       "message": "success",
- *       "data":{        
+ *       "data":{
+ *          offers:[
+           {        
             status:1,         //   '1:active;2:pauseded',
             offerId:"189378",   //'第三方的OfferId',
             name:"",
@@ -298,23 +330,43 @@ router.get('/api/third/offers/:id', async function (req, res, next) {
             platform:""
  *          }
  *     }
+ * ]}
  *
  */
 router.get('/api/third/offers', async function (req, res, next) {
     let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
+        taskId: Joi.number().required(),
+        userId: Joi.number().required(),
+        page: Joi.number().required(),
+        limit: Joi.number().required()
+    });
     let connection;
     try {
-        let value = await common.validate();
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
+        let { limit, page } = value;
+        // limit
+        limit = parseInt(limit)
+        if (!limit || limit < 0)
+            limit = 1000
+        value.limit = limit
+        // offset
+        page = parseInt(page)
+        let offset = (page - 1) * limit;
+        if (!offset)
+            offset = 0
+        value.offset = offset;
+        let sql = `select id,status,offerId,name,previewLink,trackingLink,countryCode,payoutMode,payoutValue,category,carrier,platform from ThirdPartyOffer where userId=? and taskId=? limit ?,?`;
         connection = await common.getConnection();
+        let result = await common.query(sql, [value.userId, value.taskId, value.offset, value.limit], connection);
 
-        return res.json();
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                offers: result
+            }
+        });
 
     } catch (e) {
         next(e);
@@ -331,7 +383,7 @@ router.get('/api/third/offers', async function (req, res, next) {
  * @apiName   将第三方offer导入
  * @apiGroup ThirdParty
  * 
- * @apiParam {Array} ids
+ * @apiParam {Array} offers
  * @apiParam {Number} affiliateId
  * 
  * @apiSuccessExample {json} Success-Response:
@@ -345,17 +397,17 @@ router.get('/api/third/offers', async function (req, res, next) {
  */
 router.post('/api/third/offersImport', async function (req, res, next) {
     let schema = Joi.object().keys({
-        // affiliateId: Joi.number().required(),
-        // userId: Joi.number().required(),
-        // name: Joi.string().required(),
-        // token: Joi.string().optional(),
-        // account: Joi.string().optional(),
-        // password: Joi.string().optional()
-    }).or('token', 'account').with('account', 'password');
+        affiliateId: Joi.number().required(),
+        userId: Joi.number().required(),
+        offers: Joi.array().min(1).required()       
+    });
     let connection;
     try {
-        let value = await common.validate();
+        req.body.userId= req.parent.id;
+        let value = await common.validate(req.body,schema);
         connection = await common.getConnection();
+        let sql =`insert into Offer set ?`;
+        await common.query(sql,[],connection);
 
         return res.json();
 
@@ -367,8 +419,6 @@ router.post('/api/third/offersImport', async function (req, res, next) {
         }
     }
 });
-
-
 
 
 module.exports = router;
