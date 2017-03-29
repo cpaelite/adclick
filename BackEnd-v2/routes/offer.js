@@ -218,7 +218,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  * @apiGroup offer
  * @apiParam {String}  [columns]
  * @apiParam {String} [country]
- * @apiParam {Array}  [ids]
+ * @apiParam {String}  [ids]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -231,7 +231,7 @@ router.get('/api/offers', async function (req, res, next) {
     var schema = Joi.object().keys({
         columns: Joi.string().optional(),
         country: Joi.string().optional().empty(""),
-        ids: Joi.array().items(Joi.number()).optional(),
+        ids: Joi.string().optional().allow(""),
         userId: Joi.number().required()
     });
     let connection;
@@ -245,9 +245,9 @@ router.get('/api/offers', async function (req, res, next) {
             sql += ` and country like %?%`;
             params.push(value.country);
         }
-        if (value.ids && value.ids.length) {
+        if (value.ids) {
             sql += ` and id not in (?)`
-            params.push(value.ids.join(','));
+            params.push(value.ids);
         }
         connection = await common.getConnection()
         let result = await common.query(sql, params, connection);
