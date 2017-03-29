@@ -219,6 +219,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
  * @apiParam {String}  [columns]
  * @apiParam {String} [country]
  * @apiParam {String}  [ids]
+ * @apiParam {String} [filter]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -232,24 +233,31 @@ router.get('/api/offers', async function (req, res, next) {
         columns: Joi.string().optional(),
         country: Joi.string().optional().empty(""),
         ids: Joi.string().optional().allow(""),
-        userId: Joi.number().required()
+        userId: Joi.number().required(),
+        filter:Joi.string().optional()
     });
     let connection;
     try {
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
         let params = [];
         let sql = "select id, name,country from Offer where userId = ? and deleted = 0 ";
         params.push(value.userId);
         if (value.country) {
             sql += ` and country like ?`;
-            params.push("%"+value.country+"%");
+            params.push("%" + value.country + "%");
+        }
+        if (value.filter) {
+            sql += ` and name like ?`;
+            params.push("%" + value.filter + "%");
         }
         if (value.ids) {
-            sql += ` and id not in (?)`
-            params.push(value.ids);
+            let offerIds = value.ids.split(',');
+            sql += ` and id NOT IN (?) `
+            params.push(offerIds);
         }
-        connection = await common.getConnection()
+
         let result = await common.query(sql, params, connection);
         return res.json(result)
     } catch (e) {
