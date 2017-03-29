@@ -693,13 +693,13 @@ app.post('/api/names', function (req, res) {
 app.get('/api/report', function (req, res) {
   var groupBy = req.query.groupBy;
   var result;
-  if (req.query.dataType == 'csv') {
-    result = '"popads.com - Thailand - TH 4877008 C726 DTAC LP Cool Clip","popads.com",0,0,0,0,0,0,0,0,0,0,0,0,0,0,,';
-    res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment;filename="NewBidder-123.csv"`);
-    res.setHeader('Expires', '0');
-    res.setHeader('Cache-Control', 'must-revalidate');
-  } else {
+  // if (req.query.dataType == 'csv') {
+  //   result = '"popads.com - Thailand - TH 4877008 C726 DTAC LP Cool Clip","popads.com",0,0,0,0,0,0,0,0,0,0,0,0,0,0,,';
+  //   res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
+  //   res.setHeader('Content-Disposition', `attachment;filename="NewBidder-123.csv"`);
+  //   res.setHeader('Expires', '0');
+  //   res.setHeader('Cache-Control', 'must-revalidate');
+  // } else {
     result = {
       "status": 1,
       "messages": "",
@@ -805,7 +805,7 @@ app.get('/api/report', function (req, res) {
         ]
       }
     };
-  }
+  // }
   res.send(result);
 });
 
@@ -1044,7 +1044,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
       "cpaValue": 1.2,
       "cpmValue": 1.3,
       "redirectMode": 0,
-      "targetType": 1,
+      "targetType": 3,
       "targetFlowId": 1,
       "targetUrl": "",
       "status": 1,
@@ -1253,97 +1253,146 @@ app.delete('/api/campaigns/:campaignId', function (req, res) {
  */
 app.get('/api/flows/:flowId', function (req, res) {
   var result = {
-    status: 1,
-    message: "",
-    data: {
-      "id": 1,
-      "name": "Global - yoshop-Android-benson",
-      "country": "CHN",
-      "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-      "rules": [{
-        "id": 3,
-        "name": "Default paths",
-        "isDefault": true,
-        "paths": [{
-          "id": 1,
-          "name": "path name 1",
-          "redirecMode": 0,
-          "directLinking": false,
-          "enabled": true,
-          "weight": 100,
-          "landers": [{
-            "id": "46",  // lander id
-            "weight": 100
-          }],
-          "offers": [{
-            "id": "22",  // offer id
-            "weight": 100
-          }]
-        }]
-      }, {
-        "id": 4,
-        "name": "the rule name",
-        "isDefault": false,
-        "enabled": true,   // is this rule enabled/disabled
-        "conditions": [{
-          "id": "3434",    // condition id, refer to /api/conditions
-          "operand": "is", // is/isnt
-          "value": ["windows", "android4.5", "android7"]
-        }, {
-          "id": "8584",
-          "operand": "isnt",
-          "city": "xiamen",
-          "_city": {"xiamen": "Xiamen"}
-        }, {
-          "id": "8588",
-          "operand": "is",
-          "region": ["xiamen", "shanghai"],
-          "_region": {"xiamen": "Xiamen", "shanghai": "Shanghai"}
-        }, {
-          "id": "1234",
-          "operand": "isnt",
-          "tz": "+0800",
-          "weekday": ["tue", "fri"]
-        }],
-        "paths": [{
-          "id": 2,
-          "name": "path name 1",
-          "redirecMode": 0,
-          "directLinking": false,
-          "enabled": true,
-          "weight": 100,
-          "landers": [{
-            "id": "47",
-            "weight": 100
-          }, {
-            "id": "54",
-            "weight": 50
-          }],
-          "offers": [{
-            "id": "23",
-            "weight": 100
-          }, {
-            "id": "41",
-            "weight": 200
-          }]
-        }, {
-          "id": 3,
-          "name": "path name 2",
-          "redirecMode": 0,
-          "directLinking": true,
-          "enabled": true,
-          "weight": 100,
-          "landers": [{
-            "id": "49",
-            "weight": 100
-          }, {
-            "id": "50",
-            "weight": 50
-          }]
-        }]
-      }]
-    }
-  };
+	"status": 1,
+	"message": "success",
+	"data": {
+		"rules": [{
+			"id": 418,
+			"name": "Default Paths",
+			"conditions": [],
+			"enabled": false,
+			"type": 0,
+			"isDefault": true,
+			"paths": [{
+				"id": 453,
+				"name": "Path 1",
+				"directLinking": true,
+				"redirectMode": 2,
+				"enabled": true,
+				"weight": 100,
+				"offers": [{
+					"id": 257,
+					"name": "skim - sodai - Global - Godaddy",
+					"weight": 100
+				}],
+				"landers": []
+			}]
+		},
+		{
+			"id": 419,
+			"name": "Godaddy",
+			"conditions": [{
+				"id": "isp",
+				"operand": "is",
+				"value": ["GoDaddy.com LLC", "Godaddy.com", "GoDaddy", "GoDaddy Software Inc", "Private Customer - GoDaddy.com", "Go Daddy Netherlands B.V.", "Go Daddy Singapore Pte. Ltd.", "Private Customer - Go Daddy Software Inc."],
+				"_value": {
+					"GoDaddy.com LLC": "GoDaddy.com LLC",
+					"Godaddy.com": "Godaddy.com",
+					"GoDaddy": "GoDaddy",
+					"GoDaddy Software Inc": "GoDaddy Software Inc",
+					"Private Customer - GoDaddy.com": "Private Customer - GoDaddy.com",
+					"Go Daddy Netherlands B.V.": "Go Daddy Netherlands B.V.",
+					"Go Daddy Singapore Pte. Ltd.": "Go Daddy Singapore Pte. Ltd.",
+					"Private Customer - Go Daddy Software Inc.": "Private Customer - Go Daddy Software Inc."
+				}
+			}],
+			"enabled": true,
+			"type": 1,
+			"isDefault": false,
+			"paths": [{
+				"id": 454,
+				"name": "Path 1",
+				"directLinking": true,
+				"redirectMode": 2,
+				"enabled": true,
+				"weight": 100,
+				"offers": [{
+					"id": 184,
+					"name": "Mobidea - Global - Typo",
+					"weight": 100
+				}],
+				"landers": []
+			}]
+		},
+		{
+			"id": 420,
+			"name": "CJ",
+			"conditions": [{
+				"id": "isp",
+				"operand": "is",
+				"value": ["Conversant Limited", "Conversant Inc.", "Conversant Technologies Inc.", "Conversant Solution", "Conversant Solutions Pte Ltd", "Valueclick", "Valueclick Inc", "ValueClick Deutschland GmbH", "ValueClick Inc.", "Valueclick Europe Ltd", "FastClick", "FastClick Ltd", "TeleCity Group Customer - Commission Junction Holding BV"],
+				"_value": {
+					"Conversant Limited": "Conversant Limited",
+					"Conversant Inc.": "Conversant Inc.",
+					"Conversant Technologies Inc.": "Conversant Technologies Inc.",
+					"Conversant Solution": "Conversant Solution",
+					"Conversant Solutions Pte Ltd": "Conversant Solutions Pte Ltd",
+					"Valueclick": "Valueclick",
+					"Valueclick Inc": "Valueclick Inc",
+					"ValueClick Deutschland GmbH": "ValueClick Deutschland GmbH",
+					"ValueClick Inc.": "ValueClick Inc.",
+					"Valueclick Europe Ltd": "Valueclick Europe Ltd",
+					"FastClick": "FastClick",
+					"FastClick Ltd": "FastClick Ltd",
+					"TeleCity Group Customer - Commission Junction Holding BV": "TeleCity Group Customer - Commission Junction Holding BV"
+				}
+			}],
+			"enabled": true,
+			"type": 1,
+			"isDefault": false,
+			"paths": [{
+				"id": 455,
+				"name": "Path 1",
+				"directLinking": true,
+				"redirectMode": 2,
+				"enabled": true,
+				"weight": 100,
+				"offers": [{
+					"id": 184,
+					"name": "Mobidea - Global - Typo",
+					"weight": 100
+				}],
+				"landers": []
+			}]
+		},
+		{
+			"id": 421,
+			"name": "Skim",
+			"conditions": [{
+				"id": "isp",
+				"operand": "is",
+				"value": ["Skimbit Ltd", "00132385 Skimbit Limited"],
+				"_value": {
+					"Skimbit Ltd": "Skimbit Ltd",
+					"00132385 Skimbit Limited": "00132385 Skimbit Limited"
+				}
+			}],
+			"enabled": true,
+			"type": 1,
+			"isDefault": false,
+			"paths": [{
+				"id": 456,
+				"name": "Path 1",
+				"directLinking": true,
+				"redirectMode": 2,
+				"enabled": true,
+				"weight": 100,
+				"offers": [{
+					"id": 184,
+					"name": "Mobidea - Global - Typo",
+					"weight": 100
+				}],
+				"landers": []
+			}]
+		}],
+		"id": 479,
+		"name": "defaultName",
+		"hash": "cf8369c6-4b3b-46d0-b775-861f72cc9389",
+		"country": "ZZZ",
+		"type": 0,
+		"redirectMode": 2
+	}
+};
   res.send(result);
 });
 
@@ -2381,6 +2430,15 @@ app.get('/api/cities', function (req, res) {
  */
 app.get('/api/conditions', function (req, res) {
   var result = [{
+    id: 'isp',
+    display: 'ISP',
+    fields: [{
+      name: 'value',
+      type: 'async-chips',
+      url: '/api/isps'
+    }],
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  },{
     "id": "1234",
     "display": "Day of week",
     "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
@@ -3607,7 +3665,7 @@ app.post('/api/qrpay/status', function (req, res) {
   var result = {
     status: 1,
     data: {
-      status: false 
+      status: false
     }
   };
   setTimeout(function () {

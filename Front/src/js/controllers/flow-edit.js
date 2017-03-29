@@ -736,11 +736,10 @@
       };
       $scope.queryOffers = function(query) {
         if(!query) return [];
-
         var selectedIds = ($scope.curPath.offers || []).filter(function(offer) {
           return offer._def;
         }).map(function(offer) {
-          return offer.id;
+          return offer._def.id;
         });
 
         return Offer.query({columns: 'id,name', country: $scope.country.value || 'ZZZ', ids: selectedIds.join(',')}, function(result) {
