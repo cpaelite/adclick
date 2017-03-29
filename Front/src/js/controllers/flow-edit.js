@@ -327,7 +327,13 @@
             conditionMap[condition.id].fields.forEach(function(field) {
               if (!condition[field.name]) return;
               if (field.type == "async-select" || field.type == "async-chips") {
-                field._v2n = condition['_'+field.name];
+                if(field._v2n) {
+                  for (var key in condition['_'+field.name]) {
+                    field._v2n[key] = condition['_'+field.name][key];
+                  }
+                } else {
+                  field._v2n = condition['_'+field.name];
+                }
               }
             });
           });
