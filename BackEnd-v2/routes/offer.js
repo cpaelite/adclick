@@ -8,7 +8,7 @@ var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
 var _ = require('lodash');
-var util =require('../util');
+var util = require('../util');
 
 /**
  * @api {post} /api/offers  新增offer
@@ -34,7 +34,7 @@ router.post('/api/offers', async function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().required(),
-        url: Joi.string().required().regex(util.regWebURL,'url'),
+        url: Joi.string().required().regex(util.regWebURL, 'url'),
         country: Joi.string().optional().allow(""),
         payoutMode: Joi.number().required(),
         affiliateNetwork: Joi.object().optional().keys({
@@ -59,18 +59,18 @@ router.post('/api/offers', async function (req, res, next) {
 
         let postbackUrl = setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter;
         value.postbackUrl = postbackUrl;
-        let landerResult = await common.insertOffer(req.user.id,value.userId, value.idText, value, connection);
+        let landerResult = await common.insertOffer(req.user.id, value.userId, value.idText, value, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, landerResult.insertId, value.tags[index], 3, connection);
             }
         }
-        
+
 
         delete value.userId;
         delete value.idText;
         value.id = landerResult.insertId;
-        value.deleted =0;
+        value.deleted = 0;
         res.json({
             status: 1,
             message: 'success',
@@ -117,7 +117,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().optional(),
-        url: Joi.string().optional().regex(util.regWebURL,'url'),
+        url: Joi.string().optional().regex(util.regWebURL, 'url'),
         country: Joi.string().optional().allow(""),
         payoutMode: Joi.number().optional(),
         affiliateNetwork: Joi.object().optional().keys({
@@ -137,18 +137,18 @@ router.post('/api/offers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-         //check offer name exists
+        //check offer name exists
         if (await common.checkNameExists(value.userId, value.id, value.name, 3, connection)) {
             throw new Error("Offer name exists");
         }
-        await common.updateOffer(req.user.id,value.userId, value, connection);
+        await common.updateOffer(req.user.id, value.userId, value, connection);
         await common.updateTags(value.userId, value.id, 3, connection);
         if (value.tags && value.tags.length) {
             for (let index = 0; index < value.tags.length; index++) {
                 await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
             }
         }
-        
+
 
         delete value.userId;
         delete value.idText;
@@ -216,9 +216,9 @@ router.get('/api/offers/:id', async function (req, res, next) {
  * @api {get} /api/offers get offer list
  * @apiName offers
  * @apiGroup offer
- * 
- * @apiParam columns
- * @apiParam [country]
+ * @apiParam {String}  [columns]
+ * @apiParam {String} [country]
+ * @apiParam {Array}  [ids]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -226,31 +226,39 @@ router.get('/api/offers/:id', async function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offers', function (req, res, next) {
+router.get('/api/offers', async function (req, res, next) {
     // userId from jwt, don't need validation
-    var sql = "select id, name,country from Offer where userId = " + req.parent.id + " and deleted = 0 ";
-
-    if (req.query.country) {
-        sql += " and `country`=" + req.query.country;
-    }
-
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            err.status = 303
-            return next(err);
-        }
-        connection.query(
-            sql,
-            function (err, result) {
-                connection.release();
-                if (err) {
-                    return next(err);
-                }
-                res.json(
-                    result
-                );
-            });
+    var schema = Joi.object().keys({
+        columns: Joi.string().optional(),
+        country: Joi.string().optional().empty(""),
+        ids: Joi.array().items(Joi.number()).optional(),
+        userId: Joi.number().required()
     });
+    let connection;
+    try {
+        req.query.userId = req.parent.id;
+        let value = await common.validate(req.query, schema);
+        let params = [];
+        let sql = "select id, name,country from Offer where userId = ? and deleted = 0 ";
+        params.push(value.userId);
+        if (value.country) {
+            sql += ` and country like %?%`;
+            params.push(value.country);
+        }
+        if (value.ids && value.ids.length) {
+            sql += ` and id not in (?)`
+            params.push(value.ids.join(','));
+        }
+        connection = await common.getConnection()
+        let result = await common.query(sql, params, connection);
+        return res.json(result)
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release()
+        }
+    }
 });
 
 
@@ -276,9 +284,9 @@ router.delete('/api/offers/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        
+
         //check offer used by flow ?   
-        let templeSql=`select  f.\`id\`as flowId,f.\`name\` as flowName from  Offer offer  
+        let templeSql = `select  f.\`id\`as flowId,f.\`name\` as flowName from  Offer offer  
             inner join Offer2Path p2 on offer.\`id\` = p2.\`offerId\` 
             inner join Path p on p.\`id\` = p2.\`pathId\` 
             inner join Path2Rule r2 on r2.\`pathId\` = p.\`id\`
@@ -287,25 +295,25 @@ router.delete('/api/offers/:id', async function (req, res, next) {
             inner join Flow f on f.\`id\` = f2.\`flowId\` 
             where  offer.\`deleted\` = 0  and p2.\`deleted\` = 0  and p.\`deleted\` = 0  and r2.\`deleted\` = 0  and r.\`deleted\`= 0 and f2.\`deleted\`= 0 and f.\`deleted\` = 0   
             and offer.\`id\`= <%=offerId%> and offer.\`userId\`= <%=userId%> and p.\`userId\`=<%=userId%> and r.\`userId\`= <%=userId%> and f.\`userId\` = <%=userId%>`;
-         let buildFuc=_.template(templeSql);
-         let sql = buildFuc({
-             offerId:value.id,
-             userId:value.userId
-         });
-        let flowResult=await common.query(sql,[],connection);
-        if(flowResult.length){
+        let buildFuc = _.template(templeSql);
+        let sql = buildFuc({
+            offerId: value.id,
+            userId: value.userId
+        });
+        let flowResult = await common.query(sql, [], connection);
+        if (flowResult.length) {
             res.json({
-            status: 0,
-            message: 'offer used by flow!',
-            data:{
-                flows:flowResult
-            }
-          });
-          return ;
+                status: 0,
+                message: 'offer used by flow!',
+                data: {
+                    flows: flowResult
+                }
+            });
+            return;
         }
 
-        let result = await common.deleteOffer(req.user.id,value.id, value.userId, value.name, value.hash, connection);
-         
+        let result = await common.deleteOffer(req.user.id, value.id, value.userId, value.name, value.hash, connection);
+
 
         res.json({
             status: 1,
