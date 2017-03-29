@@ -241,11 +241,11 @@
       }).$promise;
       initPromises.push(prms);
 
-      var allOffers;
-      prms = Offer.query({columns:'id,name,country'}, function(result) {
-        allOffers = result;
-      }).$promise;
-      initPromises.push(prms);
+      // var allOffers;
+      // prms = Offer.query({columns:'id,name,country'}, function(result) {
+      //   allOffers = result;
+      // }).$promise;
+      // initPromises.push(prms);
 
       var allConditions;
       if(!$rootScope.allConditions) {
@@ -268,10 +268,10 @@
       $scope.initState = 'init';
       function initSuccess() {
         $scope.flowDataSuccess = true;
-        var offerMap = {};
-        allOffers.forEach(function(offer) {
-          offerMap[offer.id] = offer;
-        });
+        // var offerMap = {};
+        // allOffers.forEach(function(offer) {
+        //   offerMap[offer.id] = offer;
+        // });
         var landerMap = {};
         allLanders.forEach(function(lander) {
           landerMap[lander.id] = lander;
@@ -361,8 +361,12 @@
             }
 
             calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
+
             path.offers.forEach(function(offer) {
-              offer._def = offerMap[offer.id];
+              offer._def = {
+                id: offer.id,
+                name: offer.name
+              };
             });
           });
         });
@@ -731,18 +735,29 @@
         }
       };
       $scope.queryOffers = function(query) {
-        var deferred = $q.defer();
-        $timeout(function() {
-          if (allOffers) {
-            var filtered = allOffers.filter(function(offer) {
-              return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
-            }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
-            deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
-          } else {
-            deferred.resolve([]);
-          }
+        if(!query) return [];
+
+        var selectedIds = ($scope.curPath.offers || []).filter(function(offer) {
+          return offer._def;
+        }).map(function(offer) {
+          return offer.id;
         });
-        return deferred.promise;
+
+        return Offer.query({columns: 'id,name', country: $scope.country.value || 'ZZZ', ids: selectedIds.join(',')}, function(result) {
+          return result;
+        }).$promise
+        // var deferred = $q.defer();
+        // $timeout(function() {
+        //   if (allOffers) {
+        //     var filtered = allOffers.filter(function(offer) {
+        //       return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
+        //     }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
+        //     deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
+        //   } else {
+        //     deferred.resolve([]);
+        //   }
+        // });
+        // return deferred.promise;
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
