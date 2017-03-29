@@ -3094,15 +3094,15 @@ md-autocomplete .md-show-clear-button button{width:22px;height:22px;margin:auto 
 }
 
 .alipay-box qr {
-  position: absolute;
-  top: 122px;
-  left: 50%;
-  margin-left: -60px;
-  width: 120px;
+    position: absolute;
+    top: 112px;
+    left: 50%;
+    margin-left: -70px;
+    width: 140px;
 }
 
 .alipay-box qr img {
-  width: 120px;
+  width: 140px;border-radius:3px;
 }
 
 .alipay-box .amount {
