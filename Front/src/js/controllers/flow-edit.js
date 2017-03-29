@@ -136,12 +136,12 @@
             return;
           }
           var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
-          allOffers.unshift(newOffer);
+          // allOffers.unshift(newOffer);
           if (offer) {
-            var idx = allOffers.indexOf(offer._def);
-            if (idx >= 0) {
-              allOffers.splice(idx, 1);
-            }
+            // var idx = allOffers.indexOf(offer._def);
+            // if (idx >= 0) {
+            //   allOffers.splice(idx, 1);
+            // }
             offer._def = newOffer;
           } else {
             $scope.curPath.offers.push({
@@ -741,22 +741,9 @@
         }).map(function(offer) {
           return offer._def.id;
         });
-
-        return Offer.query({columns: 'id,name', country: $scope.country.value || 'ZZZ', ids: selectedIds.join(',')}, function(result) {
+        return Offer.query({columns: 'id,name', country: $scope.country.value || 'ZZZ', ids: selectedIds.join(','), filter: query}, function(result) {
           return result;
         }).$promise
-        // var deferred = $q.defer();
-        // $timeout(function() {
-        //   if (allOffers) {
-        //     var filtered = allOffers.filter(function(offer) {
-        //       return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
-        //     }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
-        //     deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
-        //   } else {
-        //     deferred.resolve([]);
-        //   }
-        // });
-        // return deferred.promise;
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
