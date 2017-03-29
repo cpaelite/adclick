@@ -88,16 +88,16 @@ body {
 .p-header .money-icon{color:#357cf3;font-size:18px;vertical-align:top;line-height:24px;}
 .p-header .money-size{color:#357cf3;font-size:42px;line-height:42px;}
 .p-header .money-small{color:#b3b3b3;}
-.pricing-box .p-header.p-header2{position:relative;margin:25px 0 5px 0;}
-.pricing-box .p-header.p-header2 .line{height:110px;width:3px;display:block;background:#aaa;position:absolute;left:50%;top:-45px;
+.p-header.p-header2{position:relative;margin:25px 0 5px 0;}
+.p-header.p-header2 .line{height:110px;width:3px;display:block;background:#aaa;position:absolute;left:50%;top:-45px;
     transform:rotate(-80deg);
     -ms-transform:rotate(-80deg); /* Internet Explorer */
     -moz-transform:rotate(-80deg); /* Firefox */
     -webkit-transform:rotate(-80deg); /* Safari 和 Chrome */
     -o-transform:rotate(-80deg); /* Opera */}
-.pricing-box .p-header.p-header2 .money-size{color:#aaa;font-size:34px;}
-.pricing-box .p-header.p-header2 .money-icon{color:#aaa;font-size:14px;}
-.pricing-box .p-header.p-header2 .money-small{color:#aaa;}
+.p-header.p-header2 .money-size{color:#aaa;font-size:34px;}
+.p-header.p-header2 .money-icon{color:#aaa;font-size:14px;}
+.p-header.p-header2 .money-small{color:#aaa;}
 .edit-pricing-box .col-md-8.my-price-l{color:#333;border:none;padding-right:20px;}
 .edit-pricing-box .my-price-l:hover,.p-pay li:hover{border:none;}
 .edit-pricing-box .col-md-8{padding:0;}
