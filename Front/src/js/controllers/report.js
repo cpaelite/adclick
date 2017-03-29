@@ -190,7 +190,6 @@
 
         $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus ', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            $('.blue-btn.apply-btn').css({'background':'#16a919','border':'1px solid #16a919'});
             $('.apply-change-btn').addClass('apply-btn');
             $scope.btnName = 'apply';
           }
@@ -335,6 +334,8 @@
 
     $scope.applySearch = function() {
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
+      $scope.btnName = 'Refresh';
+      $('.apply-change-btn').removeClass('apply-btn');
       if ($scope.treeLevel == 0) {
         $mdDialog.show(
           $mdDialog.alert()
