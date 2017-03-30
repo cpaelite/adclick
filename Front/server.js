@@ -3605,13 +3605,10 @@ app.get('/api/third/affiliates', function(req, res, next) {
       affiliateId: 1,
       name: "affiliateTest01",
       token: "3455sdfsdsfsd",
-      account: "uu@cc.com",
-      password:"111111"
     }, {
       id: 12,
       affiliateId: 2,
       name: "affiliateTest02",
-      token: "3455sdfsdsfsd2222",
       account: "uu222@cc.com",
       password:"222222"
     }]
@@ -3656,34 +3653,55 @@ app.delete('/api/third/affiliates/:id', function(req, res, next) {
  *     }
  *
  */
+ var times = 0;
 app.post('/api/third/tasks', function(req, res, next) {
+  times = 0;
     var result = {
-       "taskId": '1111'
+       "status": 1,
+       "message": "success",
+       "data": {
+         "taskId": '1111'
+       }
     };
 
     delayResponse(res, result);
 });
 
 /**
- * @api {get} /api/third/tasks/:id  获取OfferSyncTask状态
- * @apiName   获取OfferSyncTask状态
- * @apiGroup ThirdParty
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success",
- *       "data":{progress:1,error:""} //0:新建;1:运行中;2:出错;3:完成
- *     }
- *
- */
-app.get('/api/third/tasks/:id', function(req, res, next) {
+ * @api {get} /api/third/tasks  获取OfferSyncTask 
+ * @apiName   获取OfferSyncTask  
+ * @apiGroup ThirdParty
+ *
+ * @apiParam {Number} thirdPartyANId
+ *  
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{tasks:[]}  //0:新建;1:运行中;2:出错;3:完成
+ *     }
+ *
+ */
+
+
+app.get('/api/third/tasks', function(req, res, next) {
+  times++;
   var result = {
     "status": 1,
     "message": "success",
-    "data":{progress:1,error:""} //0:新建;1:运行中;2:出错;3:完成
+    "data":[{
+      id: '12',
+      status: 1, //0:新建;1:运行中;2:出错;3:完成
+      message: ''
+    }]
   };
+
+  console.log('times', times);
+
+  if(times > 5) {
+    result.data[0].status = 3;
+  }
 
   delayResponse(res, result);
 });
@@ -3789,22 +3807,26 @@ app.get('/api/third/offers', function(req, res, next) {
 });
 
 /**
- * @api {post} /api/third/offersImport  将第三方offer导入
- * @apiName   将第三方offer导入
- * @apiGroup ThirdParty
- *
- * @apiParam {Array} ids
- * @apiParam {Number} affiliateId
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": 1,
- *       "message": "success",
- *       "data":{}
- *     }
- *
- */
+ * @api {post} /api/third/offersImport  将第三方offer导入
+ * @apiName   将第三方offer导入
+ * @apiGroup ThirdParty
+ * 
+ * @apiParam {Array} offers
+ * @apiParam {Number} affiliateId
+ * @apiParam {Number} taskId
+ * @apiParam {String} affiliateName
+ * @apiParam {Number} action  1.新导入  2.覆盖
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{}
+ *     }
+ *
+ */
+
 app.post('/api/third/offersImport', function(req, res, next) {
   var result = {
     "status": 1,

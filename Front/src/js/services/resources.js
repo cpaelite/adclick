@@ -158,5 +158,16 @@ angular.module('app')
   .factory('ThirdOffer', ['$resource', function($resource) {
     return $resource('/api/third/offers/:id', {id: '@id'});
   }])
+  .factory('OfferTask', ['$resource', function($resource) {
+    return $resource('/api/third/tasks');
+  }])
+  .factory('OfferImport', ['$resource', function($resource) {
+    return $resource('/api/third/offersImport');
+  }])
+
+
+
+
+>>>>>>> 添加ts offers
 
 ;

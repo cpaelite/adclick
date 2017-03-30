@@ -4,6 +4,7 @@
   var i18n_en = {
     ok: 'Ok',
     save: 'Save',
+    warn: 'Warn',
     cancel: 'Cancel',
     operation: 'Operation',
     add: 'Add',
