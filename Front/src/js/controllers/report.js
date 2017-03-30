@@ -305,10 +305,19 @@
     function filteGroupBy(level) {
       return function(item) {
         var exclude = [];
+        var isShowIp = false;
         $scope.filters.forEach(function(f) {
           exclude.push(f.key);
+          if (f.key == 'campaign') {
+            isShowIp = true;
+          }
         });
-        exclude.push($scope.groupBy[0]);
+        if (!isShowIp) {
+          exclude.push('ip');
+        }
+        if (level != 0) {
+          exclude.push($scope.groupBy[0]);
+        }
         if (level == 2) {
           exclude.push($scope.groupBy[1]);
         }
@@ -316,6 +325,7 @@
       }
     }
 
+    $scope.groupbyFilter = filteGroupBy(0);
     $scope.groupbyFilter1 = filteGroupBy(1);
     $scope.groupbyFilter2 = filteGroupBy(2);
 

@@ -11,9 +11,9 @@
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <div class="cs-subform-control">
-                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
+                <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[0]" ng-disabled="groupBy[0]=='ip'" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <!--<option value="">Choose grouping</option>-->
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions">{{gb.display}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter: groupbyFilter">{{gb.display}}</md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
