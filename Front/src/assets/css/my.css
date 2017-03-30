@@ -353,15 +353,15 @@ md-datepicker {
     border-radius: 0;
 }
 .change-paln-dialog {
-  width: 1024px;max-width: 100%;height: 652px;
+  width: 1024px;max-width: 100%;
 }
 .change-paln-dialog .change-paln-dialog-content {
   padding-bottom: 5px;
-  height: 600px;
 }
 .change-paln-dialog .change-paln-dialog-content .note {
-  margin: 0;
-  padding-top: 5px;
+  margin: 15px auto 0;
+  font-weight: 700;
+  width: 80%;
 }
 .change-paln-dialog .change-paln-dialog-content > .pricing-box {
   margin: 0;
@@ -1455,6 +1455,9 @@ h1.setting-title p{line-height:26px;color:#333;font-weight:normal;margin-bottom:
 }
 .table tbody tr{
     background: #fff
+}
+.table tbody tr.campaign-tr{
+    cursor: pointer;
 }
 .table tbody tr:nth-child(2n+2){
     background: #f8f8f8;
@@ -2975,6 +2978,19 @@ md-content.md-default-theme, md-content{color:#000;}
     transition: color 300ms ease-in-out;}
 .md-button.md-primary.md-raised.green-btn i{margin-right:5px;}
 .btn.btn-primary.blue-btn{padding:0 12px;font-weight:bold;font-size:13px;}
+.right-select .cs-add-button.blue-btn[disabled]{
+    background: #a09b9b !important;
+    border: 1px solid #868484 !important;
+}
+.ts-time{
+    padding: 0 5px;
+    border: 1px solid #c9c9cf!important;
+    border-radius: 3px;
+    background: #fff;
+    min-width: 82px;
+    height: 32px;
+    line-height: 30px;
+}
 .blue-btn.apply-change-btn.apply-btn{
     background: #16a919 !important;
     border:1px solid #16a919 !important;

@@ -16,9 +16,10 @@
 
     $scope.query = {
       page: 1,
-      tsReferenceId: '',
       __tk: 0
     };
+
+    $scope.tsReferenceId = '';
 
     $scope.datetype = '1';
     getDateRange($scope.datetype);
@@ -48,7 +49,7 @@
     }, true);
 
     $scope.$watch('query', function (newVal, oldVal) {
-      if (!newVal || !newVal.limit || !newVal.tsReferenceId) {
+      if (!newVal || !newVal.limit || !$scope.tsReferenceId) {
         return;
       }
       if (angular.equals(newVal, oldVal)) {
@@ -63,6 +64,7 @@
     }, true);
 
     $scope.applySearch = function() {
+      $scope.disabled = true;
       getDateRange($scope.datetype);
       $scope.query.page = 1;
       $scope.query.__tk += 1;
@@ -75,7 +77,7 @@
         item.startStatus = true;
       }
       TsCampaign.save({id: item.campaignId}, {
-        tsReferenceId: $scope.query.tsReferenceId,
+        tsReferenceId: $scope.tsReferenceId,
         action: 'start'
       }, function(oData) {
         if(oData.status) {
@@ -113,7 +115,7 @@
         controller: ['$mdDialog', 'Tsreport', 'TsCampaign', pauseCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {item: item, tsReferenceId: $scope.query.tsReferenceId},
+        locals: {item: item, tsReferenceId: $scope.tsReferenceId},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html'
       }).then(function(oData) {
@@ -129,8 +131,8 @@
     function getTsReferences() {
       TsReference.get(null, function(oData) {
         $scope.tsReferences = oData.data.tsreferences;
-        if(!$scope.query.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
-          $scope.query.tsReferenceId = $scope.tsReferences[0].id;
+        if(!$scope.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
+          $scope.tsReferenceId = $scope.tsReferences[0].id;
         }
       });
     }
@@ -141,14 +143,32 @@
       });
     }
 
+    $scope.btnName = 'Refresh';
     function getList() {
       var params = {};
       angular.extend(params, $scope.query, pageStatus);
       delete params.__tk;
       $scope.promise = Tsreport.get(params, function(result) {
         $scope.report = result.data;
+
+        $scope.disabled = false;
+        $scope.btnName = 'Refresh';
+        $scope.applyBtn = false;
       }).$promise;
-    }
+    }      
+    $scope.$watch('datetype + fromDate + fromTime + toDate + toTime ', function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        $scope.applyBtn = true;
+        $scope.btnName = 'apply';
+      }
+    }, true);
+
+    $scope.$watch('tsReferenceId', function(newVal, oldVal) {
+      if (newVal != oldVal && oldVal) {
+        $scope.applyBtn = true;
+        $scope.btnName = 'apply';
+      }
+    }, true);
 
     function pauseCtrl($mdDialog, Tsreport, TsCampaign) {
       var self = this;
