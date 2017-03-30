@@ -1,10 +1,10 @@
 @font-face {
   font-family: 's-icon';
-  src:  url('../fonts/s-icon.eot?cuhtwe');
-  src:  url('../fonts/s-icon.eot?cuhtwe#iefix') format('embedded-opentype'),
-  url('../fonts/s-icon.ttf?cuhtwe') format('truetype'),
-  url('../fonts/s-icon.woff?cuhtwe') format('woff'),
-  url('../fonts/s-icon.svg?cuhtwe#s-icon') format('svg');
+  src:  url('../fonts/s-icon.eot?auj0ti');
+  src:  url('../fonts/s-icon.eot?auj0ti#iefix') format('embedded-opentype'),
+  url('../fonts/s-icon.ttf?auj0ti') format('truetype'),
+  url('../fonts/s-icon.woff?auj0ti') format('woff'),
+  url('../fonts/s-icon.svg?auj0ti#s-icon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -360,6 +360,9 @@
 .icon-h-02:before {
   content: "\e922";
 }
+.icon-smile:before {
+  content: "\e996";
+}
 .icon-tj-01:before {
   content: "\e93a";
 }
@@ -474,7 +477,7 @@
 .icon-happy:before {
   content: "\e9df";
 }
-.icon-smile:before {
+.icon-smile-2:before {
   content: "\e9e1";
 }
 .icon-tongue:before {
