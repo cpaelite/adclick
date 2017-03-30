@@ -192,9 +192,13 @@
           }
         }
 
+        $scope.disabled = false;
+        $scope.btnName = 'Refresh';
+        $scope.applyBtn = false;
+
         $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus ', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            $('.apply-change-btn').addClass('apply-btn');
+            $scope.applyBtn = true;
             $scope.btnName = 'apply';
           }
         }, true);
@@ -357,8 +361,7 @@
 
     $scope.applySearch = function() {
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
-      $scope.btnName = 'Refresh';
-      $('.apply-change-btn').removeClass('apply-btn');
+      $scope.disabled = true;
       if ($scope.treeLevel == 0) {
         $mdDialog.show(
           $mdDialog.alert()

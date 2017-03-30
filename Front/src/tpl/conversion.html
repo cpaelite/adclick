@@ -43,7 +43,7 @@
                 </md-select>
             </div>
         </div>
-        <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="applySearch($event)" translate>apply</md-button>
+        <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-class="{'apply-btn': applyBtn}" ng-click="applySearch($event)" ng-model="btnName" ng-disabled="disabled" translate>{{btnName}}</md-button>
         <div class="view_column blue-btn" ng-click="viewColumnClick()">
             <div class="view_column_con" ng-show="viewColumnIsShow">
                 <ul class="view_column_list">
@@ -76,9 +76,9 @@
 <div flex layout="column" class="cs-page-content report">
            <div class="table-box">
 
-    <md-table-container>
+    <md-table-container resize>
         <table md-table multiple ng-model="selected" md-progress="promise">
-            <thead md-head md-order="query.order">
+            <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
                     <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
                         ng-show="preferences.reportViewColumns['conversion_' + item.key].visible">{{item.name}}
@@ -95,7 +95,8 @@
                     </td>
                 </tr>
             </tbody>
-            <tfoot md-body ng-if="report.totalRows != 0">
+            <!-- ng-if="report.totalRows != 0" -->
+            <tfoot md-body fix-foot>
                 <tr md-row>
                     <td md-cell ng-show="preferences.reportViewColumns['conversion_' + columns[0].key].visible">Total</td>
                     <td md-cell ng-repeat="column in columns"

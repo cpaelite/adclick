@@ -1,5 +1,51 @@
 (function () {
-  angular.module('app').controller('ConversionCtrl', ['$scope', 'Conversion', 'Preference', 'columnDefinition', 'Profile', ConversionCtrl]);
+  angular.module('app')
+  .controller('ConversionCtrl', ['$scope', 'Conversion', 'Preference', 'columnDefinition', 'Profile', 
+  ConversionCtrl
+  ])
+  .directive('resize',['$timeout','$q',function($timeout,$q){
+      return function(scope, element) {
+        var timeout;
+        var w_h = $(window);
+        var nav_h = $('nav');
+        var filter_h = $('.cs-action-bar-bg');
+        var page_h = $('md-table-pagination');
+        var breadcrumb_h = $('.breadcrumb-div');
+        function getHeight() {
+          var deferred = $q.defer();
+          $timeout(function() {
+            deferred.resolve({
+              'w_h': w_h.height(),
+              'nav_h': nav_h.height(),
+              'filter_h':filter_h.outerHeight(true),
+              'page_h':page_h.height(),
+            });
+          });
+          return deferred.promise;
+        }
+
+        function heightResize() {
+          getHeight().then(function(newVal) {
+            scope.windowHeight = newVal.w_h;
+            scope.navHeight = newVal.nav_h;
+            scope.filterHeight = newVal.filter_h;
+            scope.pageHeight = newVal.page_h;
+
+            angular.element(element).css({
+              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - 10) + 'px'
+            })
+
+          })
+        }
+
+        heightResize();
+
+        w_h.bind('resize', function() {
+          heightResize();
+        });
+      }
+    }]);
+
   function ConversionCtrl($scope, Conversion, Preference, columnDefinition, Profile) {
     var pageStatus = {};
 
@@ -65,6 +111,7 @@
     });
 
     $scope.applySearch = function () {
+      $scope.disabled = true;
       getDateRange($scope.datetype);
       $scope.query.page = 1;
       $scope.query.__tk += 1;
@@ -91,18 +138,28 @@
       var preferences = {
         json: $scope.preferences
       };
-      Preference.save(preferences);
+      Preference.save(prefereces);
     };
 
+    $scope.btnName = 'Refresh';
     function getList() {
       var params = {};
       angular.extend(params, $scope.query, pageStatus);
       delete params.__tk;
       $scope.promise = Conversion.get(params, function (result) {
         $scope.report = result.data;
+        $scope.disabled = false;
+        $scope.btnName = 'Refresh';
+        $scope.applyBtn = false;
+
       }).$promise;
     }
-
+    $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus ', function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        $scope.applyBtn = true;
+        $scope.btnName = 'apply';
+      }
+    }, true);
     $scope.isNeedCurrency = function(key) {
       return ['Cost', 'Revenue'].indexOf(key) > -1;
     };

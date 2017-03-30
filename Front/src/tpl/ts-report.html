@@ -3,7 +3,7 @@
     <div class="cs-action-bar clearfix">
     <div class="right-select right-select-left">
         <div class="cs-subform-control">
-            <md-select class="cs-subform-select" ng-model="query.tsReferenceId">
+            <md-select class="cs-subform-select" ng-model="tsReferenceId">
                 <md-option value="{{tsReference.id}}" ng-repeat="tsReference in tsReferences">{{tsReference.name}}</md-option>
             </md-select>
         </div>
@@ -31,7 +31,7 @@
                         ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
                     {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
                 </button>
-                <select class="cs-subform-select" ng-model="fromTime">
+                <select class="cs-subform-select ts-time" ng-model="fromTime">
                     <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
                 </select>
             </div>
@@ -42,17 +42,18 @@
                         ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
                     {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
                 </button>
-                <select class="cs-subform-select" ng-model="toTime">
+                <select class="cs-subform-select ts-time" ng-model="toTime">
                     <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
                 </select>
             </div>
         </div>
         <md-button
-                class="md-raised md-primary cs-compact cs-add-button blue-btn"
-                ng-click="applySearch($event)"
+                class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn"
+                ng-click="applySearch($event)" ng-model="btnName" ng-disabled="disabled"
+                ng-class="{'apply-btn': applyBtn}"
                 translate
         >
-            apply
+            {{btnName}}
         </md-button>
         <md-button
                 class="md-raised md-primary cs-compact cs-add-button blue-btn"
@@ -63,7 +64,7 @@
         </md-button>
         <md-button
                 class="md-raised md-primary cs-compact cs-add-button blue-btn"
-                ng-click="addOrEditTsReference(query.tsReferenceId)"
+                ng-click="addOrEditTsReference(tsReferenceId)"
                 translate
                 ng-show="tsReferences.length > 0"
         >
@@ -77,7 +78,7 @@
     <div class="table-box">
     <md-table-container>
         <table md-table multiple ng-model="selected" md-progress="promise">
-            <thead md-head md-order="query.order">
+            <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
                     <th md-column md-order-by="campaignName">Campaign</th>
                     <th md-column md-order-by="campaignId">Campaign ID</th>
