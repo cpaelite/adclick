@@ -1,0 +1,81 @@
+<div class="cs-action-bar-bg">
+    <h6>Advanced filters:</h6>
+    <div class="cs-action-bar clearfix">
+      <div class="right-select right-select-left">
+        <div class="cs-subform-control">
+          <md-select class="cs-subform-select" ng-model="query.id">
+              <md-option value="{{thirdAffiliate.id}}" ng-repeat="thirdAffiliate in thirdAffiliates">{{thirdAffiliate.name}}</md-option>
+          </md-select>
+        </div>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="load($event)"
+          ng-show="thirdAffiliates.length > 0"
+          translate
+        >
+            load
+        </md-button>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="addOrEditThirdAffiliates()"
+          translate
+        >
+            add
+        </md-button>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="addOrEditThirdAffiliates(query.id)"
+          translate
+          ng-show="thirdAffiliates.length > 0"
+        >
+            edit
+        </md-button>
+      </div>
+  </div>
+</div>
+
+<div flex layout="column" class="cs-page-content report ts-offer-report">
+  <div class="load-progress-box">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">60%</div>
+    </div>
+    <div class="load-progress-content">
+      <i class="icon-smile"></i>
+      <h2>Loading...</h2>
+      <p>Thanks for your patients, the data is extracting...</p>
+    </div>
+  </div>
+
+  <div class="table-box">
+    <md-table-container>
+        <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
+            <thead md-head md-order="query.order" fix-head>
+              <tr md-row>
+                <th md-column md-order-by="campaignName">Campaign</th>
+                <th md-column md-order-by="campaignId">Campaign ID</th>
+                <th md-column md-order-by="impressions">Impressions</th>
+                <th md-column md-order-by="clicks">Clicks</th>
+                <th md-column md-order-by="cost">Cost</th>
+              </tr>
+            </thead>
+            <tbody md-body >
+              <tr md-row md-select="dessert.id" ng-repeat="dessert in desserts.data" md-auto-select="options.autoSelect">
+                <td md-cell><span>{{dessert.calories.value}}</span></td>
+                <td md-cell><span>{{dessert.calories.value}}</span></td>
+                <td md-cell><span>{{dessert.calories.value}}</span></td>
+                <td md-cell><span>{{dessert.calories.value}}</span></td>
+                <td md-cell><span>{{dessert.calories.value}}</span></td>
+              </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+  </div>
+  <md-table-pagination
+    md-limit="query.limit"
+    md-limit-options="[50, 100, 200, 500, 1000]"
+    md-page="query.page"
+    md-total="{{report.totalRows}}"
+    md-page-select
+  >
+  </md-table-pagination>
+</div>

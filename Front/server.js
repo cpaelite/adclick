@@ -1622,6 +1622,8 @@ app.get('/api/offers/:offerId', function (req, res) {
  * get offers list
  * params:
  *  columns - needed columns, comma seperated, e.g. id,name
+ *  filter - 查询的名字
+ *  ids [] - 需要排除掉的offers
  * shang@v1
  */
 app.get('/api/offers', function (req, res) {
@@ -2229,13 +2231,19 @@ app.get('/api/affilate/tpl', function (req, res) {
           id: 1,
           name: 'tpl1',
           desc: '<div>tpl1</div>',
-          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=%SUBID1%&p=%AMOUNT%'
+          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=%SUBID1%&p=%AMOUNT%',
+          apiOffer: '', // '0:不支持api拉取Offer;1:支持拉取Offer',
+          apiUrl: '', // 'api拉取Offer用的Url',
+          apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持',
         },
         {
           id: 2,
           name: 'tpl2',
           desc: '<div>tpl2</div>',
-          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=[dv1]&p=[conversion revenue]'
+          postbackurl: 'http://zx1jg.newbidder.com/postback?cid=[dv1]&p=[conversion revenue]',
+          apiOffer: '', // '0:不支持api拉取Offer;1:支持拉取Offer',
+          apiUrl: '', // 'api拉取Offer用的Url',
+          apiMode: 2, // '1:仅token;2:仅Username/password;3:token/up都支持',
         }
       ]
     }
@@ -3515,6 +3523,296 @@ app.post('/api/qrpay/status', function (req, res) {
   setTimeout(function () {
     res.send(result);
   }, 5000);
+});
+
+/**
+ * @api {post} /api/third/affiliates  新建ThirdPartyAffiliatNetwork
+ * @apiName  新建ThirdPartyAffiliatNetwork
+ * @apiGroup ThirdParty
+ *
+ * @apiParam {Number} affiliateId
+ * @apiParam {String} name
+ * @apiParam {String} [token]
+ * @apiParam {String} [account]
+ * @apiParam {String} [password]
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *     }
+ *
+ */
+app.post('/api/third/affiliates', function(req, res, next) {
+    var result = {
+      "status": 1,
+      "message": "success"
+    };
+
+    delayResponse(res, result);
+});
+
+/**
+ * @api {put} /api/third/affiliates  update ThirdPartyAffiliatNetwork
+ * @apiName  新建ThirdPartyAffiliatNetwork
+ * @apiGroup ThirdParty
+ *
+ * @apiParam {Number} affiliateId
+ * @apiParam {String} name
+ * @apiParam {String} [token]
+ * @apiParam {String} [account]
+ * @apiParam {String} [password]
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *     }
+ *
+ */
+app.put('/api/third/affiliates/:id', function(req, res, next) {
+    var result = {
+      "status": 1,
+      "message": "success"
+    };
+
+    delayResponse(res, result);
+});
+
+/**
+ * @api {get} /api/third/affiliates/:id  获取ThirdPartyAffiliatNetwork detail
+ * @apiName  获取ThirdPartyAffiliatNetwork detail
+ * @apiGroup ThirdParty
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{name:"",affiliateId:1,token:"",account:"",password:""}
+ *     }
+ *
+ */
+app.get('/api/third/affiliates', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [{
+      id: 11,
+      affiliateId: 1,
+      name: "affiliateTest01",
+      token: "3455sdfsdsfsd",
+      account: "uu@cc.com",
+      password:"111111"
+    }, {
+      id: 12,
+      affiliateId: 2,
+      name: "affiliateTest02",
+      token: "3455sdfsdsfsd2222",
+      account: "uu222@cc.com",
+      password:"222222"
+    }]
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @api {delete} /api/third/affiliates/:id  删除ThirdPartyAffiliatNetwork
+ * @apiName  删除ThirdPartyAffiliatNetwork
+ * @apiGroup ThirdParty
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *     }
+ *
+ */
+app.delete('/api/third/affiliates/:id', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @api {post} /api/third/tasks  新建OfferSyncTask
+ * @apiName   新建OfferSyncTask
+ * @apiGroup ThirdParty
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *     }
+ *
+ */
+app.post('/api/third/tasks', function(req, res, next) {
+    var result = {
+       "taskId": '1111'
+    };
+
+    delayResponse(res, result);
+});
+
+/**
+ * @api {get} /api/third/tasks/:id  获取OfferSyncTask状态
+ * @apiName   获取OfferSyncTask状态
+ * @apiGroup ThirdParty
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{progress:1,error:""} //0:新建;1:运行中;2:出错;3:完成
+ *     }
+ *
+ */
+app.get('/api/third/tasks/:id', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data":{progress:1,error:""} //0:新建;1:运行中;2:出错;3:完成
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @api {get} /api/third/offers/:id  获取第三方offer detail
+ * @apiName   获取第三方offer detail
+ * @apiGroup ThirdParty
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{}
+ *     }
+ *
+ */
+app.get('/api/third/offers/:id', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data":{}
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @api {get} /api/third/offers  load thirdparty offer list
+ * @apiName  load thirdparty offer list
+ * @apiGroup ThirdParty
+ *
+ * @apiParam {Number} taskId
+ * @apiParam {Number} page
+ * @apiParam {Number} limit
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{
+            status:1,         //   '1:active;2:pauseded',
+            offerId:"189378",   //'第三方的OfferId',
+            name:"",
+            previewLink:"",
+            trackingLink:"" ,
+            countryCode:""   //'USA,SGP,CHN,IDA,IND',
+            payoutMode:1, //   '0:Auto;1:Manual',
+            payoutValue :0.23,
+            category:"",
+            carrier:"",
+            platform:""
+ *          }
+ *     }
+ *
+ */
+app.get('/api/third/offers', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [{
+       status: 1,         //   '1:active;2:pauseded',
+       offerId: "189377",   //'第三方的OfferId',
+       name:"Global - offertest",
+       previewLink: "http://www.xxx.xxxa.com",
+       trackingLink: "http://www.xxx.xxxa.com" ,
+       countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
+       payoutMode: 1, //   '0:Auto;1:Manual',
+       payoutValue :0.23,
+       category: "",
+       carrier: "",
+       platform: "OS"
+     },{
+        status: 2,         //   '1:active;2:pauseded',
+        offerId: "189378",   //'第三方的OfferId',
+        name:"Global - offertest",
+        previewLink: "http://www.xxx.xxxa.com",
+        trackingLink: "http://www.xxx.xxxa.com" ,
+        countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
+        payoutMode: 1, //   '0:Auto;1:Manual',
+        payoutValue :0.23,
+        category: "",
+        carrier: "",
+        platform: "OS"
+      },{
+         status: 3,         //   '1:active;2:pauseded',
+         offerId: "189379",   //'第三方的OfferId',
+         name:"Global - offertest",
+         previewLink: "http://www.xxx.xxxa.com",
+         trackingLink: "http://www.xxx.xxxa.com" ,
+         countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
+         payoutMode: 1, //   '0:Auto;1:Manual',
+         payoutValue :0.23,
+         category: "",
+         carrier: "",
+         platform: "OS"
+       }]
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @api {post} /api/third/offersImport  将第三方offer导入
+ * @apiName   将第三方offer导入
+ * @apiGroup ThirdParty
+ *
+ * @apiParam {Array} ids
+ * @apiParam {Number} affiliateId
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success",
+ *       "data":{}
+ *     }
+ *
+ */
+app.post('/api/third/offersImport', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data":{}
+  };
+
+  delayResponse(res, result);
 });
 
 
