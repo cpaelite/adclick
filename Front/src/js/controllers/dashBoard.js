@@ -54,6 +54,19 @@
 
       $scope.tables = ['campaign', 'country'];
 
+
+      $scope.goGroupByOffer = function(type,val){
+          if(type == 'campaign'){          
+            var params = {
+              datatype:$scope.datetype,
+              filters:{
+                campaign: val.campaignId
+              }
+            }
+            $scope.$state.go('app.report.offer',params);
+          }
+      };
+
       params.limit = 5;
       params.page = 1;
       function getTableData() {

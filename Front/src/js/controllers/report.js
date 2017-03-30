@@ -20,6 +20,7 @@
         var nav_h = $('nav');
         var filter_h = $('.cs-action-bar-bg');
         var page_h = $('md-table-pagination');
+        var breadcrumb_h = $('.breadcrumb-div');
         function getHeight() {
           var deferred = $q.defer();
           $timeout(function() {
@@ -27,7 +28,8 @@
               'w_h': w_h.height(),
               'nav_h': nav_h.height(),
               'filter_h':filter_h.outerHeight(true),
-              'page_h':page_h.height()
+              'page_h':page_h.height(),
+              'breadcrumb_h':breadcrumb_h.outerHeight(true)
             });
           });
           return deferred.promise;
@@ -39,9 +41,11 @@
             scope.navHeight = newVal.nav_h;
             scope.filterHeight = newVal.filter_h;
             scope.pageHeight = newVal.page_h;
+            scope.breadcrumbHeight = newVal.breadcrumb_h;
+            console.log(scope.breadcrumbHeight);
 
             angular.element(element).css({
-              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - 10) + 'px'
+              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - scope.breadcrumbHeight - 10) + 'px'
             })
 
           })
