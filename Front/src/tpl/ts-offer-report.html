@@ -60,7 +60,7 @@
             </thead>
             <tbody md-body >
               <tr md-row md-select="dessert.id" ng-repeat="dessert in desserts.data" md-auto-select="options.autoSelect">
-                <td md-cell><span>{{dessert.calories.value}}</span></td>
+                <td md-cell><a ng-click="offerDetail('')"><span>{{dessert.calories.value}}</span></a></td>
                 <td md-cell><span>{{dessert.calories.value}}</span></td>
                 <td md-cell><span>{{dessert.calories.value}}</span></td>
                 <td md-cell><span>{{dessert.calories.value}}</span></td>

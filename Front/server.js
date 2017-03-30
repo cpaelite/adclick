@@ -3809,7 +3809,14 @@ app.post('/api/third/offersImport', function(req, res, next) {
   var result = {
     "status": 1,
     "message": "success",
-    "data":{}
+    "data":{
+      offer: {
+          "id": 1,
+          "name": "A green door",
+          "price": 12.50,
+          "tags": ["home", "green"]
+      }
+    }
   };
 
   delayResponse(res, result);

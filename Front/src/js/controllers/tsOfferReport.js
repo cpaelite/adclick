@@ -96,6 +96,21 @@
       });
     };
 
+    $scope.offerDetail = function(id) {
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        escapeToClose: false,
+        controller: ['$mdDialog', '$scope', 'ThirdOffer', tsOfferDetail],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        bindToController: true,
+        locals: {id: id},
+        templateUrl: 'tpl/ts-offer-detail-dialog.html'
+      }).then(function() {
+        
+      });
+    };
+
     function tsOfferCtrl($mdDialog, $scope, ThirdAffiliate) {
       var thirdAffiliates = this.thirdAffiliates;
       var self = this;
@@ -141,6 +156,17 @@
       };
     }
 
+    function tsOfferDetail($mdDialog, $scope, ThirdOffer) {
+      //var id = this.offerId;
+      var id = 1;
+      this.title = 'Detail';
+      $scope.dataJson;
+      this.cancel = $mdDialog.cancel;
+      ThirdOffer.get({id: id}, function(result) {
+        $scope.dataJson = result.data.offer;
+      });
+    }
+
     $scope.options = {
       rowSelection: true,
       multiSelect: true,
@@ -154,7 +180,7 @@
     // }, true);
 
     $scope.desserts = {
-      "count": 9,
+      "totalRows": 9,
       "data": [
         {
           id: 1,

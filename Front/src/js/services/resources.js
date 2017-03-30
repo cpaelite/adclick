@@ -155,5 +155,8 @@ angular.module('app')
       'update': {method:'PUT'}
     });
   }])
+  .factory('ThirdOffer', ['$resource', function($resource) {
+    return $resource('/api/third/offers/:id', {id: '@id'});
+  }])
 
 ;

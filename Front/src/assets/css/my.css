@@ -3173,3 +3173,9 @@ border: 1px solid #e4e3ba;position: relative;z-index: 11;}
 table.md-table tr.row-deleted td.md-cell {
   color: #8d8d8d;
 }
+
+.col-sm-offset-2 textarea {
+    margin: 0px;
+    width: 834px;
+    height: 516px;
+}
