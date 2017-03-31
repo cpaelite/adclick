@@ -136,12 +136,12 @@
             return;
           }
           var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
-          allOffers.unshift(newOffer);
+          // allOffers.unshift(newOffer);
           if (offer) {
-            var idx = allOffers.indexOf(offer._def);
-            if (idx >= 0) {
-              allOffers.splice(idx, 1);
-            }
+            // var idx = allOffers.indexOf(offer._def);
+            // if (idx >= 0) {
+            //   allOffers.splice(idx, 1);
+            // }
             offer._def = newOffer;
           } else {
             $scope.curPath.offers.push({
@@ -361,9 +361,16 @@
             }
 
             calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
+
             path.offers.forEach(function(offer) {
               offer._def = offerMap[offer.id];
-            });
+            })
+            /*path.offers.forEach(function(offer) {
+              offer._def = {
+                id: offer.id,
+                name: offer.name
+              };
+            });*/
           });
         });
 
@@ -731,18 +738,15 @@
         }
       };
       $scope.queryOffers = function(query) {
-        var deferred = $q.defer();
-        $timeout(function() {
-          if (allOffers) {
-            var filtered = allOffers.filter(function(offer) {
-              return $scope.country.value == 'ZZZ' || offer.country == 'ZZZ' || offer.country == $scope.country.value;
-            }).filter(excludeIn($scope.curPath.offers.map(function(item) { return item._def; })));
-            deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
-          } else {
-            deferred.resolve([]);
-          }
+        if(!query) return [];
+        var selectedIds = ($scope.curPath.offers || []).filter(function(offer) {
+          return offer._def;
+        }).map(function(offer) {
+          return offer._def.id;
         });
-        return deferred.promise;
+        return Offer.query({columns: 'id,name', country: $scope.country.value || 'ZZZ', ids: selectedIds.join(','), filter: query}, function(result) {
+          return result;
+        }).$promise
       };
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
@@ -1222,7 +1226,7 @@
 
           if (path.offers) {
             path.offers.some(function(offer) {
-              if (offer._def && offer._def.country != 'ZZZ' && offer._def.country != country.value) {
+              if (offer._def && offer._def.country != 'ZZZ' && offer._def.country.indexOf(country.value) == -1) {
                 returnStatus = true;
                 return false;
               }

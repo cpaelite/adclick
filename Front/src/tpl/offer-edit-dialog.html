@@ -58,13 +58,19 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label class="col-sm-3 control-label">Country: </label>
                 <div class="col-sm-7 my-select">
                     <md-select class="cs-subform-select" aria-label="Country" name="country" ng-model="item.country" ng-change="countryChanged(item.country)" ng-disabled="countryInputDisabled">
 
-                        <md-option value="{{cou.value}}" ng-repeat="cou in countries">{{cou.display}}</md-option>
+                        <md-option value="{{cou.value}}" ng-repeat="cou in countriess">{{cou.display}}</md-option>
                     </md-select>
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Country<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7">
+                    <selectize config='countryFilter.config' options='countryFilter.options' ng-model="countries" required></selectize>
                 </div>
             </div>
             <div class="form-group">

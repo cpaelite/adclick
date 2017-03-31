@@ -96,6 +96,11 @@
           // if (!result.status)
           // return;
           $rootScope.countries = result;
+          var countryMap = {};
+          result.forEach(function(country) {
+            countryMap[country.value] = country;
+          });
+          $rootScope.countryMap = countryMap;
         });
 
         var clientId = $cookies.get('clientId');

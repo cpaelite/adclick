@@ -1464,9 +1464,12 @@
   }
 
   function editOfferCtrl($scope, $mdDialog, $rootScope, $q, $timeout, Offer, AffiliateNetwork, urlParameter, DefaultPostBackUrl, Tag, AppConstant, reportCache, UrlValidate) {
-    var prefixCountry = '', prefixAffiliate = '';
+    //var prefixCountry = '', prefixAffiliate = '';
+    $scope.prefixCountry = '';
+    $scope.prefixAffiliate = '';
     $scope.prefix = '';
     initTags($scope, Tag, 3);
+    initCountries($scope);
     // init load data
     var initPromises = [], prms;
 
@@ -1503,18 +1506,12 @@
       };
       $scope.affiliateId = "0";
       this.title = "add";
-      prefixCountry = this.country ? this.country.display + ' - ' : 'Global - ';
-      $scope.prefix = $scope.item.name = $scope.oldName = prefixCountry;
       $scope.tagsFilter.options = $scope.item.tags = [];
-      $scope.item.country = this.country ? this.country.value : 'ZZZ';
+      processPrefixCountry($scope, "");
+      $scope.prefix = $scope.item.name = $scope.oldName = $scope.prefixCountry;
+      // 初始化country,默认选中Global
+      initDefaultCountry();
     }
-
-    if(this.country) {
-      $scope.countryInputDisabled = true;
-    }
-
-    // Country
-    $scope.countries = $scope.$root.countries;
 
     var defaultPostBackUrl;
     prms = DefaultPostBackUrl.get(null, function (postbackUrl) {
@@ -1537,28 +1534,30 @@
           $scope.tags.push(v.name);
         });
         $scope.tagsFilter.options = $scope.item.tags;
-        // if ($scope.item['payoutMode'] == null) {
-        //   $scope.item = {
-        //     payoutMode: 0,
-        //   };
-        // }
-        // $scope.item = {
-        //   numberOfOffers: 1,
-        // };
-        $scope.countries.forEach(function(v) {
-          if(v.value == $scope.item.country) {
-            prefixCountry = v.display + ' - ';
-            return;
-          }
-        });
+
+        var countries = processPrefixCountry($scope, $scope.item.country);
+        if (countries.indexOf('ZZZ') == -1) {
+          var allCountry = angular.copy($scope.$root.countries);
+          allCountry.forEach(function(country, index) {
+            if (country.value == 'ZZZ') {
+              allCountry.splice(index, 1);
+              return false;
+            }
+          });
+          $scope.countryFilter.options = allCountry;
+          $scope.countries = countries;
+        } else {
+          initDefaultCountry();
+        }
+
         $scope.affiliates.forEach(function(v) {
           if(v.id == $scope.item.AffiliateNetworkId) {
-            prefixAffiliate = v.name + ' - ';
+            $scope.prefixAffiliate = v.name + ' - ';
             return;
           }
         });
         $scope.oldName = $scope.item.name;
-        $scope.prefix = prefixAffiliate + prefixCountry;
+        $scope.prefix = $scope.prefixAffiliate + $scope.prefixCountry;
       }
 
       $scope.$watch('affiliateId', function (newValue, oldValue) {
@@ -1623,31 +1622,14 @@
 
     $scope.nameRequired = nameRequired;
 
-    $scope.countryChanged = function(country) {
-      $scope.countries.forEach(function(v) {
-        if(v.value == country) {
-          prefixCountry = v.display + ' - ';
-          return;
-        }
-      });
-      var preStr = prefixAffiliate + prefixCountry;
-      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
-      $scope.prefix = preStr;
-      nameRequired();
-    }
-
     $scope.affiliateChanged = function(id) {
       $scope.affiliates.forEach(function(v) {
         if(v.id == id) {
-          prefixAffiliate = v.name + ' - ';
+          $scope.prefixAffiliate = v.name + ' - ';
           return;
         }
       });
-      var preStr = prefixAffiliate + prefixCountry;
-      $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
-      $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
-      $scope.prefix = preStr;
+      processOfferName($scope);
     };
 
     $q.all(initPromises).then(initSuccess);
@@ -1677,6 +1659,7 @@
     this.save = function () {
       if(!nameRequired()) return;
       $scope.item.tags = $scope.tags;
+      $scope.item.country = $scope.countries.join(',');
 
       // fill item.affiliateNetwork
       $scope.affiliates.forEach(function (affiliate) {
@@ -1732,6 +1715,11 @@
         $scope.btnWord = "Clipboard";
       }, 2000);
     };
+
+    function initDefaultCountry() {
+      $scope.countries = ['ZZZ'];
+      $scope.countryFilter.options = [{"value": "ZZZ", "display": "Global"}];
+    }
   }
 
   function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant, UrlValidate) {
@@ -2389,6 +2377,68 @@
     // Tag.get({type: type}, function(oData) {
     //   $scope.tagsFilter.options = oData.data.tags;
     // });
+  }
+
+  function initCountries($scope) {
+    $scope.countries = [];
+    $scope.countryFilter = {
+        config: {
+            plugins: ['remove_button'],
+            valueField: 'value',
+            labelField: 'display',
+            searchField: ['display'],
+            onChange: function(value) {
+              var prefixCountry = 'Global';
+              if (value.length == 0) {
+                $scope.countrySelectize.clearOptions();
+                $scope.countrySelectize.addOption(angular.copy($scope.$root.countries));
+              } else if (value.indexOf('ZZZ') == -1) {
+                $scope.countrySelectize.removeOption('ZZZ');
+              } else {
+                // 从国家选项里只保留Global
+                $scope.countrySelectize.currentResults.items.forEach(function(item) {
+                  $scope.countrySelectize.removeOption(item.id);
+                });
+              }
+              $scope.countrySelectize.refreshOptions();
+
+              if (value.length == 1) {
+                prefixCountry = $scope.countrySelectize.options[value[0]].display;
+              } else if (value.length > 1) {
+                prefixCountry = 'Multi';
+              }
+
+              $scope.prefixCountry = prefixCountry + ' - ';
+              $scope.$apply(processOfferName($scope));
+            },
+            onInitialize: function(selectize) {
+                $scope.countrySelectize = selectize;
+            }
+        },
+        options: []
+    };
+  }
+
+  function processPrefixCountry($scope, country) {
+    var countries = [];
+    if (!country) {
+      $scope.prefixCountry = 'Global - ';
+    } else {
+      countries = country.split(',');
+      if (countries.length == 1) {
+        $scope.prefixCountry = $scope.$root.countryMap[countries[0]].display + ' - ';
+      } else {
+        $scope.prefixCountry = 'Multi - ';
+      }
+    }
+    return countries;
+  }
+
+  function processOfferName($scope) {
+    var preStr = $scope.prefixAffiliate + $scope.prefixCountry;
+    $scope.item.name = preStr + $scope.item.name.substr($scope.prefix.length);
+    $scope.oldName = preStr + $scope.oldName.substr($scope.prefix.length);
+    $scope.prefix = preStr;
   }
 
   function closeConfirmDialog($mdDialog) {

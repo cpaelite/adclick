@@ -693,13 +693,13 @@ app.post('/api/names', function (req, res) {
 app.get('/api/report', function (req, res) {
   var groupBy = req.query.groupBy;
   var result;
-  if (req.query.dataType == 'csv') {
-    result = '"popads.com - Thailand - TH 4877008 C726 DTAC LP Cool Clip","popads.com",0,0,0,0,0,0,0,0,0,0,0,0,0,0,,';
-    res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment;filename="NewBidder-123.csv"`);
-    res.setHeader('Expires', '0');
-    res.setHeader('Cache-Control', 'must-revalidate');
-  } else {
+  // if (req.query.dataType == 'csv') {
+  //   result = '"popads.com - Thailand - TH 4877008 C726 DTAC LP Cool Clip","popads.com",0,0,0,0,0,0,0,0,0,0,0,0,0,0,,';
+  //   res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
+  //   res.setHeader('Content-Disposition', `attachment;filename="NewBidder-123.csv"`);
+  //   res.setHeader('Expires', '0');
+  //   res.setHeader('Cache-Control', 'must-revalidate');
+  // } else {
     result = {
       "status": 1,
       "messages": "",
@@ -805,7 +805,7 @@ app.get('/api/report', function (req, res) {
         ]
       }
     };
-  }
+  // }
   res.send(result);
 });
 
@@ -1044,7 +1044,7 @@ app.get('/api/campaigns/:campaignId', function (req, res) {
       "cpaValue": 1.2,
       "cpmValue": 1.3,
       "redirectMode": 0,
-      "targetType": 1,
+      "targetType": 3,
       "targetFlowId": 1,
       "targetUrl": "",
       "status": 1,
@@ -1252,98 +1252,7 @@ app.delete('/api/campaigns/:campaignId', function (req, res) {
  * shang@v1
  */
 app.get('/api/flows/:flowId', function (req, res) {
-  var result = {
-    status: 1,
-    message: "",
-    data: {
-      "id": 1,
-      "name": "Global - yoshop-Android-benson",
-      "country": "CHN",
-      "redirectMode": 0, //0:302, 1:Mate, 2:Double meta
-      "rules": [{
-        "id": 3,
-        "name": "Default paths",
-        "isDefault": true,
-        "paths": [{
-          "id": 1,
-          "name": "path name 1",
-          "redirecMode": 0,
-          "directLinking": false,
-          "enabled": true,
-          "weight": 100,
-          "landers": [{
-            "id": "46",  // lander id
-            "weight": 100
-          }],
-          "offers": [{
-            "id": "22",  // offer id
-            "weight": 100
-          }]
-        }]
-      }, {
-        "id": 4,
-        "name": "the rule name",
-        "isDefault": false,
-        "enabled": true,   // is this rule enabled/disabled
-        "conditions": [{
-          "id": "3434",    // condition id, refer to /api/conditions
-          "operand": "is", // is/isnt
-          "value": ["windows", "android4.5", "android7"]
-        }, {
-          "id": "8584",
-          "operand": "isnt",
-          "city": "xiamen",
-          "_city": {"xiamen": "Xiamen"}
-        }, {
-          "id": "8588",
-          "operand": "is",
-          "region": ["xiamen", "shanghai"],
-          "_region": {"xiamen": "Xiamen", "shanghai": "Shanghai"}
-        }, {
-          "id": "1234",
-          "operand": "isnt",
-          "tz": "+0800",
-          "weekday": ["tue", "fri"]
-        }],
-        "paths": [{
-          "id": 2,
-          "name": "path name 1",
-          "redirecMode": 0,
-          "directLinking": false,
-          "enabled": true,
-          "weight": 100,
-          "landers": [{
-            "id": "47",
-            "weight": 100
-          }, {
-            "id": "54",
-            "weight": 50
-          }],
-          "offers": [{
-            "id": "23",
-            "weight": 100
-          }, {
-            "id": "41",
-            "weight": 200
-          }]
-        }, {
-          "id": 3,
-          "name": "path name 2",
-          "redirecMode": 0,
-          "directLinking": true,
-          "enabled": true,
-          "weight": 100,
-          "landers": [{
-            "id": "49",
-            "weight": 100
-          }, {
-            "id": "50",
-            "weight": 50
-          }]
-        }]
-      }]
-    }
-  };
+  var result = {"status":1,"message":"success","data":{"rules":[{"id":305,"name":"Default Paths","conditions":[],"enabled":false,"type":0,"isDefault":true,"paths":[{"id":329,"name":"Path 1","directLinking":false,"redirectMode":0,"enabled":true,"weight":100,"offers":[{"id":138,"name":"Multi - 1234","weight":100},{"id":140,"name":"Multi - 123","weight":100}],"landers":[{"id":63,"name":"Global - ggvirus","weight":100}]}]}],"id":259,"name":"China - Flow1","hash":"51fefa31-13e5-4751-80eb-7d1fbc46a0d4","country":"CHN","type":1,"redirectMode":0}};
   res.send(result);
 });
 
@@ -1608,15 +1517,7 @@ app.get('/api/landers/:landerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/landers', function (req, res) {
-  var result = [{"id": 46, "name": "Lander12", "country": "us"}, {
-    "id": 47,
-    "name": "Lander1",
-    "country": "us"
-  }, {"id": 49, "name": "china - Lander2", "country": "CHN"}, {"id": 50, "name": "Lander3", "country": "us"}, {
-    "id": 54,
-    "name": "Lander4",
-    "country": "ca"
-  }];
+  var result = [{"id":47,"name":"Global - jp","country":"ZZZ"},{"id":48,"name":"Global - jp2","country":"ZZZ"},{"id":60,"name":"Thailand - dss","country":"THA"},{"id":62,"name":"Global - fastclean","country":"ZZZ"},{"id":63,"name":"Global - ggvirus","country":"ZZZ"}];
   delayResponse(res, result);
 });
 
@@ -1724,15 +1625,7 @@ app.get('/api/offers/:offerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/offers', function (req, res) {
-  var result = [{"id": 22, "name": "Offer12", "country": "us"}, {
-    "id": 23,
-    "name": "Offer1",
-    "country": "cn"
-  }, {"id": 41, "name": "Offer2", "country": "ca"}, {"id": 42, "name": "Offer3", "country": "cn"}, {
-    "id": 43,
-    "name": "Offer4",
-    "country": "us"
-  }];
+  var result = [{"id":60,"name":"MMatch - Thailand - TH 4877008 C726 DTAC LP Cool Clip","country":"THA"},{"id":81,"name":"Avazu - Global - fastclean","country":"ZZZ"},{"id":92,"name":"Mobvista - Thailand - GlamourSexyGirls","country":"THA"},{"id":93,"name":"Mobvista - Thailand - amour","country":"THA"},{"id":94,"name":"MMatch - Global - truemove","country":"THA"},{"id":116,"name":"MMatch - Global - www","country":"ZZZ"},{"id":117,"name":"Avazu - Global - o5","country":"ZZZ"},{"id":132,"name":"Albania -  123","country":"ALB"},{"id":133,"name":"Global - 234","country":"ZZZ"},{"id":138,"name":"Multi - 1234","country":"CHN,ALB"},{"id":139,"name":"Multi - 2345","country":"CHN,HKG,TWN"},{"id":140,"name":"Multi - 123","country":"CHN,TWN"},{"id":141,"name":"China - 110","country":"CHN"},{"id":142,"name":"Multi - 120","country":"AFG,ALA,ALB,DZA,ASM,AGO,AIA"}];
   delayResponse(res, result);
 });
 
@@ -2381,6 +2274,15 @@ app.get('/api/cities', function (req, res) {
  */
 app.get('/api/conditions', function (req, res) {
   var result = [{
+    id: 'isp',
+    display: 'ISP',
+    fields: [{
+      name: 'value',
+      type: 'async-chips',
+      url: '/api/isps'
+    }],
+    "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
+  },{
     "id": "1234",
     "display": "Day of week",
     "operands": [{value: "is", display: "Is"}, {value: "isnt", display: "Isnt"}],
@@ -3607,7 +3509,7 @@ app.post('/api/qrpay/status', function (req, res) {
   var result = {
     status: 1,
     data: {
-      status: false 
+      status: false
     }
   };
   setTimeout(function () {
