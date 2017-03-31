@@ -245,7 +245,7 @@ router.get('/api/offers', async function (req, res, next) {
         let sql = "select id, name,country from Offer where userId = ? and deleted = 0 ";
         params.push(value.userId);
         if (value.country) {
-            sql += ` and country like ?`;
+            sql += ` and (country like ? or country='ZZZ')`;
             params.push("%" + value.country + "%");
         }
         if (value.filter) {
