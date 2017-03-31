@@ -403,7 +403,7 @@
       $scope.dataJson;
       this.cancel = $mdDialog.cancel;
       ThirdOffer.get({id: id}, function(result) {
-        $scope.dataJson = result.data.offer;
+        $scope.dataJson = result.data;
       });
     }
 
