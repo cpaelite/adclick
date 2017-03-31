@@ -1,0 +1,26 @@
+<md-dialog class="md-default-theme" ng-cloak>
+  <md-toolbar>
+      <div class="md-toolbar-tools cam-title">
+          <h2 class="md-title">{{ctrl.title | translate}}</h2>
+      </div>
+  </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+        <p>{{ctrl.content | translate}}</p>
+        <p class="text-danger" ng-if="ctrl.error" layout="row" layout-align="center center">
+            <span><md-icon class="text-danger" style="position: relative; top: 4px;">error_outline</md-icon>{{ctrl.error}}</span>
+        </p>
+        <div layout="row" layout-sm="column" layout-align="space-around">
+            <md-progress-circular
+              md-mode="indeterminate"
+              ng-show="ctrl.onprocess"
+              class="md-accent"
+              md-diameter="30"
+              ></md-progress-circular>
+        </div>
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button class="md-primary md-raised disabled-btn" ng-click="ctrl.ok()" ng-disabled="!warnSaveStatus">{{'ok' | translate}}</md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()" ng-disabled="!warnSaveStatus">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+</md-dialog>

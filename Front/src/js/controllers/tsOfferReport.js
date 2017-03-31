@@ -1,7 +1,49 @@
 (function () {
   'use strict';
 
-  angular.module('app').controller('TsOfferReportCtrl', ['$scope', '$q', '$mdDialog', 'AffiliateTemplate', 'ThirdAffiliate', 'ThirdOffer', 'OfferTask', '$timeout', 'OfferImport', 'AffiliateNetwork', TsOfferReportCtrl]);
+  angular.module('app')
+    .controller('TsOfferReportCtrl', ['$scope', '$q', '$mdDialog', 'AffiliateTemplate', 'ThirdAffiliate', 'ThirdOffer', 'OfferTask', '$timeout', 'OfferImport', 'AffiliateNetwork', TsOfferReportCtrl])
+    .directive('resizets',['$timeout','$q',function($timeout,$q){
+      return function(scope, element) {
+        var timeout;
+        var w_h = $(window);
+        var nav_h = $('nav');
+        var filter_h = $('.cs-action-bar-bg');
+        var page_h = $('md-table-pagination');
+        function getHeight() {
+          var deferred = $q.defer();
+          $timeout(function() {
+            deferred.resolve({
+              'w_h': w_h.height(),
+              'nav_h': nav_h.height(),
+              'filter_h':filter_h.outerHeight(true),
+              'page_h':page_h.height()
+            });
+          });
+          return deferred.promise;
+        }
+
+        function heightResize() {
+          getHeight().then(function(newVal) {
+            scope.windowHeight = newVal.w_h;
+            scope.navHeight = newVal.nav_h;
+            scope.filterHeight = newVal.filter_h;
+            scope.pageHeight = newVal.page_h;
+
+            angular.element(element).css({
+              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 56 - 33 - 5) + 'px'
+            })
+
+          })
+        }
+
+        heightResize();
+
+        w_h.bind('resize', function() {
+          heightResize();
+        });
+      }
+    }]);
 
   function TsOfferReportCtrl($scope, $q, $mdDialog, AffiliateTemplate, ThirdAffiliate, ThirdOffer, OfferTask, $timeout, OfferImport, AffiliateNetwork) {
     $scope.thirdAffiliateId = '';
@@ -36,7 +78,7 @@
       delete params.__tk;
       $scope.promise = ThirdOffer.get(params, function(oData) {
         if(oData.status == 1) {
-          $scope.offers = oData.data.rows;
+          $scope.offers = oData.data;
         }
       }).$promise;
     }
@@ -93,6 +135,7 @@
     $scope.taskProgress = {};
 
     $scope.load = function() {
+      $scope.offers = [];
       $scope.taskProgress[$scope.thirdAffiliateId] = {
         offerStatus: false,
         progressStatus: true
@@ -121,7 +164,7 @@
           if(data.status == 0 || data.status == 1) { // create or running
             $scope.taskProgress[id].progressStatus = true;
             if(!$scope.taskProgress[id].progress) {
-              $scope.taskProgress[id].progress = Math.random()*100;
+              $scope.taskProgress[id].progress = Math.random()*40 + 10;
               loadOfferProgress(id);
             }
             $timeout(function() {
@@ -129,6 +172,7 @@
             }, 3000);
           } else if (data.status == 2) { // error
             $scope.taskProgress[id].progressStatus = false;
+            $scope.taskProgress[id].taskErrorMeg = data.message;
             if($scope.taskProgress[id].progress) {
               loadOfferProgress(id, true)
             }
@@ -139,12 +183,12 @@
             if($scope.taskProgress[id].progress) {
               loadOfferProgress(id, true)
             } else {
-              // loader Offer
-              getThirdOffers();
+              // getThirdOffers();
+              $scope.query.page = 1;
+              $scope.query.__tk++;
             }
           }
         } else if (oData.status == 1 && oData.data.length == 0) {
-          console.log('no task');
           $scope.taskProgress[id].offerStatus = true;
           $scope.offers = [];
         }
@@ -154,15 +198,16 @@
     function loadOfferProgress(id, isFinished) {
       if(isFinished) {
           $scope.taskProgress[id].progress = 100;
-          // loader Offer
-          getThirdOffers();
+          $scope.taskProgress[id].progressNum = 100;
+          $scope.query.page = 1;
+          $scope.query.__tk++;
       } else {
         $timeout(function() {
-          if($scope.taskProgress[id].progress < 90 && $scope.taskProgress[id].status == false) {
+          if($scope.taskProgress[id].progress < 80 && $scope.taskProgress[id].status == false) {
             $scope.taskProgress[id].progress = $scope.taskProgress[id].progress + (Math.random()/10);
             $scope.taskProgress[id].progressNum = new Number($scope.taskProgress[id].progress).toFixed(2);
             loadOfferProgress(id);
-          } else if($scope.taskProgress[id].progress >= 90 && $scope.taskProgress[id].status == false) {
+          } else if($scope.taskProgress[id].progress <= 98 && $scope.taskProgress[id].progress >= 80 && $scope.taskProgress[id].status == false) {
             $scope.taskProgress[id].progress = $scope.taskProgress[id].progress + (Math.random()/100);
             $scope.taskProgress[id].progressNum = new Number($scope.taskProgress[id].progress).toFixed(2);
             loadOfferProgress(id);
@@ -205,13 +250,13 @@
         $scope.editForm.$setSubmitted();
         if($scope.editForm.$valid) {
           $scope.saveStatus = true;
-          OfferImport.save($scope.params, function(oData) {
+          OfferImport.save({errorFn: true}, $scope.params, function(oData) {
             // warning
             self.onprocess = false;
             $scope.saveStatus = false;
-            if(oData.status == 1) {
-              reImportWarn();
-              self.error = oData.message || 'Error occured when import offers.';
+            if(oData.status == 0) {
+              // self.error = oData.message || 'Error occured when import offers.';
+              reImportWarn(oData, $scope.params);
             } else {
               $mdDialog.hide();
             }
@@ -220,33 +265,42 @@
       };
     }
 
-    function reImportWarn() {
+    function reImportWarn(oData, params) {
       $mdDialog.show({
         multiple: true,
         skipHide: true,
         clickOutsideToClose: false,
         escapeToClose: false,
-        controller: ['$mdDialog', '$scope', importOffersWarnCtrl],
+        controller: ['$mdDialog', '$scope', 'OfferImport', importOffersWarnCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         bindToController: true,
-        locals: {},
-        templateUrl: 'tpl/close-confirm-dialog.html'
+        locals: {oData: oData, params: params},
+        templateUrl: 'tpl/warn-dialog.html'
       }).then(function(oData) {
-        // if(oData.type == 1){
-        //
-        // } else {
-        // }
         $mdDialog.hide(oData);
       });
     }
 
-    function importOffersWarnCtrl($mdDialog, $scope) {
+    function importOffersWarnCtrl($mdDialog, $scope, OfferImport) {
+      var self = this, len = this.oData.data.offers ? this.oData.data.offers.length : 0;
       this.title = "warn";
-      this.error = '1231231212';
-
+      this.error = len > 1 ? 'Some offers exist when import, do you want to replace them.' : this.oData.message;
+      $scope.warnSaveStatus = true;
       this.ok = function() {
-        $mdDialog.hide();
+        $scope.warnSaveStatus = false;
+        if(len > 0) {
+          OfferImport.save({errorFn: true}, {action: 2, affiliateId: self.params.affiliateId, affiliateName: self.params.affiliateName, offers: self.oData.data.offers}, function(oData) {
+            $scope.warnSaveStatus = true;
+            if(oData.status == 1) {
+              $mdDialog.hide();
+            } else {
+              self.error = oData.message;
+            }
+          });
+        } else {
+          $mdDialog.hide();
+        }
       };
 
       this.cancel = function() {
@@ -320,6 +374,14 @@
       };
     }
 
+    $scope.itemUrlClick = function(offer, key){
+      if(!offer[key]) {offer[key] = {};}
+      offer[key].btnWord = "Copied";
+      $timeout(function() {
+        offer[key].btnWord = "Clipboard";
+      }, 1000);
+    };
+
     $scope.offerDetail = function(id) {
       $mdDialog.show({
         clickOutsideToClose: false,
@@ -336,8 +398,7 @@
     };
 
     function tsOfferDetail($mdDialog, $scope, ThirdOffer) {
-      //var id = this.offerId;
-      var id = 1;
+      var id = this.id;
       this.title = 'Detail';
       $scope.dataJson;
       this.cancel = $mdDialog.cancel;
@@ -349,7 +410,7 @@
     $scope.options = {
       rowSelection: true,
       multiSelect: true,
-      autoSelect: true
+      autoSelect: false
     };
 
     $scope.selected = [];

@@ -655,7 +655,8 @@ table tbody tr:nth-child(2n+2){background:#f5f5f5;border-width:1px 0 1px 0;borde
 
 table{border-radius:3px 3px 0 0;float:left;width:100%;height:auto;}
 md-table-container {overflow-y:auto;border-radius:0 0 3px 3px;float:left;width:100%;background: rgb(241, 242, 247);min-height: 100px;}
-.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;height: 94%;}
+/*.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;height: 94%;}*/
+.table-box{border:1px solid #d7d7d7;}
 .md-table-pagination{color:#000;}
 .md-table-pagination .label {
     font-size: 12px;

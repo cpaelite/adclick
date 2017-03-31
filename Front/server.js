@@ -3764,12 +3764,12 @@ app.get('/api/third/offers', function(req, res, next) {
   var result = {
     "status": 1,
     "message": "success",
-    "data": [{
+    "data": {rows: [{
        status: 1,         //   '1:active;2:pauseded',
        offerId: "189377",   //'第三方的OfferId',
        name:"Global - offertest",
        previewLink: "http://www.xxx.xxxa.com",
-       trackingLink: "http://www.xxx.xxxa.com" ,
+       trackingLink: "http://www.xxx.xxxa1.com" ,
        countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
        payoutMode: 1, //   '0:Auto;1:Manual',
        payoutValue :0.23,
@@ -3781,7 +3781,7 @@ app.get('/api/third/offers', function(req, res, next) {
         offerId: "189378",   //'第三方的OfferId',
         name:"Global - offertest",
         previewLink: "http://www.xxx.xxxa.com",
-        trackingLink: "http://www.xxx.xxxa.com" ,
+        trackingLink: "http://www.xxx.xxxa2.com" ,
         countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
         payoutMode: 1, //   '0:Auto;1:Manual',
         payoutValue :0.23,
@@ -3793,7 +3793,7 @@ app.get('/api/third/offers', function(req, res, next) {
          offerId: "189379",   //'第三方的OfferId',
          name:"Global - offertest",
          previewLink: "http://www.xxx.xxxa.com",
-         trackingLink: "http://www.xxx.xxxa.com" ,
+         trackingLink: "http://www.xxx.xxxa3.com" ,
          countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
          payoutMode: 1, //   '0:Auto;1:Manual',
          payoutValue :0.23,
@@ -3801,6 +3801,7 @@ app.get('/api/third/offers', function(req, res, next) {
          carrier: "",
          platform: "OS"
        }]
+     }
   };
 
   delayResponse(res, result);

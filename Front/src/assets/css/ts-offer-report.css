@@ -16,7 +16,7 @@
   text-align: center;
 }
 
-.load-progress-box .icon-smile {
+.load-progress-box .icon-smile, .load-progress-box .icon-meh {
   color: #d5d5d5;
   font-size: 80px;
 }
@@ -28,4 +28,8 @@
 .right-select .cs-add-button.blue-btn[disabled] {
     background: #a09b9b!important;
     border: 1px solid #868484!important;
+}
+
+table.md-table.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover {
+  background: #8494a2!important;
 }
