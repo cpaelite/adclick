@@ -738,7 +738,7 @@
         }
       };
       $scope.queryOffers = function(query) {
-        if(!query) return [];
+        // if(!query) return [];
         var selectedIds = ($scope.curPath.offers || []).filter(function(offer) {
           return offer._def;
         }).map(function(offer) {

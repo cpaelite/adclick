@@ -234,7 +234,7 @@ router.get('/api/offers', async function (req, res, next) {
         country: Joi.string().optional().empty(""),
         ids: Joi.string().optional().allow(""),
         userId: Joi.number().required(),
-        filter:Joi.string().optional()
+        filter:Joi.string().optional().allow("")
     });
     let connection;
     try {
@@ -274,10 +274,10 @@ router.get('/api/offers', async function (req, res, next) {
  * @api {delete} /api/offers/:id 删除offer
  * @apiName  删除offer
  * @apiGroup offer
- * 
+ *
  * @apiParam {String} name
  * @apiParam {String} hash
- * 
+ *
  */
 router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
@@ -293,15 +293,15 @@ router.delete('/api/offers/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
 
-        //check offer used by flow ?   
-        let templeSql = `select  f.\`id\`as flowId,f.\`name\` as flowName from  Offer offer  
-            inner join Offer2Path p2 on offer.\`id\` = p2.\`offerId\` 
-            inner join Path p on p.\`id\` = p2.\`pathId\` 
+        //check offer used by flow ?
+        let templeSql = `select  f.\`id\`as flowId,f.\`name\` as flowName from  Offer offer
+            inner join Offer2Path p2 on offer.\`id\` = p2.\`offerId\`
+            inner join Path p on p.\`id\` = p2.\`pathId\`
             inner join Path2Rule r2 on r2.\`pathId\` = p.\`id\`
             inner join Rule r on r.\`id\`= r2.\`ruleId\`
             inner join Rule2Flow f2 on f2.\`ruleId\`= r.\`id\`
-            inner join Flow f on f.\`id\` = f2.\`flowId\` 
-            where  offer.\`deleted\` = 0  and p2.\`deleted\` = 0  and p.\`deleted\` = 0  and r2.\`deleted\` = 0  and r.\`deleted\`= 0 and f2.\`deleted\`= 0 and f.\`deleted\` = 0   
+            inner join Flow f on f.\`id\` = f2.\`flowId\`
+            where  offer.\`deleted\` = 0  and p2.\`deleted\` = 0  and p.\`deleted\` = 0  and r2.\`deleted\` = 0  and r.\`deleted\`= 0 and f2.\`deleted\`= 0 and f.\`deleted\` = 0
             and offer.\`id\`= <%=offerId%> and offer.\`userId\`= <%=userId%> and p.\`userId\`=<%=userId%> and r.\`userId\`= <%=userId%> and f.\`userId\` = <%=userId%>`;
         let buildFuc = _.template(templeSql);
         let sql = buildFuc({
