@@ -7,10 +7,13 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var moment = require('moment');
+var uuidV4 = require('uuid/v4');
+var setting = require('../config/setting');
+var _ = require('lodash');
 
 /**
- * @api {post} /api/third/affiliates  新建ThirdPartyAffiliatNetwork
- * @apiName  新建ThirdPartyAffiliatNetwork
+ * @api {post} /api/third/affiliates  新建ThirdPartyAffiliateNetwork
+ * @apiName  新建ThirdPartyAffiliateNetwork
  * @apiGroup ThirdParty
  * 
  * @apiParam {Number} affiliateId 
@@ -50,7 +53,7 @@ router.post('/api/third/affiliates', async function (req, res, next) {
         req.body.userId = req.parent.id;
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let sql = `insert into ThirdPartyAffiliatNetwork (userId,trustedANId,name,token,userName,password,createdAt) values (?,?,?,?,?,?,?)`;
+        let sql = `insert into ThirdPartyAffiliateNetwork (userId,trustedANId,name,token,userName,password,createdAt) values (?,?,?,?,?,?,?)`;
         let params = [value.userId, value.affiliateId, value.name, value.token ? value.token : "", value.account ? value.account : "", value.password ? value.password : "", moment().unix()];
 
         let { insertId: id } = await common.query(sql, params, connection);
@@ -71,8 +74,8 @@ router.post('/api/third/affiliates', async function (req, res, next) {
 });
 
 /**
- * @api {get} /api/third/affiliates/:id  获取ThirdPartyAffiliatNetwork detail
- * @apiName  获取ThirdPartyAffiliatNetwork detail
+ * @api {get} /api/third/affiliates  获取ThirdPartyAffiliateNetwork  
+ * @apiName  获取ThirdPartyAffiliateNetwork  
  * @apiGroup ThirdParty
  * 
  *
@@ -81,27 +84,25 @@ router.post('/api/third/affiliates', async function (req, res, next) {
  *     {
  *       "status": 1,
  *       "message": "success",
- *       "data":{name:"",affiliateId:1,token:"",account:"",password:""}
+ *       "data":[{id:1,name:"",affiliateId:1,token:"",account:"",password:""}]
  *     }
  *
  */
-router.get('/api/third/affiliates/:id', async function (req, res, next) {
+router.get('/api/third/affiliates', async function (req, res, next) {
     let schema = Joi.object().keys({
-        id: Joi.number().required(),
         userId: Joi.number().required()
     });
     let connection;
     try {
-        req.query.id = req.params.id;
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select name,token,userName as account,password,trustedANId as affiliateId where id = ? and userId = ?`;
-        let [result] = await common.query(sql, [value.id, value.userId], connection);
+        let sql = `select id,name,token,userName as account,password,trustedANId as affiliateId from ThirdPartyAffiliateNetwork  where deleted = ? and userId = ?`;
+        let result = await common.query(sql, [0, value.userId], connection);
         return res.json({
             status: 1,
             message: 'success',
-            data: result ? result : {}
+            data: result
         });
     } catch (e) {
         next(e);
@@ -113,9 +114,69 @@ router.get('/api/third/affiliates/:id', async function (req, res, next) {
 });
 
 
+router.put('/api/third/affiliates/:id', async function (req, res, next) {
+    let schema = Joi.object().keys({
+        id: Joi.number().required(),
+        affiliateId: Joi.number().required(),
+        userId: Joi.number().required(),
+        name: Joi.string().optional(),
+        token: Joi.string().optional(),
+        account: Joi.string().optional(),
+        password: Joi.string().optional()
+    });
+    let connection;
+    try {
+        req.body.userId = req.parent.id;
+        req.body.id = req.params.id;
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+        let params = [];
+        let sql = "update ThirdPartyAffiliateNetwork set userId = ?"
+        params.push(value.userId);
+        if (value.name != undefined) {
+            sql += ",`name`=?";
+            params.push(value.name);
+        }
+        if (value.trustedANId != undefined) {
+            sql += ",`trustedANId`=?";
+            params.push(value.trustedANId);
+        }
+        if (value.token != undefined) {
+            sql += ",`token`=?";
+            params.push(value.token);
+        }
+        if (value.account != undefined) {
+            sql += ",`userName`=?";
+            params.push(value.account);
+        }
+        if (value.password != undefined) {
+            sql += ",`password`=?";
+            params.push(value.password);
+        }
+        sql += " where `userId`= ?  and `id`= ? ";
+        params.push(value.userId);
+        params.push(value.id);
+        await common.query(sql, params, connection);
+        delete value.userId;
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: value
+        });
+    } catch (e) {
+        next(e);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+
+
 /**
- * @api {delete} /api/third/affiliates/:id  删除ThirdPartyAffiliatNetwork
- * @apiName  删除ThirdPartyAffiliatNetwork
+ * @api {delete} /api/third/affiliates/:id  删除ThirdPartyAffiliateNetwork
+ * @apiName  删除ThirdPartyAffiliateNetwork
  * @apiGroup ThirdParty
  * 
  *
@@ -138,7 +199,7 @@ router.delete('/api/third/affiliates/:id', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `update ThirdPartyAffiliatNetwork set deleted=? where id=? and userId= ?`;
+        let sql = `update ThirdPartyAffiliateNetwork set deleted=? where id=? and userId= ?`;
         await common.query(sql, [1, value.id, value.userId], connection);
         return res.json({
             status: 1,
@@ -212,8 +273,8 @@ router.post('/api/third/tasks', async function (req, res, next) {
 
 
 /**
- * @api {get} /api/third/tasks  获取OfferSyncTask id
- * @apiName   获取OfferSyncTask id
+ * @api {get} /api/third/tasks  获取OfferSyncTask 
+ * @apiName   获取OfferSyncTask  
  * @apiGroup ThirdParty
  *
  * @apiParam {Number} thirdPartyANId
@@ -356,15 +417,19 @@ router.get('/api/third/offers', async function (req, res, next) {
         if (!offset)
             offset = 0
         value.offset = offset;
-        let sql = `select id,status,offerId,name,previewLink,trackingLink,countryCode,payoutMode,payoutValue,category,carrier,platform from ThirdPartyOffer where userId=? and taskId=? limit ?,?`;
-        connection = await common.getConnection();
-        let result = await common.query(sql, [value.userId, value.taskId, value.offset, value.limit], connection);
+        let sql = `select id,status,offerId,name,previewLink,trackingLink,countryCode,payoutMode,payoutValue,category,carrier,platform from ThirdPartyOffer where userId=? and taskId=?`;
 
+        let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
+
+        sql += ` limit ?,?`
+        connection = await common.getConnection();
+        let [result, totalResult] = await Promise.all([common.query(sql, [value.userId, value.taskId, value.offset, value.limit], connection), common.query(countSql, [value.userId, value.taskId], connection)]);
         return res.json({
             status: 1,
             message: 'success',
             data: {
-                offers: result
+                totalRows: totalResult[0].total,
+                rows: result
             }
         });
 
@@ -385,6 +450,9 @@ router.get('/api/third/offers', async function (req, res, next) {
  * 
  * @apiParam {Array} offers
  * @apiParam {Number} affiliateId
+ * @apiParam {Number} taskId
+ * @apiParam {String} affiliateName
+ * @apiParam {Number} action  1.import直接入库  2.覆盖
  * 
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -398,18 +466,126 @@ router.get('/api/third/offers', async function (req, res, next) {
 router.post('/api/third/offersImport', async function (req, res, next) {
     let schema = Joi.object().keys({
         affiliateId: Joi.number().required(),
+        taskId: Joi.number(),   
+        offers: Joi.array(),
+        affiliateName: Joi.string().required(),
         userId: Joi.number().required(),
-        offers: Joi.array().min(1).required()       
-    });
+        idText: Joi.string().required(),
+        action: Joi.number().required()
+    }).or('offers', 'taskId');
     let connection;
     try {
-        req.body.userId= req.parent.id;
-        let value = await common.validate(req.body,schema);
-        connection = await common.getConnection();
-        let sql =`insert into Offer set ?`;
-        await common.query(sql,[],connection);
+        req.body.userId = req.parent.id;
+        req.body.idText = req.parent.idText;
 
-        return res.json();
+        let value = await common.validate(req.body, schema);
+        connection = await common.getConnection();
+
+        let insertOffers;
+        let existOffers = common.query('select id,thirdPartyOfferId from Offer where userId=? and AffiliateNetworkId = ?', [value.userId, value.affiliateId], connection);
+        if (value.offers && value.offers.length) {
+            insertOffers = common.query("select offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and id in (?)", [value.userId, value.offers], connection);
+        } else if (value.taskId) {
+            insertOffers = common.query('select offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and taskId=?', [value.userId, value.taskId], connection);
+        }
+
+        let UpdateOffers = []; //需要更新的offer
+        let InsertOffers = [];
+
+        let [exists, inserts] = await Promise.all([existOffers, insertOffers]);
+        if (exists.length) {
+            UpdateOffers = _.intersectionWith(inserts, exists, function (value, other) {
+                if (value.offerId == other.thirdPartyOfferId) {
+                    return true
+                }
+                return false;
+            });
+
+            if (UpdateOffers.length) {
+                if (value.action == 1) {
+                    let err = new Error("some offer imported");
+                    err.status = 200;
+                    err.code = 2020;
+                    throw err;
+                }
+                InsertOffers = _.differenceWith(inserts, UpdateOffers, _.isEqual);
+            }
+        } else {
+            InsertOffers = inserts;
+        }
+
+        const INSERTLIMIT = 500;
+        let sum = 0;
+
+        let offerContainer = []; //二维数组 子数组的长度过定为最大并发数
+        //id,status,offerId,name,previewLink,trackingLink,countryCode,payoutMode,payoutValue,category,carrier,platform
+        let subSlice = [];
+        for (let index = 0; index < InsertOffers.length; index++) {
+            let nameCountry = InsertOffers[index].countryCode ? (InsertOffers[index].countryCode.indexOf(',') > 0 ? "Multi" : InsertOffers[index].countryCode) : "";
+            let offerModel = [
+                value.userId,
+                `${value.affiliateName} - ${nameCountry} - ${InsertOffers[index].name}`,
+                uuidV4(),
+                InsertOffers[index].trackingLink,
+                InsertOffers[index].countryCode,
+                InsertOffers[index].offerId,
+                value.affiliateId,
+                value.affiliateName,
+                setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter,
+                InsertOffers[index].payoutMode,
+                InsertOffers[index].payoutValue]
+
+            sum++;
+            subSlice.push(offerModel);
+            if ((sum == InsertOffers.length && InsertOffers.length < INSERTLIMIT) || (sum == INSERTLIMIT)) {
+                offerContainer.push(subSlice);
+                subSlice = [];
+                sum = 0;
+            }
+        }
+
+        //Insert 
+        let sql = `insert into Offer (userId,name,hash,url,country,thirdPartyOfferId,AffiliateNetworkId,AffiliateNetworkName,postbackUrl,payoutMode,payoutValue) values ?`;
+        for (let i = 0; i < offerContainer.length; i++) {
+            await common.query(sql, [offerContainer[i]], connection);
+        }
+        //Update 
+        let total = 0;
+        let updateSQL = "update Offer set userId=?,name=?,hash=?,url=?,country=?,thirdPartyOfferId=?,AffiliateNetworkId=?,AffiliateNetworkName=?,postbackUrl=?,payoutMode=?,payoutValue=? where thirdPartyOfferId= ? and AffiliateNetworkId= ? and userId =?";
+        let promiseSlice = [];
+        let updateOfferContainer = [];
+        for (let index = 0; index < UpdateOffers.length; index++) {
+            let nameCountry = UpdateOffers[index].countryCode ? (UpdateOffers[index].countryCode.indexOf(',') > 0 ? "Multi" : UpdateOffers[index].countryCode) : "";
+            let offerModel = [
+                value.userId,
+                `${value.affiliateName} - ${nameCountry} - ${UpdateOffers[index].name}`,
+                uuidV4(),
+                UpdateOffers[index].trackingLink,
+                UpdateOffers[index].countryCode,
+                UpdateOffers[index].offerId,
+                value.affiliateId,
+                value.affiliateName,
+                setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter,
+                UpdateOffers[index].payoutMode,
+                UpdateOffers[index].payoutValue, UpdateOffers[index].offerId, value.affiliateId, value.userId]
+            promiseSlice.push(common.query(updateSQL, offerModel, connection));
+            total++;
+            if ((total == UpdateOffers.length && UpdateOffers.length < INSERTLIMIT) || (total == INSERTLIMIT)) {
+                updateOfferContainer.push(promiseSlice);
+                promiseSlice = [];
+                total = 0;
+            }
+        }
+        if (updateOfferContainer.length) {
+            for (let index = 0; index < updateOfferContainer.length; index++) {
+                await Promise.all(updateOfferContainer[index])
+            }
+
+        }
+        return res.json({
+            status: 1,
+            message: 'success'
+        });
 
     } catch (e) {
         next(e);
