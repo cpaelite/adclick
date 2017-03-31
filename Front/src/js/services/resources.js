@@ -164,10 +164,4 @@ angular.module('app')
   .factory('OfferImport', ['$resource', function($resource) {
     return $resource('/api/third/offersImport');
   }])
-
-
-
-
->>>>>>> 添加ts offers
-
 ;

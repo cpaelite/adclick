@@ -35,7 +35,9 @@
       angular.extend(params, $scope.query, {taskId: $scope.taskId});
       delete params.__tk;
       $scope.promise = ThirdOffer.get(params, function(oData) {
-        $scope.offers = oData.data;
+        if(oData.status == 1) {
+          $scope.offers = oData.data.rows;
+        }
       }).$promise;
     }
 
@@ -51,7 +53,7 @@
     }).$promise;
     initPromises.push(prms);
     // 获取第三方AffiliateTemplate
-    prms = AffiliateTemplate.get(null, function(oData) {
+    prms = AffiliateTemplate.get({support: true}, function(oData) {
       $scope.affiliateTemplate = oData.data.lists;
       oData.data.lists.forEach(function(affiliateTemplate) {
         affiliateTemplateMap[affiliateTemplate.id] = affiliateTemplate;
@@ -97,7 +99,7 @@
       };
       OfferTask.save({thirdPartyANId: $scope.thirdAffiliateId}, function(oData) {
         if(oData.status == 1) {
-          $scope.taskId = oData.data.taskId;
+          $scope.taskId = oData.data.id;
           checkOfferTask($scope.thirdAffiliateId);
         }
       });
@@ -116,9 +118,7 @@
       OfferTask.get({thirdPartyANId: id}, function(oData) {
         if(oData.status == 1 && oData.data.length > 0) {
           var data = oData.data[0];
-          if(data.status == 0) {
-            $scope.taskProgress[id].progressStatus = false;
-          } else if (data.status == 1) { // runing
+          if(data.status == 0 || data.status == 1) { // create or running
             $scope.taskProgress[id].progressStatus = true;
             if(!$scope.taskProgress[id].progress) {
               $scope.taskProgress[id].progress = Math.random()*100;
@@ -144,6 +144,7 @@
             }
           }
         } else if (oData.status == 1 && oData.data.length == 0) {
+          console.log('no task');
           $scope.taskProgress[id].offerStatus = true;
           $scope.offers = [];
         }
@@ -159,6 +160,10 @@
         $timeout(function() {
           if($scope.taskProgress[id].progress < 90 && $scope.taskProgress[id].status == false) {
             $scope.taskProgress[id].progress = $scope.taskProgress[id].progress + (Math.random()/10);
+            $scope.taskProgress[id].progressNum = new Number($scope.taskProgress[id].progress).toFixed(2);
+            loadOfferProgress(id);
+          } else if($scope.taskProgress[id].progress >= 90 && $scope.taskProgress[id].status == false) {
+            $scope.taskProgress[id].progress = $scope.taskProgress[id].progress + (Math.random()/100);
             $scope.taskProgress[id].progressNum = new Number($scope.taskProgress[id].progress).toFixed(2);
             loadOfferProgress(id);
           }
@@ -191,11 +196,11 @@
       }
       $scope.params = params;
       // affiliateNetworkMap
-      $scope.params['affiliateName'] = this.affiliateNetworkMap[$scope.params.affiliateId];
       $scope.affiliateNetworks = this.affiliateNetworks;
       this.cancel = $mdDialog.cancel;
       this.onprocess = false;
       this.save = function() {
+        $scope.params['affiliateName'] = self.affiliateNetworkMap[$scope.params.affiliateId].name;
         self.onprocess = true;
         $scope.editForm.$setSubmitted();
         if($scope.editForm.$valid) {

@@ -67,20 +67,20 @@
         <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order">
               <tr md-row>
-                <th md-column>Campaign</th>
-                <th md-column>Campaign ID</th>
-                <th md-column>Impressions</th>
-                <th md-column>Clicks</th>
-                <th md-column>Cost</th>
+                <th md-column>Offer</th>
+                <th md-column>Offer Id</th>
+                <th md-column>Country Code</th>
+                <th md-column>Carrier</th>
+                <th md-column>trackingLink</th>
               </tr>
             </thead>
             <tbody md-body >
-              <tr md-row md-select="offer.offerId" ng-repeat="offer in offers" md-auto-select="options.autoSelect">
-                <td md-cell><span>{{offer.offerId}}</span></td>
+              <tr md-row md-select="offer.id" ng-repeat="offer in offers" md-auto-select="options.autoSelect">
                 <td md-cell><span>{{offer.name}}</span></td>
-                <td md-cell><span>{{offer.previewLink}}</span></td>
-                <td md-cell><span>{{offer.payoutMode}}</span></td>
-                <td md-cell><span>{{offer.payoutValue}}</span></td>
+                <td md-cell><span>{{offer.offerId}}</span></td>
+                <td md-cell><span>{{offer.countryCode}}</span></td>
+                <td md-cell><span>{{offer.carrier}}</span></td>
+                <td md-cell><span>{{offer.trackingLink}}</span></td>
               </tr>
             </tbody>
         </table>
