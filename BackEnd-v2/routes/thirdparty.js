@@ -495,7 +495,9 @@ router.post('/api/third/offersImport', async function (req, res, next) {
         let InsertOffers = [];
 
         let [exists, inserts] = await Promise.all([existOffers, insertOffers]);
-         
+
+
+
         if (exists.length) {
             UpdateOffers = _.intersectionWith(inserts, exists, function (value, other) {
                 if (value.offerId == other.thirdPartyOfferId) {
@@ -503,13 +505,11 @@ router.post('/api/third/offersImport', async function (req, res, next) {
                 }
                 return false;
             });
-
-            if (UpdateOffers.length) {
-                InsertOffers = _.differenceWith(inserts, UpdateOffers, _.isEqual);
-            }
+            InsertOffers = _.differenceWith(inserts, UpdateOffers, _.isEqual);
         } else {
             InsertOffers = inserts;
         }
+
 
         const INSERTLIMIT = 500;
         let sum = 0;
