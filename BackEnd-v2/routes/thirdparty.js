@@ -489,10 +489,13 @@ router.post('/api/third/offersImport', async function (req, res, next) {
             insertOffers = common.query('select id,offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and taskId=?', [value.userId, value.taskId], connection);
         }
 
+
+
         let UpdateOffers = []; //需要更新的offer
         let InsertOffers = [];
 
         let [exists, inserts] = await Promise.all([existOffers, insertOffers]);
+         
         if (exists.length) {
             UpdateOffers = _.intersectionWith(inserts, exists, function (value, other) {
                 if (value.offerId == other.thirdPartyOfferId) {
@@ -549,7 +552,7 @@ router.post('/api/third/offersImport', async function (req, res, next) {
         if (value.action == 2) {
             //Update 
             let total = 0;
-            let updateSQL = "update Offer set userId=?,name=?,hash=?,url=?,country=?,thirdPartyOfferId=?,AffiliateNetworkId=?,AffiliateNetworkName=?,postbackUrl=?,payoutMode=?,payoutValue=? where thirdPartyOfferId= ? and AffiliateNetworkId= ? and userId =?";
+            let updateSQL = "update Offer set userId=?,name=?,url=?,country=?,thirdPartyOfferId=?,AffiliateNetworkId=?,AffiliateNetworkName=?,postbackUrl=?,payoutMode=?,payoutValue=? where thirdPartyOfferId= ? and AffiliateNetworkId= ? and userId =?";
             let promiseSlice = [];
             let updateOfferContainer = [];
             for (let index = 0; index < UpdateOffers.length; index++) {
@@ -557,7 +560,6 @@ router.post('/api/third/offersImport', async function (req, res, next) {
                 let offerModel = [
                     value.userId,
                     `${value.affiliateName} - ${nameCountry} - ${UpdateOffers[index].name}`,
-                    uuidV4(),
                     UpdateOffers[index].trackingLink,
                     UpdateOffers[index].countryCode,
                     UpdateOffers[index].offerId,
@@ -578,12 +580,11 @@ router.post('/api/third/offersImport', async function (req, res, next) {
                 for (let index = 0; index < updateOfferContainer.length; index++) {
                     await Promise.all(updateOfferContainer[index])
                 }
-
             }
         }
 
         //如果存在冲突的offer  将ids返回
-        if (UpdateOffers.length) {
+        if (UpdateOffers.length && value.action == 1) {
             let returns = [];
             for (let index = 0; index < UpdateOffers.length; index++) {
                 returns.push(UpdateOffers[index].id);
@@ -592,7 +593,7 @@ router.post('/api/third/offersImport', async function (req, res, next) {
                 status: 0,
                 message: 'some offers exist',
                 data: {
-                    offers: []
+                    offers: returns
                 }
             });
         }
