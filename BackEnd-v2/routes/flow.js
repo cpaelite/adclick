@@ -152,70 +152,70 @@ const conditionResult = [{
     "desc": ""
   }]
 }, {
-  "id": "custom1",
+  "id": "var1",
   "display": "Custom variable 1",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom2",
+  "id": "var2",
   "display": "Custom variable 2",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom3",
+  "id": "var3",
   "display": "Custom variable 3",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom4",
+  "id": "var4",
   "display": "Custom variable 4",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom5",
+  "id": "var5",
   "display": "Custom variable 5",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom6",
+  "id": "var6",
   "display": "Custom variable 6",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom7",
+  "id": "var7",
   "display": "Custom variable 7",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom8",
+  "id": "var8",
   "display": "Custom variable 8",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom9",
+  "id": "var9",
   "display": "Custom variable 9",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
     "type": "input", "name": "value", "placeholder": ""
   }]
 }, {
-  "id": "custom10",
+  "id": "var10",
   "display": "Custom variable 10",
   "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
   "fields": [{
@@ -1162,6 +1162,19 @@ function conditionFormat(c) {
       r.push(formatTime(v.id, v.operand, v.tz, v.starttime, v.endtime))
     } else if (v.id == 'useragent') {
       r.push(formatTextValue(v.id, v.operand, v.value))
+    } else if (
+      v.id == 'var1' ||
+      v.id == 'var2' ||
+      v.id == 'var3' ||
+      v.id == 'var4' ||
+      v.id == 'var5' ||
+      v.id == 'var6' ||
+      v.id == 'var7' ||
+      v.id == 'var8' ||
+      v.id == 'var9' ||
+      v.id == 'var10'
+    ) {
+      r.push(formatThreeKeys(v.id, v.operand, v.value))
     } else {
       console.error("unsupported id type ", v.id)
     }
