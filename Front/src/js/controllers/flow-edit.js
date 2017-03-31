@@ -241,11 +241,11 @@
       }).$promise;
       initPromises.push(prms);
 
-      // var allOffers;
-      // prms = Offer.query({columns:'id,name,country'}, function(result) {
-      //   allOffers = result;
-      // }).$promise;
-      // initPromises.push(prms);
+      var allOffers;
+      prms = Offer.query({columns:'id,name,country'}, function(result) {
+        allOffers = result;
+      }).$promise;
+      initPromises.push(prms);
 
       var allConditions;
       if(!$rootScope.allConditions) {
@@ -268,10 +268,10 @@
       $scope.initState = 'init';
       function initSuccess() {
         $scope.flowDataSuccess = true;
-        // var offerMap = {};
-        // allOffers.forEach(function(offer) {
-        //   offerMap[offer.id] = offer;
-        // });
+        var offerMap = {};
+        allOffers.forEach(function(offer) {
+          offerMap[offer.id] = offer;
+        });
         var landerMap = {};
         allLanders.forEach(function(lander) {
           landerMap[lander.id] = lander;
@@ -363,11 +363,14 @@
             calculateRelativeWeight(path.offers, function(item) { return !item.isDeleted; });
 
             path.offers.forEach(function(offer) {
+              offer._def = offerMap[offer.id];
+            })
+            /*path.offers.forEach(function(offer) {
               offer._def = {
                 id: offer.id,
                 name: offer.name
               };
-            });
+            });*/
           });
         });
 
@@ -1223,7 +1226,7 @@
 
           if (path.offers) {
             path.offers.some(function(offer) {
-              if (offer._def && offer._def.country != 'ZZZ' && offer._def.country != country.value) {
+              if (offer._def && offer._def.country != 'ZZZ' && offer._def.country.indexOf(country.value) == -1) {
                 returnStatus = true;
                 return false;
               }

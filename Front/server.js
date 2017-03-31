@@ -1252,147 +1252,7 @@ app.delete('/api/campaigns/:campaignId', function (req, res) {
  * shang@v1
  */
 app.get('/api/flows/:flowId', function (req, res) {
-  var result = {
-	"status": 1,
-	"message": "success",
-	"data": {
-		"rules": [{
-			"id": 418,
-			"name": "Default Paths",
-			"conditions": [],
-			"enabled": false,
-			"type": 0,
-			"isDefault": true,
-			"paths": [{
-				"id": 453,
-				"name": "Path 1",
-				"directLinking": true,
-				"redirectMode": 2,
-				"enabled": true,
-				"weight": 100,
-				"offers": [{
-					"id": 257,
-					"name": "skim - sodai - Global - Godaddy",
-					"weight": 100
-				}],
-				"landers": []
-			}]
-		},
-		{
-			"id": 419,
-			"name": "Godaddy",
-			"conditions": [{
-				"id": "isp",
-				"operand": "is",
-				"value": ["GoDaddy.com LLC", "Godaddy.com", "GoDaddy", "GoDaddy Software Inc", "Private Customer - GoDaddy.com", "Go Daddy Netherlands B.V.", "Go Daddy Singapore Pte. Ltd.", "Private Customer - Go Daddy Software Inc."],
-				"_value": {
-					"GoDaddy.com LLC": "GoDaddy.com LLC",
-					"Godaddy.com": "Godaddy.com",
-					"GoDaddy": "GoDaddy",
-					"GoDaddy Software Inc": "GoDaddy Software Inc",
-					"Private Customer - GoDaddy.com": "Private Customer - GoDaddy.com",
-					"Go Daddy Netherlands B.V.": "Go Daddy Netherlands B.V.",
-					"Go Daddy Singapore Pte. Ltd.": "Go Daddy Singapore Pte. Ltd.",
-					"Private Customer - Go Daddy Software Inc.": "Private Customer - Go Daddy Software Inc."
-				}
-			}],
-			"enabled": true,
-			"type": 1,
-			"isDefault": false,
-			"paths": [{
-				"id": 454,
-				"name": "Path 1",
-				"directLinking": true,
-				"redirectMode": 2,
-				"enabled": true,
-				"weight": 100,
-				"offers": [{
-					"id": 184,
-					"name": "Mobidea - Global - Typo",
-					"weight": 100
-				}],
-				"landers": []
-			}]
-		},
-		{
-			"id": 420,
-			"name": "CJ",
-			"conditions": [{
-				"id": "isp",
-				"operand": "is",
-				"value": ["Conversant Limited", "Conversant Inc.", "Conversant Technologies Inc.", "Conversant Solution", "Conversant Solutions Pte Ltd", "Valueclick", "Valueclick Inc", "ValueClick Deutschland GmbH", "ValueClick Inc.", "Valueclick Europe Ltd", "FastClick", "FastClick Ltd", "TeleCity Group Customer - Commission Junction Holding BV"],
-				"_value": {
-					"Conversant Limited": "Conversant Limited",
-					"Conversant Inc.": "Conversant Inc.",
-					"Conversant Technologies Inc.": "Conversant Technologies Inc.",
-					"Conversant Solution": "Conversant Solution",
-					"Conversant Solutions Pte Ltd": "Conversant Solutions Pte Ltd",
-					"Valueclick": "Valueclick",
-					"Valueclick Inc": "Valueclick Inc",
-					"ValueClick Deutschland GmbH": "ValueClick Deutschland GmbH",
-					"ValueClick Inc.": "ValueClick Inc.",
-					"Valueclick Europe Ltd": "Valueclick Europe Ltd",
-					"FastClick": "FastClick",
-					"FastClick Ltd": "FastClick Ltd",
-					"TeleCity Group Customer - Commission Junction Holding BV": "TeleCity Group Customer - Commission Junction Holding BV"
-				}
-			}],
-			"enabled": true,
-			"type": 1,
-			"isDefault": false,
-			"paths": [{
-				"id": 455,
-				"name": "Path 1",
-				"directLinking": true,
-				"redirectMode": 2,
-				"enabled": true,
-				"weight": 100,
-				"offers": [{
-					"id": 184,
-					"name": "Mobidea - Global - Typo",
-					"weight": 100
-				}],
-				"landers": []
-			}]
-		},
-		{
-			"id": 421,
-			"name": "Skim",
-			"conditions": [{
-				"id": "isp",
-				"operand": "is",
-				"value": ["Skimbit Ltd", "00132385 Skimbit Limited"],
-				"_value": {
-					"Skimbit Ltd": "Skimbit Ltd",
-					"00132385 Skimbit Limited": "00132385 Skimbit Limited"
-				}
-			}],
-			"enabled": true,
-			"type": 1,
-			"isDefault": false,
-			"paths": [{
-				"id": 456,
-				"name": "Path 1",
-				"directLinking": true,
-				"redirectMode": 2,
-				"enabled": true,
-				"weight": 100,
-				"offers": [{
-					"id": 184,
-					"name": "Mobidea - Global - Typo",
-					"weight": 100
-				}],
-				"landers": []
-			}]
-		}],
-		"id": 479,
-		"name": "defaultName",
-		"hash": "cf8369c6-4b3b-46d0-b775-861f72cc9389",
-		"country": "ZZZ",
-		"type": 0,
-		"redirectMode": 2
-	}
-};
+  var result = {"status":1,"message":"success","data":{"rules":[{"id":305,"name":"Default Paths","conditions":[],"enabled":false,"type":0,"isDefault":true,"paths":[{"id":329,"name":"Path 1","directLinking":false,"redirectMode":0,"enabled":true,"weight":100,"offers":[{"id":138,"name":"Multi - 1234","weight":100},{"id":140,"name":"Multi - 123","weight":100}],"landers":[{"id":63,"name":"Global - ggvirus","weight":100}]}]}],"id":259,"name":"China - Flow1","hash":"51fefa31-13e5-4751-80eb-7d1fbc46a0d4","country":"CHN","type":1,"redirectMode":0}};
   res.send(result);
 });
 
@@ -1657,15 +1517,7 @@ app.get('/api/landers/:landerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/landers', function (req, res) {
-  var result = [{"id": 46, "name": "Lander12", "country": "us"}, {
-    "id": 47,
-    "name": "Lander1",
-    "country": "us"
-  }, {"id": 49, "name": "china - Lander2", "country": "CHN"}, {"id": 50, "name": "Lander3", "country": "us"}, {
-    "id": 54,
-    "name": "Lander4",
-    "country": "ca"
-  }];
+  var result = [{"id":47,"name":"Global - jp","country":"ZZZ"},{"id":48,"name":"Global - jp2","country":"ZZZ"},{"id":60,"name":"Thailand - dss","country":"THA"},{"id":62,"name":"Global - fastclean","country":"ZZZ"},{"id":63,"name":"Global - ggvirus","country":"ZZZ"}];
   delayResponse(res, result);
 });
 
@@ -1773,15 +1625,7 @@ app.get('/api/offers/:offerId', function (req, res) {
  * shang@v1
  */
 app.get('/api/offers', function (req, res) {
-  var result = [{"id": 22, "name": "Offer12", "country": "us"}, {
-    "id": 23,
-    "name": "Offer1",
-    "country": "cn"
-  }, {"id": 41, "name": "Offer2", "country": "ca"}, {"id": 42, "name": "Offer3", "country": "cn"}, {
-    "id": 43,
-    "name": "Offer4",
-    "country": "us"
-  }];
+  var result = [{"id":60,"name":"MMatch - Thailand - TH 4877008 C726 DTAC LP Cool Clip","country":"THA"},{"id":81,"name":"Avazu - Global - fastclean","country":"ZZZ"},{"id":92,"name":"Mobvista - Thailand - GlamourSexyGirls","country":"THA"},{"id":93,"name":"Mobvista - Thailand - amour","country":"THA"},{"id":94,"name":"MMatch - Global - truemove","country":"THA"},{"id":116,"name":"MMatch - Global - www","country":"ZZZ"},{"id":117,"name":"Avazu - Global - o5","country":"ZZZ"},{"id":132,"name":"Albania -  123","country":"ALB"},{"id":133,"name":"Global - 234","country":"ZZZ"},{"id":138,"name":"Multi - 1234","country":"CHN,ALB"},{"id":139,"name":"Multi - 2345","country":"CHN,HKG,TWN"},{"id":140,"name":"Multi - 123","country":"CHN,TWN"},{"id":141,"name":"China - 110","country":"CHN"},{"id":142,"name":"Multi - 120","country":"AFG,ALA,ALB,DZA,ASM,AGO,AIA"}];
   delayResponse(res, result);
 });
 
