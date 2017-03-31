@@ -51,7 +51,8 @@
 </div>
 
 <div flex layout="column" class="cs-page-content report ts-offer-report">
-  <div class="load-progress-box" ng-show="taskProgress[thirdAffiliateId].progressStatus">
+  <div resizets style="margin-bottom: 89px;" ng-show="!taskProgress[thirdAffiliateId].progressStatus && !taskProgress[thirdAffiliateId].taskErrorMeg && !taskProgress[thirdAffiliateId].offerStatus"></div>
+  <div class="load-progress-box" ng-show="taskProgress[thirdAffiliateId].progressStatus" resizets style="margin-bottom: 89px;">
     <div class="progress">
       <div class="progress-bar" role="progressbar" style="width: {{taskProgress[thirdAffiliateId].progress}}%;">{{taskProgress[thirdAffiliateId].progressNum}}%</div>
     </div>
@@ -62,7 +63,7 @@
     </div>
   </div>
 
-  <div class="load-progress-box" ng-show="taskProgress[thirdAffiliateId].taskErrorMeg">
+  <div class="load-progress-box" ng-show="taskProgress[thirdAffiliateId].taskErrorMeg" resizets style="margin-bottom: 89px;">
     <div class="load-progress-content">
       <i class="icon-meh"></i>
       <p class="text-danger">{{taskProgress[thirdAffiliateId].taskErrorMeg}}</p>

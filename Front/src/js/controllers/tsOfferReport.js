@@ -29,11 +29,9 @@
             scope.navHeight = newVal.nav_h;
             scope.filterHeight = newVal.filter_h;
             scope.pageHeight = newVal.page_h;
-
             angular.element(element).css({
               'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 56 - 33 - 5) + 'px'
             })
-
           })
         }
 
