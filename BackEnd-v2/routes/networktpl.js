@@ -74,8 +74,13 @@ router.post('/affiliate/tpl', function (req, res, next) {
 router.get('/api/affilate/tpl', async function (req, res, next) {
     let connection;
     try {
+
         connection = await common.getConnection();
-        let tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
+        if (req.query.support && req.query.support) {
+            let tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode` from TemplateAffiliateNetwork where `deleted`=? and apiOffer =?", [0, 1], connection);
+        } else {
+            let tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
+        }
         let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [req.parent.id], connection);
         let result = [];
         let resultsPro = await Promise.all([tpl, mainDomain]);
@@ -104,10 +109,11 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
                     let value = {
                         id: results[i].id,
                         name: results[i].name,
-                        desc: results[i].desc
+                        desc: results[i].desc,
+                        apiMode:results[i].apiMode
                     }
                     let params = JSON.parse(results[i].postbackParams);
-                    let param = "?"; 
+                    let param = "?";
                     let sum = 0;
                     for (let i in params) {
                         param += `${i}=${params[i]}`
