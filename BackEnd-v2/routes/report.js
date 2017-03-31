@@ -53,30 +53,42 @@ router.get('/api/export', async function (req, res, next) {
       fieldsCol.push(req.query.groupBy);
     }
     req.query.dataType = "csv";
-    result = await campaignReport(req.query);
-    let rawRows = result.rows;
-    let csvFullfill = [];//缓存csv 要fullfill的关系数据
-    let attrs = Object.keys(req.query);
-    _.forEach(attrs, (attr) => {
-      if (mapping[attr]) {
-        let mapKey = {}
-        mapKey['group'] = mapping[attr].group;
-        csvFullfill.push(mapKey)
-      }
-    });
-
-    for (let index = 0; index < csvFullfill.length; index++) {
-      rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group });
-      for (let j = 0; j < csvCloums(csvFullfill[index].group).length; j++) {
-        fieldsCol.push(csvCloums(csvFullfill[index].group)[j]);
-      }
+    if (req.query.groupBy && req.query.groupBy == "ip") {
+      result = await IPReport(req);
+    } else {
+      result = await campaignReport(req.query);
     }
+    let rawRows = result.rows;
+    //特殊处理ip 导出不fullfill
+    if (req.query.groupBy && req.query.groupBy == "ip") {
+      let campaign = await getUserCampainByID(req.query.userId, req.query.campaign);
+      res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${campaign.name}-${campaign.hash}-${moment().unix()}.csv"`);
+    } else {
+      let csvFullfill = [];//缓存csv 要fullfill的关系数据
+      let attrs = Object.keys(req.query);
+      _.forEach(attrs, (attr) => {
+        if (mapping[attr]) {
+          let mapKey = {}
+          mapKey['group'] = mapping[attr].group;
+          csvFullfill.push(mapKey)
+        }
+      });
+
+      for (let index = 0; index < csvFullfill.length; index++) {
+        rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group });
+        for (let j = 0; j < csvCloums(csvFullfill[index].group).length; j++) {
+          fieldsCol.push(csvCloums(csvFullfill[index].group)[j]);
+        }
+      }
+      res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
+    }
+
+
     let queryClo = req.query.columns ? req.query.columns.split(',') : [];
     let fields = _.union(fieldsCol, queryClo);
 
     let csvData = json2csv({ data: rawRows, fields: fields });
     res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
     res.setHeader('Expires', '0');
     res.setHeader('Cache-Control', 'must-revalidate');
     return res.send(csvData);
@@ -85,6 +97,22 @@ router.get('/api/export', async function (req, res, next) {
     return next(e);
   }
 })
+
+
+async function getUserCampainByID(userid, id) {
+  let connection;
+  try {
+    connection = await common.getConnection();
+    let [campaign] = await common.query('select `name`,`hash` from TrackingCampaign where userId=? and id=?', [userid, id], connection);
+    return campaign;
+  } catch (e) {
+    throw e;
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
 
 async function campaignReport(value) {
   let { groupBy, limit, page } = value;
@@ -171,6 +199,7 @@ async function csvfullFill({ rawRows, groupBy }) {
     // don't belong to group by model, do nothing
     return rawRows
   }
+
   let foreignConfig = csvextraConfig(groupBy);
   let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
   let foreignRows = await models[mapping[groupBy].table].findAll({
@@ -385,7 +414,9 @@ async function IPReport(req) {
     groupBy: Joi.string().required(),
     tz: Joi.string().required(),
     userId: Joi.number().required(),
-    status: Joi.number().optional()
+    status: Joi.number().optional(),
+    columns: Joi.string().optional(),
+    dataType: Joi.string().optional()
   });
   let connection;
 
@@ -407,7 +438,7 @@ async function IPReport(req) {
     let offset = (page - 1) * limit;
     let dir = "asc";
 
-    let sql = `select IP as ip,Impressions as impressions,Visits as visits,Clicks as clicks,Conversions as conversions,
+    let sql = `select IP as ip,CampaignID as campaignId,Impressions as impressions,Visits as visits,Clicks as clicks,Conversions as conversions,
                   round(Cost/1000000,2) as cost,
                   round(Revenue/1000000,2) as revenue,
                   round(Revenue/1000000-Cost/1000000,2) as profit,
@@ -445,8 +476,12 @@ async function IPReport(req) {
       order = order.replace(new RegExp(/-/g), '');
     }
 
-    sql += " order by " + order + " " + dir + "  limit " + offset + "," + limit;
-    
+    if (req.query.dataType && req.query.dataType == "csv") {
+      sql += " order by " + order + " " + dir;
+    } else {
+      sql += " order by " + order + " " + dir + "  limit " + offset + "," + limit;
+    }
+
     connection = await common.getConnection();
     let result = await Promise.all([common.query(sql, [], connection), common.query(countSql, [], connection)]);
     let rows = result[0];
