@@ -46,6 +46,7 @@
     }]);
 
   function TsOfferReportCtrl($scope, $q, $mdDialog, AffiliateTemplate, ThirdAffiliate, ThirdOffer, OfferTask, $timeout, OfferImport, AffiliateNetwork) {
+    $scope.app.subtitle = 'Network Offers';
     $scope.thirdAffiliateId = '';
     $scope.taskId = '';
     $scope.query = {
@@ -129,13 +130,14 @@
     }
     $scope.thirdAffiliateChanged = function(id) {
       $scope.taskId = '';
+      $scope.thirdAffiliateId = id;
       checkOfferTask(id);
     };
 
     $scope.taskProgress = {};
 
     $scope.load = function() {
-      $scope.offers = [];
+      $scope.offers = {rows: [], totalRows: 0};
       $scope.taskProgress[$scope.thirdAffiliateId] = {
         offerStatus: false,
         progressStatus: true
@@ -168,7 +170,9 @@
               loadOfferProgress(id);
             }
             $timeout(function() {
-              checkOfferTask(id);
+              if($scope.thirdAffiliateId == id) {
+                checkOfferTask(id);
+              }
             }, 3000);
           } else if (data.status == 2) { // error
             $scope.taskProgress[id].progressStatus = false;
@@ -190,7 +194,7 @@
           }
         } else if (oData.status == 1 && oData.data.length == 0) {
           $scope.taskProgress[id].offerStatus = true;
-          $scope.offers = [];
+          $scope.offers = {rows: [], totalRows: 0};
         }
       });
     }
@@ -285,7 +289,7 @@
     function importOffersWarnCtrl($mdDialog, $scope, OfferImport) {
       var self = this, len = this.oData.data.offers ? this.oData.data.offers.length : 0;
       this.title = "warn";
-      this.error = len > 1 ? 'Some offers exist when import, do you want to replace them.' : this.oData.message;
+      this.error = len > 0 ? (len == 1 ? 'The offers exist when import, do you want to replace it.' : 'Some offers exist when import, do you want to replace them.') : this.oData.message;
       $scope.warnSaveStatus = true;
       this.ok = function() {
         $scope.warnSaveStatus = false;

@@ -70,7 +70,7 @@
     </div>
   </div>
 
-  <div class="table-box" ng-show="taskProgress[thirdAffiliateId].offerStatus">
+  <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdAffiliateId].offerStatus}">
     <md-table-container resizets>
         <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>

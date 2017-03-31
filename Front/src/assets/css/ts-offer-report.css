@@ -33,3 +33,10 @@
 table.md-table.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover {
   background: #8494a2!important;
 }
+
+.offer-table-height {
+  height: 0;
+  line-height: 0;
+  overflow: hidden;
+  border: 0;
+}
