@@ -137,9 +137,9 @@ router.put('/api/third/affiliates/:id', async function (req, res, next) {
             sql += ",`name`=?";
             params.push(value.name);
         }
-        if (value.trustedANId != undefined) {
+        if (value.affiliateId != undefined) {
             sql += ",`trustedANId`=?";
-            params.push(value.trustedANId);
+            params.push(value.affiliateId);
         }
         if (value.token != undefined) {
             sql += ",`token`=?";
@@ -584,20 +584,18 @@ router.post('/api/third/offersImport', async function (req, res, next) {
 
         //如果存在冲突的offer  将ids返回
         if (UpdateOffers.length) {
-            let returns=[];
-            for(let index=0;index<UpdateOffers.length;index++){
-
+            let returns = [];
+            for (let index = 0; index < UpdateOffers.length; index++) {
+                returns.push(UpdateOffers[index].id);
             }
             return res.json({
                 status: 0,
                 message: 'some offers exist',
-                data:{
-                    offers:[]
+                data: {
+                    offers: []
                 }
             });
         }
-
-
 
         return res.json({
             status: 1,
