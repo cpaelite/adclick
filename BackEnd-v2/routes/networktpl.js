@@ -75,7 +75,7 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
     let connection;
     try {
         connection = await common.getConnection();
-        let tpl = common.query("select `id`,`name`,`postbackParams`,`desc` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
+        let tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
         let mainDomain = common.query("select `domain`,`customize` from UserDomain where `userId`= ? and `main` = 1 and `deleted`= 0", [req.parent.id], connection);
         let result = [];
         let resultsPro = await Promise.all([tpl, mainDomain]);

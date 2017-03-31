@@ -298,7 +298,7 @@ router.get('/api/third/tasks', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,status,message from OfferSyncTask where thirdPartyANId=? and userId=? and deleted=0`;
+        let sql = `select id,status,message from OfferSyncTask where thirdPartyANId=? and userId=? and deleted=0 order by createdAt DESC limit 0,1`;
         let result = await common.query(sql, [value.thirdPartyANId, value.userId], connection);
 
         return res.json({
@@ -466,7 +466,7 @@ router.get('/api/third/offers', async function (req, res, next) {
 router.post('/api/third/offersImport', async function (req, res, next) {
     let schema = Joi.object().keys({
         affiliateId: Joi.number().required(),
-        taskId: Joi.number(),   
+        taskId: Joi.number(),
         offers: Joi.array(),
         affiliateName: Joi.string().required(),
         userId: Joi.number().required(),
@@ -484,9 +484,9 @@ router.post('/api/third/offersImport', async function (req, res, next) {
         let insertOffers;
         let existOffers = common.query('select id,thirdPartyOfferId from Offer where userId=? and AffiliateNetworkId = ?', [value.userId, value.affiliateId], connection);
         if (value.offers && value.offers.length) {
-            insertOffers = common.query("select offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and id in (?)", [value.userId, value.offers], connection);
+            insertOffers = common.query("select id,offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and id in (?)", [value.userId, value.offers], connection);
         } else if (value.taskId) {
-            insertOffers = common.query('select offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and taskId=?', [value.userId, value.taskId], connection);
+            insertOffers = common.query('select id,offerId,name,trackingLink,countryCode,payoutMode,payoutValue from ThirdPartyOffer where userId=? and taskId=?', [value.userId, value.taskId], connection);
         }
 
         let UpdateOffers = []; //需要更新的offer
@@ -502,12 +502,6 @@ router.post('/api/third/offersImport', async function (req, res, next) {
             });
 
             if (UpdateOffers.length) {
-                if (value.action == 1) {
-                    let err = new Error("some offer imported");
-                    err.status = 200;
-                    err.code = 2020;
-                    throw err;
-                }
                 InsertOffers = _.differenceWith(inserts, UpdateOffers, _.isEqual);
             }
         } else {
@@ -549,39 +543,47 @@ router.post('/api/third/offersImport', async function (req, res, next) {
         for (let i = 0; i < offerContainer.length; i++) {
             await common.query(sql, [offerContainer[i]], connection);
         }
-        //Update 
-        let total = 0;
-        let updateSQL = "update Offer set userId=?,name=?,hash=?,url=?,country=?,thirdPartyOfferId=?,AffiliateNetworkId=?,AffiliateNetworkName=?,postbackUrl=?,payoutMode=?,payoutValue=? where thirdPartyOfferId= ? and AffiliateNetworkId= ? and userId =?";
-        let promiseSlice = [];
-        let updateOfferContainer = [];
-        for (let index = 0; index < UpdateOffers.length; index++) {
-            let nameCountry = UpdateOffers[index].countryCode ? (UpdateOffers[index].countryCode.indexOf(',') > 0 ? "Multi" : UpdateOffers[index].countryCode) : "";
-            let offerModel = [
-                value.userId,
-                `${value.affiliateName} - ${nameCountry} - ${UpdateOffers[index].name}`,
-                uuidV4(),
-                UpdateOffers[index].trackingLink,
-                UpdateOffers[index].countryCode,
-                UpdateOffers[index].offerId,
-                value.affiliateId,
-                value.affiliateName,
-                setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter,
-                UpdateOffers[index].payoutMode,
-                UpdateOffers[index].payoutValue, UpdateOffers[index].offerId, value.affiliateId, value.userId]
-            promiseSlice.push(common.query(updateSQL, offerModel, connection));
-            total++;
-            if ((total == UpdateOffers.length && UpdateOffers.length < INSERTLIMIT) || (total == INSERTLIMIT)) {
-                updateOfferContainer.push(promiseSlice);
-                promiseSlice = [];
-                total = 0;
-            }
-        }
-        if (updateOfferContainer.length) {
-            for (let index = 0; index < updateOfferContainer.length; index++) {
-                await Promise.all(updateOfferContainer[index])
-            }
 
+
+        //action 是2 时才执行覆盖
+        if (value.action == 2) {
+            //Update 
+            let total = 0;
+            let updateSQL = "update Offer set userId=?,name=?,hash=?,url=?,country=?,thirdPartyOfferId=?,AffiliateNetworkId=?,AffiliateNetworkName=?,postbackUrl=?,payoutMode=?,payoutValue=? where thirdPartyOfferId= ? and AffiliateNetworkId= ? and userId =?";
+            let promiseSlice = [];
+            let updateOfferContainer = [];
+            for (let index = 0; index < UpdateOffers.length; index++) {
+                let nameCountry = UpdateOffers[index].countryCode ? (UpdateOffers[index].countryCode.indexOf(',') > 0 ? "Multi" : UpdateOffers[index].countryCode) : "";
+                let offerModel = [
+                    value.userId,
+                    `${value.affiliateName} - ${nameCountry} - ${UpdateOffers[index].name}`,
+                    uuidV4(),
+                    UpdateOffers[index].trackingLink,
+                    UpdateOffers[index].countryCode,
+                    UpdateOffers[index].offerId,
+                    value.affiliateId,
+                    value.affiliateName,
+                    setting.newbidder.httpPix + value.idText + "." + setting.newbidder.mainDomain + setting.newbidder.postBackRouter,
+                    UpdateOffers[index].payoutMode,
+                    UpdateOffers[index].payoutValue, UpdateOffers[index].offerId, value.affiliateId, value.userId]
+                promiseSlice.push(common.query(updateSQL, offerModel, connection));
+                total++;
+                if ((total == UpdateOffers.length && UpdateOffers.length < INSERTLIMIT) || (total == INSERTLIMIT)) {
+                    updateOfferContainer.push(promiseSlice);
+                    promiseSlice = [];
+                    total = 0;
+                }
+            }
+            if (updateOfferContainer.length) {
+                for (let index = 0; index < updateOfferContainer.length; index++) {
+                    await Promise.all(updateOfferContainer[index])
+                }
+
+            }
         }
+
+     //如果存在冲突的offer  将ids返回
+
         return res.json({
             status: 1,
             message: 'success'
