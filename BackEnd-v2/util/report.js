@@ -138,7 +138,7 @@ export function formatTotals(rows) {
     row.cv = +parseFloat(row.cv * 100).toFixed(2);
     row.roi = +parseFloat(row.roi * 100).toFixed(2);
     row.epv = +parseFloat(row.epv).toFixed(4);
-    row.epc = +parseFloat(row.epc).toFixed(2);
+    row.epc = +parseFloat(row.epc).toFixed(4);
     row.ap = +parseFloat(row.ap).toFixed(2);
     row = removeNanFromObject(row)
     return row;
@@ -167,7 +167,7 @@ export function formatRows(rows) {
     row.cv = +parseFloat(row.cv * 100).toFixed(2);
     row.roi = +parseFloat(row.roi * 100).toFixed(2);
     row.epv = +parseFloat(row.epv).toFixed(4);
-    row.epc = +parseFloat(row.epc).toFixed(2);
+    row.epc = +parseFloat(row.epc).toFixed(4);
     row.ap = +parseFloat(row.ap).toFixed(2);
     row = removeNanFromObject(row)
     return row;
