@@ -36,30 +36,30 @@
                     </span>
                 </div>
             </div>
-            <div class="form-group" ng-show="affiliateTemplateObject.apiMode !== 2">
-                <label class="col-sm-3 control-label">Token<span class="star-icon">*</span>:</label>
+            <div class="form-group" ng-show="affiliateTemplateObject.apiMode !== 2 && affiliateTemplateObject">
+                <label class="col-sm-3 control-label">{{(affiliateTemplateObject && affiliateTemplateObject.apiParams) ? affiliateTemplateObject.apiParams.token : ''}}<span class="star-icon">*</span>:</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" ng-model="formData.token" ng-required="affiliateTemplateObject.apiMode == 1 || affiliateTemplateObject.apiMode == 3" name="token"/>
                     <span class="text-danger" ng-show="(editForm.token.$touched || editForm.$submitted) && editForm.token.$invalid">
-                        <span ng-show="editForm.token.$error.required">Token is required.</span>
+                        <span ng-show="editForm.token.$error.required">{{(affiliateTemplateObject && affiliateTemplateObject.apiParams) ? affiliateTemplateObject.apiParams.token : ''}} is required.</span>
                     </span>
                 </div>
             </div>
-            <div class="form-group" ng-show="affiliateTemplateObject.apiMode !== 1">
-                <label class="col-sm-3 control-label">Account<span class="star-icon">*</span>:</label>
+            <div class="form-group" ng-show="affiliateTemplateObject.apiMode !== 1 && affiliateTemplateObject">
+                <label class="col-sm-3 control-label">{{(affiliateTemplateObject && affiliateTemplateObject.apiParams) ? affiliateTemplateObject.apiParams.account : ''}}<span class="star-icon">*</span>:</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" ng-model="formData.account" ng-required="affiliateTemplateObject.apiMode == 2 || affiliateTemplateObject.apiMode == 3" name="account"/>
                     <span class="text-danger" ng-show="(editForm.account.$touched || editForm.$submitted) && editForm.account.$invalid">
-                        <span ng-show="editForm.account.$error.required">Account is required.</span>
+                        <span ng-show="editForm.account.$error.required">{{(affiliateTemplateObject && affiliateTemplateObject.apiParams) ? affiliateTemplateObject.apiParams.account : ''}} is required.</span>
                     </span>
                 </div>
             </div>
-            <div class="form-group" ng-show="affiliateTemplateObject.apiMode !== 1">
-                <label class="col-sm-3 control-label">Password<span class="star-icon">*</span>:</label>
+            <div class="form-group" ng-show="affiliateTemplateObject.apiMode !== 1 && affiliateTemplateObject">
+                <label class="col-sm-3 control-label">{{(affiliateTemplateObject && affiliateTemplateObject.apiParams) ? affiliateTemplateObject.apiParams.password : ''}}<span class="star-icon">*</span>:</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" ng-model="formData.password" ng-required="affiliateTemplateObject.apiMode == 2 || affiliateTemplateObject.apiMode == 3" name="password"/>
                     <span class="text-danger" ng-show="(editForm.password.$touched || editForm.$submitted) && editForm.password.$invalid">
-                        <span ng-show="editForm.password.$error.required">Password is required.</span>
+                        <span ng-show="editForm.password.$error.required">{{(affiliateTemplateObject && affiliateTemplateObject.apiParams) ? affiliateTemplateObject.apiParams.password : ''}} is required.</span>
                     </span>
                 </div>
             </div>
