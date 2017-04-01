@@ -49,7 +49,7 @@
     $scope.taskId = '';
     $scope.query = {
       page: 1,
-      limit: 100,
+      limit: 50,
       __tk: 0
     };
 
@@ -287,7 +287,7 @@
     function importOffersWarnCtrl($mdDialog, $scope, OfferImport) {
       var self = this, len = this.oData.data.offers ? this.oData.data.offers.length : 0;
       this.title = "warn";
-      this.error = len > 0 ? (len == 1 ? 'The offers exist when import, do you want to replace it.' : 'Some offers exist when import, do you want to replace them.') : this.oData.message;
+      this.error = len > 0 ? (len == 1 ? 'The offer exist when import, do you want to replace it.' : 'Some offers exist when import, do you want to replace them.') : this.oData.message;
       $scope.warnSaveStatus = true;
       this.ok = function() {
         $scope.warnSaveStatus = false;
