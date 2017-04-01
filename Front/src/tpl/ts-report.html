@@ -4,7 +4,7 @@
     <div class="right-select right-select-left">
         <div class="cs-subform-control">
             <md-select class="cs-subform-select" ng-model="tsReferenceId">
-                <md-option value="{{tsReference.id}}" ng-repeat="tsReference in tsReferences">{{tsReference.name}}</md-option>
+                <md-option value="{{tsReference.id}}" ng-repeat="tsReference in tsReferences track by tsReference.id">{{tsReference.name}}</md-option>
             </md-select>
         </div>
 
