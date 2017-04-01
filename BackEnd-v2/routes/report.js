@@ -452,8 +452,8 @@ async function IPReport(req) {
                   IFNULL(round(Revenue/Clicks/1000000,2),0.00) as epc,
                   IFNULL(round(Revenue/Conversions/1000000,2),0.00) as ap
                   from AdIPStatis where UserID=${userId} and CampaignID=${campaign} 
-                  and Timestamp >=(UNIX_TIMESTAMP(CONVERT_TZ('${from}', '+00:00','${tz}'))*1000)  
-                  and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '+00:00','${tz}'))*1000)`;
+                  and Timestamp >=(UNIX_TIMESTAMP(CONVERT_TZ('${from}', '${tz}','+00:00'))*1000)  
+                  and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '${tz}','+00:00'))*1000)`;
 
 
     let countSql = `select COUNT(*) as total,IFNULL(sum(impressions),0) as impressions,IFNULL(sum(visits),0) as visits, 

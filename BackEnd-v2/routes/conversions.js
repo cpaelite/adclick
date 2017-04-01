@@ -46,14 +46,14 @@ router.get('/api/conversions', async function (req, res, next) {
         page = parseInt(page)
         let offset = (page - 1) * limit;
 
-        let sqlTmp = "select IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") as PostbackTimestamp," +
-            "IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\")  as VisitTimestamp," +
+        let sqlTmp = "select IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'<%= tz %>','+00:00') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") as PostbackTimestamp," +
+            "IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'<%= tz %>','+00:00') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\")  as VisitTimestamp," +
             "`ExternalID`,`ClickID`,`TransactionID`,`Revenue`,`Cost`,`CampaignName`,`CampaignID`," +
             "`LanderName`,`LanderID`,`OfferName`,`OfferID`,`Country`,`CountryCode`,`TrafficSourceName`,`TrafficSourceID`," +
             "`AffiliateNetworkName`,`AffiliateNetworkID`,`Device`,`OS`,`OSVersion`,`Brand`,`Model`,`Browser`,`BrowserVersion`,`ISP`," +
             "`MobileCarrier`,`ConnectionType`,`VisitorIP`,`VisitorReferrer`,`V1`,`V2`,`V3`,`V4`,`V5`,`V6`,`V7`,`V8`,`V9`,`V10`  " +
-            "from AdConversionsStatis where `UserID` =<%=user%> and `PostbackTimestamp` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '+00:00','<%= tz %>'))*1000) " +
-            "and `PostbackTimestamp` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '+00:00','<%= tz %>'))*1000)  ";
+            "from AdConversionsStatis where `UserID` =<%=user%> and `PostbackTimestamp` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '<%= tz %>','+00:00'))*1000) " +
+            "and `PostbackTimestamp` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '<%= tz %>','+00:00'))*1000)  ";
 
         let compiled = _.template(sqlTmp);
         let dir = "asc";
