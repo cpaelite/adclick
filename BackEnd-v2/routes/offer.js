@@ -43,7 +43,8 @@ router.post('/api/offers', async function (req, res, next) {
             postbackUrl: Joi.string().optional().allow("")
         }),
         payoutValue: Joi.number().optional(),
-        tags: Joi.array().optional()
+        tags: Joi.array().optional(),
+        deleted:Joi.number().optional()
     });
 
     req.body.userId = req.parent.id;
