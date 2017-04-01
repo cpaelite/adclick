@@ -2235,6 +2235,7 @@ app.get('/api/affilate/tpl', function (req, res) {
           apiOffer: '', // '0:不支持api拉取Offer;1:支持拉取Offer',
           apiUrl: '', // 'api拉取Offer用的Url',
           apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持',
+          apiParams: {"account":"uid","password":"sourceid","token":"token"}
         },
         {
           id: 2,
@@ -2244,6 +2245,7 @@ app.get('/api/affilate/tpl', function (req, res) {
           apiOffer: '', // '0:不支持api拉取Offer;1:支持拉取Offer',
           apiUrl: '', // 'api拉取Offer用的Url',
           apiMode: 2, // '1:仅token;2:仅Username/password;3:token/up都支持',
+          apiParams: {"account":"uid","password":"sourceid","token":"token"}
         }
       ]
     }
