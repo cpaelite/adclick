@@ -952,7 +952,7 @@ async function insertTrafficSource(subId, userId, traffic, connection) {
     var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val + ") ";
     let result = await Promise.all([query(sqltraffic, params, connection), insertEventLog(userId, subId, 4, traffic.name, hash, 1, connection)]);
     //reids pub
-    new Pub(true).publish(setting.redis.channel, userId + ".add.traffic." + result[0].insertId, "trafficAdd");
+    new Pub(true).publish(setting.redis.channel, userId + ".add.trafficSource." + result[0].insertId, "trafficAdd");
 
     return result[0];
 
@@ -1010,7 +1010,7 @@ async function updatetraffic(subId, userId, traffic, connection) {
     if (trafficResult.length) {
         await insertEventLog(userId, subId, 4, trafficResult[0].name, trafficResult[0].hash, 2, connection);
     }
-    new Pub(true).publish(setting.redis.channel, userId + ".update.traffic." + traffic.id, "trafficUpdate");
+    new Pub(true).publish(setting.redis.channel, userId + ".update.trafficSource." + traffic.id, "trafficUpdate");
     return result;
 }
 
@@ -1026,7 +1026,7 @@ async function deletetraffic(subId, id, userId, connection) {
     if (trafficResult.length) {
         await insertEventLog(userId, subId, 4, trafficResult[0].name, trafficResult[0].hash, 3, connection);
     }
-    new Pub(true).publish(setting.redis.channel, userId + ".delete.traffic." + id, "trafficDelete");
+    new Pub(true).publish(setting.redis.channel, userId + ".delete.trafficSource." + id, "trafficDelete");
 
     return true;
 }
@@ -1059,7 +1059,7 @@ async function insertAffiliates(userId, subId, affiliate, connection) {
     }
     let result = await Promise.all([query(sql, params, connection), insertEventLog(userId, subId, 5, affiliate.name, hash, 1, connection)]);
       //reids pub
-    new Pub(true).publish(setting.redis.channel, userId + ".add.affiliate." + result[0].insertId, "affiliateAdd");
+    new Pub(true).publish(setting.redis.channel, userId + ".add.affiliateNetwork." + result[0].insertId, "affiliateAdd");
 
     return result[0];
 
@@ -1103,7 +1103,7 @@ async function updateAffiliates(userId, subId, affiliate, connection) {
     if (affiliateResult.length) {
         await insertEventLog(userId, subId, 5, affiliateResult[0].name, affiliateResult[0].hash, 2, connection);
     }
-    new Pub(true).publish(setting.redis.channel, userId + ".update.affiliate." + affiliate.id, "affiliateUpdate");
+    new Pub(true).publish(setting.redis.channel, userId + ".update.affiliateNetwork." + affiliate.id, "affiliateUpdate");
     return result;
 }
 
@@ -1116,7 +1116,7 @@ async function deleteAffiliate(id, userId, subId, connection) {
     if (affiliateResult.length) {
         await insertEventLog(userId, subId, 5, affiliateResult[0].name, affiliateResult[0].hash, 3, connection);
     }
-    new Pub(true).publish(setting.redis.channel, userId + ".delete.affiliate." + id, "affiliateDelete");
+    new Pub(true).publish(setting.redis.channel, userId + ".delete.affiliateNetwork." + id, "affiliateDelete");
 
     return true;
 }
