@@ -44,9 +44,9 @@ router.post('/api/third/affiliates', async function (req, res, next) {
         affiliateId: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        token: Joi.string().optional(),
-        account: Joi.string().optional(),
-        password: Joi.string().optional()
+        token: Joi.string().optional().allow(""),
+        account: Joi.string().optional().allow(""),
+        password: Joi.string().optional().allow("")
     }).or('token', 'account').with('account', 'password');
     let connection;
     try {
@@ -120,9 +120,9 @@ router.put('/api/third/affiliates/:id', async function (req, res, next) {
         affiliateId: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
-        token: Joi.string().optional(),
-        account: Joi.string().optional(),
-        password: Joi.string().optional()
+        token: Joi.string().optional().allow(""),
+        account: Joi.string().optional().allow(""),
+        password: Joi.string().optional().allow("")
     });
     let connection;
     try {
