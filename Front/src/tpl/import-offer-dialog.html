@@ -1,0 +1,47 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools cam-title">
+            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Affiliate Network<span class="star-icon">*</span>:</label>
+                <div class="col-sm-8">
+                    <md-select name="ts" class="form-control form-control-none"
+                      ng-model="params.affiliateId"
+                      ng-change="affilateChanged(formData.affiliateId)"
+                      required
+                    >
+                        <md-option value=""></md-option>
+                        <md-option value="{{affiliateNetwork.id}}" ng-repeat="affiliateNetwork in affiliateNetworks">{{affiliateNetwork.name}}</md-option>
+                    </md-select>
+                    <span class="text-danger" ng-show="(editForm.ts.$touched || editForm.$submitted) && editForm.ts.$invalid">
+                        <span ng-show="editForm.ts.$error.required">Affiliate network is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div layout="row" layout-sm="column" layout-align="space-around">
+                <md-progress-circular
+                  md-mode="indeterminate"
+                  ng-show="ctrl.onprocess"
+                  class="md-accent"
+                  md-diameter="30"
+                >
+
+                </md-progress-circular>
+            </div>
+            <p class="text-danger" ng-if="ctrl.error" layout="row" layout-align="center center">
+                <span>
+                  <md-icon style="position: relative;top: 4px;" class="text-danger">error_outline</md-icon>&nbsp; {{ctrl.error}}
+                </span>
+            </p>
+        </form>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'import' | translate}}
+        </md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()" ng-disabled="saveStatus">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+</md-dialog>

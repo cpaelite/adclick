@@ -97,6 +97,7 @@
       });
       $mdDialog.show({
         clickOutsideToClose: true,
+        escapeToClose: false,
         controller: ['$mdDialog', '$scope', 'TsReference', tsReferenceCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
