@@ -119,6 +119,9 @@ router.post('/auth/login', async function (req, res, next) {
  */
 router.post('/auth/signup', async function (req, res, next) {
   try {
+    if (req.cookies && req.cookies.refToken) {
+      req.body.refToken = req.cookies.refToken;
+    }
     let value = await signup(req.body, next);
     //异步发送邮件
     sendActiveEmail(req.body.email, value.idtext);
@@ -595,6 +598,15 @@ router.get('/status', function (req, res) {
 router.get('/robot.txt', function (req, res) {
   res.status(200).send('User-agent: *\nDisallow: /');
 });
+
+
+router.get('/referral', function (req, res) {
+  if (req.query.refToken) {
+    res.cookie('refToken', req.query.refToken, { maxAge: 86400000, path: '/auth/signup' })
+  }
+  res.redirect(setting.freetrialRedirect);
+});
+
 
 
 
