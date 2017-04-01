@@ -68,27 +68,6 @@
     </div>
 </div>
 </div>
-<div class="jumbo-box">
-    <a href="#" class="jumbo">
-        <div class="jumbo-text-box">
-            <h1><b>1000000</b> Events Tracked Daily</h1>
-            <div class="jumbo-text">
-                <div class="jumbo-text-top">
-                    <b>50</b>
-                    <span class="jump-off">% <em>OFF</em></span>
-                    <span>sitewide</span>
-                </div>
-                <button class="jumbo-btn"><i class="icon-time"></i>
-                    <span id="jumbo-btn">20 Days Left</span></button>
-
-            </div>
-        </div>
-        <div class="jumbo-pic" style="background-image:url('img/jump-ad-00.png')">
-        </div>
-        <div class="jumbo-hover-box"></div>
-
-    </a>
-</div>
 <div class="bider-menu-nr">
     <div class="container">
         <div class="row">
@@ -501,8 +480,7 @@
         </tbody>
     </table>
 </div>
-<div id="googleMap">
-</div>
+
 <footer class="footer-box" id="section-3">
     <div class="container">
         <div class="row">
@@ -522,7 +500,7 @@
                         <h4>Contact</h4>
                         <span><a href="mailto:contact@newbidder.com"><i class="icon-envelope"></i>contact@newbidder.com</a></span><br>
                         <span><a href="#"><i class="icon-skype icon-skype-font"></i>live:support_44609</a></span><br>
-                        <span><i class="icon-map-marker" style="font-size:13px;margin:0 10px 0 3px;"></i>Jinke Road, Pudong New Area, Shanghai 2889, Lane Changtai Square office building Room 702, Building B</span>
+                        <span><i class="icon-map-marker" style="font-size:13px;margin:0 10px 0 3px;"></i>6 raffles quay #16-01 Singapore</span>
                     </div>
                 <div class="col-xs-12 col-sm-4">
                     <h4>Product</h4>
@@ -642,18 +620,6 @@
     function closeBg() {
         $("#fullbg,#dialog").hide();
     }
-    function getLeftDays() {
-        var date = new Date();
-        var month = date.getMonth() + 1;
-        var strDate = date.getDate();
-        if (month == 3) {
-            var leftDays = 31 - strDate + 1;
-            $(".jumbo-btn").text(leftDays + " Days Left");
-        } else {
-            $(".jumbo-text").text("");
-        }
-    }
 </script>
-<script src="js/map.js"></script>
 <script src="js/jquery.fullPage.min.js" type="text/javascript"></script>
 </html>
