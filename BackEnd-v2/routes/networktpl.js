@@ -78,7 +78,7 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
         connection = await common.getConnection();
         let tpl;
         if (req.query.support && req.query.support) {
-            tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode` from TemplateAffiliateNetwork where `deleted`=? and apiOffer =?", [0, 1], connection);
+            tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode`,`apiParams` from TemplateAffiliateNetwork where `deleted`=? and apiOffer =?", [0, 1], connection);
         } else {
             tpl = common.query("select `id`,`name`,`postbackParams`,`desc`,`apiMode` from TemplateAffiliateNetwork where `deleted`=?", [0], connection);
         }
@@ -112,6 +112,9 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
                         name: results[i].name,
                         desc: results[i].desc,
                         apiMode: results[i].apiMode
+                    }
+                    if(results[i].apiParams){
+                        value.apiParams = JSON.parse(results[i].apiParams);
                     }
                     let params = JSON.parse(results[i].postbackParams);
                     let param = "?";
