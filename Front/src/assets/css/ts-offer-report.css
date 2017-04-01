@@ -1,0 +1,42 @@
+.ts-offer-report table.md-table.md-row-select td.md-cell:first-child,
+.ts-offer-report table.md-table.md-row-select th.md-column:first-child {
+  padding: 0 12px 0 12px;
+}
+
+.ts-offer-report md-checkbox .md-icon {
+  margin-top: 0;
+}
+
+.ts-offer-report table.md-table.md-row-select td.md-cell:nth-child(n+3):nth-last-child(n+2),
+.ts-offer-report table.md-table.md-row-select th.md-column:nth-child(n+3):nth-last-child(n+2) {
+  padding:8px 15px 5px 12px;
+}
+
+.load-progress-box .load-progress-content {
+  text-align: center;
+}
+
+.load-progress-box .icon-smile, .load-progress-box .icon-meh {
+  color: #d5d5d5;
+  font-size: 80px;
+}
+
+.load-progress-box .load-progress-content h2 {
+  color: #777;
+}
+
+.right-select .cs-add-button.blue-btn[disabled] {
+    background: #a09b9b!important;
+    border: 1px solid #868484!important;
+}
+
+table.md-table.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover {
+  background: #8494a2!important;
+}
+
+.offer-table-height {
+  height: 0;
+  line-height: 0;
+  overflow: hidden;
+  border: 0;
+}

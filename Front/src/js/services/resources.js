@@ -150,4 +150,18 @@ angular.module('app')
   .factory('QrpayStatus', ['$resource', function($resource) {
     return $resource('/api/qrpay/status');
   }])
+  .factory('ThirdAffiliate', ['$resource', function($resource) {
+    return $resource('/api/third/affiliates/:id', {id: '@id'}, {
+      'update': {method:'PUT'}
+    });
+  }])
+  .factory('ThirdOffer', ['$resource', function($resource) {
+    return $resource('/api/third/offers/:id', {id: '@id'});
+  }])
+  .factory('OfferTask', ['$resource', function($resource) {
+    return $resource('/api/third/tasks');
+  }])
+  .factory('OfferImport', ['$resource', function($resource) {
+    return $resource('/api/third/offersImport');
+  }])
 ;

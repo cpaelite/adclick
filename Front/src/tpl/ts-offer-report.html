@@ -1,0 +1,121 @@
+<div class="cs-action-bar-bg">
+    <h6>Advanced filters:</h6>
+    <div class="cs-action-bar clearfix">
+      <div class="right-select right-select-left">
+        <div class="cs-subform-control">
+          <md-select class="cs-subform-select" ng-model="thirdAffiliateId" ng-change="thirdAffiliateChanged(thirdAffiliateId)">
+              <md-option value="{{thirdAffiliate.id}}" ng-repeat="thirdAffiliate in thirdAffiliates">{{thirdAffiliate.name}}</md-option>
+          </md-select>
+        </div>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="load($event)"
+          ng-disabled="!(thirdAffiliates && thirdAffiliates.length > 0 && !taskProgress[thirdAffiliateId].progressStatus)"
+          translate
+        >
+            load
+        </md-button>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="addOrEditThirdAffiliates()"
+          translate
+        >
+            add
+        </md-button>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="addOrEditThirdAffiliates(thirdAffiliateId)"
+          translate
+          ng-show="thirdAffiliates.length > 0"
+        >
+            edit
+        </md-button>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="importOffers(1)"
+          translate
+          ng-disabled="!selected.length"
+        >
+            import seleted offers
+        </md-button>
+        <md-button
+          class="md-raised md-primary cs-compact cs-add-button blue-btn"
+          ng-click="importOffers(2)"
+          translate
+          ng-disabled="!(offers && offers.rows && offers.rows.length > 0)"
+        >
+            import all offers
+        </md-button>
+      </div>
+  </div>
+</div>
+
+<div flex layout="column" class="cs-page-content report ts-offer-report">
+  <div resizets style="margin-bottom: 89px;" ng-show="!taskProgress[thirdAffiliateId].progressStatus && !taskProgress[thirdAffiliateId].taskErrorMeg && !taskProgress[thirdAffiliateId].offerStatus"></div>
+  <div class="load-progress-box" ng-show="taskProgress[thirdAffiliateId].progressStatus" resizets style="margin-bottom: 89px;">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" style="width: {{taskProgress[thirdAffiliateId].progress}}%;">{{taskProgress[thirdAffiliateId].progressNum}}%</div>
+    </div>
+    <div class="load-progress-content">
+      <i class="icon-smile"></i>
+      <h2>Loading...</h2>
+      <p>Thanks for your patients, the data is extracting...</p>
+    </div>
+  </div>
+
+  <div class="load-progress-box" ng-show="taskProgress[thirdAffiliateId].taskErrorMeg" resizets style="margin-bottom: 89px;">
+    <div class="load-progress-content">
+      <i class="icon-meh"></i>
+      <p class="text-danger">{{taskProgress[thirdAffiliateId].taskErrorMeg}}</p>
+      <p>You can load it again.</p>
+    </div>
+  </div>
+
+  <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdAffiliateId].offerStatus}">
+    <md-table-container resizets>
+        <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
+            <thead md-head md-order="query.order" fix-head>
+              <tr md-row>
+                <th md-column>Offer</th>
+                <th md-column>Offer Id</th>
+                <th md-column>Country Code</th>
+                <th md-column>Carrier</th>
+                <th md-column>Platform</th>
+                <th md-column>TrackingLink</th>
+                <th md-column>PreviewLink</th>
+              </tr>
+            </thead>
+            <tbody md-body >
+              <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows" md-auto-select="options.autoSelect">
+                <td md-cell ng-click="offerDetail(offer.id)"><a href="javascript:;" style="color: #337ab7">{{offer.name}}</a></td>
+                <td md-cell><span>{{offer.offerId}}</span></td>
+                <td md-cell><span>{{offer.countryCode}}</span></td>
+                <td md-cell><span>{{offer.carrier}}</span></td>
+                <td md-cell><span>{{offer.platform}}</span></td>
+                <td md-cell>
+                  <button clipboard class="btn-xs btn btn-primary" ng-show="offer.trackingLink" text="offer.trackingLink" ng-click="itemUrlClick(offer, 'tracking')">
+                      <i class="material-icons">content_copy</i>
+                      {{offer.tracking && offer.tracking.btnWord ? offer.tracking.btnWord : 'Clipboard'}}
+                  </button>
+                </td>
+                <td md-cell>
+                  <button clipboard class="btn-xs btn btn-primary" ng-show="offer.previewLink" text="offer.previewLink" ng-click="itemUrlClick(offer, 'preview')">
+                      <i class="material-icons">content_copy</i>
+                      {{offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+  </div>
+  <md-table-pagination
+    md-limit="query.limit"
+    md-limit-options="[50, 100, 200, 500, 1000]"
+    md-page="query.page"
+    md-total="{{offers.totalRows}}"
+    md-page-select
+    ng-show="taskProgress[thirdAffiliateId].offerStatus"
+  >
+  </md-table-pagination>
+</div>

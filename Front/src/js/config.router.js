@@ -144,6 +144,11 @@
         templateUrl: 'tpl/ts-report.html',
         controller: 'TsreportCtrl'
       })
+      .state('app.report.tsOfferReport', {
+        url: '/ts-offer-report',
+        templateUrl: 'tpl/ts-offer-report.html',
+        controller: 'TsOfferReportCtrl'
+      })
       .state('app.rule', {
         url: '/rule',
         templateUrl: 'tpl/rule.html',

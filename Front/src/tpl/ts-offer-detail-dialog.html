@@ -1,0 +1,18 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools cam-title">
+            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+        <div class="form-group">
+            <div class="col-sm-offset-2">
+                <!--<json-formatter json="dataJson" open="open"></json-formatter>-->
+                <textarea json-text class="textarea-content-offer" ng-model="dataJson"></textarea>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+</md-dialog>
