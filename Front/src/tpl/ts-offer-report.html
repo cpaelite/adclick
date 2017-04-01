@@ -4,7 +4,7 @@
       <div class="right-select right-select-left">
         <div class="cs-subform-control">
           <md-select class="cs-subform-select" ng-model="thirdAffiliateId" ng-change="thirdAffiliateChanged(thirdAffiliateId)">
-              <md-option value="{{thirdAffiliate.id}}" ng-repeat="thirdAffiliate in thirdAffiliates">{{thirdAffiliate.name}}</md-option>
+              <md-option value="{{thirdAffiliate.id}}" ng-repeat="thirdAffiliate in thirdAffiliates track by thirdAffiliate.id">{{thirdAffiliate.name}}</md-option>
           </md-select>
         </div>
         <md-button
@@ -38,14 +38,14 @@
         >
             import seleted offers
         </md-button>
-        <md-button
+        <!-- <md-button
           class="md-raised md-primary cs-compact cs-add-button blue-btn"
           ng-click="importOffers(2)"
           translate
           ng-disabled="!(offers && offers.rows && offers.rows.length > 0)"
         >
             import all offers
-        </md-button>
+        </md-button> -->
       </div>
   </div>
 </div>
@@ -67,7 +67,7 @@
     <div class="load-progress-content">
       <i class="icon-meh"></i>
       <p class="text-danger">{{taskProgress[thirdAffiliateId].taskErrorMeg}}</p>
-      <p>You can load it again.</p>
+      <p>Please load again.</p>
     </div>
   </div>
 
@@ -111,7 +111,7 @@
   </div>
   <md-table-pagination
     md-limit="query.limit"
-    md-limit-options="[50, 100, 200, 500, 1000]"
+    md-limit-options="[50, 100]"
     md-page="query.page"
     md-total="{{offers.totalRows}}"
     md-page-select
