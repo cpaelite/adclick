@@ -43,8 +43,7 @@ router.post('/api/offers', async function (req, res, next) {
             postbackUrl: Joi.string().optional().allow("")
         }),
         payoutValue: Joi.number().optional(),
-        tags: Joi.array().optional(),
-        deleted:Joi.number().optional()
+        tags: Joi.array().optional()
     });
 
     req.body.userId = req.parent.id;
@@ -52,6 +51,7 @@ router.post('/api/offers', async function (req, res, next) {
     let connection;
     try {
         let value = await common.validate(req.body, schema);
+        console.log(value)
         connection = await common.getConnection();
         //check offer name exists
         if (await common.checkNameExists(value.userId, null, value.name, 3, connection)) {

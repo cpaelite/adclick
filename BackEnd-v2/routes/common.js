@@ -67,7 +67,7 @@ function rollback(connection) {
 
 function validate(data, schema) {
     return new Promise(function (resolve, reject) {
-        Joi.validate(data, schema, function (err, value) {
+        Joi.validate(data, schema,{allowUnknown:true,stripUnknown:true},function (err, value) {
             if (err) {
                 let validateJSON = {
                     message: {}
