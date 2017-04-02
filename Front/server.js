@@ -3723,11 +3723,7 @@ app.get('/api/third/tasks', function(req, res, next) {
  *
  */
 app.get('/api/third/offers/:id', function(req, res, next) {
-  var result = {
-    "status": 1,
-    "message": "success",
-    "data":{}
-  };
+  var result = {"status":1,"message":"success","data":{"banner":"[\"http:\\/\\/cdn.avazu.net\\/zips\\/201505\\/098\\/e62dca38e59753c18fd831dc096ede0f.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201505\\/023\\/bbf2368ee99e4600cd4a7ba673cfca29.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/114\\/3552018890dc864b9b758c8b7857fa45.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/122\\/9d730fe3c9d15a999bbf64d115ac48da.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/031\\/eed2f827d96ad5ce8d6eb7afc0528879.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/108\\/e5f1d3da1cee7f894c7a987e8f6a3d5d.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/096\\/ed87d10ce74c845daf937bd20ab01c73.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/031\\/833cb72da6e496ebf42cce700db083a0.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201505\\/023\\/bbf2368ee99e4600cd4a7ba673cfca29.zip\",\"http:\\/\\/cdn.avazu.net\\/zips\\/201510\\/038\\/68a329461bfc0fa741cf3f8050732c7b.zip\"]","carrier":"WIFI,All Poland Carriers","category":"107","conntype":"1,2","convflow":"108","cpnid":9342,"cpnname":"Xtubes Poland Mobile(Adult)","description":"Carrier%3A+Carrier%3A+PLUS+3G+%28one-click-sale%29+%26+Orange%2CWi-Fi+%28MT+flow%29%0D%0A%0D%0ARestriction%3A%0D%0ANo+incent%0D%0ANo+adult%0D%0ANo+misleading%0D%0A%0D%0AAsk+for+the+ip+targeted+lists+from+your+AM+if+necessary","devicetype":"1","lps":[{"city":"","cityinclude":2,"country":"PL","countryinclude":1,"enddate":"0000-00-00 00:00:00","enforcedv":"","lpid":21043,"lpname":"Xtube V4 PL","payout":6,"pkgname":"","previewlink":"","trackinglink":"http://clk.apxadtracking.net/iclk/redirect.php?id=mTeueOjMIWuXeW45KNeXD3xMgT2RKNeU&trafficsourceid=22433&trackid=58df533010e14a00"},{"city":"","cityinclude":2,"country":"PL","countryinclude":1,"enddate":"0000-00-00 00:00:00","enforcedv":"","lpid":195681,"lpname":"xTubesV19 PL","payout":6,"pkgname":"","previewlink":"","trackinglink":"http://clk.apxadtracking.net/iclk/redirect.php?id=mTeueOjMIWuXeToQKWJngTuwD3jReWGUe5-0N-0N&trafficsourceid=22433&trackid=58df533010e14a00"},{"city":"","cityinclude":2,"country":"PL","countryinclude":1,"enddate":"0000-00-00 00:00:00","enforcedv":"","lpid":195683,"lpname":"xTubesV21 PL","payout":6,"pkgname":"","previewlink":"","trackinglink":"http://clk.apxadtracking.net/iclk/redirect.php?id=mTeueOjMIWuXeToQKWJUgTuwD3jReWGUe5-0N-0N&trafficsourceid=22433&trackid=58df533010e14a00"},{"city":"","cityinclude":2,"country":"PL","countryinclude":1,"enddate":"0000-00-00 00:00:00","enforcedv":"","lpid":195684,"lpname":"xTubesV23 PL","payout":6,"pkgname":"","previewlink":"","trackinglink":"http://clk.apxadtracking.net/iclk/redirect.php?id=mTeueOjMIWuXeToQKWJugTuwD3jReWGUe5-0N-0N&trafficsourceid=22433&trackid=58df533010e14a00"},{"city":"","cityinclude":2,"country":"PL","countryinclude":1,"enddate":"0000-00-00 00:00:00","enforcedv":"","lpid":195686,"lpname":"BikiniBayV7 PL","payout":6,"pkgname":"","previewlink":"","trackinglink":"http://clk.apxadtracking.net/iclk/redirect.php?id=mTeueOjMIWuXeToQKWJHgTuwD3jReWGUe5-0N-0N&trafficsourceid=22433&trackid=58df533010e14a00"},{"city":"","cityinclude":2,"country":"PL","countryinclude":1,"enddate":"0000-00-00 00:00:00","enforcedv":"","lpid":832984,"lpname":"xTubesV19 PL","payout":6,"pkgname":"","previewlink":"","trackinglink":"http://clk.apxadtracking.net/iclk/redirect.php?id=mTeueOjMIWuXmNeRmTJugTuwD3jReWGUe5-0N-0N&trafficsourceid=22433&trackid=58df533010e14a00"}],"minosv":"0.0","os":"1,2","policy":1,"traffictype":"111,105,110,102,101,103,104,108"}};
 
   delayResponse(res, result);
 });
@@ -3767,6 +3763,7 @@ app.get('/api/third/offers', function(req, res, next) {
     "status": 1,
     "message": "success",
     "data": {rows: [{
+       id: 1,
        status: 1,         //   '1:active;2:pauseded',
        offerId: "189377",   //'第三方的OfferId',
        name:"Global - offertest",
@@ -3779,6 +3776,7 @@ app.get('/api/third/offers', function(req, res, next) {
        carrier: "",
        platform: "OS"
      },{
+        id: 2,
         status: 2,         //   '1:active;2:pauseded',
         offerId: "189378",   //'第三方的OfferId',
         name:"Global - offertest",
@@ -3791,6 +3789,7 @@ app.get('/api/third/offers', function(req, res, next) {
         carrier: "",
         platform: "OS"
       },{
+         id: 3,
          status: 3,         //   '1:active;2:pauseded',
          offerId: "189379",   //'第三方的OfferId',
          name:"Global - offertest",

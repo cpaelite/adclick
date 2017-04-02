@@ -1,18 +1,57 @@
-<md-dialog class="cs-edit-dialog" ng-cloak>
-    <md-toolbar>
+<md-dialog class="cs-edit-dialog" aria-label="Edit Dialog">
+    <md-toolbar aria-label="Toolbar">
         <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}}</h2>
         </div>
     </md-toolbar>
+
     <md-dialog-content class="md-dialog-content">
-        <div class="form-group">
-            <div class="col-sm-offset-2">
-                <!--<json-formatter json="dataJson" open="open"></json-formatter>-->
-                <textarea json-text class="textarea-content-offer" ng-model="dataJson"></textarea>
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Offer：</label>
+                <div class="col-sm-7">
+                    <input type="text" name="offer" class="form-control" ng-model="item.cpnname" readonly>
+                </div>
             </div>
-        </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Offer ID：</label>
+                <div class="col-sm-7">
+                    <input type="text" name="offerId" class="form-control" ng-model="item.cpnid" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Country Code：</label>
+                <div class="col-sm-7">
+                    <input type="text" name="countryCode" class="form-control" ng-model="item.countryCode" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Carrier: </label>
+                <div class="col-sm-7">
+                    <input type="text" name="platform" class="form-control" ng-model="item.carrier" readonly>
+                </div>
+            </div>
+
+            <div class="form-group collapsible-tab">
+                <div class="collapsible-header" ng-class="{'active':isActive}" ng-click="toggleShow()">
+                    <h3 class="label-con">
+                        <span></span>
+                        DataJson
+                        <i class="icon-chevron-down"></i>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="form-group collapse-wrapper" ng-show="visible">
+                <div class="col-sm-offset-2">
+                    <textarea json-text class="textarea-content-offer" ng-model="item"></textarea>
+                </div>
+            </div>
+        </form>
     </md-dialog-content>
+
     <md-dialog-actions>
         <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
     </md-dialog-actions>
+
 </md-dialog>

@@ -3176,7 +3176,7 @@ table.md-table tr.row-deleted td.md-cell {
 }
 
 .col-sm-offset-2 textarea {
-    margin: 0px;
+    margin: 3% 0px;
     width: 85%;
     height: 516px;
 }

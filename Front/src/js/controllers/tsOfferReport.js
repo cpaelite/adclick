@@ -405,8 +405,19 @@
       $scope.dataJson;
       this.cancel = $mdDialog.cancel;
       ThirdOffer.get({id: id}, function(result) {
-        $scope.dataJson = result.data;
+        $scope.item = result.data;
+        if (result.data && result.data.lps.length > 0) {
+          $scope.item.countryCode = result.data.lps[0].country;
+        }
+        //$scope.dataJson = result.data;
       });
+
+      $scope.visible = false;
+      $scope.toggleShow = function(){
+        $scope.isActive = !$scope.isActive;
+        $scope.visible = !$scope.visible;
+      };
+
     }
 
     $scope.options = {
