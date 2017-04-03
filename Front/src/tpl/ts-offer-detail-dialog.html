@@ -30,6 +30,12 @@
                 <div class="col-sm-7">
                     <input type="text" name="countryCode" class="form-control" ng-model="item.trackingLink" readonly>
                 </div>
+                <div class="col-sm-2">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="item.trackingLink" text="item.trackingLink" ng-click="itemUrlClick()">
+                        <i class="material-icons">content_copy</i>
+                        {{btnWord}}
+                    </md-button>
+                </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Carrier: </label>

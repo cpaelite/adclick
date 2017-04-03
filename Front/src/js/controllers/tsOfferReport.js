@@ -414,6 +414,14 @@
         $scope.visible = !$scope.visible;
       };
 
+      $scope.btnWord = "Clipboard";
+      $scope.itemUrlClick = function(){
+        $scope.btnWord = "Copied";
+        $timeout(function() {
+          $scope.btnWord = "Clipboard";
+        }, 2000);
+      };
+
     }
 
     $scope.options = {
