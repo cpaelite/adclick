@@ -10,19 +10,25 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Offer：</label>
                 <div class="col-sm-7">
-                    <input type="text" name="offer" class="form-control" ng-model="item.cpnname" readonly>
+                    <input type="text" name="offer" class="form-control" ng-model="item.name" readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Offer ID：</label>
                 <div class="col-sm-7">
-                    <input type="text" name="offerId" class="form-control" ng-model="item.cpnid" readonly>
+                    <input type="text" name="offerId" class="form-control" ng-model="item.offerId" readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Country Code：</label>
                 <div class="col-sm-7">
                     <input type="text" name="countryCode" class="form-control" ng-model="item.countryCode" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">TrackingLink：</label>
+                <div class="col-sm-7">
+                    <input type="text" name="countryCode" class="form-control" ng-model="item.trackingLink" readonly>
                 </div>
             </div>
             <div class="form-group">
@@ -44,7 +50,7 @@
 
             <div class="form-group collapse-wrapper" ng-show="visible">
                 <div class="col-sm-offset-2">
-                    <textarea json-text class="textarea-content-offer" ng-model="item"></textarea>
+                    <textarea json-text class="textarea-content-offer" ng-model="dataJson"></textarea>
                 </div>
             </div>
         </form>

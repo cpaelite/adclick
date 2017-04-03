@@ -87,7 +87,7 @@
             </thead>
             <tbody md-body >
               <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows" md-auto-select="options.autoSelect">
-                <td md-cell ng-click="offerDetail(offer.id)"><a href="javascript:;" style="color: #337ab7">{{offer.name}}</a></td>
+                <td md-cell ng-click="offerDetail(offer)"><a href="javascript:;" style="color: #337ab7">{{offer.name}}</a></td>
                 <td md-cell><span>{{offer.offerId}}</span></td>
                 <td md-cell><span>{{offer.countryCode}}</span></td>
                 <td md-cell><span>{{offer.carrier}}</span></td>

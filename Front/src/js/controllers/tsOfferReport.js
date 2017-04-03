@@ -384,7 +384,7 @@
       }, 1000);
     };
 
-    $scope.offerDetail = function(id) {
+    $scope.offerDetail = function(offer) {
       $mdDialog.show({
         clickOutsideToClose: false,
         escapeToClose: false,
@@ -392,7 +392,7 @@
         controllerAs: 'ctrl',
         focusOnOpen: false,
         bindToController: true,
-        locals: {id: id},
+        locals: {offer: offer},
         templateUrl: 'tpl/ts-offer-detail-dialog.html'
       }).then(function() {
 
@@ -400,16 +400,12 @@
     };
 
     function tsOfferDetail($mdDialog, $scope, ThirdOffer) {
-      var id = this.id;
+      $scope.item = this.offer;
       this.title = 'Detail';
       $scope.dataJson;
       this.cancel = $mdDialog.cancel;
-      ThirdOffer.get({id: id}, function(result) {
-        $scope.item = result.data;
-        if (result.data && result.data.lps.length > 0) {
-          $scope.item.countryCode = result.data.lps[0].country;
-        }
-        //$scope.dataJson = result.data;
+      ThirdOffer.get({id: $scope.item.id}, function(result) {
+        $scope.dataJson = result.data;
       });
 
       $scope.visible = false;
