@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -128,10 +128,12 @@
     });
 
     $rootScope.changeGroup = $scope.changeGroup = function (group) {
-      $cookies.put("clientId", group.groupId);
-      $rootScope.currentGroup = group;
-      $localStorage.currentUser.firstname = group.firstname;
-      window.location.reload();
+      //$cookies.put("clientId", group.groupId);
+      AccountGroup({'clientId': group.groupId}, function(result) {
+        $rootScope.currentGroup = group;
+        $localStorage.currentUser.firstname = group.firstname;
+        window.location.reload();
+      })
     };
 
     // this event can be emitted when $http response with 403 status
