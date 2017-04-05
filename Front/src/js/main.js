@@ -129,11 +129,13 @@
 
     $rootScope.changeGroup = $scope.changeGroup = function (group) {
       //$cookies.put("clientId", group.groupId);
-      AccountGroup({'clientId': group.groupId}, function(result) {
-        $rootScope.currentGroup = group;
-        $localStorage.currentUser.firstname = group.firstname;
-        window.location.reload();
-      })
+      AccountGroup.save({'clientId': group.groupId}, function(result) {
+        if (result.status) {
+          $rootScope.currentGroup = group;
+          $localStorage.currentUser.firstname = group.firstname;
+          window.location.reload();
+        }
+      });
     };
 
     // this event can be emitted when $http response with 403 status

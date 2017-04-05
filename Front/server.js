@@ -3857,6 +3857,7 @@ app.post('/api/defaultGroupId', function(req, res) {
     "message": "success",
     data: {}
   }
+  delayResponse(res, result);
 });
 
 app.listen(51500, function () {
