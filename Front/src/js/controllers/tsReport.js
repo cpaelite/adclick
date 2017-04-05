@@ -147,7 +147,7 @@
     $scope.btnName = 'Refresh';
     function getList() {
       var params = {};
-      angular.extend(params, $scope.query, pageStatus);
+      angular.extend(params, $scope.query, pageStatus, {tsReferenceId: $scope.tsReferenceId});
       delete params.__tk;
       $scope.promise = Tsreport.get(params, function(result) {
         $scope.report = result.data;
@@ -156,7 +156,7 @@
         $scope.btnName = 'Refresh';
         $scope.applyBtn = false;
       }).$promise;
-    }      
+    }
     $scope.$watch('datetype + fromDate + fromTime + toDate + toTime ', function(newVal, oldVal) {
       if (newVal != oldVal) {
         $scope.applyBtn = true;
