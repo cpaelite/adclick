@@ -66,6 +66,8 @@
     $scope.app.subtitle = perfType;
     $scope.groupByOptions = groupByOptions;
 
+    $scope.loading = true;
+
     // status, from, to, datetype, groupBy
     var pageStatus = {};
 
@@ -190,6 +192,7 @@
             $scope.report = result.data;
             $scope.report.rows = rows;
           }
+          $scope.loading = false;
         }
 
         $scope.disabled = false;
@@ -360,6 +363,7 @@
     }
 
     $scope.applySearch = function() {
+      $scope.loading = true;
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
       $scope.disabled = true;
       if ($scope.treeLevel == 0) {
@@ -415,6 +419,7 @@
         row.expanded = true;
         return;
       } else {
+        $scope.loading = true;
         getList(row);
       }
     };
