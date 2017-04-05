@@ -41,13 +41,13 @@ router.post('/auth/login', async function (req, res, next) {
   });
   let connection;
   try {
+    let clientId;
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
 
-    let sql = "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified` from User where `email` = ? and `deleted` =0";
+    let sql = "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified`,`currentGroup` from User where `email` = ? and `deleted` =0";
 
     let rows = await common.query(sql, [value.email], connection);
-
     if (rows.length > 0) {
       if (rows[0].emailVerified == 0) {
         let err = new Error("Your email has not been verified.");
@@ -55,11 +55,16 @@ router.post('/auth/login', async function (req, res, next) {
         throw err;
       }
       if (rows[0].password == md5(value.password)) {
-        let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
-        if (userGroup.length == 0) {
-          throw new Error("account exception");
+        if (rows[0].currentGroup) {
+          let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
+          if (userGroup.length == 0) {
+            throw new Error("account exception");
+          }
+          clientId = rows[0].currentGroup;
+        } else {
+          clientId = userGroup[0].groupId;
         }
-        let clientId = userGroup[0].groupId;
+
         var expires = moment().add(200, 'days').valueOf();
         //set cookie
         res.cookie("clientId", clientId);
@@ -361,7 +366,7 @@ router.get('/invitation', async function (req, res, next) {
     if (users.length) {
       //加入用户组
       if (users[0].id != userSlice[0].userId) {//排除自身
-        await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?) ON DUPLICATE KEY UPDATE `privilege` = ?", [userSlice[0].groupId, users[0].id, 1,configSlice[0].config,configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
+        await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?) ON DUPLICATE KEY UPDATE `privilege` = ?", [userSlice[0].groupId, users[0].id, 1, configSlice[0].config, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
       }
       res.redirect(setting.invitationredirect);
     } else {

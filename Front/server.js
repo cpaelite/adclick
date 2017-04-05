@@ -3846,6 +3846,19 @@ app.post('/api/third/offersImport', function(req, res, next) {
   delayResponse(res, result);
 });
 
+/**
+ * @apiName 更新账户登录默认的Group
+ * 
+ * @apiParam {String} clientId
+ */
+app.post('/api/defaultGroupId', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {}
+  }
+  delayResponse(res, result);
+});
 
 app.listen(51500, function () {
   console.log('server started success port : 51500');

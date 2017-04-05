@@ -2,6 +2,9 @@ angular.module('app')
   .factory('AccountCheck', ['$resource', function ($resource) {
     return $resource('/account/check');
   }])
+  .factory('AccountGroup', ['$resource', function($resource) {
+    return $resource('/api/defaultGroupId');
+  }])
   .factory('Report', ['$resource', function ($resource) {
     return $resource('/api/report');
   }])
