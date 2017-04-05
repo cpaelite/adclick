@@ -55,13 +55,13 @@ router.post('/auth/login', async function (req, res, next) {
         throw err;
       }
       if (rows[0].password == md5(value.password)) {
-        if (rows[0].currentGroup) {
+        if (rows[0].currentGroup && String(rows[0].currentGroup) !== '0') {
+          clientId = rows[0].currentGroup;
+        } else {
           let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
           if (userGroup.length == 0) {
             throw new Error("account exception");
           }
-          clientId = rows[0].currentGroup;
-        } else {
           clientId = userGroup[0].groupId;
         }
 
