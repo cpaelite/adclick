@@ -191,7 +191,7 @@ router.get('/api/profile', async function (req, res, next) {
       responseData.lastname = result[0].lastname;
       responseData.status = result[0].status;
       responseData.timezone = result[0].timezone;
-      responseData.timezoneId=result[0].timezoneId;
+      responseData.timezoneId = result[0].timezoneId;
       responseData.referralToken = result[0].referralToken;
       responseData.email = result[0].email;
       if (result[0].setting) {
@@ -272,5 +272,36 @@ router.get('/api/permission', async function (req, res, next) {
   }
 });
 
+
+router.post('/api/defaultGroupId', async function (req, res, next) {
+  var schema = Joi.object().keys({
+    userId: Joi.number().required(),
+    clientId: Joi.string().required()
+  });
+  req.body.userId = req.user.id;
+  let connection;
+  try {
+    let value = await common.validate(req.body, schema);
+    connection = await common.getConnection();
+
+    let sql = 'update User set currentGroup = ? where `id`= ?';
+
+    await common.query(sql, [value.clientId, value.userId], connection);
+    res.cookie("clientId", value.clientId);
+    res.json({
+      "status": 1,
+      "message": "success"
+    });
+  } catch (e) {
+    next(e);
+  }
+  finally {
+    if (connection) {
+      connection.release();
+    }
+
+  }
+
+})
 
 module.exports = router;
