@@ -2157,6 +2157,11 @@ input[type="checkbox"].th-checkbox{
 md-content.cs-main-content{
     height: calc(100% - 93px);
 }
+.table-box md-progress-linear{
+    position: fixed;
+    width: calc(100% - 30px);
+    top: auto !important;
+}
 .cs-page-flow,
 .cs-flow-content{
     height: 100%;

@@ -55,7 +55,7 @@ function fixHead($compile, $window) {
 
       function marginTop(height) {
         // table.original.css('marginTop', '-' + (height - 3) + 'px');
-        table.original.css('marginTop', '-' + 27 + 'px');
+        table.original.css('marginTop', '-' + 30 + 'px');
       }
 
       function updateCells() {

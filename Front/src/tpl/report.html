@@ -7,8 +7,6 @@
   </ul>
 </div>
 <div class="cs-action-bar-bg">
-    <div class="masking" ng-if='loading'></div>
-    <md-progress-circular md-mode="indeterminate" ng-if='loading'></md-progress-circular>
     <h6>Advanced filters:</h6>
     <div class="cs-action-bar clearfix">
         <div class="left-con">
@@ -144,7 +142,7 @@
 
 <div class="table-box">
     <md-table-container resize>
-        <table md-table multiple ng-model="selected">
+        <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
                 <th md-column style="padding: 0 10px" class="row-action"><i class="icon-circle"></i></th>
