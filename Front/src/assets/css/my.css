@@ -289,7 +289,6 @@ header .home:hover{
     height: 30px;
 }
 md-select{margin:0;}
-md-select.md-table-select{min-width:100%;}
 md-select .md-select-value,md-select.md-table-select > .md-select-value{
     padding: 0 5px;
     border:1px solid #c9c9cf !important;
