@@ -105,7 +105,7 @@
         locals: {item: angular.copy(item), thirdTraffics: $scope.thirdTraffics, tsReferences: $scope.tsReferences},
         templateUrl: 'tpl/ts-reference-dialog.html'
       }).then(function() {
-        getList();
+        //getList();
         getTsReferences();
       });
     };
