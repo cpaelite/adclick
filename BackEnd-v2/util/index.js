@@ -92,6 +92,7 @@ exports.resetUserByClientId = function () {
       let userGroupSlice = results[0];
       //check clientId 合法
       if (!_.some(userGroupSlice, ['groupId', clientId])) {
+        req.parent = req.user;
         return next();
         // let err = new Error('clientId invalidate');
         // err.status = 401;
@@ -101,6 +102,7 @@ exports.resetUserByClientId = function () {
       //获取client 管理员信息
       let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
       if (_.isEmpty(userGroupObject)) {
+        req.parent = req.user;
         return next();
         // let err = new Error('clientId invalidate');
         // err.status = 401;
@@ -172,7 +174,7 @@ exports.getUUID = function () {
 
 
 exports.regWebURL = new RegExp(
-  /^((http|https):\/\/)((([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?($|\/)/,'g'
-);  
+  /^((http|https):\/\/)((([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?($|\/)/, 'g'
+);
 
 
