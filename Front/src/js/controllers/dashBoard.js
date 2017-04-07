@@ -35,7 +35,8 @@
         groupBy: "day",
         from: $scope.fromDate + "T" + $scope.fromTime,
         to: $scope.toDate + "T" + $scope.toTime,
-        tz: profile.data.timezone
+        tz: profile.data.timezone,
+        status: 1
       };
       $scope.summary = {};
       Report.get(angular.copy(params), function (result) {
