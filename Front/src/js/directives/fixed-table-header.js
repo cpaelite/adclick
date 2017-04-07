@@ -87,6 +87,9 @@ function fixHead($compile, $window) {
           var listener = scope.$watch(getWidth, setWidth);
 
           $window.addEventListener('resize', setWidth);
+          scrollContainer.on('scroll', function () {
+            setWidth();
+          });
 
           clone.on('$destroy', function () {
             listener();

@@ -141,27 +141,27 @@
 </div>
 
 <div class="table-box">
-    <md-table-container resize>
+    <md-table-container resize class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
                 <th md-column style="padding: 0 10px" class="row-action"><i class="icon-circle"></i></th>
                 <th md-column ng-if="treeLevel>1"></th>
-                <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns"
-                    ng-show="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{item.name}}
+                <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}"
+                    ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{::item.name}}
                 </th>
             </tr>
             </thead>
-            <tbody md-body>
+            <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
               <tr md-row
-                  ng-repeat="row in report.rows" ng-show="row.parentRow.expanded"
+                  ng-repeat="row in report.rows track by $index" ng-if="row.parentRow.expanded"
                   ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
                 <td class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
-                    <md-menu-bar style="padding: 0;" ng-show="row.treeLevel==1">
+                    <md-menu-bar style="padding: 0;" ng-if="row.treeLevel==1">
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">
-                              <i class="icon-remove" ng-show="row.data.deleted==1"></i>
-                              <i class="icon-circle" ng-show="row.data.deleted==0"></i>
+                              <i class="icon-remove" ng-if="row.data.deleted==1"></i>
+                              <i class="icon-circle" ng-if="row.data.deleted==0"></i>
                             </a>
                             <md-menu-content width="3">
                                 <md-menu-item ng-if="row.data.deleted==0"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
@@ -175,14 +175,20 @@
                      ng-if="row.treeLevel<treeLevel"
                      ng-click="toggleRow(row)">keyboard_arrow_right</i></td>
                 <td md-cell
-                    ng-repeat="column in columns"
-                    ng-show="preferences.reportViewColumns[column.key].visible  || column.role=='name'"
-                    ng-class="{'red':row.data[column.key] < 0 && column.key == 'roi','green':row.data[column.key] > 0 && column.key == 'roi'}">
+                    ng-repeat="column in columns track by $index"
+                    ng-if="preferences.reportViewColumns[column.key].visible  || column.role=='name'"
+                    ng-class="{'red':row.data[column.key] < 0 && column.key == 'roi','green':row.data[column.key] > 0 && column.key == 'roi', 'item-name': $index == 0}">
                     <!--ng-click="openMenu($event, row, column.role)"-->
                   <span ng-if="column.role=='name'">
                     <md-menu-bar style="padding: 0;">
                         <md-menu>
-                            <a ng-click="menuOpen($mdMenu, row)">{{row.data[column.key]}}</a>
+                            <a ng-click="menuOpen($mdMenu, row)">
+                              <md-tooltip
+                                md-direction="'top'">
+                                {{::row.data[column.key]}}
+                              </md-tooltip>
+                              {{::row.data[column.key]}}
+                            </a>
                             <md-menu-content width="3">
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
@@ -191,7 +197,7 @@
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
                                         <md-menu-content width="3">
-                                            <md-menu-item ng-repeat="gb in groupByOptions | filter:drilldownFilter">
+                                            <md-menu-item ng-repeat="gb in groupByOptions | filter:drilldownFilter  track by $index">
                                                 <md-button ng-click="drilldown(row, gb)">{{gb.display}} <em ng-if="gb.role == 'campaign'">: {{gb.paramValue}}</em></md-button>
                                             </md-menu-item>
                                         </md-menu-content>
@@ -202,7 +208,7 @@
                     </md-menu-bar>
                   </span>
                   <span ng-if="column.role!='name'">
-                    {{isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
+                    {{::isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
                   </span>
                 </td>
               </tr>
@@ -213,7 +219,7 @@
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
                 <td md-cell ng-class="{'red':report.totals[column.key] < 0 && column.key == 'roi','green':report.totals[column.key] > 0 && column.key == 'roi'}" ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
-                  {{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? ((report.totals[column.key] || 0) + '%') : report.totals[column.key])}}
+                  {{::isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? ((report.totals[column.key] || 0) + '%') : report.totals[column.key])}}
                 </td>
                 <!-- <td md-cell></td> -->
               </tr>

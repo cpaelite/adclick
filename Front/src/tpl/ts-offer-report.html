@@ -72,36 +72,36 @@
   </div>
 
   <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdAffiliateId].offerStatus}">
-    <md-table-container resizets>
+    <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
         <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
               <tr md-row>
-                <th md-column>Offer</th>
+                <th class="item-name" md-column>Offer</th>
                 <th md-column>Offer Id</th>
-                <th md-column>Country Code</th>
-                <th md-column>Carrier</th>
+                <th class="item-name" md-column>Country Code</th>
+                <th class="item-name" md-column>Carrier</th>
                 <th md-column>Platform</th>
                 <th md-column>TrackingLink</th>
                 <th md-column>PreviewLink</th>
               </tr>
             </thead>
-            <tbody md-body >
-              <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows" md-auto-select="options.autoSelect">
-                <td md-cell ng-click="offerDetail(offer)"><a href="javascript:;" style="color: #337ab7">{{offer.name}}</a></td>
-                <td md-cell><span>{{offer.offerId}}</span></td>
-                <td md-cell><span>{{offer.countryCode}}</span></td>
-                <td md-cell><span>{{offer.carrier}}</span></td>
-                <td md-cell><span>{{offer.platform}}</span></td>
+            <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
+              <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows track by offer.id" md-auto-select="options.autoSelect">
+                <td class="item-name" style="width: 350px;" md-cell ng-click="offerDetail(offer)"><span href="javascript:;" style="color: #337ab7">{{offer.name}}</span></td>
+                <td md-cell><span>{{::offer.offerId}}</span></td>
+                <td class="item-name" style="width: 350px;" md-cell><span>{{::offer.countryCode}}</span></td>
+                <td class="item-name" style="width: 350px;" md-cell><span>{{::offer.carrier}}</span></td>
+                <td md-cell><span>{{::offer.platform}}</span></td>
                 <td md-cell>
                   <button clipboard class="btn-xs btn btn-primary" ng-show="offer.trackingLink" text="offer.trackingLink" ng-click="itemUrlClick(offer, 'tracking')">
                       <i class="material-icons">content_copy</i>
-                      {{offer.tracking && offer.tracking.btnWord ? offer.tracking.btnWord : 'Clipboard'}}
+                      {{::offer.tracking && offer.tracking.btnWord ? offer.tracking.btnWord : 'Clipboard'}}
                   </button>
                 </td>
                 <td md-cell>
                   <button clipboard class="btn-xs btn btn-primary" ng-show="offer.previewLink" text="offer.previewLink" ng-click="itemUrlClick(offer, 'preview')">
                       <i class="material-icons">content_copy</i>
-                      {{offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
+                      {{::offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
                   </button>
                 </td>
               </tr>
@@ -111,7 +111,7 @@
   </div>
   <md-table-pagination
     md-limit="query.limit"
-    md-limit-options="[50, 100]"
+    md-limit-options="[50, 100, 200, 500, 1000]"
     md-page="query.page"
     md-total="{{offers.totalRows}}"
     md-page-select

@@ -42,7 +42,6 @@
             scope.filterHeight = newVal.filter_h;
             scope.pageHeight = newVal.page_h;
             scope.breadcrumbHeight = newVal.breadcrumb_h;
-            console.log(scope.breadcrumbHeight);
 
             angular.element(element).css({
               'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - scope.breadcrumbHeight - 10) + 'px'
@@ -319,7 +318,7 @@
         $scope.filters.forEach(function(f) {
           exclude.push(f.key);
         });
-        
+
         exclude.push('ip');
         exclude.push($scope.groupBy[0]);
         if (level == 2) {
