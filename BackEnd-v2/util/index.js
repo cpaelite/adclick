@@ -73,11 +73,11 @@ exports.checkPlan = function () {
 
 exports.resetUserByClientId = function () {
   return async function (req, res, next) {
+    req.parent = req.user;
     let connection;
     try {
       let clientId = req.cookies.clientId;
       if (!clientId || (clientId && clientId == req.user.groupId)) {
-        req.parent = req.user;
         return next();
       }
 
@@ -92,7 +92,6 @@ exports.resetUserByClientId = function () {
       let userGroupSlice = results[0];
       //check clientId 合法
       if (!_.some(userGroupSlice, ['groupId', clientId])) {
-        req.parent = req.user;
         return next();
         // let err = new Error('clientId invalidate');
         // err.status = 401;
@@ -102,7 +101,6 @@ exports.resetUserByClientId = function () {
       //获取client 管理员信息
       let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
       if (_.isEmpty(userGroupObject)) {
-        req.parent = req.user;
         return next();
         // let err = new Error('clientId invalidate');
         // err.status = 401;
