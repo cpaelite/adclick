@@ -92,17 +92,19 @@ exports.resetUserByClientId = function () {
       let userGroupSlice = results[0];
       //check clientId 合法
       if (!_.some(userGroupSlice, ['groupId', clientId])) {
-        let err = new Error('clientId invalidate');
-        err.status = 401;
-        throw err;
+        return next();
+        // let err = new Error('clientId invalidate');
+        // err.status = 401;
+        // throw err;
       }
       let user_privilege = _.find(userGroupSlice, { groupId: clientId }).privilege;
       //获取client 管理员信息
       let userGroupObject = _.find(results[1], { groupId: clientId, role: 0 });
       if (_.isEmpty(userGroupObject)) {
-        let err = new Error('clientId invalidate');
-        err.status = 401;
-        throw err;
+        return next();
+        // let err = new Error('clientId invalidate');
+        // err.status = 401;
+        // throw err;
       }
       req.parent = {
         id: userGroupObject.userId,
