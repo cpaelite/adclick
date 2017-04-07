@@ -26,6 +26,7 @@
     'angularAwesomeSlider',
     'angular-momentjs',
     'permission',
+    'vs-repeat',
     'ja.qr'
   ]);
 

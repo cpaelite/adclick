@@ -6,6 +6,18 @@
     overflow-x:hidden;
 
 }
+.item-name {
+  min-width: 350px !important;
+  max-width: 350px !important;
+}
+
+.item-name a, .item-name span {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 330px;
+}
 
 .fade-in-right-big{width:50%;background:#fff;border-radius:5px;margin:7% auto 0 auto;padding-bottom:30px;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 1px 1px 0 rgba(0, 0, 0, 0.08);
