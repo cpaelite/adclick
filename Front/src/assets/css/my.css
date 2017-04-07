@@ -9,6 +9,7 @@
 .item-name {
   min-width: 350px !important;
   max-width: 350px !important;
+  width: 350px !important;
 }
 
 .item-name a, .item-name span {

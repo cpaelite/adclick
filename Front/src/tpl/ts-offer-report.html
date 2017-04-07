@@ -87,10 +87,10 @@
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
               <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows track by offer.id" md-auto-select="options.autoSelect">
-                <td class="item-name" style="width: 350px;" md-cell ng-click="offerDetail(offer)"><span href="javascript:;" style="color: #337ab7">{{offer.name}}</span></td>
+                <td class="item-name" md-cell ng-click="offerDetail(offer)"><span href="javascript:;" style="color: #337ab7">{{offer.name}}</span></td>
                 <td md-cell><span>{{::offer.offerId}}</span></td>
-                <td class="item-name" style="width: 350px;" md-cell><span>{{::offer.countryCode}}</span></td>
-                <td class="item-name" style="width: 350px;" md-cell><span>{{::offer.carrier}}</span></td>
+                <td class="item-name" md-cell><span>{{::offer.countryCode}}</span></td>
+                <td class="item-name" md-cell><span>{{::offer.carrier}}</span></td>
                 <td md-cell><span>{{::offer.platform}}</span></td>
                 <td md-cell>
                   <button clipboard class="btn-xs btn btn-primary" ng-show="offer.trackingLink" text="offer.trackingLink" ng-click="itemUrlClick(offer, 'tracking')">
