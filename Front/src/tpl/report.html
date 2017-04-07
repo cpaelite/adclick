@@ -154,7 +154,7 @@
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
               <tr md-row
-                  ng-repeat="row in report.rows track by $index" ng-if="row.parentRow.expanded"
+                  ng-repeat="row in report.rows track by row.data.id" ng-if="row.parentRow.expanded"
                   ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
                 <td class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
                     <md-menu-bar style="padding: 0;" ng-if="row.treeLevel==1">
@@ -197,8 +197,8 @@
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
                                         <md-menu-content width="3">
-                                            <md-menu-item ng-repeat="gb in groupByOptions | filter:drilldownFilter  track by $index">
-                                                <md-button ng-click="drilldown(row, gb)">{{gb.display}} <em ng-if="gb.role == 'campaign'">: {{gb.paramValue}}</em></md-button>
+                                            <md-menu-item ng-repeat="gb in groupByOptions | filter:drilldownFilter track by $index">
+                                                <md-button ng-click="drilldown(row, gb)">{{::gb.display}} <em ng-if="gb.role == 'campaign'">: {{::gb.paramValue}}</em></md-button>
                                             </md-menu-item>
                                         </md-menu-content>
                                     </md-menu>
