@@ -17,6 +17,13 @@ module.exports = {
       connectionLimit: 10
     }
   },
+   "reportSQL":{
+     host: '52.14.70.205',
+      user: 'dev',
+      password: '55Te$ydFq',
+      database: 'AdClickTool',
+      connectionLimit: 1000
+  },
   "redis": {
     host: "adclick-jp.082pif.ng.0001.apne1.cache.amazonaws.com",
     port: "6379",

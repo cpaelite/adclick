@@ -47,12 +47,13 @@ myEmitter.on('dbDone', () => {
 })
 
 const {
-  connect
+  connect,
+  connectReportDatabase
 } = require('../util/database');
 
 var Promise = require('bluebird');
 
-Promise.all([connect('gatekeeper'), connect('AdClickTool')]).then(orms => {
+Promise.all([connect('gatekeeper'), connect('AdClickTool'),connectReportDatabase('adclicktool')]).then(orms => {
   orms.forEach(orm => {
     Object.assign(models, orm.models);
   })

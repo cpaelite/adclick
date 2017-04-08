@@ -3,46 +3,166 @@ import _ from 'lodash';
 export const mapping = {
   campaign: {
     dbKey: "CampaignID",
-    dbGroupBy: "CampaignID",
+    dbGroupBy: "UserID,CampaignID",
     listPage: true,
     table: "TrackingCampaign",
     dbFilter: "CampaignName",
-    group: "campaign"
+    group: "campaign",
+    attributes: [
+      'UserID',
+      ['CampaignID', 'campaignId']
+    ]
   },
-  flow: { dbKey: "FlowID", dbGroupBy: "FlowID", listPage: true, table: "Flow", dbFilter: "FlowName", group: "flow" },
-  lander: { dbKey: "LanderID", dbGroupBy: "LanderID", listPage: true, table: "Lander", dbFilter: "LanderName", group: "lander" },
-  offer: { dbKey: "OfferID", dbGroupBy: "OfferID", listPage: true, table: "Offer", dbFilter: "OfferName", group: "offer" },
+  flow: {
+    attributes: [
+      'UserID',
+      ['FlowID', 'flowId']
+    ],
+    dbKey: "FlowID", dbGroupBy: "UserID,FlowID", listPage: true, table: "Flow", dbFilter: "FlowName", group: "flow"
+  },
+  lander: {
+    attributes: [
+      'UserID',
+      ['LanderID', 'landerId']
+    ],
+    dbKey: "LanderID", dbGroupBy: "UserID,LanderID", listPage: true, table: "Lander", dbFilter: "LanderName", group: "lander"
+  },
+  offer: {
+    attributes: [
+      'UserID',
+      ['OfferID', 'offerId']  
+    ],
+    dbKey: "OfferID", dbGroupBy: "UserID,OfferID", listPage: true, table: "Offer", dbFilter: "OfferName", group: "offer"
+  },
   affiliate: {
+    attributes: [
+      'UserID',
+      ['AffiliateNetworkID', 'affiliateId']
+    ],
     dbKey: "AffiliateNetworkID",
-    dbGroupBy: "AffiliateNetworkID",
+    dbGroupBy: "UserID,AffiliateNetworkID",
     listPage: true,
     table: "AffiliateNetwork",
     dbFilter: "AffiliateNetworkName",
     group: "affiliate"
   },
   traffic: {
+    attributes: [
+      'UserID',
+      ['TrafficSourceID', 'trafficId'] 
+    ],
     dbKey: "TrafficSourceID",
-    dbGroupBy: "TrafficSourceID",
+    dbGroupBy: "UserID,TrafficSourceID",
     listPage: true,
     table: "TrafficSource",
     dbFilter: "TrafficSourceName",
     group: "traffic"
   },
-  language: { dbKey: "Language", dbGroupBy: "Language", listPage: false },
-  model: { dbKey: "Model", dbGroupBy: "Model", listPage: false },
-  country: { dbKey: "Country", dbGroupBy: "Country", listPage: false },
-  city: { dbKey: "City", dbGroupBy: "City", listPage: false },
-  region: { dbKey: "Region", dbGroupBy: "Region", listPage: false },
-  isp: { dbKey: "ISP", dbGroupBy: "ISP", listPage: false },
-  mobileCarrier: { dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false },
-  domain: { dbKey: "Domain", dbGroupBy: "Domain", listPage: false },
-  deviceType: { dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false },
-  brand: { dbKey: "Brand", dbGroupBy: "Brand", listPage: false },
-  os: { dbKey: "OS", dbGroupBy: "OS", listPage: false },
-  osVersion: { dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false },
-  browser: { dbKey: "Browser", dbGroupBy: "Browser", listPage: false },
-  browserVersion: { dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false },
-  connectionType: { dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false },
+  language: {
+    attributes: [
+      ['Language', 'id'],
+      'Language'  
+    ],
+    dbKey: "Language", dbGroupBy: "Language", listPage: false
+  },
+  model: {
+    attributes: [
+      ['model', 'id'],
+      ['model', 'model']  
+    ],
+    dbKey: "Model", dbGroupBy: "Model", listPage: false
+  },
+  country: {
+    attributes: [
+      ['Country', 'id'],
+      ['Country', 'country'] 
+    ],
+    dbKey: "Country", dbGroupBy: "Country", listPage: false
+  },
+  city: {
+    attributes: [ 
+      ['City', 'id'],
+      ['City', 'city'] 
+    ],
+    dbKey: "City", dbGroupBy: "City", listPage: false
+  },
+  region: {
+    attributes: [
+      ['Region', 'id'],
+      ['Region', 'region']    
+    ],
+    dbKey: "Region", dbGroupBy: "Region", listPage: false
+  },
+  isp: {
+    attributes: [
+      ['ISP', 'id'],
+      ['ISP', 'isp']
+    ],
+    dbKey: "ISP", dbGroupBy: "ISP", listPage: false
+  },
+  mobileCarrier: {
+    attributes: [ 
+      ['MobileCarrier', 'id'],
+      ['MobileCarrier', 'mobileCarrier']
+    ],
+    dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false
+  },
+  domain: {
+    attributes: [
+      ['Domain', 'id'],
+      ['Domain', 'domain'] 
+    ],
+    dbKey: "Domain", dbGroupBy: "Domain", listPage: false
+  },
+  deviceType: {
+    attributes: [
+      ['DeviceType', 'id'],
+      ['DeviceType', 'deviceType'] 
+    ],
+    dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false
+  },
+  brand: {
+    attributes: [ 
+      ['Brand', 'id'],
+      ['Brand', 'brand']   
+    ],
+    dbKey: "Brand", dbGroupBy: "Brand", listPage: false
+  },
+  os: {
+    attributes: [
+      ['OS', 'id'],
+      ['OS', 'os']
+    ],
+    dbKey: "OS", dbGroupBy: "OS", listPage: false
+  },
+  osVersion: {
+    attributes: [
+      ['OSVersion', 'id'],
+      ['OSVersion', 'osVersion'], 
+    ],
+    dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false
+  },
+  browser: {
+    attributes: [
+      ['Browser', 'id'],
+      ['Browser', 'browser']
+    ],
+    dbKey: "Browser", dbGroupBy: "Browser", listPage: false
+  },
+  browserVersion: {
+    attributes: [
+      ['BrowserVersion', 'id'],
+      ['BrowserVersion', 'browserVersion']
+    ],
+    dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false
+  },
+  connectionType: {
+    attributes: [
+      ['ConnectionType', 'id'],
+      ['ConnectionType', 'connectionType']  
+    ],
+    dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false
+  },
   timestamp: { dbKey: "Timestamp", dbGroupBy: "Timestamp", listPage: false },
   visits: { dbKey: "Visits", dbGroupBy: "Visits", listPage: false },
   clicks: { dbKey: "Clicks", dbGroupBy: "Clicks", listPage: false },
@@ -50,18 +170,88 @@ export const mapping = {
   cost: { dbKey: "Cost", dbGroupBy: "Cost", listPage: false },
   revenue: { dbKey: "Revenue", dbGroupBy: "Revenue", listPage: false },
   impressions: { dbKey: "Impressions", dbGroupBy: "Impressions", listPage: false },
-  v1: { dbKey: "V1", dbGroupBy: "V1", listPage: false },
-  v2: { dbKey: "V2", dbGroupBy: "V2", listPage: false },
-  v3: { dbKey: "V3", dbGroupBy: "V3", listPage: false },
-  v4: { dbKey: "V4", dbGroupBy: "V4", listPage: false },
-  v5: { dbKey: "V5", dbGroupBy: "V5", listPage: false },
-  v6: { dbKey: "V6", dbGroupBy: "V6", listPage: false },
-  v7: { dbKey: "V7", dbGroupBy: "V7", listPage: false },
-  v8: { dbKey: "V8", dbGroupBy: "V8", listPage: false },
-  v9: { dbKey: "V9", dbGroupBy: "V9", listPage: false },
-  v10: { dbKey: "V10", dbGroupBy: "V10", listPage: false },
-  day: { dbKey: "day", dbGroupBy: "day", listPage: false },
-  tsWebsiteId: { dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false },
+  v1: {
+    attributes: [
+      ['V1', 'id'],
+      ['V1', 'v1'] 
+    ],
+    dbKey: "V1", dbGroupBy: "V1", listPage: false
+  },
+  v2: {
+    attributes: [
+      ['V2', 'id'],
+      ['V2', 'v2']
+    ],
+    dbKey: "V2", dbGroupBy: "V2", listPage: false
+  },
+  v3: {
+    attributes: [
+      ['V3', 'id'],
+      ['V3', 'v3']
+    ],
+    dbKey: "V3", dbGroupBy: "V3", listPage: false
+  },
+  v4: {
+    attributes: [
+      ['V4', 'id'],
+      ['V4', 'v4']
+    ],
+    dbKey: "V4", dbGroupBy: "V4", listPage: false
+  },
+  v5: {
+    attributes: [
+      ['V5', 'id'],
+      ['V5', 'v5']
+    ],
+    dbKey: "V5", dbGroupBy: "V5", listPage: false
+  },
+  v6: {
+    attributes: [
+      ['V6', 'id'],
+      ['V6', 'v6']  
+    ],
+    dbKey: "V6", dbGroupBy: "V6", listPage: false
+  },
+  v7: {
+    attributes: [
+      ['V7', 'id'],
+      ['V7', 'v7']
+    ],
+    dbKey: "V7", dbGroupBy: "V7", listPage: false
+  },
+  v8: {
+    attributes: [
+      ['V8', 'id'],
+      ['V8', 'v8']
+    ],
+    dbKey: "V8", dbGroupBy: "V8", listPage: false
+  },
+  v9: {
+    attributes: [
+      ['V9', 'id'],
+      ['V9', 'v9']   
+    ],
+    dbKey: "V9", dbGroupBy: "V9", listPage: false
+  },
+  v10: {
+    attributes: [
+      ['V10', 'id'],
+      ['V10', 'v10']  
+    ],
+    dbKey: "V10", dbGroupBy: "V10", listPage: false
+  },
+  day: {
+    attributes: [
+      ],
+    dbKey: "day", dbGroupBy: "day", listPage: false
+  },
+  tsWebsiteId: {
+    attributes: [
+      ['tsWebsiteId', 'id'],
+      ['tsWebsiteId', 'tsWebsiteId']
+    ],
+    dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false
+  },
 }
 
 export const sumShorts = {
@@ -70,56 +260,21 @@ export const sumShorts = {
   revenue: [sequelize.fn('SUM', sequelize.col('Revenue')), 'revenue'],
   clicks: [sequelize.fn('SUM', sequelize.col('Clicks')), 'clicks'],
   conversions: [sequelize.fn('SUM', sequelize.col('Conversions')), 'conversions'],
-  cost: [sequelize.fn('SUM', sequelize.col('AdStatis.Cost')), 'cost'],
-  profit: [sequelize.fn('SUM', sequelize.literal('AdStatis.Revenue / 1000000 - AdStatis.Cost / 1000000')), 'profit'],
-  cpv: [sequelize.literal('sum(AdStatis.Cost / 1000000) / sum(AdStatis.visits)'), 'cpv'],
-  ictr: [sequelize.literal('sum(AdStatis.Visits)/sum(AdStatis.Impressions)'), 'ictr'],
-  ctr: [sequelize.literal('sum(AdStatis.Clicks)/sum(AdStatis.Visits)'), 'ctr'],
-  cr: [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Clicks)'), 'cr'],
-  cv: [sequelize.literal('sum(AdStatis.Conversions)/sum(AdStatis.Visits)'), 'cv'],
-  roi: [sequelize.literal('(sum(AdStatis.Revenue) - sum(AdStatis.Cost))/sum(AdStatis.Cost)'), 'roi'],
-  epv: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Visits)'), 'epv'],
-  epc: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Clicks)'), 'epc'],
-  ap: [sequelize.literal('sum(AdStatis.Revenue)/ 1000000 / sum(AdStatis.Conversions)'), 'ap']
+  cost: [sequelize.fn('SUM', sequelize.col('AdStatisReport.Cost')), 'cost'],
+  profit: [sequelize.fn('SUM', sequelize.literal('AdStatisReport.Revenue / 1000000 - AdStatisReport.Cost / 1000000')), 'profit'],
+  cpv: [sequelize.literal('sum(AdStatisReport.Cost / 1000000) / sum(AdStatisReport.visits)'), 'cpv'],
+  ictr: [sequelize.literal('sum(AdStatisReport.Visits)/sum(AdStatisReport.Impressions)'), 'ictr'],
+  ctr: [sequelize.literal('sum(AdStatisReport.Clicks)/sum(AdStatisReport.Visits)'), 'ctr'],
+  cr: [sequelize.literal('sum(AdStatisReport.Conversions)/sum(AdStatisReport.Clicks)'), 'cr'],
+  cv: [sequelize.literal('sum(AdStatisReport.Conversions)/sum(AdStatisReport.Visits)'), 'cv'],
+  roi: [sequelize.literal('(sum(AdStatisReport.Revenue) - sum(AdStatisReport.Cost))/sum(AdStatisReport.Cost)'), 'roi'],
+  epv: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Visits)'), 'epv'],
+  epc: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Clicks)'), 'epc'],
+  ap: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Conversions)'), 'ap']
 }
 
 
-export const attributes = [
-  'UserID',
-  'Language',
-  ['model', 'model'],
-  ['CampaignID', 'campaignId'],
-  ['FlowID', 'flowId'],
-  ['LanderID', 'landerId'],
-  ['OfferID', 'offerId'],
-  ['AffiliateNetworkID', 'affiliateId'],
-  ['TrafficSourceID', 'trafficId'],
-  ['Country', 'country'],
-  ['City', 'city'],
-  ['Region', 'region'],
-  ['ISP', 'isp'],
-  ['MobileCarrier', 'mobileCarrier'],
-  ['Domain', 'domain'],
-  ['DeviceType', 'deviceType'],
-  ['Brand', 'brand'],
-  ['OS', 'os'],
-  ['OSVersion', 'osVersion'],
-  ['Browser', 'browser'],
-  ['BrowserVersion', 'browserVersion'],
-  ['ConnectionType', 'connectionType'],
-  ['V1', 'v1'],
-  ['V2', 'v2'],
-  ['V3', 'v3'],
-  ['V4', 'v4'],
-  ['V5', 'v5'],
-  ['V6', 'v6'],
-  ['V7', 'v7'],
-  ['V8', 'v8'],
-  ['V9', 'v9'],
-  ['V10', 'v10'],
-  ['tsWebsiteId', 'tsWebsiteId'],
-  ...(_.values(sumShorts))
-]
+
 
 export const nunberColumnForListPage = [
   'visits', 'impressions', 'revenue', 'clicks', 'conversions', 'cost', 'profit', 'cpv', 'ictr', 'ctr', 'cr',
@@ -370,7 +525,7 @@ export function csvCloums(groupBy) {
       answer = ['affiliateId', 'affiliateName', 'affiliateHash'];
       break;
     default:
-      answer=[groupBy];
+      answer = [groupBy];
       break;
   }
 
