@@ -145,7 +145,7 @@
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
-                <th md-column style="padding: 0 10px;" class="row-action"><i class="icon-circle"></i></th>
+                <th md-column style="padding: 0 10px;text-align: center;" class="row-action"><i class="icon-circle"></i></th>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}"
                     ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{::item.name}}
@@ -154,7 +154,7 @@
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
               <tr md-row
-                  ng-repeat="row in report.rows track by row.data.id" ng-if="row.parentRow.expanded"
+                  ng-repeat="row in report.rows track by row.id" ng-if="row.parentRow.expanded"
                   ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
                 <td class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
                     <md-menu-bar style="padding: 0;" ng-if="row.treeLevel==1">
@@ -215,7 +215,7 @@
             </tbody>
             <tfoot md-body fix-foot>
               <tr md-row>
-                <td></td>
+                <td md-cell></td>
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
                 <td md-cell ng-class="{'red':report.totals[column.key] < 0 && column.key == 'roi','green':report.totals[column.key] > 0 && column.key == 'roi'}" ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">

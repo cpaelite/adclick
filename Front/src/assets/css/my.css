@@ -1153,8 +1153,8 @@ table .traficc-source-input input[type="checkbox"]{
 
 .table-arrow-down{
     width: 100%;
-    height: 48px;
-    line-height: 48px;
+    height: 16px;
+    line-height: 16px;
     text-align: center;
     cursor: pointer;
     /*background: rgba(18, 189, 206, 0.14);*/

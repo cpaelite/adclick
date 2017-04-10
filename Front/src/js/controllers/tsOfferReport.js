@@ -431,5 +431,19 @@
     };
 
     $scope.selected = [];
+
+    $scope.$watch('selected', function(newVal, oldVal) {
+      var limit = $scope.query.limit;
+
+      if(newVal.length - oldVal.length > 1) {
+        var offers = angular.copy($scope.offers.rows);
+        var currOffers = offers.length > limit ? offers.slice(0, limit) : offers;
+        $scope.selected = currOffers.map(function(offer) {
+          return offer.id;
+        });
+      } else if (oldVal.length - newVal.length > 1) {
+        $scope.selected = [];
+      }
+    }, true);
   }
 })();
