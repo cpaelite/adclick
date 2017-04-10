@@ -438,9 +438,13 @@
         $scope.menuStatus.isopen = true;
       }
     };
-    //$scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
+    // $scope.canEdit = ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
     $scope.canEdit = function (row) {
-      return ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0 && row.treeLevel == 1;
+      if(row) {
+        return ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0 && row.treeLevel == 1;
+      } else {
+        return ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf(perfType) >= 0;
+      }
     };
     $scope.drilldownFilter = function(item) {
       var exclude = [];
