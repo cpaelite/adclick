@@ -152,12 +152,13 @@ function isListPageRequest(value) {
 
 function hasFilter(value) {
   let attrs = Object.keys(value);
+  let f = false
   _.forEach(attrs, (attr) => {
     if (mapping[attr]) {
-      return true
+      f = true
     }
   })
-  return
+  return f
 }
 
 async function fullFill({ rawRows, groupBy }) {
