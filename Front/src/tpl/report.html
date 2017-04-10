@@ -198,7 +198,7 @@
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
                                         <md-menu-content width="3">
                                             <md-menu-item ng-repeat="gb in groupByOptions | filter:drilldownFilter track by $index">
-                                                <md-button ng-click="drilldown(row, gb)">{{::gb.display}} <em ng-if="gb.role == 'campaign'">: {{::gb.paramValue}}</em></md-button>
+                                                <md-button ng-click="drilldown(row, gb)">{{::gb.display}} <em ng-if="gb.role == 'campaign'">: {{gb.paramValue}}</em></md-button>
                                             </md-menu-item>
                                         </md-menu-content>
                                     </md-menu>
