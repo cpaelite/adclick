@@ -262,11 +262,15 @@ async function normalReport(values) {
   // group by day
   let finalAttribute = mapping[groupBy].attributes;
   if (groupBy.toLowerCase() === 'day') {
-    finalAttribute =[[sequelize.literal(`DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(Timestamp/1000), '${tz}','+00:00'),"%Y-%m-%d")`), 'id'],[sequelize.literal(`DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(Timestamp/1000), '${tz}','+00:00'),"%Y-%m-%d")`), 'day']]; 
+    //处理timezone 兼容列存储
+    let tag = tz.slice(0, 1);
+    let numberString = tz.slice(1);
+    let slice = numberString.split(':');
+    let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+    finalAttribute = [[sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d")`), 'id'], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d")`), 'day']];
   }
-finalAttribute = _.concat(finalAttribute, _.values(sumShorts));
-  console.log('======')
-  console.log(JSON.stringify(finalAttribute))
+  finalAttribute = _.concat(finalAttribute, _.values(sumShorts));
+
   let conditions = {
     where: sqlWhere,
     limit,

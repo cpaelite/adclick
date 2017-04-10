@@ -243,7 +243,7 @@ export const mapping = {
   day: {
     attributes: [
       ],
-    dbKey: "day", dbGroupBy: "day", listPage: false
+    dbKey: "day", dbGroupBy: "id,day", listPage: false
   },
   tsWebsiteId: {
     attributes: [
