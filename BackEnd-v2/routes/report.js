@@ -229,6 +229,7 @@ async function normalReport(values) {
   let { userId, from, to, tz, groupBy, offset, limit, filter, order, status } = values;
 
   let sqlWhere = {};
+  let having;
   sqlWhere.UserID = userId
   sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
 
@@ -247,21 +248,27 @@ async function normalReport(values) {
     }
   })
 
+  //TODO 不应该数据表模糊查询
   if (filter) {
-    sqlWhere[mapping[groupBy].dbFilter] = {
-      $like: `%${filter}%`
+    //单独处理group by day
+    if (groupBy == 'day') {
+       having = [`${mapping[groupBy].dbFilter} like '%${filter}%'`]
+    } else {
+      sqlWhere[mapping[groupBy].dbFilter] = sequelize.literal(` ${mapping[groupBy].dbFilter} like '%${filter}%'`)//{
+      //   $like: `%${filter}%`
+      // }
     }
   }
 
-  let orderBy = ['UserID', 'ASC']
+  let orderBy = [];
 
   if (order) {
-    if (order[0] === '-') {
-      orderBy[1] = 'DESC'
-      order = order.slice(1)
-    }
-    if (sumShorts[order]) {
-      orderBy[0] = sumShorts[order][0]
+    if (order.slice(0, 1) === '-') {
+      orderBy[1] = 'DESC';
+      orderBy[0] = order.slice(1);
+    } else {
+      orderBy[1] = 'ASC';
+      orderBy[0] = order;
     }
   }
 
@@ -283,14 +290,42 @@ async function normalReport(values) {
     limit,
     offset,
     attributes: finalAttribute,
-    group: `${mapping[groupBy].dbGroupBy}`,
-    order: [orderBy]
+    group: `${mapping[groupBy].dbGroupBy}`
   }
+  if(having){
+    conditions.having=having
+  }
+  let mustOrder = false; //默认不排序
+
+  if (orderBy.length) {
+    //判断order 字段在列存储中存在对应的列
+    for (let index = 0; index < finalAttribute.length; index++) {
+      if (_.isArray(finalAttribute[index])) {
+        if (orderBy[0] == finalAttribute[index][1]) {
+          mustOrder = true;
+          break;
+        }
+      } else if (_.isString(finalAttribute[index])) {
+        if (orderBy[0] == finalAttribute[index]) {
+          mustOrder = true;
+          break;
+        }
+      }
+    }
+    if (mustOrder) {
+      conditions.order = [[sequelize.literal(orderBy[0]), orderBy[1]]];
+    }
+
+  }
+
+  //TODO 判断 campain offer lander 此时数据表不应该分页
   if (values.dataType && values.dataType == "csv") {
     delete conditions.limit;
     delete conditions.offset;
   }
+
   let rows = await models.AdStatisReport.findAll(conditions)
+
   let rawRows = rows.map(e => e.dataValues);
   rawRows = await fullFill({ rawRows, groupBy })
   if (groupBy === "campaign") {

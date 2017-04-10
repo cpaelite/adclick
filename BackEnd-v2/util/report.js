@@ -63,105 +63,105 @@ export const mapping = {
       ['Language', 'id'],
       ['Language'  ,'language']
     ],
-    dbKey: "Language", dbGroupBy: "Language", listPage: false
+    dbKey: "Language", dbGroupBy: "Language", listPage: false,dbFilter:'Language'
   },
   model: {
     attributes: [
       ['model', 'id'],
       ['model', 'model']  
     ],
-    dbKey: "Model", dbGroupBy: "Model", listPage: false
+    dbKey: "Model", dbGroupBy: "Model", listPage: false,dbFilter:'Model'
   },
   country: {
     attributes: [
       ['Country', 'id'],
       ['Country', 'country'] 
     ],
-    dbKey: "Country", dbGroupBy: "Country", listPage: false
+    dbKey: "Country", dbGroupBy: "Country", listPage: false,dbFilter:'Country'
   },
   city: {
     attributes: [ 
       ['City', 'id'],
       ['City', 'city'] 
     ],
-    dbKey: "City", dbGroupBy: "City", listPage: false
+    dbKey: "City", dbGroupBy: "City", listPage: false,dbFilter:'City',dbFilter:'City'
   },
   region: {
     attributes: [
       ['Region', 'id'],
       ['Region', 'region']    
     ],
-    dbKey: "Region", dbGroupBy: "Region", listPage: false
+    dbKey: "Region", dbGroupBy: "Region", listPage: false,dbFilter:'Region'
   },
   isp: {
     attributes: [
       ['ISP', 'id'],
       ['ISP', 'isp']
     ],
-    dbKey: "ISP", dbGroupBy: "ISP", listPage: false
+    dbKey: "ISP", dbGroupBy: "ISP", listPage: false,dbFilter:'ISP'
   },
   mobileCarrier: {
     attributes: [ 
       ['MobileCarrier', 'id'],
       ['MobileCarrier', 'mobileCarrier']
     ],
-    dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false
+    dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false,dbFilter:'MobileCarrier'
   },
   domain: {
     attributes: [
       ['Domain', 'id'],
       ['Domain', 'domain'] 
     ],
-    dbKey: "Domain", dbGroupBy: "Domain", listPage: false
+    dbKey: "Domain", dbGroupBy: "Domain", listPage: false,dbFilter:'Domain'
   },
   deviceType: {
     attributes: [
       ['DeviceType', 'id'],
       ['DeviceType', 'deviceType'] 
     ],
-    dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false
+    dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false,dbFilter:'DeviceType'
   },
   brand: {
     attributes: [ 
       ['Brand', 'id'],
       ['Brand', 'brand']   
     ],
-    dbKey: "Brand", dbGroupBy: "Brand", listPage: false
+    dbKey: "Brand", dbGroupBy: "Brand", listPage: false,dbFilter:'Brand'
   },
   os: {
     attributes: [
       ['OS', 'id'],
       ['OS', 'os']
     ],
-    dbKey: "OS", dbGroupBy: "OS", listPage: false
+    dbKey: "OS", dbGroupBy: "OS", listPage: false,dbFilter:'OS'
   },
   osVersion: {
     attributes: [
       ['OSVersion', 'id'],
       ['OSVersion', 'osVersion'], 
     ],
-    dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false
+    dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false,dbFilter:'OSVersion'
   },
   browser: {
     attributes: [
       ['Browser', 'id'],
       ['Browser', 'browser']
     ],
-    dbKey: "Browser", dbGroupBy: "Browser", listPage: false
+    dbKey: "Browser", dbGroupBy: "Browser", listPage: false,dbFilter:'Browser'
   },
   browserVersion: {
     attributes: [
       ['BrowserVersion', 'id'],
       ['BrowserVersion', 'browserVersion']
     ],
-    dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false
+    dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false,dbFilter:'BrowserVersion'
   },
   connectionType: {
     attributes: [
       ['ConnectionType', 'id'],
       ['ConnectionType', 'connectionType']  
     ],
-    dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false
+    dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false,dbFilter:'ConnectionType'
   },
   timestamp: { dbKey: "Timestamp", dbGroupBy: "Timestamp", listPage: false },
   visits: { dbKey: "Visits", dbGroupBy: "Visits", listPage: false },
@@ -175,82 +175,82 @@ export const mapping = {
       ['V1', 'id'],
       ['V1', 'v1'] 
     ],
-    dbKey: "V1", dbGroupBy: "V1", listPage: false
+    dbKey: "V1", dbGroupBy: "V1", listPage: false,dbFilter:'V1'
   },
   v2: {
     attributes: [
       ['V2', 'id'],
       ['V2', 'v2']
     ],
-    dbKey: "V2", dbGroupBy: "V2", listPage: false
+    dbKey: "V2", dbGroupBy: "V2", listPage: false,dbFilter:'V2'
   },
   v3: {
     attributes: [
       ['V3', 'id'],
       ['V3', 'v3']
     ],
-    dbKey: "V3", dbGroupBy: "V3", listPage: false
+    dbKey: "V3", dbGroupBy: "V3", listPage: false,dbFilter:'V3'
   },
   v4: {
     attributes: [
       ['V4', 'id'],
       ['V4', 'v4']
     ],
-    dbKey: "V4", dbGroupBy: "V4", listPage: false
+    dbKey: "V4", dbGroupBy: "V4", listPage: false,dbFilter:'V4'
   },
   v5: {
     attributes: [
       ['V5', 'id'],
       ['V5', 'v5']
     ],
-    dbKey: "V5", dbGroupBy: "V5", listPage: false
+    dbKey: "V5", dbGroupBy: "V5", listPage: false,dbFilter:'V5'
   },
   v6: {
     attributes: [
       ['V6', 'id'],
       ['V6', 'v6']  
     ],
-    dbKey: "V6", dbGroupBy: "V6", listPage: false
+    dbKey: "V6", dbGroupBy: "V6", listPage: false,dbFilter:'V6'
   },
   v7: {
     attributes: [
       ['V7', 'id'],
       ['V7', 'v7']
     ],
-    dbKey: "V7", dbGroupBy: "V7", listPage: false
+    dbKey: "V7", dbGroupBy: "V7", listPage: false,dbFilter:'V7'
   },
   v8: {
     attributes: [
       ['V8', 'id'],
       ['V8', 'v8']
     ],
-    dbKey: "V8", dbGroupBy: "V8", listPage: false
+    dbKey: "V8", dbGroupBy: "V8", listPage: false,dbFilter:'V8'
   },
   v9: {
     attributes: [
       ['V9', 'id'],
       ['V9', 'v9']   
     ],
-    dbKey: "V9", dbGroupBy: "V9", listPage: false
+    dbKey: "V9", dbGroupBy: "V9", listPage: false,dbFilter:'V9'
   },
   v10: {
     attributes: [
       ['V10', 'id'],
       ['V10', 'v10']  
     ],
-    dbKey: "V10", dbGroupBy: "V10", listPage: false
+    dbKey: "V10", dbGroupBy: "V10", listPage: false,dbFilter:'V10'
   },
   day: {
     attributes: [
       ],
-    dbKey: "day", dbGroupBy: "id,day", listPage: false
+    dbKey: "day", dbGroupBy: "id,day", listPage: false,dbFilter:'day'
   },
   tsWebsiteId: {
     attributes: [
       ['tsWebsiteId', 'id'],
       ['tsWebsiteId', 'tsWebsiteId']
     ],
-    dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false
+    dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false,dbFilter:'tsWebsiteId'
   },
 }
 
