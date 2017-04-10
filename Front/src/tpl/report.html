@@ -154,7 +154,7 @@
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
               <tr md-row
-                  ng-repeat="row in report.rows track by row.id" ng-if="row.parentRow.expanded"
+                  ng-repeat="row in report.rows" ng-if="row.parentRow.expanded"
                   ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
                 <td class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
                     <md-menu-bar style="padding: 0;" ng-if="row.treeLevel==1">
