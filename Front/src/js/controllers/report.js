@@ -241,6 +241,7 @@
         params.columns = $scope.downloadReportCols;
         FileDownload.download(params);
       } else {
+
         $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
       }
     };
@@ -408,19 +409,23 @@
     $scope.toggleRow = function(row) {
       if (row.expanded) {
         row.expanded = false;
+        var temp = [];
         $scope.report.rows.forEach(function(item) {
-          if (item.parentRow == row)
-            item.expanded = false;
+          if (item.parentRow != row) {
+            // item.expanded = false;
+            temp.push(item);
+          }
         });
+        $scope.report.rows = temp;
         return;
       }
-      if (row.childrenLoaded) {
-        row.expanded = true;
-        return;
-      } else {
+      // if (row.childrenLoaded) {
+      //   row.expanded = true;
+      //   return;
+      // } else {
         $scope.loading = true;
         getList(row);
-      }
+      // }
     };
 
     // todo: use single menu for all rows
