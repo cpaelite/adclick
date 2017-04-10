@@ -61,7 +61,7 @@ export const mapping = {
   language: {
     attributes: [
       ['Language', 'id'],
-      'Language'  
+      ['Language'  ,'language']
     ],
     dbKey: "Language", dbGroupBy: "Language", listPage: false
   },
