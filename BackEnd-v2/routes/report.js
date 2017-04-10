@@ -60,26 +60,33 @@ router.get('/api/export', async function (req, res, next) {
     }
     let rawRows = result.rows;
     //特殊处理ip 导出不fullfill
-    if (req.query.groupBy && req.query.groupBy == "ip") {
+    // if (req.query.groupBy && req.query.groupBy == "ip") {
+    //   let campaign = await getUserCampainByID(req.query.userId, req.query.campaign);
+    //   res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${campaign.name}-${campaign.hash}-${moment().unix()}.csv"`);
+    // } else {
+    // let csvFullfill = [];//缓存csv 要fullfill的关系数据
+    // let attrs = Object.keys(req.query);
+    // _.forEach(attrs, (attr) => {
+    //   if (mapping[attr]) {
+    //     let mapKey = {}
+    //     mapKey['group'] = mapping[attr].group;
+    //     csvFullfill.push(mapKey)
+    //   }
+    // });
+
+    // for (let index = 0; index < csvFullfill.length; index++) {
+    //   rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group });
+    //   for (let j = 0; j < csvCloums(csvFullfill[index].group).length; j++) {
+    //     fieldsCol.push(csvCloums(csvFullfill[index].group)[j]);
+    //   }
+    // }
+    //res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
+    // }
+
+    if (req.query.campaign) {
       let campaign = await getUserCampainByID(req.query.userId, req.query.campaign);
       res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${campaign.name}-${campaign.hash}-${moment().unix()}.csv"`);
     } else {
-      let csvFullfill = [];//缓存csv 要fullfill的关系数据
-      let attrs = Object.keys(req.query);
-      _.forEach(attrs, (attr) => {
-        if (mapping[attr]) {
-          let mapKey = {}
-          mapKey['group'] = mapping[attr].group;
-          csvFullfill.push(mapKey)
-        }
-      });
-
-      for (let index = 0; index < csvFullfill.length; index++) {
-        rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group });
-        for (let j = 0; j < csvCloums(csvFullfill[index].group).length; j++) {
-          fieldsCol.push(csvCloums(csvFullfill[index].group)[j]);
-        }
-      }
       res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
     }
 
