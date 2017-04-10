@@ -9,13 +9,13 @@ import sequelize from 'sequelize';
 import {
   mapping,
   sumShorts,
-  attributes,
   nunberColumnForListPage,
   formatRows,
   formatTotals,
   extraConfig,
   csvextraConfig,
-  csvCloums
+  csvCloums,
+  groupByKeys
 } from '../util/report'
 
 /**
@@ -223,7 +223,7 @@ async function normalReport(values) {
 
   let sqlWhere = {};
   sqlWhere.UserID = userId
-  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatis.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
 
   let attrs = Object.keys(values);
   _.forEach(attrs, (attr) => {
@@ -231,8 +231,8 @@ async function normalReport(values) {
       let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       sqlWhere.Timestamp = sequelize.and(
-        sequelize.literal(`AdStatis.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000)`),
-        sequelize.literal(`AdStatis.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`)
+        sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000)`),
+        sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`)
       );
     } else if (mapping[attr]) {
       sqlWhere[mapping[attr].dbKey] = values[attr];
@@ -260,10 +260,16 @@ async function normalReport(values) {
 
 
   // group by day
-  let finalAttribute = attributes
+  let finalAttribute = mapping[groupBy].attributes;
   if (groupBy.toLowerCase() === 'day') {
-    finalAttribute = [[sequelize.literal(`DATE_FORMAT(CONVERT_TZ(FROM_UNIXTIME(Timestamp/1000), '${tz}','+00:00'),"%Y-%m-%d")`), 'day'], ...attributes]
+    //处理timezone 兼容列存储
+    let tag = tz.slice(0, 1);
+    let numberString = tz.slice(1);
+    let slice = numberString.split(':');
+    let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+    finalAttribute = [[sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d")`), 'id'], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d")`), 'day']];
   }
+  finalAttribute = _.concat(finalAttribute, _.values(sumShorts));
 
   let conditions = {
     where: sqlWhere,
@@ -277,7 +283,7 @@ async function normalReport(values) {
     delete conditions.limit;
     delete conditions.offset;
   }
-  let rows = await models.AdStatis.findAll(conditions)
+  let rows = await models.AdStatisReport.findAll(conditions)
   let rawRows = rows.map(e => e.dataValues);
   rawRows = await fullFill({ rawRows, groupBy })
   if (groupBy === "campaign") {
