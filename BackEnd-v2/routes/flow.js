@@ -608,7 +608,10 @@ async function saveOrUpdateFlow(subId, value, connection) {
   let beginTransaction = false;
   try {
     //check flow name exists
-    if (await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, 4, connection)) {
+    if (value.name === "defaultName") {
+      // skip check name if defaultName
+    } else if (await common.checkNameExists(value.userId, value.id ? value.id : null, value.name, 4, connection)) {
+      //check flow name existed
       throw new Error("Flow name exists");
     }
 
