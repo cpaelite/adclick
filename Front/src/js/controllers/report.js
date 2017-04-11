@@ -486,7 +486,7 @@
         return;
       }
       mdMenu.open();
-      if ($scope.treeLevel > 1)
+      if (row.treeLevel > 1)
         return;
 
       var id = 0;
