@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource', 'FileDownload',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr', 
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -58,7 +58,7 @@
       }
     }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource, FileDownload) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource, FileDownload, Domains, toastr) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
@@ -457,6 +457,26 @@
       return exclude.indexOf(item.value) == -1;
     };
 
+    // 获取 MainDomain
+    Domains.get({}, function(result) {
+      var mainDomain;
+      result.data.internal.forEach(function(internal) {
+        if (internal.main) {
+          mainDomain = internal.address;
+          return;
+        }
+      });
+      if (!mainDomain) {
+        result.data.custom.forEach(function(custom) {
+          if (custom.main) {
+            mainDomain = custom.address;
+            return;
+          }
+        });
+      }
+      $scope.mainDomain = mainDomain;
+    });
+
     $scope.menuOpen = function (mdMenu, row) {
       if (perfType == 'ip') {
         return;
@@ -474,7 +494,8 @@
         return;
       }
       TrafficSource.get({id: id}, function (traffic) {
-        if (traffic.status && traffic.data.params) {
+        if (traffic.status) {
+          // drilldown v1-v10的名字
           var params = JSON.parse(traffic.data.params);
           $scope.groupByOptions.forEach(function(option, index) {
             if (option.role == "campaign") {
@@ -487,9 +508,22 @@
               }
             }
           });
+          // copy campaignUrl
+          if (perfType == "campaign") {
+            var urlParams = spliceUrlParams(traffic.data);
+            if (!traffic.impTracking) {
+              $scope.copyCampaignUrl = "http://" + $scope.profile.idText + "." + $scope.mainDomain + "/" + row.data.campaignHash + urlParams;
+            }
+          }
         }
+        
       });
     };
+
+    $scope.copyUrlClick = function() {
+      toastr.clear();
+      toastr.success('Copy Success!');
+    }
 
     $scope.drilldown = function(row, gb) {
       if ($scope.treeLevel > 1)
@@ -834,46 +868,15 @@
             $scope.impTracking = traffic.impTracking;
             $scope.trafficPostbackUrl = traffic.postbackUrl;
             $scope.trafficPixelRedirectUrl = traffic.pixelRedirectUrl;
-            spliceUrlParams(traffic);
+            fillParamsByTraffic(traffic);
             return;
           }
 
         });
       });
     }
-
-    function spliceUrlParams(traffic) {
-      var params = JSON.parse(traffic.params);
-      var impParam = "";
-      params.forEach(function (param) {
-        if (param.Placeholder && param.Track) {
-          impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
-        }
-      });
-
-      var cost = JSON.parse(traffic.cost);
-      if (cost.Placeholder) {
-        impParam = impParam + cost.Parameter + "=" + cost.Placeholder + "&";
-      }
-      var external = JSON.parse(traffic.externalId);
-      if (external.Placeholder) {
-        impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
-      }
-      var campaignId = JSON.parse(traffic.campaignId);
-      if (campaignId.Placeholder) {
-        impParam = impParam + campaignId.Parameter + "=" + campaignId.Placeholder + "&";
-      }
-      var websiteId = JSON.parse(traffic.websiteId);
-      if (websiteId.Placeholder) {
-        impParam = impParam + websiteId.Parameter + "=" + websiteId.Placeholder + "&";
-      }
-
-      if (impParam) {
-        impParam = "?" + impParam;
-      }
-
-      impParam = impParam.substring(0, impParam.length-1);
-
+    function fillParamsByTraffic(traffic) {
+      var impParam = spliceUrlParams(traffic);
       if (traffic.impTracking) {
         $scope.campaignUrl = $scope.item.url;
         if ($scope.impPixelUrl) {
@@ -1175,7 +1178,7 @@
       $scope.campaignUrl = campaign.url;
 
       var traffic = JSON.parse($scope.item.trafficSource);
-      spliceUrlParams(traffic);
+      fillParamsByTraffic(traffic);
       if (!$scope.item.id) {
         $scope.campaignAddStatus = true;
         $scope.item.id = campaign.id;
@@ -2477,5 +2480,38 @@
       };
     }
   }
+
+  function spliceUrlParams(traffic) {
+      var params = JSON.parse(traffic.params);
+      var impParam = "";
+      params.forEach(function (param) {
+        if (param.Placeholder && param.Track) {
+          impParam = impParam + param.Parameter + "=" + param.Placeholder + "&";
+        }
+      });
+
+      var cost = JSON.parse(traffic.cost);
+      if (cost.Placeholder) {
+        impParam = impParam + cost.Parameter + "=" + cost.Placeholder + "&";
+      }
+      var external = JSON.parse(traffic.externalId);
+      if (external.Placeholder) {
+        impParam = impParam + external.Parameter + "=" + external.Placeholder + "&";
+      }
+      var campaignId = JSON.parse(traffic.campaignId);
+      if (campaignId.Placeholder) {
+        impParam = impParam + campaignId.Parameter + "=" + campaignId.Placeholder + "&";
+      }
+      var websiteId = JSON.parse(traffic.websiteId);
+      if (websiteId.Placeholder) {
+        impParam = impParam + websiteId.Parameter + "=" + websiteId.Placeholder + "&";
+      }
+
+      if (impParam) {
+        impParam = "?" + impParam;
+      }
+      impParam = impParam.substring(0, impParam.length-1);
+      return impParam;
+    }
 
 })();

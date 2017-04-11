@@ -193,6 +193,7 @@
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="perfType=='campaign'"><md-button clipboard text="copyCampaignUrl" ng-click="copyUrlClick()">Copy Url</md-button></md-menu-item>
                                 <md-menu-item ng-if="treeLevel == 1">
                                     <md-menu>
                                         <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
