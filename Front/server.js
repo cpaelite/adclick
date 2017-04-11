@@ -1758,7 +1758,7 @@ app.get('/api/traffics/:id', function (req, res) {
       "pixelRedirectUrl": "",
       "impTracking": 1,
       "externalId": "{\"Parameter\":\"1\",\"Placeholder\":\"1\"}",
-      "cost": "",
+      "cost": "{}",
       "campaignId": "{}",
       "websiteId": "{}",
       "params": "[{\"Parameter\":\"WEBSITE\",\"Placeholder\":\"{WEBSITE}\",\"Name\":\"WEBSITE\",\"Track\":1,\"$$hashKey\":\"object:603\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:604\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:605\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:606\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:607\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:608\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:609\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:610\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:611\"},{\"Parameter\":\"\",\"Placeholder\":\"\",\"Name\":\"\",\"Track\":\"\",\"$$hashKey\":\"object:612\"}]"
@@ -2855,7 +2855,7 @@ app.get('/api/domains', function (req, res) {
         },
         {
           address: "www.newbidder2.com",
-          main: false
+          main: true
         },
         {
           address: "www.newbidder1.com",
@@ -2864,7 +2864,7 @@ app.get('/api/domains', function (req, res) {
       custom: [
         {
           address: "www.adbund.com",
-          main: true,
+          main: false,
           verified: false
         }
       ]
