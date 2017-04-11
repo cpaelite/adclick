@@ -184,9 +184,17 @@
 
           if (parentRow.treeLevel > 0) {
             var idx = $scope.report.rows.indexOf(parentRow);
-            Array.prototype.splice.apply($scope.report.rows, [idx+1, 0].concat(rows));
-            parentRow.childrenLoaded = true;
-            parentRow.expanded = true;
+            var nextIdx;
+            if ((idx+1) < $scope.report.rows.length) {
+              nextIdx = idx+1;
+            } else {
+              nextIdx = idx;
+            }
+            if ($scope.report.rows[nextIdx].parentRow != parentRow) {
+              Array.prototype.splice.apply($scope.report.rows, [idx+1, 0].concat(rows));
+              parentRow.childrenLoaded = true;
+              parentRow.expanded = true;
+            }
           } else {
             $scope.report = result.data;
             $scope.report.rows = rows;

@@ -23,7 +23,7 @@ function delayResponse(res, data) {
   //console.log(data);
   setTimeout(function () {
     res.send(data);
-  }, 1000);
+  }, 3000);
 }
 
 app.use(function (req, res, next) {
@@ -806,7 +806,8 @@ app.get('/api/report', function (req, res) {
       }
     };
   // }
-  res.send(result);
+  //res.send(result);
+  delayResponse(res, result);
 });
 
 /**
