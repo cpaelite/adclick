@@ -30,7 +30,7 @@ export const mapping = {
   offer: {
     attributes: [
       'UserID',
-      ['OfferID', 'offerId']  
+      ['OfferID', 'offerId']
     ],
     dbKey: "OfferID", dbGroupBy: "UserID,OfferID", listPage: true, table: "Offer", dbFilter: "OfferName", group: "offer"
   },
@@ -49,7 +49,7 @@ export const mapping = {
   traffic: {
     attributes: [
       'UserID',
-      ['TrafficSourceID', 'trafficId'] 
+      ['TrafficSourceID', 'trafficId']
     ],
     dbKey: "TrafficSourceID",
     dbGroupBy: "UserID,TrafficSourceID",
@@ -61,107 +61,107 @@ export const mapping = {
   language: {
     attributes: [
       ['Language', 'id'],
-      ['Language'  ,'language']
+      ['Language', 'language']
     ],
-    dbKey: "Language", dbGroupBy: "Language", listPage: false,dbFilter:'Language'
+    dbKey: "Language", dbGroupBy: "Language", listPage: false, dbFilter: 'Language'
   },
   model: {
     attributes: [
       ['model', 'id'],
-      ['model', 'model']  
+      ['model', 'model']
     ],
-    dbKey: "Model", dbGroupBy: "Model", listPage: false,dbFilter:'Model'
+    dbKey: "Model", dbGroupBy: "Model", listPage: false, dbFilter: 'Model'
   },
   country: {
     attributes: [
       ['Country', 'id'],
-      ['Country', 'country'] 
+      ['Country', 'country']
     ],
-    dbKey: "Country", dbGroupBy: "Country", listPage: false,dbFilter:'Country'
+    dbKey: "Country", dbGroupBy: "Country", listPage: false, dbFilter: 'Country'
   },
   city: {
-    attributes: [ 
+    attributes: [
       ['City', 'id'],
-      ['City', 'city'] 
+      ['City', 'city']
     ],
-    dbKey: "City", dbGroupBy: "City", listPage: false,dbFilter:'City',dbFilter:'City'
+    dbKey: "City", dbGroupBy: "City", listPage: false, dbFilter: 'City', dbFilter: 'City'
   },
   region: {
     attributes: [
       ['Region', 'id'],
-      ['Region', 'region']    
+      ['Region', 'region']
     ],
-    dbKey: "Region", dbGroupBy: "Region", listPage: false,dbFilter:'Region'
+    dbKey: "Region", dbGroupBy: "Region", listPage: false, dbFilter: 'Region'
   },
   isp: {
     attributes: [
       ['ISP', 'id'],
       ['ISP', 'isp']
     ],
-    dbKey: "ISP", dbGroupBy: "ISP", listPage: false,dbFilter:'ISP'
+    dbKey: "ISP", dbGroupBy: "ISP", listPage: false, dbFilter: 'ISP'
   },
   mobileCarrier: {
-    attributes: [ 
+    attributes: [
       ['MobileCarrier', 'id'],
       ['MobileCarrier', 'mobileCarrier']
     ],
-    dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false,dbFilter:'MobileCarrier'
+    dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false, dbFilter: 'MobileCarrier'
   },
   domain: {
     attributes: [
       ['Domain', 'id'],
-      ['Domain', 'domain'] 
+      ['Domain', 'domain']
     ],
-    dbKey: "Domain", dbGroupBy: "Domain", listPage: false,dbFilter:'Domain'
+    dbKey: "Domain", dbGroupBy: "Domain", listPage: false, dbFilter: 'Domain'
   },
   deviceType: {
     attributes: [
       ['DeviceType', 'id'],
-      ['DeviceType', 'deviceType'] 
+      ['DeviceType', 'deviceType']
     ],
-    dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false,dbFilter:'DeviceType'
+    dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false, dbFilter: 'DeviceType'
   },
   brand: {
-    attributes: [ 
+    attributes: [
       ['Brand', 'id'],
-      ['Brand', 'brand']   
+      ['Brand', 'brand']
     ],
-    dbKey: "Brand", dbGroupBy: "Brand", listPage: false,dbFilter:'Brand'
+    dbKey: "Brand", dbGroupBy: "Brand", listPage: false, dbFilter: 'Brand'
   },
   os: {
     attributes: [
       ['OS', 'id'],
       ['OS', 'os']
     ],
-    dbKey: "OS", dbGroupBy: "OS", listPage: false,dbFilter:'OS'
+    dbKey: "OS", dbGroupBy: "OS", listPage: false, dbFilter: 'OS'
   },
   osVersion: {
     attributes: [
       ['OSVersion', 'id'],
-      ['OSVersion', 'osVersion'], 
+      ['OSVersion', 'osVersion'],
     ],
-    dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false,dbFilter:'OSVersion'
+    dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false, dbFilter: 'OSVersion'
   },
   browser: {
     attributes: [
       ['Browser', 'id'],
       ['Browser', 'browser']
     ],
-    dbKey: "Browser", dbGroupBy: "Browser", listPage: false,dbFilter:'Browser'
+    dbKey: "Browser", dbGroupBy: "Browser", listPage: false, dbFilter: 'Browser'
   },
   browserVersion: {
     attributes: [
       ['BrowserVersion', 'id'],
       ['BrowserVersion', 'browserVersion']
     ],
-    dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false,dbFilter:'BrowserVersion'
+    dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false, dbFilter: 'BrowserVersion'
   },
   connectionType: {
     attributes: [
       ['ConnectionType', 'id'],
-      ['ConnectionType', 'connectionType']  
+      ['ConnectionType', 'connectionType']
     ],
-    dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false,dbFilter:'ConnectionType'
+    dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false, dbFilter: 'ConnectionType'
   },
   timestamp: { dbKey: "Timestamp", dbGroupBy: "Timestamp", listPage: false },
   visits: { dbKey: "Visits", dbGroupBy: "Visits", listPage: false },
@@ -173,84 +173,84 @@ export const mapping = {
   v1: {
     attributes: [
       ['V1', 'id'],
-      ['V1', 'v1'] 
+      ['V1', 'v1']
     ],
-    dbKey: "V1", dbGroupBy: "V1", listPage: false,dbFilter:'V1'
+    dbKey: "V1", dbGroupBy: "V1", listPage: false, dbFilter: 'V1'
   },
   v2: {
     attributes: [
       ['V2', 'id'],
       ['V2', 'v2']
     ],
-    dbKey: "V2", dbGroupBy: "V2", listPage: false,dbFilter:'V2'
+    dbKey: "V2", dbGroupBy: "V2", listPage: false, dbFilter: 'V2'
   },
   v3: {
     attributes: [
       ['V3', 'id'],
       ['V3', 'v3']
     ],
-    dbKey: "V3", dbGroupBy: "V3", listPage: false,dbFilter:'V3'
+    dbKey: "V3", dbGroupBy: "V3", listPage: false, dbFilter: 'V3'
   },
   v4: {
     attributes: [
       ['V4', 'id'],
       ['V4', 'v4']
     ],
-    dbKey: "V4", dbGroupBy: "V4", listPage: false,dbFilter:'V4'
+    dbKey: "V4", dbGroupBy: "V4", listPage: false, dbFilter: 'V4'
   },
   v5: {
     attributes: [
       ['V5', 'id'],
       ['V5', 'v5']
     ],
-    dbKey: "V5", dbGroupBy: "V5", listPage: false,dbFilter:'V5'
+    dbKey: "V5", dbGroupBy: "V5", listPage: false, dbFilter: 'V5'
   },
   v6: {
     attributes: [
       ['V6', 'id'],
-      ['V6', 'v6']  
+      ['V6', 'v6']
     ],
-    dbKey: "V6", dbGroupBy: "V6", listPage: false,dbFilter:'V6'
+    dbKey: "V6", dbGroupBy: "V6", listPage: false, dbFilter: 'V6'
   },
   v7: {
     attributes: [
       ['V7', 'id'],
       ['V7', 'v7']
     ],
-    dbKey: "V7", dbGroupBy: "V7", listPage: false,dbFilter:'V7'
+    dbKey: "V7", dbGroupBy: "V7", listPage: false, dbFilter: 'V7'
   },
   v8: {
     attributes: [
       ['V8', 'id'],
       ['V8', 'v8']
     ],
-    dbKey: "V8", dbGroupBy: "V8", listPage: false,dbFilter:'V8'
+    dbKey: "V8", dbGroupBy: "V8", listPage: false, dbFilter: 'V8'
   },
   v9: {
     attributes: [
       ['V9', 'id'],
-      ['V9', 'v9']   
+      ['V9', 'v9']
     ],
-    dbKey: "V9", dbGroupBy: "V9", listPage: false,dbFilter:'V9'
+    dbKey: "V9", dbGroupBy: "V9", listPage: false, dbFilter: 'V9'
   },
   v10: {
     attributes: [
       ['V10', 'id'],
-      ['V10', 'v10']  
+      ['V10', 'v10']
     ],
-    dbKey: "V10", dbGroupBy: "V10", listPage: false,dbFilter:'V10'
+    dbKey: "V10", dbGroupBy: "V10", listPage: false, dbFilter: 'V10'
   },
   day: {
     attributes: [
-      ],
-    dbKey: "day", dbGroupBy: "id,day", listPage: false,dbFilter:'day'
+    ],
+    dbKey: "day", dbGroupBy: "id,day", listPage: false, dbFilter: 'day'
   },
   tsWebsiteId: {
     attributes: [
       ['tsWebsiteId', 'id'],
       ['tsWebsiteId', 'tsWebsiteId']
     ],
-    dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false,dbFilter:'tsWebsiteId'
+    dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false, dbFilter: 'tsWebsiteId'
   },
 }
 
@@ -351,6 +351,9 @@ export function extraConfig(groupBy) {
     case 'flow':
       answer = {
         foreignKey: 'flowId',
+        directlink: {
+          flowName: "Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'flowId'],
@@ -363,6 +366,9 @@ export function extraConfig(groupBy) {
     case 'lander':
       answer = {
         foreignKey: 'landerId',
+        directlink: {
+          landerName: "Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'landerId'],
@@ -377,6 +383,9 @@ export function extraConfig(groupBy) {
     case 'offer':
       answer = {
         foreignKey: 'offerId',
+        directlink: {
+          offerName: "Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'offerId'],
@@ -392,6 +401,9 @@ export function extraConfig(groupBy) {
     case 'traffic':
       answer = {
         foreignKey: 'trafficId',
+        directlink: {
+          trafficName: "Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'trafficId'],
