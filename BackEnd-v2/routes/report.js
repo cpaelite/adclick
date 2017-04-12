@@ -35,7 +35,7 @@ router.get('/api/report', async function (req, res, next) {
     if (req.query.groupBy && req.query.groupBy == "ip") {
       result = await IPReport(req);
     } else {
-      result = await campaignReport(req.query);
+      result = await main_report(req.query);
     }
     return res.json({ status: 1, message: 'success', data: result });
   } catch (e) {
@@ -56,7 +56,7 @@ router.get('/api/export', async function (req, res, next) {
     if (req.query.groupBy && req.query.groupBy == "ip") {
       result = await IPReport(req);
     } else {
-      result = await campaignReport(req.query);
+      result = await main_report(req.query);
     }
     let rawRows = result.rows;
     //特殊处理ip 导出不fullfill
@@ -121,7 +121,7 @@ async function getUserCampainByID(userid, id) {
   }
 }
 
-async function campaignReport(value) {
+async function main_report(value) {
   let { groupBy, limit, page } = value;
   // init values
   if (!mapping[groupBy]) {
@@ -169,12 +169,14 @@ function hasFilter(value) {
 }
 
 async function fullFill({ rawRows, groupBy }) {
+  
   if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
     return rawRows
   }
   let foreignConfig = extraConfig(groupBy);
   let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
+  
   let foreignRows = await models[mapping[groupBy].table].findAll({
     where: {
       id: foreignKeys
@@ -244,7 +246,6 @@ async function normalReport(values) {
       );
     } else if (mapping[attr]) {
       sqlWhere[mapping[attr].dbKey] = values[attr];
-
     }
   })
 
@@ -252,7 +253,7 @@ async function normalReport(values) {
   if (filter) {
     //单独处理group by day
     if (groupBy == 'day') {
-       having = [`${mapping[groupBy].dbFilter} like '%${filter}%'`]
+      having = [`${mapping[groupBy].dbFilter} like '%${filter}%'`]
     } else {
       sqlWhere[mapping[groupBy].dbFilter] = sequelize.literal(` ${mapping[groupBy].dbFilter} like '%${filter}%'`)//{
       //   $like: `%${filter}%`
@@ -292,8 +293,8 @@ async function normalReport(values) {
     attributes: finalAttribute,
     group: `${mapping[groupBy].dbGroupBy}`
   }
-  if(having){
-    conditions.having=having
+  if (having) {
+    conditions.having = having
   }
   let mustOrder = false; //默认不排序
 
@@ -327,12 +328,13 @@ async function normalReport(values) {
   let rows = await models.AdStatisReport.findAll(conditions)
 
   let rawRows = rows.map(e => e.dataValues);
-  rawRows = await fullFill({ rawRows, groupBy })
+  rawRows = await fullFill({ rawRows, groupBy });
+  //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy === "campaign") {
-    rawRows = await fullFill({ rawRows, groupBy: "traffic" })
+    rawRows = await fullFill({ rawRows, groupBy: "traffic" });
   }
 
-  rawRows = formatRows(rawRows)
+  rawRows = formatRows(rawRows);
   let totalRows = rawRows.length;
   let totals = {
     impressions: rawRows.reduce((sum, row) => sum + row.impressions, 0),
