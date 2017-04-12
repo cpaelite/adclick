@@ -169,35 +169,47 @@ function hasFilter(value) {
 }
 
 async function fullFill({ rawRows, groupBy }) {
-  
+
   if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
     return rawRows
   }
   let foreignConfig = extraConfig(groupBy);
-  let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
-  
-  let foreignRows = await models[mapping[groupBy].table].findAll({
-    where: {
-      id: foreignKeys
-    },
-    attributes: foreignConfig.attributes
-  })
-  let rawForeignRows = foreignRows.map(e => e.dataValues);
+  let foreignKeys = [];
+  for (let index = 0; index < rawRows.length; index++) {
+    //bugfix NB-479 rawRows[index][foreignConfig.foreignKey] == 0 说明是directLink
+    if (rawRows[index][foreignConfig.foreignKey] == 0) {
+      if (foreignConfig.directlink) {
+        rawRows[index] = _.assign(rawRows[index], foreignConfig.directlink);
+      }
+    } else {
+      foreignKeys.push(rawRows[index][foreignConfig.foreignKey]);
+    }
+  }
 
-  let totalRows = rawRows.length;
+  if (foreignKeys.length) {
+    let foreignRows = await models[mapping[groupBy].table].findAll({
+      where: {
+        id: foreignKeys
+      },
+      attributes: foreignConfig.attributes
+    })
+    let rawForeignRows = foreignRows.map(e => e.dataValues);
 
-  for (let i = 0; i < rawForeignRows.length; i++) {
-    let rawForeignRow = rawForeignRows[i];
-    for (let j = 0; j < totalRows; j++) {
-      let rawRow = rawRows[j];
-      if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
-        let keys = Object.keys(rawForeignRow);
-        keys.forEach(key => {
-          if (key === 'id') return;
-          rawRow[key] = rawForeignRow[key]
-        })
-        break;
+    let totalRows = rawRows.length;
+
+    for (let i = 0; i < rawForeignRows.length; i++) {
+      let rawForeignRow = rawForeignRows[i];
+      for (let j = 0; j < totalRows; j++) {
+        let rawRow = rawRows[j];
+        if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
+          let keys = Object.keys(rawForeignRow);
+          keys.forEach(key => {
+            if (key === 'id') return;
+            rawRow[key] = rawForeignRow[key]
+          })
+          break;
+        }
       }
     }
   }

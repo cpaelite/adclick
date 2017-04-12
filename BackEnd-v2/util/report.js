@@ -351,6 +351,9 @@ export function extraConfig(groupBy) {
     case 'flow':
       answer = {
         foreignKey: 'flowId',
+        directlink:{
+          flowName:"Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'flowId'],
@@ -363,6 +366,9 @@ export function extraConfig(groupBy) {
     case 'lander':
       answer = {
         foreignKey: 'landerId',
+        directlink:{
+          landerName:"Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'landerId'],
@@ -377,6 +383,9 @@ export function extraConfig(groupBy) {
     case 'offer':
       answer = {
         foreignKey: 'offerId',
+         directlink:{
+          offerName:"Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'offerId'],
@@ -392,6 +401,9 @@ export function extraConfig(groupBy) {
     case 'traffic':
       answer = {
         foreignKey: 'trafficId',
+         directlink:{
+          trafficName:"Direct Linking"
+        },
         attributes: [
           'id',
           ['id', 'trafficId'],
