@@ -148,7 +148,7 @@
                 <th ng-if="canEdit()" md-column style="padding: 0 10px;text-align: center;" class="row-action"><i class="icon-circle"></i></th>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}"
-                    ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{::item.name}}
+                    ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{item.name}}
                 </th>
             </tr>
             </thead>
