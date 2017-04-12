@@ -469,24 +469,29 @@
       return exclude.indexOf(item.value) == -1;
     };
 
+    var mainDomain;
     // 获取 MainDomain
     Domains.get({}, function(result) {
-      var mainDomain;
       result.data.internal.forEach(function(internal) {
         if (internal.main) {
-          mainDomain = internal.address;
+          mainDomain = {
+            internal: true,
+            address: internal.address
+          }
           return;
         }
       });
       if (!mainDomain) {
         result.data.custom.forEach(function(custom) {
           if (custom.main) {
-            mainDomain = custom.address;
+            mainDomain = {
+              internal: false,
+              address: custom.address
+            }
             return;
           }
         });
       }
-      $scope.mainDomain = mainDomain;
     });
 
     $scope.menuOpen = function (mdMenu, row) {
@@ -523,9 +528,19 @@
           // copy campaignUrl
           if (perfType == "campaign") {
             var urlParams = spliceUrlParams(traffic.data);
-            if (!traffic.impTracking) {
-              $scope.copyCampaignUrl = "http://" + $scope.profile.idText + "." + $scope.mainDomain + "/" + row.data.campaignHash + urlParams;
+            if (!mainDomain) {
+              return;
             }
+            var copyCampaignUrl = "http://";
+            if (mainDomain.internal) {
+              copyCampaignUrl += $scope.profile.idText + ".";
+            }
+            copyCampaignUrl += mainDomain.address + "/" + row.data.campaignHash;
+            if (!traffic.data.impTracking) {
+              copyCampaignUrl += urlParams;
+              //$scope.copyCampaignUrl = "http://" + $scope.profile.idText + "." + $scope.mainDomain + "/" + row.data.campaignHash + urlParams;
+            }
+            $scope.copyCampaignUrl = copyCampaignUrl;
           }
         }
         
