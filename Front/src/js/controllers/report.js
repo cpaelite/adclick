@@ -96,6 +96,20 @@
     } else {
       $scope.datetype = '1';
     }
+
+    if (stateParams.status) {
+      pageStatus.status = stateParams.status;
+      $scope.activeStatus = pageStatus.status;
+    } else {
+      pageStatus.status = 1;
+      $scope.activeStatus = 1;
+    }
+
+    $scope.query = {
+      page: 1,
+      __tk: 0
+    };
+
     $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
     $scope.fromTime = $scope.fromTime || '00:00';
     $scope.toDate = $scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
@@ -120,16 +134,6 @@
         $scope.filters.splice(level-1, 0, { key: gb.value, val: val, name: cacheName });
       }
     });
-
-    if (stateParams.status) {
-      pageStatus.status = stateParams.status;
-      $scope.activeStatus = pageStatus.status;
-    }
-
-    $scope.query = {
-      page: 1,
-      __tk: 0
-    };
 
     var groupMap = {};
     groupByOptions.forEach(function(group) {
@@ -203,17 +207,17 @@
         }
 
         $scope.disabled = false;
-        $scope.btnName = 'Refresh';
-        $scope.applyBtn = false;
+        //$scope.btnName = 'Refresh';
+        //$scope.applyBtn = false;
 
-        $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus ', function(newVal, oldVal) {
-          if (newVal != oldVal) {
-            $scope.applyBtn = true;
-            $scope.btnName = 'apply';
-          }
-        }, true);
       };
     }
+    $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus + searchFilter ', function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        $scope.applyBtn = true;
+        $scope.btnName = 'apply';
+      }
+    }, true);
 
     function notEmpty(val) {
       return !!val;
@@ -231,6 +235,9 @@
         params.groupBy = pageStatus.groupBy[parentRow.treeLevel];
         params.page = 1;
         //params.limit = -1;
+        // 多级group by不支持状态和搜索框搜索
+        delete params.filter;
+        delete params.status;
 
         var pgrp = pageStatus.groupBy[parentRow.treeLevel-1];
         params[pgrp] = parentRow.id;
@@ -279,10 +286,10 @@
           limit: newVal.reportViewLimit,
           order: newVal.reportViewOrder,
         });
-        if (!pageStatus.status) {
+        /*if (!pageStatus.status) {
           $scope.activeStatus = newVal.entityType;
           pageStatus.status = newVal.entityType;
-        }
+        }*/
 
         // 处理下载报表的列
         var downloadCols = '';
@@ -319,7 +326,14 @@
         $scope.groupBy[1] = "";
       }
       $scope.groupBy[2] = "";
+      if ($scope.groupBy[1] || $scope.activeStatusIsDisabled()) {
+        $scope.activeStatus = 2;
+      }
     };
+
+    $scope.activeStatusIsDisabled = function() {
+      return ['campaign', 'flow', 'lander', 'offer', 'traffic', 'affiliate'].indexOf($scope.groupBy[0]) < 0;
+    }
 
     function filteGroupBy(level) {
       return function(item) {
@@ -372,6 +386,8 @@
 
     $scope.applySearch = function() {
       $scope.loading = true;
+      $scope.btnName = 'Refresh';
+      $scope.applyBtn = false;
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
       $scope.disabled = true;
       if ($scope.treeLevel == 0) {

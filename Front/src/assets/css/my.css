@@ -2683,8 +2683,8 @@ md-select:not([disabled]):focus .md-select-value{
 .md-select-value.md-select-placeholder{padding-left:10px;}
 md-select{height:32px;line-height:30px;}
 table.md-table tbody.md-body > tr.md-row span {white-space: nowrap;}
-.search-btn{background:url("../../assets/img/serch-icon.png") no-repeat center center;width:35px;height:30px;background-size:12px;float:right;text-align:center;}
-.search-btn:hover{background:#f6f8f8 url("../../assets/img/serch-icon.png") no-repeat center center;background-size:12px;}
+.search-btn{background:url("../../assets/img/serch-icon.png") no-repeat center center;width:35px;height:30px;background-size:12px;float:left;text-align:center;}
+/*.search-btn:hover{background:#f6f8f8 url("../../assets/img/serch-icon.png") no-repeat center center;background-size:12px;}*/
 .form-control{color:#000;}
 .icon-sort-down{position:relative;z-index:1;top:9px;right:22px;float:right;color:#666;}
 .url-tokens-row i{font-style:normal;color:#999;}

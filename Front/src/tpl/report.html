@@ -32,7 +32,7 @@
         <div class="right-select" ng-class="{'right-select2': datetype == '0'}">
             <div class="cs-subform-control search-con">
                 <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
-                <i class="search-btn" ng-click="applySearch($event)"></i>
+                <i class="search-btn"></i>
             </div>
             <div class="cs-subform-control">
                 <md-select aria-label="select" class="cs-subform-select" ng-model="datetype">
@@ -76,7 +76,7 @@
 
 
             <div class="selectAll">
-                <md-select aria-label="select" class="cs-subform-select" ng-model="activeStatus" required>
+                <md-select aria-label="select" class="cs-subform-select" ng-model="activeStatus" ng-disabled="groupBy[1] || activeStatusIsDisabled()">
                     <md-option value="0">Archived</md-option>
                     <md-option value="1">Active</md-option>
                     <md-option value="2">All</md-option>
