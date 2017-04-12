@@ -216,7 +216,7 @@
             </tbody>
             <tfoot md-body fix-foot>
               <tr md-row>
-                <td md-cell></td>
+                <td ng-if="canEdit()" md-cell></td>
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
                 <td md-cell ng-class="{'red':report.totals[column.key] < 0 && column.key == 'roi','green':report.totals[column.key] > 0 && column.key == 'roi'}" ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
