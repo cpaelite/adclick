@@ -2727,7 +2727,7 @@ md-icon.md-default-theme, md-icon{color:#fff;}
 .sign-text a:hover{color:#2770ea;background:transparent;box-shadow: none;}
 .sign-top{margin:15px 0;}
 .list-group-item{border:none;}
-.list-group-item input{text-indent:25px;background:#f6f8f8;border:1px solid #d5dce4;height:42px;line-height:42px;}
+.list-group-item input{text-indent:25px;background:#f6f8f8;border:1px solid #d5dce4;height:42px;line-height:normal;}
 .list-group-item input:focus{outline:0;}
 .form-control-feedback{left:15px;top:14px;text-align:left;color:#666;}
 .icon-envelope-top{margin-top:2px;left:13px;}
@@ -2785,7 +2785,7 @@ md-select-menu:not(.md-overflow) md-content{padding:0;}
 md-select.md-default-theme[disabled] .md-select-value, md-select[disabled] .md-select-value{border-bottom-color:#c9c9cf;background-image:none;background: #eee;}
 md-select-menu.md-default-theme md-option[selected], md-select-menu md-option[selected]{color:#000;}
 md-select-menu.md-default-theme md-option[selected]:hover, md-select-menu md-option[selected]:hover,md-select-menu md-option[selected]:focus{background:#c9c9cf;color:#000;}
-table.md-table thead.md-head > tr.md-row{height: auto;}
+table.md-table thead.md-head > tr.md-row{height: 30px;}
 /*table.md-table tbody.md-body > tr.md-row, table.md-table tfoot.md-foot > tr.md-row{height:33px;}*/
 /*md-option{height:33px;background:#f6f6f6;}*/
 /*md-option:hover{background:#e6ebf0;}*/

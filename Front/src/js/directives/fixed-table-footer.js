@@ -48,7 +48,7 @@ function fixHead($compile, $window) {
       });
 
       function cells() {
-        return header.clone.find('td').lengtq;
+        return header.clone.find('td').length;
       }
 
       function getCells(node) {
