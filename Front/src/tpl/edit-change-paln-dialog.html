@@ -59,8 +59,13 @@
                 <br> Please send us your alipay account and newbidder account for refund.
                 <br> To: <b>finance@newbidder.com</b>
               </p>
-              <div ng-show="payType == 1">
-
+              <div ng-show="payType == 1" class="paypal-text">
+                <h3 class="text-center">Hello, Welcome to Choose Paypal.</h3>
+                <div class="text-center">
+                  <button class="md-raised copy-btn md-button md-ink-ripple" ng-disabled="btnStatus" ng-click="planCommit()" ng-show="payType == 1">
+                    Instant Pay
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -75,6 +80,6 @@
   </md-dialog-content>
   <md-dialog-actions layout="row">
     <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
-    <md-button class="md-primary" ng-disabled="btnStatus" ng-click="planCommit()" ng-show="payType == 1">{{'commit' | translate}}</md-button>
+    <!-- <md-button class="md-primary" ng-disabled="btnStatus" ng-click="planCommit()" ng-show="payType == 1">{{'commit' | translate}}</md-button> -->
   </md-dialog-actions>
 </md-dialog>
