@@ -149,51 +149,51 @@ export default function (sequelize, DataTypes) {
         },
         V1: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V2: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V3: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V4: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V5: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V6: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V7: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V8: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V9: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         V10: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         tsCampaignId: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         },
         tsWebsiteId: {
             type: DataTypes.STRING(255),
-            defaultValue: 0
+            defaultValue: ''
         }
     }, {
             tableName: 'adstatis',
