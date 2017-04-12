@@ -3100,6 +3100,8 @@ md-menu-content.md-default-theme .md-menu>.md-button:after, md-menu-content .md-
 
 
 }
+.pay-type-box .paypal-text h3{color: #777;margin-top: 110px;margin-bottom: 45px;}
+.pay-type-box .paypal-text button {height: 42px;line-height: 42px;width: 180px;font-size: 16px;}
 .pay-type-box .alipay-code {
   text-align: center;
       margin-top: 30px;
