@@ -669,7 +669,7 @@ table tbody tr:nth-child(2n+2){background:#fff;border-width:1px 0 1px 0;border-c
 table.md-table:not(.md-row-select) td.md-cell:first-child, table.md-table:not(.md-row-select) th.md-column:first-child{padding:4px 10px 0 10px;}
 table{border-radius:0;float:left;width:100%;height:auto;}
 md-table-container {overflow-y:auto;border-radius:0;float:left;width:100%;background:#f6f8f8;min-height: 100px;}
-.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;height: 94%;}
+.table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;}
 
 .md-table-pagination{color:#000;}
 .md-table-pagination .label {
@@ -2168,7 +2168,10 @@ input[type="checkbox"].th-checkbox{
     color: #fff;
 }
 md-content.cs-main-content{
-    height: calc(100% - 93px);
+    height: calc(100% - 88px);
+}
+@media (max-width:1340px){
+    md-content.cs-main-content{height: calc(100% - 130px);}
 }
 .table-box md-progress-linear{
     position: fixed;
@@ -3135,6 +3138,12 @@ md-menu-content.md-default-theme .md-menu>.md-button:after, md-menu-content .md-
     padding: 0 5px;
     color: #ccc;
     content: ">\00a0";
+}
+ul.breadcrumb{
+    margin-bottom: 0;
+}
+.breadcrumb-div{
+    margin-bottom: 20px;
 }
 .radio-inline, .checkbox-inline{line-height:22px;padding:15px 0 0 20px;}
 md-checkbox .md-icon{width:18px;height:18px;border-radius:2px;margin-top:17px;}
