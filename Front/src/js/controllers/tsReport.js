@@ -103,9 +103,7 @@
         focusOnOpen: false,
         bindToController: true,
         locals: {item: angular.copy(item), thirdTraffics: $scope.thirdTraffics, tsReferences: $scope.tsReferences},
-        templateUrl: function() {
-          return 'tpl/ts-reference-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/ts-reference-dialog.html?' + +new Date()
       }).then(function() {
         //getList();
         getTsReferences();
@@ -120,9 +118,7 @@
         focusOnOpen: false,
         locals: {item: item, tsReferenceId: $scope.tsReferenceId},
         bindToController: true,
-        templateUrl: function() {
-          return 'tpl/delete-confirm-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function(oData) {
         if(oData.status) {
           toastr.success(oData.message);

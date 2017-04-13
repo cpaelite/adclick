@@ -114,9 +114,7 @@
           invitation: invitation,
           type: type
         },
-        templateUrl: function() {
-          return 'tpl/user-delete-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/user-delete-dialog.html?' + +new Date()
       }).then(function () {
         Invitation.delete({
           id: invitation.id

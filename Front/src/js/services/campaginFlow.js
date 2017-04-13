@@ -458,9 +458,7 @@
         locals: locals,
         bindToController: true,
         targetEvent: evt,
-        templateUrl: function() {
-          return 'tpl/lander-edit-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/lander-edit-dialog.html?' + +new Date()
       }).then(function(result) {
         var newLander = {id: result.data.id, name: result.data.name, country: result.data.country};
         allLanders.unshift(newLander);
@@ -531,9 +529,7 @@
         locals: locals,
         bindToController: true,
         targetEvent: evt,
-        templateUrl: function() {
-          return 'tpl/offer-edit-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/offer-edit-dialog.html?' + +new Date()
       }).then(function(result) {
         var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
         allOffers.unshift(newOffer);

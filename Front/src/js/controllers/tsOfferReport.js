@@ -227,9 +227,7 @@
         focusOnOpen: false,
         bindToController: true,
         locals: {importType: type, affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selected: $scope.selected},
-        templateUrl: function() {
-          return 'tpl/import-offer-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/import-offer-dialog.html?' + +new Date()
       }).then(function() {
 
       });
@@ -280,9 +278,7 @@
         focusOnOpen: false,
         bindToController: true,
         locals: {oData: oData, params: params},
-        templateUrl: function() {
-          return 'tpl/warn-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/warn-dialog.html?' + +new Date()
       }).then(function(oData) {
         $mdDialog.hide(oData);
       });
@@ -325,9 +321,7 @@
         focusOnOpen: false,
         bindToController: true,
         locals: {item: angular.copy(item), affiliateTemplate: $scope.affiliateTemplate, thirdAffiliates: $scope.thirdAffiliates, affiliateTemplateObject: affiliateTemplateObject},
-        templateUrl: function() {
-          return 'tpl/ts-offer-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/ts-offer-dialog.html?' + +new Date()
       }).then(function() {
         ThirdAffiliate.get(null, function(oData) {
           $scope.thirdAffiliates = oData.data;
@@ -399,9 +393,7 @@
         focusOnOpen: false,
         bindToController: true,
         locals: {offer: offer},
-        templateUrl: function() {
-          return 'tpl/ts-offer-detail-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/ts-offer-detail-dialog.html?' + +new Date()
       }).then(function() {
 
       })

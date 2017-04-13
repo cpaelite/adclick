@@ -78,7 +78,7 @@ if (process.env.NODE_ENV === "development") {
     res.sendFile('index.html', {root: __dirname + '/../Front/src'});
   });
 } else {
-  app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets'));
+  app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets', {maxAge: 60 * 1000 * 60 * 24 * 365}));
   app.use("/tpl", compression(), express.static(__dirname + '/../Front/dist/tpl'));
 }
 

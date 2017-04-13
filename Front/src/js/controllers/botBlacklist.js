@@ -42,9 +42,7 @@
         locals: {index: index, data: $scope.data},
         bindToController: true,
         targetEvent: ev,
-        templateUrl: function() {
-          return 'tpl/botBlacklist-edit-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/botBlacklist-edit-dialog.html?' + +new Date()
       });
 
     };
@@ -58,9 +56,7 @@
         targetEvent: ev,
         locals: {index: index, data: $scope.data},
         bindToController: true,
-        templateUrl: function() {
-          return 'tpl/delete-confirm-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function (result) {
         if (result) {
           $scope.data.blacklist.splice(index, index);

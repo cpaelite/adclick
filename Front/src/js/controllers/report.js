@@ -666,9 +666,7 @@
         locals: {item: item, perfType: perfType, duplicate: !!duplicate, cache: cache},
         bindToController: true,
         targetEvent: ev,
-        templateUrl: function() {
-          return editTemplateUrl + '?' + +new Date();
-        }
+        templateUrl: editTemplateUrl + "?"+ +new Date()
       }).then(function () {
         getList();
       });
@@ -687,9 +685,7 @@
         targetEvent: ev,
         locals: {type: perfType, item: item.data},
         bindToController: true,
-        templateUrl: function() {
-          return 'tpl/delete-confirm-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function () {
         getList();
       });
@@ -708,9 +704,7 @@
         targetEvent: ev,
         locals: {type: perfType, item: item.data},
         bindToController: true,
-        templateUrl: function() {
-          return 'tpl/delete-confirm-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function () {
         getList();
       });
@@ -2110,9 +2104,7 @@
         locals: {},
         bindToController: true,
         targetEvent: ev,
-        templateUrl: function() {
-          return 'tpl/trafficSource-template-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/trafficSource-template-dialog.html?' + +new Date()
       }).then(function(data){
         $scope.item.name = data.name;
         $scope.item.postbackUrl = data.postbackUrl;
@@ -2303,9 +2295,7 @@
         locals: { item: item, currentUser: $scope.currentUser },
         bindToController: true,
         targetEvent: ev,
-        templateUrl: function() {
-          return 'tpl/trusted-affiliate-networks-dialog.html?' + +new Date();
-        }
+        templateUrl: 'tpl/trusted-affiliate-networks-dialog.html?' + +new Date()
       }).then(function(data){
         $scope.item.postbackUrl = data.postbackurl;
         $scope.item.name = data.name;
@@ -2516,9 +2506,7 @@
       controllerAs: 'ctrl',
       focusOnOpen: false,
       bindToController: true,
-      templateUrl: function() {
-        return 'tpl/close-confirm-dialog.html?' + +new Date();
-      }
+      templateUrl: 'tpl/close-confirm-dialog.html?' + +new Date()
     }).then(function(){
       $mdDialog.cancel();
     });
