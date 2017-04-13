@@ -32,6 +32,7 @@
       };
 
       var params = {
+        order: "day",
         groupBy: "day",
         from: $scope.fromDate + "T" + $scope.fromTime,
         to: $scope.toDate + "T" + $scope.toTime,
@@ -57,7 +58,7 @@
 
 
       $scope.goGroupByOffer = function(type,val){
-          if(type == 'campaign'){          
+          if(type == 'campaign'){
             var params = {
               datatype:$scope.datetype,
               filters:{
