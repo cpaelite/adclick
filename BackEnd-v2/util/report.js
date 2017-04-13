@@ -301,12 +301,11 @@ export function formatTotals(rows) {
 }
 
 export function removeNanFromObject(o) {
-  for (var prop in o) {
-    // console.log(o[prop])
-    if (o[prop] == null || o[prop] === 'null' || o[prop] === 'NaN' || o[prop] != o[prop]) {
-      o[prop] = 0
-    }
-  }
+  //for (var prop in o) {
+  // if (o[prop] == null || o[prop] === 'null' || o[prop] === 'NaN' || o[prop] != o[prop]) {
+  //   o[prop] = 0
+  // }
+  //}
   return o
 }
 
