@@ -76,7 +76,7 @@
 <div flex class="cs-page-content report">
            <div class="table-box">
 
-    <md-table-container resize>
+    <md-table-container resize class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
@@ -85,7 +85,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody md-body>
+            <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
                 <tr md-row ng-repeat="row in report.rows">
                     <td md-cell
                         ng-repeat="column in columns"
