@@ -131,7 +131,9 @@
         locals: {item: item},
         bindToController: true,
         targetEvent: ev,
-        templateUrl: 'tpl/eventlog-detail-dialog.html'
+        templateUrl: function() {
+          return 'tpl/eventlog-detail-dialog.html?' + +new Date();
+        }
       });
 
     };
