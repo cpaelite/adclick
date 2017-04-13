@@ -74,14 +74,12 @@ if (process.env.NODE_ENV === "development") {
   app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
   app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
   app.use("/bower_components", express.static(__dirname + '/../Front/bower_components'));
-
   app.get('/', function (req, res) {
     res.sendFile('index.html', {root: __dirname + '/../Front/src'});
   });
 } else {
   app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets'));
   app.use("/tpl", compression(), express.static(__dirname + '/../Front/dist/tpl'));
-
 }
 
 //log4js
@@ -102,6 +100,7 @@ app.get('/', function(req, res) {
 
 
 app.use(paypal, qrpayCallbackRouter);
+app.use(compression());
 app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, gatekeeper, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon,thirdParty);
 app.use('/', auth);
 
