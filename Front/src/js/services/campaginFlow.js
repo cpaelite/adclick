@@ -6,7 +6,7 @@
     return {
       initCampaginFlow: initCampaginFlow
     }
-    
+
     function initCampaginFlow() {
     var $scope = $rootScope.$new();
     var flowId = ''; //$scope.$stateParams.id;
@@ -458,7 +458,9 @@
         locals: locals,
         bindToController: true,
         targetEvent: evt,
-        templateUrl: 'tpl/lander-edit-dialog.html'
+        templateUrl: function() {
+          return 'tpl/lander-edit-dialog.html?' + +new Date();
+        }
       }).then(function(result) {
         var newLander = {id: result.data.id, name: result.data.name, country: result.data.country};
         allLanders.unshift(newLander);
@@ -529,7 +531,9 @@
         locals: locals,
         bindToController: true,
         targetEvent: evt,
-        templateUrl: 'tpl/offer-edit-dialog.html'
+        templateUrl: function() {
+          return 'tpl/offer-edit-dialog.html?' + +new Date();
+        }
       }).then(function(result) {
         var newOffer = {id: result.data.id, name: result.data.name, country: result.data.country};
         allOffers.unshift(newOffer);

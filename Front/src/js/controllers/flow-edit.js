@@ -43,7 +43,9 @@
             controllerAs: 'ctrl',
             focusOnOpen: false,
             bindToController: true,
-            templateUrl: 'tpl/delete-confirm-dialog.html'
+            templateUrl: function() {
+              return 'tpl/delete-confirm-dialog.html?' + +new Date();
+            }
           }).then(function(result) {
             if(result.status) {
               theFlow.rules = checkLanderAndOffer(theFlow.rules, {value: oData.country.value})
@@ -124,7 +126,9 @@
           locals: locals,
           bindToController: true,
           targetEvent: evt,
-          templateUrl: 'tpl/offer-edit-dialog.html'
+          templateUrl: function() {
+            return 'tpl/offer-edit-dialog.html?' + +new Date();
+          }
         }).then(function(result) {
           if ($scope.$parent.pathRoute) {
             $scope.$emit('pathCacheDataCancled');
@@ -594,7 +598,9 @@
               focusOnOpen: false,
               locals: {oldCountryName: oldCountryName},
               bindToController: true,
-              templateUrl: 'tpl/delete-confirm-dialog.html'
+              templateUrl: function() {
+                return 'tpl/delete-confirm-dialog.html?' + +new Date();
+              }
             }).then(function(result) {
               if(reportCache.get('flow-cache')) {
                 reportCache.remove('flow-cache');
@@ -701,7 +707,9 @@
           locals: locals,
           bindToController: true,
           targetEvent: evt,
-          templateUrl: 'tpl/lander-edit-dialog.html'
+          templateUrl: function() {
+            return 'tpl/lander-edit-dialog.html?' + +new Date();
+          }
         }).then(function(result) {
           var newLander = {id: result.data.id, name: result.data.name, country: result.data.country};
           allLanders.unshift(newLander);

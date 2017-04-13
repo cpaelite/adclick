@@ -137,7 +137,9 @@
               internal: $scope.item.internal,
               domainAddress: domain.address
             },
-            templateUrl: 'tpl/domains-verify-dialog.html'
+            templateUrl: function() {
+              return 'tpl/domains-verify-dialog.html?' + +new Date();
+            }
           });
         }
       });

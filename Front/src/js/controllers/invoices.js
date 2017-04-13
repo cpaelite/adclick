@@ -47,7 +47,9 @@
 				locals: {
 					item: item
 				},
-				templateUrl: 'tpl/invoices-update-dialog.html'
+				templateUrl: function() {
+          return 'tpl/invoices-update-dialog.html?' + +new Date();
+        }
 			});
 		};
 

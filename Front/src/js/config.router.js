@@ -61,7 +61,9 @@
   function configReport(groupby) {
     return {
       url: '/' + groupby + '?frcpn',
-      templateUrl: 'tpl/report.html',
+      templateUrl: function() {
+        return 'tpl/report.html?' + +new Date();
+      },
       controller: 'ReportCtrl',
       params: {
         campaign: null,
@@ -84,12 +86,16 @@
       .state('app', {
         abstract: true,
         url: '/app',
-        templateUrl: "tpl/app.html",
+        templateUrl: function() {
+          return 'tpl/app.html?' + +new Date();
+        },
         data: {}
       })
       .state('app.dashboard', {
         url: '/dashboard',
-        templateUrl: 'tpl/dashBoard.html',
+        templateUrl: function() {
+          return 'tpl/dashBoard.html?' + +new Date();
+        },
         controller: 'DashCtrl',
       })
       .state('app.report', {
@@ -136,27 +142,37 @@
 
       .state('app.report.conversion', {
         url: '/conversion',
-        templateUrl: 'tpl/conversion.html',
+        templateUrl: function() {
+          return 'tpl/conversion.html?' + +new Date();
+        },
         controller: 'ConversionCtrl'
       })
       .state('app.report.tsreport', {
         url: '/tsreport?trafficId',
-        templateUrl: 'tpl/ts-report.html',
+        templateUrl: function() {
+          return 'tpl/ts-report.html?' + +new Date();
+        },
         controller: 'TsreportCtrl'
       })
       .state('app.report.tsOfferReport', {
         url: '/ts-offer-report',
-        templateUrl: 'tpl/ts-offer-report.html',
+        templateUrl: function() {
+          return 'tpl/ts-offer-report.html?' + +new Date();
+        },
         controller: 'TsOfferReportCtrl'
       })
       .state('app.rule', {
         url: '/rule',
-        templateUrl: 'tpl/rule.html',
+        templateUrl: function() {
+          return 'tpl/rule.html?' + +new Date();
+        },
         controller: 'RuleCtrl',
       })
       .state('app.flow', {
         url: '/flow?id&dup&frcpn',
-        templateUrl: 'tpl/flow-edit.html',
+        templateUrl: function() {
+          return 'tpl/flow-edit.html?' + +new Date();
+        },
         controller: 'FlowEditCtrl',
       })
       .state('access', {
@@ -165,92 +181,124 @@
       })
       .state('access.signin', {
         url: '/signin',
-        templateUrl: 'tpl/signin.html',
+        templateUrl: function() {
+          return 'tpl/signin.html?' + +new Date();
+        },
         controller: 'SigninCtrl'
       })
       .state('access.reset-password', {
         url: '/reset-password',
-        templateUrl: 'tpl/reset-password.html',
+        templateUrl: function() {
+          return 'tpl/reset-password.html?' + +new Date();
+        },
         controller: 'ResetPasswordCtrl'
       })
       .state('access.reset-password-info', {
         url: '/reset-password-info',
-        templateUrl: 'tpl/reset-password-info.html',
+        templateUrl: function() {
+          return 'tpl/reset-password-info.html?' + +new Date();
+        },
         controller: 'ResetPasswordInfoCtrl'
       })
       .state('access.signup', {
         url: '/signup',
-        templateUrl: 'tpl/signup.html',
+        templateUrl: function() {
+          return 'tpl/signup.html?' + +new Date();
+        },
         controller: 'SignupCtrl'
       })
       .state('access.signup-success', {
         url: '/signup-success',
-        templateUrl: 'tpl/signup-success.html',
+        templateUrl: function() {
+          return 'tpl/signup-success.html?' + +new Date();
+        },
         controller: 'SignupCtrl'
       })
       .state('setApp', {
         abstract: true,
         url: '/setApp',
-        templateUrl: "tpl/setApp.html",
+        templateUrl: function() {
+          return 'tpl/setApp.html?' + +new Date();
+        },
         data: {}
       })
       .state('setApp.profile', {
         url: '/profile',
-        templateUrl: 'tpl/profile.html',
+        templateUrl: function() {
+          return 'tpl/profile.html?' + +new Date();
+        },
         controller: 'ProfileCtrl',
         data: {}
       })
       .state('setApp.referralProgram', {
         url: '/referralProgram',
-        templateUrl: 'tpl/referralProgram.html',
+        templateUrl: function() {
+          return 'tpl/referralProgram.html?' + +new Date();
+        },
         controller: 'ReferralProgramCtrl',
         data: {}
       })
       .state('setApp.subscriptions', {
         url: '/subscriptions',
-        templateUrl: 'tpl/subscriptions.html',
+        templateUrl: function() {
+          return 'tpl/subscriptions.html?' + +new Date();
+        },
         controller: 'SubscriptionsCtrl',
         data: {}
       })
       .state('setApp.domain', {
         url: '/domain',
-        templateUrl: 'tpl/domain.html',
+        templateUrl: function() {
+          return 'tpl/domain.html?' + +new Date();
+        },
         controller: 'DomainCtrl',
         data: {}
       })
       .state('setApp.setUp', {
         url: '/setUp',
-        templateUrl: 'tpl/setUp.html',
+        templateUrl: function() {
+          return 'tpl/setUp.html?' + +new Date();
+        },
         controller: 'SetUpCtrl',
         data: {}
       })
       .state('setApp.userManagement', {
         url: '/userManagement',
-        templateUrl: 'tpl/userManagement.html',
+        templateUrl: function() {
+          return 'tpl/userManagement.html?' + +new Date();
+        },
         controller: 'UserManagementCtrl',
         data: {}
       })
       .state('setApp.botBlacklist', {
         url: '/botBlacklist',
-        templateUrl: 'tpl/botBlacklist.html',
+        templateUrl: function() {
+          return 'tpl/botBlacklist.html?' + +new Date();
+        },
         controller: 'BotBlacklistCtrl',
         data: {}
       })
       .state('setApp.invoices', {
         url: '/invoices',
-        templateUrl: 'tpl/invoices.html',
+        templateUrl: function() {
+          return 'tpl/invoices.html?' + +new Date();
+        },
         controller: 'InvoicesCtrl',
         data: {}
       })
       .state('setApp.eventLog', {
         url: '/eventLog',
-        templateUrl: 'tpl/eventLog.html',
+        templateUrl: function() {
+          return 'tpl/eventLog.html?' + +new Date();
+        },
         controller: 'EventLogCtrl',
         data: {}
       })
       .state('setApp.conversionUpload', {
         url: '/conversionUpload',
-        templateUrl: 'tpl/conversionUpload.html',
+        templateUrl: function() {
+          return 'tpl/conversionUpload.html?' + +new Date();
+        },
         controller: 'ConversionUploadCtrl',
         data: {}
       });

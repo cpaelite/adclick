@@ -23,7 +23,9 @@
           noPlan: noPlan,
           options: options
         },
-        templateUrl: 'tpl/change-paln-dialog.html',
+        templateUrl: function() {
+          return 'tpl/change-paln-dialog.html?' + +new Date();
+        },
         escapeToClose: false
       });
 
@@ -107,7 +109,9 @@
               plans: $scope.item
             },
             bindToController: true,
-            templateUrl: 'tpl/edit-change-paln-dialog.html',
+            templateUrl: function() {
+              return 'tpl/edit-change-paln-dialog.html?' + +new Date();
+            },
             escapeToClose: false
           }).then(function(oData) {
             if(oData.qrpayStatus) {
