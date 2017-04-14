@@ -75,7 +75,7 @@ header {font-family:Helvetica;
 .join-btn{background:transparent;border:1px solid #fff;color:#fff;font-size:32px;width:200px;text-align:center;height:64px;line-height:60px;border-radius:6px;margin-top:50px;
     -webkit-transition:all 0.3s;
     -moz-transition:all 0.3s;
-    transition:all 0.3s;font-family:Roboto;font-weight:100;}
+    transition:all 0.3s;font-family:Roboto-Regular;font-weight:100;}
 .join-btn:hover, .join-btn:active{color:#fff;background:#fff;background-color:rgba(255,255,255,0.1);}
 .join-btn:focus{outline:0;}
 
