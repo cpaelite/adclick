@@ -6,7 +6,7 @@ const env = process.env.NODE_ENV || 'staging';
 const mysqlSetting = mysql[env];
 
 export function connect(database, config) {
-    let discover = [path.join(__dirname, '..', `./model/${database}`)]
+    let discover = [path.join(__dirname, '..', `./model/adclicktool`)]
     let matcher = () => {
         return true
     };
