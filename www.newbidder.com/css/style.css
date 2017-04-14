@@ -332,7 +332,7 @@ nav ul li:hover {
 .p-header2 .money-size{font-size:26px;font-weight:bold;color:#c0c0c0;}
 .p-header2 .money-icon{font-size:14px;vertical-align:8px;color:#c0c0c0;}
 .p-header2 .money-small{font-size:12px;color:#c0c0c0;font-weight:normal;}
-.pricing-list,.free-list{font-family:Helvetica;font-size:12px;line-height:30px;padding:20px 0 20px 0;width:70%;display:table;margin:0 auto;}
+.pricing-list,.free-list{font-family:Helvetica;font-size:12px;line-height:30px;padding:20px 0;display:table;margin:0 auto;width:188px;}
 .pricing-list li,.free-list li{width:100%;}
 .pricing-list i,.free-list i{color:#357cf4;margin:0 12px 0 0;}
 .plan-btn,.free-btn,.sign-btn{background-image: linear-gradient(to right, #357cf4 0%, #2564cf 100%);
@@ -431,6 +431,7 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
     .pricing-list li, .free-list li{width:100%;margin:0;}
 
 }
+
 @media (min-width: 320px) and (max-width:768px){
     .title-02{padding:40px 0}
     .tutorial-box{height:350px;width:100%}
@@ -444,8 +445,6 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
     .title h1{font-size:48px;}
     .join-btn{width:180px;font-size:28px;height:58px;line-height:58px;}
     .scroll-down{bottom:62vh;}
-
-
 }
 @media only screen and (max-width:700px) {
     .nav-w{display:none;}
@@ -456,7 +455,6 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 @media only screen and (max-width:530px) {
     .pricing-col li{width:47%;margin-bottom:10px;}
     .pricing-list li, .free-list li{width:100%;margin:0;}
-    .pricing-list, .free-list{width:48%;}
     .demo-bg{background-size: 260%}
     .tutorial-box{height:200px;}
     .tutorial-box img{padding-top:6px;}
@@ -464,10 +462,9 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 }
 @media only screen and (max-width:500px) {
     .pricing-col li{width:100%;margin-bottom:10px;}
-    .pricing-list li, .free-list li{width:100%;margin:0;}
+
 
 }
-@media only screen and (max-width:400px) {.pricing-list, .free-list{width:58%;}}
 
 
 
