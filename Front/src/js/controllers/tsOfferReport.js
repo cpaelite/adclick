@@ -52,6 +52,7 @@
       limit: 50,
       __tk: 0
     };
+    $scope.type = 0;
 
     $scope.$watch('query', function (newVal, oldVal) {
       if (!newVal || !newVal.limit) {
@@ -70,6 +71,8 @@
 
     var initPromises = [], prms;
 
+    var allOffers = [];
+
     // 获取第三方Offer
     function getThirdOffers() {
       var params = {};
@@ -78,6 +81,9 @@
       $scope.promise = ThirdOffer.get(params, function(oData) {
         if(oData.status == 1) {
           $scope.offers = oData.data;
+          if (allOffers.length < 1 && !$scope.query.filterValue) {
+            allOffers = oData.data;
+          }
         }
       }).$promise;
     }
@@ -445,5 +451,11 @@
         $scope.selected = [];
       }
     }, true);
+
+    $scope.applySearch = function() {
+      $scope.query.type = $scope.type;
+      $scope.query.filterValue = $scope.filterValue;
+    }
+
   }
 })();
