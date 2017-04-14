@@ -3794,7 +3794,7 @@ app.post('/api/third/offersImport', function(req, res, next) {
 
 /**
  * @apiName 更新账户登录默认的Group
- * 
+ *
  * @apiParam {String} clientId
  */
 app.post('/api/defaultGroupId', function(req, res) {
@@ -3803,6 +3803,226 @@ app.post('/api/defaultGroupId', function(req, res) {
     "message": "success",
     data: {}
   }
+  delayResponse(res, result);
+});
+
+
+/**
+ *  @apiName 获取ThirdPartyTrafficSource数据List
+ *  @apiParam null
+ */
+app.get('/api/third/traffic-source', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [{
+      id: 11,
+      trustedTrafficSourceId: 1,
+      name: "trafficTest01",
+      token: "3455sdfsdsfsd",
+    }, {
+      id: 12,
+      trustedTrafficSourceId: 2,
+      name: "trafficTest02",
+      account: "uu222@cc.com",
+      password: "222222"
+    }]
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ *  @apiName 新建ThirdPartyTrafficSource
+ *  @apiGroup ThirdTraffic
+ *
+ *  @apiParam {Number} trafficId
+ *  @apiParam {String} name
+ *  @apiParam {String} [token]
+ *  @apiParam {String} [account]
+ *  @apiParam {String} [password]
+ */
+app.post('/api/third/traffic-source', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ *  @apiName 更新ThirdPartyTrafficSource
+ *  @apiGroup ThirdTraffic
+ *
+ *  @apiParam {Number} trafficId
+ *  @apiParam {String} name
+ *  @apiParam {String} [token]
+ *  @apiParam {String} [account]
+ *  @apiParam {String} [password]
+ */
+app.put('/api/third/traffic-source/:id', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ *  @apiName 获取TemplateTrafficSource数据
+ *  @apiParam {Boolen} support
+ */
+app.get('/api/traffic-source/tpl', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      lists: [
+        {
+          id: 1,
+          name: 'AirPush.com',
+          postbackurl: 'http://api.airpush.com/track/?guid={externalid}',
+          apiReport: 0, // '0:不支持api拉取Report;1:支持拉取Report'
+          apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持'
+          apiParams: {
+            'account': 'uid',
+            'password': 'sourceid',
+            'token':'token'
+          }
+        },
+        {
+          id: 2,
+          name: 'popads.net',
+          postbackurl: 'http://serve.popads.net/cpixel.php?s2s=1&aid=b18b7ac1b27b01fdada779adf1b51fdb&id={externalid}&value=conversionValue',
+          apiReport: 0, // '0:不支持api拉取Report;1:支持拉取Report'
+          apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持'
+          apiParams: {
+            'account': 'uid',
+            'password': 'sourceid',
+            'token':'token'
+          }
+        }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 新建trafficSourceSyncTask
+ * @apiGroup ThirdPartyTrafficSource
+ *
+ */
+app.post('/api/third/traffic-source/tasks', function(req, res, next) {
+    var result = {
+       "status": 1,
+       "message": "success",
+       "data": {
+         "taskId": '1111'
+       }
+    };
+
+    delayResponse(res, result);
+});
+
+/**
+ * @apiName 获取trafficSourceSyncTask
+ * @apiParam {Number} ThirdPartyTrafficSourceId
+ * @apiParam {String} from
+ * @apiParam {String} to
+ * @apiParam {String} tz
+ * @apiGroup ThirdPartyTrafficSource
+ */
+app.get('/api/third/traffic-source/tasks', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data":[{
+      id: '12',
+      status: 1, //0:新建;1:运行中;2:出错;3:完成
+      message: ''
+    }]
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @apiName  load TrafficSourceStatis list
+ * @apiGroup ThirdPartyTrafficSource
+ *
+ * @apiParam {Number} taskId
+ * @apiParam {String} groupBy
+ * @apiParam {Number} page
+ * @apiParam {Number} limit
+ *
+ */
+app.get('/api/third/traffic-source-statis', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {rows: [{
+       id: 1,
+       status: 1, // 1: active; 2: pauseded
+       campaignId: "189377",
+       campaignName: "Global - offertest",
+       websiteId: "websiteId",
+       impression: 100,
+       click: 1,
+       cost :0.23,
+       v1: "v1",
+       v2: "v2"
+     },{
+       id: 2,
+       status: 1, // 1: active; 2: pauseded
+       campaignName: "Global - offertest",
+       impression: 100,
+       click: 1,
+       cost :0.23,
+       websiteId: "websiteId",
+       campaignId: "189377",
+       v1: "v1",
+       v2: "v2"
+      },{
+        id: 3,
+        status: 1, // 1: active; 2: pauseded
+        campaignName: "Global - offertest",
+        impression: 100,
+        click: 1,
+        cost :0.23,
+        campaignId: "189377",
+        websiteId: "websiteId",
+        v1: "v1",
+        v2: "v2"
+       }]
+     }
+  };
+
+  delayResponse(res, result);
+});
+
+/**
+ * @apiName  load TrafficSource groupby list
+ * @apiGroup ThirdPartyTrafficSource
+ *
+ */
+app.get('/api/third/traffic-source/groups', function(req, res, next) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": [
+      {
+        display: 'V1',
+        name: 'V1'
+      },
+      {
+        display: 'V2',
+        name: 'V2'
+      }
+    ]
+  };
   delayResponse(res, result);
 });
 
