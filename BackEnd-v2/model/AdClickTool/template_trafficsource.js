@@ -64,12 +64,7 @@ export default function (sequelize, DataTypes) {
     }
   }, {
       timestamps: false,
-      tableName: 'TemplateTrafficSource',
-      classMethods: {
-        associate(models) {
-
-        }
-      }
+      tableName: 'TemplateTrafficSource'
     })
   return model;
 }
