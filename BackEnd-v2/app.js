@@ -48,7 +48,7 @@ import plan from './routes/plan';
 import paypal from './routes/paypal';
 import {qrpayRouter, qrpayCallbackRouter} from './routes/qrpay';
 
-import gatekeeper from './routes/gatekeeper'
+ 
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -101,7 +101,7 @@ app.get('/', function(req, res) {
 
 app.use(paypal, qrpayCallbackRouter);
 app.use(compression());
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, gatekeeper, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon,thirdParty);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon,thirdParty);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
