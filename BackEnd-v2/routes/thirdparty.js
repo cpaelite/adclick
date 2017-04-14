@@ -399,7 +399,9 @@ router.get('/api/third/offers', async function (req, res, next) {
         taskId: Joi.number().required(),
         userId: Joi.number().required(),
         page: Joi.number().required(),
-        limit: Joi.number().required()
+        limit: Joi.number().required(),
+        type: Joi.number().optional(), //0 offerIds  1 names
+        filterValue: Joi.string().optional().allow("")
     });
     let connection;
     try {
@@ -418,12 +420,28 @@ router.get('/api/third/offers', async function (req, res, next) {
             offset = 0
         value.offset = offset;
         let sql = `select id,status,offerId,name,previewLink,trackingLink,countryCode,payoutMode,payoutValue,category,carrier,platform from ThirdPartyOffer where userId=? and taskId=?`;
+        let params = [value.userId, value.taskId];
+        //offerId 搜索
+        if (value.type == 0 && value.filterValue) {
+            sql += `and offerId in (?)`;
+            params.push(value.filterValue.split(','))
+        } else if (value.type == 1 && value.filterValue) {
+            let nameSlice = value.filterValue.split(',');
+            let tpl = ` name like '%?%' `
+            for (let index = 0; index < nameSlice.length - 1; index++) {
+                tpl += `or name like '%?%' `
+            }
+            sql += `and (${tpl})`;
+            params.push(nameSlice);
+        }
 
         let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
         sql += ` limit ?,?`
+        params.push(value.offset);
+        params.push(value.limit);
         connection = await common.getConnection();
-        let [result, totalResult] = await Promise.all([common.query(sql, [value.userId, value.taskId, value.offset, value.limit], connection), common.query(countSql, [value.userId, value.taskId], connection)]);
+        let [result, totalResult] = await Promise.all([common.query(sql, params, connection), common.query(countSql, [value.userId, value.taskId], connection)]);
         return res.json({
             status: 1,
             message: 'success',
