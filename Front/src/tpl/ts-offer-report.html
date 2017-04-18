@@ -46,20 +46,22 @@
         >
             import all offers
         </md-button> -->
+        <div class="right-select" ng-show="offers.rows">
+            <div class="cs-subform-group">
+                <label class="cs-subform-label">{{'filterType' | translate}}：</label>
+                <md-select aria-label="select" class="cs-subform-select" ng-model="type" ng-change="changeClearValue()">
+                  <md-option value="0">Offer ID</md-option>
+                  <md-option value="1">Offer Name</md-option>
+                </md-select>
+            </div>
+            <div class="cs-subform-control search-con">
+                <input type="text" class="cs-filter-input" ng-model="filterValue" placeholder="Search...">
+                <!--<i class="search-btn"></i>-->
+            </div>
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-click="applySearch()" translate>Search</md-button>
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-disabled="!selected.length" ng-click="showSelect()" translate>Cart({{selected.length}})</md-button>
+        </div>
         
-        <div class="cs-subform-group">
-            <label class="cs-subform-label">{{'filterType' | translate}}：</label>
-            <md-select aria-label="select" class="cs-subform-select" ng-model="type">
-              <md-option value="0">Offer ID</md-option>
-              <md-option value="1">Offer Name</md-option>
-            </md-select>
-        </div>
-        <div class="cs-subform-control search-con">
-            <input type="text" class="cs-filter-input" ng-model="filterValue" placeholder="Search...">
-            <!--<i class="search-btn"></i>-->
-        </div>
-        <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-click="applySearch()" translate>Search</md-button>
-        <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-disabled="!selected.length" ng-click="showSelect()" translate>Cart</md-button>
       </div>
   </div>
 </div>

@@ -458,7 +458,13 @@
     $scope.applySearch = function() {
       $scope.query.type = $scope.type;
       $scope.query.filterValue = $scope.filterValue;
+      $scope.query.__tk++;
     }
+
+    $scope.changeClearValue = function() {
+      $scope.filterValue = "";
+    }
+
     $scope.showSelect = function() {
       var selectOffer = [];
       $scope.selected.forEach(function(offerId) {
