@@ -3901,6 +3901,12 @@ app.get('/api/traffic-source/tpl', function (req, res) {
             'account': 'uid',
             'password': 'sourceid',
             'token':'token'
+          },
+          apiDimensions: {
+            "campaignId": "CampaignId",
+            "webSiteId": "WebSiteId",
+            "v1": "Country",
+            "v3": "OS"
           }
         },
         {
@@ -3922,6 +3928,12 @@ app.get('/api/traffic-source/tpl', function (req, res) {
             'account': 'uid',
             'password': 'sourceid',
             'token':'token'
+          },
+          apiDimensions: {
+            "campaignId": "CampaignId",
+            "webSiteId": "WebSiteId",
+            "v1": "Country",
+            "v3": "OS"
           }
         }
       ]

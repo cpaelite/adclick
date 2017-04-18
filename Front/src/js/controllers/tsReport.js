@@ -44,8 +44,8 @@
       __tk: 0
     };
 
-    this.$scope.groupBy = 'campaignId';
-    this.$scope.groupBys = TsreportCtrl.groupBy;
+    this.$scope.groupBy = '';
+    this.$scope.groupBys = [];
 
     this.$scope.taskProgress = {};
 
@@ -72,19 +72,20 @@
       var thirdPartyTrafficSources = self.$scope.thirdPartyTrafficSources;
       if(thirdPartyTrafficSources.length > 0) {
         self.$scope.thirdPartyTrafficSourceId = thirdPartyTrafficSources[0].id;
-        self.$scope.meshSizeArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiMeshSize.split(',');
-        var apiTimezoneArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiTimezones;
-        var isExist = apiTimezoneArr.some(function(timezone) {
-          return timezone.id == self.$scope.timezoneId;
-        });
-        self.$scope.timezoneId = isExist ? self.$scope.timezoneId : apiTimezoneArr[0].id;
-        self.$scope.timezones = apiTimezoneArr;
-        apiTimezoneArr.forEach(function(timezone) {
-          self.timezoneMap[timezone.id] = timezone;
-        });
-        if(self.$scope.meshSizeArr.length > 0) {
-          self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
-        }
+        // self.$scope.meshSizeArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiMeshSize.split(',');
+        // var apiTimezoneArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiTimezones;
+        // var isExist = apiTimezoneArr.some(function(timezone) {
+        //   return timezone.id == self.$scope.timezoneId;
+        // });
+        // self.$scope.timezoneId = isExist ? self.$scope.timezoneId : apiTimezoneArr[0].id;
+        // self.$scope.timezones = apiTimezoneArr;
+        // apiTimezoneArr.forEach(function(timezone) {
+        //   self.timezoneMap[timezone.id] = timezone;
+        // });
+        // if(self.$scope.meshSizeArr.length > 0) {
+        //   self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
+        // }
+        self.setFilter(thirdPartyTrafficSources[0].trustedTrafficSourceId);
         self.checkTrafficSourceTask.call(self, thirdPartyTrafficSources[0].id);
       }
     }
@@ -121,6 +122,8 @@
       $scope.taskId = '';
       $scope.thirdPartyTrafficSourceId = id;
       self.checkTrafficSourceTask(id);
+      // reset Timezone、Mesh size
+      self.setFilter(self.thirdPartyTrafficSourceMap[id].trustedTrafficSourceId);
     };
 
     $scope.onGroupByChanged = function() {
@@ -162,6 +165,32 @@
 
       self.getThirdOffers();
     }, true);
+  };
+
+  TsreportCtrl.prototype.setFilter = function(trustedTrafficSourceId) {
+    var self = this, $scope = this.$scope;
+    self.$scope.meshSizeArr = self.templateTrafficSourceMap[trustedTrafficSourceId].apiMeshSize.split(',');
+    var apiTimezoneArr = self.templateTrafficSourceMap[trustedTrafficSourceId].apiTimezones;
+    var isExist = apiTimezoneArr.some(function(timezone) {
+      return timezone.id == self.$scope.timezoneId;
+    });
+    self.$scope.timezoneId = isExist ? self.$scope.timezoneId : apiTimezoneArr[0].id;
+    self.$scope.timezones = apiTimezoneArr;
+    apiTimezoneArr.forEach(function(timezone) {
+      self.timezoneMap[timezone.id] = timezone;
+    });
+    if(self.$scope.meshSizeArr.length > 0) {
+      self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
+    }
+    var apiDimensions = self.templateTrafficSourceMap[trustedTrafficSourceId].apiDimensions;
+    $scope.groupBys = [];
+    for(var key in apiDimensions) {
+      $scope.groupBys.push({
+        display: apiDimensions[key],
+        name: key
+      });
+    }
+    $scope.groupBy = $scope.groupBys[0].name;
   };
 
   TsreportCtrl.prototype.getThirdOffers = function() {
