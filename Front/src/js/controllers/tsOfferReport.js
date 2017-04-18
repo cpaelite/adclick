@@ -71,7 +71,7 @@
 
     var initPromises = [], prms;
 
-    var allOffers = [];
+    var offersMap;
 
     // 获取第三方Offer
     function getThirdOffers() {
@@ -81,8 +81,11 @@
       $scope.promise = ThirdOffer.get(params, function(oData) {
         if(oData.status == 1) {
           $scope.offers = oData.data;
-          if (allOffers.length < 1 && !$scope.query.filterValue) {
-            allOffers = oData.data;
+          if (!offersMap && !$scope.query.filterValue) {
+            offersMap = {}
+            oData.data.rows.forEach(function(offer) {
+              offersMap[offer.id] = offer
+            });
           }
         }
       }).$promise;
@@ -455,6 +458,56 @@
     $scope.applySearch = function() {
       $scope.query.type = $scope.type;
       $scope.query.filterValue = $scope.filterValue;
+    }
+    $scope.showSelect = function() {
+      var selectOffer = [];
+      $scope.selected.forEach(function(offerId) {
+        selectOffer.push(offersMap[offerId])
+      });
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        escapeToClose: false,
+        controller: ['$mdDialog', '$scope', tsOfferSelect],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        bindToController: true,
+        locals: {affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selectOffers: selectOffer},
+        templateUrl: 'tpl/ts-offer-select-dialog.html?' + +new Date()
+      }).then(function() {
+
+      })
+    }
+
+    function tsOfferSelect($mdDialog, $scope) {
+      this.title = 'Select Offers';
+
+      $scope.options = {
+        rowSelection: true,
+        multiSelect: true,
+        autoSelect: false
+      };
+
+      $scope.selected = [];
+      console.log(this.selectOffers.length);
+      $scope.offers = this.selectOffers;
+      
+      this.importOffers = function(type) {
+        $mdDialog.show({
+          clickOutsideToClose: false,
+          escapeToClose: false,
+          controller: ['$mdDialog', '$scope', 'OfferImport', importOffersCtrl],
+          controllerAs: 'ctrl',
+          focusOnOpen: false,
+          bindToController: true,
+          locals: {importType: type, affiliateNetworks: this.affiliateNetworks, affiliateNetworkMap: this.affiliateNetworkMap, taskId: this.taskId, selected: $scope.selected},
+          templateUrl: 'tpl/import-offer-dialog.html?' + +new Date()
+        }).then(function() {
+
+        });
+      }
+
+      this.cancel = $mdDialog.cancel;
+      this.onprocess = false;
     }
 
   }

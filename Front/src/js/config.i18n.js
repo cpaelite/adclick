@@ -65,7 +65,8 @@
     changeCountryConfirm: 'Changing country will remove landers and offers within paths. Are your sure?',
     restore: 'Restore',
     warnRestore: 'Are you sure you want to restore this item? ',
-    filterType: 'FilterType'
+    filterType: 'FilterType',
+    import: 'Import'
   };
   var i18n_zh = {
     ok: '确定',

@@ -1,0 +1,55 @@
+<md-dialog class="cs-edit-dialog" aria-label="Edit Dialog">
+    <md-toolbar aria-label="Toolbar">
+        <div class="md-toolbar-tools cam-title">
+            <h2 class="md-title">{{ctrl.title | translate}}</h2>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content class="md-dialog-content">
+        <div class="table-box ts-offer-report">
+            <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
+                <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
+                    <thead md-head fix-head>
+                    <tr md-row>
+                        <th class="item-name" md-column>Offer</th>
+                        <th md-column>Offer Id</th>
+                        <th class="item-name" md-column>Country Code</th>
+                        <th class="item-name" md-column>Carrier</th>
+                        <th md-column>Platform</th>
+                        <th md-column>TrackingLink</th>
+                        <th md-column>PreviewLink</th>
+                    </tr>
+                    </thead>
+                    <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
+                    <tr md-row md-select="offer.id" ng-repeat="offer in offers track by offer.id" md-auto-select="options.autoSelect">
+                        <td class="item-name" md-cell ng-click="offerDetail(offer)"><span href="javascript:;" style="color: #337ab7">{{offer.name}}</span></td>
+                        <td md-cell><span>{{::offer.offerId}}</span></td>
+                        <td class="item-name" md-cell><span>{{::offer.countryCode}}</span></td>
+                        <td class="item-name" md-cell><span>{{::offer.carrier}}</span></td>
+                        <td md-cell><span>{{::offer.platform}}</span></td>
+                        <td md-cell>
+                        <button clipboard class="btn-xs btn btn-primary" ng-show="offer.trackingLink" text="offer.trackingLink" ng-click="itemUrlClick(offer, 'tracking')">
+                            <i class="material-icons">content_copy</i>
+                            {{::offer.tracking && offer.tracking.btnWord ? offer.tracking.btnWord : 'Clipboard'}}
+                        </button>
+                        </td>
+                        <td md-cell>
+                        <button clipboard class="btn-xs btn btn-primary" ng-show="offer.previewLink" text="offer.previewLink" ng-click="itemUrlClick(offer, 'preview')">
+                            <i class="material-icons">content_copy</i>
+                            {{::offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
+                        </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+        </div>
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.importOffers(1)" ng-disabled="!selected.length">{{'import' | translate}}
+        </md-button>
+        <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+
+</md-dialog>
