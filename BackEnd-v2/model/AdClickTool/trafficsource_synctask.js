@@ -26,8 +26,8 @@ export default function (sequelize, DataTypes) {
             allowNull: false,
             defaultValue: 35
         },
-        tzParam:{
-              type: DataTypes.TEXT
+        tzParam: {
+            type: DataTypes.TEXT
         },
         statisFrom: {
             type: DataTypes.DATE,
@@ -42,16 +42,13 @@ export default function (sequelize, DataTypes) {
             defaultValue: 2
         },
         createdAt: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            type: DataTypes.INTEGER
         },
         startedAt: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            type: DataTypes.INTEGER
         },
         endedAt: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            type: DataTypes.INTEGER
         },
         deleted: {
             type: DataTypes.INTEGER,

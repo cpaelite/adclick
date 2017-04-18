@@ -29,7 +29,7 @@ router.get('/api/third/traffic-source', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
         let result = await TTS.findAll({
-            attributes: ['id', 'name', 'trustedTrafficSourceId', 'token', ['userName','account'], 'password'],
+            attributes: ['id', 'name', 'trustedTrafficSourceId', 'token', ['userName', 'account'], 'password'],
             where: {
                 userId: value.userId
             }
@@ -48,36 +48,6 @@ router.get('/api/third/traffic-source', async function (req, res, next) {
 });
 
 
-/**
- *  @api {get} /api/third/traffic-source/:id  获取ThirdPartyTrafficSource detail
- *  @apiName 获取ThirdPartyTrafficSource  detail
- *   
- */
-router.get('/api/third/traffic-source/:id', async function (req, res, next) {
-    try {
-        let schema = Joi.object().keys({
-            userId: Joi.number().required(),
-            id: Joi.number().required()
-        });
-        req.query.userId = req.parent.id;
-        let value = await validate(req.query, schema);
-        let result = await TTS.findOne({
-            attributes: ['id', 'trustedTrafficSourceId', 'name', 'token', ['userName', 'account'], 'password'],
-            where: {
-                userId: value.userId,
-                id: value.id
-            }
-        });
-        return res.json({
-            status: 1,
-            message: 'success',
-            data: result
-        });
-
-    } catch (e) {
-        next(e);
-    }
-});
 
 /**
  *  @api {post} /api/third/traffic-source  新建ThirdPartyTrafficSource
@@ -255,7 +225,7 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
         let value = await validate(req.body, schema);
 
         //限制新建task的频率
-        let { apiInterval: Interval } = await TTS.findOne({
+        let IntervalResult = await TTS.findOne({
             include: [{
                 model: TPTS,
                 attributes: ['apiInterval']
@@ -263,10 +233,12 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
             where: {
                 id: value.tsId
             },
-            attributes: ['']
+            attributes: ['trustedTrafficSourceId']
         });
 
-        let [{ createdAt: begin }] = await TASK.findAll({
+        let { dataValues: { TemplateTrafficSource: { dataValues: { apiInterval: Interval } } } } = IntervalResult;
+
+        let Results = await TASK.findAll({
             where: {
                 userId: value.userId,
                 thirdPartyTrafficSourceId: value.tsId
@@ -275,12 +247,18 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
             order: 'createdAt DESC',
             offset: 0, limit: 1
         });
+        let begin = null;
+        
+        if (Results.length) {
+            [{ dataValues: { createdAt: begin } }] = Results;
+        }
+       
 
         if (begin && (Interval && Interval > 0)) {
-            if ((begin + Interval) < moment.unix()) {
+            if ((moment().unix() - begin) < Interval ) {
                 return res.json({
                     status: 0,
-                    message: `please wait ${moment.unix() - (begin + Interval)}s`
+                    message: `please wait ${moment().unix() - (begin + Interval)}s`
                 });
             }
         }
@@ -332,23 +310,24 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
 });
 
 /**
- * @api {get}
+ * @api {get}  /api/third/traffic-source/tasks
  * @apiName 获取trafficSourceSyncTask
- * @apiParam {Number} ThirdPartyTrafficSourceId
+ * @apiParam {Number} thirdPartyTrafficSourceId
  *
  * @apiGroup ThirdPartyTrafficSource
  */
 router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
-            ThirdPartyTrafficSourceId: Joi.number.required(),
+            thirdPartyTrafficSourceId: Joi.number().required(),
             userId: Joi.number().required()
         });
         req.query.userId = req.parent.id;
+        let value = await validate(req.query,schema);
         let rows = await TASK.findAll({
             where: {
                 userId: value.userId,
-                thirdPartyTrafficSourceId: value.ThirdPartyTrafficSourceId
+                thirdPartyTrafficSourceId: value.thirdPartyTrafficSourceId
             },
             attributes: ['id', 'status', 'message'],
             order: 'createdAt DESC',
@@ -364,4 +343,36 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
         next(e);
     }
 
+});
+
+
+/**
+ *  @api {get} /api/third/traffic-source/:id  获取ThirdPartyTrafficSource detail
+ *  @apiName 获取ThirdPartyTrafficSource  detail
+ *   
+ */
+router.get('/api/third/traffic-source/:id', async function (req, res, next) {
+    try {
+        let schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            id: Joi.number().required()
+        });
+        req.query.userId = req.parent.id;
+        let value = await validate(req.query, schema);
+        let result = await TTS.findOne({
+            attributes: ['id', 'trustedTrafficSourceId', 'name', 'token', ['userName', 'account'], 'password'],
+            where: {
+                userId: value.userId,
+                id: value.id
+            }
+        });
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: result
+        });
+
+    } catch (e) {
+        next(e);
+    }
 });
