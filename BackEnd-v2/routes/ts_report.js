@@ -195,7 +195,7 @@ router.get('/api/traffic-source/tpl', async function (req, res, next) {
     try {
         let slice = [];
         let rows = await TPTS.findAll({
-            attributes: ['id', 'name', 'apiReport', 'apiMode', 'apiParams', 'apiTimezones'],
+            attributes: ['id', 'name', 'apiReport', 'apiMode', 'apiParams', 'apiTimezones','apiMeshSize'],
             where: {
                 apiReport: 1
             }
