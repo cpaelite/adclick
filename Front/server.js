@@ -3808,32 +3808,34 @@ app.post('/api/defaultGroupId', function(req, res) {
 
 
 /**
- *  @apiName 获取ThirdPartyTrafficSource数据List
+ *  @apiName 获取 ThirdPartyTrafficSource 数据List
  *  @apiParam null
  */
 app.get('/api/third/traffic-source', function (req, res) {
   var result = {
     "status": 1,
     "message": "success",
-    "data": [{
-      id: 11,
-      trustedTrafficSourceId: 1,
-      name: "trafficTest01",
-      token: "3455sdfsdsfsd",
-    }, {
-      id: 12,
-      trustedTrafficSourceId: 2,
-      name: "trafficTest02",
-      account: "uu222@cc.com",
-      password: "222222"
-    }]
+    "data": {
+        lists: [{
+          id: 11,
+          trustedTrafficSourceId: 1,
+          name: "trafficTest01",
+          token: "3455sdfsdsfsd",
+        }, {
+          id: 12,
+          trustedTrafficSourceId: 2,
+          name: "trafficTest02",
+          account: "uu222@cc.com",
+          password: "222222"
+        }]
+    }
   };
 
   delayResponse(res, result);
 });
 
 /**
- *  @apiName 新建ThirdPartyTrafficSource
+ *  @apiName 新建 ThirdPartyTrafficSource
  *  @apiGroup ThirdTraffic
  *
  *  @apiParam {Number} trafficId
@@ -3871,7 +3873,7 @@ app.put('/api/third/traffic-source/:id', function (req, res) {
 });
 
 /**
- *  @apiName 获取TemplateTrafficSource数据
+ *  @apiName 获取 TemplateTrafficSource 数据
  *  @apiParam {Boolen} support
  */
 app.get('/api/traffic-source/tpl', function (req, res) {
@@ -3885,7 +3887,16 @@ app.get('/api/traffic-source/tpl', function (req, res) {
           name: 'AirPush.com',
           postbackurl: 'http://api.airpush.com/track/?guid={externalid}',
           apiReport: 0, // '0:不支持api拉取Report;1:支持拉取Report'
-          apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持'
+          apiTimezoneIds: '1,2',
+          apiTimezones: [{
+            id: 1,
+            param: 'UTC',
+            name: 'beijing',
+            shift: '+00:00'
+          }],
+          apiInterval: '',
+          apiMode: 2, // '1:仅token;2:仅Username/password;3:token/up都支持'
+          apiMeshSize: 'week,month,year',
           apiParams: {
             'account': 'uid',
             'password': 'sourceid',
@@ -3897,7 +3908,16 @@ app.get('/api/traffic-source/tpl', function (req, res) {
           name: 'popads.net',
           postbackurl: 'http://serve.popads.net/cpixel.php?s2s=1&aid=b18b7ac1b27b01fdada779adf1b51fdb&id={externalid}&value=conversionValue',
           apiReport: 0, // '0:不支持api拉取Report;1:支持拉取Report'
+          apiTimezoneIds: '3,4,5',
+          apiTimezones: [{
+            id: 2,
+            param: 'UTC',
+            name: 'beijing',
+            shift: '+00:00'
+          }],
+          apiInterval: '',
           apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持'
+          apiMeshSize: 'minute,hour,day,week,month,year',
           apiParams: {
             'account': 'uid',
             'password': 'sourceid',
@@ -3912,6 +3932,14 @@ app.get('/api/traffic-source/tpl', function (req, res) {
 
 /**
  * @apiName 新建trafficSourceSyncTask
+ * @apiParam {String} from
+ * @apiParam {String} to
+ * @apiParam {String} tz
+ * @apiParam {String} tzId
+ * @apiParam {String} tzShift
+ * @apiParam {String} tzParam
+ * @apiParam {String} meshSize
+ * @apiParam {String} tsId
  * @apiGroup ThirdPartyTrafficSource
  *
  */
@@ -3929,13 +3957,15 @@ app.post('/api/third/traffic-source/tasks', function(req, res, next) {
 
 /**
  * @apiName 获取trafficSourceSyncTask
- * @apiParam {Number} ThirdPartyTrafficSourceId
- * @apiParam {String} from
- * @apiParam {String} to
- * @apiParam {String} tz
- * @apiGroup ThirdPartyTrafficSource
+ * @apiParam {Number} thirdPartyTrafficSourceId
+ *
+ * @apiGroup TrafficSourceSyncTask
  */
+var i = 0;
 app.get('/api/third/traffic-source/tasks', function(req, res, next) {
+  i++;
+  console.log(i);
+
   var result = {
     "status": 1,
     "message": "success",
@@ -3945,6 +3975,10 @@ app.get('/api/third/traffic-source/tasks', function(req, res, next) {
       message: ''
     }]
   };
+
+  if(i > 3) {
+    result.data[0].status = 3;
+  }
 
   delayResponse(res, result);
 });
@@ -3963,7 +3997,9 @@ app.get('/api/third/traffic-source-statis', function(req, res, next) {
   var result = {
     "status": 1,
     "message": "success",
-    "data": {rows: [{
+    "data": {
+      totalRows: 3700,
+      rows: [{
        id: 1,
        status: 1, // 1: active; 2: pauseded
        campaignId: "189377",
@@ -4015,16 +4051,17 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
     "data": [
       {
         display: 'V1',
-        name: 'V1'
+        name: 'v1'
       },
       {
         display: 'V2',
-        name: 'V2'
+        name: 'v2'
       }
     ]
   };
   delayResponse(res, result);
 });
+
 
 app.listen(51500, function () {
   console.log('server started success port : 51500');

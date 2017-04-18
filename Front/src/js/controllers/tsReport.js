@@ -1,55 +1,149 @@
-(function () {
+(function() {
   'use strict';
 
-  angular.module('app')
-    .controller('TsreportCtrl', [
-      '$scope', '$timeout', 'Domains', 'DefaultPostBackUrl', 'TrafficSource', 'Tsreport', '$mdDialog', 'TsReference', 'ThirdTraffic', 'TsCampaign', 'toastr', 'DateRangeUtil', TsreportCtrl
-    ]);
+  angular.module('app').controller('TsreportCtrl', ['$scope', '$timeout', '$q', 'TemplateTrafficSource', 'ThirdPartyTrafficSource', 'Profile', 'DateRangeUtil', '$mdDialog', 'TrafficSourceSyncTask', 'TrafficSourceStatis', TsreportCtrl]);
 
-  function TsreportCtrl($scope, $timeout, Domains, DefaultPostBackUrl, TrafficSource, Tsreport, $mdDialog, TsReference, ThirdTraffic, TsCampaign, toastr, DateRangeUtil) {
-    var pageStatus = {};
+  function TsreportCtrl($scope, $timeout, $q, TemplateTrafficSource, ThirdPartyTrafficSource, Profile, DateRangeUtil, $mdDialog, TrafficSourceSyncTask, TrafficSourceStatis) {
+    this.$scope = $scope;
+    this.$timeout = $timeout;
+    this.$q = $q;
+    this.TemplateTrafficSource = TemplateTrafficSource;
+    this.ThirdPartyTrafficSource = ThirdPartyTrafficSource;
+    this.Profile = Profile;
+    this.DateRangeUtil = DateRangeUtil;
+    this.$mdDialog = $mdDialog;
+    this.TrafficSourceSyncTask = TrafficSourceSyncTask;
+    this.TrafficSourceStatis = TrafficSourceStatis;
 
-    $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
-    $scope.fromTime = $scope.fromTime || '00:00';
-    $scope.toDate = $scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
-    $scope.toTime = $scope.toTime || '00:00';
+    this.templateTrafficSourceMap = {};
+    this.thirdPartyTrafficSourceMap = {};
+    this.timezoneMap = {};
+    this.pageStatus = {};
 
-    $scope.query = {
+    this.$scope.datetype = '1';
+    this.$scope.fromDate = this.$scope.fromDate || moment().format('YYYY-MM-DD');
+    this.$scope.fromTime = this.$scope.fromTime || '00:00';
+    this.$scope.toDate = this.$scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
+    this.$scope.toTime = this.$scope.toTime || '00:00';
+    this.$scope.hours = (function() {
+      var hours = [];
+      for (var i = 0; i < 24; ++i) {
+        if (i < 10) {
+          hours.push('0' + i + ':00');
+        } else {
+          hours.push('' + i + ':00');
+        }
+      }
+      return hours;
+    })();
+
+    this.$scope.query = {
       page: 1,
+      limit: 50,
       __tk: 0
     };
 
-    $scope.tsReferenceId = '';
+    this.$scope.groupBy = 'campaignId';
+    this.$scope.groupBys = TsreportCtrl.groupBy;
 
-    $scope.datetype = '1';
-    getDateRange($scope.datetype);
-    $scope.hours = [];
-    for (var i = 0; i < 24; ++i) {
-      if (i < 10) {
-        $scope.hours.push('0' + i + ':00');
-      } else {
-        $scope.hours.push('' + i + ':00');
+    this.$scope.taskProgress = {};
+
+    this.init();
+    this.initEvent();
+  }
+
+  TsreportCtrl.prototype.init = function() {
+    var self = this, initPromises = [];
+
+    initPromises.push(self._getTemplateTrafficSource());
+    initPromises.push(self._getThirdPartyTrafficSource());
+    initPromises.push(self._getProfile());
+
+    self.$q.all(initPromises).then(initSuccess);
+
+    function initSuccess() {
+      self.$scope.templateTrafficSources.forEach(function(data) {
+        self.templateTrafficSourceMap[data.id] = data;
+      });
+      self.$scope.thirdPartyTrafficSources.forEach(function(data) {
+        self.thirdPartyTrafficSourceMap[data.id] = data;
+      });
+      var thirdPartyTrafficSources = self.$scope.thirdPartyTrafficSources;
+      if(thirdPartyTrafficSources.length > 0) {
+        self.$scope.thirdPartyTrafficSourceId = thirdPartyTrafficSources[0].id;
+        self.$scope.meshSizeArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiMeshSize.split(',');
+        var apiTimezoneArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiTimezones;
+        var isExist = apiTimezoneArr.some(function(timezone) {
+          return timezone.id == self.$scope.timezoneId;
+        });
+        self.$scope.timezoneId = isExist ? self.$scope.timezoneId : apiTimezoneArr[0].id;
+        self.$scope.timezones = apiTimezoneArr;
+        apiTimezoneArr.forEach(function(timezone) {
+          self.timezoneMap[timezone.id] = timezone;
+        });
+        if(self.$scope.meshSizeArr.length > 0) {
+          self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
+        }
+        self.checkTrafficSourceTask.call(self, thirdPartyTrafficSources[0].id);
       }
     }
+  };
 
-    $scope.trafficSources = [];
+  TsreportCtrl.prototype.initEvent = function() {
+    var self = this, $scope = this.$scope;
 
-    var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
-      if (!newVal)
-        return;
-
-      angular.extend($scope.query, {
-        limit: newVal.reportViewLimit,
-        order: newVal.reportViewOrder,
-        tz: newVal.reportTimeZone
+    $scope.load = function($event) {
+      self.getDateRange($scope.datetype);
+      var params = {}, timezone = self.timezoneMap[$scope.timezoneId];
+      angular.extend(params, self.pageStatus, {
+        tsId: $scope.thirdPartyTrafficSourceId,
+        meshSize: $scope.meshSizeId,
+        tzShift: timezone.shift,
+        tzParam: timezone.param,
+        tzId: timezone.id
       });
 
-      unwatch();
-      unwatch = null;
-    }, true);
+      self.TrafficSourceSyncTask.save(params, function(oData) {
+        if(oData.status == 1) {
+          $scope.taskId = oData.data.taskId;
+          self.checkTrafficSourceTask($scope.thirdPartyTrafficSourceId);
+        }
+      });
+    };
+
+    $scope.thirdPartyTrafficSourceChanged = function(id) {
+      $scope.taskId = '';
+      $scope.thirdPartyTrafficSourceId = id;
+      self.checkTrafficSourceTask(id);
+    };
+
+    $scope.onGroupByChanged = function() {
+      $scope.query.page = 1;
+      $scope.query.__tk++;
+    };
+
+    $scope.addOrEditTsReference = function(tsId) {
+      var item = tsId ? self.thirdPartyTrafficSourceMap[tsId] : null;
+      self.$mdDialog.show({
+        clickOutsideToClose: false,
+        escapeToClose: false,
+        controller: ['$mdDialog', '$scope', 'ThirdPartyTrafficSource', TsReferenceCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        bindToController: true,
+        locals: {item: angular.copy(item), templateTrafficSources: self.$scope.templateTrafficSources, thirdPartyTrafficSources: self.$scope.thirdPartyTrafficSources, templateTrafficSourceMap: self.templateTrafficSourceMap},
+        templateUrl: 'tpl/ts-reference-dialog.html?' + +new Date()
+      }).then(function() {
+        self._getThirdPartyTrafficSource().then(function(oData) {
+          self.$scope.thirdPartyTrafficSources.forEach(function(data) {
+            self.thirdPartyTrafficSourceMap[data.id] = data;
+          });
+        });
+      });
+    };
 
     $scope.$watch('query', function (newVal, oldVal) {
-      if (!newVal || !newVal.limit || !$scope.tsReferenceId) {
+      if (!newVal || !newVal.limit) {
         return;
       }
       if (angular.equals(newVal, oldVal)) {
@@ -60,202 +154,241 @@
         return;
       }
 
-      getList();
+      self.getThirdOffers();
     }, true);
+  };
 
-    $scope.applySearch = function() {
-      $scope.disabled = true;
-      getDateRange($scope.datetype);
-      $scope.query.page = 1;
-      $scope.query.__tk += 1;
-    };
-
-    $scope.start = function(item) {
-      if(item.startStatus) {
-        return;
-      } else {
-        item.startStatus = true;
-      }
-      TsCampaign.save({id: item.campaignId}, {
-        tsReferenceId: $scope.tsReferenceId,
-        action: 'start'
-      }, function(oData) {
-        if(oData.status) {
-          toastr.success(oData.message);
-        }
-        item.startStatus = false;
-      });
-    };
-
-    $scope.addOrEditTsReference = function(tsId) {
-      var item;
-      $scope.tsReferences.forEach(function(v) {
-        if(v.id == tsId) {
-          item = v;
-          return;
-        }
-      });
-      $mdDialog.show({
-        clickOutsideToClose: true,
-        escapeToClose: false,
-        controller: ['$mdDialog', '$scope', 'TsReference', tsReferenceCtrl],
-        controllerAs: 'ctrl',
-        focusOnOpen: false,
-        bindToController: true,
-        locals: {item: angular.copy(item), thirdTraffics: $scope.thirdTraffics, tsReferences: $scope.tsReferences},
-        templateUrl: 'tpl/ts-reference-dialog.html?' + +new Date()
-      }).then(function() {
-        //getList();
-        getTsReferences();
-      });
-    };
-
-    $scope.pause = function(item) {
-      $mdDialog.show({
-        clickOutsideToClose: true,
-        controller: ['$mdDialog', 'Tsreport', 'TsCampaign', pauseCtrl],
-        controllerAs: 'ctrl',
-        focusOnOpen: false,
-        locals: {item: item, tsReferenceId: $scope.tsReferenceId},
-        bindToController: true,
-        templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
-      }).then(function(oData) {
-        if(oData.status) {
-          toastr.success(oData.message);
-        }
-      })
-    };
-
-    getTsReferences();
-    getThirdTraffic();
-
-    function getTsReferences() {
-      TsReference.get(null, function(oData) {
-        $scope.tsReferences = oData.data.tsreferences;
-        if(!$scope.tsReferenceId && $scope.tsReferences && $scope.tsReferences.length > 0) {
-          $scope.tsReferenceId = $scope.tsReferences[0].id;
-        }
-      });
-    }
-
-    function getThirdTraffic() {
-      ThirdTraffic.get(null, function(oData) {
-          $scope.thirdTraffics = oData.data.thirdTraffics;
-      });
-    }
-
-    $scope.btnName = 'Refresh';
-    function getList() {
-      var params = {};
-      angular.extend(params, $scope.query, pageStatus, {tsReferenceId: $scope.tsReferenceId});
-      delete params.__tk;
-      $scope.promise = Tsreport.get(params, function(result) {
+  TsreportCtrl.prototype.getThirdOffers = function() {
+    var self = this, $scope = this.$scope;
+    var params = {}, timezone = self.timezoneMap[$scope.timezoneId];
+    angular.extend(params, $scope.query, {
+      groupBy: $scope.groupBy,
+      taskId: $scope.taskId
+    });
+    delete params.__tk;
+    $scope.promise = self.TrafficSourceStatis.get(params, function(result) {
+      if(result.status == 1) {
         $scope.report = result.data;
-
-        $scope.disabled = false;
-        $scope.btnName = 'Refresh';
-        $scope.applyBtn = false;
-      }).$promise;
-    }
-    $scope.$watch('datetype + fromDate + fromTime + toDate + toTime ', function(newVal, oldVal) {
-      if (newVal != oldVal) {
-        $scope.applyBtn = true;
-        $scope.btnName = 'apply';
       }
-    }, true);
+    }).$promise;
+  };
 
-    $scope.$watch('tsReferenceId', function(newVal, oldVal) {
-      if (newVal != oldVal && oldVal) {
-        $scope.applyBtn = true;
-        $scope.btnName = 'apply';
-      }
-    }, true);
-
-    function pauseCtrl($mdDialog, Tsreport, TsCampaign) {
-      var self = this;
-      this.title = "confirmPauseTitle";
-      this.content = 'confirmPauseContent';
-      this.cancel = $mdDialog.cancel;
-
-      this.ok = function () {
-        if(self.item.pauseStatus) {
-          return;
-        } else {
-          self.item.pauseStatus = true;
-        }
-        TsCampaign.save({id: self.item.campaignId}, {
-          tsReferenceId: self.tsReferenceId,
-          action: 'pause'
-        }, function(oData) {
-          $mdDialog.hide(oData);
-          self.item.pauseStatus = false;
-        });
+  TsreportCtrl.prototype.checkTrafficSourceTask = function(id) {
+    var self = this, $timeout = this.$timeout, $scope = this.$scope;
+    if(!$scope.taskProgress[id]) {
+      $scope.taskProgress[id] = {
+        offerStatus: false,
+        progressStatus: false
       };
     }
-
-    function tsReferenceCtrl($mdDialog, $scope, TsReference) {
-      var self = this;
-      var tsReferences = this.tsReferences;
-      this.title = this.item ? 'edit' : 'add';
-      this.cancel = $mdDialog.cancel;
-      if(this.item) {
-        this.item.tsId = this.item.tsId.toString();
-        $scope.formData = this.item;
-      }
-
-      $scope.checkName = function(name, id) {
-        $scope.editForm.name.$setValidity('checkName', !(tsReferences.some(function(tsReference) {
-          if(id && id == tsReference.id) {
-            return false;
+    if(!$scope.taskProgress[id].status) {
+      $scope.taskProgress[id].status = false;
+    }
+    self.TrafficSourceSyncTask.get({thirdPartyTrafficSourceId: id}, function(oData) {
+      if(oData.status == 1 && oData.data.length > 0) {
+        var data = oData.data[0];
+        if(data.status == 0 || data.status == 1) { // create or running
+          $scope.taskProgress[id].progressStatus = true;
+          if(!$scope.taskProgress[id].progress) {
+            $scope.taskProgress[id].progress = Math.random()*40 + 10;
+            self.loadOfferProgress(id);
           }
-          return tsReference.name == name;
-        })));
-      };
-
-      $scope.thirdTraffics = this.thirdTraffics;
-
-      // $scope.tsChanged = function(id) {
-      //   if(!id) {
-      //     $scope.formData.api = '';
-      //     return;
-      //   }
-      //   $scope.thirdTraffics.some(function(v) {
-      //     if (v.id == id) {
-      //       $scope.formData.api = v.api;
-      //       return true;
-      //     }
-      //   });
-      // };
-
-      this.save = function() {
-        $scope.editForm.$setSubmitted();
-        if($scope.editForm.$valid) {
-          $scope.saveStatus = true;
-          if(self.item) {
-            TsReference.update({id: self.item.id}, $scope.formData, function(oData) {
-              $mdDialog.hide();
-              $scope.saveStatus = false;
-            });
+          $timeout(function() {
+            if($scope.thirdPartyTrafficSourceId == id) {
+              self.checkTrafficSourceTask(id);
+            }
+          }, 3000);
+        } else if (data.status == 2) { // error
+          $scope.taskProgress[id].progressStatus = false;
+          $scope.taskProgress[id].taskErrorMeg = data.message;
+          if($scope.taskProgress[id].progress) {
+            self.loadOfferProgress(id, true, true)
+          }
+        } else if(data.status == 3) { // Finish
+          $scope.taskProgress[id].progressStatus = false;
+          $scope.taskProgress[id].offerStatus = true;
+          $scope.taskId = data.id;
+          if($scope.taskProgress[id].progress) {
+            self.loadOfferProgress(id, true)
           } else {
-            TsReference.save($scope.formData, function(oData) {
-              $mdDialog.hide();
-              $scope.saveStatus = false;
-            });
+            $scope.query.page = 1;
+            $scope.query.__tk++;
           }
         }
-      };
-    }
-
-    function getDateRange(value) {
-      var fromDate = DateRangeUtil.fromDate(value);
-      var toDate = DateRangeUtil.toDate(value);
-      if (value == '0') {
-        pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
-        pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
-      } else {
-        pageStatus.from = fromDate + 'T00:00';
-        pageStatus.to = toDate + 'T00:00';
+      } else if (oData.status == 1 && oData.data.length == 0) {
+        $scope.taskProgress[id].offerStatus = true;
+        $scope.report = {rows: [], totalRows: 0};
       }
+    });
+  };
+
+  TsreportCtrl.prototype.loadOfferProgress = function(id, isFinished, isError) {
+    var self = this, $timeout = this.$timeout, $scope = this.$scope;
+    if(isFinished) {
+        $scope.taskProgress[id].progress = 100;
+        $scope.taskProgress[id].progressNum = 100;
+        if(!isError) {
+          $scope.query.page = 1;
+          $scope.query.__tk++;
+        }
+    } else {
+      $timeout(function() {
+        if($scope.taskProgress[id].progress < 80 && $scope.taskProgress[id].status == false) {
+          $scope.taskProgress[id].progress = $scope.taskProgress[id].progress + (Math.random()/10);
+          $scope.taskProgress[id].progressNum = new Number($scope.taskProgress[id].progress).toFixed(2);
+          self.loadOfferProgress(id);
+        } else if($scope.taskProgress[id].progress <= 98 && $scope.taskProgress[id].progress >= 80 && $scope.taskProgress[id].status == false) {
+          $scope.taskProgress[id].progress = $scope.taskProgress[id].progress + (Math.random()/100);
+          $scope.taskProgress[id].progressNum = new Number($scope.taskProgress[id].progress).toFixed(2);
+          self.loadOfferProgress(id);
+        }
+      }, 100);
     }
+  };
+
+  TsreportCtrl.prototype.getDateRange = function(value) {
+    var self = this, DateRangeUtil = self.DateRangeUtil;
+    var fromDate = DateRangeUtil.fromDate(value);
+    var toDate = DateRangeUtil.toDate(value);
+    if (value == '0') {
+      self.pageStatus.from = moment(self.$scope.fromDate).format('YYYY-MM-DD') + 'T' + self.$scope.fromTime;
+      self.pageStatus.to = moment(self.$scope.toDate).format('YYYY-MM-DD') + 'T' + self.$scope.toTime;
+    } else {
+      self.pageStatus.from = fromDate + 'T00:00';
+      self.pageStatus.to = toDate + 'T00:00';
+    }
+  };
+
+  TsreportCtrl.prototype._getTemplateTrafficSource = function() {
+    var self = this;
+    return self.TemplateTrafficSource.get({support: true}, function(oData) {
+      self.$scope.templateTrafficSources = oData.data.lists;
+    }).$promise;
+  };
+
+  TsreportCtrl.prototype._getThirdPartyTrafficSource = function() {
+    var self = this;
+    return self.ThirdPartyTrafficSource.get(null, function(oData) {
+      self.$scope.thirdPartyTrafficSources = oData.data.lists;
+    }).$promise;
+  };
+
+  TsreportCtrl.prototype._getProfile = function() {
+    var self = this;
+    return self.Profile.get(null, function(oData) {
+      self.$scope.timezoneId = oData.data.timezoneId;
+    }).$promise;
+  };
+
+  TsreportCtrl.groupBy = [
+    {
+      display: 'CampaignId',
+      name: 'campaignId'
+    },
+    {
+      display: 'WebsiteId',
+      name: 'websiteId'
+    },
+    {
+      display: 'V1',
+      name: 'v1'
+    },
+    {
+      display: 'V2',
+      name: 'v2'
+    },
+    {
+      display: 'V3',
+      name: 'v3'
+    },
+    {
+      display: 'V4',
+      name: 'v4'
+    },
+    {
+      display: 'V5',
+      name: 'v5'
+    },
+    {
+      display: 'V6',
+      name: 'v6'
+    },
+    {
+      display: 'V7',
+      name: 'v7'
+    },
+    {
+      display: 'V8',
+      name: 'v8'
+    },
+    {
+      display: 'V9',
+      name: 'v9'
+    },
+    {
+      display: 'V10',
+      name: 'v10'
+    }
+  ];
+
+  function TsReferenceCtrl($mdDialog, $scope, ThirdPartyTrafficSource) {
+    this.$mdDialog = $mdDialog;
+    this.$scope = $scope;
+    this.ThirdPartyTrafficSource = ThirdPartyTrafficSource;
+
+    this.init();
+    this.initEvent();
   }
+
+  TsReferenceCtrl.prototype.init = function() {
+    this.title = this.item ? 'edit' : 'add';
+    this.cancel = this.$mdDialog.cancel;
+    this.$scope.templateTrafficSources = this.templateTrafficSources;
+    if(this.item) {
+      this.$scope.templateTrafficSourceObj = this.templateTrafficSourceMap[this.item.trustedTrafficSourceId] || {};
+      this.item.trustedTrafficSourceId = this.item.trustedTrafficSourceId.toString();
+      this.$scope.formData = this.item;
+    }
+  };
+
+  TsReferenceCtrl.prototype.initEvent = function() {
+    var self = this, thirdPartyTrafficSources = this.thirdPartyTrafficSources;
+    self.$scope.checkName = function(name, id) {
+      self.$scope.editForm.name.$setValidity('checkName', !(thirdPartyTrafficSources.some(function(thirdPartyTrafficSource) {
+        if(id && id == thirdPartyTrafficSource.id) {
+          return false;
+        }
+        return thirdPartyTrafficSource.name == name;
+      })));
+    };
+    self.$scope.tsChanged = function(id) {
+      self.$scope.templateTrafficSourceObj = self.templateTrafficSourceMap[id];
+    };
+    self.save = function() {
+      self.$scope.editForm.$setSubmitted();
+      if(self.$scope.editForm.$valid) {
+        self.$scope.saveStatus = true;
+        var formData = angular.copy(self.$scope.formData), templateTrafficSourceObj = self.$scope.templateTrafficSourceObj;
+        formData.trafficId = formData.trustedTrafficSourceId;
+        delete formData.trustedTrafficSourceId;
+        if(+templateTrafficSourceObj.apiMode == 1) {
+          delete formData.password;
+          delete formData.account;
+        } else if (+templateTrafficSourceObj.apiMode == 2) {
+          delete formData.token;
+        }
+        if(self.item) {
+          self.ThirdPartyTrafficSource.update({id: self.item.id}, formData, function(oData) {
+            self.$mdDialog.hide();
+            self.$scope.saveStatus = false;
+          });
+        } else {
+          self.ThirdPartyTrafficSource.save(formData, function(oData) {
+            self.$mdDialog.hide();
+            self.$scope.saveStatus = false;
+          });
+        }
+      }
+    };
+  };
 })();
