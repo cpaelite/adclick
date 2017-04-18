@@ -29,7 +29,7 @@ router.get('/api/third/traffic-source', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
         let result = await TTS.findAll({
-            attributes: ['id', 'name'],
+            attributes: ['id', 'name','trustedTrafficSourceId','token','userName','password'],
             where: {
                 userId: value.userId
             }
