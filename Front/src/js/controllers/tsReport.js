@@ -40,6 +40,7 @@
     this.$scope.query = {
       page: 1,
       limit: 50,
+      order: 'clicks',
       __tk: 0
     };
 
@@ -103,6 +104,11 @@
         tzId: timezone.id
       });
 
+      $scope.report = {rows: [], totalRows: 0};
+      $scope.taskProgress[$scope.thirdPartyTrafficSourceId] = {
+        offerStatus: false,
+        progressStatus: true
+      };
       self.TrafficSourceSyncTask.save(params, function(oData) {
         if(oData.status == 1) {
           $scope.taskId = oData.data.taskId;
@@ -184,6 +190,17 @@
     if(!$scope.taskProgress[id].status) {
       $scope.taskProgress[id].status = false;
     }
+
+    function setFilterValue(data) {
+      $scope.datetype = '0';
+      $scope.fromDate = data.from.split('T')[0];
+      $scope.toDate = data.to.split('T')[0];
+      $scope.fromTime = data.from.split('T')[1];
+      $scope.toTime = data.to.split('T')[1];
+      $scope.meshSizeId = data.meshSize;
+      $scope.timezoneId = data.tzId;
+    }
+
     self.TrafficSourceSyncTask.get({thirdPartyTrafficSourceId: id}, function(oData) {
       if(oData.status == 1 && oData.data.length > 0) {
         var data = oData.data[0];
@@ -202,14 +219,16 @@
           $scope.taskProgress[id].progressStatus = false;
           $scope.taskProgress[id].taskErrorMeg = data.message;
           if($scope.taskProgress[id].progress) {
-            self.loadOfferProgress(id, true, true)
+            self.loadOfferProgress(id, true, true);
           }
+          setFilterValue(data);
         } else if(data.status == 3) { // Finish
           $scope.taskProgress[id].progressStatus = false;
           $scope.taskProgress[id].offerStatus = true;
           $scope.taskId = data.id;
+          setFilterValue(data);
           if($scope.taskProgress[id].progress) {
-            self.loadOfferProgress(id, true)
+            self.loadOfferProgress(id, true);
           } else {
             $scope.query.page = 1;
             $scope.query.__tk++;

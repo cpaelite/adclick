@@ -3971,8 +3971,12 @@ app.get('/api/third/traffic-source/tasks', function(req, res, next) {
     "message": "success",
     "data":[{
       id: '12',
-      status: 1, //0:新建;1:运行中;2:出错;3:完成
-      message: ''
+      status: 3, //0:新建;1:运行中;2:出错;3:完成
+      tzId: 1,
+      meshSize: 'year',
+      from: '2016-04-18T01:00',
+      to: '2017-04-19T00:00',
+      message: '12312'
     }]
   };
 
