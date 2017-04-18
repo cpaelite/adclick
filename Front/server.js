@@ -3760,51 +3760,7 @@ app.get('/api/third/offers/:id', function(req, res, next) {
  *
  */
 app.get('/api/third/offers', function(req, res, next) {
-  var result = {
-    "status": 1,
-    "message": "success",
-    "data": {rows: [{
-       id: 1,
-       status: 1,         //   '1:active;2:pauseded',
-       offerId: "189377",   //'第三方的OfferId',
-       name:"Global - offertest",
-       previewLink: "http://www.xxx.xxxa.com",
-       trackingLink: "http://www.xxx.xxxa1.com" ,
-       countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
-       payoutMode: 1, //   '0:Auto;1:Manual',
-       payoutValue :0.23,
-       category: "",
-       carrier: "",
-       platform: "OS"
-     },{
-        id: 2,
-        status: 2,         //   '1:active;2:pauseded',
-        offerId: "189378",   //'第三方的OfferId',
-        name:"Global - offertest",
-        previewLink: "http://www.xxx.xxxa.com",
-        trackingLink: "http://www.xxx.xxxa2.com" ,
-        countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
-        payoutMode: 1, //   '0:Auto;1:Manual',
-        payoutValue :0.23,
-        category: "",
-        carrier: "",
-        platform: "OS"
-      },{
-         id: 3,
-         status: 3,         //   '1:active;2:pauseded',
-         offerId: "189379",   //'第三方的OfferId',
-         name:"Global - offertest",
-         previewLink: "http://www.xxx.xxxa.com",
-         trackingLink: "http://www.xxx.xxxa3.com" ,
-         countryCode: "CHN",   //'USA,SGP,CHN,IDA,IND',
-         payoutMode: 1, //   '0:Auto;1:Manual',
-         payoutValue :0.23,
-         category: "",
-         carrier: "",
-         platform: "OS"
-       }]
-     }
-  };
+  var result = {"status":1,"message":"success","data":{"totalRows":22,"rows":[{"id":128164,"status":1,"offerId":"6557668","name":"API-Win iPhone7_Inc_ZA","previewLink":"http://futurepay.globway.eu/mcb/in/hash:5899892a-a770-44f0-bbf1-0d2857fa9d8b/action:wifiurl","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=6557668&affiliate_id=3805","countryCode":"ZAF","payoutMode":1,"payoutValue":3.5,"category":null,"carrier":null,"platform":""},{"id":128227,"status":1,"offerId":"113571","name":"API-Subscription - Quiz- Competitions - iPhone 6s - FI - Non-incent","previewLink":"http://se.quizonaut.com/campaigns/iphone6s/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=113571&affiliate_id=3805","countryCode":"FIN","payoutMode":1,"payoutValue":35,"category":null,"carrier":null,"platform":""},{"id":128363,"status":1,"offerId":"113563","name":"API-Subscription - Quiz- Competitions - iPhone - SE - Non-incent","previewLink":"http://se.quizonaut.com/campaigns/iphone6/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=113563&affiliate_id=3805","countryCode":"SWE","payoutMode":1,"payoutValue":35,"category":null,"carrier":null,"platform":""},{"id":128391,"status":1,"offerId":"6620389","name":"API-Online Tester - iPhone 7_AU_Inc","previewLink":"https://www.onlinetester-au.com/_static/_supload/bba/Prelander/Wingame/63/Onlinetester-au_iPhone7_NEW_2/Onlinetester-au_iPhone7_NEW_2.html","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=6620389&affiliate_id=3805","countryCode":"AUS","payoutMode":1,"payoutValue":3,"category":null,"carrier":null,"platform":""},{"id":128458,"status":1,"offerId":"1404891","name":"iPhone 7_CPL SOI (2)","previewLink":"1","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=1404891&affiliate_id=3805","countryCode":"ESP","payoutMode":1,"payoutValue":0.792,"category":null,"carrier":null,"platform":"mobile"},{"id":128468,"status":1,"offerId":"10245040","name":"API-GR - iPhone7 -Non- Incentive - one click","previewLink":"https://puu.sh/u2Nzr/87d44c5470.png","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10245040&affiliate_id=3805&idfa={idfa}&device_id={device_id}","countryCode":"GRC","payoutMode":1,"payoutValue":8,"category":null,"carrier":null,"platform":"ios,android"},{"id":128477,"status":1,"offerId":"10244926","name":"API-DE - DIAL4FUN - 10560 - Iphone 7","previewLink":"http://join.dial4fun.org/lpx/o4eTBlWZon","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244926&affiliate_id=3805","countryCode":"DEU","payoutMode":1,"payoutValue":6,"category":null,"carrier":null,"platform":""},{"id":128575,"status":1,"offerId":"1405304","name":"Win an iPhone6 6S CPL SOI","previewLink":"","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=1405304&affiliate_id=3805","countryCode":"RUS","payoutMode":1,"payoutValue":0.242,"category":null,"carrier":null,"platform":"mobile"},{"id":128611,"status":1,"offerId":"10244990","name":"API-MX - iPhone7  (Telcel)  -   Incentive - one click","previewLink":"https://puu.sh/u4sHA/22b58d20a3.png","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244990&affiliate_id=3805&idfa={idfa}&device_id={device_id}","countryCode":"MEX","payoutMode":1,"payoutValue":2.3,"category":null,"carrier":null,"platform":"ios,android"},{"id":128618,"status":1,"offerId":"6620399","name":"API-Online Tester - iPhone 7_NZ_Non-inc","previewLink":"https://www.onlinetester-nz.com/_static/_supload/bba/wingame/53/OT_iPhone_7_2/OT_iPhone_7_2.html","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=6620399&affiliate_id=3805","countryCode":"NZL","payoutMode":1,"payoutValue":1.8,"category":null,"carrier":null,"platform":""},{"id":128620,"status":1,"offerId":"10244462","name":"API-NL - AMAZANDO  - 10558 - Win the new iPhone 7","previewLink":"http://new-iphone7-nl.lp2.amazando.net/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244462&affiliate_id=3805","countryCode":"NLD","payoutMode":1,"payoutValue":0.8,"category":null,"carrier":null,"platform":""},{"id":128645,"status":1,"offerId":"10244814","name":"API-ZA - OLLANDO - 10570 - IPHONE7 - (All Devices)","previewLink":"http://tracking01.co/?a=69&oc=15822&c=35095&m=7","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244814&affiliate_id=3805&idfa={idfa}&device_id={device_id}","countryCode":"ZAF","payoutMode":1,"payoutValue":5,"category":null,"carrier":null,"platform":"ios,android"},{"id":128732,"status":1,"offerId":"113564","name":"API-Subscription - Quiz- Competitions - iPhone - NO - Non-incent","previewLink":"http://se.quizonaut.com/campaigns/iphone6/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=113564&affiliate_id=3805","countryCode":"NOR","payoutMode":1,"payoutValue":30,"category":null,"carrier":null,"platform":""},{"id":128758,"status":1,"offerId":"10244570","name":"API-HU - MOBISTOS - 12921 - IPHONE7 NEW","previewLink":"http://play.mobistos.com/lpx/F32GTF6Z5n","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244570&affiliate_id=3805","countryCode":"HUN","payoutMode":1,"payoutValue":5,"category":null,"carrier":null,"platform":""},{"id":128767,"status":1,"offerId":"10244469","name":"API-NZ - ZALINCO  - 10713 - Win the new iPhone 7","previewLink":"http://1-iphone7-nz.lp2.zalinco.com/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244469&affiliate_id=3805","countryCode":"NZL","payoutMode":1,"payoutValue":0.8,"category":null,"carrier":null,"platform":""},{"id":128854,"status":1,"offerId":"10245083","name":"API-AU - ZALINCO  - 10554 - Win the new iPhone 7","previewLink":"http://1-iphone7-au.lp2.zalinco.com/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10245083&affiliate_id=3805","countryCode":"AUS","payoutMode":1,"payoutValue":3.2,"category":null,"carrier":null,"platform":""},{"id":128868,"status":1,"offerId":"113569","name":"API-Subscription - Quiz- Competitions - iPhone - FI - Non-incent","previewLink":"http://se.quizonaut.com/campaigns/iphone6/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=113569&affiliate_id=3805","countryCode":"FIN","payoutMode":1,"payoutValue":35,"category":null,"carrier":null,"platform":""},{"id":128907,"status":1,"offerId":"6505704","name":"API-WWE: Champions [Incent] [Iphone] [US]","previewLink":"https://itunes.apple.com/us/app/wwe-champions-free-puzzle-rpg/id1017432937?mt=8&ign-mpt=uo%3D4","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=6505704&affiliate_id=3805&idfa={idfa}&device_id={device_id}","countryCode":"USA","payoutMode":1,"payoutValue":0.7,"category":null,"carrier":null,"platform":"IOS"},{"id":128913,"status":1,"offerId":"113559","name":"API-Subscription - Quiz- Competitions - iPhone 6s - SE - Non-incent","previewLink":"http://se.quizonaut.com/campaigns/iphone6s/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=113559&affiliate_id=3805","countryCode":"SWE","payoutMode":1,"payoutValue":35,"category":null,"carrier":null,"platform":""},{"id":128951,"status":1,"offerId":"10244766","name":"API-NL - Zumodi - Win and Iphone","previewLink":"http://zumodi.com/smart/nl-a346?trackid=1101730726","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=10244766&affiliate_id=3805","countryCode":"NLD","payoutMode":1,"payoutValue":20,"category":null,"carrier":null,"platform":""},{"id":129076,"status":1,"offerId":"113560","name":"API-Subscription - Quiz- Competitions - iPhone 6s - NO - Non-incent","previewLink":"http://se.quizonaut.com/campaigns/iphone6s/","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=113560&affiliate_id=3805","countryCode":"NOR","payoutMode":1,"payoutValue":30,"category":null,"carrier":null,"platform":""},{"id":129143,"status":1,"offerId":"11021527","name":"API-W-WEB/WAP-iPhone 7 Plus -US-Email submit","previewLink":"http://spnccrzone.com/?yte=S3qibiMPDO172r4JZC%2bboVloSRoIC534&s1={affid}&s2={tid}","trackingLink":"http://click.howdoesin.net/aff_c?offer_id=11021527&affiliate_id=3805","countryCode":"ZZZ","payoutMode":1,"payoutValue":2.4,"category":null,"carrier":null,"platform":""}]}};
 
   delayResponse(res, result);
 });
@@ -3831,18 +3787,7 @@ app.get('/api/third/offers', function(req, res, next) {
  */
 
 app.post('/api/third/offersImport', function(req, res, next) {
-  var result = {
-    "status": 1,
-    "message": "success",
-    "data":{
-      offer: {
-          "id": 1,
-          "name": "A green door",
-          "price": 12.50,
-          "tags": ["home", "green"]
-      }
-    }
-  };
+  var result = {"status":0,"message":"some offers exist","data":{"offers":[128115]}};
 
   delayResponse(res, result);
 });

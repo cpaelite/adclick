@@ -72,7 +72,7 @@
     var initPromises = [], prms;
 
     var offersMap;
-
+    var selectOffers = [];
     // 获取第三方Offer
     function getThirdOffers() {
       var params = {};
@@ -81,12 +81,10 @@
       $scope.promise = ThirdOffer.get(params, function(oData) {
         if(oData.status == 1) {
           $scope.offers = oData.data;
-          if (!offersMap && !$scope.query.filterValue) {
-            offersMap = {}
-            oData.data.rows.forEach(function(offer) {
-              offersMap[offer.id] = offer
-            });
-          }
+          offersMap = {}
+          oData.data.rows.forEach(function(offer) {
+            offersMap[offer.id] = offer
+          });
         }
       }).$promise;
     }
@@ -138,6 +136,8 @@
     $scope.thirdAffiliateChanged = function(id) {
       $scope.taskId = '';
       $scope.thirdAffiliateId = id;
+      $scope.filterValue = "";
+      $scope.offers = {};
       checkOfferTask(id);
     };
 
@@ -237,8 +237,8 @@
         bindToController: true,
         locals: {importType: type, affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selected: $scope.selected},
         templateUrl: 'tpl/import-offer-dialog.html?' + +new Date()
-      }).then(function() {
-
+      }).then(function(selectOffer) {
+        $scope.selected = [];
       });
     };
 
@@ -267,16 +267,16 @@
             $scope.saveStatus = false;
             if(oData.status == 0) {
               // self.error = oData.message || 'Error occured when import offers.';
-              reImportWarn(oData, $scope.params);
+              reImportWarn(oData, $scope.params, self.selected);
             } else {
-              $mdDialog.hide();
+              $mdDialog.hide(self.selected);
             }
           });
         }
       };
     }
 
-    function reImportWarn(oData, params) {
+    function reImportWarn(oData, params, selected) {
       $mdDialog.show({
         multiple: true,
         skipHide: true,
@@ -289,7 +289,7 @@
         locals: {oData: oData, params: params},
         templateUrl: 'tpl/warn-dialog.html?' + +new Date()
       }).then(function(oData) {
-        $mdDialog.hide(oData);
+        $mdDialog.hide(selected);
       });
     }
 
@@ -441,17 +441,36 @@
 
     $scope.selected = [];
 
+    var isImport = false;
+
     $scope.$watch('selected', function(newVal, oldVal) {
       var limit = $scope.query.limit;
-
+ 
       if(newVal.length - oldVal.length > 1) {
         var offers = angular.copy($scope.offers.rows);
         var currOffers = offers.length > limit ? offers.slice(0, limit) : offers;
         $scope.selected = currOffers.map(function(offer) {
+          selectOffers.push(offersMap[offer.id])
           return offer.id;
         });
-      } else if (oldVal.length - newVal.length > 1) {
+        isImport = false;
+      } else if (oldVal.length - newVal.length > 1 && !isImport) {
         $scope.selected = [];
+        selectOffers = [];
+      } else if (newVal.length > oldVal.length) {
+        selectOffers.push(offersMap[newVal[newVal.length-1]]);
+        isImport = false;
+      } else if (newVal.length < oldVal.length) {
+        // 找出勾选取消的offerId
+        var difference = oldVal.concat(newVal).filter(function(v) {
+          return !oldVal.includes(v) || !newVal.includes(v)
+        });
+        selectOffers.forEach(function(offer, index) {
+          if (offer.id == difference) {
+            selectOffers.splice(index, 1);
+          }
+        });
+        isImport = false;
       }
     }, true);
 
@@ -466,27 +485,33 @@
     }
 
     $scope.showSelect = function() {
-      var selectOffer = [];
-      $scope.selected.forEach(function(offerId) {
-        selectOffer.push(offersMap[offerId])
-      });
       $mdDialog.show({
+        multiple: true,
+        skipHide: true,
         clickOutsideToClose: false,
         escapeToClose: false,
         controller: ['$mdDialog', '$scope', tsOfferSelect],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         bindToController: true,
-        locals: {affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selectOffers: selectOffer},
+        locals: {affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selectOffers: selectOffers},
         templateUrl: 'tpl/ts-offer-select-dialog.html?' + +new Date()
-      }).then(function() {
-
+      }).then(function(selectOffer) {
+        if (selectOffer.length == 0) {
+          $scope.selected = [];
+          return;
+        }
+        selectOffers = [];
+        $scope.selected = selectOffer.map(function(offer) {
+          selectOffers.push(offersMap[offer.id])
+          return offer.id;
+        });
+        isImport = true;
       })
     }
 
     function tsOfferSelect($mdDialog, $scope) {
       this.title = 'Select Offers';
-
       $scope.options = {
         rowSelection: true,
         multiSelect: true,
@@ -494,11 +519,12 @@
       };
 
       $scope.selected = [];
-      console.log(this.selectOffers.length);
       $scope.offers = this.selectOffers;
       
       this.importOffers = function(type) {
         $mdDialog.show({
+          multiple: true,
+          skipHide: true,
           clickOutsideToClose: false,
           escapeToClose: false,
           controller: ['$mdDialog', '$scope', 'OfferImport', importOffersCtrl],
@@ -507,12 +533,27 @@
           bindToController: true,
           locals: {importType: type, affiliateNetworks: this.affiliateNetworks, affiliateNetworkMap: this.affiliateNetworkMap, taskId: this.taskId, selected: $scope.selected},
           templateUrl: 'tpl/import-offer-dialog.html?' + +new Date()
-        }).then(function() {
-
+        }).then(function(selectOffer) {
+          if (!selectOffer) {
+            return;
+          }
+          if (selectOffer.length == $scope.offers.length) {
+            $mdDialog.hide([]);
+            return;
+          }
+          var tempSelect = [];
+          selectOffers.forEach(function(offer, index) {
+            if (selectOffer.indexOf(offer.id) < 0) {
+              tempSelect.push(offer);
+            }
+          });
+          $scope.offers = angular.copy(tempSelect);
+          $scope.selected = [];
         });
       }
-
-      this.cancel = $mdDialog.cancel;
+      this.cancel = function() {
+        $mdDialog.hide($scope.offers);
+      };
       this.onprocess = false;
     }
 
