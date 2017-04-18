@@ -18,13 +18,16 @@ export default function (sequelize, DataTypes) {
         message: {
             type: DataTypes.TEXT
         },
-        timezone: {
+        tzShift: {
             type: DataTypes.STRING(6)
         },
-        timezoneId: {
+        tzId: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: '35'
+            defaultValue: 35
+        },
+        tzParam:{
+              type: DataTypes.TEXT
         },
         statisFrom: {
             type: DataTypes.DATE,

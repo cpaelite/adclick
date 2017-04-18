@@ -35,7 +35,7 @@ export default function (sequelize, DataTypes) {
       tableName: 'ThirdPartyTrafficSource',
       classMethods: {
         associate(models) {
-          model.hasMany(models.TemplateTrafficSource, {
+          model.belongsTo(models.TemplateTrafficSource, {
             foreignKey: 'trustedTrafficSourceId'
           })
         }
@@ -46,4 +46,3 @@ export default function (sequelize, DataTypes) {
 
 
 
- 

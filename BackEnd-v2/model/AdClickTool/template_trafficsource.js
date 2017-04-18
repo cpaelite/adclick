@@ -43,19 +43,11 @@ export default function (sequelize, DataTypes) {
       defaultValue: 0
     },
     apiMeshSize: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+      type: DataTypes.STRING(6),
+      allowNull: false
     },
     apiTimezones: {
-      type: DataTypes.STRING(256),
-      allowNull: false,
-      defaultValue: '+00:00'
-    },
-    apiTimezoneIds: {
-      type: DataTypes.STRING(512),
-      allowNull: false,
-      defaultValue: '35'
+      type: DataTypes.TEXT
     },
     deleted: {
       type: DataTypes.INTEGER,
@@ -64,7 +56,14 @@ export default function (sequelize, DataTypes) {
     }
   }, {
       timestamps: false,
-      tableName: 'TemplateTrafficSource'
+      tableName: 'TemplateTrafficSource',
+      classMethods: {
+        associate(models) {
+           model.hasMany(models.ThirdPartyTrafficSource, {
+            foreignKey: 'trustedTrafficSourceId'
+          })
+        }
+      }
     })
   return model;
 }
@@ -80,4 +79,3 @@ export default function (sequelize, DataTypes) {
 
 
 
- 
