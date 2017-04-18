@@ -29,7 +29,7 @@ router.get('/api/third/traffic-source', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
         let result = await TTS.findAll({
-            attributes: ['id', 'name','trustedTrafficSourceId','token','userName','password'],
+            attributes: ['id', 'name', 'trustedTrafficSourceId', 'token', ['userName','account'], 'password'],
             where: {
                 userId: value.userId
             }
@@ -62,7 +62,7 @@ router.get('/api/third/traffic-source/:id', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
         let result = await TTS.findOne({
-            attributes: ['id', 'name', 'trustedTrafficSourceId', 'name', 'token', 'userName', 'password'],
+            attributes: ['id', 'trustedTrafficSourceId', 'name', 'token', ['userName', 'account'], 'password'],
             where: {
                 userId: value.userId,
                 id: value.id
@@ -174,7 +174,7 @@ router.put('/api/third/traffic-source/:id', async function (req, res, next) {
             updateObject.token = value.token;
         }
         if (value.account != undefined) {
-            updateObject.account = value.account;
+            updateObject.userName = value.account;
         }
         if (value.password != undefined) {
             updateObject.password = value.password;
@@ -195,7 +195,7 @@ router.get('/api/traffic-source/tpl', async function (req, res, next) {
     try {
         let slice = [];
         let rows = await TPTS.findAll({
-            attributes: ['id', 'name', 'apiReport', 'apiMode', 'apiParams', 'apiTimezones','apiMeshSize'],
+            attributes: ['id', 'name', 'apiReport', 'apiMode', 'apiParams', 'apiTimezones', 'apiMeshSize'],
             where: {
                 apiReport: 1
             }
@@ -258,14 +258,14 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
         let { apiInterval: Interval } = await TTS.findOne({
             include: [{
                 model: TPTS,
-                where: { id: Sequelize.col('TTS.trustedTrafficSourceId') },
                 attributes: ['apiInterval']
             }],
             where: {
                 id: value.tsId
-            }
+            },
+            attributes: ['']
         });
-       
+
         let [{ createdAt: begin }] = await TASK.findAll({
             where: {
                 userId: value.userId,
@@ -350,18 +350,18 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
                 userId: value.userId,
                 thirdPartyTrafficSourceId: value.ThirdPartyTrafficSourceId
             },
-            attributes: ['id', 'status','message'],
+            attributes: ['id', 'status', 'message'],
             order: 'createdAt DESC',
             offset: 0, limit: 1
         });
         let resultSlice = rows.map(e => e.dataValues);
         return res.json({
-            status:1,
-            message:'success',
-            data:resultSlice
+            status: 1,
+            message: 'success',
+            data: resultSlice
         })
     } catch (e) {
         next(e);
     }
-     
+
 });
