@@ -69,15 +69,19 @@ export default function (sequelize, DataTypes) {
         },
         impression: {
             type: DataTypes.INTEGER,
-            defaultValue:0
+            defaultValue: 0
         },
         click: {
             type: DataTypes.INTEGER,
-            defaultValue:0
+            defaultValue: 0
         },
         cost: {
             type: DataTypes.BIGINT,
             defaultValue: 0
+        },
+        time: {
+            type: DataTypes.STRING(20),
+            defaultValue: ""
         }
     }, {
             timestamps: false,
@@ -98,4 +102,3 @@ export default function (sequelize, DataTypes) {
 
 
 
- 

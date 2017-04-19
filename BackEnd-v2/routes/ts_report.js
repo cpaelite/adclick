@@ -3,7 +3,8 @@ const router = express.Router();
 import moment from 'moment';
 import { validate } from './common';
 import Joi from 'Joi';
-import Sequelize from 'sequelize';
+import sequelize from 'sequelize';
+const _ = require('lodash');
 
 export default router;
 
@@ -11,7 +12,8 @@ const {
     TrafficSourceSyncTask: TASK,
     TemplateTrafficSource: TPTS,
     ThirdPartyTrafficSource: TTS,
-    TrafficSourceStatis: TSSTATIS
+    TrafficSourceStatis: TSSTATIS,
+    AdStatisReport: AdStatisReport
 } = models;
 
 
@@ -248,14 +250,14 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
             offset: 0, limit: 1
         });
         let begin = null;
-        
+
         if (Results.length) {
             [{ dataValues: { createdAt: begin } }] = Results;
         }
-       
+
 
         if (begin && (Interval && Interval > 0)) {
-            if ((moment().unix() - begin) < Interval ) {
+            if ((moment().unix() - begin) < Interval) {
                 return res.json({
                     status: 0,
                     message: `please wait ${moment().unix() - (begin + Interval)}s`
@@ -323,13 +325,13 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
             userId: Joi.number().required()
         });
         req.query.userId = req.parent.id;
-        let value = await validate(req.query,schema);
+        let value = await validate(req.query, schema);
         let rows = await TASK.findAll({
             where: {
                 userId: value.userId,
                 thirdPartyTrafficSourceId: value.thirdPartyTrafficSourceId
             },
-            attributes: ['id', 'status', 'message'],
+            attributes: ['id', 'status', 'message', 'tzId', ['statisFrom', 'from'], ['statisTo', 'to']],
             order: 'createdAt DESC',
             offset: 0, limit: 1
         });
@@ -375,4 +377,241 @@ router.get('/api/third/traffic-source/:id', async function (req, res, next) {
     } catch (e) {
         next(e);
     }
+});
+
+
+const trafficSourceStatisAttributes = [
+    'campaignId',
+    'websiteId',
+    'status',
+    'impression',
+    'click',
+    'cost', 'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'
+];
+
+const adReportAttributes = [
+    [sequelize.fn('SUM', sequelize.col('Visits')), 'visit'],
+    [sequelize.fn('SUM', sequelize.col('Conversions')), 'conversion'],
+    [sequelize.fn('SUM', sequelize.col('Revenue')), 'revenue']
+]
+
+const mapping = {
+    campaignId: 'tsCampaignId',
+    websiteId: 'tsWebsiteId',
+    v1: 'V1',
+    v2: 'V2',
+    v3: 'V3',
+    v4: 'V4',
+    v5: 'V5',
+    v6: 'V6',
+    v7: 'V7',
+    v8: 'V8',
+    v9: 'V9',
+    v10: 'V10',
+}
+
+/**
+ * @apiName  load TrafficSourceStatis list
+ * @apiGroup ThirdPartyTrafficSource
+ *
+ * @apiParam {Number} taskId
+ * @apiParam {String} groupBy
+ * @apiParam {Number} page
+ * @apiParam {Number} limit
+ * @apiParam {String} order 
+ *
+ */
+router.get('/api/third/traffic-source-statis', async function (req, res, next) {
+    try {
+        let schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            taskId: Joi.number().required(),
+            groupBy: Joi.string().required(),
+            page: Joi.number().required(),
+            limit: Joi.number().required(),
+            order: Joi.string().required()
+        });
+        req.query.userId = req.parent.id;
+        let value = await validate(req.query, schema);
+
+        //check groupby 
+        if (!_.has(mapping, value.groupBy)) {
+            return res.json({
+                status: 0,
+                message: 'groupBy error'
+            });
+        }
+
+        let { groupBy, limit, page, order } = value;
+        // limit
+        limit = parseInt(limit)
+        if (!limit || limit < 0) limit = 1000;
+        // offset
+        page = parseInt(page)
+        let offset = (page - 1) * limit;
+        if (!offset) offset = 0;
+        //order
+        let orderBy = [];
+        if (order) {
+            if (order.slice(0, 1) === '-') {
+                orderBy[1] = 'DESC';
+                orderBy[0] = order.slice(1);
+            } else {
+                orderBy[1] = 'ASC';
+                orderBy[0] = order;
+            }
+        }
+
+        //select task get from to tz
+        let { dataValues: taskObj } = await TASK.findOne({
+            where: {
+                id: value.taskId
+            },
+            attributes: ['tzShift', 'statisFrom', 'statisTo', 'meshSize']
+        });
+        if (!taskObj) {
+            throw new Error('taskId error');
+        }
+
+        console.log(taskObj)
+
+        let { statisFrom: from, statisTo: to, tzShift: tz, meshSize: meshSize } = taskObj;
+        console.log('form :', from);
+        console.log('to :', to);
+        //select 3rd ts report 
+        let rows = await TSSTATIS.findAll({
+            where: {
+                userId: value.userId,
+                taskId: value.taskId
+            },
+            limit,
+            offset,
+            attributes: trafficSourceStatisAttributes,
+            group: groupBy + ',time',
+            order: orderBy.length ? [[sequelize.literal(orderBy[0]), orderBy[1]]] : [[sequelize.literal('campaignId'), 'ASC']]
+        });
+        console.log("==========111");
+        //第三方没拉取到数据直接返回
+        if (rows.length == 0) {
+            return res.json({
+                status: 1,
+                message: 'success',
+                data: {
+                    rows: rows,
+                    totalRows: rows.length,
+                    totals: {
+
+                    }
+                }
+            })
+        }
+
+        let rawRows = [];
+        let InSlice = [];
+        for (let index = 0; index < rows.length; index++) {
+            rawRows.push(rows[index].dataValues);
+            let value = rows[index].dataValues[groupBy]
+            InSlice.push(value);
+        }
+
+        //report 
+        let sqlWhere = {};
+        let having;
+        sqlWhere.UserID = value.userId
+        sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+        sqlWhere[mapping[groupBy]] = {
+            $in: InSlice
+        }
+        let groupCondition = groupBy;
+        let finalAttribute = [];
+
+        //处理列存储tz 问题
+        let tag = tz.slice(0, 1);
+        let numberString = tz.slice(1);
+        let slice = numberString.split(':');
+        let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+
+        //0:minute;1:hour;2:day;3:week;4:month;5:year
+        let formatType = '%Y-%m-%d';
+        let groupByKey = 'time'
+        switch (meshSize) {
+            // case 0:
+            // case 1:
+            case 2:
+                formatType = '%Y-%m-%d';
+                from = moment(from).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+                to = moment(to).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+                break;
+            // case 3:
+            // case 4:
+            // case 5:
+            default:
+                formatType = '%Y-%m-%d';
+        }
+        finalAttribute = [[mapping[groupBy], groupBy], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}')`), `${groupByKey}`]];
+        groupCondition = groupCondition + ',' + groupByKey;
+        finalAttribute = _.concat(finalAttribute, adReportAttributes);
+        let reportRows = await AdStatisReport.findAll({
+            where: sqlWhere,
+            group: groupCondition,
+            attributes: finalAttribute
+        });
+        console.log("==========");
+        console.log(reportRows);
+
+        for (let index = 0; index < reportRows.length; index++) {
+             _.assignWith()
+        }
+        
+
+        let reportrawRows = reportRows.map(e => e.dataValues);
+
+        console.log(reportrawRows);
+
+    } catch (e) {
+        next(e);
+    }
+
+    // var result = {
+    //     "status": 1,
+    //     "message": "success",
+    //     "data": {
+    //         rows: [{
+    //             id: 1,
+    //             status: 1, // 1: active; 2: pauseded
+    //             campaignId: "189377",
+    //             campaignName: "Global - offertest",
+    //             websiteId: "websiteId",
+    //             impression: 100,
+    //             click: 1,
+    //             cost: 0.23,
+    //             v1: "v1",
+    //             v2: "v2"
+    //         }, {
+    //             id: 2,
+    //             status: 1, // 1: active; 2: pauseded
+    //             campaignName: "Global - offertest",
+    //             impression: 100,
+    //             click: 1,
+    //             cost: 0.23,
+    //             websiteId: "websiteId",
+    //             campaignId: "189377",
+    //             v1: "v1",
+    //             v2: "v2"
+    //         }, {
+    //             id: 3,
+    //             status: 1, // 1: active; 2: pauseded
+    //             campaignName: "Global - offertest",
+    //             impression: 100,
+    //             click: 1,
+    //             cost: 0.23,
+    //             campaignId: "189377",
+    //             websiteId: "websiteId",
+    //             v1: "v1",
+    //             v2: "v2"
+    //         }]
+    //     }
+    // };
+
+
 });
