@@ -137,22 +137,31 @@
                     </span>
                 </a>
             </li>
+            <li>
+              <md-menu-bar>
+                  <md-menu>
+                    <button ng-click="$mdMenu.open()" class="type-title">
+                      Tool
+                    </button>
+                    <md-menu-content>
+                      <md-menu-item>
+                        <md-button ng-click="ctrl.sampleAction('share', $event)">
+                          Share
+                        </md-button>
+                      </md-menu-item>
+                      <md-menu-item>
+                        <md-menu>
+                          <md-button ng-click="ctrl.sampleAction('new', $event)">New</md-button>
+                        </md-menu>
+                      </md-menu-item>
+                    </md-menu-content>
+                  </md-menu>
+              </md-menu-bar>
+            </li>
+
         </ul>
     </nav>
 </md-sidenav>
-
-<!-- <md-sidenav class="md-sidenav-left md-whiteframe-z2 cs-left-aside" ng-show="settingNav">
-    <nav ui-nav class="navi clearfix">
-        <ul class="nav">
-            <li ui-sref-active="active">
-                <a ui-sref="app.dashboard" md-ink-ripple>
-                    <md-icon class="material-icons md-dark md-18 nav-icon">view_list</md-icon>
-                    <span>{{'profile' | translate}}</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</md-sidenav> -->
 
 <md-content flex layout="column" class="main-content cs-main-content">
     <div ui-butterbar></div>

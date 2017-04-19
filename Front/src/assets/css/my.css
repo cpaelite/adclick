@@ -194,8 +194,8 @@ header .home:hover{
     background:#0055bf;
 }
 .navi ul.nav li.active a i,.navi ul.nav li.active a:hover i{color:#fff;}
-.navi ul.nav li a{color:#fff;height:42px;line-height:42px;padding:0 17px;font-weight:bold;font-size:14px;}
-.navi ul.nav li a:hover{background:#0055bf;}
+.navi ul.nav li a,li md-menu-bar .type-title{color:#fff;height:42px;line-height:42px;padding:0 17px;font-weight:bold;font-size:14px;}
+.navi ul.nav li a:hover,li md-menu-bar .type-title:hover,li md-menu-bar md-menu.md-open>button,li md-menu-bar md-menu>button:focus{background:#0055bf;}
 .navi ul.nav li a i{color:#fff}
 .navi ul.nav li a:hover i{color:#fff}
 .nav-icon {
