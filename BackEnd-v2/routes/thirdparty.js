@@ -399,12 +399,15 @@ router.get('/api/third/offers', async function (req, res, next) {
         taskId: Joi.number().required(),
         userId: Joi.number().required(),
         page: Joi.number().required(),
-        limit: Joi.number().required()
+        limit: Joi.number().required(),
+        type: Joi.number().optional(), //0 offerIds  1 names
+        filterValue: Joi.string().optional().allow("")
     });
     let connection;
     try {
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
         let { limit, page } = value;
         // limit
         limit = parseInt(limit)
@@ -418,12 +421,31 @@ router.get('/api/third/offers', async function (req, res, next) {
             offset = 0
         value.offset = offset;
         let sql = `select id,status,offerId,name,previewLink,trackingLink,countryCode,payoutMode,payoutValue,category,carrier,platform from ThirdPartyOffer where userId=? and taskId=?`;
+        let params = [value.userId, value.taskId];
+        let countParams = [value.userId, value.taskId];
+        //offerId 搜索
+        if (value.type == 0 && value.filterValue) {
+            sql += ` and offerId in (?)`;
+            params.push(value.filterValue.split(','));
+            countParams.push(value.filterValue.split(','));
+        } else if (value.type == 1 && value.filterValue) {
+            let nameSlice = value.filterValue.split(',');
+            let tpl = "name like '%" + nameSlice[0] + "%'";
+            for (let index = 1; index < nameSlice.length; index++) {
+                tpl += " or name like '%" + nameSlice[index] + "%'"
+            }
+            sql += ` and (${tpl})`;
+
+        }
 
         let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
-
+        
         sql += ` limit ?,?`
-        connection = await common.getConnection();
-        let [result, totalResult] = await Promise.all([common.query(sql, [value.userId, value.taskId, value.offset, value.limit], connection), common.query(countSql, [value.userId, value.taskId], connection)]);
+        params.push(value.offset);
+        params.push(value.limit);
+
+
+        let [result, totalResult] = await Promise.all([common.query(sql, params, connection), common.query(countSql, countParams, connection)]);
         return res.json({
             status: 1,
             message: 'success',
