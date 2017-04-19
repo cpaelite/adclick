@@ -465,11 +465,13 @@
         var difference = oldVal.concat(newVal).filter(function(v) {
           return !oldVal.includes(v) || !newVal.includes(v)
         });
+        var tempSelect = [];
         selectOffers.forEach(function(offer, index) {
-          if (offer.id == difference) {
-            selectOffers.splice(index, 1);
+          if ($scope.selected.indexOf(offer.id) >= 0) {
+            tempSelect.push(offer);
           }
         });
+        selectOffers = angular.copy(tempSelect);
         isImport = false;
       }
     }, true);
@@ -497,15 +499,26 @@
         locals: {affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selectOffers: selectOffers},
         templateUrl: 'tpl/ts-offer-select-dialog.html?' + +new Date()
       }).then(function(selectOffer) {
+        if (selectOffer.length == $scope.selected.length) {
+          return;
+        }
         if (selectOffer.length == 0) {
           $scope.selected = [];
           return;
         }
-        selectOffers = [];
+        /*selectOffers = [];
         $scope.selected = selectOffer.map(function(offer) {
           selectOffers.push(offersMap[offer.id])
           return offer.id;
+        });*/
+        var tempSelect = [];
+        var tempSelected = [];
+        selectOffer.forEach(function(offer, index) {
+          tempSelect.push(offer);
+          tempSelected.push(offer.id);
         });
+        selectOffers = angular.copy(tempSelect);
+        $scope.selected = angular.copy(tempSelected);
         isImport = true;
       })
     }
