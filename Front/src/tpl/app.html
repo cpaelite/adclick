@@ -137,6 +137,7 @@
                     </span>
                 </a>
             </li>
+
             <li>
               <md-menu-bar>
                   <md-menu>
@@ -145,20 +146,15 @@
                     </button>
                     <md-menu-content>
                       <md-menu-item>
-                        <md-button ng-click="ctrl.sampleAction('share', $event)">
-                          Share
-                        </md-button>
+                        <md-button ng-click="goSuddenChange()">SuddenChange</md-button>
                       </md-menu-item>
                       <md-menu-item>
-                        <md-menu>
-                          <md-button ng-click="ctrl.sampleAction('new', $event)">New</md-button>
-                        </md-menu>
+                        <md-button ng-click="ctrl.sampleAction('new', $event)">FraudFilter</md-button>
                       </md-menu-item>
                     </md-menu-content>
                   </md-menu>
               </md-menu-bar>
             </li>
-
         </ul>
     </nav>
 </md-sidenav>

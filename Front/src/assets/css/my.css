@@ -699,6 +699,129 @@ md-content.cs-main-content{
 
 /*End Nav Style*/
 
+/*Start tabs Style*/
+md-content md-tabs{
+  padding:15px;
+}
+.sudden-change md-tab-content,
+.sudden-change md-content,
+.sudden-change md-tabs{
+  /*overflow: visible;*/
+}
+
+.sudden-change .md-tab{
+  line-height: 15px;
+  text-transform:none;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.84);
+}
+.sudden-change md-pagination-wrapper,
+.sudden-change md-tabs-canvas{
+  height: 36px;
+}
+md-content md-tabs .md-tab.md-active{
+  background: #2770ea;
+  border-radius: 5px 5px 0 0;
+  border-bottom: none;
+  color: #fff;
+}
+.sudden-change .md-ripple-container{
+  background: none;
+}
+md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar{
+  background: none;
+}
+.sudden-change .md-padding{
+  padding: 0;
+}
+.sudden-change md-tabs[md-border-bottom] md-tabs-wrapper{
+  border: none;
+}
+.sudden-change .md-padding{
+  border: 1px solid #e8e8e8;
+  padding:20px 15px;
+}
+.sudden-change .cs-action-bar-bg{
+  border: none;
+  padding:0;
+  background: none;
+}
+.sudden-change label.cs-subform-label{
+  padding:0;
+}
+.selectAll label.cs-subform-label.date-title{
+  line-height: 30px;
+  margin-right: 10px;
+}
+label.cs-subform-label.date-title{
+  font-weight: bold;
+  color:#2770ea;
+}
+.sudden-change .right-select .search-con{
+  border-radius: 4px;
+}
+.sudden-change .table-box{
+  min-height: 300px;
+}
+.sudden-change md-radio-button{
+  display: inline-block;
+  margin-right: 10px;
+}
+.sudden-change .add-rule{
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+.sudden-change .table-box a{
+  display: inline-block;
+}
+.sudden-change .right-select .search-con{
+  border: none;
+}
+.sudden-change .cs-filter-input{
+  border: 1px solid #c9c9cf;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+.sudden-change .table-box a.status-icon{
+  text-align: center;
+  width: 100%;
+}
+.sudden-change .table-box a.opera-icon{
+  width: 35%;
+  text-align: center;
+  margin-right: 5px;
+}
+.sudden-change .table-box i.icon-ok-sign{
+    color: #6ac16a;
+    font-size: 17px;
+}
+.sudden-change .table-box i.icon-eye-open{
+  font-size: 17px;
+}
+.rule-log .rule-log-title{
+  font-size: 16px;
+  font-weight: bold;
+  color: #2770ea;
+  margin-bottom: 15px;
+  line-height: 30px;
+}
+.rule-log .log-name{
+  line-height: 30px;
+}
+.rule-log .log-name span{
+  display: inline-block;
+}
+.rule-log .log-name span.rule-name{
+  color: #2770ea;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.rule-log table.md-table th.md-column:last-child{
+  border:none;
+}
+/*End tabs Style*/
 
 /*start URL tokens style*/
 .url-tokens-row .url-tokens{
