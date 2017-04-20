@@ -794,8 +794,11 @@ label.cs-subform-label.date-title{
   margin-right: 5px;
 }
 .sudden-change .table-box i.icon-ok-sign{
-    color: #6ac16a;
-    font-size: 17px;
+  color: #939693;
+  font-size: 17px;
+}
+.sudden-change .table-box .isGray i.icon-ok-sign{
+  color: #6ac16a;
 }
 .sudden-change .table-box i.icon-eye-open{
   font-size: 17px;

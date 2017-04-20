@@ -3869,6 +3869,8 @@ app.get('/api/third/traffic-source', function (req, res) {
  *  @apiParam {String} [token]
  *  @apiParam {String} [account]
  *  @apiParam {String} [password]
+ *
+ * @apiParam {String} clientId
  */
 app.post('/api/third/traffic-source', function (req, res) {
   var result = {
@@ -4114,12 +4116,13 @@ app.get('/api/automated/rules', function(req, res) {
     "message": "success",
     data: {
       "rules": [
-        {"id": 1, "name": "Rule1", "campaigns": "campaign1", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": "active"},
-        {"id": 2, "name": "Rule2", "campaigns": "campaign2", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": "active"},
-        {"id": 3, "name": "Rule3", "campaigns": "campaign3", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": "active"}
+        {"id": 1, "name": "Rule1", "campaigns": "campaign1", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": 0},
+        {"id": 2, "name": "Rule2", "campaigns": "campaign2", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": 1},
+        {"id": 3, "name": "Rule3", "campaigns": "campaign3", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": 0}
       ]
     }
   }
+  res.send(result);
 });
 
 /**
@@ -4186,7 +4189,7 @@ app.delete('/api/automated/rules/:id', function(req, res) {
  * @apiName获取rule的log记录
  *
  */
-app.get('/api/automated/rules/logs', function(req, res) {
+app.get('/api/automated/logs', function(req, res) {
   var result = {
     "status": 1,
     "message": "success",

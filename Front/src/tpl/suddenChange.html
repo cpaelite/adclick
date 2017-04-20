@@ -34,7 +34,7 @@
                           </tr>
                         </thead>
                         <tbody md-body>
-                          <tr ms-row ng-repeat="tr in trs">
+                          <tr ms-row ng-repeat="tr in list.rules">
                             <td md-cell>{{tr.name}}</td>
                             <td md-cell>
                               {{tr.campaigns}}
@@ -42,11 +42,11 @@
                                 {{tr.campaigns}}
                               </md-tooltip>
                             </td>
-                            <td md-cell>{{tr.action}}</td>
-                            <td md-cell>{{tr.frequerncy}}</td>
-                            <td md-cell>{{tr.datafrom}}</td>
+                            <td md-cell>{{tr.dimension}}</td>
+                            <td md-cell>{{tr.frequency}}</td>
+                            <td md-cell>{{tr.dataFrom}}</td>
                             <td md-cell>
-                              <a  class="status-icon">
+                              <a  class="status-icon" ng-class="{'isGray': tr.status == 0}">
                                 <i class="icon-ok-sign"></i>
                                 <md-tooltip md-direction="bottom">
                                   Change rule status
@@ -131,7 +131,7 @@
                           </tr>
                         </thead>
                         <tbody md-body>
-                          <tr ms-row ng-repeat="tr in logs">
+                          <tr ms-row ng-repeat="tr in loglist.logs">
                             <td md-cell>{{tr.time}}</td>
                             <td md-cell>{{tr.name}}</td>
                             <td md-cell>
