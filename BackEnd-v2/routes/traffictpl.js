@@ -25,7 +25,7 @@ router.get('/api/traffic/tpl', function (req, res, next) {
             return next(err);
         }
         connection.query(
-            "select `id`,`name`,`postbackUrl`,`pixelRedirectUrl` ,`externalId`, `cost`,`params`,`campaignId`,`websiteId` from TemplateTrafficSource where `deleted`=?", [
+            "select `id`,`name`,`postbackUrl`,`pixelRedirectUrl` ,`externalId`, `cost`,`params`,`campaignId`,`websiteId` from TemplateTrafficSource where `deleted`=? order by `order` ASC", [
                 0
             ],
             function (err, results) {
