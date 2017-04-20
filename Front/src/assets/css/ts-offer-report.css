@@ -2,7 +2,9 @@
 .ts-offer-report table.md-table.md-row-select th.md-column:first-child {
   padding: 0 12px 0 12px;
 }
-
+.ts-offer-report th.md-column.md-checkbox-column:first-child md-checkbox {
+  display: none;
+}
 .ts-offer-report md-checkbox .md-icon {
   margin-top: 0;
 }
