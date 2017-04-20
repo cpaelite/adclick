@@ -127,17 +127,27 @@ async function main_report(value) {
   if (!mapping[groupBy]) {
     //TODO: unsupport group
   }
+  if (limit && page) {
+    // limit
+    limit = parseInt(limit);
+    value.limit = limit;
+    // offset
+    page = parseInt(page);
+    let offset = (page - 1) * limit;
+    if (!offset || offset < 0) offset = 0;
+    value.offset = offset;
+  }
   // limit
-  limit = parseInt(limit)
-  if (!limit || limit < 0)
-    limit = 1000
-  value.limit = limit
-  // offset
-  page = parseInt(page)
-  let offset = (page - 1) * limit;
-  if (!offset)
-    offset = 0
-  value.offset = offset
+  // limit = parseInt(limit)
+  // if (!limit || limit < 0)
+  //   limit = 1000
+  // value.limit = limit
+  // // offset
+  // page = parseInt(page)
+  // let offset = (page - 1) * limit;
+  // if (!offset)
+  //   offset = 0
+  // value.offset = offset
 
 
   console.info("------------", isListPageRequest(value))
@@ -146,7 +156,7 @@ async function main_report(value) {
     return listPageReport(value)
   } else {
     console.info("normal process")
-    return normalReport(value)
+    return normalReport(value, true)
   }
 }
 
@@ -239,105 +249,106 @@ async function csvfullFill({ rawRows, groupBy }) {
 }
 
 
-async function normalReport(values) {
+async function normalReport(values, mustPagination) {
   let { userId, from, to, tz, groupBy, offset, limit, filter, order, status } = values;
-
-  let sqlWhere = {};
-  let having;
-  sqlWhere.UserID = userId
-  sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+  //======== start 
+  let having = "";
+  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
   let attrs = Object.keys(values);
   _.forEach(attrs, (attr) => {
     if (attr === 'day') {
       let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
-      sqlWhere.Timestamp = sequelize.and(
-        sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000)`),
-        sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`)
-      );
+      where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
     } else if (mapping[attr]) {
-      sqlWhere[mapping[attr].dbKey] = values[attr];
+      where += ` and ${[mapping[attr].dbKey]} = ${values[attr]}`;
     }
-  })
+  });
+
 
   //TODO 不应该数据表模糊查询
   if (filter) {
     //单独处理group by day
     if (groupBy == 'day') {
-      having = [`${mapping[groupBy].dbFilter} like '%${filter}%'`]
+      having = `having ${mapping[groupBy].dbFilter} like '%${filter}%'`;
     } else {
-      sqlWhere[mapping[groupBy].dbFilter] = sequelize.literal(` ${mapping[groupBy].dbFilter} like '%${filter}%'`)//{
-      //   $like: `%${filter}%`
-      // }
+      where += ` and ${mapping[groupBy].dbFilter} like '%${filter}%'`
     }
   }
 
-  let orderBy = [];
-
+  let orders = "";
   if (order) {
     if (order.slice(0, 1) === '-') {
-      orderBy[1] = 'DESC';
-      orderBy[0] = order.slice(1);
+      orders = ` order by ${order.slice(1)} DESC`;
     } else {
-      orderBy[1] = 'ASC';
-      orderBy[0] = order;
+      orders = ` order by ${order} ASC`;
+    }
+  }
+  
+  let column = `sum(Visits) as visits,
+                sum(Impressions) as impressions ,
+                round(sum(Revenue/1000000),2) as revenue,
+                sum(Clicks) as clicks,
+                sum(Conversions) as conversions ,
+                round(sum(Cost/1000000),2) as cost ,
+                round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit ,
+                round(sum(Cost / 1000000) / sum(Visits),4) as cpv,
+                round(sum(Visits)/sum(Impressions)*100,2)  as  ictr,
+                round(sum(Clicks)/sum(Visits)*100,2) as ctr,
+                round(sum(Conversions)/sum(Clicks)*100,4) as  cr,
+                round(sum(Conversions)/sum(Visits)*100,2) as cv,
+                round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2) as roi ,
+                round(sum(Revenue)/ 1000000 / sum(Visits),4) as epv,
+                round(sum(Revenue)/ 1000000 / sum(Clicks),4) as epc,
+                round(sum(Revenue)/ 1000000 / sum(Conversions),2) as ap `;
+  //根据groupBy 拼接column 
+  for (let index = 0; index < mapping[groupBy].attributes.length; index++) {
+    if (_.isString(mapping[groupBy].attributes[index])) {
+      column += `,${mapping[groupBy].attributes[index]} `
+    } else if (_.isArray(mapping[groupBy].attributes[index])) {
+      column += `,${mapping[groupBy].attributes[index][0]} as ${mapping[groupBy].attributes[index][1]} `
     }
   }
 
-
-  // group by day
-  let finalAttribute = mapping[groupBy].attributes;
   if (groupBy.toLowerCase() === 'day') {
     //处理timezone 兼容列存储
     let tag = tz.slice(0, 1);
     let numberString = tz.slice(1);
     let slice = numberString.split(':');
     let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
-    finalAttribute = [[sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d")`), 'id'], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d")`), 'day']];
-  }
-  finalAttribute = _.concat(finalAttribute, _.values(sumShorts));
-
-  let conditions = {
-    where: sqlWhere,
-    limit,
-    offset,
-    attributes: finalAttribute,
-    group: `${mapping[groupBy].dbGroupBy}`
-  }
-  if (having) {
-    conditions.having = having
-  }
-  let mustOrder = false; //默认不排序
-
-  if (orderBy.length) {
-    //判断order 字段在列存储中存在对应的列
-    for (let index = 0; index < finalAttribute.length; index++) {
-      if (_.isArray(finalAttribute[index])) {
-        if (orderBy[0] == finalAttribute[index][1]) {
-          mustOrder = true;
-          break;
-        }
-      } else if (_.isString(finalAttribute[index])) {
-        if (orderBy[0] == finalAttribute[index]) {
-          mustOrder = true;
-          break;
-        }
-      }
-    }
-    if (mustOrder) {
-      conditions.order = [[sequelize.literal(orderBy[0]), orderBy[1]]];
-    }
-
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d") as 'id',
+                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d") as  'day'`;
   }
 
-  //TODO 判断 campain offer lander 此时数据表不应该分页
-  if (values.dataType && values.dataType == "csv") {
-    delete conditions.limit;
-    delete conditions.offset;
+  let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} group by ${mapping[groupBy].dbGroupBy} ${having} ${orders} `;
+
+  let totalSQL = `select sum(visits) as visits,    
+                sum(impressions) as impressions ,
+                round(sum(revenue),2) as revenue,
+                sum(clicks) as clicks,
+                sum(conversions) as conversions ,
+                round(sum(cost),2) as cost ,
+                round(sum(profit),2) as profit , 
+                round(sum(cost)/sum(visits),4) as cpv,
+                round(sum(visits)/sum(impressions) *100,2) as ictr,
+                round(sum(clicks)/sum(visits)*100,2) as ctr,
+                round(sum(conversions)/sum(clicks)*100,4) as cr,
+                round(sum(conversions)/sum(visits)*100,2) as cv,
+                round(sum(profit)/sum(cost)*100,2) as roi,
+                round(sum(revenue)/sum(visits),4) as epv,
+                round(sum(revenue)/sum(clicks),4) as epc,
+                round(sum(revenue)/sum(conversions),2) as ap from ((${tpl}) as T)`;
+
+  if (values.dataType != "csv" && mustPagination && offset >= 0 && limit >= 0) {
+    tpl += ` limit ${offset},${limit}`;
   }
 
-  let rows = await models.AdStatisReport.findAll(conditions)
+  let [rows, Totals] = await Promise.all([
+    sequelizeInstance.query(tpl, { model: models.AdStatisReport, type: sequelize.QueryTypes.SELECT }),
+    sequelizeInstance.query(totalSQL, { model: models.AdStatisReport, type: sequelize.QueryTypes.SELECT })
+  ]);
+  let totals = Totals[0].dataValues;
 
   let rawRows = rows.map(e => e.dataValues);
   rawRows = await fullFill({ rawRows, groupBy });
@@ -345,35 +356,13 @@ async function normalReport(values) {
   if (groupBy === "campaign") {
     rawRows = await fullFill({ rawRows, groupBy: "traffic" });
   }
-
-  rawRows = formatRows(rawRows);
   let totalRows = rawRows.length;
-  let totals = {
-    impressions: rawRows.reduce((sum, row) => sum + row.impressions, 0),
-    clicks: rawRows.reduce((sum, row) => sum + row.clicks, 0),
-    visits: rawRows.reduce((sum, row) => sum + row.visits, 0),
-    conversions: rawRows.reduce((sum, row) => sum + row.conversions, 0),
-    revenue: rawRows.reduce((sum, row) => sum + row.revenue, 0),
-    cost: rawRows.reduce((sum, row) => sum + row.cost, 0),
-    profit: rawRows.reduce((sum, row) => sum + row.profit, 0),
-    cpv: rawRows.reduce((sum, row) => sum + row.cost, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
-    ictr: rawRows.reduce((sum, row) => sum + row.visits, 0) / rawRows.reduce((sum, row) => sum + row.impression, 0),
-    ctr: rawRows.reduce((sum, row) => sum + row.clicks, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
-    cr: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
-    cv: rawRows.reduce((sum, row) => sum + row.conversions, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
-    // roi: (rawRows.reduce((sum, row) => sum + row.revenue, 0) - rawRows.reduce((sum, row) => sum + row.cost, 0)) / rawRows.reduce((sum, row) => sum + row.cost),
-    epv: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.visits, 0),
-    epc: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.clicks, 0),
-    ap: rawRows.reduce((sum, row) => sum + row.revenue, 0) / rawRows.reduce((sum, row) => sum + row.conversions, 0),
-  }
-  totals.roi = totals.profit / totals.cost
-  totals = formatTotals([totals])[0]
   return { rows: rawRows, totals, totalRows }
 }
 
 async function listPageReport(query) {
   let { userId, groupBy, filter, order, status, offset, limit } = query;
-  let nr = await normalReport(query);
+  let nr = await normalReport(query, false);
   let foreignConfig = extraConfig(groupBy);
   let _where = {
     userId,

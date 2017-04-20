@@ -5,11 +5,13 @@ require("babel-polyfill");
 
 const EventEmitter = require('events');
 
-class MyEmitter extends EventEmitter {}
+class MyEmitter extends EventEmitter { }
 const myEmitter = new MyEmitter();
-const setting =require('../config/setting');
+const setting = require('../config/setting');
 
 global.models = {};
+global.sequelizeInstance = "";
+
 
 // var cluster = require('express-cluster');
 var path = require('path');
@@ -29,11 +31,11 @@ log4js.configure(path.join(__dirname, '../config/log4js.json'));
 
 var log = log4js.getLogger('startup');
 
-// cluster(function() {
+
 myEmitter.on('dbDone', () => {
   var app = require('../app');
 
-  app.set('port',setting.port || 51500);
+  app.set('port', setting.port || 51500);
 
   var server = app.listen(app.get('port'), function () {
     log.info('adclick server listening on port', server.address().port,
@@ -53,11 +55,12 @@ const {
 
 var Promise = require('bluebird');
 
-Promise.all([connect('gatekeeper'), connect('AdClickTool'),connectReportDatabase('adclicktool')]).then(orms => {
+Promise.all([connect('gatekeeper'), connect('AdClickTool'), connectReportDatabase('adclicktool')]).then(orms => {
   orms.forEach(orm => {
+    sequelizeInstance = orm.sequelize;
     Object.assign(models, orm.models);
   })
   myEmitter.emit('dbDone')
 })
 
-// });
+
