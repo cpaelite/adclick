@@ -731,8 +731,8 @@ md-content md-tabs .md-tab.md-active{
 md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar{
   background: none;
 }
-.sudden-change .md-padding{
-  padding: 0;
+.sudden-change .md-padding.black-list{
+  padding: 0 0 20px 0;
 }
 .sudden-change md-tabs[md-border-bottom] md-tabs-wrapper{
   border: none;
@@ -2044,6 +2044,8 @@ input[type="checkbox"].th-checkbox{
 }
 .bot-blacklist-editForm{
     padding:0 20px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 .bot-blacklist-editForm .form-group{
     margin-left: 0;
@@ -2064,15 +2066,15 @@ input[type="checkbox"].th-checkbox{
 }
 .ip-range input{
     float: left;
-    width:100%;
+    width:95%;
 }
 .ip-range .material-icons{
     float: right;
+    font-size: 20px;
+    line-height: 32px;
+    margin-left: 10px;
 }
-.bot-blacklist-add-content{
-    max-height: 300px;
-    overflow-y: auto;
-}
+
 
 
 @media screen and (max-width:998px){
@@ -2939,7 +2941,7 @@ md-dialog .md-actions .md-button, md-dialog md-dialog-actions .md-button{line-he
 .md-button.md-default-theme.md-primary, .md-button.md-primary{color:#fff;}
 md-dialog .md-actions, md-dialog md-dialog-actions{background:#e4e6e7;border-top:1px solid #dcdcdc;}
 .botblack-height{margin-top:130px;}
-md-dialog md-dialog-content.botblack-height{overflow:initial;}
+md-dialog md-dialog-content.botblack-height{overflow:initial;margin-top: 0;}
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{vertical-align:middle}
 .navi ul.nav li .nav-tip{position:relative;}
 .navi ul.nav li .icon-question-sign{margin:14px 0 0 8px;float:right;}
