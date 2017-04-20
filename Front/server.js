@@ -1033,6 +1033,22 @@ app.put('/api/tsreport/:id', function (req, res) {
   res.send(result);
 });
 
+// 获取用户所有的campaign
+app.get('/api/campaigns', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "campaign": [
+        {"id": 1, "name": "campaign1"},
+        {"id": 2, "name": "campaign2"},
+        {"id": 3, "name": "campaign3"}
+      ]
+    }
+  };
+  res.send(result);
+});
+
 /**
  * @apiName 根据ID获取Campaign信息
  *
@@ -4088,6 +4104,119 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
   delayResponse(res, result);
 });
 
+/**
+ * @apiName 获取所有规则
+ *
+ */
+app.get('/api/automated/rules', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "rules": [
+        {"id": 1, "name": "Rule1", "campaigns": "campaign1", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": "active"},
+        {"id": 2, "name": "Rule2", "campaigns": "campaign2", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": "active"},
+        {"id": 3, "name": "Rule3", "campaigns": "campaign3", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": "active"}
+      ]
+    }
+  }
+});
+
+/**
+ * @apiName 根据id获取rule
+ *
+ */
+app.get('/api/automated/rules/:id', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "campaign1,campaign2",
+      "dimension": "Country",
+      "dataFrom": "Last 6 Hours",
+      "frequency": "Every 6 Hours",
+      "conditions": "impressions>100,clicks>300",
+      "then": "0",    //0:Include, 1:Exclude
+      "frequency": "Every 1 Hours",
+      "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 保存 rule
+ *
+ */
+app.post('/api/automated/rules', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "campaign1,campaign2",
+      "dimension": "Country",
+      "dataFrom": "Last 6 Hours",
+      "frequency": "Every 6 Hours",
+      "conditions": "impressions>100,clicks>300",
+      "then": "0",    //0:Include, 1:Exclude
+      "frequency": "Every 1 Hours",
+      "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 删除rule
+ *
+ */
+app.delete('/api/automated/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName获取rule的log记录
+ *
+ */
+app.get('/api/automated/rules/logs', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [
+        {id: 1, time: '2017-04-20 00:01:01', name: 'rule1', dimension: "Country"},
+        {id: 2, time: '2017-04-20 00:02:01', name: 'rule2',  dimension: "Device"},
+        {id: 3, time: '2017-04-20 00:03:01', name: 'rule2', dimension: "OS"}
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取rule的log的详情
+ *
+ */
+app.get('/api/automated/rule/logs/detail/:ruleId', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "runlogs": [
+        {id: 1, campaign: 'campaign1', action: '', inventorySources: '', inventory}
+      ]
+    }
+  };
+  res.send(result);
+});
 
 app.listen(51500, function () {
   console.log('server started success port : 51500');

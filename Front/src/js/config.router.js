@@ -189,6 +189,13 @@
         },
         controller: 'FlowEditCtrl',
       })
+      .state('app.automatedrule', {
+        url: '/automatedrule',
+        templateUrl: function() {
+          return 'tpl/automated-rule.html?' + +new Date();
+        },
+        controller: 'AutomatedRuleCtrl',
+      })
       .state('access', {
         url: '/access',
         template: '<div ui-view class="fade-in-right-big smooth"></div>'

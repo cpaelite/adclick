@@ -1,0 +1,84 @@
+<md-dialog class="cs-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools cam-title">
+            <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content class="md-dialog-content">
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Rule Name<span class="star-icon">*</span>：</label>
+                <div class="col-sm-7">
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <span style="color:red" ng-show="editForm.name.$invalid">
+                        <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Campaign<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7">
+                    <selectize config='campaignFilter.config' options='campaignFilter.options' ng-model="campaigns" required></selectize>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Number of offers<span class="star-icon">*</span>：</label>
+                <div class="col-sm-7">
+                    <input type="text" name="numberOfOffers" class="form-control" ng-model="item.numberOfOffers" required>
+                    <span style="color:red" ng-show="editForm.numberOfOffers.$dirty && editForm.numberOfOffers.$invalid">
+                    <span ng-show="editForm.numberOfOffers.$error.required">NumberOfOffers is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Country: </label>
+                <div class="col-sm-7 my-select">
+                    <md-select aria-label="Country" class="cs-subform-select" name="country"
+                        ng-disabled="countryInputDisabled"
+                        ng-model="item.country"
+                        ng-change="countryChanged(item.country)"
+                    >
+                        <md-option value="{{country.value}}" ng-repeat="country in countries">{{country.display}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Click Url：</label>
+                <div  class="col-sm-7">
+                    <input type="text" class="form-control" ng-model="clickUrl" readonly>
+                </div>
+                <div class="col-sm-2">
+                    <md-button clipboard class="md-raised copied-btn" ng-show="clickUrl" text="clickUrl" ng-click="itemUrlClick()">
+                        <i class="material-icons">content_copy</i>
+                        {{btnWord}}
+                    </md-button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Tags：</label>
+                <div class="col-sm-7">
+                    <selectize config='tagsFilter.config' options='tagsFilter.options' ng-model="tags"></selectize>
+                    <!-- <md-chips
+                            ng-model="tags"
+                            readonly="ctrl.readonly"
+                            md-removable="ctrl.removable"
+                            placeholder="Enter a tag"
+                            delete-button-label="Remove Tag"
+                            delete-hint="Press delete to remove tag"
+                            secondary-placeholder="+Tag"
+                            md-max-chips="10">
+                    </md-chips> -->
+                </div>
+            </div>
+        </form>
+
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        </md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+
+</md-dialog>
