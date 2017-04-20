@@ -181,6 +181,10 @@
       $scope.$state.go('app.suddenChange');
     };
 
+    $scope.goFraudFilter = function(){
+      $scope.$state.go('app.fraudFilter');
+    };
+
   }
 
 })();

@@ -1,0 +1,155 @@
+<div ng-cloak class="sudden-change">
+  <md-content>
+    <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn add-rule" translate>New Add Rule</md-button>
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab label="Rules">
+        <md-content class="md-padding">
+          <div class="cs-action-bar-bg">
+              <div class="cs-action-bar clearfix">
+                  <div class="left-con">
+                    <div class="selectAll">
+                      <label class="cs-subform-label date-title ng-binding">Status：</label>
+                        <md-select aria-label="select" class="cs-subform-select" ng-model="activeStatus" ng-disabled="groupBy[1] || activeStatusIsDisabled()">
+                            <md-option value="0" selected>All</md-option>
+                            <md-option value="1">Active</md-option>
+                            <md-option value="2">Inactive</md-option>
+                        </md-select>
+                    </div>
+                  </div>
+                  <div class="right-select clearfix">
+                    <div class="cs-subform-control search-con">
+                        <label class="cs-subform-label date-title ng-binding">Keyword Search：</label>
+                        <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
+                    </div>
+                  </div>
+              </div>
+              <div class="table-box">
+                  <md-table-container class="repeater-container">
+                      <table md-table multiple md-progress="promise">
+                        <thead md-head>
+                          <tr md-row>
+                            <th md-column ng-repeat="th in ths">{{th.name}}</th>
+                            <th md-column>Status</th>
+                            <th md-column>Operations</th>
+                          </tr>
+                        </thead>
+                        <tbody md-body>
+                          <tr ms-row ng-repeat="tr in trs">
+                            <td md-cell>{{tr.name}}</td>
+                            <td md-cell>
+                              {{tr.campaigns}}
+                              <md-tooltip md-direction="bottom">
+                                {{tr.campaigns}}
+                              </md-tooltip>
+                            </td>
+                            <td md-cell>{{tr.action}}</td>
+                            <td md-cell>{{tr.frequerncy}}</td>
+                            <td md-cell>{{tr.datafrom}}</td>
+                            <td md-cell>
+                              <a  class="status-icon">
+                                <i class="icon-ok-sign"></i>
+                                <md-tooltip md-direction="bottom">
+                                  Change rule status
+                                </md-tooltip>
+                              </a>
+                            </td>
+                            <td md-cell>
+                              <a  class="opera-icon">
+                                <i class="icon-file-alt"></i>
+                                <md-tooltip md-direction="bottom">
+                                  Edit automate rules
+                                </md-tooltip>
+                              </a>
+                              <a  class="opera-icon">
+                                <i class="icon-trash"></i>
+                                <md-tooltip md-direction="bottom">
+                                  Delete this automate rule
+                                </md-tooltip>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                  </md-table-container>
+              </div>
+          </div>
+        </md-content>
+      </md-tab>
+      <md-tab label="Logs" class="logs">
+        <md-content class="md-padding">
+          <div class="cs-action-bar-bg">
+              <div class="cs-action-bar clearfix">
+                  <div class="left-con">
+                    <div class="cs-subform-control">
+                      <label class="cs-subform-label date-title">{{'Date Range' | translate}}：</label>
+                      <div class="cs-subform-control">
+                              <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
+                                      ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                                      ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                                  {{fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                              </button>
+                            </div>
+                            <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+                            <div class="cs-subform-control">
+                              <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
+                                      ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                                      ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                                  {{toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                              </button>
+                            </div>
+                    </div>
+                    <div class="cs-subform-group">
+                      <md-select aria-label="select" class="cs-subform-select" ng-model="datetype">
+                          <md-option value="1" selected>Today</md-option>
+                          <md-option value="2">Yesterday</md-option>
+                          <md-option value="3">Last 7 days</md-option>
+                          <md-option value="4">Last 14 days</md-option>
+                          <md-option value="5">This Week</md-option>
+                          <md-option value="6">Last Week</md-option>
+                          <md-option value="7">This Month</md-option>
+                          <md-option value="8">Last Month</md-option>
+                          <md-option value="9">This Year</md-option>
+                          <md-option value="10">Last Year</md-option>
+                          <md-option value="0">Custom</md-option>
+                      </md-select>
+                    </div>
+                  </div>
+                  <div class="right-select">
+                    <div class="cs-subform-control search-con">
+                        <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
+                    </div>
+                  </div>
+              </div>
+              <div class="table-box">
+                  <md-table-container class="repeater-container">
+                      <table md-table multiple md-progress="promise">
+                        <thead md-head>
+                          <tr md-row>
+                            <th md-column>Time</th>
+                            <th md-column>Rule Name</th>
+                            <th md-column>Operations</th>
+                          </tr>
+                        </thead>
+                        <tbody md-body>
+                          <tr ms-row ng-repeat="tr in logs">
+                            <td md-cell>{{tr.time}}</td>
+                            <td md-cell>{{tr.name}}</td>
+                            <td md-cell>
+                              <a class="status-icon" ng-click="viewLogs($event)">
+                                <i class="icon-eye-open"></i>
+                                <md-tooltip md-direction="bottom">
+                                  View automate logs
+                                </md-tooltip>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                  </md-table-container>
+              </div>
+          </div>
+        </md-content>
+      </md-tab>
+    </md-tabs>
+  </md-content>
+</div>

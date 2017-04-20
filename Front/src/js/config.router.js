@@ -105,6 +105,13 @@
         },
         controller: 'suddenChangeCtrl'
       })
+      .state('app.fraudFilter', {
+        url: '/fraudFilter',
+        templateUrl: function() {
+          return 'tpl/fraudFilter.html?' + +new Date();
+        },
+        controller: 'fraudFilterCtrl'
+      })
       .state('app.report', {
         abstract: true,
         url: '/report',
