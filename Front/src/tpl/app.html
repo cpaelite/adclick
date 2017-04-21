@@ -137,6 +137,12 @@
                     </span>
                 </a>
             </li>
+            <li ng-class="{active: $state.is('app.automatedrule') || $state.is('app.automatedrule')}">
+                <a ui-sref="app.automatedrule" md-ink-ripple>
+                    <i class="icon-yw-01 fonts17"></i>
+                    <span>{{'AutomatedRule' | translate}}</span>
+                </a>
+            </li>
             <li>
               <md-menu-bar>
                   <md-menu>

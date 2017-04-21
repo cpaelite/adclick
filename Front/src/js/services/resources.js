@@ -190,5 +190,7 @@ angular.module('app')
   .factory('TrafficSourceGroups', ['$resource', function($resource) {
     return $resource('/api/third/traffic-source/groups');
   }])
-
+  .factory('AutomatedRule', ['$resource', function($resource) {
+    return $resource('/api/automated/rules/:id', {id: '@id'});
+  }])
 ;

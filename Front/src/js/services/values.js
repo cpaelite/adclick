@@ -687,6 +687,52 @@ angular.module('app').value('urlParameter', {
   ]
 });
 
+angular.module('app').value('AutomatedRuleOptions', {
+  "dimension": [
+    "-",
+    "Inventory Apps/Sites",
+    "Inventory Sellers",
+    "Inventory Sources",
+    "Country",
+    "Carrier",
+    "Device",
+    "OS",
+    "OS Version",
+    "ISP"
+  ],
+  "dataFrom": [
+    "-",
+    "Last 3 Hours",
+    "Last 6 Hours",
+    "Last 12 Hours",
+    "Last 24 Hours",
+    "Last 3 Days",
+    "Last 7 Days",
+    "Previous Day",
+    "Same Day"
+  ],
+  "condition": [
+    {"key": "impressions","display": "Impressions","unit": ""},
+    {"key": "clicks","display": "Clicks","unit": ""},
+    {"key": "conversions","display": "Conversions","unit": ""},
+    {"key": "ctr","display": "CTR","unit": "%"},
+    {"key": "cr","display": "CR","unit": "%"},
+    {"key": "cpm","display": "CPM","unit": "USD"},
+    {"key": "cpc","display": "CPC","unit": "USD"},
+    {"key": "cpa","display": "CPA","unit": "USD"},
+    {"key": "spend","display": "Spend","unit": "USD"},
+  ],
+  "frequency": [
+    "Every 1 Hour",
+    "Every 3 Hours",
+    "Every 6 Hours",
+    "Every 12 Hours",
+    "Daily",
+    "Weekly",
+    "One Time"
+  ]
+});
+
 angular.module('app').factory('reportCache', ['$cacheFactory', function ($cacheFactory) {
   var cache = $cacheFactory.get('report-cache');
   if (!cache) {
