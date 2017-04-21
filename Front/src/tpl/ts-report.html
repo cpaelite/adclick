@@ -157,7 +157,7 @@
                       </md-menu-bar>
                       <span ng-if="groupBy != 'campaignId'">{{row['campaignName']}}</span>
                     </td>
-                    <td md-cell><span>{{row['campaignId']}}</span></td>
+                    <td md-cell><span>{{row[groupBy]}}</span></td>
                     <td md-cell><span>{{row['impression']}}</span></td>
                     <td md-cell><span>{{row['click']}}</span></td>
                     <td md-cell><span>{{row['cost'] | currency}}</span></td>
