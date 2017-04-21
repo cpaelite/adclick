@@ -97,6 +97,7 @@
     $scope.load = function($event) {
       $scope.groupBy = 'campaignId';
       $scope.campaignId = '';
+      $scope.campaignName = '';
       self.getDateRange($scope.datetype);
       var params = {}, timezone = self.timezoneMap[$scope.timezoneId];
       angular.extend(params, self.pageStatus, {
@@ -127,6 +128,7 @@
     $scope.groupItem = function(groupBy, row) {
       $scope.groupBy = groupBy;
       $scope.campaignId = row.campaignId;
+      $scope.campaignName = row.campaignName;
       $scope.query.page = 1;
       $scope.query.__tk++;
     };
@@ -134,6 +136,7 @@
     $scope.backToAllCampaign = function() {
       $scope.groupBy = 'campaignId';
       $scope.campaignId = '';
+      $scope.campaignName = '';
       $scope.query.page = 1;
       $scope.query.__tk++;
     };
