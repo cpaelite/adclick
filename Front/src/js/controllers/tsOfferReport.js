@@ -445,7 +445,7 @@
 
     $scope.$watch('selected', function(newVal, oldVal) {
       var limit = $scope.query.limit;
- 
+
       if(newVal.length - oldVal.length > 1) {
         var offers = angular.copy($scope.offers.rows);
         var currOffers = offers.length > limit ? offers.slice(0, limit) : offers;
@@ -533,7 +533,7 @@
 
       $scope.selected = [];
       $scope.offers = this.selectOffers;
-      
+
       this.importOffers = function(type) {
         $mdDialog.show({
           multiple: true,

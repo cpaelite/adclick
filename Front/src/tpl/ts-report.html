@@ -109,10 +109,12 @@
       <p>Please load again.</p>
     </div>
   </div>
-  <ul class="breadcrumb" ng-if="groupBy != 'campaignId'" style="margin-bottom: 15px;">
-    <li ng-click="backToAllCampaign()"><em style="color: dodgerblue">Back</em></li>
-    <li><em></em></li>
-  </ul>
+  <div class="breadcrumb-div" ng-if="groupBy != 'campaignId'">
+    <ul class="breadcrumb">
+      <li ng-click="backToAllCampaign()"><em style="color: dodgerblue">Back</em></li>
+      <li><em>{{campaignId}}</em></li>
+    </ul>
+  </div>
   <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdPartyTrafficSourceId].offerStatus}">
     <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
