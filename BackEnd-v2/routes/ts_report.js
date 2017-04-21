@@ -167,7 +167,7 @@ router.get('/api/traffic-source/tpl', async function (req, res, next) {
     try {
         let slice = [];
         let rows = await TPTS.findAll({
-            attributes: ['id', 'name', 'apiReport', 'apiMode', 'apiParams', 'apiTimezones', 'apiMeshSize'],
+            attributes: ['id', 'name', 'apiReport', 'apiMode', 'apiParams', 'apiTimezones', 'apiMeshSize', 'apiDimensions'],
             where: {
                 apiReport: 1
             }
@@ -180,6 +180,9 @@ router.get('/api/traffic-source/tpl', async function (req, res, next) {
             }
             if (resultSlice[index].apiTimezones) {
                 resultSlice[index].apiTimezones = JSON.parse(resultSlice[index].apiTimezones);
+            }
+            if (resultSlice[index].apiDimensions) {
+                resultSlice[index].apiDimensions = JSON.parse(resultSlice[index].apiDimensions)
             }
             slice.push(resultSlice[index]);
         }
