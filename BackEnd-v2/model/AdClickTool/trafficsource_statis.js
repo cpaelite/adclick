@@ -82,6 +82,10 @@ export default function (sequelize, DataTypes) {
         time: {
             type: DataTypes.STRING(20),
             defaultValue: ""
+        },
+        dimensions: {
+            type: DataTypes.STRING(256),
+            defaultValue: "campaignId"
         }
     }, {
             timestamps: false,

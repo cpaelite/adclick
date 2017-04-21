@@ -482,29 +482,17 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         let rows = await TSSTATIS.findAll({
             where: {
                 userId: value.userId,
-                taskId: value.taskId
+                taskId: value.taskId,
+                dimensions: `campaignId,${groupBy == "campaignId" ? "" : groupBy}`
             },
             limit,
             offset,
             attributes: trafficSourceStatisAttributes,
-            group: groupBy + ',time',
             order: orderBy.length ? [[sequelize.literal(orderBy[0]), orderBy[1]]] : [[sequelize.literal('campaignId'), 'ASC']]
         });
         console.log("==========111");
-        //第三方没拉取到数据直接返回
-        if (rows.length == 0) {
-            return res.json({
-                status: 1,
-                message: 'success',
-                data: {
-                    rows: rows,
-                    totalRows: rows.length,
-                    totals: {
 
-                    }
-                }
-            })
-        }
+
 
         let rawRows = [];
         let InSlice = [];
@@ -514,104 +502,79 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             InSlice.push(value);
         }
 
-        //report 
-        let sqlWhere = {};
-        let having;
-        sqlWhere.UserID = value.userId
-        sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
-        sqlWhere[mapping[groupBy]] = {
-            $in: InSlice
-        }
-        let groupCondition = groupBy;
-        let finalAttribute = [];
+        if (rawRows.length) {
+            //report 
+            let sqlWhere = {};
+            let having;
+            sqlWhere.UserID = value.userId
 
-        //处理列存储tz 问题
-        let tag = tz.slice(0, 1);
-        let numberString = tz.slice(1);
-        let slice = numberString.split(':');
-        let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+            sqlWhere[mapping[groupBy]] = {
+                $in: InSlice
+            }
+            let groupCondition = groupBy;
+            let finalAttribute = [];
 
-        //0:minute;1:hour;2:day;3:week;4:month;5:year
-        let formatType = '%Y-%m-%d';
-        let groupByKey = 'time'
-        switch (meshSize) {
-            // case 0:
-            // case 1:
-            case 2:
-                formatType = '%Y-%m-%d';
-                from = moment(from).startOf('day').format('YYYY-MM-DD HH:mm:ss');
-                to = moment(to).startOf('day').format('YYYY-MM-DD HH:mm:ss');
-                break;
-            // case 3:
-            // case 4:
-            // case 5:
-            default:
-                formatType = '%Y-%m-%d';
+            //处理列存储tz 问题
+            let tag = tz.slice(0, 1);
+            let numberString = tz.slice(1);
+            let slice = numberString.split(':');
+            let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+
+            //0:minute;1:hour;2:day;3:week;4:month;5:year
+            let formatType = '%Y-%m-%d';
+            let groupByKey = 'time'
+            switch (meshSize) {
+                // case 0:
+                case 1:
+                    formatType = '%Y-%m-%d %H';
+                    break;
+                case 2:
+                    formatType = '%Y-%m-%d';
+                    break;
+                case 3:
+                    formatType = '%Y-W%V';
+                    break;
+                case 4:
+                    formatType = '%Y-%m';
+                    break;
+                case 5:
+                    formatType = '%Y';
+                    break;
+                default:
+                    formatType = '%Y-%m-%d';
+            }
+            from = moment(from).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+            to = moment(to).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+            groupCondition = groupCondition + ',' + groupByKey;
+            sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
+            finalAttribute = [[mapping[groupBy], groupBy], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}')`), `${groupByKey}`]];
+            finalAttribute = _.concat(finalAttribute, adReportAttributes);
+            let reportRows = await AdStatisReport.findAll({
+                where: sqlWhere,
+                group: groupCondition,
+                attributes: finalAttribute
+            });
+            console.log("==========");
+            console.log(reportRows);
+
+            for (let index = 0; index < reportRows.length; index++) {
+                for (let i = 0; i < rawRows.length; i++) {
+                    if (rawRows[i].time == reportRows[index].dataValues[groupByKey]) {
+                        rawRows[i] = _.assign(rawRows[i], reportRows[index].dataValues)
+                    }
+                }
+            }
+
         }
-        finalAttribute = [[mapping[groupBy], groupBy], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}')`), `${groupByKey}`]];
-        groupCondition = groupCondition + ',' + groupByKey;
-        finalAttribute = _.concat(finalAttribute, adReportAttributes);
-        let reportRows = await AdStatisReport.findAll({
-            where: sqlWhere,
-            group: groupCondition,
-            attributes: finalAttribute
+
+        return res.json({
+            status: 1,
+            message: 'success',
+            data: {
+                rows: rawRows
+            }
         });
-        console.log("==========");
-        console.log(reportRows);
-
-        for (let index = 0; index < reportRows.length; index++) {
-             _.assignWith()
-        }
-        
-
-        let reportrawRows = reportRows.map(e => e.dataValues);
-
-        console.log(reportrawRows);
-
     } catch (e) {
         next(e);
     }
-
-    // var result = {
-    //     "status": 1,
-    //     "message": "success",
-    //     "data": {
-    //         rows: [{
-    //             id: 1,
-    //             status: 1, // 1: active; 2: pauseded
-    //             campaignId: "189377",
-    //             campaignName: "Global - offertest",
-    //             websiteId: "websiteId",
-    //             impression: 100,
-    //             click: 1,
-    //             cost: 0.23,
-    //             v1: "v1",
-    //             v2: "v2"
-    //         }, {
-    //             id: 2,
-    //             status: 1, // 1: active; 2: pauseded
-    //             campaignName: "Global - offertest",
-    //             impression: 100,
-    //             click: 1,
-    //             cost: 0.23,
-    //             websiteId: "websiteId",
-    //             campaignId: "189377",
-    //             v1: "v1",
-    //             v2: "v2"
-    //         }, {
-    //             id: 3,
-    //             status: 1, // 1: active; 2: pauseded
-    //             campaignName: "Global - offertest",
-    //             impression: 100,
-    //             click: 1,
-    //             cost: 0.23,
-    //             campaignId: "189377",
-    //             websiteId: "websiteId",
-    //             v1: "v1",
-    //             v2: "v2"
-    //         }]
-    //     }
-    // };
-
-
 });

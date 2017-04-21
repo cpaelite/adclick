@@ -25,7 +25,7 @@ router.get('/api/traffic/tpl', function (req, res, next) {
             return next(err);
         }
         connection.query(
-            "select `id`,`name`,`postbackUrl`,`pixelRedirectUrl` ,`externalId`, `cost`,`params`,`campaignId`,`websiteId` from TemplateTrafficSource where `deleted`=? order by `order` ASC", [
+            "select `id`,`name`,`postbackUrl`,`pixelRedirectUrl` ,`externalId`, `cost`,`params`,`campaignId`,`websiteId`,`apiDimensions` from TemplateTrafficSource where `deleted`=? order by `order` ASC", [
                 0
             ],
             function (err, results) {
@@ -34,6 +34,11 @@ router.get('/api/traffic/tpl', function (req, res, next) {
                     return next(err);
                 }
                 try {
+                    for(let index=0;index<results.length;index++){
+                        if(results[index].apiDimensions){
+                            results[index].apiDimensions=JSON.parse(results[index].apiDimensions)
+                        }
+                    }
                     res.json({
                         status: 1,
                         message: 'success',
