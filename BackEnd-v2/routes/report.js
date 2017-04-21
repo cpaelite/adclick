@@ -296,9 +296,9 @@ async function normalReport(values, mustPagination) {
                 round(sum(Cost / 1000000) / sum(Visits),4) as cpv,
                 round(sum(Visits)/sum(Impressions)*100,2)  as  ictr,
                 round(sum(Clicks)/sum(Visits)*100,2) as ctr,
-                round(sum(Conversions)/sum(Clicks)*100,4) as  cr,
+                IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr,
                 round(sum(Conversions)/sum(Visits)*100,2) as cv,
-                round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2) as roi ,
+                IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi ,
                 round(sum(Revenue)/ 1000000 / sum(Visits),4) as epv,
                 round(sum(Revenue)/ 1000000 / sum(Clicks),4) as epc,
                 round(sum(Revenue)/ 1000000 / sum(Conversions),2) as ap `;
