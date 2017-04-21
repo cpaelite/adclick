@@ -40,7 +40,7 @@
     this.$scope.query = {
       page: 1,
       limit: 50,
-      order: 'clicks',
+      order: 'click',
       __tk: 0
     };
 
@@ -48,7 +48,7 @@
     this.$scope.groupBys = [];
 
     this.$scope.taskProgress = {};
-
+    this.$scope.app.subtitle = 'tsReport';
     this.init();
     this.initEvent();
   }
@@ -95,6 +95,8 @@
     var self = this, $scope = this.$scope;
 
     $scope.load = function($event) {
+      $scope.groupBy = 'campaignId';
+      $scope.campaignId = '';
       self.getDateRange($scope.datetype);
       var params = {}, timezone = self.timezoneMap[$scope.timezoneId];
       angular.extend(params, self.pageStatus, {
@@ -116,6 +118,24 @@
           self.checkTrafficSourceTask($scope.thirdPartyTrafficSourceId);
         }
       });
+    };
+
+    $scope.menuOpen = function (mdMenu) {
+      mdMenu.open();
+    };
+
+    $scope.groupItem = function(groupBy, row) {
+      $scope.groupBy = groupBy;
+      $scope.campaignId = row.campaignId;
+      $scope.query.page = 1;
+      $scope.query.__tk++;
+    };
+
+    $scope.backToAllCampaign = function() {
+      $scope.groupBy = 'campaignId';
+      $scope.campaignId = '';
+      $scope.query.page = 1;
+      $scope.query.__tk++;
     };
 
     $scope.thirdPartyTrafficSourceChanged = function(id) {
@@ -182,7 +202,7 @@
     if(self.$scope.meshSizeArr.length > 0) {
       self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
     }
-    var apiDimensions = self.templateTrafficSourceMap[trustedTrafficSourceId].apiDimensions;
+    var apiDimensions = $scope.apiDimensions = self.templateTrafficSourceMap[trustedTrafficSourceId].apiDimensions;
     $scope.groupBys = [];
     for(var key in apiDimensions) {
       $scope.groupBys.push({
@@ -201,6 +221,9 @@
       taskId: $scope.taskId
     });
     delete params.__tk;
+    if($scope.campaignId) {
+      params.campaignId = $scope.campaignId;
+    }
     $scope.promise = self.TrafficSourceStatis.get(params, function(result) {
       if(result.status == 1) {
         $scope.report = result.data;

@@ -109,29 +109,59 @@
       <p>Please load again.</p>
     </div>
   </div>
+  <ul class="breadcrumb" ng-if="groupBy != 'campaignId'" style="margin-bottom: 15px;">
+    <li ng-click="backToAllCampaign()"><em style="color: dodgerblue">Back</em></li>
+    <li><em></em></li>
+  </ul>
   <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdPartyTrafficSourceId].offerStatus}">
     <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
                     <th md-column>Campaign</th>
-                    <th md-column class="group-by">
-                      <select ng-model="groupBy" ng-change="onGroupByChanged()">
-                        <option value="{{group.name}}" ng-repeat="group in groupBys track by group.name">{{group.display}}</option>
-                      </select>
-                    </th>
-                    <th md-column md-order-by="impressions">Impressions</th>
-                    <th md-column md-order-by="clicks">Clicks</th>
+                    <th md-column>{{apiDimensions[groupBy]}}</th>
+                    <th md-column md-order-by="impression">Impressions</th>
+                    <th md-column md-order-by="click">Clicks</th>
                     <th md-column md-order-by="cost">Cost</th>
+                    <th md-column md-order-by="visit">Visit</th>
+                    <th md-column md-order-by="revenue">Revenue</th>
                 </tr>
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
                 <tr md-row ng-repeat="row in report.rows">
-                    <td md-cell><span>{{row['campaignName']}}</span></td>
+                    <td md-cell>
+                      <md-menu-bar style="padding: 0;" ng-if="groupBy == 'campaignId'">
+                          <md-menu>
+                              <a ng-click="menuOpen($mdMenu)">
+                                {{row['campaignName']}}
+                              </a>
+                              <md-menu-content width="3">
+                                  <md-menu-item>
+                                      <md-menu>
+                                        <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
+                                        <md-menu-content width="3">
+                                            <md-menu-item
+                                            ng-if="group.name != 'campaignId' && group.name != groupBy"
+                                            ng-repeat="group in groupBys track by group.name"
+                                            ng-click="groupItem(group.name, row)"
+                                            >
+                                              <md-button>{{group.display}}</md-button>
+                                            </md-menu-item>
+                                        </md-menu-content>
+                                      </md-menu>
+                                  </md-menu-item>
+                              </md-menu-content>
+                          </md-menu>
+                      </md-menu-bar>
+                      <span ng-if="groupBy != 'campaignId'">{{row['campaignName']}}</span>
+                    </td>
                     <td md-cell><span>{{row['campaignId']}}</span></td>
                     <td md-cell><span>{{row['impression']}}</span></td>
                     <td md-cell><span>{{row['click']}}</span></td>
                     <td md-cell><span>{{row['cost'] | currency}}</span></td>
+                    <td md-cell><span>{{row['visit']}}</span></td>
+                    <td md-cell><span>{{row['revenue']}}</span></td>
+
                 </tr>
             </tbody>
         </table>
