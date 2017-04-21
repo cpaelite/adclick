@@ -4116,9 +4116,9 @@ app.get('/api/automated/rules', function(req, res) {
     "message": "success",
     data: {
       "rules": [
-        {"id": 1, "name": "Rule1", "campaigns": "campaign1", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": 0},
-        {"id": 2, "name": "Rule2", "campaigns": "campaign2", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": 1},
-        {"id": 3, "name": "Rule3", "campaigns": "campaign3", "dimension": "Country", "frequency": "Every 6 Hours", "dataFrom": "Last 6 Hours", "status": 0}
+        {"id": 1, "name": "Rule1", "campaigns": "1", "dimension": "Country", "timeSpan": "last6hours","status": 0},
+        {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "Country", "timeSpan": "last6hours", "status": 1},
+        {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "Country", "timeSpan": "last6hours", "status": 0}
       ]
     }
   }
@@ -4136,7 +4136,7 @@ app.get('/api/automated/rules/:id', function(req, res) {
     data: {
       "id": 1,
       "name": "rule1",
-      "campaigns": "campaign1,campaign2",
+      "campaigns": "1,2",
       "dimension": "Country",
       "dataFrom": "Last 6 Hours",
       "frequency": "Every 6 Hours",
@@ -4186,14 +4186,12 @@ app.post('/api/automated/rules', function(req, res) {
     data: {
       "id": 1,
       "name": "rule1",
-      "campaigns": "campaign1,campaign2",
+      "campaigns": "1,2",
       "dimension": "Country",
-      "dataFrom": "Last 6 Hours",
-      "frequency": "Every 6 Hours",
-      "conditions": "impressions>100,clicks>300",
-      "then": "0",    //0:Include, 1:Exclude
-      "frequency": "Every 1 Hours",
-      "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
+      "timeSpan": "last6hours",
+      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "schedule": "0 0 * * * *",
+      "status": 0
     }
   };
   res.send(result);

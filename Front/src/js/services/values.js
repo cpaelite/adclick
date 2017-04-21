@@ -689,38 +689,27 @@ angular.module('app').value('urlParameter', {
 
 angular.module('app').value('AutomatedRuleOptions', {
   "dimension": [
-    "-",
-    "Inventory Apps/Sites",
-    "Inventory Sellers",
-    "Inventory Sources",
-    "Country",
-    "Carrier",
-    "Device",
-    "OS",
-    "OS Version",
-    "ISP"
+    "WebSiteId","Country","Carrier","City","Device","OS","OSVersion","ISP","Offer","Lander","Brand","Browser","BrowserVersion"
   ],
   "dataFrom": [
-    "-",
-    "Last 3 Hours",
-    "Last 6 Hours",
-    "Last 12 Hours",
-    "Last 24 Hours",
-    "Last 3 Days",
-    "Last 7 Days",
-    "Previous Day",
-    "Same Day"
+    {"key": "last3hours", "display": "Last 3 Hours"},
+    {"key": "last6hours", "display": "Last 6 Hours"},
+    {"key": "last12hours", "display": "Last 12 Hours"},
+    {"key": "last24hours", "display": "Last 24 Hours"},
+    {"key": "last3days", "display": "Last 3 Days"},
+    {"key": "last7days", "display": "Last 7 Days"},
+    {"key": "previousDay", "display": "Previous Day"},
+    {"key": "sameDay", "display": "Same Day"}
   ],
   "condition": [
-    {"key": "impressions","display": "Impressions","unit": ""},
-    {"key": "clicks","display": "Clicks","unit": ""},
-    {"key": "conversions","display": "Conversions","unit": ""},
+    {"key": "sumImps","display": "Impressions","unit": ""},
+    {"key": "sumVisits","display": "Visits","unit": ""},
+    {"key": "sumClicks","display": "Clicks","unit": ""},
     {"key": "ctr","display": "CTR","unit": "%"},
     {"key": "cr","display": "CR","unit": "%"},
     {"key": "cpm","display": "CPM","unit": "USD"},
     {"key": "cpc","display": "CPC","unit": "USD"},
     {"key": "cpa","display": "CPA","unit": "USD"},
-    {"key": "spend","display": "Spend","unit": "USD"},
   ],
   "frequency": [
     "Every 1 Hour",

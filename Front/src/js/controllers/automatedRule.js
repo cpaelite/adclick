@@ -36,14 +36,14 @@
         this.title = "add";
         $scope.conditionArray = [
           {
-            "key": "impressions",
-            "operand": "0",   //0: >, 1: <
+            "key": "sumImps",
+            "operand": ">",
             "value": ""
           }
         ];
         $scope.item = {
-          "dimension": "-",
-          "dataFrom": "-",
+          "dimension": "WebSiteId",
+          "timeSpan": "last3hours",
           "then": "1",
           "frequency": "Every 1 Hour",
           "executionType": "0"
@@ -55,6 +55,15 @@
       $scope.dataFroms = AutomatedRuleOptions.dataFrom;
       $scope.conditions = AutomatedRuleOptions.condition;
       $scope.frequencys = AutomatedRuleOptions.frequency;
+
+      $scope.hours = [];
+      for (var i=0; i<24; ++i) {
+        if (i < 10) {
+          $scope.hours.push('0' + i + ':00');
+        } else {
+          $scope.hours.push('' + i + ':00');
+        }
+      }
 
       $scope.conditionDisable = function(item, index) {
         var selectConditions = $scope.conditionArray.map(function(con) {

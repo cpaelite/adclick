@@ -45,8 +45,8 @@
                         <md-option value="{{con.key}}" ng-repeat="con in conditions" ng-disabled="conditionDisable(con, conArrIdx)">{{con.display}}</md-option>
                     </md-select>
                     <md-select aria-label="ConditionOperand" class="cs-subform-select" ng-model="condition.operand">
-                        <md-option value="0">></md-option>
-                        <md-option value="1"><</md-option>
+                        <md-option value=">">></md-option>
+                        <md-option value="<"><</md-option>
                     </md-select>
                     <input type="text" name="conValue" class="cs-subform-select" ng-model="condition.value" required>
                     <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
@@ -57,33 +57,19 @@
                 <div class="col-sm-7"><em ng-click="addCondition()" ng-if="conditionArray.length < conditions.length">+Add another</em></div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Then<span class="star-icon">*</span>：</label>
-                <div class="col-sm-7 campaign-radio">
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="item.then" value="0">Include
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="item.then" value="1">Exclude
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
                 <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
                     <md-select aria-label="DataFrom" class="cs-subform-select" ng-model="item.frequency">
                         <md-option value="{{frequency}}" ng-repeat="frequency in frequencys track by $index">{{frequency}}</md-option>
                     </md-select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Execution Type<span class="star-icon">*</span>：</label>
-                <div class="col-sm-7 campaign-radio">
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="item.executionType" value="0">Modify Based on Current Settings
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="item.executionType" value="1">Replace Current Settings
-                    </label>
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="freDate"
+                            is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                        {{freDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                    </button>
+                    <md-select aria-label="freTime" class="cs-subform-select" ng-model="freTime">
+                        <md-option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</md-option>
+                    </md-select>
                 </div>
             </div>
         </form>
