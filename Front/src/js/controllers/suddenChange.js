@@ -3,14 +3,12 @@
 
   angular.module('app')
     .controller('suddenChangeCtrl', [
-      '$scope', '$mdDialog', 'toastr','SuddenChange', 'Logs', 'BlackList', '$timeout',
+      '$scope', '$mdDialog', 'toastr','SuddenChange', 'Logs', 'LogDetail', 'DateRangeUtil', 'BlackList', '$timeout',
       suddenChangeCtrl
     ]);
 
-  function suddenChangeCtrl($scope,  $mdDialog, toastr, SuddenChange, Logs, BlackList, $timeout) {
+  function suddenChangeCtrl($scope,  $mdDialog, toastr, SuddenChange, Logs, LogDetail, DateRangeUtil, BlackList, $timeout) {
     $scope.app.subtitle = 'Sudden Change';
-    $scope.fromDate = $scope.fromDate || moment().format('YYYY-MM-DD');
-    $scope.toDate = $scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
 
     $scope.ths = [
       {name:'Rule Name'},
@@ -35,52 +33,73 @@
     //     datafrom:'Last 6 Hours'
     //   }
     // ];
-    $scope.logs = [
-      {
-        time:'2017-04-19 06:01:01',
-        name:'exclude sites'
-      },
-      {
-        time:'2017-04-19 07:01:01',
-        name:'exclude sites'
-      }
-    ];
+    // $scope.logs = [
+    //   {
+    //     time:'2017-04-19 06:01:01',
+    //     name:'exclude sites'
+    //   },
+    //   {
+    //     time:'2017-04-19 07:01:01',
+    //     name:'exclude sites'
+    //   }
+    // ];
 
-    $scope.viewLogs = function(ev){
+    $scope.viewLogs = function(tr){
+      console.log(tr);
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', ruleLogCtrl],
+        controller: ['$scope', '$mdDialog', 'LogDetail', ruleLogCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        // locals: {index: index, data: $scope.data},
+        locals: {data:tr},
         bindToController: true,
-        targetEvent: ev,
         templateUrl: 'tpl/rule-log-dialog.html?' + +new Date()
       });
     };
 
-    $scope.deleteRule = function(ev){
-      $mdDialog.show({
-        clickOutsideToClose: true,
-        escapeToClose: false,
-        controller: ['$scope', '$mdDialog', deleteRuleCtrl],
-        controllerAs: 'ctrl',
-        focusOnOpen: false,
-        targetEvent: ev,
-        // locals: {type: perfType, item: item.data},
-        bindToController: true,
-        templateUrl: 'tpl/delete-rule-dialog.html?' + +new Date()
+    $scope.query = {
+      activeStatus :'1',
+      searchFilter:''
+    };
+    $scope.getRuleList = function(){
+      SuddenChange.get($scope.query,function(result){
+        $scope.list = result.data;
       });
     };
+    $scope.getRuleList();
 
-    SuddenChange.get(null,function(result){
-      $scope.list = result.data;
-    });
+    $scope.datetype = '1';
+    $scope.queryLog = {
+      searchFilter:''
+    };
+    $scope.getLogList = function(){
+      Logs.get($scope.queryLog,function(result){
+        $scope.loglist = result.data;
+      });
+    };
+    $scope.getLogList();
 
-    Logs.get(null,function(result){
-      $scope.loglist = result.data;
-    });
+    getDateRange($scope.datetype);
 
+    function getDateRange(value) {
+      var fromDate = DateRangeUtil.fromDate(value);
+      var toDate = DateRangeUtil.toDate(value);
+      if (value == '0') {
+        $scope.queryLog.from = moment().format('YYYY-MM-DD');
+        $scope.queryLog.to = moment().add(1, 'days').format('YYYY-MM-DD');
+      } else {
+        $scope.queryLog.from = fromDate;
+        $scope.queryLog.to = toDate;
+      }
+    }
+
+    $scope.statusChange = function(){
+      $scope.getRuleList();
+    };
+    $scope.logQueryChange = function(){
+      getDateRange($scope.datetype);
+      $scope.getLogList();
+    };
 
     $scope.blacklistCount = 20;
 
@@ -137,16 +156,50 @@
       });
     };
 
+    $scope.deleteRule = function(id){
+      $mdDialog.show({
+        clickOutsideToClose: true,
+        escapeToClose: false,
+        controller: ['$scope', '$mdDialog', 'SuddenChange', deleteRuleCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: {id: id},
+        bindToController: true,
+        templateUrl: 'tpl/delete-rule-dialog.html?' + +new Date()
+      });
+    };
+
+    $scope.ruleStatusChange = function(index){
+      if($scope.list.rules[index].status == 0){
+        $scope.list.rules[index].status = 1;
+      }else{
+        $scope.list.rules[index].status = 0;
+      }
+      SuddenChange.save($scope.list.rules[index]);
+    };
   }
 
-  function ruleLogCtrl($scope, $mdDialog){
+  function ruleLogCtrl($scope, $mdDialog, LogDetail){
     this.cancel = $mdDialog.cancel;
+    LogDetail.get({id:this.data.id},function(result){
+      $scope.detailItem = result.data;
+    });
+    $scope.rule = {
+      name:  this.data.name,
+      dimension: this.data.dimension
+    };
   }
 
-  function deleteRuleCtrl($scope, $mdDialog){
+  function deleteRuleCtrl($scope, $mdDialog, SuddenChange){
     this.cancel = $mdDialog.cancel;
     this.title = 'confirm delete';
     this.content = 'are you sure you want to delete this rule';
+
+    this.ok = function(){
+      SuddenChange.remove({'id': this.id},function(){
+        $mdDialog.hide();
+      });
+    };
   }
 
   function editItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {

@@ -4144,6 +4144,32 @@ app.get('/api/automated/rules/:id', function(req, res) {
       "then": "0",    //0:Include, 1:Exclude
       "frequency": "Every 1 Hours",
       "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
+      "status": "0",
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 保存 rule
+ *
+ */
+app.post('/api/automated/rules/:id', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "campaign1,campaign2",
+      "dimension": "Country",
+      "dataFrom": "Last 6 Hours",
+      "frequency": "Every 6 Hours",
+      "conditions": "impressions>100,clicks>300",
+      "then": "0",    //0:Include, 1:Exclude
+      "frequency": "Every 1 Hours",
+      "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
+      "status": "0",
     }
   };
   res.send(result);
@@ -4197,7 +4223,7 @@ app.get('/api/automated/logs', function(req, res) {
       "logs": [
         {id: 1, time: '2017-04-20 00:01:01', name: 'rule1', dimension: "Country"},
         {id: 2, time: '2017-04-20 00:02:01', name: 'rule2',  dimension: "Device"},
-        {id: 3, time: '2017-04-20 00:03:01', name: 'rule2', dimension: "OS"}
+        {id: 3, time: '2017-04-20 00:03:01', name: 'rule3', dimension: "OS"}
       ]
     }
   };
@@ -4208,13 +4234,13 @@ app.get('/api/automated/logs', function(req, res) {
  * @apiName 获取rule的log的详情
  *
  */
-app.get('/api/automated/rule/logs/detail/:ruleId', function(req, res) {
+app.get('/api/automated/logs/detail/:id', function(req, res) {
   var result = {
     "status": 1,
     "message": "success",
     "data": {
-      "runlogs": [
-        {id: 1, campaign: 'campaign1', action: '', inventorySources: '', inventory}
+      "logs": [
+        {id: 1, campaign: 'campaign1', action: 'action', inventorySources: 'sources', inventory:'ccc'}
       ]
     }
   };

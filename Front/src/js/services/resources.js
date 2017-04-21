@@ -107,10 +107,13 @@ angular.module('app')
     return $resource('/api/blacklist/:id', {id: '@id'});
   }])
   .factory('SuddenChange', ['$resource', function ($resource) {
-    return $resource('/api/automated/rules:id', {id: '@id'});
+    return $resource('/api/automated/rules/:id', {id: '@id'});
   }])
   .factory('Logs', ['$resource', function ($resource) {
-    return $resource('/api/automated/logs:id', {id: '@id'});
+    return $resource('/api/automated/logs/:id', {id: '@id'});
+  }])
+  .factory('LogDetail', ['$resource', function ($resource) {
+    return $resource('/api/automated/logs/detail/:id', {id: '@id'});
   }])
   .factory('EventLog', ['$resource', function ($resource) {
     return $resource('/api/eventlog');

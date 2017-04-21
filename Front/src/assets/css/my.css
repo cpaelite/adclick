@@ -708,7 +708,12 @@ md-content md-tabs{
 .sudden-change md-tabs{
   /*overflow: visible;*/
 }
-
+.sudden-change .cs-subform-group{
+  float: left;
+}
+.sudden-change .cs-action-bar{
+  margin-bottom: 10px;
+}
 .sudden-change .md-tab{
   line-height: 15px;
   text-transform:none;

@@ -5,11 +5,11 @@
       </div>
       <div class="log-name">
         <span class=rule-name>Rule Name</span>
-        <span>exclude sites</span>
+        <span>{{rule.name}}</span>
       </div>
       <div class="log-name">
         <span class=rule-name>Dimension</span>
-        <span>Inventory Apps/Sites</span>
+        <span>{{rule.dimension}}</span>
       </div>
       <div class="table-box">
           <md-table-container class="repeater-container">
@@ -23,13 +23,12 @@
                   </tr>
                 </thead>
                 <tbody md-body>
-                  <tr ms-row>
-                    <td md-cell>Campaign</td>
-                    <td md-cell>Action</td>
-                    <td md-cell>Inventory Sources</td>
-                    <td md-cell>Inventory Apps/Sites</td>
+                  <tr md-row ng-repeat="item in detailItem.logs">
+                    <td md-cell>{{item.campaign}}</td>
+                    <td md-cell>{{item.action}}</td>
+                    <td md-cell>{{item.inventorySources}}</td>
+                    <td md-cell>{{item.inventory}}</td>
                   </tr>
-
                 </tbody>
               </table>
           </md-table-container>
