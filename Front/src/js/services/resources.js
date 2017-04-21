@@ -167,4 +167,22 @@ angular.module('app')
   .factory('OfferImport', ['$resource', function($resource) {
     return $resource('/api/third/offersImport');
   }])
+  .factory('TemplateTrafficSource', ['$resource', function($resource) {
+    return $resource('/api/traffic-source/tpl');
+  }])
+  .factory('ThirdPartyTrafficSource', ['$resource', function($resource) {
+    return $resource('/api/third/traffic-source/:id', {id: '@id'}, {
+      'update': {method: 'PUT'}
+    });
+  }])
+  .factory('TrafficSourceSyncTask', ['$resource', function($resource) {
+    return $resource('/api/third/traffic-source/tasks');
+  }])
+  .factory('TrafficSourceStatis', ['$resource', function($resource) {
+    return $resource('/api/third/traffic-source-statis');
+  }])
+  .factory('TrafficSourceGroups', ['$resource', function($resource) {
+    return $resource('/api/third/traffic-source/groups');
+  }])
+
 ;

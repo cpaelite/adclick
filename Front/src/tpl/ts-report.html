@@ -1,10 +1,24 @@
-<div class="cs-action-bar-bg">
-    <h6>Advanced filters:</h6>
+<div class="cs-action-bar-bg ts-report-box">
+    <h6>Advanced filters:{{name}}</h6>
     <div class="cs-action-bar clearfix">
     <div class="right-select right-select-left">
         <div class="cs-subform-control">
-            <md-select class="cs-subform-select" ng-model="tsReferenceId">
-                <md-option value="{{tsReference.id}}" ng-repeat="tsReference in tsReferences track by tsReference.id">{{tsReference.name}}</md-option>
+            <md-select class="cs-subform-select" ng-model="thirdPartyTrafficSourceId" ng-change="thirdPartyTrafficSourceChanged(thirdPartyTrafficSourceId)">
+                <md-option value="{{thirdPartyTrafficSource.id}}" ng-repeat="thirdPartyTrafficSource in thirdPartyTrafficSources track by thirdPartyTrafficSource.id">{{thirdPartyTrafficSource.name}}</md-option>
+            </md-select>
+        </div>
+
+        <div class="cs-subform-control">
+            <label class="label-name">Mesh Size:</label>
+            <md-select class="cs-subform-select" ng-model="meshSizeId">
+                <md-option value="{{meshSize}}" ng-repeat="meshSize in meshSizeArr">{{meshSize}}</md-option>
+            </md-select>
+        </div>
+
+        <div class="cs-subform-control">
+            <label class="label-name">Timezone:</label>
+            <md-select class="cs-subform-select" ng-model="timezoneId">
+                <md-option value="{{timezone.id}}" ng-repeat="timezone in timezones track by timezone.id">{{timezone.name}}</md-option>
             </md-select>
         </div>
 
@@ -29,7 +43,7 @@
                 <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
                         ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
                         ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-                    {{fromDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    {{fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                 </button>
                 <select class="cs-subform-select ts-time" ng-model="fromTime">
                     <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
@@ -40,7 +54,7 @@
                 <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
                         ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
                         ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-                    {{toDate | date: 'yyyy-MM-dd'}}<i class="glyphicon glyphicon-calendar"></i>
+                    {{toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                 </button>
                 <select class="cs-subform-select ts-time" ng-model="toTime">
                     <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
@@ -49,11 +63,12 @@
         </div>
         <md-button
                 class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn"
-                ng-click="applySearch($event)" ng-model="btnName" ng-disabled="disabled"
+                ng-click="load($event)" ng-model="btnName"
                 ng-class="{'apply-btn': applyBtn}"
                 translate
+                ng-disabled="!(thirdPartyTrafficSources && thirdPartyTrafficSources.length > 0 && !taskProgress[thirdPartyTrafficSourceId].progressStatus)"
         >
-            {{btnName}}
+            load
         </md-button>
         <md-button
                 class="md-raised md-primary cs-compact cs-add-button blue-btn"
@@ -64,9 +79,9 @@
         </md-button>
         <md-button
                 class="md-raised md-primary cs-compact cs-add-button blue-btn"
-                ng-click="addOrEditTsReference(tsReferenceId)"
+                ng-click="addOrEditTsReference(thirdPartyTrafficSourceId)"
                 translate
-                ng-show="tsReferences.length > 0"
+                ng-show="thirdPartyTrafficSources.length > 0"
         >
             edit
         </md-button>
@@ -74,33 +89,81 @@
 </div>
 </div>
 
-<div flex class="cs-page-content report">
-    <div class="table-box">
-    <md-table-container>
+<div flex class="cs-page-content report ts-offer-report">
+  <div resizets style="margin-bottom: 89px;" ng-show="!taskProgress[thirdPartyTrafficSourceId].progressStatus && !taskProgress[thirdPartyTrafficSourceId].taskErrorMeg && !taskProgress[thirdPartyTrafficSourceId].offerStatus"></div>
+  <div class="load-progress-box" ng-show="taskProgress[thirdPartyTrafficSourceId].progressStatus" resizets style="margin-bottom: 89px;">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" style="width: {{taskProgress[thirdPartyTrafficSourceId].progress}}%;">{{taskProgress[thirdPartyTrafficSourceId].progressNum}}%</div>
+    </div>
+    <div class="load-progress-content">
+      <i class="icon-smile"></i>
+      <h2>Loading...</h2>
+      <p>Thanks for your patients, the data is extracting...</p>
+    </div>
+  </div>
+
+  <div class="load-progress-box" ng-show="taskProgress[thirdPartyTrafficSourceId].taskErrorMeg" resizets style="margin-bottom: 89px;">
+    <div class="load-progress-content">
+      <i class="icon-meh"></i>
+      <p class="text-danger">{{taskProgress[thirdPartyTrafficSourceId].taskErrorMeg}}</p>
+      <p>Please load again.</p>
+    </div>
+  </div>
+  <div class="breadcrumb-div" ng-if="groupBy != 'campaignId'">
+    <ul class="breadcrumb">
+      <li ng-click="backToAllCampaign()"><em style="color: dodgerblue">Back</em></li>
+      <li><em>{{campaignName}}</em></li>
+    </ul>
+  </div>
+  <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdPartyTrafficSourceId].offerStatus}">
+    <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
-                    <th md-column md-order-by="campaignName">Campaign</th>
-                    <th md-column md-order-by="campaignId">Campaign ID</th>
-                    <th md-column md-order-by="impressions">Impressions</th>
-                    <th md-column md-order-by="clicks">Clicks</th>
+                    <th md-column>Campaign</th>
+                    <th md-column>{{apiDimensions[groupBy]}}</th>
+                    <th md-column md-order-by="impression">Impressions</th>
+                    <th md-column md-order-by="click">Clicks</th>
                     <th md-column md-order-by="cost">Cost</th>
-                    <!-- <th md-column md-order-by="conversions">Conversions</th> -->
-                    <th md-column>Action</th>
+                    <th md-column md-order-by="visit">Visit</th>
+                    <th md-column md-order-by="revenue">Revenue</th>
                 </tr>
             </thead>
-            <tbody md-body>
+            <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
                 <tr md-row ng-repeat="row in report.rows">
-                    <td md-cell><span>{{row['campaignName']}}</span></td>
-                    <td md-cell><span>{{row['campaignId']}}</span></td>
-                    <td md-cell><span>{{row['impressions']}}</span></td>
-                    <td md-cell><span>{{row['clicks']}}</span></td>
-                    <td md-cell><span>{{row['cost'] | currency}}</span></td>
-                    <!-- <td md-cell><span>{{row['conversions']}}</span></td> -->
                     <td md-cell>
-                        <span class="btn btn-default star-btn" ng-class="{disabled: row.startStatus}" ng-click="start(row)"><i class="icon-ks-01"></i>Start</span>
-                        <span class="btn btn-default star-btn stop-btn" ng-class="{disabled: row.pauseStatus}" ng-click="pause(row)"><i class="icon-zt-02"></i>Pause</span>
+                      <md-menu-bar style="padding: 0;" ng-if="groupBy == 'campaignId'">
+                          <md-menu>
+                              <a ng-click="menuOpen($mdMenu)">
+                                {{row['campaignName']}}
+                              </a>
+                              <md-menu-content width="3">
+                                  <md-menu-item>
+                                      <md-menu>
+                                        <md-button ng-click="$mdMenu.open()">Drilldown by...</md-button>
+                                        <md-menu-content width="3">
+                                            <md-menu-item
+                                            ng-if="group.name != 'campaignId' && group.name != groupBy"
+                                            ng-repeat="group in groupBys track by group.name"
+                                            ng-click="groupItem(group.name, row)"
+                                            >
+                                              <md-button>{{group.display}}</md-button>
+                                            </md-menu-item>
+                                        </md-menu-content>
+                                      </md-menu>
+                                  </md-menu-item>
+                              </md-menu-content>
+                          </md-menu>
+                      </md-menu-bar>
+                      <span ng-if="groupBy != 'campaignId'">{{row['campaignName']}}</span>
                     </td>
+                    <td md-cell><span>{{row[groupBy]}}</span></td>
+                    <td md-cell><span>{{row['impression']}}</span></td>
+                    <td md-cell><span>{{row['click']}}</span></td>
+                    <td md-cell><span>{{row['cost'] | currency}}</span></td>
+                    <td md-cell><span>{{row['visit']}}</span></td>
+                    <td md-cell><span>{{row['revenue']}}</span></td>
+
                 </tr>
             </tbody>
         </table>
@@ -112,7 +175,7 @@
         md-page="query.page"
         md-total="{{report.totalRows}}"
         md-page-select
+        ng-show="taskProgress[thirdPartyTrafficSourceId].offerStatus"
     >
-
     </md-table-pagination>
 </div>

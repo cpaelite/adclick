@@ -42,3 +42,16 @@ table.md-table.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover {
   overflow: hidden;
   border: 0;
 }
+.table-box .group-by {
+  padding-left: 5px!important;
+}
+.table-box .group-by select {
+  border: 0;
+  background: transparent;
+  width: 100%;
+}
+.ts-report-box .label-name{
+  margin: 0;
+  padding: 0 5px 0 20px;
+  font-weight: normal;
+}

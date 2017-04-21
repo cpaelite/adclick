@@ -55,7 +55,8 @@ const {
 
 var Promise = require('bluebird');
 
-Promise.all([connect('gatekeeper'), connect('AdClickTool'), connectReportDatabase('adclicktool')]).then(orms => {
+
+Promise.all([connect('AdClickTool'), connectReportDatabase('adclicktool')]).then(orms => {
   orms.forEach(orm => {
     sequelizeInstance = orm.sequelize;
     Object.assign(models, orm.models);
