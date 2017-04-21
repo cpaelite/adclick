@@ -120,7 +120,7 @@
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
-                    <th md-column>Campaign</th>
+                    <th md-column class="item-name">Campaign</th>
                     <th md-column>{{apiDimensions[groupBy]}}</th>
                     <th md-column md-order-by="impression">Impressions</th>
                     <th md-column md-order-by="click">Clicks</th>
@@ -131,11 +131,12 @@
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
                 <tr md-row ng-repeat="row in report.rows">
-                    <td md-cell>
+                    <td md-cell class="item-name">
                       <md-menu-bar style="padding: 0;" ng-if="groupBy == 'campaignId'">
                           <md-menu>
                               <a ng-click="menuOpen($mdMenu)">
                                 {{row['campaignName']}}
+                                <i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i>
                               </a>
                               <md-menu-content width="3">
                                   <md-menu-item>
