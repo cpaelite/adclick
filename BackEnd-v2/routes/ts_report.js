@@ -334,7 +334,7 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
                 userId: value.userId,
                 thirdPartyTrafficSourceId: value.thirdPartyTrafficSourceId
             },
-            attributes: ['id', 'status', 'message', 'tzId', ['statisFrom', 'from'], ['statisTo', 'to']],
+            attributes: ['id', 'status', 'message', 'tzId','tzShift','tzParam',['thirdPartyTrafficSourceId','tsId'], ['statisFrom', 'from'], ['statisTo', 'to'],'meshSize'],
             order: 'createdAt DESC',
             offset: 0, limit: 1
         });
