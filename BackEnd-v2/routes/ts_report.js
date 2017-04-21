@@ -5,6 +5,7 @@ import { validate } from './common';
 import Joi from 'Joi';
 import sequelize from 'sequelize';
 const _ = require('lodash');
+var common = require('./common');
 
 export default router;
 
@@ -393,9 +394,9 @@ const trafficSourceStatisAttributes = [
     [sequelize.literal('sum(impression)'), 'impression'],
     [sequelize.literal('sum(click)'), 'click'],
     [sequelize.literal('round(sum(Cost/1000000),2)'), 'cost'],
-    [sequelize.literal('sum(0)'),'visit'],
-    [sequelize.literal('sum(0)'),'conversion'],
-    [sequelize.literal('sum(0)'),'revenue'],
+    [sequelize.literal('sum(0)'), 'visit'],
+    [sequelize.literal('sum(0)'), 'conversion'],
+    [sequelize.literal('sum(0)'), 'revenue'],
     'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'
 ];
 
@@ -432,6 +433,7 @@ const mapping = {
  *
  */
 router.get('/api/third/traffic-source-statis', async function (req, res, next) {
+    let connection;
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required(),
@@ -444,7 +446,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         });
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
-
+        connection = await common.getConnection();
         //check groupby 
         if (!_.has(mapping, value.groupBy)) {
             return res.json({
@@ -533,30 +535,40 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                 IN = 5;
         }
 
-        let whereConditon = {
-            userId: value.userId,
-            taskId: value.taskId,
-            dimensions: sequelize.literal(`dimensions & ${IN} > 0`)
-        };
+        let orders = "";
+        let whereConditon = `userId=${value.userId} and taskId=${value.taskId} and dimensions & ${IN} > 0 `;
         if (value.campaignId != undefined) {
-            whereConditon.campaignId = value.campaignId;
+            whereConditon += ` and campaignId=${value.campaignId}`;
         }
+
+        if (orderBy.length) {
+            orders = `order by ${orderBy[0]} ${orderBy[1]}`;
+        } else {
+            orders = `order by campaignId ASC`;
+        }
+
+        let tpl = ` select campaignId,campaignName,websiteId,status,
+                    sum(impression) as impression,
+                    sum(click) as click,
+                    round(sum(Cost/1000000),2) as cost,
+                    0 as visit, 0 as conversion,0 as revenue,
+                    'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'  from TrafficSourceStatis
+                    where ${whereConditon} group by ${groupBy},time ${orders} `
+        let totaltpl = `select COUNT(*) as total from ((${tpl}) as T)`;
+        tpl += ` limit ${offset},${limit}`;
+       
+        let [rows,totals] = await Promise.all([
+            common.query(tpl,[],connection),
+            common.query(totaltpl,[],connection),
+        ]);
+        
         //console.log('IN ======= :', IN)
-        //select 3rd ts report 
-        let rows = await TSSTATIS.findAll({
-            where: whereConditon,
-            limit,
-            offset,
-            group: `${groupBy},time`,
-            attributes: trafficSourceStatisAttributes,
-            order: orderBy.length ? [[sequelize.literal(orderBy[0]), orderBy[1]]] : [[sequelize.literal('campaignId'), 'ASC']]
-        });
-    
+        
         let rawRows = [];
         let InSlice = [];
         for (let index = 0; index < rows.length; index++) {
-            rawRows.push(rows[index].dataValues);
-            let value = rows[index].dataValues[groupBy]
+            rawRows.push(rows[index]);
+            let value = rows[index][groupBy]
             InSlice.push(value);
         }
 
@@ -569,8 +581,8 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             sqlWhere[mapping[groupBy]] = {
                 $in: InSlice
             }
-            if(value.campaignId !=undefined){
-                sqlWhere.tsCampaignId= value.campaignId;
+            if (value.campaignId != undefined) {
+                sqlWhere.tsCampaignId = value.campaignId;
             }
             let groupCondition = groupBy;
             let finalAttribute = [];
@@ -615,7 +627,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                 group: groupCondition,
                 attributes: finalAttribute
             });
-           
+
             for (let index = 0; index < reportRows.length; index++) {
                 for (let i = 0; i < rawRows.length; i++) {
                     if (rawRows[i].time == reportRows[index].dataValues[groupByKey]) {
@@ -630,10 +642,15 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             status: 1,
             message: 'success',
             data: {
-                rows: rawRows
+                rows: rawRows,
+                totalRows:totals.length ? totals[0].total :0
             }
         });
     } catch (e) {
         next(e);
+    }finally{
+        if(connection){
+            connection.release();
+        }
     }
 });
