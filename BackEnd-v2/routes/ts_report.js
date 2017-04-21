@@ -334,7 +334,9 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
                 userId: value.userId,
                 thirdPartyTrafficSourceId: value.thirdPartyTrafficSourceId
             },
-            attributes: ['id', 'status', 'message', 'tzId','tzShift','tzParam',['thirdPartyTrafficSourceId','tsId'], ['statisFrom', 'from'], ['statisTo', 'to'],'meshSize'],
+            //0:minute;1:hour;2:day;3:week;4:month;5:year
+            attributes: ['id', 'status', 'message', 'tzId', 'tzShift', 'tzParam', ['thirdPartyTrafficSourceId', 'tsId'], [sequelize.literal('DATE_FORMAT(statisFrom,\'%Y-%m-%d %H:%i:%S\')'), 'from'], [sequelize.literal('DATE_FORMAT(statisTo,\'%Y-%m-%d %H:%i:%S\')'), 'to'],
+                [sequelize.literal('case meshSize when 0 then \'minute\' when 1 then \'hour\' when 2 then \'day\' when 3 then \'week\' when 4 then \'month\' else \'year\' end '), 'meshSize']],
             order: 'createdAt DESC',
             offset: 0, limit: 1
         });
