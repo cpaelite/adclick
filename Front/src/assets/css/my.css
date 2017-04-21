@@ -3227,3 +3227,21 @@ table.md-table tr.row-deleted td.md-cell {
     width: 85%;
     height: 516px;
 }
+.repeater-container .drilldown-tag {
+  position: absolute;
+  right: 0;
+  top: 3px;
+  display: none;
+}
+.repeater-container tr .item-name {
+  position: relative;
+}
+.repeater-container tr .item-name a {
+  border: 1px solid transparent;
+}
+.repeater-container tr:hover .item-name a {
+  border: 1px solid;
+}
+.repeater-container tr:hover .drilldown-tag {
+  display: inline-block;
+}

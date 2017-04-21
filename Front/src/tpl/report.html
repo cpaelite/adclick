@@ -157,18 +157,8 @@
                   ng-repeat="row in report.rows" ng-if="row.parentRow.expanded"
                   ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
                 <td ng-if="canEdit()" class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
-                    <md-menu-bar style="padding: 0;" ng-if="row.treeLevel==1">
-                        <md-menu>
-                            <a ng-click="menuOpen($mdMenu, row)">
-                              <i class="icon-remove" ng-if="row.data.deleted==1"></i>
-                              <i class="icon-circle" ng-if="row.data.deleted==0"></i>
-                            </a>
-                            <md-menu-content width="3">
-                                <md-menu-item ng-if="row.data.deleted==0"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
-                                <md-menu-item ng-if="row.data.deleted==1"><md-button ng-click="restoreItem($event, row)">Restore</md-button></md-menu-item>
-                            </md-menu-content>
-                        </md-menu>
-                    </md-menu-bar>
+                  <i class="icon-remove" ng-if="row.data.deleted==1"></i>
+                  <i class="icon-circle" ng-if="row.data.deleted==0"></i>
                 </td>
                 <td md-cell ng-if="treeLevel>1">
                   <i class="material-icons table-arrow-down" ng-class="{active:row.expanded}"
@@ -179,20 +169,18 @@
                     ng-if="preferences.reportViewColumns[column.key].visible  || column.role=='name'"
                     ng-class="{'red':row.data[column.key] < 0 && column.key == 'roi','green':row.data[column.key] > 0 && column.key == 'roi', 'item-name': $index == 0}">
                     <!--ng-click="openMenu($event, row, column.role)"-->
-                  <span ng-if="column.role=='name'">
+                  <span ng-if="column.role=='name' && row.treeLevel == 1">
                     <md-menu-bar style="padding: 0;">
                         <md-menu>
                             <a ng-click="menuOpen($mdMenu, row)">
-                              <md-tooltip
-                                md-direction="'top'">
-                                {{::row.data[column.key]}}
-                              </md-tooltip>
                               {{::row.data[column.key]}}
+                              <i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i>
                             </a>
                             <md-menu-content width="3">
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row)">Edit</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && row.data.deleted"><md-button ng-click="restoreItem($event, row)">Restore</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && perfType=='campaign'"><md-button clipboard text="copyCampaignUrl" ng-click="copyUrlClick()">Copy Url</md-button></md-menu-item>
                                 <md-menu-item ng-if="treeLevel == 1">
                                     <md-menu>
@@ -207,6 +195,9 @@
                             </md-menu-content>
                         </md-menu>
                     </md-menu-bar>
+                  </span>
+                  <span ng-if="column.role=='name' && row.treeLevel != 1">
+                    {{::row.data[column.key]}}
                   </span>
                   <span ng-if="column.role!='name'">
                     {{::isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
