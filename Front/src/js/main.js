@@ -176,15 +176,6 @@
     $scope.copyCon = function(){
       toastr.success('copy success',{ timeOut: 4000, positionClass: 'toast-top-center' });
     };
-
-    $scope.goSuddenChange = function(){
-      $scope.$state.go('app.suddenChange');
-    };
-
-    $scope.goFraudFilter = function(){
-      $scope.$state.go('app.fraudFilter');
-    };
-
   }
 
 })();
