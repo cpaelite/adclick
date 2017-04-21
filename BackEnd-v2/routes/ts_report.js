@@ -387,17 +387,22 @@ router.get('/api/third/traffic-source/:id', async function (req, res, next) {
 
 const trafficSourceStatisAttributes = [
     'campaignId',
+    'campaignName',
     'websiteId',
     'status',
-    'impression',
-    'click',
-    'cost', 'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'
+    [sequelize.literal('sum(impression)'), 'impression'],
+    [sequelize.literal('sum(click)'), 'click'],
+    [sequelize.literal('round(sum(Cost/1000000),2)'), 'cost'],
+    [sequelize.literal('sum(0)'),'visit'],
+    [sequelize.literal('sum(0)'),'conversion'],
+    [sequelize.literal('sum(0)'),'revenue'],
+    'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'
 ];
 
 const adReportAttributes = [
-    [sequelize.fn('SUM', sequelize.col('Visits')), 'visit'],
-    [sequelize.fn('SUM', sequelize.col('Conversions')), 'conversion'],
-    [sequelize.fn('SUM', sequelize.col('Revenue')), 'revenue']
+    [sequelize.literal('sum(Visits)'), 'visit'],
+    [sequelize.literal('sum(Conversions)'), 'conversion'],
+    [sequelize.literal('round(sum(Revenue/1000000),2)'), 'revenue']
 ]
 
 const mapping = {
@@ -434,7 +439,8 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             groupBy: Joi.string().required(),
             page: Joi.number().required(),
             limit: Joi.number().required(),
-            order: Joi.string().required()
+            order: Joi.string().required(),
+            campaignId: Joi.string().optional()
         });
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
@@ -478,27 +484,74 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             throw new Error('taskId error');
         }
 
-        console.log(taskObj)
+        //console.log(taskObj)
 
         let { statisFrom: from, statisTo: to, tzShift: tz, meshSize: meshSize } = taskObj;
-        console.log('form :', from);
-        console.log('to :', to);
+        //console.log('form :', from);
+        //console.log('to :', to);
+        //v1~v10 campaignId/webSiteId/time的顺序依次赋值
+        let IN = 5; //默认campaignId,time
+
+        switch (groupBy) {
+            case 'campaignId':
+                IN = parseInt('101', 2);
+                break;
+            case 'websiteId':
+                IN = parseInt('111', 2);
+                break;
+            case 'v1':
+                IN = parseInt('1000000000101', 2);
+                break;
+            case 'v2':
+                IN = parseInt('100000000101', 2);
+                break;
+            case 'v3':
+                IN = parseInt('10000000101', 2);
+                break;
+            case 'v4':
+                IN = parseInt('1000000101', 2);
+                break;
+            case 'v5':
+                IN = parseInt('100000101', 2);
+                break;
+            case 'v6':
+                IN = parseInt('10000101', 2);
+                break;
+            case 'v7':
+                IN = parseInt('1000101', 2);
+                break;
+            case 'v8':
+                IN = parseInt('100101', 2);
+                break;
+            case 'v9':
+                IN = parseInt('10101', 2);
+                break;
+            case 'v10':
+                IN = parseInt('1101', 2);
+                break;
+            default:
+                IN = 5;
+        }
+
+        let whereConditon = {
+            userId: value.userId,
+            taskId: value.taskId,
+            dimensions: sequelize.literal(`dimensions & ${IN} > 0`)
+        };
+        if (value.campaignId != undefined) {
+            whereConditon.campaignId = value.campaignId;
+        }
+        //console.log('IN ======= :', IN)
         //select 3rd ts report 
         let rows = await TSSTATIS.findAll({
-            where: {
-                userId: value.userId,
-                taskId: value.taskId,
-                dimensions: `campaignId,${groupBy == "campaignId" ? "" : groupBy}`
-            },
+            where: whereConditon,
             limit,
             offset,
+            group: `${groupBy},time`,
             attributes: trafficSourceStatisAttributes,
             order: orderBy.length ? [[sequelize.literal(orderBy[0]), orderBy[1]]] : [[sequelize.literal('campaignId'), 'ASC']]
         });
-        console.log("==========111");
-
-
-
+    
         let rawRows = [];
         let InSlice = [];
         for (let index = 0; index < rows.length; index++) {
@@ -515,6 +568,9 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
 
             sqlWhere[mapping[groupBy]] = {
                 $in: InSlice
+            }
+            if(value.campaignId !=undefined){
+                sqlWhere.tsCampaignId= value.campaignId;
             }
             let groupCondition = groupBy;
             let finalAttribute = [];
@@ -559,9 +615,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                 group: groupCondition,
                 attributes: finalAttribute
             });
-            console.log("==========");
-            console.log(reportRows);
-
+           
             for (let index = 0; index < reportRows.length; index++) {
                 for (let i = 0; i < rawRows.length; i++) {
                     if (rawRows[i].time == reportRows[index].dataValues[groupByKey]) {
