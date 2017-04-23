@@ -4302,7 +4302,6 @@ app.post('/api/fraud-filter/rules', function(req, res) {
     "stauts": 1,
     "message": "success",
     data: {
-      "id": 1,
       "name": "ruleName",
       "campaigns": "1,2",
       "dimension": "IP",
@@ -4363,11 +4362,13 @@ app.get('/api/fraud-filter/logs/:id', function(req, res) {
     "status": 1,
     "message": "success",
     "data": {
-      id: 1,
-      campaign: 'campaign1',
-      dimension: 'IP',
-      name: 'rule1',
-      data: data
+      "logs": [{
+        id: 1,
+        campaign: 'campaign1',
+        dimension: 'IP',
+        name: 'rule1',
+        data: data
+      }]
     }
   };
   res.send(result);
