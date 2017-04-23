@@ -722,6 +722,14 @@ angular.module('app').value('AutomatedRuleOptions', {
   ]
 });
 
+angular.module('app').value('FraudFilterRuleOptions', {
+  "condition": [
+    {"key": "pv", "display": "PV", "unit": ""},
+    {"key": "uv", "display": "UV", "unit": ""},
+    {"key": "clicks", "display": "Clicks", "unit": ""},
+  ]
+});
+
 angular.module('app').factory('reportCache', ['$cacheFactory', function ($cacheFactory) {
   var cache = $cacheFactory.get('report-cache');
   if (!cache) {

@@ -2512,7 +2512,8 @@ p.cs-flow-offer-view{
     font-size: 16px;
     float: right;
     width: 22px;
-    height: 22px;
+    height: 32px;
+    line-height: 32px;
     text-align: center;
     color: #666;
 }
@@ -2908,7 +2909,7 @@ md-icon.md-default-theme, md-icon{color:#fff;}
 .md-primary.cancel-btn{background:#f6f8f8;color:#000;font-size:12px;}
 .md-primary.cancel-btn:hover{background:#f6f8f8;}
 .form-control{height:32px;border-radius:3px;border:1px solid #c9c9cf;font-size:14px;}
-.selectize-input{border:1px solid #c9c9cf;border-radius:3px;min-height:32px;line-height:32px;padding:0;color:#000;}
+.selectize-input{border:1px solid #c9c9cf;border-radius:3px;min-height:32px;line-height:32px;padding:0;color:#000;padding-left: 12px;}
 .selectize-control.multi .selectize-input > div{line-height:normal;color:#fff;padding:2px 5px;background:#8494a2;}
 .selectize-control.multi .selectize-input.has-items{padding:0 5px 3px 5px;}
 .selectize-input:focus,table .traficc-source-input input:focus,.network-textarea textarea:focus{
