@@ -4154,7 +4154,7 @@ app.get('/api/automated/rules/:id', function(req, res) {
  * @apiName 保存 rule
  *
  */
-app.post('/api/automated/rules/:id', function(req, res) {
+app.post('/api/automated/rules/', function(req, res) {
   var result = {
     "stauts": 1,
     "message": "success",

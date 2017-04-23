@@ -691,7 +691,7 @@ angular.module('app').value('AutomatedRuleOptions', {
   "dimension": [
     "WebSiteId","Country","Carrier","City","Device","OS","OSVersion","ISP","Offer","Lander","Brand","Browser","BrowserVersion"
   ],
-  "dataFrom": [
+  "timeSpan": [
     {"key": "last3hours", "display": "Last 3 Hours"},
     {"key": "last6hours", "display": "Last 6 Hours"},
     {"key": "last12hours", "display": "Last 12 Hours"},

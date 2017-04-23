@@ -19,7 +19,6 @@
     ];
 
     $scope.viewLogs = function(tr){
-      console.log(tr);
       $mdDialog.show({
         clickOutsideToClose: false,
         controller: ['$scope', '$mdDialog', 'LogDetail', ruleLogCtrl],
@@ -191,11 +190,15 @@
           "frequency": "Every 1 Hour",
           "executionType": "0"
         };
+        $scope.freDate = moment().format('YYYY-MM-DD');;
+        $scope.freWeek = "0";
+        $scope.freTime = "00:00";
+
       }
       this.titleType = "Rule";
 
       $scope.dimensions = AutomatedRuleOptions.dimension;
-      $scope.dataFroms = AutomatedRuleOptions.dataFrom;
+      $scope.timeSpans = AutomatedRuleOptions.timeSpan;
       $scope.conditions = AutomatedRuleOptions.condition;
       $scope.frequencys = AutomatedRuleOptions.frequency;
 
@@ -207,6 +210,15 @@
           $scope.hours.push('' + i + ':00');
         }
       }
+      $scope.weeks = [
+        {"key": 0, display: "Sunday"},
+        {"key": 1, display: "Monday"},
+        {"key": 2, display: "Tuesday"},
+        {"key": 3, display: "Wednesday"},
+        {"key": 4, display: "Thursday"},
+        {"key": 5, display: "Friday"},
+        {"key": 6, display: "Saturday"},
+      ];
 
       $scope.conditionDisable = function(item, index) {
         var selectConditions = $scope.conditionArray.map(function(con) {
@@ -252,6 +264,20 @@
         }
       };
 
+      // 是否显示日期选择框
+      $scope.showDateSelect = function() {
+        return ['One Time'].indexOf($scope.item.frequency) >= 0;
+      };
+      // 是否显示星期选择框
+      $scope.showWeekSelect = function() {
+        return ['Weekly'].indexOf($scope.item.frequency) >= 0;
+      };
+      // 是否显示时间选择框
+      $scope.showTimeSelect = function() {
+        return ['Daily', 'Weekly', 'One Time'].indexOf($scope.item.frequency) >= 0;
+      };
+
+      // 获取所有campaign
       Campaign.get(null, function(result) {
         if (result.status) {
           $scope.campaignFilter.options = result.data.campaign;
@@ -269,7 +295,7 @@
 
       function success(item) {
         $scope.saveStatus = false;
-        if(item.data.status == 0) {
+        if(item.status == 0) {
           $scope.errMessage = item.message;
           return;
         } else {

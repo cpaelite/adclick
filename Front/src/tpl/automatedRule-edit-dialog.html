@@ -31,15 +31,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Using Data from<span class="star-icon">*</span>: </label>
+                <label class="col-sm-3 control-label">Time Span<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
-                    <md-select aria-label="DataFrom" class="cs-subform-select" ng-model="item.dataFrom">
-                        <md-option value="{{datafrom}}" ng-repeat="datafrom in dataFroms track by $index">{{datafrom}}</md-option>
+                    <md-select aria-label="DataFrom" class="cs-subform-select" ng-model="item.timeSpan">
+                        <md-option value="{{timeSpan.key}}" ng-repeat="timeSpan in timeSpans track by $index">{{timeSpan.display}}</md-option>
                     </md-select>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">If<span class="star-icon">*</span>: </label>
+                <label class="col-sm-3 control-label">Conditions<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select" ng-repeat="(conArrIdx, condition) in conditionArray">
                     <md-select aria-label="ConditionKey" class="cs-subform-select" ng-model="conditionArray[conArrIdx].key">
                         <md-option value="{{con.key}}" ng-repeat="con in conditions" ng-disabled="conditionDisable(con, conArrIdx)">{{con.display}}</md-option>
@@ -64,10 +64,13 @@
                     </md-select>
                     <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="freDate"
                             is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
-                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                            ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button" ng-if="showDateSelect()">
                         {{freDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                     </button>
-                    <md-select aria-label="freTime" class="cs-subform-select" ng-model="freTime">
+                    <md-select aria-label="freTime" class="cs-subform-select" ng-model="freWeek" ng-if="showWeekSelect()">
+                        <md-option ng-repeat="week in weeks" value="{{week.key}}">{{week.display}}</md-option>
+                    </md-select>
+                    <md-select aria-label="freTime" class="cs-subform-select" ng-model="freTime" ng-if="showTimeSelect()">
                         <md-option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</md-option>
                     </md-select>
                 </div>
