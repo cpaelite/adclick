@@ -115,6 +115,15 @@ angular.module('app')
   .factory('LogDetail', ['$resource', function ($resource) {
     return $resource('/api/automated/logs/detail/:id', {id: '@id'});
   }])
+  .factory('FraudFilterRule', ['$resource', function ($resource) {
+    return $resource('/api/fraudFilter/rules/:id', {id: '@id'});
+  }])
+  .factory('FraudFilterLog', ['$resource', function ($resource) {
+    return $resource('/api/fraudFilter/logs/:id', {id: '@id'});
+  }])
+  .factory('FraudFilterLogDetail', ['$resource', function ($resource) {
+    return $resource('/api/fraudFilter/logs/detail/:id', {id: '@id'});
+  }])
   .factory('EventLog', ['$resource', function ($resource) {
     return $resource('/api/eventlog');
   }])

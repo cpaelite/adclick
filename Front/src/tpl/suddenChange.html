@@ -150,68 +150,6 @@
           </div>
         </md-content>
       </md-tab>
-      <md-tab label="Bot Blacklist">
-        <md-content class="md-padding black-list">
-          <h1 class="setting-title">
-            Bot Blacklist
-            <p>Bot Blacklist permits you to add bot rules based on IP / IP range and useragent values.
-          Once bot rules are enabled, they will be applied globally to all active campaigns with bot traffic events excluded from your reporting.</p>
-            <p>Further information regarding the use of the Bot Blacklist can be referenced here.
-          The maximum amount of the bot rules that can be created is {{blacklistCount}}. You can still add {{blacklistCount - data.blacklist.length}} bot rule(s).</p>
-          </h1>
-          <div class="form-column bot-blacklist">
-            <div class="container clearfix">
-              <div class="form-group bot-select">
-                <label>Bot rules: </label>
-                  <md-select class="cs-subform-select" ng-model="data.enabled">
-                      <md-option value="true">Enabled</md-option>
-                      <md-option value="false">Disabled</md-option>
-                  </md-select>
-              </div>
-              <div class="btn-right" ng-show="data.blacklist.length < blacklistCount">
-                <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="icon-plus"></i>Create New</md-button>
-                <!-- <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
-                <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button> -->
-              </div>
-              <div class="data-table">
-                  <div class="table-box">
-                      <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Bot</th>
-                      <th>IP / IP range</th>
-                      <th>User agent</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <tr ng-repeat="item in data.blacklist track by $index">
-                    <td>
-                      <span uib-dropdown>
-                          <a uib-dropdown-toggle>{{item.name}}</a>
-                          <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                              <li role="menuitem"><a ng-click="editItem($event, $index)">Edit</a></li>
-                              <li role="menuitem"><a ng-click="deleteItem($event, $index)">Delete</a></li>
-                          </ul>
-                        </span>
-                    </td>
-                    <td>
-                        {{item.ipRules[0]}}
-                        <span style="color:red" ng-if="item.ipRules.length >= 2">{{item.ipRules.length -1}}</span></td>
-                    <td>
-                        {{item.userAgentRules[0]}}
-                        <span style="color:red" ng-if="item.userAgentRules.length >= 2">{{item.userAgentRules.length -1}}</span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-                  </div>
-              </div>
-            </div>
-
-          </div>
-
-        </md-content>
-      </md-tab>
     </md-tabs>
   </md-content>
 </div>

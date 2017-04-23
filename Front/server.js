@@ -4110,7 +4110,7 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
  * @apiName 获取所有规则
  *
  */
-app.get('/api/automated/rules', function(req, res) {
+  app.get('/api/automated/rules', function(req, res) {
   var result = {
     "stauts": 1,
     "message": "success",
@@ -4233,6 +4233,95 @@ app.get('/api/automated/logs', function(req, res) {
  *
  */
 app.get('/api/automated/logs/detail/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [
+        {id: 1, campaign: 'campaign1', action: 'action', inventorySources: 'sources', inventory:'ccc'}
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName fraudFilter获取所有rule
+ *
+ */
+app.get('/api/fraudFilter/rules', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "rules": [
+        {"id": 1, "name": "Rule1", "campaigns": "1", "dimension": "Country1","frequency":"frequency", "timeSpan": "last6hours","status": 0},
+        {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "Country2","frequency":"frequency", "timeSpan": "last6hours", "status": 1},
+        {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "Country3","frequency":"frequency", "timeSpan": "last6hours", "status": 0}
+      ]
+    }
+  }
+  res.send(result);
+});
+
+/**
+ * @apiName 删除rule
+ *
+ */
+app.delete('/api/fraudFilter/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 保存 rule
+ *
+ */
+app.post('/api/fraudFilter/rules/:id', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "1,2",
+      "dimension": "Country",
+      "timeSpan": "last6hours",
+      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "schedule": "0 0 * * * *",
+      "status": 0
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName获取rule的log记录
+ *
+ */
+app.get('/api/fraudFilter/logs', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [
+        {id: 1, time: '2017-04-20 00:01:01', name: 'rule1', dimension: "Country"},
+        {id: 2, time: '2017-04-20 00:02:01', name: 'rule2',  dimension: "Device"},
+        {id: 3, time: '2017-04-20 00:03:01', name: 'rule3', dimension: "OS"}
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取rule的log的详情
+ *
+ */
+app.get('/api/fraudFilter/logs/detail/:id', function(req, res) {
   var result = {
     "status": 1,
     "message": "success",

@@ -38,9 +38,9 @@
                     </md-select>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Conditions<span class="star-icon">*</span>: </label>
-                <div class="col-sm-7 my-select" ng-repeat="(conArrIdx, condition) in conditionArray">
+            <div class="form-group"  ng-repeat="(conArrIdx, condition) in conditionArray">
+                <label class="col-sm-3 control-label" ng-class="{'isShowNameCondition': conArrIdx != 0}">Conditions<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7 my-select">
                     <md-select aria-label="ConditionKey" class="cs-subform-select" ng-model="conditionArray[conArrIdx].key">
                         <md-option value="{{con.key}}" ng-repeat="con in conditions" ng-disabled="conditionDisable(con, conArrIdx)">{{con.display}}</md-option>
                     </md-select>
@@ -48,13 +48,17 @@
                         <md-option value=">">></md-option>
                         <md-option value="<"><</md-option>
                     </md-select>
-                    <input type="text" name="conValue" class="cs-subform-select" ng-model="condition.value" required>
+                    <input type="text" name="conValue" class="form-control rule-edit-input cs-subform-select" ng-model="condition.value" required>
                     <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
                         <span ng-show="editForm.conValue.$error.required">Value is required.</span>
                     </span>
-                    <em ng-click="deleteCondition(condition)" class="em-close" ng-if="$index > 0">x</em>
+                    <em ng-click="deleteCondition(condition)" class="rule-condition em-close" ng-if="$index > 0"><i class="material-icons">delete</i></em>
                 </div>
-                <div class="col-sm-7"><em ng-click="addCondition()" ng-if="conditionArray.length < conditions.length">+Add another</em></div>
+
+            </div>
+            <div class="form-group add-another">
+              <label class="col-sm-3 control-label"></label>
+              <div class="col-sm-7"><em ng-click="addCondition()" ng-if="conditionArray.length < conditions.length"><i class="material-icons add-next">add_circle</i>Add another</em></div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>: </label>

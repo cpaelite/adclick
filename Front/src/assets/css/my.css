@@ -829,6 +829,26 @@ label.cs-subform-label.date-title{
 .rule-log table.md-table th.md-column:last-child{
   border:none;
 }
+.form-control.rule-edit-input{
+  width: auto;
+}
+.add-another .material-icons.add-next{
+  font-size: 17px;
+  margin-right: 5px;
+}
+.add-another em{
+  font-style: normal;
+  font-size: 13px;
+}
+.control-label.isShowNameCondition{
+  visibility:hidden;
+}
+.rule-condition.em-close{
+  width: 14px;
+  height: 32px;
+  line-height: 32px;
+  color: #000;
+}
 /*End tabs Style*/
 
 /*start URL tokens style*/
