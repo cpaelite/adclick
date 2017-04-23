@@ -90,8 +90,8 @@
 </div>
 
 <div flex class="cs-page-content report ts-offer-report">
-  <div resizets style="margin-bottom: 89px;" ng-show="!taskProgress[thirdPartyTrafficSourceId].progressStatus && !taskProgress[thirdPartyTrafficSourceId].taskErrorMeg && !taskProgress[thirdPartyTrafficSourceId].offerStatus"></div>
-  <div class="load-progress-box" ng-show="taskProgress[thirdPartyTrafficSourceId].progressStatus" resizets style="margin-bottom: 89px;">
+  <div resizetsr style="margin-bottom: 89px;" ng-show="!taskProgress[thirdPartyTrafficSourceId].progressStatus && !taskProgress[thirdPartyTrafficSourceId].taskErrorMeg && !taskProgress[thirdPartyTrafficSourceId].offerStatus"></div>
+  <div class="load-progress-box" ng-show="taskProgress[thirdPartyTrafficSourceId].progressStatus" resizetsr style="margin-bottom: 89px;">
     <div class="progress">
       <div class="progress-bar" role="progressbar" style="width: {{taskProgress[thirdPartyTrafficSourceId].progress}}%;">{{taskProgress[thirdPartyTrafficSourceId].progressNum}}%</div>
     </div>
@@ -102,21 +102,21 @@
     </div>
   </div>
 
-  <div class="load-progress-box" ng-show="taskProgress[thirdPartyTrafficSourceId].taskErrorMeg" resizets style="margin-bottom: 89px;">
+  <div class="load-progress-box" ng-show="taskProgress[thirdPartyTrafficSourceId].taskErrorMeg" resizetsr style="margin-bottom: 89px;">
     <div class="load-progress-content">
       <i class="icon-meh"></i>
       <p class="text-danger">{{taskProgress[thirdPartyTrafficSourceId].taskErrorMeg}}</p>
       <p>Please load again.</p>
     </div>
   </div>
-  <div class="breadcrumb-div" ng-if="groupBy != 'campaignId'">
+  <div class="breadcrumb-div" ng-if="groupBy && groupBy != 'campaignId'">
     <ul class="breadcrumb">
       <li ng-click="backToAllCampaign()"><em style="color: dodgerblue">Back</em></li>
       <li><em>{{campaignName}}</em></li>
     </ul>
   </div>
   <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdPartyTrafficSourceId].offerStatus}">
-    <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
+    <md-table-container resizetsr class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
                 <tr md-row>

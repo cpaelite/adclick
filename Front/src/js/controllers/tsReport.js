@@ -1,7 +1,45 @@
 (function() {
   'use strict';
 
-  angular.module('app').controller('TsreportCtrl', ['$scope', '$timeout', '$q', 'TemplateTrafficSource', 'ThirdPartyTrafficSource', 'Profile', 'DateRangeUtil', '$mdDialog', 'TrafficSourceSyncTask', 'TrafficSourceStatis', TsreportCtrl]);
+  angular.module('app').controller('TsreportCtrl', ['$scope', '$timeout', '$q', 'TemplateTrafficSource', 'ThirdPartyTrafficSource', 'Profile', 'DateRangeUtil', '$mdDialog', 'TrafficSourceSyncTask', 'TrafficSourceStatis', TsreportCtrl])
+  .directive('resizetsr',['$timeout','$q', '$window', function($timeout, $q, $window){
+    return function(scope, element) {
+      var timeout;
+      var w_h = $(window);
+      var nav_h = $('nav');
+      var filter_h = $('.cs-action-bar-bg');
+      var page_h = $('md-table-pagination');
+      function getHeight() {
+        var deferred = $q.defer();
+        $timeout(function() {
+          deferred.resolve({
+            'w_h': w_h.height(),
+            'nav_h': nav_h.height(),
+            'filter_h':filter_h.outerHeight(true),
+            'page_h':page_h.height()
+          });
+        });
+        return deferred.promise;
+      }
+
+      function heightResize() {
+        getHeight().then(function(newVal) {
+          scope.windowHeight = newVal.w_h;
+          scope.navHeight = newVal.nav_h;
+          scope.filterHeight = newVal.filter_h;
+          scope.pageHeight = newVal.page_h;
+
+          angular.element(element).css({
+            'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 56 - 33 - 5 - $('.breadcrumb-div').outerHeight(true)) + 'px'
+          })
+        })
+      }
+      heightResize();
+      $(window).on('resize', function() {
+        heightResize();
+      });
+    }
+  }]);
 
   function TsreportCtrl($scope, $timeout, $q, TemplateTrafficSource, ThirdPartyTrafficSource, Profile, DateRangeUtil, $mdDialog, TrafficSourceSyncTask, TrafficSourceStatis) {
     this.$scope = $scope;
@@ -131,6 +169,7 @@
       $scope.campaignName = row.campaignName;
       $scope.query.page = 1;
       $scope.query.__tk++;
+      $(window).trigger('resize');
     };
 
     $scope.backToAllCampaign = function() {
@@ -139,6 +178,7 @@
       $scope.campaignName = '';
       $scope.query.page = 1;
       $scope.query.__tk++;
+      $(window).trigger('resize');
     };
 
     $scope.thirdPartyTrafficSourceChanged = function(id) {
