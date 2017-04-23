@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import moment from 'moment';
 import { validate } from './common';
-import Joi from 'Joi';
+import Joi from 'joi';
 import sequelize from 'sequelize';
 const _ = require('lodash');
 var common = require('./common');
