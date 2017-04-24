@@ -36,12 +36,6 @@
                         <tbody md-body>
                           <tr ms-row ng-repeat="tr in list.rules track by $index">
                             <td md-cell>{{tr.name}}</td>
-                            <td md-cell>
-                              {{tr.campaigns}}
-                              <md-tooltip md-direction="bottom">
-                                {{tr.campaigns}}
-                              </md-tooltip>
-                            </td>
                             <td md-cell>{{tr.dimension}}</td>
                             <td md-cell>{{tr.frequency}}</td>
                             <td md-cell>{{tr.dataFrom}}</td>

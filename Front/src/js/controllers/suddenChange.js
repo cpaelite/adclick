@@ -32,7 +32,9 @@
 
     $scope.query = {
       activeStatus :'1',
-      searchFilter:''
+      searchFilter:'',
+      page: 1,
+      limit: 1000
     };
     $scope.getRuleList = function(){
       SuddenChange.get($scope.query,function(result){
@@ -43,7 +45,9 @@
 
     $scope.datetype = '1';
     $scope.queryLog = {
-      searchFilter:''
+      searchFilter:'',
+      page: 1,
+      limit: 1000
     };
     $scope.getLogList = function(){
       Logs.get($scope.queryLog,function(result){

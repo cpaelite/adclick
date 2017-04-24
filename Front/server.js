@@ -4116,9 +4116,9 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
     "message": "success",
     data: {
       "rules": [
-        {"id": 1, "name": "Rule1", "campaigns": "1", "dimension": "Country", "timeSpan": "last6hours","status": 0},
-        {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "Country", "timeSpan": "last6hours", "status": 1},
-        {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "Country", "timeSpan": "last6hours", "status": 0}
+        {"id": 1, "name": "Rule1", "dimension": "Country", "timeSpan": "last6hours","status": 0},
+        {"id": 2, "name": "Rule2", "dimension": "Country", "timeSpan": "last6hours", "status": 1},
+        {"id": 3, "name": "Rule3", "dimension": "Country", "timeSpan": "last6hours", "status": 0}
       ]
     }
   }
