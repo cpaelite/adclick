@@ -267,7 +267,7 @@ router.post('/api/automated/rules', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let sql = `insert into SuddenChangeRule (userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails) values(?,?,?,?,?,?,?,?,?)`;
+        let sql = `insert into SuddenChangeRule (userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails) values(?,?,?,?,?,?,?,?)`;
         let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition, value.schedule, value.scheduleString, value.emails];
         let { insertId: InsertId } = await common.query(sql, params, connection);
         let campaignArray = value.campaigns.split(',');
