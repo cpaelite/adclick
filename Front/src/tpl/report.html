@@ -171,6 +171,7 @@
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="editItem($event, row, true)">Duplicate</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && !row.data.deleted"><md-button ng-click="deleteItem($event, row)">Delete</md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && row.data.deleted"><md-button ng-click="restoreItem($event, row)">Restore</md-button></md-menu-item>
+                                <md-menu-item ng-if="canEdit(row) && perfType=='campaign'"><md-button clipboard text="copyCampaignUrl"><a href="{{copyCampaignUrl}}" target="_blank" class="campaign-preview">Preview</a></md-button></md-menu-item>
                                 <md-menu-item ng-if="canEdit(row) && perfType=='campaign'"><md-button clipboard text="copyCampaignUrl" ng-click="copyUrlClick()">Copy Url</md-button></md-menu-item>
                                 <md-menu-item ng-if="treeLevel == 1">
                                     <md-menu>

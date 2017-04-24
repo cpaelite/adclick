@@ -1612,6 +1612,9 @@ h1.setting-title p{line-height:26px;color:#333;font-weight:normal;margin-bottom:
 .md-raised.copy-btn.verify-btn:hover{
     background:#29af69 !important;
 }
+a.campaign-preview{
+  display: block;
+}
 .md-raised.copy-btn{color:#fff;font-weight:bold;}
 .md-raised.copy-btn.verify-btn.domain-error
 {
