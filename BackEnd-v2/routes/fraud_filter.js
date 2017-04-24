@@ -29,7 +29,7 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,name,campaigns,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
+        let sql = `select id,name,campaignIDs,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
         let [Result] = await common.query(sql, [value.id, value.userId], connection);
         res.json({
             status: 1,
@@ -104,7 +104,7 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
             default:
                 statusFilter = ` and status=${value.status} `;
         }
-        let sql = `select id,name,campaigns,dimension,timeSpan,status from FraudFilterRule where userId =? and deleted=0 ${filter} ${statusFilter} `;
+        let sql = `select id,name,campaignIDs,dimension,timeSpan,status from FraudFilterRule where userId =? and deleted=0 ${filter} ${statusFilter} `;
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
@@ -187,7 +187,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
             params.push(value.timeSpan)
         }
         if (value.condition != undefined) {
-            sql += `,condition= ?`;
+            sql += `,\`condition\`= ?`;
             params.push(value.condition)
         }
         if (value.status != undefined) {
