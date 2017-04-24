@@ -1,7 +1,7 @@
 <div ng-cloak class="sudden-change">
   <md-content>
     <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn add-rule" ng-click="editRuleItem()" translate>New Add Rule</md-button>
-    <md-tabs md-dynamic-height md-border-bottom>
+    <md-tabs md-dynamic-height md-border-bottom md-selected="tabSelected">
       <md-tab label="Rules">
         <md-content class="md-padding">
           <div class="cs-action-bar-bg">
@@ -10,9 +10,9 @@
                     <div class="selectAll">
                       <label class="cs-subform-label date-title ng-binding">Status：</label>
                         <md-select aria-label="select" class="cs-subform-select" ng-model="query.status">
-                            <md-option value="0">All</md-option>
-                            <md-option value="1">Active</md-option>
-                            <md-option value="2">Inactive</md-option>
+                            <md-option value="2">All</md-option>
+                            <md-option value="0">Active</md-option>
+                            <md-option value="1">Inactive</md-option>
                         </md-select>
                     </div>
                   </div>
@@ -29,7 +29,6 @@
                         <thead md-head>
                           <tr md-row>
                             <th md-column>Rule Name</th>
-                            <th md-column>Campaigns</th>
                             <th md-column>Frequerncy</th>
                             <th md-column>Status</th>
                             <th md-column>Operations</th>
@@ -38,33 +37,18 @@
                         <tbody md-body>
                           <tr ms-row ng-repeat="rule in rules.rules track by $index">
                             <td md-cell>{{rule.name}}</td>
-                            <td md-cell>
-                              {{rule.campaignNames}}
-                              <md-tooltip md-direction="bottom">
-                                {{rule.campaignNames}}
-                              </md-tooltip>
-                            </td>
                             <td md-cell>{{rule.timeSpan}}</td>
                             <td md-cell>
                               <a  class="status-icon" ng-class="{'isGray': rule.status == 0}" ng-click="ruleStatusChange(rule)">
                                 <i class="icon-ok-sign"></i>
-                                <md-tooltip md-direction="bottom">
-                                  Change rule status
-                                </md-tooltip>
                               </a>
                             </td>
                             <td md-cell>
                               <a  class="opera-icon" ng-click="editRuleItem(rule)" href="javascript:;">
                                 <i class="icon-file-alt"></i>
-                                <md-tooltip md-direction="bottom">
-                                  Edit automate rules
-                                </md-tooltip>
                               </a>
                               <a  class="opera-icon" ng-click="deleteRule(rule.id)">
                                 <i class="icon-trash"></i>
-                                <md-tooltip md-direction="bottom">
-                                  Delete this automate rule
-                                </md-tooltip>
                               </a>
                             </td>
                           </tr>
@@ -165,62 +149,7 @@
       </md-tab>
       <md-tab label="Bot Blacklist">
         <md-content class="md-padding black-list">
-          <h1 class="setting-title">
-            Bot Blacklist
-            <p>Bot Blacklist permits you to add bot rules based on IP / IP range and useragent values.
-          Once bot rules are enabled, they will be applied globally to all active campaigns with bot traffic events excluded from your reporting.</p>
-            <p>Further information regarding the use of the Bot Blacklist can be referenced here.
-          The maximum amount of the bot rules that can be created is {{blacklistCount}}. You can still add {{blacklistCount - data.blacklist.length}} bot rule(s).</p>
-          </h1>
-          <div class="form-column bot-blacklist">
-            <div class="container clearfix">
-              <div class="form-group bot-select">
-                <label>Bot rules: </label>
-                  <md-select class="cs-subform-select" ng-model="data.enabled">
-                      <md-option value="true">Enabled</md-option>
-                      <md-option value="false">Disabled</md-option>
-                  </md-select>
-              </div>
-              <div class="btn-right" ng-show="data.blacklist.length < blacklistCount">
-                <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="icon-plus"></i>Create New</md-button>
-                <!-- <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
-                <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button> -->
-              </div>
-              <div class="data-table">
-                  <div class="table-box">
-                      <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Bot</th>
-                      <th>IP / IP range</th>
-                      <th>User agent</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <tr ng-repeat="item in data.blacklist track by $index">
-                    <td>
-                      <span uib-dropdown>
-                          <a uib-dropdown-toggle>{{item.name}}</a>
-                          <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                              <li role="menuitem"><a ng-click="editItem($event, $index)">Edit</a></li>
-                              <li role="menuitem"><a ng-click="deleteItem($event, $index)">Delete</a></li>
-                          </ul>
-                        </span>
-                    </td>
-                    <td>
-                        {{item.ipRules[0]}}
-                        <span style="color:red" ng-if="item.ipRules.length >= 2">{{item.ipRules.length -1}}</span></td>
-                    <td>
-                        {{item.userAgentRules[0]}}
-                        <span style="color:red" ng-if="item.userAgentRules.length >= 2">{{item.userAgentRules.length -1}}</span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-                  </div>
-              </div>
-            </div>
-          </div>
+          <div ng-include="pathRoute" ng-controller="BotBlacklistCtrl"></div>
         </md-content>
       </md-tab>
     </md-tabs>

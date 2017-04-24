@@ -21,7 +21,7 @@
     this.$scope.query = {
       page: 1,
       limit: 50,
-      status: 0,
+      status: 2,
       filter: '',
       __tk: 0
     };
@@ -36,6 +36,8 @@
     };
 
     this.$scope.datetype = '1';
+    this.$scope.tabSelected = 0;
+    this.$scope.pathRoute = 'tpl/botBlacklist.html?' + +new Date();
 
     this.init();
     this.initEvent();
@@ -108,6 +110,9 @@
         locals: {item: item, campaigns: self.campaigns, campaignMap: self.campaignMap},
         templateUrl: 'tpl/fraudFilter-edit-dialog.html?' + +new Date()
       }).then(function() {
+        if(self.$scope.tabSelected != 0) {
+          self.$scope.tabSelected = 0;
+        }
         self.$scope.query.page = 1;
         self.$scope.query.__tk++;
       });
@@ -168,21 +173,21 @@
   FraudFilterCtrl.prototype._getCampaigns = function() {
     var self = this, $scope = self.$scope, Campaign = self.Campaign;
     return Campaign.get(null, function(oData) {
-      self.campaigns = oData.data.campaign;
+      self.campaigns = oData.data;
     }).$promise;
   };
 
   FraudFilterCtrl.prototype._getFormatCampaignName = function() {
     var self = this, $scope = self.$scope;
-    $scope.rules.rules.map(function(rule) {
-      var campaignIds = rule.campaigns.split(',');
-      var campaignNameArr = [];
-
-      campaignIds.forEach(function(id) {
-        campaignNameArr.push(self.campaignMap[id].name);
-      });
-      rule.campaignNames = campaignNameArr.join(',');
-    });
+    // $scope.rules.rules.map(function(rule) {
+    //   var campaignIds = rule.campaigns.split(',');
+    //   var campaignNameArr = [];
+    //
+    //   campaignIds.forEach(function(id) {
+    //     campaignNameArr.push(self.campaignMap[id].name);
+    //   });
+    //   rule.campaignNames = campaignNameArr.join(',');
+    // });
   };
 
   FraudFilterCtrl.prototype._getDateRange = function(value) {
@@ -226,7 +231,7 @@
 
     this.cancel = $mdDialog.cancel;
     this.title = 'confirm delete';
-    this.content = 'are you sure you want to delete this rule';
+    this.content = 'Are you sure to delete this rule?';
 
     this.ok = function(){
       FraudFilter.remove({id: self.id}, function(oData) {
@@ -290,9 +295,13 @@
     };
     if (self.item) {
       var item = angular.copy(self.item);
-      item.campaigns = item.campaigns.split(',');
-      $scope.formData = item;
-      $scope.conditions = self._formatCondition(item.conditions);
+      self.FraudFilter.get({id: self.item.id}, function(oData) {
+        var data = oData.data;
+        data.campaigns = data.campaigns.split(',');
+        data.conditions = data.condition;
+        $scope.formData = data;
+        $scope.conditions = self._formatCondition(data.conditions);
+      });
     } else {
       $scope.formData = {
         dimension: 'IP',
@@ -340,17 +349,17 @@
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
         var postData = angular.copy($scope.formData);
-        postData.conditions = self._encodeCondition.call(this);
+        postData.condition = self._encodeCondition.call(this);
         postData.campaigns = postData.campaigns.join(',');
         if(self.item) {
           self.FraudFilter.update({id: postData.id}, postData, function(oData) {
-            if(oData.stauts == 1) {
+            if(oData.status == 1) {
               $mdDialog.hide();
             }
           });
         } else {
           self.FraudFilter.save(postData, function(oData) {
-            if(oData.stauts == 1) {
+            if(oData.status == 1) {
               $mdDialog.hide();
             }
           });

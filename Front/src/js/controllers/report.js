@@ -827,7 +827,7 @@
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant, reportCache, UrlValidate) {
-    $scope.pathRoute = 'tpl/flow-edit.html'
+    $scope.pathRoute = 'tpl/flow-edit.html?' + +new Date();
     var prefixCountry = '', prefixTraffic = '';
     $scope.prefix = '';
     initTags($scope, Tag, 1);

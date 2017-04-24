@@ -1038,13 +1038,12 @@ app.get('/api/campaigns', function(req, res) {
   var result = {
     "status": 1,
     "message": "success",
-    data: {
-      "campaign": [
+    data: [
         {"id": 1, "name": "campaign1"},
         {"id": 2, "name": "campaign2"},
         {"id": 3, "name": "campaign3"}
       ]
-    }
+
   };
   res.send(result);
 });
@@ -4112,7 +4111,7 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
  */
   app.get('/api/automated/rules', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "rules": [
@@ -4131,7 +4130,7 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
  */
 app.get('/api/automated/rules/:id', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "id": 1,
@@ -4156,7 +4155,7 @@ app.get('/api/automated/rules/:id', function(req, res) {
  */
 app.post('/api/automated/rules', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "id": 1,
@@ -4181,7 +4180,7 @@ app.post('/api/automated/rules', function(req, res) {
  */
 app.post('/api/automated/rules/:id', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "id": 1,
@@ -4281,7 +4280,7 @@ app.get('/api/automated/logs/detail/:id', function(req, res) {
  */
 app.get('/api/fraud-filter/rules', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "rules": [
@@ -4303,9 +4302,9 @@ app.get('/api/fraud-filter/rules', function(req, res) {
  */
 app.get('/api/fraud-filter/rules/:id', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
-    data: {"id": 1, "name": "Rule1", "campaigns": "1", "dimension": "IP", "timeSpan": "100", "status": 0}
+    data: {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "IP", "timeSpan": "100", "status": 0, "conditions": "PV>500,UserAgent>100,Clicks>100"}
   }
   res.send(result);
 });
@@ -4328,7 +4327,7 @@ app.delete('/api/fraud-filter/rules/:id', function(req, res) {
  */
 app.post('/api/fraud-filter/rules', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "name": "ruleName",
@@ -4348,7 +4347,7 @@ app.post('/api/fraud-filter/rules', function(req, res) {
  */
 app.put('/api/fraud-filter/rules/:id', function(req, res) {
   var result = {
-    "stauts": 1,
+    "status": 1,
     "message": "success",
     data: {
       "id": 1,
