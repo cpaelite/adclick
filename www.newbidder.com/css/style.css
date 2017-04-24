@@ -332,7 +332,7 @@ nav ul li:hover {
 .p-header2 .money-size{font-size:26px;font-weight:bold;color:#c0c0c0;}
 .p-header2 .money-icon{font-size:14px;vertical-align:8px;color:#c0c0c0;}
 .p-header2 .money-small{font-size:12px;color:#c0c0c0;font-weight:normal;}
-.pricing-list,.free-list{font-family:Helvetica;font-size:12px;line-height:30px;padding:20px 0;display:table;margin:0 auto;width:188px;}
+.pricing-list,.free-list{font-family:Helvetica;font-size:12px;line-height:30px;padding:35px 0;display:table;margin:0 auto;width:188px;}
 .pricing-list li,.free-list li{width:100%;}
 .pricing-list i,.free-list i{color:#357cf4;margin:0 12px 0 0;}
 .plan-btn,.free-btn,.sign-btn{background-image: linear-gradient(to right, #357cf4 0%, #2564cf 100%);
@@ -349,7 +349,7 @@ nav ul li:hover {
 .free-top{height:192px;padding-top:60px;}
 .free-top h4{font-size:38px;}
 .free-top p{font-size:13px;margin-top:6px;}
-.free-list{padding:55px 0 45px 0;}
+.free-list{padding:20px 0;}
 .free-list i{color:#009800;}
 .free-btn{background-image: linear-gradient(to right, #049d04 0%, #008e00 100%);}
 input:focus{outline:0;}

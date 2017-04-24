@@ -101,7 +101,6 @@ header.navbar {
     width: 100%;
     background:#fff;
     color: #fff;
-    border-bottom:1px solid #bbb;
 }
 
 .free-btn{
@@ -2802,9 +2801,10 @@ table.md-table thead.md-head > tr.md-row{height: 30px;}
 table.md-table tbody.md-body > tr.md-row, table.md-table tfoot.md-foot > tr.md-row{height:33px;}
 .layout-column > .flex, .layout-sm-column > .flex{background:#fff;}
 .navbar-right .dropdown-menu{top:46px;right:0;padding:0;border-radius:4px;overflow:hidden;}
-.w{min-width: 200px;width: auto;}
-
-.navbar-right .dropdown-menu a{border:0;}
+.w{min-width: 200px;width:auto;}
+.navbar-right .dropdown-menu a .icon-question-sign{color:#2770ea;margin:15px 0 0 15px;float:right;font-size:13px;}
+.navbar-right .dropdown-menu a:hover{background:transparent !important;color:#2770ea;}
+.navbar-right .dropdown-menu a{border-left:none;border-bottom:1px solid #eee;background:transparent;height:42px;line-height:42px;padding:0 15px;}
 .md-button{min-height:32px;height:32px;min-width:62px;font-size: 12px;font-weight: 600;color:#fff;}
 .md-button i{margin-right:3px;}
 md-dialog .md-dialog-content.change-paln-dialog-content{padding:15px;}
@@ -2966,7 +2966,7 @@ input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disa
 .nav-col i.mtop2{margin:14px 5px 0 0;}
 
 .navbar-box{min-height:46px;height:46px;}
-.navbar-box a{line-height:45px;height:45px;margin-top:-1px;border-left:1px solid #d5d5d5;background:#fff;}
+.navbar-box a{line-height:46px;height:46px;margin-top:-1px;border-left:1px solid #d5d5d5;background:#fff;}
 .navbar-box a:hover{
     background: #f6f8f8;
     background: -moz-linear-gradient(top, #e9e9e9 0, #fff 100%);
