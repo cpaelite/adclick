@@ -76,13 +76,13 @@
 
     $scope.blacklistCount = 20;
 
-    $scope.getList = function () {
+    $scope.getBlackList = function () {
       BlackList.get(null, function (blacklist) {
         $scope.data = blacklist.data;
       });
     };
 
-    $scope.getList();
+    $scope.getBlackList();
 
     $scope.editRuleItem = function(item) {
       $mdDialog.show({
@@ -95,7 +95,7 @@
         locals: {item: item},
         templateUrl: 'tpl/automatedRule-edit-dialog.html?' + +new Date()
       }).then(function() {
-        $scope.getList();
+        $scope.getRuleList();
       });
     }
 
@@ -113,10 +113,10 @@
       });
     });
 
-    $scope.editItem = function (ev, index) {
+    $scope.editBlackItem = function (ev, index) {
       $mdDialog.show({
         clickOutsideToClose: false,
-        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', editItemCtrl],
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', editBlackItemCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         locals: {index: index, data: $scope.data},
@@ -127,10 +127,10 @@
 
     };
 
-    $scope.deleteItem = function (ev, index) {
+    $scope.deleteBlackItem = function (ev, index) {
       $mdDialog.show({
         clickOutsideToClose: true,
-        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', deleteCtrl],
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', deleteBlackCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
@@ -138,13 +138,11 @@
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function (result) {
-        if (result) {
-          $scope.data.blacklist.splice(index, index);
-        }
+        $scope.getBlackList();
       });
     };
 
-    $scope.deleteRule = function(id){
+    $scope.deleteRuleItem = function(id){
       $mdDialog.show({
         clickOutsideToClose: true,
         escapeToClose: false,
@@ -154,6 +152,8 @@
         locals: {id: id},
         bindToController: true,
         templateUrl: 'tpl/delete-rule-dialog.html?' + +new Date()
+      }).then(function() {
+        $scope.getRuleList();
       });
     };
 
@@ -360,7 +360,7 @@
     };
   }
 
-  function editItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
+  function editBlackItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
     var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
 
     if (this.data.blacklist && this.index >= 0) {
@@ -479,7 +479,7 @@
     };
   }
 
-  function deleteCtrl($scope, $mdDialog, toastr, BlackList) {
+  function deleteBlackCtrl($scope, $mdDialog, toastr, BlackList) {
     this.title = "delete";
     this.content = 'warnDelete';
 
