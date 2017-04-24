@@ -9,7 +9,7 @@
                   <div class="left-con">
                     <div class="selectAll">
                       <label class="cs-subform-label date-title ng-binding">Status：</label>
-                        <md-select aria-label="select" class="cs-subform-select" ng-model="query.activeStatus" ng-change="statusChange()">
+                        <md-select aria-label="select" class="cs-subform-select" ng-model="query.status">
                             <md-option value="0">All</md-option>
                             <md-option value="1">Active</md-option>
                             <md-option value="2">Inactive</md-option>
@@ -19,7 +19,7 @@
                   <div class="right-select clearfix">
                     <div class="cs-subform-control search-con">
                         <label class="cs-subform-label date-title ng-binding">Keyword Search：</label>
-                        <input type="text" class="cs-filter-input" ng-model="query.searchFilter" placeholder="Search..." ng-change="statusChange()">
+                        <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search...">
                     </div>
                   </div>
               </div>
@@ -28,25 +28,25 @@
                       <table md-table multiple md-progress="promise">
                         <thead md-head>
                           <tr md-row>
-                            <th md-column ng-repeat="th in ths">{{th.name}}</th>
+                            <th md-column>Rule Name</th>
+                            <th md-column>Campaigns</th>
+                            <th md-column>Frequerncy</th>
                             <th md-column>Status</th>
                             <th md-column>Operations</th>
                           </tr>
                         </thead>
                         <tbody md-body>
-                          <tr ms-row ng-repeat="tr in list.rules track by $index">
-                            <td md-cell>{{tr.name}}</td>
+                          <tr ms-row ng-repeat="rule in rules.rules track by $index">
+                            <td md-cell>{{rule.name}}</td>
                             <td md-cell>
-                              {{tr.campaigns}}
+                              {{rule.campaignNames}}
                               <md-tooltip md-direction="bottom">
-                                {{tr.campaigns}}
+                                {{rule.campaignNames}}
                               </md-tooltip>
                             </td>
-                            <td md-cell>{{tr.dimension}}</td>
-                            <td md-cell>{{tr.frequency}}</td>
-                            <td md-cell>{{tr.timeSpan}}</td>
+                            <td md-cell>{{rule.timeSpan}}</td>
                             <td md-cell>
-                              <a  class="status-icon" ng-class="{'isGray': tr.status == 0}" ng-click="ruleStatusChange($index)">
+                              <a  class="status-icon" ng-class="{'isGray': rule.status == 0}" ng-click="ruleStatusChange(rule)">
                                 <i class="icon-ok-sign"></i>
                                 <md-tooltip md-direction="bottom">
                                   Change rule status
@@ -54,13 +54,13 @@
                               </a>
                             </td>
                             <td md-cell>
-                              <a  class="opera-icon" ng-click="editRuleItem(tr)" href="javascript:;">
+                              <a  class="opera-icon" ng-click="editRuleItem(rule)" href="javascript:;">
                                 <i class="icon-file-alt"></i>
                                 <md-tooltip md-direction="bottom">
                                   Edit automate rules
                                 </md-tooltip>
                               </a>
-                              <a  class="opera-icon" ng-click="deleteRule(tr.id)">
+                              <a  class="opera-icon" ng-click="deleteRule(rule.id)">
                                 <i class="icon-trash"></i>
                                 <md-tooltip md-direction="bottom">
                                   Delete this automate rule
@@ -72,6 +72,14 @@
                       </table>
                   </md-table-container>
               </div>
+              <md-table-pagination
+                md-limit="query.limit"
+                md-limit-options="[50, 100, 200, 500, 1000]"
+                md-page="query.page"
+                md-total="{{rules.totalRows}}"
+                md-page-select
+              >
+              </md-table-pagination>
           </div>
         </md-content>
       </md-tab>

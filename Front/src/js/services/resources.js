@@ -205,4 +205,12 @@ angular.module('app')
   .factory('AutomatedRule', ['$resource', function($resource) {
     return $resource('/api/automated/rules/:id', {id: '@id'});
   }])
+  .factory('FraudFilter', ['$resource', function($resource) {
+    return $resource('/api/fraud-filter/rules/:id', {id: '@id'}, {
+      'update': {method:'PUT'}
+    });
+  }])
+  .factory('FraudFilterLog', ['$resource', function($resource) {
+    return $resource('/api/fraud-filter/logs/:id', {id: '@id'});
+  }])
 ;

@@ -4249,7 +4249,7 @@ app.get('/api/automated/logs/detail/:id', function(req, res) {
  * @apiName fraudFilter获取所有rule
  *
  * @apiParam
- *  status: 0,1
+ *  status: 0: inactive, 1: active, 2: all
  */
 app.get('/api/fraud-filter/rules', function(req, res) {
   var result = {
@@ -4257,10 +4257,11 @@ app.get('/api/fraud-filter/rules', function(req, res) {
     "message": "success",
     data: {
       "rules": [
-        {"id": 1, "name": "Rule1", "campaigns": "1", "dimension": "IP", "timeSpan": "100", "status": 0},
+        {"id": 1, "name": "Rule1", "campaigns": "1,2", "dimension": "IP", "timeSpan": "100", "status": 0},
         {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "IP", "timeSpan": "100", "status": 1},
         {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "IP", "timeSpan": "100", "status": 0}
-      ]
+      ],
+      "totalRows": 200
     }
   }
   res.send(result);
