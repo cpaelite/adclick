@@ -29,8 +29,14 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,name,campaignIDs,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
-        let [Result] = await common.query(sql, [value.id, value.userId], connection);
+        let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
+       let camsql = `select c.campaignId,t.name FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
+        let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
+        common.query(camsql, [value.userId, value.id], connection)
+        ]);
+        if (Result) {
+            Result.campaigns = campaigns;
+        }
         res.json({
             status: 1,
             message: "success",
@@ -104,7 +110,7 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
             default:
                 statusFilter = ` and status=${value.status} `;
         }
-        let sql = `select id,name,campaignIDs,dimension,timeSpan,status from FraudFilterRule where userId =? and deleted=0 ${filter} ${statusFilter} `;
+        let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where userId =? and deleted=0 ${filter} ${statusFilter} `;
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
@@ -135,7 +141,7 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
  * @apiGroup  sudden_change
  *
  * @apiParam {String} [name]
- * @apiParam {String} [campaignIDs]
+ * @apiParam {String} [campaigns]
  * @apiParam {String} [dimension]
  * @apiParam {String} [timeSpan]
  * @apiParam {String} [condition]
@@ -155,7 +161,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
-        campaignIDs: Joi.string().optional(),
+        campaigns: Joi.string().optional(),
         dimension: Joi.string().optional(),
         timeSpan: Joi.string().optional(),
         condition: Joi.string().optional(),
@@ -173,10 +179,6 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
         if (value.name != undefined) {
             sql += `,name= ?`;
             params.push(value.name)
-        }
-        if (value.campaignIDs != undefined) {
-            sql += `,campaignIDs= ?`;
-            params.push(value.campaignIDs)
         }
         if (value.dimension != undefined) {
             sql += `,dimension= ?`;
@@ -198,6 +200,13 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
         params.push(value.id);
         params.push(value.userId);
         await common.query(sql, params, connection);
+        if (value.campaigns != undefined) {
+            await common.query('delete from FFRule2Campaign where ruleId = ?', [value.id], connection);
+            let campaignArray = value.campaigns.split(',');
+            for (let index = 0; index < campaignArray.length; index++) {
+                await common.query('insert into FFRule2Campaign(ruleId,campaignId) values (?,?)', [value.id, campaignArray[index]], connection);
+            }
+        }
         delete value.userId;
         res.json({
             status: 1,
@@ -221,7 +230,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
  * @apiGroup  fraud-filter
  *
  * @apiParam {String} name
- * @apiParam {String} campaignIDs
+ * @apiParam {String} campaigns
  * @apiParam {String} dimension
  * @apiParam {String} timeSpan
  * @apiParam {String} condition
@@ -237,7 +246,7 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        campaignIDs: Joi.string().required(),
+        campaigns: Joi.string().required(),
         dimension: Joi.string().required(),
         timeSpan: Joi.string().required(),
         condition: Joi.string().required()
@@ -247,9 +256,13 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let sql = `insert into FraudFilterRule (userId,name,campaignIDs,dimension,timeSpan,\`condition\`) values(?,?,?,?,?,?)`;
-        let params = [value.userId, value.name, value.campaignIDs, value.dimension, value.timeSpan, value.condition];
+        let sql = `insert into FraudFilterRule (userId,name,dimension,timeSpan,\`condition\`) values(?,?,?,?,?,?)`;
+        let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition];
         let { insertId: InsertId } = await common.query(sql, params, connection);
+         let campaignArray = value.campaigns.split(',');
+        for (let index = 0; index < campaignArray.length; index++) {
+            await common.query('insert into FFRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
+        }
         value.id = InsertId;
         delete value.userId;
         value.status = 0; //default 0 

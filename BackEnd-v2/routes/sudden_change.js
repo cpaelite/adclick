@@ -205,7 +205,7 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
             await common.query('delete from SCRule2Campaign where ruleId = ?', [value.id], connection);
             let campaignArray = value.campaigns.split(',');
             for (let index = 0; index < campaignArray.length; index++) {
-                await common.query('insert into SCRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
+                await common.query('insert into SCRule2Campaign(ruleId,campaignId) values (?,?)', [value.id, campaignArray[index]], connection);
             }
         }
         delete value.userId;
