@@ -30,14 +30,14 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
-       let camsql = `select c.campaignId as id ,t.name as name  FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
+        let camsql = `select c.campaignId as id ,t.name as name  FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
         let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
         common.query(camsql, [value.userId, value.id], connection)
         ]);
         if (Result) {
-            let campaignSlice=[];
-            for(let index=0;index<campaigns.length;index++){
-                 campaignSlice.push(campaigns[index].id);
+            let campaignSlice = [];
+            for (let index = 0; index < campaigns.length; index++) {
+                campaignSlice.push(campaigns[index].id);
             }
             Result.campaigns = campaignSlice.join(',');
         }
@@ -263,7 +263,7 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
         let sql = `insert into FraudFilterRule (userId,name,dimension,timeSpan,\`condition\`) values(?,?,?,?,?,?)`;
         let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition];
         let { insertId: InsertId } = await common.query(sql, params, connection);
-         let campaignArray = value.campaigns.split(',');
+        let campaignArray = value.campaigns.split(',');
         for (let index = 0; index < campaignArray.length; index++) {
             await common.query('insert into FFRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
         }
@@ -327,6 +327,7 @@ router.delete('/api/fraud-filter/rules/:id', async function (req, res, next) {
  * 
  *@apiParam {Number} page
  *@apiParam {Number} limit
+ *@apiParam {String} filter
  * 
  */
 
@@ -334,7 +335,8 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         page: Joi.number().required(),
-        limit: Joi.number().required()
+        limit: Joi.number().required(),
+        filter: Joi.string().optional()
     });
     req.query.userId = req.parent.id;
     let connection;
@@ -353,8 +355,14 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
         if (!offset)
             offset = 0;
         value.offset = offset;
+
+        let filter = "";
+        if (value.filter != undefined && value.filter) {
+            filter = ` and rule.name like '%${value.filter}%' `;
+        }
+
         let sql = `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time,rule.name as name,log.dimension as dimension  
-                  from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? `;
+                  from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? ${filter}`;
 
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
@@ -399,7 +407,7 @@ router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
 
-        let sql = `select detail.id,detail.data,cam.name as campaign,log.dimension as dimension from FraudFilterLogDetail detail inner join TrackingCampaign cam on cam.id = detail.campaignID 
+        let sql = `select detail.id,detail.data,cam.name as campaign,log.dimension as dimension,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time from FraudFilterLogDetail detail inner join TrackingCampaign cam on cam.id = detail.campaignID 
                    inner join FraudFilterLog log on log.id = detail.logId where detail.logId = ?`;
         let Result = await common.query(sql, [value.id], connection);
         return res.json({
