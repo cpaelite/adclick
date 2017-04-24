@@ -61,8 +61,10 @@
                         <md-option value=">">></md-option>
                         <md-option value="<"><</md-option>
                     </md-select>
-                    <input type="text" name="conValue" class="form-control rule-edit-input cs-subform-select" ng-model="condition.value" required>
-                    <span class="dollar-icon">{{conditionMap[conditionArray[conArrIdx].key]}}</span>
+                    <div class="rule-condition-div clearfix">
+                      <input type="text" name="conValue" class="form-control rule-edit-input cs-subform-select" ng-model="condition.value" required>
+                      <span class="dollar-icon">{{conditionMap[conditionArray[conArrIdx].key]}}</span>
+                    </div>
                     <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
                         <span ng-show="editForm.conValue.$error.required">Value is required.</span>
                         <span ng-show="editForm.conValue.$error.number">Value is valid.</span>

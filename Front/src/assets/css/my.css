@@ -832,6 +832,10 @@ label.cs-subform-label.date-title{
 .form-control.rule-edit-input{
   width: auto;
 }
+.rule-condition-div{
+  position: relative;
+  float: left;
+}
 .add-another .material-icons.add-next{
   font-size: 17px;
   margin-right: 5px;
@@ -1218,6 +1222,7 @@ table .traficc-source-input input[type="checkbox"]{
     display: block;
     line-height: 32px;
     padding-left: 10px;
+    right: 20px;
 }
 .dollar-input{
     padding-left: 20px;text-indent:15px;
@@ -2510,7 +2515,7 @@ p.cs-flow-offer-view{
 }
 .em-close{
     font-size: 16px;
-    float: right;
+    float: left;
     width: 22px;
     height: 32px;
     line-height: 32px;
