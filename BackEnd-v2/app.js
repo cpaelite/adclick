@@ -43,7 +43,7 @@ var coupon = require('./routes/coupon');
 var route_noplan = require('./routes/router_noplan');
 var thirdParty = require('./routes/thirdparty');
 import ts_report from './routes/ts_report';
-
+var sudden_change= require('./routes/sudden_change');
 import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
@@ -113,7 +113,7 @@ app.get('/', function(req, res) {
 
 app.use(paypal, qrpayCallbackRouter);
 app.use(compression());
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions, coupon, thirdParty, ts_report);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, gatekeeper, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon,thirdParty,sudden_change, ts_report);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
