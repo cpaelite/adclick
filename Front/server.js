@@ -4154,7 +4154,32 @@ app.get('/api/automated/rules/:id', function(req, res) {
  * @apiName 保存 rule
  *
  */
-app.post('/api/automated/rules/', function(req, res) {
+app.post('/api/automated/rules', function(req, res) {
+  var result = {
+    "stauts": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "1,2",
+      "dimension": "Country",
+      "timeSpan": "last6hours",
+      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
+      "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
+      "oneTime": "2017-04-21 23",
+      "emails": "test@adbund.com",      // xxx@xxx.com,xxx@xxx.com
+      "status": 0
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 修改rule
+ *
+ */
+app.post('/api/automated/rules/:id', function(req, res) {
   var result = {
     "stauts": 1,
     "message": "success",
@@ -4190,7 +4215,10 @@ app.post('/api/automated/rules', function(req, res) {
       "dimension": "Country",
       "timeSpan": "last6hours",
       "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
-      "schedule": "0 0 * * * *",
+      "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
+      "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
+      "oneTime": "2017-04-21 23",
+      "emails": "test@adbund.com",      // xxx@xxx.com,xxx@xxx.com
       "status": 0
     }
   };

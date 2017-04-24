@@ -183,9 +183,33 @@ angular.module('app').factory('UrlValidate', ['AppConstant', function(AppConstan
       }
       var strRegex = AppConstant.URLREG;
       var re=new RegExp(strRegex, 'g');
-      if (!re.test(url)) {
+      if (url.match(re) == null) {
         isValid = false;
       }
+      return isValid;
+    }
+  }
+}]);
+
+angular.module('app').factory('EmailValidate', ['AppConstant', function(AppConstant) {
+  return {
+    validate: function(emails) {
+      var isValid = true;
+      if (!emails) {
+        return isValid;
+      }
+      var strRegex = AppConstant.EMAILREG;
+      var re = new RegExp(strRegex, 'g');
+      var emailArr = emails.split(",");
+      emailArr.forEach(function(email) {
+        if (email.match(re) == null) {
+          isValid = false;
+          return;
+        }
+      });
+      /*if (results.indexOf(false) != -1) {
+        isValid = false;
+      }*/
       return isValid;
     }
   }

@@ -74,11 +74,21 @@
       $scope.getLogList();
     };
 
+    $scope.blacklistCount = 20;
+
+    $scope.getList = function () {
+      BlackList.get(null, function (blacklist) {
+        $scope.data = blacklist.data;
+      });
+    };
+
+    $scope.getList();
+
     $scope.editRuleItem = function(item) {
       $mdDialog.show({
         clickOutsideToClose: true,
         escapeToClose: false,
-        controller: ['$scope', '$mdDialog', 'AutomatedRuleOptions', 'Campaign', 'AutomatedRule', editRuleCtrl],
+        controller: ['$scope', '$mdDialog', "$q", 'AutomatedRuleOptions', 'Campaign', 'AutomatedRule', 'EmailValidate', editRuleCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         bindToController: true,
@@ -88,6 +98,51 @@
         $scope.getList();
       });
     }
+
+    $scope.$watch('data.enabled', function (newValue, oldValue) {
+      if ((newValue != undefined && oldValue == undefined) || newValue == oldValue) {
+        return;
+      }
+
+      BlackList.save($scope.data, function (result) {
+        if (result.status) {
+          toastr.success('Update Success!');
+        } else {
+          toastr.error(result.message, {timeOut: 7000, positionClass: 'toast-top-center'});
+        }
+      });
+    });
+
+    $scope.editItem = function (ev, index) {
+      $mdDialog.show({
+        clickOutsideToClose: false,
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', editItemCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        locals: {index: index, data: $scope.data},
+        bindToController: true,
+        targetEvent: ev,
+        templateUrl: 'tpl/botBlacklist-edit-dialog.html?' + +new Date()
+      });
+
+    };
+
+    $scope.deleteItem = function (ev, index) {
+      $mdDialog.show({
+        clickOutsideToClose: true,
+        controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', deleteCtrl],
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        targetEvent: ev,
+        locals: {index: index, data: $scope.data},
+        bindToController: true,
+        templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
+      }).then(function (result) {
+        if (result) {
+          $scope.data.blacklist.splice(index, index);
+        }
+      });
+    };
 
     $scope.deleteRule = function(id){
       $mdDialog.show({
@@ -112,13 +167,16 @@
     };
   }
 
-  function editRuleCtrl($scope, $mdDialog, AutomatedRuleOptions, Campaign, AutomatedRule) {
+  function editRuleCtrl($scope, $mdDialog, $q, AutomatedRuleOptions, Campaign, AutomatedRule, EmailValidate) {
+    // init load data
+    var initPromises = [], prms;
       if (this.item) {
         this.title = "edit";
-        $scope.campaigns = this.item.campaigns;
-        AutomatedRule.get({id: this.item.id}, function(result) {
-          $scope.item = result.data;
-        });
+        var theData;
+        prms = AutomatedRule.get({id: this.item.id}, function(result) {
+          theData = result.data;
+        }).$promise;
+        initPromises.push(prms);
       } else {
         this.title = "add";
         $scope.conditionArray = [
@@ -131,15 +189,13 @@
         $scope.item = {
           "dimension": "WebSiteId",
           "timeSpan": "last3hours",
-          "then": "1",
-          "frequency": "Every 1 Hour",
-          "executionType": "0"
         };
-        $scope.freDate = moment().format('YYYY-MM-DD');;
-        $scope.freWeek = "0";
-        $scope.freTime = "00:00";
-
       }
+      $scope.frequency = "Every 1 Hour";
+      $scope.freDate = new Date();
+      $scope.freWeek = "0";
+      $scope.freTime = "0";
+
       this.titleType = "Rule";
 
       $scope.dimensions = AutomatedRuleOptions.dimension;
@@ -147,31 +203,29 @@
       $scope.conditions = AutomatedRuleOptions.condition;
       $scope.frequencys = AutomatedRuleOptions.frequency;
 
+      var conditionMap = {};
+      $scope.conditions.forEach(function(con) {
+        conditionMap[con.key] = con.unit;
+      })
+      $scope.conditionMap = conditionMap;
+
       $scope.hours = [];
       for (var i=0; i<24; ++i) {
         if (i < 10) {
-          $scope.hours.push('0' + i + ':00');
+          $scope.hours.push({key: i.toString(), display: '0' + i + ':00'});
         } else {
-          $scope.hours.push('' + i + ':00');
+          $scope.hours.push({key: i.toString(), display: i + ':00'});
         }
       }
       $scope.weeks = [
-        {"key": 0, display: "Sunday"},
-        {"key": 1, display: "Monday"},
-        {"key": 2, display: "Tuesday"},
-        {"key": 3, display: "Wednesday"},
-        {"key": 4, display: "Thursday"},
-        {"key": 5, display: "Friday"},
-        {"key": 6, display: "Saturday"},
+        {key: "0", display: "Sunday"},
+        {key: "1", display: "Monday"},
+        {key: "2", display: "Tuesday"},
+        {key: "3", display: "Wednesday"},
+        {key: "4", display: "Thursday"},
+        {key: "5", display: "Friday"},
+        {key: "6", display: "Saturday"},
       ];
-
-      $scope.conditionDisable = function(item, index) {
-        var selectConditions = $scope.conditionArray.map(function(con) {
-          return con.key;
-        });
-        var selectIdx = selectConditions.indexOf(item.key);
-        return selectIdx > -1 && selectIdx != index;
-      }
 
       $scope.campaignFilter = {
         config: {
@@ -182,6 +236,33 @@
         },
         options: []
       };
+
+      // 获取所有campaign
+      prms = Campaign.get(null, function(result) {
+        if (result.status) {
+          $scope.campaignFilter.options = result.data.campaign;
+        }
+      }).$promise;
+      initPromises.push(prms);
+
+      function initSuccess() {
+        if (theData) {
+          $scope.item = theData;
+          $scope.item.campaigns = $scope.item.campaigns.split(",");
+          $scope.conditionArray = fillConditionArray($scope.item.conditions);
+          parseScheduleString($scope);
+        }
+      }
+
+      $q.all(initPromises).then(initSuccess);
+
+      $scope.conditionDisable = function(item, index) {
+        var selectConditions = $scope.conditionArray.map(function(con) {
+          return con.key;
+        });
+        var selectIdx = selectConditions.indexOf(item.key);
+        return selectIdx > -1 && selectIdx != index;
+      }
 
       $scope.addCondition = function() {
         var key;
@@ -197,7 +278,7 @@
         });
         $scope.conditionArray.push({
           "key": key,
-          "operand": "0",
+          "operand": ">",
           "value": ""
         });
       };
@@ -209,31 +290,36 @@
         }
       };
 
+      $scope.validateEmail = function() {
+        var isValid = EmailValidate.validate($scope.item.emails);
+        $scope.editForm.email.$setValidity('emailValid', isValid);
+      }
+
       // 是否显示日期选择框
       $scope.showDateSelect = function() {
-        return ['One Time'].indexOf($scope.item.frequency) >= 0;
+        return ['One Time'].indexOf($scope.frequency) >= 0;
       };
       // 是否显示星期选择框
       $scope.showWeekSelect = function() {
-        return ['Weekly'].indexOf($scope.item.frequency) >= 0;
+        return ['Weekly'].indexOf($scope.frequency) >= 0;
       };
       // 是否显示时间选择框
       $scope.showTimeSelect = function() {
-        return ['Daily', 'Weekly', 'One Time'].indexOf($scope.item.frequency) >= 0;
+        return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
       };
-
-      // 获取所有campaign
-      Campaign.get(null, function(result) {
-        if (result.status) {
-          $scope.campaignFilter.options = result.data.campaign;
-        }
-      });
 
       this.save = function() {
         $scope.editForm.$setSubmitted();
         if ($scope.editForm.$valid) {
+          // crontab格式处理, 0(秒) 0(分) *(时) *(天) *(月) *(星期)
+          formateCrontab($scope);
+          // condition
+          var condition = "";
+          $scope.conditionArray.forEach(function(con) {
+            condition = condition +  con.key + con.operand + con.value + ",";
+          });
+          $scope.item.condition = condition;
           $scope.saveStatus = true;
-          $scope.item.conditions = $scope.conditionArray;
           AutomatedRule.save($scope.item, success);
         }
       }
@@ -273,5 +359,224 @@
       });
     };
   }
+
+  function editItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
+    var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+
+    if (this.data.blacklist && this.index >= 0) {
+      $scope.item = this.data.blacklist[this.index];
+    } else {
+      $scope.item = {
+        ipRules:[""],
+        userAgentRules: [""]
+      };
+    }
+
+    $scope.regex = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(-(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?$";
+
+    $scope.addIP = function () {
+      $scope.item.ipRules.push("");
+      $timeout(function() {
+        $scope.blurInput();
+      });
+    };
+
+    $scope.deleteIP = function (index) {
+      $scope.item.ipRules.splice(index, index);
+      $scope.blurInput();
+    };
+
+    $scope.addAgent = function () {
+      $scope.item.userAgentRules.push("");
+      $timeout(function() {
+        $scope.blurInput();
+      });
+    };
+
+    $scope.deleteAgent = function (index) {
+      $scope.item.userAgentRules.splice(index, index);
+      $scope.blurInput();
+    };
+
+    $scope.checkIP = function (index) {
+      var isValid = true;
+      // 验证IP格式
+      var ipList = $scope.item.ipRules[index];
+      if (ipList) {
+        var ips = ipList.split('-');
+        ips.forEach(function (ip) {
+          if (!re.test(ip)) {
+            isValid = false;
+            return;
+          }
+        });
+        var temp = 'ipRange' + index;
+        $scope.editForm[temp].$setValidity('valid', isValid);
+      } else {
+        $scope.editForm.ipRange.$setValidity('valid', isValid);
+      }
+    };
+
+    $scope.blurInput = function() {
+      var index;
+      var ipReg = $scope.item.ipRules.some(function(v, i) {
+        index = i;
+        return v && !re.test(v);
+      });
+      var ipRequired = $scope.item.ipRules.some(function(v, i) {
+        return v && v.length > 0;
+      });
+      var userAgentRequired = $scope.item.userAgentRules.some(function(v, i) {
+        return v && v.length > 0;
+      });
+      // reset
+      $scope.item.ipRules.forEach(function(v, i) {
+        $scope.editForm['ipRule' + i].$setValidity('valid', true);
+      });
+      $scope.item.ipRules.forEach(function(v, i) {
+        $scope.editForm['ipRule' + i].$setValidity('required', true);
+      });
+      $scope.item.userAgentRules.forEach(function(v, i) {
+        $scope.editForm['userAgentRule' + i].$setValidity('required', true);
+      });
+
+      if (!ipRequired && !userAgentRequired) {
+        $scope.item.ipRules.forEach(function(v, i) {
+          $scope.editForm['ipRule' + i].$setValidity('required', false);
+        });
+        $scope.item.userAgentRules.forEach(function(v, i) {
+          $scope.editForm['userAgentRule' + i].$setValidity('required', false);
+        });
+      } else {
+        if(ipReg) {
+          $scope.editForm['ipRule' + index].$setValidity('valid', false);
+        }
+      }
+    };
+
+    this.cancel = $mdDialog.cancel;
+
+    function success(result) {
+      $scope.blackListStatus = false;
+      if (result.status) {
+        toastr.success('Update Success!');
+      } else {
+        toastr.error(result.message, {timeOut: 7000, positionClass: 'toast-top-center'});
+      }
+      $mdDialog.hide();
+    }
+
+    this.save = function () {
+      if (this.index < 0) {
+        this.data.blacklist.push($scope.item);
+      }
+      $scope.editForm.$setSubmitted();
+      $scope.blurInput();
+      if ($scope.editForm.$valid) {
+        $scope.blackListStatus = true;
+        BlackList.save(this.data, success);
+      }
+    };
+  }
+
+  function deleteCtrl($scope, $mdDialog, toastr, BlackList) {
+    this.title = "delete";
+    this.content = 'warnDelete';
+
+    this.cancel = $mdDialog.cancel;
+
+    this.ok = function () {
+      BlackList.save(this.data, success);
+    };
+
+    function success(response) {
+      if (response.status) {
+        toastr.success("success delete");
+        $mdDialog.hide(true);
+      } else {
+        toastr.error(response.message);
+        $mdDialog.hide(false);
+      }
+    }
+  }
+
+  // 根据condition字符串获取数组
+  function fillConditionArray(conStr) {
+    var conditions = conStr.split(",");
+    var conditionArray = [];
+    conditions.forEach(function(con) {
+      var newCon;
+      if (con.indexOf(">") > 0) {
+        newCon = {
+          "key": con.substring(0, con.indexOf(">")),
+          "operand": ">",
+          "value": Number(con.substring(con.indexOf(">")+1))
+        }
+      } else {
+        newCon = {
+          "key": con.substring(0, con.indexOf("<")),
+          "operand": "<",
+          "value": Number(con.substring(con.indexOf("<")+1))
+        }
+      }
+      conditionArray.push(newCon);
+    });
+    return conditionArray;
+  }
+
+  // crontab格式处理, 0(秒) 0(分) *(时) *(天) *(月) *(星期)
+  function formateCrontab($scope) {
+    if ($scope.frequency == "Daily") {
+      $scope.item.schedule = "0 0 " + $scope.freTime + " * * *";
+      $scope.item.scheduleString = $scope.frequency + " " + $scope.freTime;
+    } else if ($scope.frequency == "Weekly") {
+      $scope.item.schedule = "0 0 " + $scope.freTime + " * * " + $scope.freWeek;
+      $scope.item.scheduleString = $scope.frequency + " " + $scope.freWeek + " " + $scope.freTime;
+    } else if ($scope.frequency == "One Time") {
+      var freDate = moment($scope.freDate).format('YYYY-MM-DD');
+      var dateSplit = freDate.split("-");
+      var daily = dateSplit[1];
+      var hour = dateSplit[2];
+      if (daily.indexOf(0) == 0) {
+        daily = daily.substring(1);
+      }
+      if (hour.indexOf(0) == 0) {
+        hour = hour.substring(1);
+      }
+      $scope.item.schedule = "0 0 " + $scope.freTime + " " + hour + " " + daily + " *";
+      $scope.item.scheduleString = $scope.frequency + " " + freDate + " " + $scope.freTime;
+      $scope.item.oneTime = freDate + " " + $scope.freTime;
+    } else {
+      $scope.item.scheduleString = $scope.frequency;
+    }
+  }
+
+  // 处理scheduleString
+  function parseScheduleString($scope) {
+    var schStr = $scope.item.scheduleString.split(" ");
+    if ($scope.item.scheduleString.indexOf("Daily") != -1) {
+      $scope.frequency = schStr[0];
+      $scope.freDate = new Date();
+      $scope.freWeek = "0";
+      $scope.freTime = schStr[1];
+    } else if ($scope.item.scheduleString.indexOf("Weekly") != -1) {
+      $scope.frequency = schStr[0];
+      $scope.freDate = new Date();
+      $scope.freWeek = schStr[1];
+      $scope.freTime = schStr[2];
+    } else if ($scope.item.scheduleString.indexOf("One Time") != -1) {
+      $scope.frequency = "One Time";
+      $scope.freDate = schStr[2];
+      $scope.freWeek = "0";
+      $scope.freTime = schStr[3];
+    } else if ($scope.item.scheduleString.indexOf("Every") != -1) {
+      $scope.frequency = $scope.item.scheduleString;
+      $scope.freDate = new Date();
+      $scope.freWeek = "0";
+      $scope.freTime = "0";
+    }
+
+  }
+
 
 })();
