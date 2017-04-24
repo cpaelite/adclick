@@ -147,7 +147,7 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
  * @apiParam {String} [name]
  * @apiParam {String} [campaigns]
  * @apiParam {String} [dimension]
- * @apiParam {String} [timeSpan]
+ * @apiParam {Number} [timeSpan]
  * @apiParam {String} [condition]
  * @apiParam {Number} [status]
  *
@@ -167,7 +167,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
         name: Joi.string().optional(),
         campaigns: Joi.string().optional(),
         dimension: Joi.string().optional(),
-        timeSpan: Joi.string().optional(),
+        timeSpan: Joi.number().optional(),
         condition: Joi.string().optional(),
         status: Joi.number().optional()
     });
@@ -236,7 +236,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
  * @apiParam {String} name
  * @apiParam {String} campaigns
  * @apiParam {String} dimension
- * @apiParam {String} timeSpan
+ * @apiParam {Number} timeSpan
  * @apiParam {String} condition
  *
  * @apiSuccessExample {json} Success-Response:
@@ -252,7 +252,7 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
         name: Joi.string().required(),
         campaigns: Joi.string().required(),
         dimension: Joi.string().required(),
-        timeSpan: Joi.string().required(),
+        timeSpan: Joi.number().required(),
         condition: Joi.string().required()
     });
     req.body.userId = req.parent.id;
