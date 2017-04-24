@@ -1,4 +1,4 @@
-<md-dialog class="cs-edit-dialog" ng-cloak>
+<md-dialog class="cs-edit-dialog fraud-filter-edit-dialog" ng-cloak>
     <md-toolbar>
         <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
@@ -38,9 +38,9 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>:</label>
-                <div class="col-sm-3">
-                    <input type="text" name="frequency" class="form-control" ng-model="formData.timeSpan" required style="width: 99px;float: left;">
-                    <span style="float: left; height: 32px; line-height: 32px; padding: 0 15px;">seconds（xxxx）</span>
+                <div class="col-sm-3 frequency">
+                    <input type="text" name="frequency" class="form-control" ng-model="formData.timeSpan" required>
+                    <span class="msg">seconds（xxxx）</span>
                     <span style="color:red" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
                         <span ng-show="editForm.frequency.$error.required">Frequency is required.</span>
                     </span>
@@ -49,7 +49,7 @@
             <div class="form-group" ng-repeat="condition in conditions track by $index">
                 <label class="col-sm-3 control-label" ng-if="$index == 0">Conditions<span class="star-icon">*</span>:</label>
                 <div class="col-sm-7 my-select" ng-class="{'col-sm-offset-3': $index != 0}">
-                    <md-select class="cs-subform-select" ng-model="condition.key" style="width: 110px;">
+                    <md-select class="cs-subform-select condition-select" ng-model="condition.key">
                         <md-option
                           value="{{conditionFilter.key}}"
                           ng-repeat="conditionFilter in conditionFilters"
