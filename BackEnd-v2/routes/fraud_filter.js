@@ -29,7 +29,7 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
+        let sql = `select id,name,dimension,timeSpan,\`condition\`,status from FraudFilterRule where id= ? and userId = ?`;
         let camsql = `select c.campaignId as id ,t.name as name from  FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
         let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
         common.query(camsql, [value.userId, value.id], connection)
