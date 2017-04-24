@@ -30,7 +30,7 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where id= ? and userId = ?`;
-        let camsql = `select c.campaignId as id ,t.name as name  FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
+        let camsql = `select c.campaignId as id ,t.name as name from  FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
         let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
         common.query(camsql, [value.userId, value.id], connection)
         ]);
@@ -114,7 +114,7 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
             default:
                 statusFilter = ` and status=${value.status} `;
         }
-        let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where userId =? and deleted=0 ${filter} ${statusFilter} `;
+        let sql = `select id,name,dimension,timeSpan,status from FraudFilterRule where userId =? and deleted=0 ${filter} ${statusFilter} order by id DESC `;
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];

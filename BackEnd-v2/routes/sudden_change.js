@@ -30,7 +30,7 @@ router.get('/api/automated/rules/:id', async function (req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
         let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,status from SuddenChangeRule where id= ? and userId = ?`;
-        let camsql = `select c.campaignId as id,t.name as name SCRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
+        let camsql = `select c.campaignId as id,t.name as name from SCRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
         let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
         common.query(camsql, [value.userId, value.id], connection)
         ]);
@@ -104,7 +104,7 @@ router.get('/api/automated/rules', async function (req, res, next) {
         if (value.filter != undefined && value.filter) {
             filter = ` and name like '%${value.filter}%' `;
         }
-        let sql = `select id,name,dimension,timeSpan,status from SuddenChangeRule where userId =? and deleted=0 ${filter} `;
+        let sql = `select id,name,dimension,timeSpan,status from SuddenChangeRule where userId =? and deleted=0 ${filter} order by id DESC `;
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
