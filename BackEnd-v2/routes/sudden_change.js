@@ -29,8 +29,14 @@ router.get('/api/automated/rules/:id', async function (req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,name,campaignIDs,dimension,timeSpan,\`condition\`,\`schedule\`,status from SuddenChangeRule where id= ? and userId = ?`;
-        let [Result] = await common.query(sql, [value.id, value.userId], connection);
+        let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,status from SuddenChangeRule where id= ? and userId = ?`;
+        let camsql = `select c.campaignId,t.name SCRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
+        let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
+        common.query(camsql, [value.userId, value.id], connection)
+        ]);
+        if (Result) {
+            Result.campaigns = campaigns;
+        }
         res.json({
             status: 1,
             message: "success",
@@ -94,7 +100,7 @@ router.get('/api/automated/rules', async function (req, res, next) {
         if (value.filter != undefined && value.filter) {
             filter = ` and name like '%${value.filter}%' `;
         }
-        let sql = `select id,name,campaignIDs,dimension,timeSpan,status from SuddenChangeRule where userId =? and deleted=0 ${filter} `;
+        let sql = `select id,name,dimension,timeSpan,status from SuddenChangeRule where userId =? and deleted=0 ${filter} `;
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
@@ -126,7 +132,7 @@ router.get('/api/automated/rules', async function (req, res, next) {
  * @apiGroup  sudden_change
  *
  * @apiParam {String} [name]
- * @apiParam {String} [campaignIDs]
+ * @apiParam {String} [campaigns]
  * @apiParam {String} [dimension]
  * @apiParam {String} [timeSpan]
  * @apiParam {String} [condition]
@@ -146,7 +152,7 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
         id: Joi.number().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
-        campaignIDs: Joi.string().optional(),
+        campaigns: Joi.string().optional(),
         dimension: Joi.string().optional(),
         timeSpan: Joi.string().optional(),
         condition: Joi.string().optional(),
@@ -166,10 +172,6 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
         if (value.name != undefined) {
             sql += `,name= ?`;
             params.push(value.name)
-        }
-        if (value.campaignIDs != undefined) {
-            sql += `,campaignIDs= ?`;
-            params.push(value.campaignIDs)
         }
         if (value.dimension != undefined) {
             sql += `,dimension= ?`;
@@ -199,6 +201,13 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
         params.push(value.id);
         params.push(value.userId);
         await common.query(sql, params, connection);
+        if (value.campaigns != undefined) {
+            await common.query('delete from SCRule2Campaign where ruleId = ?', [value.id], connection);
+            let campaignArray = value.campaigns.split(',');
+            for (let index = 0; index < campaignArray.length; index++) {
+                await common.query('insert into SCRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
+            }
+        }
         delete value.userId;
         res.json({
             status: 1,
@@ -222,7 +231,7 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
  * @apiGroup  sudden_change
  *
  * @apiParam {String} name
- * @apiParam {String} campaignIDs
+ * @apiParam {String} campaigns
  * @apiParam {String} dimension
  * @apiParam {String} timeSpan
  * @apiParam {String} condition
@@ -241,7 +250,7 @@ router.post('/api/automated/rules', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
-        campaignIDs: Joi.string().required(),
+        campaigns: Joi.string().required(),
         dimension: Joi.string().required(),
         timeSpan: Joi.string().required(),
         condition: Joi.string().required(),
@@ -254,9 +263,13 @@ router.post('/api/automated/rules', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let sql = `insert into SuddenChangeRule (userId,name,campaignIDs,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails) values(?,?,?,?,?,?,?,?,?)`;
-        let params = [value.userId, value.name, value.campaignIDs, value.dimension, value.timeSpan, value.condition, value.schedule, value.scheduleString, value.emails];
+        let sql = `insert into SuddenChangeRule (userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails) values(?,?,?,?,?,?,?,?,?)`;
+        let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition, value.schedule, value.scheduleString, value.emails];
         let { insertId: InsertId } = await common.query(sql, params, connection);
+        let campaignArray = value.campaigns.split(',');
+        for (let index = 0; index < campaignArray.length; index++) {
+            await common.query('insert into SCRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
+        }
         value.id = InsertId;
         delete value.userId;
         res.json({
@@ -352,7 +365,7 @@ router.get('/api/automated/logs', async function (req, res, next) {
         let [Result, [{ total: Total }]] = await Promise.all(
             [common.query(sql, params, connection),
             common.query(totalsql, [value.userId], connection)]);
-        
+
         return res.json({
             status: 1,
             message: 'success',
