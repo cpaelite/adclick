@@ -18,7 +18,7 @@ module.exports = {
     }
   },
    "reportSQL":{
-     host: '52.14.70.205',
+     host: '13.58.7.105',
       user: 'dev',
       password: '55Te$ydFq',
       database: 'AdClickTool',
