@@ -703,6 +703,7 @@ md-content.cs-main-content{
 md-content md-tabs{
   padding:15px;
 }
+.sudden-change, .sudden-change md-content {height: 100%;}
 .sudden-change md-tab-content,
 .sudden-change md-content,
 .sudden-change md-tabs{
