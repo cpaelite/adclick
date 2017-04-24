@@ -724,9 +724,9 @@ angular.module('app').value('AutomatedRuleOptions', {
 
 angular.module('app').value('FraudFilterRuleOptions', {
   "condition": [
-    {"key": "pv", "display": "PV", "unit": ""},
-    {"key": "uv", "display": "UV", "unit": ""},
-    {"key": "clicks", "display": "Clicks", "unit": ""},
+    {"key": "PV", "display": "PV", "unit": ""},
+    {"key": "UserAgent", "display": "UserAgent", "unit": ""},
+    {"key": "Clicks", "display": "Clicks", "unit": ""},
   ]
 });
 

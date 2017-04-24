@@ -4277,7 +4277,7 @@ app.get('/api/automated/logs/detail/:id', function(req, res) {
  * @apiName fraudFilter获取所有rule
  *
  * @apiParam
- *  status: 0: inactive, 1: active, 2: all
+ *  status: 0: all 1: active 2: inactive
  */
 app.get('/api/fraud-filter/rules', function(req, res) {
   var result = {
@@ -4285,9 +4285,9 @@ app.get('/api/fraud-filter/rules', function(req, res) {
     "message": "success",
     data: {
       "rules": [
-        {"id": 1, "name": "Rule1", "campaigns": "1,2", "dimension": "IP", "timeSpan": "100", "status": 0},
-        {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "IP", "timeSpan": "100", "status": 1},
-        {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "IP", "timeSpan": "100", "status": 0}
+        {"id": 1, "name": "Rule1", "campaigns": "1,2", "dimension": "IP", "timeSpan": "100", "status": 0, "conditions": "PV>500,UserAgent>100,Clicks>100"},
+        {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "IP", "timeSpan": "100", "status": 1, "conditions": "PV>500,UserAgent>100,Clicks>100"},
+        {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "IP", "timeSpan": "100", "status": 0, "conditions": "PV>500,UserAgent>100,Clicks>100"}
       ],
       "totalRows": 200
     }
@@ -4376,10 +4376,11 @@ app.get('/api/fraud-filter/logs', function(req, res) {
         {id: 1, time: '2017-04-20 00:01:01', name: 'rule1'},
         {id: 2, time: '2017-04-20 00:02:01', name: 'rule2'},
         {id: 3, time: '2017-04-20 00:03:01', name: 'rule3'}
-      ]
+      ],
+      "totalRows": 200
     }
   };
-  res.send(result);
+  delayResponse(res, result);
 });
 
 /**
@@ -4396,7 +4397,7 @@ app.get('/api/fraud-filter/logs/:id', function(req, res) {
         campaign: 'campaign1',
         dimension: 'IP',
         name: 'rule1',
-        data: data
+        data: {}
       }]
     }
   };
