@@ -28,7 +28,7 @@ import {
 
 //from   to tz  sort  direction  ]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 //dataType csv   columns=offerName,offerHash
-router.get('/api/report', async function (req, res, next) {
+router.get('/api/report', async function(req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
@@ -37,14 +37,18 @@ router.get('/api/report', async function (req, res, next) {
     } else {
       result = await main_report(req.query);
     }
-    return res.json({ status: 1, message: 'success', data: result });
+    return res.json({
+      status: 1,
+      message: 'success',
+      data: result
+    });
   } catch (e) {
     console.error(e)
     return next(e);
   }
 });
 
-router.get('/api/export', async function (req, res, next) {
+router.get('/api/export', async function(req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
@@ -94,7 +98,10 @@ router.get('/api/export', async function (req, res, next) {
     let queryClo = req.query.columns ? req.query.columns.split(',') : [];
     let fields = _.union(fieldsCol, queryClo);
 
-    let csvData = json2csv({ data: rawRows, fields: fields });
+    let csvData = json2csv({
+      data: rawRows,
+      fields: fields
+    });
     res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
     res.setHeader('Expires', '0');
     res.setHeader('Cache-Control', 'must-revalidate');
@@ -122,7 +129,11 @@ async function getUserCampainByID(userid, id) {
 }
 
 async function main_report(value) {
-  let { groupBy, limit, page } = value;
+  let {
+    groupBy,
+    limit,
+    page
+  } = value;
   // init values
   if (!mapping[groupBy]) {
     //TODO: unsupport group
@@ -161,7 +172,9 @@ async function main_report(value) {
 }
 
 function isListPageRequest(value) {
-  let { groupBy } = value
+  let {
+    groupBy
+  } = value
   let _flag = !!mapping[groupBy].listPage
   let isListPageRequest = !hasFilter(value) && _flag
   return isListPageRequest
@@ -178,7 +191,10 @@ function hasFilter(value) {
   return f
 }
 
-async function fullFill({ rawRows, groupBy }) {
+async function fullFill({
+  rawRows,
+  groupBy
+}) {
 
   if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
@@ -212,10 +228,10 @@ async function fullFill({ rawRows, groupBy }) {
       let rawForeignRow = rawForeignRows[i];
       for (let j = 0; j < totalRows; j++) {
         let rawRow = rawRows[j];
-        if (rawRow[foreignConfig.foreignKey] === rawForeignRow.id) {
+        if (rawRow[foreignConfig.foreignKey] == rawForeignRow.id) {
           let keys = Object.keys(rawForeignRow);
           keys.forEach(key => {
-            if (key === 'id') return;
+            if (key == 'id') return;
             rawRow[key] = rawForeignRow[key]
           })
           break;
@@ -226,7 +242,10 @@ async function fullFill({ rawRows, groupBy }) {
   return rawRows;
 }
 
-async function csvfullFill({ rawRows, groupBy }) {
+async function csvfullFill({
+  rawRows,
+  groupBy
+}) {
   if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
     return rawRows
@@ -250,14 +269,25 @@ async function csvfullFill({ rawRows, groupBy }) {
 
 
 async function normalReport(values, mustPagination) {
-  let { userId, from, to, tz, groupBy, offset, limit, filter, order, status } = values;
-  //======== start 
+  let {
+    userId,
+    from,
+    to,
+    tz,
+    groupBy,
+    offset,
+    limit,
+    filter,
+    order,
+    status
+  } = values;
+  //====== start 
   let having = "";
   let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
   let attrs = Object.keys(values);
   _.forEach(attrs, (attr) => {
-    if (attr === 'day') {
+    if (attr == 'day') {
       let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
@@ -278,14 +308,14 @@ async function normalReport(values, mustPagination) {
   }
 
   let orders = "";
-  if (order) {
-    if (order.slice(0, 1) === '-') {
+  if (order && mustPagination) {
+    if (order.slice(0, 1) == '-') {
       orders = ` order by ${order.slice(1)} DESC`;
     } else {
       orders = ` order by ${order} ASC`;
     }
   }
-  
+
   let column = `sum(Visits) as visits,
                 sum(Impressions) as impressions ,
                 round(sum(Revenue/1000000),2) as revenue,
@@ -311,7 +341,7 @@ async function normalReport(values, mustPagination) {
     }
   }
 
-  if (groupBy.toLowerCase() === 'day') {
+  if (groupBy.toLowerCase() == 'day') {
     //处理timezone 兼容列存储
     let tag = tz.slice(0, 1);
     let numberString = tz.slice(1);
@@ -345,41 +375,71 @@ async function normalReport(values, mustPagination) {
   }
 
   let [rows, Totals] = await Promise.all([
-    sequelizeInstance.query(tpl, { model: models.AdStatisReport, type: sequelize.QueryTypes.SELECT }),
-    sequelizeInstance.query(totalSQL, { model: models.AdStatisReport, type: sequelize.QueryTypes.SELECT })
+    sequelizeInstance.query(tpl, {
+      model: models.AdStatisReport,
+      type: sequelize.QueryTypes.SELECT
+    }),
+    sequelizeInstance.query(totalSQL, {
+      model: models.AdStatisReport,
+      type: sequelize.QueryTypes.SELECT
+    })
   ]);
   let totals = Totals[0].dataValues;
 
   let rawRows = rows.map(e => e.dataValues);
-  rawRows = await fullFill({ rawRows, groupBy });
+  rawRows = await fullFill({
+    rawRows,
+    groupBy
+  });
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
-  if (groupBy === "campaign") {
-    rawRows = await fullFill({ rawRows, groupBy: "traffic" });
+  if (groupBy == "campaign") {
+    rawRows = await fullFill({
+      rawRows,
+      groupBy: "traffic"
+    });
   }
   let totalRows = rawRows.length;
-  return { rows: rawRows, totals, totalRows }
+  return {
+    rows: rawRows,
+    totals,
+    totalRows
+  }
 }
 
 async function listPageReport(query) {
-  let { userId, groupBy, filter, order, status, offset, limit } = query;
+  let {
+    userId,
+    groupBy,
+    filter,
+    order,
+    status,
+    offset,
+    limit
+  } = query;
   let nr = await normalReport(query, false);
   let foreignConfig = extraConfig(groupBy);
   let _where = {
     userId,
   }
-  if (groupBy === 'flow') {
-    _where['type'] = { ne: 0 }
+  if (groupBy == 'flow') {
+    _where['type'] = {
+      ne: 0
+    }
   }
   if (filter) {
-    _where.name = { $like: `%${filter}%` }
+    _where.name = {
+      $like: `%${filter}%`
+    }
   }
-  if (status === "0") {
-    _where.deleted = "1";
-  } else if (status === "1") {
-    _where.deleted = "0";
+  if (status == "0") {
+    _where.deleted = 1;
+  } else if (status == "1") {
+    _where.deleted = 0;
   }
 
-  let totalRows = await models[mapping[groupBy].table].count({ where: _where });
+  let totalRows = await models[mapping[groupBy].table].count({
+    where: _where
+  });
 
   let listData = await models[mapping[groupBy].table].findAll({
     attributes: foreignConfig.attributes,
@@ -390,8 +450,7 @@ async function listPageReport(query) {
     let obj = e.dataValues;
     nunberColumnForListPage.forEach(key => {
       obj[key] = 0;
-    }
-    );
+    });
     return obj;
   })
 
@@ -399,10 +458,10 @@ async function listPageReport(query) {
     let rawForeignRow = nr.rows[i];
     for (let j = 0; j < listData.length; j++) {
       let rawRow = listData[j];
-      if (rawForeignRow[foreignConfig.foreignKey] === rawRow.id) {
+      if (rawForeignRow[foreignConfig.foreignKey] == rawRow.id) {
         let keys = Object.keys(rawForeignRow);
         keys.forEach(key => {
-          if (key === 'id') return;
+          if (key == 'id') return;
           rawRow[key] = rawForeignRow[key]
         })
         break;
@@ -444,11 +503,11 @@ async function listPageReport(query) {
 
 function dynamicSort(property) {
   var sortOrder = 1;
-  if (property[0] === "-") {
+  if (property[0] == "-") {
     sortOrder = -1;
     property = property.substr(1);
   }
-  return function (a, b) {
+  return function(a, b) {
     var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
     return result * sortOrder;
   }
@@ -484,7 +543,7 @@ async function IPReport(req) {
       tz,
       order,
       userId
-        } = value;
+    } = value;
     limit = parseInt(limit)
     page = parseInt(page)
     let offset = (page - 1) * limit;
@@ -545,8 +604,7 @@ async function IPReport(req) {
     }
   } catch (e) {
     throw e;
-  }
-  finally {
+  } finally {
     if (connection) {
       connection.release();
     }
