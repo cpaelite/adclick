@@ -1039,11 +1039,10 @@ app.get('/api/campaigns', function(req, res) {
     "status": 1,
     "message": "success",
     data: [
-        {"id": 1, "name": "campaign1"},
-        {"id": 2, "name": "campaign2"},
-        {"id": 3, "name": "campaign3"}
-      ]
-
+      {"id": 1, "name": "campaign1"},
+      {"id": 2, "name": "campaign2"},
+      {"id": 3, "name": "campaign3"}
+    ]
   };
   res.send(result);
 });

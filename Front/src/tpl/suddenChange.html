@@ -37,8 +37,7 @@
                           <tr ms-row ng-repeat="tr in list.rules track by $index">
                             <td md-cell>{{tr.name}}</td>
                             <td md-cell>{{tr.dimension}}</td>
-                            <td md-cell>{{tr.frequency}}</td>
-                            <td md-cell>{{tr.dataFrom}}</td>
+                            <td md-cell>{{tr.timsSpan}}</td>
                             <td md-cell>
                               <a  class="status-icon" ng-class="{'isGray': tr.status == 0}" ng-click="ruleStatusChange($index)">
                                 <i class="icon-ok-sign"></i>

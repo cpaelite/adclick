@@ -12,10 +12,8 @@
 
     $scope.ths = [
       {name:'Rule Name'},
-      {name:'Campaigns'},
-      {name:'Automatic Action'},
-      {name:'Frequerncy'},
-      {name:'Using data from'}
+      {name:'Dimension'},
+      {name:'TimeSpan'}
     ];
 
     $scope.viewLogs = function(tr){
@@ -244,7 +242,7 @@
       // 获取所有campaign
       prms = Campaign.get(null, function(result) {
         if (result.status) {
-          $scope.campaignFilter.options = result.data.campaign;
+          $scope.campaignFilter.options = result.data;
         }
       }).$promise;
       initPromises.push(prms);
