@@ -22,7 +22,7 @@ const {
 /**
  *  @api {get} /api/third/traffic-source  获取ThirdPartyTrafficSource数据List
  *  @apiName 获取ThirdPartyTrafficSource数据List
- *   
+ *
  */
 router.get('/api/third/traffic-source', async function (req, res, next) {
     try {
@@ -357,7 +357,7 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
 /**
  *  @api {get} /api/third/traffic-source/:id  获取ThirdPartyTrafficSource detail
  *  @apiName 获取ThirdPartyTrafficSource  detail
- *   
+ *
  */
 router.get('/api/third/traffic-source/:id', async function (req, res, next) {
     try {
@@ -429,7 +429,7 @@ const mapping = {
  * @apiParam {String} groupBy
  * @apiParam {Number} page
  * @apiParam {Number} limit
- * @apiParam {String} order 
+ * @apiParam {String} order
  *
  */
 router.get('/api/third/traffic-source-statis', async function (req, res, next) {
@@ -447,7 +447,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         req.query.userId = req.parent.id;
         let value = await validate(req.query, schema);
         connection = await common.getConnection();
-        //check groupby 
+        //check groupby
         if (!_.has(mapping, value.groupBy)) {
             return res.json({
                 status: 0,
@@ -552,18 +552,18 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                     sum(click) as click,
                     round(sum(Cost/1000000),2) as cost,
                     0 as visit, 0 as conversion,0 as revenue,
-                    'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'  from TrafficSourceStatis
+                    v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, time  from TrafficSourceStatis
                     where ${whereConditon} group by ${groupBy},time ${orders} `
         let totaltpl = `select COUNT(*) as total from ((${tpl}) as T)`;
         tpl += ` limit ${offset},${limit}`;
-       
+
         let [rows,totals] = await Promise.all([
             common.query(tpl,[],connection),
             common.query(totaltpl,[],connection),
         ]);
-        
+
         //console.log('IN ======= :', IN)
-        
+
         let rawRows = [];
         let InSlice = [];
         for (let index = 0; index < rows.length; index++) {
@@ -573,7 +573,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         }
 
         if (rawRows.length) {
-            //report 
+            //report
             let sqlWhere = {};
             let having;
             sqlWhere.UserID = value.userId

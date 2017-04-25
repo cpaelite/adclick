@@ -169,6 +169,10 @@
       $scope.campaignName = row.campaignName;
       $scope.query.page = 1;
       $scope.query.__tk++;
+      $scope.report = {
+        rows: [],
+        totalRows: 0
+      };
       $(window).trigger('resize');
     };
 
@@ -178,6 +182,10 @@
       $scope.campaignName = '';
       $scope.query.page = 1;
       $scope.query.__tk++;
+      $scope.report = {
+        rows: [],
+        totalRows: 0
+      };
       $(window).trigger('resize');
     };
 

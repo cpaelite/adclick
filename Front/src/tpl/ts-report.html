@@ -120,8 +120,9 @@
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
                 <tr md-row>
-                    <th md-column class="item-name">Campaign</th>
+                    <th md-column class="item-name" ng-if="groupBy && groupBy == 'campaignId'">Campaign</th>
                     <th md-column>{{apiDimensions[groupBy]}}</th>
+                    <th md-column>Time</th>
                     <th md-column md-order-by="impression">Impressions</th>
                     <th md-column md-order-by="click">Clicks</th>
                     <th md-column md-order-by="cost">Cost</th>
@@ -131,7 +132,7 @@
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
                 <tr md-row ng-repeat="row in report.rows">
-                    <td md-cell class="item-name">
+                    <td md-cell class="item-name" ng-if="groupBy && groupBy == 'campaignId'">
                       <md-menu-bar style="padding: 0;" ng-if="groupBy == 'campaignId'">
                           <md-menu>
                               <a ng-click="menuOpen($mdMenu)">
@@ -156,15 +157,15 @@
                               </md-menu-content>
                           </md-menu>
                       </md-menu-bar>
-                      <span ng-if="groupBy != 'campaignId'">{{row['campaignName']}}</span>
+                      <span ng-if="groupBy != 'campaignId'">{{::row['campaignName']}}</span>
                     </td>
-                    <td md-cell><span>{{row[groupBy]}}</span></td>
-                    <td md-cell><span>{{row['impression']}}</span></td>
-                    <td md-cell><span>{{row['click']}}</span></td>
-                    <td md-cell><span>{{row['cost'] | currency}}</span></td>
-                    <td md-cell><span>{{row['visit']}}</span></td>
-                    <td md-cell><span>{{row['revenue']}}</span></td>
-
+                    <td md-cell><span>{{::row[groupBy]}}</span></td>
+                    <td md-cell>{{::row['time']}}</td>
+                    <td md-cell><span>{{::row['impression']}}</span></td>
+                    <td md-cell><span>{{::row['click']}}</span></td>
+                    <td md-cell><span>{{::row['cost'] | currency}}</span></td>
+                    <td md-cell><span>{{::row['visit']}}</span></td>
+                    <td md-cell><span>{{::row['revenue']}}</span></td>
                 </tr>
             </tbody>
         </table>
