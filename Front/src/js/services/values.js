@@ -332,6 +332,12 @@ angular.module('app').value('columnDefinition', {
       name: 'Day'
     }
   ],
+  hour: [
+    {
+      key: 'hour',
+      name: 'Hour'
+    }
+  ],
   deviceType: [
     {
       key: 'deviceType',
@@ -533,6 +539,7 @@ angular.module('app').value('groupByOptions', [
   // {value: "conversion", display: "Conversions", idKey: "conversionId", nameKey: "conversionName"},
   {value: "country", display: "Country", idKey: "country", nameKey: "country"},
   {value: "day", display: "Day", idKey: "day", nameKey: "day"},
+  {value: "hour", display: "Hour", idKey: "hour", nameKey: "hour"},
   // {value: "dayOfWeek", display: "Day of week", idKey: "dowId", nameKey: "DayOfWeek"},
   {value: "deviceType", display: "Device Type", idKey: "deviceType", nameKey: "deviceType"},
   // {value: "HourOfDay", display: "Hour of day", idKey: "hodId", nameKey: "HourOfDay"},
