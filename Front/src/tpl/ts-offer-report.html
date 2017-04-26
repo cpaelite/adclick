@@ -61,7 +61,7 @@
             <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-click="applySearch()" translate>Search</md-button>
             <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-disabled="!selected.length" ng-click="showSelect()" translate>Cart({{selected.length}})</md-button>
         </div>
-        
+
       </div>
   </div>
 </div>
@@ -94,6 +94,7 @@
               <tr md-row>
                 <th class="item-name" md-column>Offer</th>
                 <th md-column>Offer Id</th>
+                <th md-column>Payout</th>
                 <th class="item-name" md-column>Country Code</th>
                 <th class="item-name" md-column>Carrier</th>
                 <th md-column>Platform</th>
@@ -105,6 +106,7 @@
               <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows track by offer.id" md-auto-select="options.autoSelect">
                 <td class="item-name" md-cell ng-click="offerDetail(offer)"><span href="javascript:;" style="color: #337ab7">{{offer.name}}</span></td>
                 <td md-cell><span>{{::offer.offerId}}</span></td>
+                <td md-cell><span>{{::offer.payoutValue}}</span></td>
                 <td class="item-name" md-cell><span>{{::offer.countryCode}}</span></td>
                 <td class="item-name" md-cell><span>{{::offer.carrier}}</span></td>
                 <td md-cell><span>{{::offer.platform}}</span></td>
