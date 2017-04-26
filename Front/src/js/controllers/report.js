@@ -1945,7 +1945,7 @@
       $rootScope.$broadcast('add', url, "postbackUrl");
     };
 
-    $scope.visible = false;
+    $scope.visible = true;
     $scope.toggleShow = function(){
       $scope.isActive = !$scope.isActive;
       $scope.visible = !$scope.visible;
