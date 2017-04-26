@@ -5,7 +5,49 @@
     .controller('fraudFilterCtrl', [
       '$scope', '$mdDialog', '$q', 'FraudFilter', 'Campaign', 'DateRangeUtil', 'FraudFilterLog',
       FraudFilterCtrl
-    ]);
+    ])
+    .directive('resizefraud', ['$timeout', '$q', function($timeout, $q) {
+      return function(scope, element) {
+        function getElementTop(element){
+          var actualTop = element.offsetTop;
+          var current = element.offsetParent;
+          while (current !== null){
+            actualTop += current.offsetTop;
+            current = current.offsetParent;
+          }
+          return actualTop;
+        }
+
+        var w_h = angular.element(window);
+        function getHeight() {
+          var deferred = $q.defer();
+          $timeout(function() {
+            deferred.resolve({
+              'w_h': w_h.height(),
+              'page_h': angular.element(element).closest('.table-box').next('md-table-pagination').outerHeight(true)
+            });
+          });
+          return deferred.promise;
+        }
+
+        function heightResize() {
+          getHeight().then(function(newVal) {
+            var windowHeight = newVal.w_h;
+            var pageHeight = newVal.page_h;
+            var elementTop = getElementTop(element[0]);
+
+            angular.element(element).css({
+              'height': (windowHeight - elementTop - pageHeight - 43) + 'px'
+            });
+          });
+        }
+
+        heightResize();
+        w_h.bind('resize', function() {
+          heightResize();
+        });
+      }
+    }]);
 
   function FraudFilterCtrl($scope,  $mdDialog, $q, FraudFilter, Campaign, DateRangeUtil, FraudFilterLog) {
     this.$scope = $scope;

@@ -4,147 +4,143 @@
     <md-tabs md-dynamic-height md-border-bottom md-selected="tabSelected">
       <md-tab label="Rules">
         <md-content class="md-padding">
-          <div class="cs-action-bar-bg">
-              <div class="cs-action-bar clearfix">
-                  <div class="left-con">
-                    <div class="selectAll">
-                      <label class="cs-subform-label date-title ng-binding">Status：</label>
-                        <md-select aria-label="select" class="cs-subform-select" ng-model="query.status">
-                            <md-option value="2">All</md-option>
-                            <md-option value="0">Active</md-option>
-                            <md-option value="1">Inactive</md-option>
-                        </md-select>
-                    </div>
+            <div class="cs-action-bar clearfix">
+                <div class="left-con">
+                  <div class="selectAll">
+                    <label class="cs-subform-label date-title ng-binding">Status：</label>
+                      <md-select aria-label="select" class="cs-subform-select" ng-model="query.status">
+                          <md-option value="2">All</md-option>
+                          <md-option value="0">Active</md-option>
+                          <md-option value="1">Inactive</md-option>
+                      </md-select>
                   </div>
-                  <div class="right-select clearfix">
-                    <div class="cs-subform-control search-con">
-                        <label class="cs-subform-label date-title ng-binding">Keyword Search：</label>
-                        <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search...">
-                    </div>
+                </div>
+                <div class="right-select clearfix">
+                  <div class="cs-subform-control search-con">
+                      <label class="cs-subform-label date-title ng-binding">Keyword Search：</label>
+                      <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search...">
                   </div>
-              </div>
-              <div class="table-box">
-                  <md-table-container class="repeater-container">
-                      <table md-table multiple md-progress="promise">
-                        <thead md-head>
-                          <tr md-row>
-                            <th md-column>Rule Name</th>
-                            <th md-column>Frequerncy</th>
-                            <th md-column>Status</th>
-                            <th md-column>Operations</th>
-                          </tr>
-                        </thead>
-                        <tbody md-body>
-                          <tr ms-row ng-repeat="rule in rules.rules track by $index">
-                            <td md-cell>{{rule.name}}</td>
-                            <td md-cell>{{rule.timeSpan}}</td>
-                            <td md-cell>
-                              <a  class="status-icon" ng-class="{'isGray': rule.status == 0}" ng-click="ruleStatusChange(rule)">
-                                <i class="icon-ok-sign"></i>
-                              </a>
-                            </td>
-                            <td md-cell>
-                              <a  class="opera-icon" ng-click="editRuleItem(rule)" href="javascript:;">
-                                <i class="icon-file-alt"></i>
-                              </a>
-                              <a  class="opera-icon" ng-click="deleteRule(rule.id)">
-                                <i class="icon-trash"></i>
-                              </a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                  </md-table-container>
-              </div>
-              <md-table-pagination
-                md-limit="query.limit"
-                md-limit-options="[50, 100, 200, 500, 1000]"
-                md-page="query.page"
-                md-total="{{rules.totalRows}}"
-                md-page-select
-              >
-              </md-table-pagination>
-          </div>
+                </div>
+            </div>
+            <div class="table-box">
+                <md-table-container resizefraud class="repeater-container" style="overflow-anchor: none;">
+                    <table md-table multiple md-progress="promise">
+                      <thead md-head fix-head>
+                        <tr md-row>
+                          <th md-column>Rule Name</th>
+                          <th md-column>Frequerncy</th>
+                          <th md-column>Status</th>
+                          <th md-column>Operations</th>
+                        </tr>
+                      </thead>
+                      <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
+                        <tr ms-row ng-repeat="rule in rules.rules track by rule.id">
+                          <td md-cell>{{rule.name}}</td>
+                          <td md-cell>{{rule.timeSpan}}</td>
+                          <td md-cell>
+                            <a  class="status-icon" ng-class="{'isGray': rule.status == 0}" ng-click="ruleStatusChange(rule)">
+                              <i class="icon-ok-sign"></i>
+                            </a>
+                          </td>
+                          <td md-cell>
+                            <a  class="opera-icon" ng-click="editRuleItem(rule)" href="javascript:;">
+                              <i class="icon-file-alt"></i>
+                            </a>
+                            <a  class="opera-icon" ng-click="deleteRule(rule.id)">
+                              <i class="icon-trash"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+            <md-table-pagination
+              md-limit="query.limit"
+              md-limit-options="[50, 100, 200, 500, 1000]"
+              md-page="query.page"
+              md-total="{{rules.totalRows}}"
+              md-page-select
+            >
+            </md-table-pagination>
         </md-content>
       </md-tab>
       <md-tab label="Logs" class="logs" md-on-select="onLogTabSelected()">
         <md-content class="md-padding">
-          <div class="cs-action-bar-bg">
-              <div class="cs-action-bar clearfix">
-                <div class="left-con">
-                  <div class="cs-subform-group">
-                    <md-select aria-label="select" class="cs-subform-select" ng-model="datetype" ng-change="logQueryChange(datetype)">
-                        <md-option value="1">Today</md-option>
-                        <md-option value="2">Yesterday</md-option>
-                        <md-option value="3">Last 7 days</md-option>
-                        <md-option value="4">Last 14 days</md-option>
-                        <md-option value="5">This Week</md-option>
-                        <md-option value="6">Last Week</md-option>
-                        <md-option value="7">This Month</md-option>
-                        <md-option value="8">Last Month</md-option>
-                        <md-option value="9">This Year</md-option>
-                        <md-option value="10">Last Year</md-option>
-                        <md-option value="0">Custom</md-option>
-                    </md-select>
-                  </div>
-                  <div class="cs-subform-control" ng-show="datetype==0">
-                    <label class="cs-subform-label date-title">{{'Date Range' | translate}}：</label>
-                    <div class="cs-subform-control">
-                            <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="logQuery.from"
-                                    ng-max="logQuery.to" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
-                                    ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-                                {{logQuery.from | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
-                            </button>
-                          </div>
-                          <label class="cs-subform-label">{{'toDate' | translate}}：</label>
-                          <div class="cs-subform-control">
-                            <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="logQuery.to"
-                                    ng-min="logQuery.from" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
-                                    ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-                                {{logQuery.to | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
-                            </button>
-                          </div>
-                  </div>
-                </div>
-                <div class="right-select">
-                  <div class="cs-subform-control search-con">
-                      <input type="text" class="cs-filter-input" ng-model="logQuery.filter" placeholder="Search...">
-                  </div>
-                </div>
+          <div class="cs-action-bar clearfix">
+            <div class="left-con">
+              <div class="cs-subform-group">
+                <md-select aria-label="select" class="cs-subform-select" ng-model="datetype" ng-change="logQueryChange(datetype)">
+                    <md-option value="1">Today</md-option>
+                    <md-option value="2">Yesterday</md-option>
+                    <md-option value="3">Last 7 days</md-option>
+                    <md-option value="4">Last 14 days</md-option>
+                    <md-option value="5">This Week</md-option>
+                    <md-option value="6">Last Week</md-option>
+                    <md-option value="7">This Month</md-option>
+                    <md-option value="8">Last Month</md-option>
+                    <md-option value="9">This Year</md-option>
+                    <md-option value="10">Last Year</md-option>
+                    <md-option value="0">Custom</md-option>
+                </md-select>
               </div>
-              <div class="table-box">
-                  <md-table-container class="repeater-container">
-                      <table md-table multiple md-progress="logPromise">
-                        <thead md-head>
-                          <tr md-row>
-                            <th md-column>Time</th>
-                            <th md-column>Rule Name</th>
-                            <th md-column>Operations</th>
-                          </tr>
-                        </thead>
-                        <tbody md-body>
-                          <tr ms-row ng-repeat="log in logs.logs">
-                            <td md-cell>{{log.time}}</td>
-                            <td md-cell>{{log.name}}</td>
-                            <td md-cell>
-                              <a class="status-icon" ng-click="viewLogs(log)">
-                                <i class="icon-eye-open"></i>
-                              </a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                  </md-table-container>
+              <div class="cs-subform-control" ng-show="datetype==0">
+                <label class="cs-subform-label date-title">{{'Date Range' | translate}}：</label>
+                <div class="cs-subform-control">
+                        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="logQuery.from"
+                                ng-max="logQuery.to" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
+                                ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
+                            {{logQuery.from | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                        </button>
+                      </div>
+                      <label class="cs-subform-label">{{'toDate' | translate}}：</label>
+                      <div class="cs-subform-control">
+                        <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="logQuery.to"
+                                ng-min="logQuery.from" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                                ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
+                            {{logQuery.to | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                        </button>
+                      </div>
               </div>
-              <md-table-pagination
-                md-limit="logQuery.limit"
-                md-limit-options="[50, 100, 200, 500, 1000]"
-                md-page="logQuery.page"
-                md-total="{{logs.totalRows}}"
-                md-page-select
-              >
-              </md-table-pagination>
+            </div>
+            <div class="right-select">
+              <div class="cs-subform-control search-con">
+                  <input type="text" class="cs-filter-input" ng-model="logQuery.filter" placeholder="Search...">
+              </div>
+            </div>
           </div>
+          <div class="table-box">
+            <md-table-container resizefraud class="repeater-log-container" style="overflow-anchor: none;">
+                <table md-table multiple md-progress="logPromise">
+                  <thead md-head fix-head>
+                    <tr md-row>
+                      <th md-column>Time</th>
+                      <th md-column>Rule Name</th>
+                      <th md-column>Operations</th>
+                    </tr>
+                  </thead>
+                  <tbody md-body vs-repeat vs-scroll-parent=".repeater-log-container">
+                    <tr ms-row ng-repeat="log in logs.logs">
+                      <td md-cell>{{log.time}}</td>
+                      <td md-cell>{{log.name}}</td>
+                      <td md-cell>
+                        <a class="status-icon" ng-click="viewLogs(log)">
+                          <i class="icon-eye-open"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </md-table-container>
+          </div>
+          <md-table-pagination
+            md-limit="logQuery.limit"
+            md-limit-options="[50, 100, 200, 500, 1000]"
+            md-page="logQuery.page"
+            md-total="{{logs.totalRows}}"
+            md-page-select
+          >
+          </md-table-pagination>
         </md-content>
       </md-tab>
       <md-tab label="Bot Blacklist">
