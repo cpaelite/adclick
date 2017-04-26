@@ -306,7 +306,7 @@ app.get('/api/permission', function (req, res) {
         },
         networkoffer: {
           show: true,
-          networkOfferLimit: 1
+          anOfferAPILimit: 1
         },
         suddenchange: {
           show: true

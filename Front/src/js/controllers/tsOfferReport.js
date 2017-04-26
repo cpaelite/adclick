@@ -54,7 +54,7 @@
     };
     $scope.type = 0;
 
-    $scope.networkOfferLimit = $scope.permissions.report.networkoffer.networkOfferLimit;
+    $scope.networkOfferLimit = $scope.permissions.report.networkoffer.anOfferAPILimit;
 
     $scope.$watch('query', function (newVal, oldVal) {
       if (!newVal || !newVal.limit) {
