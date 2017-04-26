@@ -34,6 +34,19 @@ router.get('/api/billing', async function(req, res, next) {
                 where bill.userId=? and bill.expired=0`;
     let [spicialPlan] = await common.query(sql, [value.userId], connection);
 
+    if (!spicialPlan) {
+      return res.json({
+        status: 1,
+        message: 'success',
+        data: {
+          plan: {},
+          statistic: {
+
+          }
+        }
+      });
+    }
+
 
     return res.json({
       status: 1,
