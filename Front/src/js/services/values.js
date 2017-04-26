@@ -747,6 +747,19 @@ angular.module('app').factory('DateRangeUtil', ['$moment', function ($moment) {
           break;
       }
       return toDate;
+    },
+    diffMonths: function(from, to) {
+      var fromDate = $moment(from);
+      var toDate = $moment(to);
+      var diffYears = toDate.format("Y") - fromDate.format("Y");
+      var diffMonths = toDate.format("M") - fromDate.format("M");
+      if (diffYears > 0) {
+        diffMonths += 12 * diffYears;
+      }
+      return diffMonths;
+    },
+    minFromDate: function(to, limit) {
+      return $moment(to).subtract(limit, 'months').startOf('month').format('YYYY-MM-DD');
     }
   }
 }]);

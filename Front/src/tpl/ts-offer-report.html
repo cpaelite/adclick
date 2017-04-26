@@ -18,6 +18,7 @@
         <md-button
           class="md-raised md-primary cs-compact cs-add-button blue-btn"
           ng-click="addOrEditThirdAffiliates()"
+          ng-disabled="thirdAffiliates.length >= networkOfferLimit"
           translate
         >
             add
