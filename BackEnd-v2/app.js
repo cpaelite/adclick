@@ -4,13 +4,13 @@ const env = process.env.NODE_ENV || 'staging'
 const mysqlSetting = setting.mysql[env]
 
 global.pool = mysql.createPool({
-    host: mysqlSetting.host,
-    user: mysqlSetting.user,
-    password: mysqlSetting.password,
-    database: mysqlSetting.database,
-    connectionLimit: mysqlSetting.connectionLimit,
-    debug: process.env.DEBUG === 'true',
-    waitForConnections: false
+  host: mysqlSetting.host,
+  user: mysqlSetting.user,
+  password: mysqlSetting.password,
+  database: mysqlSetting.database,
+  connectionLimit: mysqlSetting.connectionLimit,
+  debug: process.env.DEBUG === 'true',
+  waitForConnections: false
 });
 
 var express = require('express');
@@ -28,7 +28,7 @@ var networktpl = require('./routes/networktpl');
 var network = require('./routes/network');
 var offer = require('./routes/offer');
 var flowCtrl = require('./routes/flow');
-var flow=flowCtrl.router;
+var flow = flowCtrl.router;
 
 var report = require('./routes/report');
 var user = require('./routes/user');
@@ -38,25 +38,28 @@ var traffic = require('./routes/traffic');
 var user_setting = require('./routes/user_setting');
 var event_log = require('./routes/event_log');
 var traffictpl = require('./routes/traffictpl');
-var conversions =require('./routes/conversions');
-var coupon =require('./routes/coupon');
-var route_noplan= require('./routes/router_noplan');
+var conversions = require('./routes/conversions');
+var coupon = require('./routes/coupon');
+var route_noplan = require('./routes/router_noplan');
 var thirdParty = require('./routes/thirdparty');
-import  ts_report from './routes/ts_report';
+import ts_report from './routes/ts_report';
 
 import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
-import {qrpayRouter, qrpayCallbackRouter} from './routes/qrpay';
+import {
+  qrpayRouter,
+  qrpayCallbackRouter
+} from './routes/qrpay';
 
- 
+
 
 var express = require('express');
 var favicon = require('serve-favicon');
 var log4js = require('log4js');
 var logger = log4js.getLogger("app");
 var bodyParser = require('body-parser');
-var compression=require('compression');
+var compression = require('compression');
 var cookiePareser = require('cookie-parser');
 
 var app = express();
@@ -75,51 +78,59 @@ if (process.env.NODE_ENV === "development") {
   app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
   app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
   app.use("/bower_components", express.static(__dirname + '/../Front/bower_components'));
-  app.get('/', function (req, res) {
-    res.sendFile('index.html', {root: __dirname + '/../Front/src'});
+  app.get('/', function(req, res) {
+    res.sendFile('index.html', {
+      root: __dirname + '/../Front/src'
+    });
   });
 } else {
-  app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets', {maxAge: 60 * 1000 * 60 * 24 * 365}));
+  app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets', {
+    maxAge: 60 * 1000 * 60 * 24 * 365
+  }));
   app.use("/tpl", compression(), express.static(__dirname + '/../Front/dist/tpl'));
 }
 
 //log4js
-app.use(log4js.connectLogger(log4js.getLogger("http"), {level: 'auto'}));
+app.use(log4js.connectLogger(log4js.getLogger("http"), {
+  level: 'auto'
+}));
 
 app.use(cookiePareser());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
-// parse application/json
+app.use(bodyParser.urlencoded({
+    extended: false
+  }))
+  // parse application/json
 app.use(bodyParser.json())
 
 
 app.get('/', function(req, res) {
-    res.sendFile('index.html', {
-        root: __dirname + '/../Front/dist'
-    });
+  res.sendFile('index.html', {
+    root: __dirname + '/../Front/dist'
+  });
 });
 
 
 app.use(paypal, qrpayCallbackRouter);
 app.use(compression());
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions,coupon,thirdParty,ts_report);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions, coupon, thirdParty, ts_report);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 /// error handlers
 app.use(function(err, req, res, next) {
-    logger.error("Something went wrong:", err);
-    res.status(err.status || 500);
-    res.json({
-        status: err.code? err.code: 0,
-        message: err.message,
-        data:{}
-    });
+  logger.error("Something went wrong:", err);
+  res.status(err.status || 500);
+  res.json({
+    status: err.code ? err.code : 0,
+    message: err.message,
+    data: {}
+  });
 });
 module.exports = app;

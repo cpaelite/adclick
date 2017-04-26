@@ -53,6 +53,8 @@
     this.TrafficSourceSyncTask = TrafficSourceSyncTask;
     this.TrafficSourceStatis = TrafficSourceStatis;
 
+    $scope.tsReportLimit = $scope.permissions.report.tsReport.tsReportLimit;
+
     this.templateTrafficSourceMap = {};
     this.thirdPartyTrafficSourceMap = {};
     this.timezoneMap = {};
@@ -74,6 +76,47 @@
       }
       return hours;
     })();
+
+    $scope.datatypes = [
+      {value: "1", display: "Today"},
+      {value: "2", display: "Yesterday"},
+      {value: "3", display: "Last 7 days"},
+      {value: "4", display: "Last 14 days"},
+      {value: "5", display: "This Week"},
+      {value: "6", display: "Last Week"},
+      {value: "7", display: "This Month"},
+      {value: "8", display: "Last Month"},
+      {value: "9", display: "This Year"},
+      {value: "10", display: "Last Year"},
+      {value: "0", display: "Custom"},
+    ];
+
+    var retentionLimit = $scope.permissions.report.retentionLimit;
+
+    function filterDateType() {
+      return function(datetype) {
+        if (datetype.value == "0") {
+          return true;
+        }
+        var fromDate = DateRangeUtil.fromDate(datetype.value);
+        var toDate = DateRangeUtil.toDate(datetype.value);
+        var diff = DateRangeUtil.diffMonths(fromDate, toDate);
+        return diff < retentionLimit;
+      }
+    };
+
+    $scope.datetypeFilter = filterDateType();
+
+    var minFromDate = DateRangeUtil.minFromDate($scope.toDate, retentionLimit);
+
+    $scope.fromDateOptions = {
+      minDate: minFromDate,
+      maxDate: $scope.toDate
+    }
+    $scope.toDateOptions = {
+      minDate: $scope.fromDate,
+      maxDate: $scope.toDate
+    }
 
     this.$scope.query = {
       page: 1,

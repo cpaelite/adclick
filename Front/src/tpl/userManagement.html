@@ -12,13 +12,17 @@
 	<div class="user-mangement-content" ng-show="initState=='success'">
 		<div ng-show="invitationUserCount==userLimit">
 			<span>Your plan has limitation of {{userLimit}} user invitations</span>
-			<span>
+			<!--<span>
 				You have reached the limit of users for your chosen plan.<br>
 				To have additional users, you can upgrade to higher plan.
+			</span>-->
+			<span>
+				You have reached the limit of users for your chosen plan.<br>
+				To have additional users, you can contact us.
 			</span>
-			<div class="plan-btn">
+			<!--<div class="plan-btn">
 				<md-button class="md-raised copy-btn" ng-click="upgradePlan()">Upgrade plan</md-button>
-			</div>
+			</div>-->
 		</div>
 		<div ng-show="invitationUserCount<userLimit">
 			<span>Your plan has limitation of {{userLimit}} user invitations</span>

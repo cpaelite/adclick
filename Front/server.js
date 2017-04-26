@@ -302,7 +302,17 @@ app.get('/api/permission', function (req, res) {
         },
         tsReport: {
           show: true,
-          tsReportLimit: 3
+          tsReportLimit: 2
+        },
+        networkoffer: {
+          show: true,
+          anOfferAPILimit: 1
+        },
+        suddenchange: {
+          show: true
+        },
+        fraudfilter: {
+          show: true
         }
       },
     }

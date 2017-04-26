@@ -20,7 +20,7 @@ const _ = require('lodash');
  *     }
  *
  */
-router.get('/api/preferences', async function (req, res, next) {
+router.get('/api/preferences', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
@@ -69,15 +69,15 @@ router.get('/api/preferences', async function (req, res, next) {
  *     }
  *
  */
-router.get('/api/countries', function (req, res, next) {
-  pool.getConnection(function (err, connection) {
+router.get('/api/countries', function(req, res, next) {
+  pool.getConnection(function(err, connection) {
     if (err) {
       err.status = 303
       return next(err);
     }
     connection.query(
       "select `id`,`name` as display,`alpha2Code`,`alpha3Code` as value,`numCode` from `Country` order by name asc",
-      function (err, result) {
+      function(err, result) {
         connection.release();
         if (err) {
           return next(err);
@@ -107,7 +107,7 @@ router.get('/api/countries', function (req, res, next) {
  * }}
  *
  **/
-router.get('/api/groups', async function (req, res, next) {
+router.get('/api/groups', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required()
@@ -173,7 +173,7 @@ router.get('/api/groups', async function (req, res, next) {
  *   }
  *
  */
-router.get('/api/profile', async function (req, res, next) {
+router.get('/api/profile', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
@@ -221,7 +221,7 @@ router.get('/api/profile', async function (req, res, next) {
 });
 
 
-router.get('/api/permission', async function (req, res, next) {
+router.get('/api/permission', async function(req, res, next) {
   let connection;
   try {
     let privileges;
@@ -230,6 +230,7 @@ router.get('/api/permission', async function (req, res, next) {
     if (req.parent.privilege) {
       privileges = JSON.parse(req.parent.privilege);
     }
+
     //初始化
     if (_.has(privileges, "setting.domain")) {
       privileges.setting.domain.domainLimit = 0;
@@ -257,7 +258,18 @@ router.get('/api/permission', async function (req, res, next) {
       if (_.has(limits, 'retentionLimit') && _.has(privileges, "report")) {
         privileges.report.retentionLimit = limits.retentionLimit;
       }
+      if (_.has(limits, 'anOfferAPILimit') && _.has(privileges, "report.networkoffer")) {
+        privileges.report.networkoffer.anOfferAPILimit = limits.anOfferAPILimit;
+      }
+      if (_.has(limits, 'ffRuleLimit') && _.has(privileges, "report.fraudfilter")) {
+        privileges.report.fraudfilter.ffRuleLimit = limits.ffRuleLimit;
+      }
+      if (_.has(limits, 'scRuleLimit') && _.has(privileges, "report.suddenchange")) {
+        privileges.report.suddenchange.scRuleLimit = limits.scRuleLimit;
+      }
+
     }
+
     return res.json({
       status: 1,
       message: 'success',
@@ -273,7 +285,7 @@ router.get('/api/permission', async function (req, res, next) {
 });
 
 
-router.post('/api/defaultGroupId', async function (req, res, next) {
+router.post('/api/defaultGroupId', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     clientId: Joi.string().required()
@@ -294,8 +306,7 @@ router.post('/api/defaultGroupId', async function (req, res, next) {
     });
   } catch (e) {
     next(e);
-  }
-  finally {
+  } finally {
     if (connection) {
       connection.release();
     }

@@ -15,19 +15,20 @@
   					<td>Current period:</td>
   					<td>{{item.statistic.from}} - {{item.statistic.to}}</td>
   				</tr>
-  				<tr>
+  				<!--<tr>
   					<td>Billed events:</td>
   					<td>{{item.statistic.billedEvents}}</td>
-  				</tr>
+  				</tr>-->
   				<tr>
   					<td>Total events:</td>
   					<td>{{item.statistic.totalEvents}}</td>
   				</tr>
   				<tr>
   					<td>Included events:</td>
-  					<td>{{item.statistic.includedEvents}}</td>
+  					<!--<td>{{item.statistic.includedEvents}}</td>-->
+						<td>Unlimited</td>
   				</tr>
-  				<tr>
+  				<!--<tr>
   					<td>Free events:</td>
   					<td>{{item.statistic.freeEvents}}</td>
   				</tr>
@@ -42,7 +43,7 @@
   				<tr>
   					<td>Overage cost:</td>
   					<td>{{item.statistic.overageCost}}</td>
-  				</tr>
+  				</tr>-->
   			</table>
   		</div>
     </div>
@@ -57,10 +58,10 @@
   						<span class="pro-price">$<em ng-if="item.plan.price">{{item.plan.price}}</em><em ng-if="!item.plan.price">0</em></span>/mo
   					</span>
   				</div>
-  				<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(item.plan.id, item.plan.level)">Change Plan</md-button>
+  				<!--<md-button class="md-raised copy-btn" ng-disabled="!plans" ng-click="changePlan(item.plan.id, item.plan.level)">Change Plan</md-button>-->
   			</div>
   		</div>
-      <h3 class="subscription-title subscription-title2">Coupon code</h3>
+      <!--<h3 class="subscription-title subscription-title2">Coupon code</h3>
       <div class="table-out table-out-coupon">
         <form name="couponForm" ng-submit="$event.preventDefault()">
           <div class="form-group" layout="row">
@@ -68,7 +69,7 @@
 			      <md-button style="margin: 0;" class="md-raised copy-btn" ng-disabled="couponForm.coupon.$invalid || couponStatus" ng-click="changeCoupon(couponText)">Submit</md-button>
 		      </div>
         </form>
-      </div>
+      </div>-->
     </div>
   </div>
 	</div>
@@ -149,4 +150,3 @@
 		<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/859286781/?label=fEnQCM3Sl28Q_dnemQM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
-

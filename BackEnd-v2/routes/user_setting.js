@@ -40,7 +40,7 @@ var Pub = require('./redis_sub_pub');
  *  }
  *
  */
-router.post('/api/profile', async function (req, res, next) {
+router.post('/api/profile', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         firstname: Joi.string().required(),
@@ -89,8 +89,7 @@ router.post('/api/profile', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -123,7 +122,7 @@ router.post('/api/profile', async function (req, res, next) {
  *     }
  *
  */
-router.post('/api/password', async function (req, res, next) {
+router.post('/api/password', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         oldpassword: Joi.string().required().trim(),
@@ -157,8 +156,7 @@ router.post('/api/password', async function (req, res, next) {
 
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -190,7 +188,7 @@ router.post('/api/password', async function (req, res, next) {
  *     }
  *
  */
-router.post('/api/email', async function (req, res, next) {
+router.post('/api/email', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         email: Joi.string().required(),
@@ -232,8 +230,7 @@ router.post('/api/email', async function (req, res, next) {
 
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -270,7 +267,7 @@ router.post('/api/email', async function (req, res, next) {
  *     }
  *
  */
-router.get('/api/referrals', async function (req, res, next) {
+router.get('/api/referrals', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         page: Joi.number().required().min(1),
@@ -319,13 +316,16 @@ left join User user on user.id= ref.referredUserId  where mis.createdAt><%=time%
             message: 'succes',
             data: {
                 referrals: result[0],
-                totals: result[1].length ? result[1][0] : { count: 0, lastMonthCommissions: 0, lifeTimeCommissions: 0 }
+                totals: result[1].length ? result[1][0] : {
+                    count: 0,
+                    lastMonthCommissions: 0,
+                    lifeTimeCommissions: 0
+                }
             }
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -367,7 +367,7 @@ left join User user on user.id= ref.referredUserId  where mis.createdAt><%=time%
        // }
  *
  */
-router.get('/api/domains', async function (req, res, next) {
+router.get('/api/domains', async function(req, res, next) {
 
     let connection;
     try {
@@ -387,9 +387,16 @@ router.get('/api/domains', async function (req, res, next) {
         let userDomians = await common.query(sql, [value.userId], connection);
         for (let index = 0; index < userDomians.length; index++) {
             if (userDomians[index].customize == 0) {
-                result.internal.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false });
+                result.internal.push({
+                    address: userDomians[index].address,
+                    main: userDomians[index].main == 1 ? true : false
+                });
             } else {
-                result.custom.push({ address: userDomians[index].address, main: userDomians[index].main == 1 ? true : false, verified: userDomians[index].verified == 1 ? true : false });
+                result.custom.push({
+                    address: userDomians[index].address,
+                    main: userDomians[index].main == 1 ? true : false,
+                    verified: userDomians[index].verified == 1 ? true : false
+                });
             }
         }
         res.json({
@@ -399,8 +406,7 @@ router.get('/api/domains', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -440,7 +446,7 @@ router.get('/api/domains', async function (req, res, next) {
 
  *
  */
-router.post('/api/domains', async function (req, res, next) {
+router.post('/api/domains', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         internal: Joi.array().items({
@@ -466,14 +472,24 @@ router.post('/api/domains', async function (req, res, next) {
             if (value.internal[index].main) {
                 mainDomianNumber++;
             }
-            insertData.push({ domain: value.internal[index].address, main: value.internal[index].main ? 1 : 0, customize: 0, verified: 1 });
+            insertData.push({
+                domain: value.internal[index].address,
+                main: value.internal[index].main ? 1 : 0,
+                customize: 0,
+                verified: 1
+            });
 
         }
         for (let index = 0; index < value.custom.length; index++) {
             if (value.custom[index].main) {
                 mainDomianNumber++;
             }
-            let data = { domain: value.custom[index].address, main: value.custom[index].main ? 1 : 0, customize: 1, verified: value.custom[index].verified ? 1 : 0 };
+            let data = {
+                domain: value.custom[index].address,
+                main: value.custom[index].main ? 1 : 0,
+                customize: 1,
+                verified: value.custom[index].verified ? 1 : 0
+            };
             insertData.push(data);
             //main domain verfied
             if (value.custom[index].main && value.custom[index].verified) {
@@ -503,16 +519,13 @@ router.post('/api/domains', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
     }
 
 });
-
-
 
 
 
@@ -534,7 +547,7 @@ router.post('/api/domains', async function (req, res, next) {
             }
         }
  */
-router.get('/api/domains/validatecname', async function (req, res, next) {
+router.get('/api/domains/validatecname', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -546,8 +559,8 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
         let cnames = [];
         let value = await common.validate(req.query, schema);
         cnames = await ((address) => {
-            return new Promise(function (resolve, reject) {
-                dns.resolveCname(address, function (err, result) {
+            return new Promise(function(resolve, reject) {
+                dns.resolveCname(address, function(err, result) {
                     if (err) {
                         delete err.code;
                         err.status = 200;
@@ -656,7 +669,7 @@ router.get('/api/domains/validatecname', async function (req, res, next) {
 }
  */
 
-router.post('/api/blacklist', async function (req, res, next) {
+router.post('/api/blacklist', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -698,7 +711,7 @@ router.post('/api/blacklist', async function (req, res, next) {
 });
 
 
-router.get('/api/blacklist', async function (req, res, next) {
+router.get('/api/blacklist', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required()
@@ -771,7 +784,7 @@ router.get('/api/blacklist', async function (req, res, next) {
  *
  *
  **/
-router.post('/api/invitation', async function (req, res, next) {
+router.post('/api/invitation', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -796,12 +809,18 @@ router.post('/api/invitation', async function (req, res, next) {
             if (invatationSlice.length) {
                 if (invatationSlice[0].status != 1) {
                     await common.query("update GroupInvitation set `status`= 0 ,`inviteeTime`= unix_timestamp(now()) where `id`= ? ", [invatationSlice[0].id], connection);
-                    sendContext.push({ email: value.invitationEmail[index], code: invatationSlice[0].code })
+                    sendContext.push({
+                        email: value.invitationEmail[index],
+                        code: invatationSlice[0].code
+                    })
                 }
-            } else {//新邀请
+            } else { //新邀请
                 let code = uuidV4();
                 await common.query("insert into GroupInvitation (`userId`,`groupId`,`inviteeEmail`,`inviteeTime`,`code`) values(?,?,?,unix_timestamp(now()),?)", [value.userId, value.groupId, value.invitationEmail[index], code], connection);
-                sendContext.push({ email: value.invitationEmail[index], code: code })
+                sendContext.push({
+                    email: value.invitationEmail[index],
+                    code: code
+                })
             }
         }
 
@@ -823,7 +842,7 @@ router.post('/api/invitation', async function (req, res, next) {
 
         //异步发送邀请邮件
         for (let i = 0; i < sendContext.length; i++) {
-            (function (context) {
+            (function(context) {
                 tpl.html = htmlTpl(({
                     name: req.parent.firstname,
                     companyname: req.user.campanyname ? req.user.campanyname : req.parent.firstname,
@@ -888,7 +907,7 @@ router.post('/api/invitation', async function (req, res, next) {
   }
 }
  */
-router.get('/api/invitation', async function (req, res, next) {
+router.get('/api/invitation', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -923,7 +942,6 @@ router.get('/api/invitation', async function (req, res, next) {
 
 
 
-
 /**
  * @api {post} /api/invitation/:id  解除邀请
  *
@@ -935,7 +953,7 @@ router.get('/api/invitation', async function (req, res, next) {
  * {status:1,message:'success'}
  *
  **/
-router.delete('/api/invitation/:id', async function (req, res, next) {
+router.delete('/api/invitation/:id', async function(req, res, next) {
     let connection;
     try {
         var schema = Joi.object().keys({
@@ -973,7 +991,6 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
 
 
 
-
 /**
  * @api {get} /api/setup   获取setting  setup
  * @apiName   获取setting  setup
@@ -993,7 +1010,7 @@ router.delete('/api/invitation/:id', async function (req, res, next) {
  *
  */
 
-router.get('/api/setup', async function (req, res, next) {
+router.get('/api/setup', async function(req, res, next) {
 
     let connection;
     try {
@@ -1062,7 +1079,7 @@ router.get('/api/setup', async function (req, res, next) {
                 }}
  *
  */
-router.get('/api/user/plan', async function (req, res, next) {
+router.get('/api/user/plan', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
@@ -1071,47 +1088,82 @@ router.get('/api/user/plan', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let compled = _.template(`select   
-        plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
-        plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM,plan.\`order\` as level  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
-        let sql = compled({
-            userId: value.userId
-        });
-        let results = await query(sql, [], connection);
-        let val = results.length ? results[0] : null;
-        let responseData = { plan: {} };
-        if (val) {
-            responseData.plan = {
-                id: val.id,
-                name: val.name,
-                price: val.price,
-                eventsLimit: val.eventsLimit,
-                overageCPM: val.overageCPM,
-                retentionLimit: val.retentionLimit,
-                userLimit: val.userLimit,
-                domainLimit: val.domainLimit,
-                level: val.level
-            }
-        }
-        res.json({
+        let sql = `select DATE_FORMAT(FROM_UNIXTIME(bill.planStart), "%m/%d/%Y") as \`from\` ,
+                (case bill.planEnd when  0 then 'Unlimited' else DATE_FORMAT(FROM_UNIXTIME(bill.planEnd), "%m/%d/%Y") end) as \`to\`,
+                bill.totalEvents as totalEvents ,bill.includedEvents as includedEvents,plan.name as name ,plan.price as price  
+                from UserBilling bill inner join UserPlan plan on bill.customPlanId=plan.id 
+                where bill.userId=? and bill.expired=0`;
+        let [spicialPlan] = await common.query(sql, [value.userId], connection);
+
+
+        return res.json({
             status: 1,
             message: 'success',
-            data: responseData
+            data: {
+                plan: spicialPlan ? spicialPlan : {}
+            }
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
     }
-})
+});
+
+
+// router.get('/api/user/plan', async function(req, res, next) {
+//     var schema = Joi.object().keys({
+//         userId: Joi.number().required()
+//     });
+//     req.query.userId = req.user.id;
+//     let connection;
+//     try {
+//         let value = await common.validate(req.query, schema);
+//         connection = await common.getConnection();
+//         let compled = _.template(`select   
+//         plan.\`id\` as id , plan.\`name\` as name, plan.\`normalPrice\` as price,plan.\`eventsLimit\` as eventsLimit,plan.\`retentionLimit\` as  retentionLimit,
+//         plan.\`userLimit\` as   userLimit,plan.\`domainLimit\` as domainLimit,(plan.\`overageCPM\`/ 1000000) as overageCPM,plan.\`order\` as level  from UserBilling bill  inner join TemplatePlan plan on bill.\`planId\`= plan.\`id\` where bill.\`expired\` = 0 and bill.\`userId\`=<%=userId%>`);
+//         let sql = compled({
+//             userId: value.userId
+//         });
+//         let results = await query(sql, [], connection);
+//         let val = results.length ? results[0] : null;
+//         let responseData = {
+//             plan: {}
+//         };
+//         if (val) {
+//             responseData.plan = {
+//                 id: val.id,
+//                 name: val.name,
+//                 price: val.price,
+//                 eventsLimit: val.eventsLimit,
+//                 overageCPM: val.overageCPM,
+//                 retentionLimit: val.retentionLimit,
+//                 userLimit: val.userLimit,
+//                 domainLimit: val.domainLimit,
+//                 level: val.level
+//             }
+//         }
+//         res.json({
+//             status: 1,
+//             message: 'success',
+//             data: responseData
+//         });
+//     } catch (e) {
+//         next(e);
+//     } finally {
+//         if (connection) {
+//             connection.release();
+//         }
+//     }
+// });
 
 
 function query(sql, params, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, params, function (err, result) {
+    return new Promise(function(resolve, reject) {
+        connection.query(sql, params, function(err, result) {
             if (err) {
                 reject(err)
             }
