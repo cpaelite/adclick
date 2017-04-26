@@ -34,7 +34,7 @@ const codeKey = '^niu1bi&#$285'; //密匙
  *   }
  *
  */
-router.post('/auth/login', async function (req, res, next) {
+router.post('/auth/login', async function(req, res, next) {
   var schema = Joi.object().keys({
     email: Joi.string().trim().email().required(),
     password: Joi.string().required()
@@ -68,7 +68,9 @@ router.post('/auth/login', async function (req, res, next) {
         var expires = moment().add(200, 'days').valueOf();
         //set cookie
         res.cookie("clientId", clientId);
-        res.json({ token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText) });
+        res.json({
+          token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText)
+        });
 
         //更新登录时间
         let updateSql = "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
@@ -117,7 +119,7 @@ router.post('/auth/login', async function (req, res, next) {
  *     }
  *
  */
-router.post('/auth/signup', async function (req, res, next) {
+router.post('/auth/signup', async function(req, res, next) {
   try {
     if (req.cookies && req.cookies.refToken) {
       req.body.refToken = req.cookies.refToken;
@@ -146,9 +148,9 @@ function sendActiveEmail(email, idText) {
 
             <p>Best regards,</p>
             <p>Newbidder Team </p>`)({
-        href: setting.activateRouter + "?key=" + idText,
+      href: setting.activateRouter + "?key=" + idText,
 
-      })
+    })
   };
   //异步发送邮件
   emailCtrl.sendMail([email], tpl);
@@ -165,13 +167,96 @@ function sendforgetPwdEmail(email, code) {
 
             <p>Best regards,</p>
             <p>Newbidder Team </p>`)({
-        href: setting.forgetPwdRouter + "?code=" + code,
+      href: setting.forgetPwdRouter + "?code=" + code,
 
-      })
+    })
   };
   //异步发送邮件
   emailCtrl.sendMail([email], tpl);
 }
+
+// async function signup(data, next) {
+//   var schema = Joi.object().keys({
+//     email: Joi.string().trim().email().required(),
+//     password: Joi.string().required(),
+//     firstname: Joi.string().required().allow(""),
+//     lastname: Joi.string().required().allow(""),
+//     refToken: Joi.string().optional().empty(""),
+//     qq: Joi.string().optional().empty(""),
+//     skype: Joi.string().optional().empty("")
+//   });
+//   let connection;
+//   let beginTransaction = false;
+//   let value;
+//   try {
+//     value = await common.validate(data, schema);
+//     connection = await common.getConnection();
+//     //check email exists
+//     let UserResult = await common.query("select id from User where `email`=?", [value.email], connection);
+//     if (UserResult.length > 0) throw new Error("account exists");
+//     //事务开始
+//     await common.beginTransaction(connection);
+//     beginTransaction = true;
+//     let idtext = util.getRandomString(6);
+//     let reftoken = util.getUUID() + "." + idtext;
+//     //User
+//     let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (unix_timestamp(now()),?,?,?,?,?,?,?,?)";
+//     let contact = {};
+//     if (value.qq) {
+//       contact.qq = value.qq;
+//     }
+//     if (value.skype) {
+//       contact.skype = value.skype;
+//     }
+//     let params = [
+//       value.firstname, value.lastname, value.email,
+//       md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting), JSON.stringify(contact)
+//     ];
+//     let result = await common.query(sql, params, connection);
+//     value.userId = result.insertId;
+//     value.idtext = idtext;
+//     //系统默认domains
+//     for (let index = 0; index < setting.domains.length; index++) {
+//       await common.query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`,`verified`) values (?,?,?,?,1)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0], connection);
+//     }
+
+//     //如果refToken 不为"" 说明是从推广链接过来的
+//     if (value.refToken) {
+//       let slice = value.refToken.split('.');
+//       let referreUserId = slice.length == 2 ? slice[1] : 0;
+//       if (referreUserId) {
+//         let USER = await common.query("select `id` from User where `idText` = ?", [referreUserId], connection);
+//         if (USER.length == 0) {
+//           throw new Error("refToken error");
+//         }
+//         await common.query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500], connection);
+//       }
+//     }
+
+//     //user Group
+//     let configSlice = await common.query("select `config` from RolePrivilege where `role`=?", [0], connection);
+
+//     await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config : "{}"], connection);
+
+
+//     await common.commit(connection);
+//     //redis publish
+//     new Pub(true).publish(setting.redis.channel, result.insertId + ".add.user." + result.insertId, "userAdd");
+
+//     return value;
+//   } catch (e) {
+//     if (beginTransaction) {
+//       await common.rollback(connection);
+//     }
+//     throw e;
+//   } finally {
+//     if (connection) {
+//       connection.release();
+//     }
+
+//   }
+// }
+
 
 async function signup(data, next) {
   var schema = Joi.object().keys({
@@ -198,7 +283,7 @@ async function signup(data, next) {
     let idtext = util.getRandomString(6);
     let reftoken = util.getUUID() + "." + idtext;
     //User
-    let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (unix_timestamp(now()),?,?,?,?,?,?,?,?)";
+    let sql = "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (unix_timestamp(1,now()),?,?,?,?,?,?,?,?)";
     let contact = {};
     if (value.qq) {
       contact.qq = value.qq;
@@ -234,7 +319,34 @@ async function signup(data, next) {
     //user Group
     let configSlice = await common.query("select `config` from RolePrivilege where `role`=?", [0], connection);
 
-    await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config : "{}"], connection);
+    let UPDATEUserGroup = common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config : "{}"], connection);
+
+    //免费plan逻辑
+
+    let GETFREEPLAN = common.query(`select id,name,includedEvents,retentionLimit,domainLimit,userLimit,tsReportLimit,anOfferAPILimit,ffRuleLimit,scRuleLimit,separateIP,price,hasCommission from UserPlan where userId = ? and deleted = ?`, [0, 0], connection);
+
+    let [
+      [freePlanMap]
+    ] = await Promise.all([GETFREEPLAN, UPDATEUserGroup]);
+
+    if (freePlanMap) {
+      let UPDATEUSERBILLING = common.query(`insert into UserBilling (userId,planId,customPlanId,planPaymentLogId,planStart,planEnd,billedEvents,totalEvents,includedEvents,agreementId) values(?,?,?,?,?,?,?,?,?,?)`, [value.userId, freePlanMap.id, freePlanMap.id, 0, moment().unix(), 0, 0, 0, freePlanMap.includedEvents, 0], connection);
+
+      let functionsString = JSON.stringify({
+        retentionLimit: freePlanMap.retentionLimit,
+        domainLimit: freePlanMap.domainLimit,
+        userLimit: freePlanMap.userLimit,
+        tsReportLimit: freePlanMap.tsReportLimit,
+        anOfferAPILimit: freePlanMap.anOfferAPILimit,
+        ffRuleLimit: freePlanMap.ffRuleLimit,
+        scRuleLimit: freePlanMap.scRuleLimit,
+        separateIP: freePlanMap.separateIP
+      });
+
+      let UPDATEUserFunctions = common.query(`insert UserFunctions (userId,functions) values (?,?)`, [value.userId, functionsString], connection);
+
+      await Promise.all([UPDATEUSERBILLING, UPDATEUserFunctions]);
+    }
 
 
     await common.commit(connection);
@@ -254,6 +366,9 @@ async function signup(data, next) {
 
   }
 }
+
+
+
 /**
  * @api {post} /account/check  检查用户是否存在
  * @apiName account check
@@ -269,22 +384,22 @@ async function signup(data, next) {
  *     }
  *
  */
-router.post('/account/check', function (req, res, next) {
+router.post('/account/check', function(req, res, next) {
   var schema = Joi.object().keys({
     email: Joi.string().trim().email().required()
   });
-  Joi.validate(req.body, schema, function (err, value) {
+  Joi.validate(req.body, schema, function(err, value) {
     if (err) {
       return next(err);
     }
-    pool.getConnection(function (err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) {
         err.status = 303
         return next(err);
       }
       connection.query("select id from User where `email`=?", [
         value.email
-      ], function (err, result) {
+      ], function(err, result) {
         connection.release();
         if (err) {
           return next(err);
@@ -319,15 +434,15 @@ router.post('/account/check', function (req, res, next) {
  *     }
  *
  */
-router.get('/timezones', function (req, res, next) {
-  pool.getConnection(function (err, connection) {
+router.get('/timezones', function(req, res, next) {
+  pool.getConnection(function(err, connection) {
     if (err) {
       err.status = 303
       return next(err);
     }
     connection.query(
       "select `id`,`name`,`detail`,`region`,`utcShift` from `Timezones`",
-      function (err, result) {
+      function(err, result) {
         connection.release();
         if (err) {
           return next(err);
@@ -344,7 +459,7 @@ router.get('/timezones', function (req, res, next) {
 });
 
 
-router.get('/invitation', async function (req, res, next) {
+router.get('/invitation', async function(req, res, next) {
   var schema = Joi.object().keys({
     code: Joi.string().trim().required()
   });
@@ -368,7 +483,7 @@ router.get('/invitation', async function (req, res, next) {
 
     if (users.length) {
       //加入用户组
-      if (users[0].id != userSlice[0].userId) {//排除自身
+      if (users[0].id != userSlice[0].userId) { //排除自身
         await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?) ON DUPLICATE KEY UPDATE `privilege` = ?", [userSlice[0].groupId, users[0].id, 1, configSlice[0].config, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
       }
       res.redirect(setting.invitationredirect);
@@ -383,9 +498,9 @@ router.get('/invitation', async function (req, res, next) {
       }, next);
       //并发加入用户组   发送邮件
       let tpl = {
-        subject: 'Newbidder Register', // Subject line
-        text: ``, // plain text body
-        html: _.template(` <p>Hello,</p>
+          subject: 'Newbidder Register', // Subject line
+          text: ``, // plain text body
+          html: _.template(` <p>Hello,</p>
 
                     <p>Welcome to Newbidder! Please follow the link to complete your Profile (or copy/paste it in your browser):</p>
                     <p><%= href%>/#/setApp/profile</p>
@@ -407,8 +522,8 @@ router.get('/invitation', async function (req, res, next) {
             password: password,
             href: setting.invitationredirect
           })
-      }
-      //异步发送邮件
+        }
+        //异步发送邮件
       emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
 
       await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [userSlice[0].groupId, user.userId, 1, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection), common.query("update User set emailVerified= ? where id= ?", [1, user.userId], connection)]);
@@ -440,7 +555,7 @@ router.get('/invitation', async function (req, res, next) {
 // });
 
 
-router.get('/user/active', async function (req, res, next) {
+router.get('/user/active', async function(req, res, next) {
   var schema = Joi.object().keys({
     key: Joi.string().trim().required()
   });
@@ -459,7 +574,7 @@ router.get('/user/active', async function (req, res, next) {
   }
 });
 
-router.get('/user/resendconfirmation', async function (req, res, next) {
+router.get('/user/resendconfirmation', async function(req, res, next) {
   var schema = Joi.object().keys({
     email: Joi.string().trim().required()
   });
@@ -487,7 +602,7 @@ router.get('/user/resendconfirmation', async function (req, res, next) {
 });
 
 
-router.get('/user/resetpassword', async function (req, res, next) {
+router.get('/user/resetpassword', async function(req, res, next) {
   var schema = Joi.object().keys({
     email: Joi.string().trim().required()
   });
@@ -512,7 +627,7 @@ router.get('/user/resetpassword', async function (req, res, next) {
     var cipher = crypto.createCipher('aes-256-cbc', codeKey)
     var crypted = cipher.update(code, 'utf8', 'hex')
     crypted += cipher.final('hex')
-    //异步发送邮件
+      //异步发送邮件
     if (user.length) {
       sendforgetPwdEmail(value.email, crypted);
     }
@@ -531,7 +646,7 @@ router.get('/user/resetpassword', async function (req, res, next) {
 });
 
 
-router.post('/user/resetpassword', async function (req, res, next) {
+router.post('/user/resetpassword', async function(req, res, next) {
   var schema = Joi.object().keys({
     code: Joi.string().trim().required(),
     password: Joi.string().trim().required()
@@ -591,22 +706,24 @@ router.post('/user/resetpassword', async function (req, res, next) {
   }
 })
 
-router.get('/status', function (req, res) {
+router.get('/status', function(req, res) {
   res.status(200).send('ok');
 });
 
-router.get('/robot.txt', function (req, res) {
+router.get('/robot.txt', function(req, res) {
   res.status(200).send('User-agent: *\nDisallow: /');
 });
 
 
-router.get('/referral', function (req, res) {
+router.get('/referral', function(req, res) {
   if (req.query.refToken) {
-    res.cookie('refToken', req.query.refToken, { maxAge: 86400000, path: '/auth/signup' })
+    res.cookie('refToken', req.query.refToken, {
+      maxAge: 86400000,
+      path: '/auth/signup'
+    })
   }
   res.redirect(setting.freetrialRedirect);
 });
-
 
 
 
