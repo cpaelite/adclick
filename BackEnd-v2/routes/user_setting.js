@@ -1088,21 +1088,19 @@ router.get('/api/user/plan', async function(req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-
-        let spicialPlan = common.query(`select id,name,includedEvents,retentionLimit,domainLimit,userLimit,tsReportLimit,anOfferAPILimit,ffRuleLimit,scRuleLimit,separateIP,price where userId = ? and deleted = ? `, [value.userId, 0], connection);
-        let freePlan = common.query(`select id,name,includedEvents,retentionLimit,domainLimit,userLimit,tsReportLimit,anOfferAPILimit,ffRuleLimit,scRuleLimit,separateIP,price where userId = ? and deleted = ? `, [0, 0], connection);
-
-        let [
-            [playedPlan],
-            [free]
-        ] = await Promise.all([spicialPlan, freePlan]);
+        let sql = `select DATE_FORMAT(FROM_UNIXTIME(bill.planStart), "%m/%d/%Y") as \`from\` ,
+                (case bill.planEnd when  0 then 'Unlimited' else DATE_FORMAT(FROM_UNIXTIME(bill.planEnd), "%m/%d/%Y") end) as \`to\`,
+                bill.totalEvents as totalEvents ,bill.includedEvents as includedEvents,plan.name as name ,plan.price as price  
+                from UserBilling bill inner join UserPlan plan on bill.customPlanId=plan.id 
+                where bill.userId=? and bill.expired=0`;
+        let [spicialPlan] = await common.query(sql, [value.userId], connection);
 
 
         return res.json({
             status: 1,
             message: 'success',
             data: {
-                plan: playedPlan ? playedPlan : free
+                plan: spicialPlan ? spicialPlan : {}
             }
         });
     } catch (e) {

@@ -283,7 +283,7 @@ async function signup(data, next) {
     let idtext = util.getRandomString(6);
     let reftoken = util.getUUID() + "." + idtext;
     //User
-    let sql = "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (unix_timestamp(1,now()),?,?,?,?,?,?,?,?)";
+    let sql = "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (1,unix_timestamp(now()),?,?,?,?,?,?,?,?)";
     let contact = {};
     if (value.qq) {
       contact.qq = value.qq;
