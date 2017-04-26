@@ -1094,7 +1094,7 @@ router.get('/api/user/plan', async function(req, res, next) {
 
         let [
             [playedPlan],
-            [freePlan]
+            [free]
         ] = await Promise.all([spicialPlan, freePlan]);
 
 
@@ -1102,7 +1102,7 @@ router.get('/api/user/plan', async function(req, res, next) {
             status: 1,
             message: 'success',
             data: {
-                plan: playedPlan ? playedPlan : freePlan
+                plan: playedPlan ? playedPlan : free
             }
         });
     } catch (e) {
