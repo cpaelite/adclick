@@ -9,6 +9,7 @@
       <div class="changeplan hide">
           <a href="#">Choose Plan<i class="icon-choose fonts28"></i></a>
       </div>
+      <div class="profile-timezone">{{profile.timezoneDeatil}}</div>
       <div class="home">
         <a class="home-link" ui-sref="app.report.campaign"><i class="icon-home fonts17"></i></a>
       </div>
@@ -109,12 +110,12 @@
                     <span>{{'userManagement' | translate}}</span>
                 </a>
             </li>
-            <li ui-sref-active="active" has-permission="setting.blacklist.show" operation="show">
+            <!-- <li ui-sref-active="active" has-permission="setting.blacklist.show" operation="show">
                 <a ui-sref="setApp.botBlacklist" md-ink-ripple>
                     <i class="icon-hmd-02 fonts15"></i>
                     <span>{{'botBlacklist' | translate}}</span>
                 </a>
-            </li>
+            </li> -->
             <li ui-sref-active="active" has-permission="setting.invoice.show" operation="show">
                 <a ui-sref="setApp.invoices" md-ink-ripple>
                     <i class="icon-fp-02 fonts14"></i>

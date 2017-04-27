@@ -1,0 +1,40 @@
+<md-dialog class="cs-edit-dialog rule-log" ng-cloak>
+  <md-toolbar>
+    <div class="md-toolbar-tools cam-title">
+      <h2 class="md-title">{{ctrl.title | translate}}</h2>
+    </div>
+  </md-toolbar>
+  <md-dialog-content class="md-dialog-content" style="padding-top: 15px;">
+    <div class="log-name">
+      <span class=rule-name>Rule Name: </span>
+      <span>{{item.name}}</span>
+    </div>
+    <div class="log-name">
+      <span class=rule-name>Dimension: </span>
+      <span>{{item.dimension}}</span>
+    </div>
+    <div class="table-box">
+      <md-table-container class="repeater-container">
+        <table md-table multiple md-progress="promise">
+          <thead md-head>
+            <tr md-row>
+              <th md-column>Campaign</th>
+              <th md-column>Dimension</th>
+              <th md-column>Date</th>
+            </tr>
+          </thead>
+          <tbody md-body>
+            <tr md-row ng-repeat="logDetail in logDetails">
+              <td md-cell>{{logDetail.campaign}}</td>
+              <td md-cell>{{logDetail.dimension}}</td>
+              <td md-cell>{{logDetail.time}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </md-table-container>
+    </div>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+  </md-dialog-actions>
+</md-dialog>

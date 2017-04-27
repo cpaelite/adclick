@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 'Profile',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup, Profile) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -119,6 +119,12 @@
           });
         });
 
+        Profile.get(null, function(oData) {
+          if(oData.status == 1) {
+            $rootScope.profile = oData.data;
+          }
+        });
+
         if(!$rootScope.allConditions) {
           Condition.query({}, function(result) {
             $rootScope.allConditions = result;
@@ -172,11 +178,10 @@
 
     $scope.emailCon = 'support@newbidder.com';
     $scope.skypeCon = 'live:support_44609';
-    $scope.qqCon = '490922827';    
+    $scope.qqCon = '490922827';
     $scope.copyCon = function(){
       toastr.success('copy success',{ timeOut: 4000, positionClass: 'toast-top-center' });
     };
-
   }
 
 })();

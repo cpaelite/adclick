@@ -1,0 +1,86 @@
+<md-dialog class="cs-edit-dialog fraud-filter-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools cam-title">
+            <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Rule Name<span class="star-icon">*</span>:</label>
+                <div class="col-sm-7">
+                    <input type="text" name="name" class="form-control" ng-model="formData.name" required>
+                    <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
+                        <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Campaign<span class="star-icon">*</span>:</label>
+                <div class="col-sm-7">
+                    <selectize
+                      config='campaignFilter.config'
+                      options='campaignFilter.options'
+                      ng-model="formData.campaigns"
+                      placeholder="Select some campaigns"
+                      required
+                      >
+                    </selectize>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Dimension<span class="star-icon">*</span>:</label>
+                <div class="col-sm-7 my-select">
+                    <md-select aria-label="Dimension" class="cs-subform-select" ng-model="formData.dimension">
+                        <md-option value="IP">IP</md-option>
+                    </md-select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>:</label>
+                <div class="col-sm-3 frequency">
+                    <input type="text" name="frequency" class="form-control" ng-model="formData.timeSpan" required>
+                    <span class="msg">seconds</span>
+                    <span style="color:red" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
+                        <span ng-show="editForm.frequency.$error.required">Frequency is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group" ng-repeat="condition in conditions track by $index">
+                <label class="col-sm-3 control-label" ng-if="$index == 0">Conditions<span class="star-icon">*</span>:</label>
+                <div class="col-sm-7 my-select" ng-class="{'col-sm-offset-3': $index != 0}">
+                    <md-select class="cs-subform-select condition-select" ng-model="condition.key">
+                        <md-option
+                          value="{{conditionFilter.key}}"
+                          ng-repeat="conditionFilter in conditionFilters"
+                          ng-disabled="conditionDisabled(condition.key, conditionFilter.key);"
+                        >
+                          {{conditionFilter.display}}
+                        </md-option>
+                    </md-select>
+                    <md-select class="cs-subform-select" ng-model="condition.operand">
+                        <md-option value=">">&gt;</md-option>
+                        <md-option value="<" ng-disabled="true">&lt;</md-option>
+                    </md-select>
+                    <input type="text" name="condition.key" class="cs-subform-select form-control" ng-model="condition.value" required style="width: auto;">
+                    <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
+                        <span ng-show="editForm[{{condition.key}}].$error.required">Value is required.</span>
+                    </span>
+                    <i ng-click="deleteCondition(condition)" ng-if="$index > 0" class="em-close material-icons">delete</i>
+                </div>
+            </div>
+            <div class="form-group" ng-if="conditionFilters.length > conditions.length">
+              <div class="col-sm-7 col-sm-offset-3">
+                <em ng-click="addCondition()">
+                  <i class="material-icons add-next">add_circle</i>Add another
+                </em>
+              </div>
+            </div>
+        </form>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        </md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+</md-dialog>

@@ -269,7 +269,34 @@ const saveOrUpdateCampaign = async (subId, value, connection) => {
 
 }
 
+router.get('/api/campaigns',async function(req,res,next){
+     let connection;
+    try {
+        var schema = Joi.object().keys({
+            userId: Joi.number().required(),
+            idText: Joi.string().required()
+        });
+        req.query.userId = req.parent.id;
+        req.query.idText = req.parent.idText;
+        let value = await common.validate(req.query, schema);
+        connection = await common.getConnection();
+        let result = await common.query('select id,name from TrackingCampaign where userId= ? and deleted = ?',[value.userId,0], connection);
+        res.json({
+            status: 1,
+            message: 'success',
+            data: result ? result : {}
+        });
+    } catch (e) {
+        next(e);
+    }
+    finally {
+        if (connection) {
+            connection.release();
+        }
 
+    }
+
+});
 
 /**
  * @api {get} /api/campaign/:id   campaign detail

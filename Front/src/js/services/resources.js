@@ -106,6 +106,24 @@ angular.module('app')
   .factory('BlackList', ['$resource', function ($resource) {
     return $resource('/api/blacklist/:id', {id: '@id'});
   }])
+  .factory('SuddenChange', ['$resource', function ($resource) {
+    return $resource('/api/automated/rules/:id', {id: '@id'});
+  }])
+  .factory('Logs', ['$resource', function ($resource) {
+    return $resource('/api/automated/logs/:id', {id: '@id'});
+  }])
+  .factory('LogDetail', ['$resource', function ($resource) {
+    return $resource('/api/automated/logs/detail/:id', {id: '@id'});
+  }])
+  .factory('FraudFilterRule', ['$resource', function ($resource) {
+    return $resource('/api/fraudFilter/rules/:id', {id: '@id'});
+  }])
+  .factory('FraudFilterLog', ['$resource', function ($resource) {
+    return $resource('/api/fraudFilter/logs/:id', {id: '@id'});
+  }])
+  .factory('FraudFilterLogDetail', ['$resource', function ($resource) {
+    return $resource('/api/fraudFilter/logs/detail/:id', {id: '@id'});
+  }])
   .factory('EventLog', ['$resource', function ($resource) {
     return $resource('/api/eventlog');
   }])
@@ -184,5 +202,15 @@ angular.module('app')
   .factory('TrafficSourceGroups', ['$resource', function($resource) {
     return $resource('/api/third/traffic-source/groups');
   }])
-
+  .factory('AutomatedRule', ['$resource', function($resource) {
+    return $resource('/api/automated/rules/:id', {id: '@id'});
+  }])
+  .factory('FraudFilter', ['$resource', function($resource) {
+    return $resource('/api/fraud-filter/rules/:id', {id: '@id'}, {
+      'update': {method:'PUT'}
+    });
+  }])
+  .factory('FraudFilterLog', ['$resource', function($resource) {
+    return $resource('/api/fraud-filter/logs/:id', {id: '@id'});
+  }])
 ;

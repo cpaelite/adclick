@@ -98,6 +98,20 @@
         },
         controller: 'DashCtrl',
       })
+      .state('app.suddenChange', {
+        url: '/suddenChange',
+        templateUrl: function() {
+          return 'tpl/suddenChange.html?' + +new Date();
+        },
+        controller: 'suddenChangeCtrl'
+      })
+      .state('app.fraudFilter', {
+        url: '/fraudFilter',
+        templateUrl: function() {
+          return 'tpl/fraudFilter.html?' + +new Date();
+        },
+        controller: 'fraudFilterCtrl'
+      })
       .state('app.report', {
         abstract: true,
         url: '/report',

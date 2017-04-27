@@ -1,6 +1,10 @@
 <md-dialog class="md-default-theme" ng-cloak>
+  <md-toolbar>
+      <div class="md-toolbar-tools cam-title">
+          <h2 class="md-title">{{ctrl.title | translate}}</h2>
+      </div>
+  </md-toolbar>
     <md-dialog-content class="md-dialog-content">
-        <h2 class="md-title">{{ctrl.title | translate}}</h2>
         <p>{{ctrl.content | translate}}</p>
 
         <p class="text-danger" ng-if="ctrl.error" layout="row" layout-align="center center">
@@ -14,7 +18,7 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-        <md-button class="md-primary md-raised">{{'ok' | translate}}</md-button>
+        <md-button class="md-primary md-raised" ng-click="ctrl.ok()">{{'ok' | translate}}</md-button>
         <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
     </md-dialog-actions>
 </md-dialog>

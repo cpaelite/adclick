@@ -1,0 +1,109 @@
+<md-dialog class="cs-edit-dialog automated-rule-edit-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools cam-title">
+            <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content class="md-dialog-content">
+        <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Rule Name<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7">
+                    <input type="text" name="name" class="form-control" ng-model="item.name" required>
+                    <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
+                        <span ng-show="editForm.name.$error.required">Name is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Campaign<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7">
+                    <selectize name="campaign" config='campaignFilter.config' options='campaignFilter.options' ng-model="item.campaigns" placeholder="Select some campaigns" required></selectize>
+                    <span style="color:red" ng-show="editForm.campaign.$dirty && editForm.campaign.$invalid">
+                        <span ng-show="editForm.campaign.$error.required">Name is required.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Emails<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7">
+                    <input type="text" name="email" class="form-control" ng-model="item.emails" ng-blur="validateEmail()" required>
+                    <span style="color:red" ng-show="editForm.email.$dirty && editForm.email.$invalid">
+                        <span ng-show="editForm.email.$error.required">Email is required.</span>
+                        <span ng-show="editForm.email.$error.emailValid">Email must be valid URL.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Dimension<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7 my-select">
+                    <md-select aria-label="Dimension" class="cs-subform-select" ng-model="item.dimension" ng-required="true">
+                        <md-option value="{{dimension}}" ng-repeat="dimension in dimensions track by $index">{{dimension}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Time Span<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7 my-select">
+                    <md-select aria-label="DataFrom" class="cs-subform-select" ng-model="item.timeSpan" ng-required="true">
+                        <md-option value="{{timeSpan.key}}" ng-repeat="timeSpan in timeSpans track by $index">{{timeSpan.display}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+            <div class="form-group"  ng-repeat="(conArrIdx, condition) in conditionArray">
+                <label class="col-sm-3 control-label" ng-class="{'isShowNameCondition': conArrIdx != 0}">Conditions<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7 my-select">
+                    <md-select aria-label="ConditionKey" class="cs-subform-select condition-select" ng-model="conditionArray[conArrIdx].key">
+                        <md-option value="{{con.key}}" ng-repeat="con in conditions" ng-disabled="conditionDisable(con, conArrIdx)">{{con.display}}</md-option>
+                    </md-select>
+                    <md-select aria-label="ConditionOperand" class="cs-subform-select" ng-model="condition.operand">
+                        <md-option value=">">></md-option>
+                        <md-option value="<"><</md-option>
+                    </md-select>
+                    <div class="rule-condition-div clearfix">
+                      <input type="text" name="conValue" class="form-control rule-edit-input cs-subform-select" ng-model="condition.value" required>
+                      <span class="dollar-icon">{{conditionMap[conditionArray[conArrIdx].key]}}</span>
+                    </div>
+                    <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
+                        <span ng-show="editForm.conValue.$error.required">Value is required.</span>
+                        <span ng-show="editForm.conValue.$error.number">Value is valid.</span>
+                    </span>
+                    <em ng-click="deleteCondition(condition)" class="rule-condition em-close" ng-if="$index > 0"><i class="material-icons">delete</i></em>
+                </div>
+
+            </div>
+            <div class="form-group add-another">
+              <label class="col-sm-3 control-label"></label>
+              <div class="col-sm-7"><em ng-click="addCondition()" ng-if="conditionArray.length < conditions.length"><i class="material-icons add-next">add_circle</i>Add another</em></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>: </label>
+                <div class="col-sm-7 my-select">
+                    <md-select aria-label="Frequency" class="cs-subform-select" ng-model="frequency">
+                        <md-option value="{{frequency}}" ng-repeat="frequency in frequencys track by $index">{{frequency}}</md-option>
+                    </md-select>
+                    <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="freDate"
+                          is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
+                          close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button" ng-show="showDateSelect()">
+                      {{freDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                    </button>
+                    <md-select aria-label="FreTime" class="cs-subform-select" ng-model="freWeek" ng-show="showWeekSelect()">
+                        <md-option value="{{week.key}}" ng-repeat="week in weeks track by $index">{{week.display}}</md-option>
+                    </md-select>
+                    <md-select aria-label="FreTime" class="cs-subform-select" ng-model="freTime" ng-show="showTimeSelect()">
+                        <md-option value="{{hr.key}}" ng-repeat="hr in hours track by $index">{{hr.display}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+        </form>
+
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button class="md-primary disabled-btn" ng-click="ctrl.save()" ng-disabled="editForm.$invalid || saveStatus">{{'save' | translate}}
+        </md-button>
+        <md-button class="md-primary red-btn" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
+    </md-dialog-actions>
+
+</md-dialog>

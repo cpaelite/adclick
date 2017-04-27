@@ -1033,6 +1033,20 @@ app.put('/api/tsreport/:id', function (req, res) {
   res.send(result);
 });
 
+// 获取用户所有的campaign
+app.get('/api/campaigns', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: [
+      {"id": 1, "name": "campaign1"},
+      {"id": 2, "name": "campaign2"},
+      {"id": 3, "name": "campaign3"}
+    ]
+  };
+  res.send(result);
+});
+
 /**
  * @apiName 根据ID获取Campaign信息
  *
@@ -3853,6 +3867,8 @@ app.get('/api/third/traffic-source', function (req, res) {
  *  @apiParam {String} [token]
  *  @apiParam {String} [account]
  *  @apiParam {String} [password]
+ *
+ * @apiParam {String} clientId
  */
 app.post('/api/third/traffic-source', function (req, res) {
   var result = {
@@ -4088,6 +4104,262 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
   delayResponse(res, result);
 });
 
+/**
+ * @apiName 获取所有规则
+ *
+ */
+  app.get('/api/automated/rules', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "rules": [
+        {"id": 1, "name": "Rule1", "dimension": "Country", "timeSpan": "last6hours","status": 0},
+        {"id": 2, "name": "Rule2", "dimension": "Country", "timeSpan": "last6hours", "status": 1},
+        {"id": 3, "name": "Rule3", "dimension": "Country", "timeSpan": "last6hours", "status": 0}
+      ]
+    }
+  }
+  res.send(result);
+});
+
+/**
+ * @apiName 根据id获取rule
+ *
+ */
+app.get('/api/automated/rules/:id', function(req, res) {
+  var result = {"status":1,"message":"success","data":{"id":10,"name":"Rule1","dimension":"WebSiteId","timeSpan":"last3hours","condition":"sumImps>1000,","schedule":"0 0 */6 * * *","scheduleString":"Every 6 Hours","status":0,"emails":"123@qq.com","campaigns":"816"}};
+  res.send(result);
+});
+
+/**
+ * @apiName 保存 rule
+ *
+ */
+app.post('/api/automated/rules', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "1,2",
+      "dimension": "Country",
+      "timeSpan": "last6hours",
+      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
+      "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
+      "oneTime": "2017-04-21 23",
+      "emails": "test@adbund.com",      // xxx@xxx.com,xxx@xxx.com
+      "status": 0
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 修改rule
+ *
+ */
+app.post('/api/automated/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "rule1",
+      "campaigns": "1,2",
+      "dimension": "Country",
+      "timeSpan": "last6hours",
+      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
+      "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
+      "oneTime": "2017-04-21 23",
+      "emails": "test@adbund.com",      // xxx@xxx.com,xxx@xxx.com
+      "status": 0
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 删除rule
+ *
+ */
+app.delete('/api/automated/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName获取rule的log记录
+ *
+ */
+app.get('/api/automated/logs', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [
+        {id: 1, time: '2017-04-20 00:01:01', name: 'rule1', dimension: "Country"},
+        {id: 2, time: '2017-04-20 00:02:01', name: 'rule2',  dimension: "Device"},
+        {id: 3, time: '2017-04-20 00:03:01', name: 'rule3', dimension: "OS"}
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 获取rule的log的详情
+ *
+ */
+app.get('/api/automated/logs/detail/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [
+        {id: 1, campaign: 'campaign1', action: 'action', inventorySources: 'sources', inventory:'ccc'}
+      ]
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName fraudFilter获取所有rule
+ *
+ * @apiParam
+ *  status: 0: all 1: active 2: inactive
+ */
+app.get('/api/fraud-filter/rules', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "rules": [
+        {"id": 1, "name": "Rule1", "campaigns": "1,2", "dimension": "IP", "timeSpan": "100", "status": 0, "conditions": "PV>500,UserAgent>100,Clicks>100"},
+        {"id": 2, "name": "Rule2", "campaigns": "2", "dimension": "IP", "timeSpan": "100", "status": 1, "conditions": "PV>500,UserAgent>100,Clicks>100"},
+        {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "IP", "timeSpan": "100", "status": 0, "conditions": "PV>500,UserAgent>100,Clicks>100"}
+      ],
+      "totalRows": 200
+    }
+  }
+  res.send(result);
+});
+
+/**
+ * @apiName fraudFilter 获取detail
+ *
+ * @apiParam
+ *
+ */
+app.get('/api/fraud-filter/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {"id": 3, "name": "Rule3", "campaigns": "3", "dimension": "IP", "timeSpan": "100", "status": 0, "conditions": "PV>500,UserAgent>100,Clicks>100"}
+  }
+  res.send(result);
+});
+
+/**
+ * @apiName 删除rule
+ *
+ */
+app.delete('/api/fraud-filter/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success"
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 新建 rule
+ *
+ */
+app.post('/api/fraud-filter/rules', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "name": "ruleName",
+      "campaigns": "1,2",
+      "dimension": "IP",
+      "timeSpan": "200",
+      "conditions": "PV>500,UserAgent>100,Clicks>100",
+      "status": 0
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 更新 rule
+ *
+ */
+app.put('/api/fraud-filter/rules/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    data: {
+      "id": 1,
+      "name": "ruleName",
+      "campaigns": "1,2",
+      "dimension": "IP",
+      "timeSpan": "200",
+      "conditions": "PV>500,UserAgent>100,Clicks>100",
+      "status": 0
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName获取rule的log记录
+ *
+ */
+app.get('/api/fraud-filter/logs', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [
+        {id: 1, time: '2017-04-20 00:01:01', name: 'rule1'},
+        {id: 2, time: '2017-04-20 00:02:01', name: 'rule2'},
+        {id: 3, time: '2017-04-20 00:03:01', name: 'rule3'}
+      ],
+      "totalRows": 200
+    }
+  };
+  delayResponse(res, result);
+});
+
+/**
+ * @apiName 获取rule的log的详情
+ *
+ */
+app.get('/api/fraud-filter/logs/:id', function(req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "logs": [{
+        id: 1,
+        campaign: 'campaign1',
+        dimension: 'IP',
+        name: 'rule1',
+        data: {}
+      }]
+    }
+  };
+  res.send(result);
+});
 
 app.listen(51500, function () {
   console.log('server started success port : 51500');
