@@ -559,18 +559,20 @@
     } else if ($scope.frequency == "One Time") {
       var freDate = moment($scope.freDate).format('YYYY-MM-DD');
       var dateSplit = freDate.split("-");
-      var daily = dateSplit[1];
-      var hour = dateSplit[2];
+      var month = dateSplit[1];
+      var daily = dateSplit[2];
+      if (month.indexOf(0) == 0) {
+        month = month.substring(1);
+      }
       if (daily.indexOf(0) == 0) {
         daily = daily.substring(1);
       }
-      if (hour.indexOf(0) == 0) {
-        hour = hour.substring(1);
-      }
-      $scope.item.schedule = "0 0 " + $scope.freTime + " " + hour + " " + daily + " *";
+      $scope.item.schedule = "0 0 " + $scope.freTime + " " + daily + " " + month + " *";
       $scope.item.scheduleString = $scope.frequency + " " + freDate + " " + $scope.freTime;
       $scope.item.oneTime = freDate + " " + $scope.freTime;
     } else {
+      var time = $scope.frequency.split(" ")[1];
+      $scope.item.schedule = "0 0 */" + time + " * * *";
       $scope.item.scheduleString = $scope.frequency;
     }
   }
