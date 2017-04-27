@@ -19,6 +19,9 @@
   white-space: nowrap;
   width: 330px;
 }
+.bot-blacklist-dialog{
+  overflow: hidden;
+}
 
 .fade-in-right-big{width:50%;background:#fff;border-radius:5px;margin:7% auto 0 auto;padding-bottom:30px;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 1px 1px 0 rgba(0, 0, 0, 0.08), 0 1px 1px 0 rgba(0, 0, 0, 0.08);
@@ -832,6 +835,9 @@ label.cs-subform-label.date-title{
 }
 .form-control.rule-edit-input{
   width: auto;
+}
+.form-control.blacklist-name-input{
+  width: 95%;
 }
 .rule-condition-div{
   position: relative;
