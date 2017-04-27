@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import moment from 'moment';
-import { validate } from './common';
+import {
+    validate
+} from './common';
 import Joi from 'joi';
 import sequelize from 'sequelize';
 const _ = require('lodash');
@@ -24,7 +26,7 @@ const {
  *  @apiName 获取ThirdPartyTrafficSource数据List
  *
  */
-router.get('/api/third/traffic-source', async function (req, res, next) {
+router.get('/api/third/traffic-source', async function(req, res, next) {
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required()
@@ -34,7 +36,8 @@ router.get('/api/third/traffic-source', async function (req, res, next) {
         let result = await TTS.findAll({
             attributes: ['id', 'name', 'trustedTrafficSourceId', 'token', ['userName', 'account'], 'password'],
             where: {
-                userId: value.userId
+                userId: value.userId,
+                deleted: 0
             }
         });
         let resultSlice = result.map(e => e.dataValues);
@@ -63,7 +66,7 @@ router.get('/api/third/traffic-source', async function (req, res, next) {
  *  @apiParam {String} [account]
  *  @apiParam {String} [password]
  */
-router.post('/api/third/traffic-source', async function (req, res, next) {
+router.post('/api/third/traffic-source', async function(req, res, next) {
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required(),
@@ -108,7 +111,6 @@ router.post('/api/third/traffic-source', async function (req, res, next) {
 
 
 
-
 /**
  * @api {put} /api/third/traffic-source/:id   更新ThirdPartyTrafficSource
  *  @apiName 更新ThirdPartyTrafficSource
@@ -120,7 +122,7 @@ router.post('/api/third/traffic-source', async function (req, res, next) {
  *  @apiParam {String} [account]
  *  @apiParam {String} [password]
  */
-router.put('/api/third/traffic-source/:id', async function (req, res, next) {
+router.put('/api/third/traffic-source/:id', async function(req, res, next) {
     try {
         let schema = Joi.object().keys({
             id: Joi.number().required(),
@@ -135,8 +137,7 @@ router.put('/api/third/traffic-source/:id', async function (req, res, next) {
         req.body.userId = req.parent.id;
         req.body.id = req.params.id;
         let value = await validate(req.body, schema);
-        let updateObject = {
-        }
+        let updateObject = {}
         if (value.name != undefined) {
             updateObject.name = value.name;
         }
@@ -152,7 +153,12 @@ router.put('/api/third/traffic-source/:id', async function (req, res, next) {
         if (value.password != undefined) {
             updateObject.password = value.password;
         }
-        await TTS.update(updateObject, { where: { id: value.id, userId: value.userId } });
+        await TTS.update(updateObject, {
+            where: {
+                id: value.id,
+                userId: value.userId
+            }
+        });
         return res.json({
             status: 1,
             message: 'success'
@@ -164,7 +170,7 @@ router.put('/api/third/traffic-source/:id', async function (req, res, next) {
 
 
 
-router.get('/api/traffic-source/tpl', async function (req, res, next) {
+router.get('/api/traffic-source/tpl', async function(req, res, next) {
     try {
         let slice = [];
         let rows = await TPTS.findAll({
@@ -215,7 +221,7 @@ router.get('/api/traffic-source/tpl', async function (req, res, next) {
  * @apiGroup ThirdPartyTrafficSource
  *
  */
-router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
+router.post('/api/third/traffic-source/tasks', async function(req, res, next) {
     try {
         let schema = Joi.object().keys({
             tsId: Joi.number().required(),
@@ -242,7 +248,15 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
             attributes: ['trustedTrafficSourceId']
         });
 
-        let { dataValues: { TemplateTrafficSource: { dataValues: { apiInterval: Interval } } } } = IntervalResult;
+        let {
+            dataValues: {
+                TemplateTrafficSource: {
+                    dataValues: {
+                        apiInterval: Interval
+                    }
+                }
+            }
+        } = IntervalResult;
 
         let Results = await TASK.findAll({
             where: {
@@ -251,12 +265,17 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
             },
             attributes: ['createdAt'],
             order: 'createdAt DESC',
-            offset: 0, limit: 1
+            offset: 0,
+            limit: 1
         });
         let begin = null;
 
         if (Results.length) {
-            [{ dataValues: { createdAt: begin } }] = Results;
+            [{
+                dataValues: {
+                    createdAt: begin
+                }
+            }] = Results;
         }
 
 
@@ -317,12 +336,12 @@ router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
 
 /**
  * @api {get}  /api/third/traffic-source/tasks
- * @apiName 获取trafficSourceSyncTask
+ * @apiName 获取trafficSourceSyncTask
  * @apiParam {Number} thirdPartyTrafficSourceId
  *
- * @apiGroup ThirdPartyTrafficSource
- */
-router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
+ * @apiGroup ThirdPartyTrafficSource
+ */
+router.get('/api/third/traffic-source/tasks', async function(req, res, next) {
     try {
         let schema = Joi.object().keys({
             thirdPartyTrafficSourceId: Joi.number().required(),
@@ -336,10 +355,14 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
                 thirdPartyTrafficSourceId: value.thirdPartyTrafficSourceId
             },
             //0:minute;1:hour;2:day;3:week;4:month;5:year
-            attributes: ['id', 'status', 'message', 'tzId', 'tzShift', 'tzParam', ['thirdPartyTrafficSourceId', 'tsId'], [sequelize.literal('DATE_FORMAT(statisFrom,\'%Y-%m-%dT%H:%i\')'), 'from'], [sequelize.literal('DATE_FORMAT(statisTo,\'%Y-%m-%dT%H:%i\')'), 'to'],
-                [sequelize.literal('case meshSize when 0 then \'minute\' when 1 then \'hour\' when 2 then \'day\' when 3 then \'week\' when 4 then \'month\' else \'year\' end '), 'meshSize']],
+            attributes: ['id', 'status', 'message', 'tzId', 'tzShift', 'tzParam', ['thirdPartyTrafficSourceId', 'tsId'],
+                [sequelize.literal('DATE_FORMAT(statisFrom,\'%Y-%m-%dT%H:%i\')'), 'from'],
+                [sequelize.literal('DATE_FORMAT(statisTo,\'%Y-%m-%dT%H:%i\')'), 'to'],
+                [sequelize.literal('case meshSize when 0 then \'minute\' when 1 then \'hour\' when 2 then \'day\' when 3 then \'week\' when 4 then \'month\' else \'year\' end '), 'meshSize']
+            ],
             order: 'createdAt DESC',
-            offset: 0, limit: 1
+            offset: 0,
+            limit: 1
         });
         let resultSlice = rows.map(e => e.dataValues);
         return res.json({
@@ -359,7 +382,7 @@ router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
  *  @apiName 获取ThirdPartyTrafficSource  detail
  *
  */
-router.get('/api/third/traffic-source/:id', async function (req, res, next) {
+router.get('/api/third/traffic-source/:id', async function(req, res, next) {
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required(),
@@ -390,8 +413,7 @@ const trafficSourceStatisAttributes = [
     'campaignId',
     'campaignName',
     'websiteId',
-    'status',
-    [sequelize.literal('sum(impression)'), 'impression'],
+    'status', [sequelize.literal('sum(impression)'), 'impression'],
     [sequelize.literal('sum(click)'), 'click'],
     [sequelize.literal('round(sum(Cost/1000000),2)'), 'cost'],
     [sequelize.literal('sum(0)'), 'visit'],
@@ -432,7 +454,7 @@ const mapping = {
  * @apiParam {String} order
  *
  */
-router.get('/api/third/traffic-source-statis', async function (req, res, next) {
+router.get('/api/third/traffic-source-statis', async function(req, res, next) {
     let connection;
     try {
         let schema = Joi.object().keys({
@@ -455,7 +477,12 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             });
         }
 
-        let { groupBy, limit, page, order } = value;
+        let {
+            groupBy,
+            limit,
+            page,
+            order
+        } = value;
         // limit
         limit = parseInt(limit)
         if (!limit || limit < 0) limit = 1000;
@@ -476,7 +503,9 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         }
 
         //select task get from to tz
-        let { dataValues: taskObj } = await TASK.findOne({
+        let {
+            dataValues: taskObj
+        } = await TASK.findOne({
             where: {
                 id: value.taskId
             },
@@ -488,7 +517,12 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
 
         //console.log(taskObj)
 
-        let { statisFrom: from, statisTo: to, tzShift: tz, meshSize: meshSize } = taskObj;
+        let {
+            statisFrom: from,
+            statisTo: to,
+            tzShift: tz,
+            meshSize: meshSize
+        } = taskObj;
         //console.log('form :', from);
         //console.log('to :', to);
         //v1~v10 campaignId/webSiteId/time的顺序依次赋值
@@ -557,9 +591,9 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         let totaltpl = `select COUNT(*) as total from ((${tpl}) as T)`;
         tpl += ` limit ${offset},${limit}`;
 
-        let [rows,totals] = await Promise.all([
-            common.query(tpl,[],connection),
-            common.query(totaltpl,[],connection),
+        let [rows, totals] = await Promise.all([
+            common.query(tpl, [], connection),
+            common.query(totaltpl, [], connection),
         ]);
 
         //console.log('IN ======= :', IN)
@@ -620,7 +654,10 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             to = moment(to).startOf('day').format('YYYY-MM-DD HH:mm:ss');
             groupCondition = groupCondition + ',' + groupByKey;
             sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
-            finalAttribute = [[mapping[groupBy], groupBy], [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}')`), `${groupByKey}`]];
+            finalAttribute = [
+                [mapping[groupBy], groupBy],
+                [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}')`), `${groupByKey}`]
+            ];
             finalAttribute = _.concat(finalAttribute, adReportAttributes);
             let reportRows = await AdStatisReport.findAll({
                 where: sqlWhere,
@@ -643,13 +680,13 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             message: 'success',
             data: {
                 rows: rawRows,
-                totalRows:totals.length ? totals[0].total :0
+                totalRows: totals.length ? totals[0].total : 0
             }
         });
     } catch (e) {
         next(e);
-    }finally{
-        if(connection){
+    } finally {
+        if (connection) {
             connection.release();
         }
     }
