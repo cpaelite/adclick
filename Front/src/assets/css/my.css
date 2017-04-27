@@ -3416,3 +3416,8 @@ table.md-table tr.row-deleted td.md-cell {
   width: 115px;
   margin-left: 0;
 }
+.profile-timezone {
+  font-size: 10px;
+  color: #333;
+  padding-right: 10px;
+}

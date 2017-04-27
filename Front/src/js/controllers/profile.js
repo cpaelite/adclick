@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('ProfileCtrl', [
-      '$scope', 'toastr', 'Profile', 'Password', 'Email', 'AccountCheck', 'Timezone', '$localStorage',
+      '$scope', 'toastr', 'Profile', 'Password', 'Email', 'AccountCheck', 'Timezone', '$localStorage', '$rootScope',
       ProfileCtrl
     ]);
 
-  function ProfileCtrl($scope, toastr, Profile, Password, Email, AccountCheck, Timezone, $localStorage) {
+  function ProfileCtrl($scope, toastr, Profile, Password, Email, AccountCheck, Timezone, $localStorage, $rootScope) {
     $scope.app.subtitle = 'Profile';
 
     Timezone.get(null, function (timezone) {
@@ -36,6 +36,11 @@
         if (response.status) {
           toastr.success('Your account data save success!');
           $localStorage.currentUser.firstname = $scope.accountItem.firstname;
+          Profile.get(null, function(oData) {
+            if(oData.status == 1) {
+              $rootScope.profile = oData.data;
+            }
+          });
         }
       });
     };
