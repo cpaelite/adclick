@@ -29,7 +29,7 @@ router.get('/api/automated/rules/:id', async function(req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,status from SuddenChangeRule where id= ? and userId = ?`;
+        let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,status from SuddenChangeRule where id= ? and userId = ?`;
         let camsql = `select c.campaignId as id,t.name as name from SCRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
         let [
             [Result], campaigns
