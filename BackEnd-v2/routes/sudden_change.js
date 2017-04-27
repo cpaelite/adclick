@@ -29,7 +29,7 @@ router.get('/api/automated/rules/:id', async function(req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,status,emails from SuddenChangeRule where id= ? and userId = ?`;
+        let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,status,emails,oneTime from SuddenChangeRule where id= ? and userId = ?`;
         let camsql = `select c.campaignId as id,t.name as name from SCRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
         let [
             [Result], campaigns
@@ -162,6 +162,7 @@ router.get('/api/automated/rules', async function(req, res, next) {
  * @apiParam {String} [scheduleString]
  * @apiParam {String} [emails]
  * @apiParam {Number} [status]
+ * @apiParam {String} [oneTime] 
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -182,7 +183,8 @@ router.post('/api/automated/rules/:id', async function(req, res, next) {
         schedule: Joi.string().optional(),
         scheduleString: Joi.string().optional(),
         emails: Joi.string().optional(),
-        status: Joi.number().optional()
+        status: Joi.number().optional(),
+        oneTime: Joi.string().optional()
     });
 
     req.body.userId = req.parent.id;
@@ -224,6 +226,10 @@ router.post('/api/automated/rules/:id', async function(req, res, next) {
         if (value.status != undefined) {
             sql += `,status= ?`;
             params.push(value.status)
+        }
+        if (value.oneTime) {
+            sql += `,oneTime= ?`;
+            params.push(value.oneTime)
         }
         sql += ` where id= ? and userId= ?`;
         params.push(value.id);
@@ -283,15 +289,24 @@ router.post('/api/automated/rules', async function(req, res, next) {
         condition: Joi.string().required(),
         schedule: Joi.string().required(),
         scheduleString: Joi.string().required(),
-        emails: Joi.string().required()
+        emails: Joi.string().required(),
+        oneTime: Joi.string().optional()
     });
     req.body.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let sql = `insert into SuddenChangeRule (userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails) values(?,?,?,?,?,?,?,?)`;
+        let v = `userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails`;
+        let p = `?,?,?,?,?,?,?,?`;
         let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition, value.schedule, value.scheduleString, value.emails];
+        if (value.oneTime) {
+            v += `,oneTime`;
+            p += `,?`;
+            params.push(value.oneTime);
+        }
+        let sql = `insert into SuddenChangeRule (${v}) values(${p})`;
+
         let {
             insertId: InsertId
         } = await common.query(sql, params, connection);
