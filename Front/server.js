@@ -4128,23 +4128,7 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
  *
  */
 app.get('/api/automated/rules/:id', function(req, res) {
-  var result = {
-    "status": 1,
-    "message": "success",
-    data: {
-      "id": 1,
-      "name": "rule1",
-      "campaigns": "1,2",
-      "dimension": "Country",
-      "dataFrom": "Last 6 Hours",
-      "frequency": "Every 6 Hours",
-      "conditions": "impressions>100,clicks>300",
-      "then": "0",    //0:Include, 1:Exclude
-      "frequency": "Every 1 Hours",
-      "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
-      "status": "0",
-    }
-  };
+  var result = {"status":1,"message":"success","data":{"id":10,"name":"Rule1","dimension":"WebSiteId","timeSpan":"last3hours","condition":"sumImps>1000,","schedule":"0 0 */6 * * *","scheduleString":"Every 6 Hours","status":0,"emails":"123@qq.com","campaigns":"816"}};
   res.send(result);
 });
 
@@ -4180,31 +4164,6 @@ app.post('/api/automated/rules', function(req, res) {
 app.post('/api/automated/rules/:id', function(req, res) {
   var result = {
     "status": 1,
-    "message": "success",
-    data: {
-      "id": 1,
-      "name": "rule1",
-      "campaigns": "campaign1,campaign2",
-      "dimension": "Country",
-      "dataFrom": "Last 6 Hours",
-      "frequency": "Every 6 Hours",
-      "conditions": "impressions>100,clicks>300",
-      "then": "0",    //0:Include, 1:Exclude
-      "frequency": "Every 1 Hours",
-      "executionType": "0",   //0:Modify Based on Current Settings, 1:Replace Current Settings
-      "status": "0",
-    }
-  };
-  res.send(result);
-});
-
-/**
- * @apiName 保存 rule
- *
- */
-app.post('/api/automated/rules', function(req, res) {
-  var result = {
-    "stauts": 1,
     "message": "success",
     data: {
       "id": 1,
