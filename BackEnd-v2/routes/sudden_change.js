@@ -356,6 +356,7 @@ router.delete('/api/automated/rules/:id', async function(req, res, next) {
  * 
  *@apiParam {Number} page
  *@apiParam {Number} limit
+ *@apiParam {String} filter
  * 
  */
 
@@ -363,7 +364,8 @@ router.get('/api/automated/logs', async function(req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         page: Joi.number().required(),
-        limit: Joi.number().required()
+        limit: Joi.number().required(),
+        filter: Joi.string().optional()
     });
     req.query.userId = req.parent.id;
     let connection;
@@ -385,8 +387,14 @@ router.get('/api/automated/logs', async function(req, res, next) {
         if (!offset)
             offset = 0;
         value.offset = offset;
+
+        let filter = "";
+        if (value.filter != undefined && value.filter) {
+            filter = ` and rule.name like '%${value.filter}%' `;
+        }
+
         let sql = `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time,rule.name as name,log.dimension as dimension  
-                  from SuddenChangeLog log inner join SuddenChangeRule rule on log.ruleId = rule.id  where rule.userId =? `;
+                  from SuddenChangeLog log inner join SuddenChangeRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} `;
 
 
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
