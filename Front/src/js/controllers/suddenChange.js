@@ -353,14 +353,16 @@
           "operand": ">",
           "value": Number(con.substring(con.indexOf(">")+1))
         }
-      } else {
+      } else if (con.indexOf("<") > 0) {
         newCon = {
           "key": con.substring(0, con.indexOf("<")),
           "operand": "<",
           "value": Number(con.substring(con.indexOf("<")+1))
         }
       }
-      conditionArray.push(newCon);
+      if (newCon) {
+        conditionArray.push(newCon);  
+      }
     });
     return conditionArray;
   }
