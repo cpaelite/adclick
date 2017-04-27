@@ -18,7 +18,7 @@ var setting = require('../config/setting');
  *     }
  *
  */
-router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
+router.get('/api/fraud-filter/rules/:id', async function(req, res, next) {
     let connection;
     try {
         var schema = Joi.object().keys({
@@ -31,8 +31,10 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
         connection = await common.getConnection();
         let sql = `select id,name,dimension,timeSpan,\`condition\`,status from FraudFilterRule where id= ? and userId = ?`;
         let camsql = `select c.campaignId as id ,t.name as name from  FFRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
-        let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
-        common.query(camsql, [value.userId, value.id], connection)
+        let [
+            [Result], campaigns
+        ] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
+            common.query(camsql, [value.userId, value.id], connection)
         ]);
         if (Result) {
             let campaignSlice = [];
@@ -75,7 +77,7 @@ router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
  *
  */
 
-router.get('/api/fraud-filter/rules', async function (req, res, next) {
+router.get('/api/fraud-filter/rules', async function(req, res, next) {
 
     let connection;
     try {
@@ -88,7 +90,10 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
         });
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
-        let { limit, page } = value;
+        let {
+            limit,
+            page
+        } = value;
 
         // limit
         limit = parseInt(limit);
@@ -118,9 +123,12 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
-        let [Result, [{ total: Total }]] = await Promise.all(
+        let [Result, [{
+            total: Total
+        }]] = await Promise.all(
             [common.query(sql, params, connection),
-            common.query(totalsql, [value.userId], connection)]);
+                common.query(totalsql, [value.userId], connection)
+            ]);
         return res.json({
             status: 1,
             message: "success",
@@ -160,7 +168,7 @@ router.get('/api/fraud-filter/rules', async function (req, res, next) {
  */
 
 
-router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
+router.put('/api/fraud-filter/rules/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -219,8 +227,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -246,7 +253,7 @@ router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
  *   }
  *
  */
-router.post('/api/fraud-filter/rules', async function (req, res, next) {
+router.post('/api/fraud-filter/rules', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -262,7 +269,9 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
         connection = await common.getConnection();
         let sql = `insert into FraudFilterRule (userId,name,dimension,timeSpan,\`condition\`) values(?,?,?,?,?)`;
         let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition];
-        let { insertId: InsertId } = await common.query(sql, params, connection);
+        let {
+            insertId: InsertId
+        } = await common.query(sql, params, connection);
         let campaignArray = value.campaigns.split(',');
         for (let index = 0; index < campaignArray.length; index++) {
             await common.query('insert into FFRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
@@ -277,8 +286,7 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -292,7 +300,7 @@ router.post('/api/fraud-filter/rules', async function (req, res, next) {
  * @apiGroup fraud-filter
  * 
  */
-router.delete('/api/fraud-filter/rules/:id', async function (req, res, next) {
+router.delete('/api/fraud-filter/rules/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -311,8 +319,7 @@ router.delete('/api/fraud-filter/rules/:id', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -328,22 +335,29 @@ router.delete('/api/fraud-filter/rules/:id', async function (req, res, next) {
  *@apiParam {Number} page
  *@apiParam {Number} limit
  *@apiParam {String} filter
+ *@apiParam {String} [from]
+ *@apiParam {String} [to]
  * 
  */
 
-router.get('/api/fraud-filter/logs', async function (req, res, next) {
+router.get('/api/fraud-filter/logs', async function(req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         page: Joi.number().required(),
         limit: Joi.number().required(),
-        filter: Joi.string().optional()
+        filter: Joi.string().optional(),
+        from: Joi.string().optional(),
+        to: Joi.string().optional()
     });
     req.query.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let { limit, page } = value;
+        let {
+            limit,
+            page
+        } = value;
         // limit
         limit = parseInt(limit);
         if (!limit || limit < 0)
@@ -361,15 +375,26 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
             filter = ` and rule.name like '%${value.filter}%' `;
         }
 
+        let timeFilter = "";
+        if (value.from) {
+            timeFilter += ` and log.timeStamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${value.from}', '+00:00','+00:00')))  `;
+        }
+        if (value.to) {
+            timeFilter += ` and log.timeStamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${value.to}', '+00:00','+00:00')))  `;
+        }
+
         let sql = `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time,rule.name as name,log.dimension as dimension  
-                  from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? ${filter}`;
+                  from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} ${timeFilter} `;
 
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
-        let [Result, [{ total: Total }]] = await Promise.all(
+        let [Result, [{
+            total: Total
+        }]] = await Promise.all(
             [common.query(sql, params, connection),
-            common.query(totalsql, [value.userId], connection)]);
+                common.query(totalsql, [value.userId], connection)
+            ]);
 
         return res.json({
             status: 1,
@@ -390,12 +415,11 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
 
 
 
-
 /**
  * @apiName 获取rule的log的详情
  *
  */
-router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
+router.get('/api/fraud-filter/logs/:id', async function(req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         id: Joi.number().required()
@@ -429,6 +453,3 @@ router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
 
 
 module.exports = router;
-
-
-
