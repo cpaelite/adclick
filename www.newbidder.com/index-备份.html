@@ -26,7 +26,7 @@
         <p>Newbidder will start <b>FREE</b> plan with</p>
         <p class="free-small">unlimited events since 1 May, 2017</p>
     </div>
-    <div class="time">Countdown <b>5</b> Days</div>
+    <div class="time">Countdown <b id="timeText">5</b> Days</div>
 
 </div>
 <header id="header">
@@ -84,12 +84,9 @@
                     </div>
                     <div class="pricing-line clearfix">
                         <ol class="free-list">
-                            <li><i class="icon-ok"></i>Unlimited events</li>
-                            <li><i class="icon-ok"></i>Skype support 24/7</li>
-                            <li><i class="icon-ok"></i>6 months data retention</li>
+                            <li><i class="icon-ok"></i>Skype Support 24/7</li>
+                            <li><i class="icon-ok"></i>3 month data retention</li>
                             <li><i class="icon-ok"></i>1 custom tracking domain</li>
-                            <li><i class="icon-ok"></i>Bot filter (1 rule)</li>
-                            <li><i class="icon-ok"></i>Sudden change (1 rule)</li>
                         </ol>
                         <a href="http://panel.newbidder.com/#/access/signup">
                             <button class="free-btn">Select Plan<i class="icon-arrow-right"></i></button>
@@ -513,15 +510,21 @@
         $.src="https://v2.zopim.com/?4ccuvov3W5X4ai2mZUkHWPRhm1DeW4mz";z.t=+new Date;$.
                 type="text/javascript";e.parentNode.insertBefore($,e)})(document,"script");
 </script>
-<script type="text/javascript">
-    $(function() {
-        $("#3").lavaLamp({
-            fx: "backout",
-            speed: 700,
-            click: function(event, menuItem) {
-                return false;
-            }
-        });
-    });
+
+<script>
+    function getLeftDays() {
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month == 4) {
+            var leftDays = 30 - strDate + 1;
+            $(".time #timeText").text(leftDays);
+        } else {
+            $(".free-active").text("");
+        }
+    }
+</script>
+<script>
+    $(function () { $("[data-toggle='tooltip']").tooltip(); getLeftDays(); });
 </script>
 </html>
