@@ -29,13 +29,19 @@
     };
 
     $scope.query = {
-      activeStatus :'1',
-      searchFilter:'',
+      status: 1,
+      filter:'',
       page: 1,
       limit: 1000
     };
+
+    $scope.tabSelected = 0;
     $scope.getRuleList = function(){
-      SuddenChange.get($scope.query,function(result){
+      var params = angular.copy($scope.query);
+      if (!params.filter) {
+        delete params.filter;
+      }
+      SuddenChange.get(params,function(result){
         $scope.list = result.data;
       });
     };
@@ -43,7 +49,7 @@
 
     $scope.datetype = '1';
     $scope.queryLog = {
-      searchFilter:'',
+      filter:'',
       page: 1,
       limit: 1000
     };
@@ -96,7 +102,10 @@
         bindToController: true,
         locals: {item: item},
         templateUrl: 'tpl/automatedRule-edit-dialog.html?' + +new Date()
-      }).then(function() {
+      }).then(function(id) {
+        if(!id) {
+          $scope.query.status = 1;
+        }
         $scope.getRuleList();
       });
     }
@@ -165,7 +174,11 @@
       }else{
         $scope.list.rules[index].status = 0;
       }
-      SuddenChange.save($scope.list.rules[index]);
+      SuddenChange.save($scope.list.rules[index], function(oData) {
+        if(oData.status == 1) {
+          $scope.getRuleList();
+        }
+      });
     };
   }
 
@@ -251,7 +264,7 @@
         if (theData) {
           $scope.item = theData;
           $scope.item.campaigns = $scope.item.campaigns.split(",");
-          $scope.conditionArray = fillConditionArray($scope.item.conditions);
+          $scope.conditionArray = fillConditionArray($scope.item.condition);
           parseScheduleString($scope);
         }
       }
@@ -321,8 +334,10 @@
             condition = condition +  con.key + con.operand + con.value + ",";
           });
           $scope.item.condition = condition;
+          var params = angular.copy($scope.item);
+          params.campaigns = params.campaigns.join(',')
           $scope.saveStatus = true;
-          AutomatedRule.save($scope.item, success);
+          AutomatedRule.save(params, success);
         }
       }
 
@@ -332,7 +347,7 @@
           $scope.errMessage = item.message;
           return;
         } else {
-          $mdDialog.hide();
+          $mdDialog.hide($scope.item.id);
         }
       }
 

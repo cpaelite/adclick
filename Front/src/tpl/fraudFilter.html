@@ -10,8 +10,8 @@
                     <label class="cs-subform-label date-title ng-binding">Status：</label>
                       <md-select aria-label="select" class="cs-subform-select" ng-model="query.status">
                           <md-option value="2">All</md-option>
-                          <md-option value="0">Active</md-option>
-                          <md-option value="1">Inactive</md-option>
+                          <md-option value="1">Active</md-option>
+                          <md-option value="0">Inactive</md-option>
                       </md-select>
                   </div>
                 </div>
@@ -38,7 +38,7 @@
                           <td md-cell>{{rule.name}}</td>
                           <td md-cell>{{rule.timeSpan}}</td>
                           <td md-cell>
-                            <a  class="status-icon" ng-class="{'isGray': rule.status == 0}" ng-click="ruleStatusChange(rule)">
+                            <a  class="status-icon" ng-class="{'isGray': rule.status == 1}" ng-click="ruleStatusChange(rule)">
                               <i class="icon-ok-sign"></i>
                             </a>
                           </td>

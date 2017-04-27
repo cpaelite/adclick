@@ -1,7 +1,7 @@
 <div ng-cloak class="sudden-change">
   <md-content>
     <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn add-rule" ng-click="editRuleItem()" translate>New Add Rule</md-button>
-    <md-tabs md-dynamic-height md-border-bottom>
+    <md-tabs md-dynamic-height md-border-bottom md-selected="tabSelected">
       <md-tab label="Rules">
         <md-content class="md-padding">
           <div class="cs-action-bar-bg">
@@ -9,17 +9,17 @@
                   <div class="left-con">
                     <div class="selectAll">
                       <label class="cs-subform-label date-title ng-binding">Status：</label>
-                        <md-select aria-label="select" class="cs-subform-select" ng-model="query.activeStatus" ng-change="statusChange()">
-                            <md-option value="0">All</md-option>
+                        <md-select aria-label="select" class="cs-subform-select" ng-model="query.status" ng-change="statusChange()">
+                            <md-option value="2">All</md-option>
                             <md-option value="1">Active</md-option>
-                            <md-option value="2">Inactive</md-option>
+                            <md-option value="0">Inactive</md-option>
                         </md-select>
                     </div>
                   </div>
                   <div class="right-select clearfix">
                     <div class="cs-subform-control search-con">
                         <label class="cs-subform-label date-title ng-binding">Keyword Search：</label>
-                        <input type="text" class="cs-filter-input" ng-model="query.searchFilter" placeholder="Search..." ng-change="statusChange()">
+                        <input type="text" class="cs-filter-input" ng-model="query.filter" placeholder="Search..." ng-change="statusChange()">
                     </div>
                   </div>
               </div>
@@ -39,7 +39,7 @@
                             <td md-cell>{{tr.dimension}}</td>
                             <td md-cell>{{tr.timsSpan}}</td>
                             <td md-cell>
-                              <a  class="status-icon" ng-class="{'isGray': tr.status == 0}" ng-click="ruleStatusChange($index)">
+                              <a  class="status-icon" ng-class="{'isGray': tr.status == 1}" ng-click="ruleStatusChange($index)">
                                 <i class="icon-ok-sign"></i>
                                 <md-tooltip md-direction="bottom">
                                   Change rule status
@@ -109,7 +109,7 @@
                   </div>
                   <div class="right-select">
                     <div class="cs-subform-control search-con">
-                        <input type="text" class="cs-filter-input" ng-model="queryLog.searchFilter" placeholder="Search..." ng-change="logQueryChange()">
+                        <input type="text" class="cs-filter-input" ng-model="queryLog.filter" placeholder="Search..." ng-change="logQueryChange()">
                     </div>
                   </div>
               </div>

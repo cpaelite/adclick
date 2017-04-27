@@ -63,7 +63,7 @@
     this.$scope.query = {
       page: 1,
       limit: 50,
-      status: 2,
+      status: 1,
       filter: '',
       __tk: 0
     };
@@ -155,6 +155,7 @@
         if(self.$scope.tabSelected != 0) {
           self.$scope.tabSelected = 0;
         }
+        self.$scope.status = 1;
         self.$scope.query.page = 1;
         self.$scope.query.__tk++;
       });
