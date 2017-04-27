@@ -34,10 +34,10 @@
                           </tr>
                         </thead>
                         <tbody md-body>
-                          <tr ms-row ng-repeat="tr in list.rules track by $index">
-                            <td md-cell>{{tr.name}}</td>
-                            <td md-cell>{{tr.dimension}}</td>
-                            <td md-cell>{{tr.timsSpan}}</td>
+                          <tr ms-row ng-repeat="tr in list.rules track by tr.id">
+                            <td md-cell>{{::tr.name}}</td>
+                            <td md-cell>{{::tr.dimension}}</td>
+                            <td md-cell>{{::tr.timeSpan}}</td>
                             <td md-cell>
                               <a  class="status-icon" ng-class="{'isGray': tr.status == 1}" ng-click="ruleStatusChange($index)">
                                 <i class="icon-ok-sign"></i>
@@ -49,15 +49,9 @@
                             <td md-cell>
                               <a  class="opera-icon" ng-click="editRuleItem(tr)">
                                 <i class="icon-file-alt"></i>
-                                <md-tooltip md-direction="bottom">
-                                  Edit automate rules
-                                </md-tooltip>
                               </a>
                               <a  class="opera-icon" ng-click="deleteRuleItem(tr.id)">
                                 <i class="icon-trash"></i>
-                                <md-tooltip md-direction="bottom">
-                                  Delete this automate rule
-                                </md-tooltip>
                               </a>
                             </td>
                           </tr>
@@ -114,25 +108,22 @@
                   </div>
               </div>
               <div class="table-box">
-                  <md-table-container resizefraud class="repeater-container">
+                  <md-table-container resizefraud class="repeater-log-container" style="overflow-anchor: none;">
                       <table md-table multiple md-progress="promise">
-                        <thead md-head>
+                        <thead md-head fix-head>
                           <tr md-row>
                             <th md-column>Time</th>
                             <th md-column>Rule Name</th>
                             <th md-column>Operations</th>
                           </tr>
                         </thead>
-                        <tbody md-body>
-                          <tr ms-row ng-repeat="tr in loglist.logs">
-                            <td md-cell>{{tr.time}}</td>
-                            <td md-cell>{{tr.name}}</td>
+                        <tbody md-body vs-repeat vs-scroll-parent=".repeater-log-container">
+                          <tr ms-row ng-repeat="tr in loglist.logs track by tr.id">
+                            <td md-cell>{{::tr.time}}</td>
+                            <td md-cell>{{::tr.name}}</td>
                             <td md-cell>
                               <a class="status-icon" ng-click="viewLogs(tr)">
                                 <i class="icon-eye-open"></i>
-                                <md-tooltip md-direction="bottom">
-                                  View automate logs
-                                </md-tooltip>
                               </a>
                             </td>
                           </tr>

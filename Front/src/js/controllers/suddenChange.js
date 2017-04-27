@@ -54,7 +54,11 @@
       limit: 1000
     };
     $scope.getLogList = function(){
-      Logs.get($scope.queryLog,function(result){
+      var params = angular.copy($scope.queryLog);
+      if(!params.filter) {
+        delete params.filter;
+      }
+      Logs.get(params, function(result){
         $scope.loglist = result.data;
       });
     };
@@ -104,7 +108,10 @@
         templateUrl: 'tpl/automatedRule-edit-dialog.html?' + +new Date()
       }).then(function(id) {
         if(!id) {
-          $scope.query.status = 1;
+          $scope.query.status = 0;
+        }
+        if($scope.tabSelected != 0) {
+          $scope.tabSelected = 0;
         }
         $scope.getRuleList();
       });

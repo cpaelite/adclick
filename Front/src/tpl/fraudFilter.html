@@ -35,8 +35,8 @@
                       </thead>
                       <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
                         <tr ms-row ng-repeat="rule in rules.rules track by rule.id">
-                          <td md-cell>{{rule.name}}</td>
-                          <td md-cell>{{rule.timeSpan}}</td>
+                          <td md-cell>{{::rule.name}}</td>
+                          <td md-cell>{{::rule.timeSpan}}</td>
                           <td md-cell>
                             <a  class="status-icon" ng-class="{'isGray': rule.status == 1}" ng-click="ruleStatusChange(rule)">
                               <i class="icon-ok-sign"></i>
@@ -120,9 +120,9 @@
                     </tr>
                   </thead>
                   <tbody md-body vs-repeat vs-scroll-parent=".repeater-log-container">
-                    <tr ms-row ng-repeat="log in logs.logs">
-                      <td md-cell>{{log.time}}</td>
-                      <td md-cell>{{log.name}}</td>
+                    <tr ms-row ng-repeat="log in logs.logs track by log.id">
+                      <td md-cell>{{::log.time}}</td>
+                      <td md-cell>{{::log.name}}</td>
                       <td md-cell>
                         <a class="status-icon" ng-click="viewLogs(log)">
                           <i class="icon-eye-open"></i>

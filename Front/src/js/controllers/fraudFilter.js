@@ -155,7 +155,7 @@
         if(self.$scope.tabSelected != 0) {
           self.$scope.tabSelected = 0;
         }
-        self.$scope.status = 1;
+        self.$scope.status = 0;
         self.$scope.query.page = 1;
         self.$scope.query.__tk++;
       });
