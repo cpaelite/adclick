@@ -411,7 +411,7 @@
       $scope.freTime = schStr[2];
     } else if ($scope.item.scheduleString.indexOf("One Time") != -1) {
       $scope.frequency = "One Time";
-      $scope.freDate = schStr[2];
+      $scope.freDate = new Date(schStr[2]);
       $scope.freWeek = "0";
       $scope.freTime = schStr[3];
     } else if ($scope.item.scheduleString.indexOf("Every") != -1) {
