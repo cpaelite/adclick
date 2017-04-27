@@ -3412,7 +3412,7 @@ table.md-table tr.row-deleted td.md-cell {
 .fraud-filter-edit-dialog .frequency span.msg {
   float: left; height: 32px; line-height: 32px; padding: 0 15px;
 }
-.fraud-filter-edit-dialog .condition-select {
-  width: 110px;
+.fraud-filter-edit-dialog .condition-select, .automated-rule-edit-dialog .condition-select{
+  width: 115px;
   margin-left: 0;
 }

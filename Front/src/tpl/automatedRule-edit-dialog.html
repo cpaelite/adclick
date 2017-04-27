@@ -1,4 +1,4 @@
-<md-dialog class="cs-edit-dialog" ng-cloak>
+<md-dialog class="cs-edit-dialog automated-rule-edit-dialog" ng-cloak>
     <md-toolbar>
         <div class="md-toolbar-tools cam-title">
             <h2 class="md-title">{{ctrl.title | translate}} - {{ctrl.titleType | translate}}</h2>
@@ -8,7 +8,7 @@
     <md-dialog-content class="md-dialog-content">
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-3 control-label">Rule Name<span class="star-icon">*</span>：</label>
+                <label class="col-sm-3 control-label">Rule Name<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7">
                     <input type="text" name="name" class="form-control" ng-model="item.name" required>
                     <span style="color:red" ng-show="editForm.name.$dirty && editForm.name.$invalid">
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Emails<span class="star-icon">*</span>：</label>
+                <label class="col-sm-3 control-label">Emails<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7">
                     <input type="text" name="email" class="form-control" ng-model="item.emails" ng-blur="validateEmail()" required>
                     <span style="color:red" ng-show="editForm.email.$dirty && editForm.email.$invalid">
@@ -38,7 +38,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Dimension<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
-                    <md-select aria-label="Dimension" class="cs-subform-select" ng-model="item.dimension">
+                    <md-select aria-label="Dimension" class="cs-subform-select" ng-model="item.dimension" ng-required="true">
                         <md-option value="{{dimension}}" ng-repeat="dimension in dimensions track by $index">{{dimension}}</md-option>
                     </md-select>
                 </div>
@@ -46,7 +46,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Time Span<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
-                    <md-select aria-label="DataFrom" class="cs-subform-select" ng-model="item.timeSpan">
+                    <md-select aria-label="DataFrom" class="cs-subform-select" ng-model="item.timeSpan" ng-required="true">
                         <md-option value="{{timeSpan.key}}" ng-repeat="timeSpan in timeSpans track by $index">{{timeSpan.display}}</md-option>
                     </md-select>
                 </div>
@@ -54,7 +54,7 @@
             <div class="form-group"  ng-repeat="(conArrIdx, condition) in conditionArray">
                 <label class="col-sm-3 control-label" ng-class="{'isShowNameCondition': conArrIdx != 0}">Conditions<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
-                    <md-select aria-label="ConditionKey" class="cs-subform-select" ng-model="conditionArray[conArrIdx].key">
+                    <md-select aria-label="ConditionKey" class="cs-subform-select condition-select" ng-model="conditionArray[conArrIdx].key">
                         <md-option value="{{con.key}}" ng-repeat="con in conditions" ng-disabled="conditionDisable(con, conArrIdx)">{{con.display}}</md-option>
                     </md-select>
                     <md-select aria-label="ConditionOperand" class="cs-subform-select" ng-model="condition.operand">
