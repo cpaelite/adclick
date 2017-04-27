@@ -18,7 +18,7 @@ var setting = require('../config/setting');
  *     }
  *
  */
-router.get('/api/automated/rules/:id', async function (req, res, next) {
+router.get('/api/automated/rules/:id', async function(req, res, next) {
     let connection;
     try {
         var schema = Joi.object().keys({
@@ -31,13 +31,15 @@ router.get('/api/automated/rules/:id', async function (req, res, next) {
         connection = await common.getConnection();
         let sql = `select id,name,dimension,timeSpan,\`condition\`,\`schedule\`,status from SuddenChangeRule where id= ? and userId = ?`;
         let camsql = `select c.campaignId as id,t.name as name from SCRule2Campaign c inner join TrackingCampaign t on t.id=c.campaignId where t.userId=? and c.ruleId=?`;
-        let [[Result], campaigns] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
-        common.query(camsql, [value.userId, value.id], connection)
+        let [
+            [Result], campaigns
+        ] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
+            common.query(camsql, [value.userId, value.id], connection)
         ]);
         if (Result) {
-            let campaignSlice=[];
-            for(let index=0;index<campaigns.length;index++){
-                 campaignSlice.push(campaigns[index].id);
+            let campaignSlice = [];
+            for (let index = 0; index < campaigns.length; index++) {
+                campaignSlice.push(campaigns[index].id);
             }
             Result.campaigns = campaignSlice.join(',');
         }
@@ -63,6 +65,7 @@ router.get('/api/automated/rules/:id', async function (req, res, next) {
  * @apiGroup sudden_change
  * @apiParam {Number} page
  * @apiParam {Number} limit
+ * @apiParam {Number} status: 0: inactive, 1: active, 2: all
  * @apiParam {String} [filter]
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -74,7 +77,7 @@ router.get('/api/automated/rules/:id', async function (req, res, next) {
  *
  */
 
-router.get('/api/automated/rules', async function (req, res, next) {
+router.get('/api/automated/rules', async function(req, res, next) {
 
     let connection;
     try {
@@ -82,11 +85,15 @@ router.get('/api/automated/rules', async function (req, res, next) {
             userId: Joi.number().required(),
             page: Joi.number().required(),
             limit: Joi.number().required(),
-            filter: Joi.string().optional()
+            filter: Joi.string().optional(),
+            status: Joi.number().required()
         });
         req.query.userId = req.parent.id;
         let value = await common.validate(req.query, schema);
-        let { limit, page } = value;
+        let {
+            limit,
+            page
+        } = value;
 
         // limit
         limit = parseInt(limit);
@@ -104,13 +111,24 @@ router.get('/api/automated/rules', async function (req, res, next) {
         if (value.filter != undefined && value.filter) {
             filter = ` and name like '%${value.filter}%' `;
         }
-        let sql = `select id,name,dimension,timeSpan,status from SuddenChangeRule where userId =? and deleted=0 ${filter} order by id DESC `;
+        let statusFilter = "";
+        switch (value.status) {
+            case 2:
+                statusFilter = "";
+                break;
+            default:
+                statusFilter = ` and status=${value.status} `;
+        }
+        let sql = `select id,name,dimension,timeSpan,status from SuddenChangeRule where userId =? and deleted=0 ${filter} ${statusFilter} order by id DESC `;
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
-        let [Result, [{ total: Total }]] = await Promise.all(
+        let [Result, [{
+            total: Total
+        }]] = await Promise.all(
             [common.query(sql, params, connection),
-            common.query(totalsql, [value.userId], connection)]);
+                common.query(totalsql, [value.userId], connection)
+            ]);
 
         return res.json({
             status: 1,
@@ -151,7 +169,7 @@ router.get('/api/automated/rules', async function (req, res, next) {
  *   }
  *
  */
-router.post('/api/automated/rules/:id', async function (req, res, next) {
+router.post('/api/automated/rules/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -220,8 +238,7 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -250,7 +267,7 @@ router.post('/api/automated/rules/:id', async function (req, res, next) {
  *   }
  *
  */
-router.post('/api/automated/rules', async function (req, res, next) {
+router.post('/api/automated/rules', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -269,7 +286,9 @@ router.post('/api/automated/rules', async function (req, res, next) {
         connection = await common.getConnection();
         let sql = `insert into SuddenChangeRule (userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails) values(?,?,?,?,?,?,?,?)`;
         let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition, value.schedule, value.scheduleString, value.emails];
-        let { insertId: InsertId } = await common.query(sql, params, connection);
+        let {
+            insertId: InsertId
+        } = await common.query(sql, params, connection);
         let campaignArray = value.campaigns.split(',');
         for (let index = 0; index < campaignArray.length; index++) {
             await common.query('insert into SCRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
@@ -283,8 +302,7 @@ router.post('/api/automated/rules', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -298,7 +316,7 @@ router.post('/api/automated/rules', async function (req, res, next) {
  * @apiGroup sudden_change
  * 
  */
-router.delete('/api/automated/rules/:id', async function (req, res, next) {
+router.delete('/api/automated/rules/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -317,8 +335,7 @@ router.delete('/api/automated/rules/:id', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -336,7 +353,7 @@ router.delete('/api/automated/rules/:id', async function (req, res, next) {
  * 
  */
 
-router.get('/api/automated/logs', async function (req, res, next) {
+router.get('/api/automated/logs', async function(req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         page: Joi.number().required(),
@@ -347,7 +364,10 @@ router.get('/api/automated/logs', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let { limit, page } = value;
+        let {
+            limit,
+            page
+        } = value;
         // limit
         limit = parseInt(limit);
         if (!limit || limit < 0)
@@ -366,9 +386,12 @@ router.get('/api/automated/logs', async function (req, res, next) {
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
         let params = [value.userId, value.offset, value.limit];
-        let [Result, [{ total: Total }]] = await Promise.all(
+        let [Result, [{
+            total: Total
+        }]] = await Promise.all(
             [common.query(sql, params, connection),
-            common.query(totalsql, [value.userId], connection)]);
+                common.query(totalsql, [value.userId], connection)
+            ]);
 
         return res.json({
             status: 1,
@@ -389,12 +412,11 @@ router.get('/api/automated/logs', async function (req, res, next) {
 
 
 
-
 /**
  * @apiName 获取rule的log的详情
  *
  */
-router.get('/api/automated/logs/detail/:id', async function (req, res, next) {
+router.get('/api/automated/logs/detail/:id', async function(req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         id: Joi.number().required()
@@ -428,6 +450,3 @@ router.get('/api/automated/logs/detail/:id', async function (req, res, next) {
 
 
 module.exports = router;
-
-
-
