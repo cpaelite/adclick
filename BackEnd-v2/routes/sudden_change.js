@@ -161,6 +161,7 @@ router.get('/api/automated/rules', async function(req, res, next) {
  * @apiParam {String} [schedule]
  * @apiParam {String} [scheduleString]
  * @apiParam {String} [emails]
+ * @apiParam {Number} [status]
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -180,7 +181,8 @@ router.post('/api/automated/rules/:id', async function(req, res, next) {
         condition: Joi.string().optional(),
         schedule: Joi.string().optional(),
         scheduleString: Joi.string().optional(),
-        emails: Joi.string().optional()
+        emails: Joi.string().optional(),
+        status: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id;
@@ -218,6 +220,10 @@ router.post('/api/automated/rules/:id', async function(req, res, next) {
         if (value.emails != undefined) {
             sql += `,emails= ?`;
             params.push(value.emails)
+        }
+        if (value.status != undefined) {
+            sql += `,status= ?`;
+            params.push(value.status)
         }
         sql += ` where id= ? and userId= ?`;
         params.push(value.id);
