@@ -61,7 +61,7 @@ header {font-family:Helvetica;
     width: 100%;
     height:85vh;
     background:url("../img/banner.jpg") no-repeat;
-    background-size:100%;float:left;margin-bottom:50px;
+    background-size:100%;float:left;margin-bottom:80px;
 }
 .title {
     -webkit-align-self: center;
@@ -314,7 +314,6 @@ nav ul li:hover {
     padding:50px 0 0 0;}
 .rtable--flip .dh-m.dh-m-h{padding:12px 30px 0 35px;}
 
-.pricing-box{}
 .pricing-box h2,.title-02{text-align:center;font-size:38px;font-weight:600;padding:70px 0 60px 0;}
 .pricing-col li{width:24.3%;float:left;margin:0 10px 0 0;font-family:Roboto-Regular;}
 .pricing-col li h3{background:#8494a1;height:32px;text-align:center;color:#fff;font-size:12px;line-height:32px;border-radius:5px 5px 0 0;}
@@ -466,6 +465,7 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 .free-teaser.free-teaser-en{font-family:Helvetica;}
 .free-teaser.free-teaser-en .free-teaser-list-top li h3{font-size:16px;}
 
+.pricing-box{margin-bottom:80px;}
 .pricing-free-box{max-width:738px;margin:0 auto;font-family:Helvetica;}
 .pricing-free{width:48%;float:left;}
 .pricing-custom{width:48%;float:right;}
