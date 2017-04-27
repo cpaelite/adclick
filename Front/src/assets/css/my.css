@@ -191,7 +191,7 @@ header .home:hover{
 .navi {
     margin-top: 8px;
 }
-.navi ul.nav li.active a {
+.navi ul.nav li.active a, .navi ul.nav li.active > md-menu-bar {
     font-weight:600;
     color:#fff;
     background:#0055bf;

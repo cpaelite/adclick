@@ -62,6 +62,7 @@
         $scope.loglist = result.data;
       });
     };
+    getDateRange($scope.datetype);
     $scope.getLogList();
 
     getDateRange($scope.datetype);
@@ -361,7 +362,7 @@
         }
       }
       if (newCon) {
-        conditionArray.push(newCon);  
+        conditionArray.push(newCon);
       }
     });
     return conditionArray;
