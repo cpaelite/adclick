@@ -387,10 +387,7 @@ async function normalReport(values, mustPagination) {
   let totals = Totals[0].dataValues;
 
   let rawRows = rows.map(e => e.dataValues);
-  rawRows = await fullFill({
-    rawRows,
-    groupBy
-  });
+
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy == "campaign") {
     rawRows = await fullFill({
@@ -398,6 +395,12 @@ async function normalReport(values, mustPagination) {
       groupBy: "traffic"
     });
   }
+
+  rawRows = await fullFill({
+    rawRows,
+    groupBy
+  });
+
   let totalRows = rawRows.length;
   return {
     rows: rawRows,
