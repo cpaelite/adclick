@@ -164,6 +164,8 @@
         $scope.$state.go('access.signin');
       }
       delete $localStorage.currentUser;
+      $rootScope.currentUser = null;
+      $rootScope.profile = null;
       $cookies.remove('token');
       $cookies.remove('clientId');
     };

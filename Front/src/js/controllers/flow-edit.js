@@ -1003,7 +1003,8 @@
             $scope.saveErrors.push('Rule ' + rule.name + ' must contain at least 1 condition');
           } else if (!rule.isDefault && ruleData.conditions.length > 0) {
             var conditionStatus = ruleData.conditions.some(function(c) {
-              return !(c.value && Object.prototype.toString.apply(c.value) == '[object String]' || c.value && Object.prototype.toString.apply(c.value) == '[object Array]' && c.value.length > 0)
+              return !(c.value && Object.prototype.toString.apply(c.value) == '[object String]' || c.value && Object.prototype.toString.apply(c.value) == '[object Array]' && c.value.length > 0
+              || (c.weekday && c.weekday.length > 0 && c.tz) || (c.endtime != undefined && c.starttime != undefined && c.tz))
             });
             if(conditionStatus) {
               $scope.saveErrors.push('At least one value should be set for ' + rule.name  + "'s condition");
