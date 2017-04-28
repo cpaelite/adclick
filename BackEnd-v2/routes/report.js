@@ -292,7 +292,7 @@ async function normalReport(values, mustPagination) {
       let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
     } else if (mapping[attr]) {
-      where += ` and ${[mapping[attr].dbKey]} = ${values[attr]}`;
+      where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
     }
   });
 

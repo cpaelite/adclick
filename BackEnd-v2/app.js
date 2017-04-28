@@ -9,7 +9,7 @@ global.pool = mysql.createPool({
   password: mysqlSetting.password,
   database: mysqlSetting.database,
   connectionLimit: mysqlSetting.connectionLimit,
-  debug: process.env.DEBUG === 'true',
+  debug: true,
   waitForConnections: false
 });
 
