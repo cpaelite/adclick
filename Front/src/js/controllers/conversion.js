@@ -138,7 +138,7 @@
       var preferences = {
         json: $scope.preferences
       };
-      Preference.save(prefereces);
+      Preference.save(preferences);
     };
 
     $scope.btnName = 'Refresh';
