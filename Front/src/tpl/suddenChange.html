@@ -1,6 +1,6 @@
 <div ng-cloak class="sudden-change">
   <md-content>
-    <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn add-rule" ng-click="editRuleItem()" translate>New Add Sudden Change Rule</md-button>
+    <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn add-rule" ng-click="editRuleItem()" ng-disabled="list.rules.length >= ruleLimit" translate>New Add Rule</md-button>
     <md-tabs md-dynamic-height md-border-bottom md-selected="tabSelected">
       <md-tab label="Sudden Change Rules">
         <md-content class="md-padding">

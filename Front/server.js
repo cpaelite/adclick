@@ -309,10 +309,12 @@ app.get('/api/permission', function (req, res) {
           anOfferAPILimit: 1
         },
         suddenchange: {
-          show: true
+          show: true,
+          scRuleLimit: 1
         },
         fraudfilter: {
-          show: true
+          show: true,
+          ffRuleLimit: 1
         }
       },
     }

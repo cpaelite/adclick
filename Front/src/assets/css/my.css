@@ -3188,6 +3188,10 @@ md-content.md-default-theme, md-content{color:#000;}
     background: #a09b9b !important;
     border: 1px solid #868484 !important;
 }
+.cs-add-button.blue-btn.add-rule[disabled]{
+    background: #a09b9b !important;
+    border: 1px solid #868484 !important;
+}
 .ts-time{
     padding: 0 5px;
     border: 1px solid #c9c9cf!important;

@@ -35,6 +35,9 @@
       limit: 1000
     };
 
+    // 账户类型对rule的数量的限制
+    $scope.ruleLimit = $scope.permissions.report.suddenchange.scRuleLimit;
+
     $scope.tabSelected = 0;
     $scope.getRuleList = function(){
       var params = angular.copy($scope.query);

@@ -81,6 +81,9 @@
     this.$scope.tabSelected = 0;
     this.$scope.pathRoute = 'tpl/botBlacklist.html?' + +new Date();
 
+    // 账户类型对rule的数量的限制
+    $scope.ruleLimit = $scope.permissions.report.fraudfilter.ffRuleLimit;
+
     this.init();
     this.initEvent();
   }
