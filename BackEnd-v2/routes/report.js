@@ -148,17 +148,6 @@ async function main_report(value) {
     if (!offset || offset < 0) offset = 0;
     value.offset = offset;
   }
-  // limit
-  // limit = parseInt(limit)
-  // if (!limit || limit < 0)
-  //   limit = 1000
-  // value.limit = limit
-  // // offset
-  // page = parseInt(page)
-  // let offset = (page - 1) * limit;
-  // if (!offset)
-  //   offset = 0
-  // value.offset = offset
 
 
   console.info("------------", isListPageRequest(value))
