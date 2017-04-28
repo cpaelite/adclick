@@ -463,7 +463,7 @@ export function extraConfig(groupBy) {
           ['name', 'campaignName'],
           ['hash', 'campaignHash'],
           ['url', 'campaignUrl'],
-          ['country', 'campaignCountry'],
+          [sequelize.literal('case country when \'ZZZ\' then \'GLOBAL\' else country end'), 'campaignCountry'],
           ['trafficSourceId', 'trafficId'],
           ['trafficSourceName', 'trafficName'],
           'deleted'
@@ -494,7 +494,7 @@ export function extraConfig(groupBy) {
           'id', ['id', 'landerId'],
           ['name', 'landerName'],
           ['hash', 'landerHash'],
-          ['country', 'landerCountry'],
+          [sequelize.literal('case country when \'ZZZ\' then \'GLOBAL\' else country end'), 'landerCountry'],
           ['url', 'landerUrl'],
           'deleted'
         ]
@@ -511,7 +511,7 @@ export function extraConfig(groupBy) {
           ['name', 'offerName'],
           ['hash', 'offerHash'],
           ['url', 'offerUrl'],
-          ['country', 'offerCountry'],
+          [sequelize.literal('case country when \'ZZZ\' then \'GLOBAL\' else country end'), 'offerCountry'],
           ['payoutValue', 'offerPayout'],
           'deleted'
         ]
