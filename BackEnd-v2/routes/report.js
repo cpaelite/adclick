@@ -184,7 +184,6 @@ async function fullFill({
   rawRows,
   groupBy
 }) {
-
   if (!mapping[groupBy].table) {
     // don't belong to group by model, do nothing
     return rawRows
@@ -388,6 +387,8 @@ async function normalReport(values, mustPagination) {
   let totals = Totals[0].dataValues;
 
   let rawRows = rows.map(e => e.dataValues);
+
+
 
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy == "campaign") {
