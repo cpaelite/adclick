@@ -9,35 +9,45 @@ export const mapping = {
     dbFilter: "CampaignName",
     group: "campaign",
     attributes: [
-      'UserID',
-      ['CampaignID', 'campaignId']
+      'UserID', ['CampaignID', 'campaignId']
     ]
   },
   flow: {
     attributes: [
-      'UserID',
-      ['FlowID', 'flowId']
+      'UserID', ['FlowID', 'flowId']
     ],
-    dbKey: "FlowID", dbGroupBy: "UserID,FlowID", listPage: true, table: "Flow", dbFilter: "FlowName", group: "flow"
+    dbKey: "FlowID",
+    dbGroupBy: "UserID,FlowID",
+    listPage: true,
+    table: "Flow",
+    dbFilter: "FlowName",
+    group: "flow"
   },
   lander: {
     attributes: [
-      'UserID',
-      ['LanderID', 'landerId']
+      'UserID', ['LanderID', 'landerId']
     ],
-    dbKey: "LanderID", dbGroupBy: "UserID,LanderID", listPage: true, table: "Lander", dbFilter: "LanderName", group: "lander"
+    dbKey: "LanderID",
+    dbGroupBy: "UserID,LanderID",
+    listPage: true,
+    table: "Lander",
+    dbFilter: "LanderName",
+    group: "lander"
   },
   offer: {
     attributes: [
-      'UserID',
-      ['OfferID', 'offerId']
+      'UserID', ['OfferID', 'offerId']
     ],
-    dbKey: "OfferID", dbGroupBy: "UserID,OfferID", listPage: true, table: "Offer", dbFilter: "OfferName", group: "offer"
+    dbKey: "OfferID",
+    dbGroupBy: "UserID,OfferID",
+    listPage: true,
+    table: "Offer",
+    dbFilter: "OfferName",
+    group: "offer"
   },
   affiliate: {
     attributes: [
-      'UserID',
-      ['AffiliateNetworkID', 'affiliateId']
+      'UserID', ['AffiliateNetworkID', 'affiliateId']
     ],
     dbKey: "AffiliateNetworkID",
     dbGroupBy: "UserID,AffiliateNetworkID",
@@ -48,8 +58,7 @@ export const mapping = {
   },
   traffic: {
     attributes: [
-      'UserID',
-      ['TrafficSourceID', 'trafficId']
+      'UserID', ['TrafficSourceID', 'trafficId']
     ],
     dbKey: "TrafficSourceID",
     dbGroupBy: "UserID,TrafficSourceID",
@@ -63,194 +72,310 @@ export const mapping = {
       ['Language', 'id'],
       ['Language', 'language']
     ],
-    dbKey: "Language", dbGroupBy: "Language", listPage: false, dbFilter: 'Language'
+    dbKey: "Language",
+    dbGroupBy: "Language",
+    listPage: false,
+    dbFilter: 'Language'
   },
   model: {
     attributes: [
       ['model', 'id'],
       ['model', 'model']
     ],
-    dbKey: "Model", dbGroupBy: "Model", listPage: false, dbFilter: 'Model'
+    dbKey: "Model",
+    dbGroupBy: "Model",
+    listPage: false,
+    dbFilter: 'Model'
   },
   country: {
     attributes: [
       ['Country', 'id'],
       ['Country', 'country']
     ],
-    dbKey: "Country", dbGroupBy: "Country", listPage: false, dbFilter: 'Country'
+    dbKey: "Country",
+    dbGroupBy: "Country",
+    listPage: false,
+    dbFilter: 'Country'
   },
   city: {
     attributes: [
       ['City', 'id'],
       ['City', 'city']
     ],
-    dbKey: "City", dbGroupBy: "City", listPage: false, dbFilter: 'City', dbFilter: 'City'
+    dbKey: "City",
+    dbGroupBy: "City",
+    listPage: false,
+    dbFilter: 'City',
+    dbFilter: 'City'
   },
   region: {
     attributes: [
       ['Region', 'id'],
       ['Region', 'region']
     ],
-    dbKey: "Region", dbGroupBy: "Region", listPage: false, dbFilter: 'Region'
+    dbKey: "Region",
+    dbGroupBy: "Region",
+    listPage: false,
+    dbFilter: 'Region'
   },
   isp: {
     attributes: [
       ['ISP', 'id'],
       ['ISP', 'isp']
     ],
-    dbKey: "ISP", dbGroupBy: "ISP", listPage: false, dbFilter: 'ISP'
+    dbKey: "ISP",
+    dbGroupBy: "ISP",
+    listPage: false,
+    dbFilter: 'ISP'
   },
   mobileCarrier: {
     attributes: [
       ['MobileCarrier', 'id'],
       ['MobileCarrier', 'mobileCarrier']
     ],
-    dbKey: "MobileCarrier", dbGroupBy: "MobileCarrier", listPage: false, dbFilter: 'MobileCarrier'
+    dbKey: "MobileCarrier",
+    dbGroupBy: "MobileCarrier",
+    listPage: false,
+    dbFilter: 'MobileCarrier'
   },
   domain: {
     attributes: [
       ['Domain', 'id'],
       ['Domain', 'domain']
     ],
-    dbKey: "Domain", dbGroupBy: "Domain", listPage: false, dbFilter: 'Domain'
+    dbKey: "Domain",
+    dbGroupBy: "Domain",
+    listPage: false,
+    dbFilter: 'Domain'
   },
   deviceType: {
     attributes: [
       ['DeviceType', 'id'],
       ['DeviceType', 'deviceType']
     ],
-    dbKey: "DeviceType", dbGroupBy: "DeviceType", listPage: false, dbFilter: 'DeviceType'
+    dbKey: "DeviceType",
+    dbGroupBy: "DeviceType",
+    listPage: false,
+    dbFilter: 'DeviceType'
   },
   brand: {
     attributes: [
       ['Brand', 'id'],
       ['Brand', 'brand']
     ],
-    dbKey: "Brand", dbGroupBy: "Brand", listPage: false, dbFilter: 'Brand'
+    dbKey: "Brand",
+    dbGroupBy: "Brand",
+    listPage: false,
+    dbFilter: 'Brand'
   },
   os: {
     attributes: [
       ['OS', 'id'],
       ['OS', 'os']
     ],
-    dbKey: "OS", dbGroupBy: "OS", listPage: false, dbFilter: 'OS'
+    dbKey: "OS",
+    dbGroupBy: "OS",
+    listPage: false,
+    dbFilter: 'OS'
   },
   osVersion: {
     attributes: [
       ['OSVersion', 'id'],
       ['OSVersion', 'osVersion'],
     ],
-    dbKey: "OSVersion", dbGroupBy: "OSVersion", listPage: false, dbFilter: 'OSVersion'
+    dbKey: "OSVersion",
+    dbGroupBy: "OSVersion",
+    listPage: false,
+    dbFilter: 'OSVersion'
   },
   browser: {
     attributes: [
       ['Browser', 'id'],
       ['Browser', 'browser']
     ],
-    dbKey: "Browser", dbGroupBy: "Browser", listPage: false, dbFilter: 'Browser'
+    dbKey: "Browser",
+    dbGroupBy: "Browser",
+    listPage: false,
+    dbFilter: 'Browser'
   },
   browserVersion: {
     attributes: [
       ['BrowserVersion', 'id'],
       ['BrowserVersion', 'browserVersion']
     ],
-    dbKey: "BrowserVersion", dbGroupBy: "BrowserVersion", listPage: false, dbFilter: 'BrowserVersion'
+    dbKey: "BrowserVersion",
+    dbGroupBy: "BrowserVersion",
+    listPage: false,
+    dbFilter: 'BrowserVersion'
   },
   connectionType: {
     attributes: [
       ['ConnectionType', 'id'],
       ['ConnectionType', 'connectionType']
     ],
-    dbKey: "ConnectionType", dbGroupBy: "ConnectionType", listPage: false, dbFilter: 'ConnectionType'
+    dbKey: "ConnectionType",
+    dbGroupBy: "ConnectionType",
+    listPage: false,
+    dbFilter: 'ConnectionType'
   },
-  timestamp: { dbKey: "Timestamp", dbGroupBy: "Timestamp", listPage: false },
-  visits: { dbKey: "Visits", dbGroupBy: "Visits", listPage: false },
-  clicks: { dbKey: "Clicks", dbGroupBy: "Clicks", listPage: false },
-  conversions: { dbKey: "Conversions", dbGroupBy: "Conversions", listPage: false },
-  cost: { dbKey: "Cost", dbGroupBy: "Cost", listPage: false },
-  revenue: { dbKey: "Revenue", dbGroupBy: "Revenue", listPage: false },
-  impressions: { dbKey: "Impressions", dbGroupBy: "Impressions", listPage: false },
+  timestamp: {
+    dbKey: "Timestamp",
+    dbGroupBy: "Timestamp",
+    listPage: false
+  },
+  visits: {
+    dbKey: "Visits",
+    dbGroupBy: "Visits",
+    listPage: false
+  },
+  clicks: {
+    dbKey: "Clicks",
+    dbGroupBy: "Clicks",
+    listPage: false
+  },
+  conversions: {
+    dbKey: "Conversions",
+    dbGroupBy: "Conversions",
+    listPage: false
+  },
+  cost: {
+    dbKey: "Cost",
+    dbGroupBy: "Cost",
+    listPage: false
+  },
+  revenue: {
+    dbKey: "Revenue",
+    dbGroupBy: "Revenue",
+    listPage: false
+  },
+  impressions: {
+    dbKey: "Impressions",
+    dbGroupBy: "Impressions",
+    listPage: false
+  },
   v1: {
     attributes: [
       ['V1', 'id'],
       ['V1', 'v1']
     ],
-    dbKey: "V1", dbGroupBy: "V1", listPage: false, dbFilter: 'V1'
+    dbKey: "V1",
+    dbGroupBy: "V1",
+    listPage: false,
+    dbFilter: 'V1'
   },
   v2: {
     attributes: [
       ['V2', 'id'],
       ['V2', 'v2']
     ],
-    dbKey: "V2", dbGroupBy: "V2", listPage: false, dbFilter: 'V2'
+    dbKey: "V2",
+    dbGroupBy: "V2",
+    listPage: false,
+    dbFilter: 'V2'
   },
   v3: {
     attributes: [
       ['V3', 'id'],
       ['V3', 'v3']
     ],
-    dbKey: "V3", dbGroupBy: "V3", listPage: false, dbFilter: 'V3'
+    dbKey: "V3",
+    dbGroupBy: "V3",
+    listPage: false,
+    dbFilter: 'V3'
   },
   v4: {
     attributes: [
       ['V4', 'id'],
       ['V4', 'v4']
     ],
-    dbKey: "V4", dbGroupBy: "V4", listPage: false, dbFilter: 'V4'
+    dbKey: "V4",
+    dbGroupBy: "V4",
+    listPage: false,
+    dbFilter: 'V4'
   },
   v5: {
     attributes: [
       ['V5', 'id'],
       ['V5', 'v5']
     ],
-    dbKey: "V5", dbGroupBy: "V5", listPage: false, dbFilter: 'V5'
+    dbKey: "V5",
+    dbGroupBy: "V5",
+    listPage: false,
+    dbFilter: 'V5'
   },
   v6: {
     attributes: [
       ['V6', 'id'],
       ['V6', 'v6']
     ],
-    dbKey: "V6", dbGroupBy: "V6", listPage: false, dbFilter: 'V6'
+    dbKey: "V6",
+    dbGroupBy: "V6",
+    listPage: false,
+    dbFilter: 'V6'
   },
   v7: {
     attributes: [
       ['V7', 'id'],
       ['V7', 'v7']
     ],
-    dbKey: "V7", dbGroupBy: "V7", listPage: false, dbFilter: 'V7'
+    dbKey: "V7",
+    dbGroupBy: "V7",
+    listPage: false,
+    dbFilter: 'V7'
   },
   v8: {
     attributes: [
       ['V8', 'id'],
       ['V8', 'v8']
     ],
-    dbKey: "V8", dbGroupBy: "V8", listPage: false, dbFilter: 'V8'
+    dbKey: "V8",
+    dbGroupBy: "V8",
+    listPage: false,
+    dbFilter: 'V8'
   },
   v9: {
     attributes: [
       ['V9', 'id'],
       ['V9', 'v9']
     ],
-    dbKey: "V9", dbGroupBy: "V9", listPage: false, dbFilter: 'V9'
+    dbKey: "V9",
+    dbGroupBy: "V9",
+    listPage: false,
+    dbFilter: 'V9'
   },
   v10: {
     attributes: [
       ['V10', 'id'],
       ['V10', 'v10']
     ],
-    dbKey: "V10", dbGroupBy: "V10", listPage: false, dbFilter: 'V10'
+    dbKey: "V10",
+    dbGroupBy: "V10",
+    listPage: false,
+    dbFilter: 'V10'
   },
   day: {
-    attributes: [
-    ],
-    dbKey: "day", dbGroupBy: "id,day", listPage: false, dbFilter: 'day'
+    attributes: [],
+    dbKey: "day",
+    dbGroupBy: "id,day",
+    listPage: false,
+    dbFilter: 'day'
+  },
+  hour: {
+    attributes: [],
+    dbKey: "hour",
+    dbGroupBy: "id,hour",
+    listPage: false,
+    dbFilter: 'hour'
   },
   tsWebsiteId: {
     attributes: [
       ['tsWebsiteId', 'id'],
       ['tsWebsiteId', 'tsWebsiteId']
     ],
-    dbKey: "tsWebsiteId", dbGroupBy: "tsWebsiteId", listPage: false, dbFilter: 'tsWebsiteId'
+    dbKey: "tsWebsiteId",
+    dbGroupBy: "tsWebsiteId",
+    listPage: false,
+    dbFilter: 'tsWebsiteId'
   },
 }
 
@@ -272,7 +397,6 @@ export const sumShorts = {
   epc: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Clicks)'), 'epc'],
   ap: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Conversions)'), 'ap']
 }
-
 
 
 
@@ -335,8 +459,7 @@ export function extraConfig(groupBy) {
       answer = {
         foreignKey: 'campaignId',
         attributes: [
-          'id',
-          ['id', 'campaignId'],
+          'id', ['id', 'campaignId'],
           ['name', 'campaignName'],
           ['hash', 'campaignHash'],
           ['url', 'campaignUrl'],
@@ -354,8 +477,7 @@ export function extraConfig(groupBy) {
           flowName: "Direct Linking"
         },
         attributes: [
-          'id',
-          ['id', 'flowId'],
+          'id', ['id', 'flowId'],
           ['name', 'flowName'],
           ['hash', 'flowHash'],
           'deleted'
@@ -369,8 +491,7 @@ export function extraConfig(groupBy) {
           landerName: "Direct Linking"
         },
         attributes: [
-          'id',
-          ['id', 'landerId'],
+          'id', ['id', 'landerId'],
           ['name', 'landerName'],
           ['hash', 'landerHash'],
           ['country', 'landerCountry'],
@@ -386,8 +507,7 @@ export function extraConfig(groupBy) {
           offerName: "Direct Linking"
         },
         attributes: [
-          'id',
-          ['id', 'offerId'],
+          'id', ['id', 'offerId'],
           ['name', 'offerName'],
           ['hash', 'offerHash'],
           ['url', 'offerUrl'],
@@ -404,8 +524,7 @@ export function extraConfig(groupBy) {
           trafficName: "Direct Linking"
         },
         attributes: [
-          'id',
-          ['id', 'trafficId'],
+          'id', ['id', 'trafficId'],
           ['name', 'trafficName'],
           ['hash', 'trafficHash'],
           'deleted'
@@ -416,8 +535,7 @@ export function extraConfig(groupBy) {
       answer = {
         foreignKey: 'affiliateId',
         attributes: [
-          'id',
-          ['id', 'affiliateId'],
+          'id', ['id', 'affiliateId'],
           ['name', 'affiliateName'],
           ['hash', 'affiliateHash'],
           'deleted'
@@ -437,8 +555,7 @@ export function csvextraConfig(groupBy) {
       answer = {
         foreignKey: 'campaignId',
         attributes: [
-          'id',
-          ['id', 'campaignId'],
+          'id', ['id', 'campaignId'],
           ['name', 'campaignName'],
           ['hash', 'campaignHash'],
           ['trafficSourceId', 'trafficId'],
@@ -450,8 +567,7 @@ export function csvextraConfig(groupBy) {
       answer = {
         foreignKey: 'flowId',
         attributes: [
-          'id',
-          ['id', 'flowId'],
+          'id', ['id', 'flowId'],
           ['name', 'flowName'],
           ['hash', 'flowHash'],
         ]
@@ -461,8 +577,7 @@ export function csvextraConfig(groupBy) {
       answer = {
         foreignKey: 'landerId',
         attributes: [
-          'id',
-          ['id', 'landerId'],
+          'id', ['id', 'landerId'],
           ['name', 'landerName'],
           ['hash', 'landerHash']
         ]
@@ -472,8 +587,7 @@ export function csvextraConfig(groupBy) {
       answer = {
         foreignKey: 'offerId',
         attributes: [
-          'id',
-          ['id', 'offerId'],
+          'id', ['id', 'offerId'],
           ['name', 'offerName'],
           ['hash', 'offerHash'],
           ['payoutValue', 'offerPayout'],
@@ -484,8 +598,7 @@ export function csvextraConfig(groupBy) {
       answer = {
         foreignKey: 'trafficId',
         attributes: [
-          'id',
-          ['id', 'trafficId'],
+          'id', ['id', 'trafficId'],
           ['name', 'trafficName'],
           ['hash', 'trafficHash']
         ]
@@ -495,8 +608,7 @@ export function csvextraConfig(groupBy) {
       answer = {
         foreignKey: 'affiliateId',
         attributes: [
-          'id',
-          ['id', 'affiliateId'],
+          'id', ['id', 'affiliateId'],
           ['name', 'affiliateName'],
           ['hash', 'affiliateHash'],
         ]

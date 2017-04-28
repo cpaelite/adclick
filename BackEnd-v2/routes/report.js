@@ -291,6 +291,10 @@ async function normalReport(values, mustPagination) {
       let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
       where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+    } else if (attr == 'hour') {
+      let start = moment(values.hour.trim()).startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
+      let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
+      where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
     } else if (mapping[attr]) {
       where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
     }
@@ -300,7 +304,7 @@ async function normalReport(values, mustPagination) {
   //TODO 不应该数据表模糊查询
   if (filter) {
     //单独处理group by day
-    if (groupBy == 'day') {
+    if (groupBy == 'day' || groupBy == 'hour') {
       having = `having ${mapping[groupBy].dbFilter} like '%${filter}%'`;
     } else {
       where += ` and ${mapping[groupBy].dbFilter} like '%${filter}%'`
@@ -349,6 +353,14 @@ async function normalReport(values, mustPagination) {
     let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d") as 'id',
                 DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d") as  'day'`;
+  } else if (groupBy.toLowerCase() == 'hour') {
+    //处理timezone 兼容列存储
+    let tag = tz.slice(0, 1);
+    let numberString = tz.slice(1);
+    let slice = numberString.split(':');
+    let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d %H") as 'id',
+                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d %H") as  'hour'`;
   }
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} group by ${mapping[groupBy].dbGroupBy} ${having} ${orders} `;
