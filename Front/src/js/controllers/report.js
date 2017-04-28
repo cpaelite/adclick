@@ -2108,7 +2108,10 @@
         var parameter = value.Parameter;
         var placeholder = value.Placeholder;
         // params name
-        if (!oldValue || !oldValue[index].Name || value.Name == oldValue[index].Parameter) {
+        // if (!oldValue || !oldValue[index].Name || value.Name == oldValue[index].Parameter) {
+        //   $scope.params[index].Name = $scope.params[index].Parameter;
+        // }
+        if (oldValue && (value.Name == oldValue[index].Parameter)) {
           $scope.params[index].Name = $scope.params[index].Parameter;
         }
         // params placeholder
