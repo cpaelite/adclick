@@ -128,12 +128,11 @@ router.put('/api/third/traffic-source/:id', async function(req, res, next) {
             id: Joi.number().required(),
             userId: Joi.number().required(),
             name: Joi.string().optional(),
-            trafficId: Joi.number().optional(),
+            trafficId: Joi.string().optional(),
             token: Joi.string().optional().allow(""),
             account: Joi.string().optional().allow(""),
             password: Joi.string().optional().allow(""),
         }).or('token', 'account').with('account', 'password');
-
         req.body.userId = req.parent.id;
         req.body.id = req.params.id;
         let value = await validate(req.body, schema);
@@ -142,7 +141,7 @@ router.put('/api/third/traffic-source/:id', async function(req, res, next) {
             updateObject.name = value.name;
         }
         if (value.trafficId != undefined) {
-            updateObject.trafficId = value.trafficId;
+            updateObject.trustedTrafficSourceId = value.trafficId;
         }
         if (value.token != undefined) {
             updateObject.token = value.token;
@@ -153,6 +152,7 @@ router.put('/api/third/traffic-source/:id', async function(req, res, next) {
         if (value.password != undefined) {
             updateObject.password = value.password;
         }
+
         await TTS.update(updateObject, {
             where: {
                 id: value.id,
