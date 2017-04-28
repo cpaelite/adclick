@@ -70,7 +70,7 @@ router.get('/api/preferences', async function(req, res, next) {
  *
  */
 router.get('/api/countries', function(req, res, next) {
-  pool.getConnection(function(err, connection) {
+  pool.getConnection('m1', function(err, connection) {
     if (err) {
       err.status = 303
       return next(err);

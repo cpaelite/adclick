@@ -26,17 +26,17 @@ const _ = require('lodash');
  *     }
  *
  */
-router.post('/api/preferences', function (req, res, next) {
+router.post('/api/preferences', function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         json: Joi.object().required()
     });
     req.body.userId = req.parent.id;
-    Joi.validate(req.body, schema, function (err, value) {
+    Joi.validate(req.body, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection('m1', function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
@@ -46,7 +46,7 @@ router.post('/api/preferences', function (req, res, next) {
                 "update  User set `json`=?   where `id` = ?", [
                     JSON.stringify(value.json), value.userId
                 ],
-                function (err) {
+                function(err) {
                     connection.release();
                     if (err) {
                         return next(err);
@@ -60,8 +60,6 @@ router.post('/api/preferences', function (req, res, next) {
         });
     });
 });
-
-
 
 
 
@@ -81,17 +79,17 @@ router.post('/api/preferences', function (req, res, next) {
  *
  */
 
-router.get('/api/tags', function (req, res, next) {
+router.get('/api/tags', function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         type: Joi.number().required()
     });
     req.query.userId = req.parent.id;
-    Joi.validate(req.query, schema, function (err, value) {
+    Joi.validate(req.query, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection('m1', function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
@@ -100,7 +98,7 @@ router.get('/api/tags', function (req, res, next) {
                 "select  `id`,`name` from Tags where `userId` = ? and `type`= ? and `deleted` =0", [
                     value.userId, value.type
                 ],
-                function (err, result) {
+                function(err, result) {
                     connection.release();
                     if (err) {
                         return next(err);
@@ -117,10 +115,6 @@ router.get('/api/tags', function (req, res, next) {
         });
     });
 });
-
-
-
-
 
 
 
@@ -142,7 +136,7 @@ router.get('/api/tags', function (req, res, next) {
  *     }
  *
  */
-router.post('/api/names', async function (req, res, next) {
+router.post('/api/names', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required().trim(),
@@ -164,8 +158,7 @@ router.post('/api/names', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -190,7 +183,7 @@ router.post('/api/names', async function (req, res, next) {
  *
  */
 
-router.get('/api/postbackurl', async function (req, res, next) {
+router.get('/api/postbackurl', async function(req, res, next) {
     let connection;
     try {
         var schema = Joi.object().keys({
@@ -236,12 +229,6 @@ router.get('/api/postbackurl', async function (req, res, next) {
         }
     }
 });
-
-
-
-
-
-
 
 
 

@@ -22,17 +22,17 @@ var common = require('./common');
  *     }
  *
  */
-router.post('/affiliate/tpl', function (req, res, next) {
+router.post('/affiliate/tpl', function(req, res, next) {
     var schema = Joi.object().keys({
         name: Joi.string().required(),
         postbackParams: Joi.string().required(),
         desc: Joi.string().required(),
     });
-    Joi.validate(req.body, schema, function (err, value) {
+    Joi.validate(req.body, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection('m1', function(err, connection) {
 
             if (err) {
                 err.status = 303
@@ -42,7 +42,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
                 "insert into TemplateAffiliateNetwork (`name`,`postbackParams`,`desc`,`deleted`) values(?,?,?,?)", [
                     value.name, value.postbackParams, value.desc, 0
                 ],
-                function (err) {
+                function(err) {
                     connection.release();
                     if (err) {
                         return next(err);
@@ -71,7 +71,7 @@ router.post('/affiliate/tpl', function (req, res, next) {
  *     }
  *
  */
-router.get('/api/affilate/tpl', async function (req, res, next) {
+router.get('/api/affilate/tpl', async function(req, res, next) {
     let connection;
     try {
 
@@ -113,7 +113,7 @@ router.get('/api/affilate/tpl', async function (req, res, next) {
                         desc: results[i].desc,
                         apiMode: results[i].apiMode
                     }
-                    if(results[i].apiParams){
+                    if (results[i].apiParams) {
                         value.apiParams = JSON.parse(results[i].apiParams);
                     }
                     let params = JSON.parse(results[i].postbackParams);

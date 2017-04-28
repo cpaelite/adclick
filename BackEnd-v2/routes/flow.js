@@ -491,7 +491,7 @@ router.get('/api/flows', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    pool.getConnection(function(err, connection) {
+    pool.getConnection('m1', function(err, connection) {
       if (err) {
         err.status = 303
         return next(err);

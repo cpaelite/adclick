@@ -392,7 +392,7 @@ router.post('/account/check', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    pool.getConnection(function(err, connection) {
+    pool.getConnection('m1', function(err, connection) {
       if (err) {
         err.status = 303
         return next(err);
@@ -435,7 +435,7 @@ router.post('/account/check', function(req, res, next) {
  *
  */
 router.get('/timezones', function(req, res, next) {
-  pool.getConnection(function(err, connection) {
+  pool.getConnection('m1', function(err, connection) {
     if (err) {
       err.status = 303
       return next(err);

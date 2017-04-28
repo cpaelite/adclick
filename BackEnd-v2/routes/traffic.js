@@ -30,7 +30,7 @@ var util = require('../util');
  *  *   }
  *
  */
-router.post('/api/traffics', async function (req, res, next) {
+router.post('/api/traffics', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -96,7 +96,7 @@ router.post('/api/traffics', async function (req, res, next) {
  *  *   }
  *
  */
-router.post('/api/traffics/:id', async function (req, res, next) {
+router.post('/api/traffics/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -110,7 +110,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
         websiteId: Joi.string().optional().allow(""),
         params: Joi.string().optional().allow(""),
         hash: Joi.string().optional(),
-        deleted:Joi.number().optional()
+        deleted: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id
@@ -137,8 +137,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
 
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -161,7 +160,7 @@ router.post('/api/traffics/:id', async function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/traffics/:id', async function (req, res, next) {
+router.get('/api/traffics/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -203,16 +202,16 @@ router.get('/api/traffics/:id', async function (req, res, next) {
  *     }
  *
  */
-router.get('/api/traffics', function (req, res, next) {
+router.get('/api/traffics', function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required()
     });
     req.query.userId = req.parent.id;
-    Joi.validate(req.query, schema, function (err, value) {
+    Joi.validate(req.query, schema, function(err, value) {
         if (err) {
             return next(err);
         }
-        pool.getConnection(function (err, connection) {
+        pool.getConnection('m1', function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
@@ -221,7 +220,7 @@ router.get('/api/traffics', function (req, res, next) {
                 "select  `id`,`name`,`externalId`,`cost`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`params`,`campaignId`,`websiteId` from TrafficSource where `userId` = ? and `deleted` =0", [
                     value.userId
                 ],
-                function (err, result) {
+                function(err, result) {
                     connection.release();
                     if (err) {
                         return next(err);
@@ -249,7 +248,7 @@ router.get('/api/traffics', function (req, res, next) {
  * @apiParam {String} hash
  * 
  */
-router.delete('/api/traffics/:id', async function (req, res, next) {
+router.delete('/api/traffics/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -269,8 +268,7 @@ router.delete('/api/traffics/:id', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
