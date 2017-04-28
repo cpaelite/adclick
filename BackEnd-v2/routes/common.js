@@ -7,8 +7,8 @@ var _ = require('lodash');
 
 
 function query(sql, params, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, params, function (err, result) {
+    return new Promise(function(resolve, reject) {
+        connection.query(sql, params, function(err, result) {
             if (err) {
                 reject(err);
             }
@@ -23,9 +23,13 @@ function getRedisClient() {
 }
 
 
-function getConnection() {
-    return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
+function getConnection(dbname) {
+    return new Promise(function(resolve, reject) {
+        let db = 'm1';
+        if (dbname) {
+            db = dbname;
+        }
+        pool.getConnection(db, function(err, connection) {
             if (err) {
                 reject(err)
             }
@@ -35,8 +39,8 @@ function getConnection() {
 }
 
 function beginTransaction(connection) {
-    return new Promise(function (resolve, reject) {
-        connection.beginTransaction(function (err) {
+    return new Promise(function(resolve, reject) {
+        connection.beginTransaction(function(err) {
             if (err) {
                 reject(err);
             }
@@ -46,8 +50,8 @@ function beginTransaction(connection) {
 }
 
 function commit(connection) {
-    return new Promise(function (resolve, reject) {
-        connection.commit(function (err) {
+    return new Promise(function(resolve, reject) {
+        connection.commit(function(err) {
             if (err) {
                 reject(err);
             }
@@ -57,8 +61,8 @@ function commit(connection) {
 }
 
 function rollback(connection) {
-    return new Promise(function (resolve, reject) {
-        connection.rollback(function () {
+    return new Promise(function(resolve, reject) {
+        connection.rollback(function() {
             resolve(1);
         })
     })
@@ -66,8 +70,11 @@ function rollback(connection) {
 
 
 function validate(data, schema) {
-    return new Promise(function (resolve, reject) {
-        Joi.validate(data, schema,{allowUnknown:true,stripUnknown:true},function (err, value) {
+    return new Promise(function(resolve, reject) {
+        Joi.validate(data, schema, {
+            allowUnknown: true,
+            stripUnknown: true
+        }, function(err, value) {
             if (err) {
                 let validateJSON = {
                     message: {}
@@ -341,7 +348,6 @@ async function getCampaign(id, userId, idText, connection) {
 
 
 
-
 async function deleteCampaign(subId, id, userId, connection) {
 
     var sqlCampaign = "update TrackingCampaign set `deleted`= 1  where `id`= ? and `userId`= ? ";
@@ -392,7 +398,10 @@ async function insertFlow(userId, flow, connection) {
     let result = await query("insert into Flow (" + col + ") values (" + val + ")", params, connection);
 
     //reids pub
-    connection.redisPubSlice.push({ data: userId + ".add.flow." + result.insertId, tag: "flowAdd" });
+    connection.redisPubSlice.push({
+        data: userId + ".add.flow." + result.insertId,
+        tag: "flowAdd"
+    });
     return result;
 
 
@@ -427,7 +436,10 @@ async function updateFlow(userId, flow, connection) {
 
     let result = await query(sqlFlow, params, connection);
     //reids pub
-    connection.redisPubSlice.push({ data: userId + ".update.flow." + flow.id, tag: "flowUpdate" })
+    connection.redisPubSlice.push({
+        data: userId + ".update.flow." + flow.id,
+        tag: "flowUpdate"
+    })
 
     return result;
 
@@ -457,9 +469,13 @@ async function insetRule(userId, rule, connection) {
     var sqlRule = "insert into `Rule` (`userId`,`name`,`hash`,`type`,`object`,`json`,`status`) values (?,?,?,?,?,?,?)";
     let result = await query(sqlRule, [userId, rule.name ? rule.name : "", uuidV4(), rule.isDefault ? 0 : 1, rule.json ?
         JSON.stringify(rule.json) : JSON.stringify([]), rule.object ?
-            JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0], connection);
+        JSON.stringify(rule.object) : JSON.stringify([]), rule.enabled ? 1 : 0
+    ], connection);
 
-    connection.redisPubSlice.push({ data: userId + ".add.rule." + result.insertId, tag: "ruleAdd" })
+    connection.redisPubSlice.push({
+        data: userId + ".add.rule." + result.insertId,
+        tag: "ruleAdd"
+    })
 
     return result;
 }
@@ -492,7 +508,10 @@ async function updateRule(userId, rule, connection) {
     params.push(rule.id);
     sqlRule += " where `userId`= ? and `id`= ? ";
     let result = await query(sqlRule, params, connection);
-    connection.redisPubSlice.push({ data: userId + ".update.rule." + rule.id, tag: "ruleUpdate" })
+    connection.redisPubSlice.push({
+        data: userId + ".update.rule." + rule.id,
+        tag: "ruleUpdate"
+    })
 
     return result;
 }
@@ -501,7 +520,10 @@ async function updateRule(userId, rule, connection) {
 async function insertPath(userId, path, connection) {
     var sqlpath = "insert into `Path` (`userId`,`name`,`hash`,`redirectMode`,`directLink`,`status`) values (?,?,?,?,?,?)";
     let result = await query(sqlpath, [userId, path.name, uuidV4(), path.redirectMode, path.directLinking ? 1 : 0, path.enabled ? 1 : 0], connection);
-    connection.redisPubSlice.push({ data: userId + ".add.path." + result.insertId, tag: "pathAdd" });
+    connection.redisPubSlice.push({
+        data: userId + ".add.path." + result.insertId,
+        tag: "pathAdd"
+    });
     return result;
 }
 
@@ -532,7 +554,10 @@ async function updatePath(userId, path, connection, callback) {
     params.push(userId);
 
     let result = await query(sqlUpdatePath, params, connection);
-    connection.redisPubSlice.push({ data: userId + ".update.path." + path.id, tag: "pathUpdate" });
+    connection.redisPubSlice.push({
+        data: userId + ".update.path." + path.id,
+        tag: "pathUpdate"
+    });
     return result;
 }
 
@@ -1058,7 +1083,7 @@ async function insertAffiliates(userId, subId, affiliate, connection) {
         params.push(affiliate.ipWhiteList);
     }
     let result = await Promise.all([query(sql, params, connection), insertEventLog(userId, subId, 5, affiliate.name, hash, 1, connection)]);
-      //reids pub
+    //reids pub
     new Pub(true).publish(setting.redis.channel, userId + ".add.affiliateNetwork." + result[0].insertId, "affiliateAdd");
 
     return result[0];

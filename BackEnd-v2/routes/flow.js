@@ -10,216 +10,461 @@ var Pub = require('./redis_sub_pub');
 const conditionResult = [{
   "id": "model",
   "display": "Brand and model",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "l2select", "name": "value", "options": []
+    "type": "l2select",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "browser",
   "display": "Browser and version",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "l2select", "name": "value", "options": []
+    "type": "l2select",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "connection",
   "display": "Connection Type",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "chips", "name": "value", "options": []
+    "type": "chips",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "country",
   "display": "Country",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "chips", "name": "value", "options": []
+    "type": "chips",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "region",
   "display": "State / Region",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "async-chips", "name": "value", "url": "/api/regions"
+    "type": "async-chips",
+    "name": "value",
+    "url": "/api/regions"
   }]
 }, {
   "id": "city",
   "display": "City",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "async-chips", "name": "value", "url": "/api/cities"
+    "type": "async-chips",
+    "name": "value",
+    "url": "/api/cities"
   }]
 
 }, {
   "id": "weekday",
   "display": "Day of week",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
-  "fields": [{
-    "type": "checkbox", "name": "weekday", "options": [
-      { "value": "0", "display": "Monday" },
-      { "value": "1", "display": "Tuesday" },
-      { "value": "2", "display": "Wednesday" },
-      { "value": "3", "display": "Thursday" },
-      { "value": "4", "display": "Friday" },
-      { "value": "5", "display": "Saturday" },
-      { "value": "6", "display": "Sunday" }
-    ]
+  "operands": [{
+    value: "is",
+    display: "Is"
   }, {
-    "type": "select", "label": "Time zone", "name": "tz", "options": [
-      { "value": "+05:45", "display": "(UTC+05:45) Kathmandu" },
-      { "value": "-03:30", "display": "(UTC-03:30) Newfoundland" },
-      { "value": "+8:00", "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi" },
-      { "value": "-7:00", "display": "(UTC-07:00) Mountain Time (US & Canada)" },
-      { "value": "+7:00", "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta" }
-    ]
+    value: "isnt",
+    display: "Isnt"
+  }],
+  "fields": [{
+    "type": "checkbox",
+    "name": "weekday",
+    "options": [{
+      "value": "0",
+      "display": "Monday"
+    }, {
+      "value": "1",
+      "display": "Tuesday"
+    }, {
+      "value": "2",
+      "display": "Wednesday"
+    }, {
+      "value": "3",
+      "display": "Thursday"
+    }, {
+      "value": "4",
+      "display": "Friday"
+    }, {
+      "value": "5",
+      "display": "Saturday"
+    }, {
+      "value": "6",
+      "display": "Sunday"
+    }]
+  }, {
+    "type": "select",
+    "label": "Time zone",
+    "name": "tz",
+    "options": [{
+      "value": "+05:45",
+      "display": "(UTC+05:45) Kathmandu"
+    }, {
+      "value": "-03:30",
+      "display": "(UTC-03:30) Newfoundland"
+    }, {
+      "value": "+8:00",
+      "display": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi"
+    }, {
+      "value": "-7:00",
+      "display": "(UTC-07:00) Mountain Time (US & Canada)"
+    }, {
+      "value": "+7:00",
+      "display": "(UTC+07:00) Bangkok, Hanoi, Jakarta"
+    }]
   }]
 }, {
   "id": "device",
   "display": "Device type",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "chips", "name": "value", "options": []
+    "type": "chips",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "iprange",
   "display": "IP and IP ranges",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "textarea", "name": "value",
+    "type": "textarea",
+    "name": "value",
     "desc": "Enter one IP address or subnet per line in the following format: 20.30.40.50 or 20.30.40.50/24"
   }]
 }, {
   "id": "isp",
   "display": "ISP",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "async-chips", "name": "value", "url": "/api/isps"
+    "type": "async-chips",
+    "name": "value",
+    "url": "/api/isps"
   }]
 }, {
   "id": "language",
   "display": "Language",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "chips", "name": "value", "options": []
+    "type": "chips",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "carrier",
   "display": "Mobile Carrier",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "async-chips", "name": "value", "url": "/api/carriers"
+    "type": "async-chips",
+    "name": "value",
+    "url": "/api/carriers"
   }]
 }, {
   "id": "os",
   "display": "Operating system and version",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "l2select", "name": "value", "options": []
+    "type": "l2select",
+    "name": "value",
+    "options": []
   }]
 }, {
   "id": "referrer",
   "display": "Referrer",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "textarea", "name": "value",
+    "type": "textarea",
+    "name": "value",
     "desc": ""
   }]
 }, {
   "id": "time",
   "display": "Time of day",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
     "type": "inputgroup",
-    "inputs": [
-      { "label": "Between", "name": "starttime", "placeholder": "00:00" },
-      { "label": "and", "name": "endtime", "placeholder": "00:00" },
-    ]
+    "inputs": [{
+      "label": "Between",
+      "name": "starttime",
+      "placeholder": "00:00"
+    }, {
+      "label": "and",
+      "name": "endtime",
+      "placeholder": "00:00"
+    }, ]
   }, {
-    "type": "select", "label": "Time zone", "name": "tz", "options": [
-      { "value": "utc", "display": "UTC" },
-      { "value": "-8", "display": "-8 PDT" },
-      { "value": "+8", "display": "+8 Shanghai" },
-      { "value": "+7", "display": "+7 Soul" },
-      { "value": "+9", "display": "+7 Tokyo" }
-    ]
+    "type": "select",
+    "label": "Time zone",
+    "name": "tz",
+    "options": [{
+      "value": "utc",
+      "display": "UTC"
+    }, {
+      "value": "-8",
+      "display": "-8 PDT"
+    }, {
+      "value": "+8",
+      "display": "+8 Shanghai"
+    }, {
+      "value": "+7",
+      "display": "+7 Soul"
+    }, {
+      "value": "+9",
+      "display": "+7 Tokyo"
+    }]
   }]
 }, {
   "id": "useragent",
   "display": "User Agent",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "textarea", "name": "value",
+    "type": "textarea",
+    "name": "value",
     "desc": ""
   }]
 }, {
   "id": "var1",
   "display": "Custom variable 1",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var2",
   "display": "Custom variable 2",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var3",
   "display": "Custom variable 3",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var4",
   "display": "Custom variable 4",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var5",
   "display": "Custom variable 5",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var6",
   "display": "Custom variable 6",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var7",
   "display": "Custom variable 7",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var8",
   "display": "Custom variable 8",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var9",
   "display": "Custom variable 9",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }, {
   "id": "var10",
   "display": "Custom variable 10",
-  "operands": [{ value: "is", display: "Is" }, { value: "isnt", display: "Isnt" }],
+  "operands": [{
+    value: "is",
+    display: "Is"
+  }, {
+    value: "isnt",
+    display: "Isnt"
+  }],
   "fields": [{
-    "type": "input", "name": "value", "placeholder": ""
+    "type": "input",
+    "name": "value",
+    "placeholder": ""
   }]
 }];
 
@@ -237,16 +482,16 @@ const conditionResult = [{
  *     }
  *
  */
-router.get('/api/flows', function (req, res, next) {
+router.get('/api/flows', function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
   req.query.userId = req.parent.id;
-  Joi.validate(req.query, schema, function (err, value) {
+  Joi.validate(req.query, schema, function(err, value) {
     if (err) {
       return next(err);
     }
-    pool.getConnection(function (err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) {
         err.status = 303
         return next(err);
@@ -255,7 +500,7 @@ router.get('/api/flows', function (req, res, next) {
         "select  `id`,`name` from Flow where `userId` = ? and `deleted` =0 and `type`=1", [
           value.userId
         ],
-        function (err, result) {
+        function(err, result) {
           connection.release();
           if (err) {
             return next(err);
@@ -289,7 +534,7 @@ router.get('/api/flows', function (req, res, next) {
  *   }
  */
 
-router.get('/api/flows/:id/campaigns', async function (req, res, next) {
+router.get('/api/flows/:id/campaigns', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     id: Joi.number().required()
@@ -310,8 +555,7 @@ router.get('/api/flows/:id/campaigns', async function (req, res, next) {
     });
   } catch (e) {
     next(e);
-  }
-  finally {
+  } finally {
     if (connection) {
       connection.release();
     }
@@ -335,7 +579,7 @@ router.get('/api/flows/:id/campaigns', async function (req, res, next) {
  *   }
  */
 
-router.get('/api/flows/:id', async function (req, res, next) {
+router.get('/api/flows/:id', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     id: Joi.number().required()
@@ -457,8 +701,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
     });
   } catch (e) {
     next(e);
-  }
-  finally {
+  } finally {
     if (connection) {
       connection.release();
     }
@@ -475,7 +718,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flows', async function (req, res, next) {
+router.post('/api/flows', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required(),
@@ -520,7 +763,7 @@ router.post('/api/flows', async function (req, res, next) {
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flows/:id', async function (req, res, next) {
+router.post('/api/flows/:id', async function(req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     rules: Joi.array(),
@@ -532,7 +775,7 @@ router.post('/api/flows/:id', async function (req, res, next) {
     userId: Joi.number().required(),
     idText: Joi.string().required(),
     deleted: Joi.number()
-  }).optionalKeys('rules','name','hash', 'type', 'country', 'redirectMode', 'deleted');
+  }).optionalKeys('rules', 'name', 'hash', 'type', 'country', 'redirectMode', 'deleted');
   let connection;
   try {
     req.body.userId = req.parent.id;
@@ -562,7 +805,7 @@ router.post('/api/flows/:id', async function (req, res, next) {
  * @apiName  删除flow
  * @apiGroup flow
  */
-router.delete('/api/flows/:id', async function (req, res, next) {
+router.delete('/api/flows/:id', async function(req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     userId: Joi.number().required(),
@@ -806,7 +1049,7 @@ async function insertOrUpdateOfferAndOfferTags(subId, userId, idText, pathId, of
   }
 }
 
-router.get('/api/conditions', async function (req, res, next) {
+router.get('/api/conditions', async function(req, res, next) {
   //production
   let connection;
   try {
@@ -823,7 +1066,7 @@ router.get('/api/conditions', async function (req, res, next) {
 });
 
 
-router.get('/api/cities', async function (req, res, next) {
+router.get('/api/cities', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -846,7 +1089,7 @@ router.get('/api/cities', async function (req, res, next) {
 });
 
 
-router.get('/api/regions', async function (req, res, next) {
+router.get('/api/regions', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -869,7 +1112,7 @@ router.get('/api/regions', async function (req, res, next) {
 });
 
 
-router.get('/api/carriers', async function (req, res, next) {
+router.get('/api/carriers', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -890,7 +1133,7 @@ router.get('/api/carriers', async function (req, res, next) {
     }
   }
 });
-router.get('/api/isps', async function (req, res, next) {
+router.get('/api/isps', async function(req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -981,9 +1224,16 @@ async function loadBrandAndVersionFromDB(connection) {
   for (let i = 0; i < lines.length; i++) {
     var line = lines[i];
     if (!r[line.category]) {
-      r[line.category] = { value: line.category, display: line.category, suboptions: [] };
+      r[line.category] = {
+        value: line.category,
+        display: line.category,
+        suboptions: []
+      };
     }
-    r[line.category].suboptions.push({ value: line.name, display: line.name });
+    r[line.category].suboptions.push({
+      value: line.name,
+      display: line.name
+    });
   }
   r2 = Object.values(r);
   return r2;
@@ -997,9 +1247,16 @@ async function loadOsFromDB(connection) {
   for (let i = 0; i < lines.length; i++) {
     var line = lines[i]
     if (!r[line.category]) {
-      r[line.category] = { value: line.category, display: line.category, suboptions: [] }
+      r[line.category] = {
+        value: line.category,
+        display: line.category,
+        suboptions: []
+      }
     }
-    r[line.category].suboptions.push({ value: line.name, display: line.name })
+    r[line.category].suboptions.push({
+      value: line.name,
+      display: line.name
+    })
   }
   r2 = Object.values(r)
 
@@ -1016,9 +1273,16 @@ async function loadBowerAndVersionFromDB(connection) {
   for (let i = 0; i < lines.length; i++) {
     var line = lines[i]
     if (!r[line.category]) {
-      r[line.category] = { value: line.category, display: line.category, suboptions: [] }
+      r[line.category] = {
+        value: line.category,
+        display: line.category,
+        suboptions: []
+      }
     }
-    r[line.category].suboptions.push({ value: line.name, display: line.name })
+    r[line.category].suboptions.push({
+      value: line.name,
+      display: line.name
+    })
   }
   r2 = Object.values(r)
 
@@ -1080,41 +1344,66 @@ async function loadTimezoneFromDB(connection) {
   r = await query(sql, [], connection);
   let result = [];
   for (let index = 0; index < r.length; index++) {
-    result.push({ value: r[index].value + "_" + r[index].id, display: r[index].display })
+    result.push({
+      value: r[index].value + "_" + r[index].id,
+      display: r[index].display
+    })
   }
   return result;
 }
 
 //TODO: update the values
 async function loadConnectionType() {
-  var r = [{ value: "Broadband", display: "Broadband" },
-  { value: "Cable", display: "Cable" },
-  { value: "Mobile", display: "Mobile" },
-  { value: "Satellite", display: "Satellite" },
-  { value: "Unknown", display: "Unknown" },
-  { value: "Wireless", display: "Wireless" },
-  { value: "XDSL", display: "XDSL" }
-  ]
+  var r = [{
+    value: "Broadband",
+    display: "Broadband"
+  }, {
+    value: "Cable",
+    display: "Cable"
+  }, {
+    value: "Mobile",
+    display: "Mobile"
+  }, {
+    value: "Satellite",
+    display: "Satellite"
+  }, {
+    value: "Unknown",
+    display: "Unknown"
+  }, {
+    value: "Wireless",
+    display: "Wireless"
+  }, {
+    value: "XDSL",
+    display: "XDSL"
+  }]
   return r
 }
 
 async function loadDeviceType() {
-  var r = [{ value: "DesktopsLaptop", display: "Desktops & Laptops" },
-  { value: "Cable", display: "Mobile Phones" },
-  { value: "Mobile", display: "Smart TV" },
-  { value: "Satellite", display: "Tablet" }
-  ]
+  var r = [{
+    value: "DesktopsLaptop",
+    display: "Desktops & Laptops"
+  }, {
+    value: "Cable",
+    display: "Mobile Phones"
+  }, {
+    value: "Mobile",
+    display: "Smart TV"
+  }, {
+    value: "Satellite",
+    display: "Tablet"
+  }]
   return r
 }
 
 function query(sql, params, connection) {
-  return new Promise(function (resolve, reject) {
-    connection.query(sql, params, function (err, result) {
+  return new Promise(function(resolve, reject) {
+    connection.query(sql, params, function(err, result) {
       if (err) {
         return reject(err);
       }
       //turn true false string to boolean
-      result.forEach(function (r) {
+      result.forEach(function(r) {
         for (let key in r) {
           if (r[key] == "true") {
             r[key] = true
@@ -1130,7 +1419,7 @@ function query(sql, params, connection) {
 
 function conditionFormat(c) {
   var r = []
-  c.forEach(function (v) {
+  c.forEach(function(v) {
     if (v.id == 'model') {
       r.push(formatThreeKeys(v.id, v.operand, v.value))
     } else if (v.id == 'browser') {
@@ -1181,8 +1470,7 @@ function conditionFormat(c) {
     } else {
       console.error("unsupported id type ", v.id)
     }
-  }
-  )
+  })
   return [r]
 }
 
@@ -1195,7 +1483,7 @@ function formatThreeKeys(id, operand, values) {
     r.push("not in")
   }
   if (isArray(values))
-    values.forEach(function (v) {
+    values.forEach(function(v) {
       r.push(v)
     })
   else
@@ -1212,7 +1500,7 @@ function formatThreeKeysWithErrorFormat(id, operand, values) {
     r.push("not in")
   }
   if (isArray(values))
-    values.forEach(function (v) {
+    values.forEach(function(v) {
       r.push(v.value)
     })
   else
@@ -1238,7 +1526,7 @@ function formatWeekDay(id, operand, tz, weekday) {
   }
   r.push(tz)
   if (isArray(weekday))
-    weekday.forEach(function (v) {
+    weekday.forEach(function(v) {
       r.push(v)
     })
   else

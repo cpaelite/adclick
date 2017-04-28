@@ -49,16 +49,14 @@ myEmitter.on('dbDone', () => {
 })
 
 const {
-  connect,
-  connectReportDatabase
+  connect
 } = require('../util/database');
 
 var Promise = require('bluebird');
 
 
-Promise.all([connect('AdClickTool'), connectReportDatabase('adclicktool')]).then(orms => {
+Promise.all([connect('AdClickTool')]).then(orms => {
   orms.forEach(orm => {
-    sequelizeInstance = orm.sequelize;
     Object.assign(models, orm.models);
   })
   myEmitter.emit('dbDone')

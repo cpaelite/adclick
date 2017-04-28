@@ -374,19 +374,18 @@ async function normalReport(values, mustPagination) {
     tpl += ` limit ${offset},${limit}`;
   }
 
-  let [rows, Totals] = await Promise.all([
-    sequelizeInstance.query(tpl, {
-      model: models.AdStatisReport,
-      type: sequelize.QueryTypes.SELECT
-    }),
-    sequelizeInstance.query(totalSQL, {
-      model: models.AdStatisReport,
-      type: sequelize.QueryTypes.SELECT
-    })
-  ]);
-  let totals = Totals[0].dataValues;
 
-  let rawRows = rows.map(e => e.dataValues);
+  let connection = await common.getConnection('m2');
+
+  let [rawRows, [totals]] = await Promise.all([
+    common.query(tpl, [], connection),
+    common.query(totalSQL, [], connection),
+  ]);
+
+  //释放链接
+  if (connection) {
+    connection.release();
+  }
 
 
 

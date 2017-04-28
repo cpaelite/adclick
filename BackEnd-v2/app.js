@@ -3,13 +3,26 @@ import mysql from 'mysql';
 const env = process.env.NODE_ENV || 'staging'
 const mysqlSetting = setting.mysql[env]
 
-global.pool = mysql.createPool({
+
+
+global.pool = mysql.createPoolCluster();
+pool.add('m1', {
   host: mysqlSetting.host,
   user: mysqlSetting.user,
   password: mysqlSetting.password,
   database: mysqlSetting.database,
   connectionLimit: mysqlSetting.connectionLimit,
-  debug: true,
+  debug: false,
+  waitForConnections: false
+});
+
+pool.add('m2', {
+  host: setting.reportSQL.host,
+  user: setting.reportSQL.user,
+  password: setting.reportSQL.password,
+  database: setting.reportSQL.database,
+  connectionLimit: setting.reportSQL.connectionLimit,
+  debug: false,
   waitForConnections: false
 });
 
