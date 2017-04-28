@@ -29,7 +29,7 @@ var util = require('../util');
  *    message: 'success' *   }
  *
  */
-router.post('/api/offers', async function (req, res, next) {
+router.post('/api/offers', async function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -79,8 +79,7 @@ router.post('/api/offers', async function (req, res, next) {
         });
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -111,7 +110,7 @@ router.post('/api/offers', async function (req, res, next) {
  *   }
  *
  */
-router.post('/api/offers/:id', async function (req, res, next) {
+router.post('/api/offers/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         hash: Joi.string().optional(),
@@ -161,8 +160,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
 
     } catch (e) {
         next(e);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -184,7 +182,7 @@ router.post('/api/offers/:id', async function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offers/:id', async function (req, res, next) {
+router.get('/api/offers/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -203,8 +201,7 @@ router.get('/api/offers/:id', async function (req, res, next) {
         });
     } catch (e) {
         next(err);
-    }
-    finally {
+    } finally {
         if (connection) {
             connection.release();
         }
@@ -228,14 +225,14 @@ router.get('/api/offers/:id', async function (req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offers', async function (req, res, next) {
+router.get('/api/offers', async function(req, res, next) {
     // userId from jwt, don't need validation
     var schema = Joi.object().keys({
         columns: Joi.string().optional(),
         country: Joi.string().optional().empty(""),
         ids: Joi.string().optional().allow(""),
         userId: Joi.number().required(),
-        filter:Joi.string().optional().allow("")
+        filter: Joi.string().optional().allow("")
     });
     let connection;
     try {
@@ -245,7 +242,7 @@ router.get('/api/offers', async function (req, res, next) {
         let params = [];
         let sql = "select id, name,country from Offer where userId = ? and deleted = 0 ";
         params.push(value.userId);
-        if (value.country) {
+        if (value.country && value.country != 'ZZZ') {
             sql += ` and (country like ? or country='ZZZ')`;
             params.push("%" + value.country + "%");
         }
@@ -280,7 +277,7 @@ router.get('/api/offers', async function (req, res, next) {
  * @apiParam {String} hash
  *
  */
-router.delete('/api/offers/:id', async function (req, res, next) {
+router.delete('/api/offers/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
