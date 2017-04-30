@@ -725,36 +725,6 @@ router.get('/referral', function(req, res) {
   res.redirect(setting.freetrialRedirect);
 });
 
-router.get('/update/user', async function(req, res, next) {
-  let connection;
-  try {
-    connection = await common.getConnection();
-    await common.beginTransaction(connection);
-    await common.query('update UserBilling set expired=1', [], connection);
-    let users = await common.query('select id from User', [], connection);
-    for (let index = 0; index < users.length; index++) {
-      await common.query('insert into UserBilling (userId,planId,customPlanId,planPaymentLogId,planStart,planEnd,billedEvents,totalEvents,includedEvents,agreementId) values(?,1,1,0,1493206966,0,0,0,-1,0)', [users[index].id], connection)
-    }
-    await common.query('update User set status= 1 where id <>0', [], connection);
-
-    await common.commit(connection);
-    res.json({
-      status: 1,
-      message: 'success'
-    });
-
-
-  } catch (e) {
-    await common.rollback(connection);
-    next(e);
-  } finally {
-    if (connection) {
-      connection.release()
-    }
-
-  }
-})
-
 
 
 module.exports = router;
