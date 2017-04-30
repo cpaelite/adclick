@@ -43,9 +43,9 @@ myEmitter.on('dbDone', () => {
     console.log('adclick server listening on port', server.address().port,
       " with pid ", process.pid)
   });
-
-  const cronJobs = require('../cron');
-  cronJobs()
+   //关闭支付定时任务
+  // const cronJobs = require('../cron');
+  // cronJobs()
 })
 
 const {

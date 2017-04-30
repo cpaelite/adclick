@@ -22,7 +22,7 @@ pool.add('m2', {
   password: setting.reportSQL.password,
   database: setting.reportSQL.database,
   connectionLimit: setting.reportSQL.connectionLimit,
-  debug: true,
+  debug: false,
   waitForConnections: false
 });
 

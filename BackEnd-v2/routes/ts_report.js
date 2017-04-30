@@ -409,24 +409,6 @@ router.get('/api/third/traffic-source/:id', async function(req, res, next) {
 });
 
 
-const trafficSourceStatisAttributes = [
-    'campaignId',
-    'campaignName',
-    'websiteId',
-    'status', [sequelize.literal('sum(impression)'), 'impression'],
-    [sequelize.literal('sum(click)'), 'click'],
-    [sequelize.literal('round(sum(Cost/1000000),2)'), 'cost'],
-    [sequelize.literal('sum(0)'), 'visit'],
-    [sequelize.literal('sum(0)'), 'conversion'],
-    [sequelize.literal('sum(0)'), 'revenue'],
-    'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'time'
-];
-
-const adReportAttributes = [
-    [sequelize.literal('sum(Visits)'), 'visit'],
-    [sequelize.literal('sum(Conversions)'), 'conversion'],
-    [sequelize.literal('round(sum(Revenue/1000000),2)'), 'revenue']
-]
 
 const mapping = {
     campaignId: 'tsCampaignId',
@@ -515,7 +497,7 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
             throw new Error('taskId error');
         }
 
-        //console.log(taskObj)
+
 
         let {
             statisFrom: from,
@@ -523,8 +505,7 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
             tzShift: tz,
             meshSize: meshSize
         } = taskObj;
-        //console.log('form :', from);
-        //console.log('to :', to);
+
         //v1~v10 campaignId/webSiteId/time的顺序依次赋值
         let IN = 5; //默认campaignId,time
 
@@ -596,7 +577,7 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
             common.query(totaltpl, [], connection),
         ]);
 
-        //console.log('IN ======= :', IN)
+
 
         let rawRows = [];
         let InSlice = [];
@@ -607,19 +588,16 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
         }
 
         if (rawRows.length) {
-            //report
-            let sqlWhere = {};
-            let having;
-            sqlWhere.UserID = value.userId
 
-            sqlWhere[mapping[groupBy]] = {
-                $in: InSlice
-            }
+            let where = ` where UserID=${value.userId} 
+                   and ${mapping[groupBy]} in (?) `;
+
+            //report
+
             if (value.campaignId != undefined) {
-                sqlWhere.tsCampaignId = value.campaignId;
+
+                where += ` and tsCampaignId=${value.campaignId} `
             }
-            let groupCondition = groupBy;
-            let finalAttribute = [];
 
             //处理列存储tz 问题
             let tag = tz.slice(0, 1);
@@ -652,23 +630,31 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
             }
             from = moment(from).startOf('day').format('YYYY-MM-DD HH:mm:ss');
             to = moment(to).startOf('day').format('YYYY-MM-DD HH:mm:ss');
-            groupCondition = groupCondition + ',' + groupByKey;
-            sqlWhere.Timestamp = sequelize.and(sequelize.literal(`AdStatisReport.Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)`), sequelize.literal(`AdStatisReport.Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`));
-            finalAttribute = [
-                [mapping[groupBy], groupBy],
-                [sequelize.literal(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}')`), `${groupByKey}`]
-            ];
-            finalAttribute = _.concat(finalAttribute, adReportAttributes);
-            let reportRows = await AdStatisReport.findAll({
-                where: sqlWhere,
-                group: groupCondition,
-                attributes: finalAttribute
-            });
+
+            where += `and Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${to}','${tz}', '+00:00')) * 1000)`
+
+            let group = ` group by ${groupBy},${groupByKey} `;
+
+            let sql = `select ${mapping[groupBy]} as ${groupBy},
+                      DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}') as ${groupByKey},
+                      sum(Visits) as visit,
+                      sum(Conversions) as conversion,
+                      round(sum(Revenue/1000000),2) as revenue from adstatis 
+                      ${where} ${group} `;
+
+
+            let connection2 = await common.getConnection('m2');
+
+            let reportRows = await common.query(sql, [InSlice], connection2);
+            //释放链接
+            if (connection2) {
+                connection2.release();
+            }
 
             for (let index = 0; index < reportRows.length; index++) {
                 for (let i = 0; i < rawRows.length; i++) {
-                    if (rawRows[i].time == reportRows[index].dataValues[groupByKey]) {
-                        rawRows[i] = _.assign(rawRows[i], reportRows[index].dataValues)
+                    if (rawRows[i].time == reportRows[index][groupByKey]) {
+                        rawRows[i] = _.assign(rawRows[i], reportRows[index])
                     }
                 }
             }
