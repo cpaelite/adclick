@@ -114,7 +114,7 @@
       maxDate: $scope.toDate
     }
     $scope.toDateOptions = {
-      minDate: $scope.fromDate,
+      minDate: minFromDate,
       maxDate: $scope.toDate
     }
 
