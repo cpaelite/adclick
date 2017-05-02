@@ -247,7 +247,7 @@
 
     $scope.toDateChanged = function(date) {
       $scope.fromDateOptions.maxDate = date;
-      self._timeSpanReset.call(self, date);
+      self._timeSpanReset.call(self, null, date);
     };
 
     $scope.isBeforeDate = function() {
@@ -367,7 +367,7 @@
       $scope.meshSizeId = data.meshSize;
       $scope.timezoneId = data.tzId;
       this._timeSpanReset($scope.fromDate);
-      this._timeSpanReset($scope.toDate);
+      this._timeSpanReset(null, $scope.toDate);
     }
 
     self.TrafficSourceSyncTask.get({thirdPartyTrafficSourceId: id}, function(oData) {
@@ -487,22 +487,32 @@
     debugger;
     if(fromDate) {
       if(moment(new Date($scope.toDate)).diff(new Date(self.minDate)) < 0 || moment(new Date($scope.toDate)).diff(new Date(self.maxDate)) > 0) {
-        tempToDate = moment(new Date($scope.toDate)).add(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
-        if(moment(new Date(tempToDate)).diff(new Date(self.maxDate)) <= 0) {
-          $scope.toDateOptions.maxDate = tempToDate;
+        tempToDate = moment(new Date($scope.fromDate)).add(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
+        if(moment(new Date(tempToDate)).diff(new Date(self.maxDate)) <= 0 && moment(new Date(tempToDate)).diff(new Date(self.minDate)) >= 0) {
+          $scope.toDateOptions.maxDate = moment(new Date(tempToDate));
+        } else {
+          $scope.toDateOptions.maxDate = moment(new Date(self.maxDate));
         }
       } else {
         var diffDate = moment(new Date($scope.toDate)).diff(moment(new Date($scope.fromDate)))/1000;
         $scope.fromDateOptions.maxDate = moment(new Date($scope.toDate)).format('YYYY-MM-DD');
         var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
-        if (self.apiMaxTimeSpan > diffDate) {
-          if(timeSpan && moment(moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore(moment(new Date(self.maxDate)))) {
-            $scope.toDateOptions.maxDate = moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+        if (self.apiMaxTimeSpan >= diffDate) {
+          if(moment(moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore(moment(new Date(self.maxDate)))) {
+            if(timeSpan < 0) {
+              $scope.toDateOptions.maxDate = moment(new Date(self.maxDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.toDateOptions.maxDate = moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+            }
           } else {
-            $scope.toDateOptions.maxDate = moment(new Date($scope.maxDate));
+            $scope.toDateOptions.maxDate = moment(new Date(self.maxDate));
           }
-          if(timeSpan && moment(moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter(moment(new Date(self.minDate)))) {
-            $scope.fromDateOptions.minDate = moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+          if(moment(moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter(moment(new Date(self.minDate)))) {
+            if(timeSpan < 0) {
+              $scope.fromDateOptions.minDate = moment(new Date(self.minDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.fromDateOptions.minDate = moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+            }
           } else {
             $scope.fromDateOptions.minDate = moment(new Date(self.minDate));
           }
@@ -512,22 +522,32 @@
       }
     } else if(toDate) {
       if(moment(new Date($scope.fromDate)).diff(new Date(self.minDate)) < 0 || moment(new Date($scope.fromDate)).diff(new Date(self.maxDate)) > 0) {
-        tempFromDate = moment(new Date($scope.fromDate)).subtract(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
-        if(monent(new Date(tempFromDate)).diff(new Date(self.minDate)) >= 0) {
-          $scope.fromDateOptions.minDate = tempFromDate;
+        tempFromDate = moment(new Date($scope.toDate)).subtract(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
+        if(moment(new Date(tempFromDate)).diff(new Date(self.minDate)) >= 0 && moment(new Date(tempFromDate)).diff(new Date(self.maxDate)) <= 0) {
+          $scope.fromDateOptions.minDate = moment(new Date(tempFromDate));
+        } else {
+          $scope.fromDateOptions.minDate = moment(new Date(self.minDate));
         }
       } else {
         var diffDate = moment(new Date($scope.toDate)).diff(moment(new Date($scope.fromDate)))/1000;
         $scope.toDateOptions.minDate = moment(new Date($scope.fromDate)).format('YYYY-MM-DD');
         var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
-        if (self.apiMaxTimeSpan > diffDate) {
-          if(timeSpan && moment(moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore(moment(new Date(self.maxDate)))) {
-            $scope.toDateOptions.maxDate = moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+        if (self.apiMaxTimeSpan >= diffDate) {
+          if(moment(moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore(moment(new Date(self.maxDate)))) {
+            if(timeSpan < 0) {
+              $scope.toDateOptions.maxDate = moment(new Date(self.maxDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.toDateOptions.maxDate = moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+            }
           } else {
-            $scope.toDateOptions.maxDate = moment(new Date($scope.maxDate));
+            $scope.toDateOptions.maxDate = moment(new Date(self.maxDate));
           }
-          if(timeSpan && moment(moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter(moment(new Date(self.minDate)))) {
-            $scope.fromDateOptions.minDate = moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+          if(moment(moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter(moment(new Date(self.minDate)))) {
+            if(timeSpan < 0) {
+              $scope.fromDateOptions.minDate = moment(new Date(self.minDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.fromDateOptions.minDate = moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+            }
           } else {
             $scope.fromDateOptions.minDate = moment(new Date(self.minDate));
           }
@@ -548,11 +568,11 @@
     // var diffDate = toDate.diff(fromDate)/1000;
     // if(self.apiMaxTimeSpan > diffDate) {
     //   var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
-    //   if(timeSpan && $moment($moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter($moment(self.minDate))) {
+    //   if($moment($moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter($moment(self.minDate))) {
     //     $scope.fromDateOptions.minDate = $moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
     //     $scope.fromDateOptions.maxDate = $scope.toDate;
     //   }
-    //   if(timeSpan && $moment($moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore($moment(self.maxDate))) {
+    //   if($moment($moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore($moment(self.maxDate))) {
     //     $scope.toDateOptions.maxDate = $moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
     //     $scope.toDateOptions.minDate = $scope.fromDate;
     //   }
