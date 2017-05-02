@@ -26,7 +26,7 @@ const {
  *  @apiName 获取ThirdPartyTrafficSource数据List
  *
  */
-router.get('/api/third/traffic-source', async function(req, res, next) {
+router.get('/api/third/traffic-source', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required()
@@ -66,7 +66,7 @@ router.get('/api/third/traffic-source', async function(req, res, next) {
  *  @apiParam {String} [account]
  *  @apiParam {String} [password]
  */
-router.post('/api/third/traffic-source', async function(req, res, next) {
+router.post('/api/third/traffic-source', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required(),
@@ -122,7 +122,7 @@ router.post('/api/third/traffic-source', async function(req, res, next) {
  *  @apiParam {String} [account]
  *  @apiParam {String} [password]
  */
-router.put('/api/third/traffic-source/:id', async function(req, res, next) {
+router.put('/api/third/traffic-source/:id', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
             id: Joi.number().required(),
@@ -170,7 +170,7 @@ router.put('/api/third/traffic-source/:id', async function(req, res, next) {
 
 
 
-router.get('/api/traffic-source/tpl', async function(req, res, next) {
+router.get('/api/traffic-source/tpl', async function (req, res, next) {
     try {
         let slice = [];
         let rows = await TPTS.findAll({
@@ -221,7 +221,7 @@ router.get('/api/traffic-source/tpl', async function(req, res, next) {
  * @apiGroup ThirdPartyTrafficSource
  *
  */
-router.post('/api/third/traffic-source/tasks', async function(req, res, next) {
+router.post('/api/third/traffic-source/tasks', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
             tsId: Joi.number().required(),
@@ -341,7 +341,7 @@ router.post('/api/third/traffic-source/tasks', async function(req, res, next) {
  *
  * @apiGroup ThirdPartyTrafficSource
  */
-router.get('/api/third/traffic-source/tasks', async function(req, res, next) {
+router.get('/api/third/traffic-source/tasks', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
             thirdPartyTrafficSourceId: Joi.number().required(),
@@ -382,7 +382,7 @@ router.get('/api/third/traffic-source/tasks', async function(req, res, next) {
  *  @apiName 获取ThirdPartyTrafficSource  detail
  *
  */
-router.get('/api/third/traffic-source/:id', async function(req, res, next) {
+router.get('/api/third/traffic-source/:id', async function (req, res, next) {
     try {
         let schema = Joi.object().keys({
             userId: Joi.number().required(),
@@ -436,7 +436,7 @@ const mapping = {
  * @apiParam {String} order
  *
  */
-router.get('/api/third/traffic-source-statis', async function(req, res, next) {
+router.get('/api/third/traffic-source-statis', async function (req, res, next) {
     let connection;
     try {
         let schema = Joi.object().keys({
@@ -488,11 +488,11 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
         let {
             dataValues: taskObj
         } = await TASK.findOne({
-            where: {
-                id: value.taskId
-            },
-            attributes: ['tzShift', 'statisFrom', 'statisTo', 'meshSize']
-        });
+                where: {
+                    id: value.taskId
+                },
+                attributes: ['tzShift', 'statisFrom', 'statisTo', 'meshSize']
+            });
         if (!taskObj) {
             throw new Error('taskId error');
         }
@@ -658,6 +658,19 @@ router.get('/api/third/traffic-source-statis', async function(req, res, next) {
                     }
                 }
             }
+
+            rawRows.map((e) => {
+                e.ctr = (e.click / e.visits).toFixed(2);
+                e.roi = ((e.revenue - e.cost) / e.cost * 100).toFixed(2);
+                e.cvr = (e.conversion / e.impression * 100).toFixed(2);
+
+                //数据修正
+                for (let prop in e) {
+                    if (e[prop] == null || e[prop] === 'null' || e[prop] === 'NaN' || e[prop] != e[prop]) {
+                        e[prop] = 0;
+                    }
+                }
+            });
 
         }
 
