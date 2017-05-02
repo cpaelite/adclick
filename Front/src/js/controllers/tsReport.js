@@ -62,7 +62,7 @@
     this.pageStatus = {};
 
     this.$scope.datetype = '1';
-    this.$scope.fromDate = null; //this.$scope.fromDate || moment().format('YYYY-MM-DD');
+    this.$scope.fromDate = null;
     this.$scope.fromTime = this.$scope.fromTime || '00:00';
     this.$scope.toDate = this.$scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
     this.maxDate = this.$scope.toDate;
@@ -141,19 +141,6 @@
       var thirdPartyTrafficSources = self.$scope.thirdPartyTrafficSources;
       if(thirdPartyTrafficSources.length > 0) {
         self.$scope.thirdPartyTrafficSourceId = thirdPartyTrafficSources[0].id;
-        // self.$scope.meshSizeArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiMeshSize.split(',');
-        // var apiTimezoneArr = self.templateTrafficSourceMap[thirdPartyTrafficSources[0].trustedTrafficSourceId].apiTimezones;
-        // var isExist = apiTimezoneArr.some(function(timezone) {
-        //   return timezone.id == self.$scope.timezoneId;
-        // });
-        // self.$scope.timezoneId = isExist ? self.$scope.timezoneId : apiTimezoneArr[0].id;
-        // self.$scope.timezones = apiTimezoneArr;
-        // apiTimezoneArr.forEach(function(timezone) {
-        //   self.timezoneMap[timezone.id] = timezone;
-        // });
-        // if(self.$scope.meshSizeArr.length > 0) {
-        //   self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
-        // }
         self.setFilter(thirdPartyTrafficSources[0].trustedTrafficSourceId);
         self.checkTrafficSourceTask.call(self, thirdPartyTrafficSources[0].id);
       }
@@ -556,27 +543,6 @@
         }
       }
     }
-
-    // var self = this, $moment = self.$moment, $scope = self.$scope, tempFromDate = $scope.fromDate, tempToDate = $scope.toDate;
-    // if(moment($scope.fromDate).diff(self.minDate) < 0) {
-    //   tempFromDate = self.minDate
-    // }
-    // if(moment($scope.toDate).diff(self.maxDate) > 0) {
-    //   tempToDate = self.maxDate
-    // }
-    // var fromDate = $moment(tempFromDate), toDate = $moment(tempToDate);
-    // var diffDate = toDate.diff(fromDate)/1000;
-    // if(self.apiMaxTimeSpan > diffDate) {
-    //   var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
-    //   if($moment($moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter($moment(self.minDate))) {
-    //     $scope.fromDateOptions.minDate = $moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
-    //     $scope.fromDateOptions.maxDate = $scope.toDate;
-    //   }
-    //   if($moment($moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore($moment(self.maxDate))) {
-    //     $scope.toDateOptions.maxDate = $moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
-    //     $scope.toDateOptions.minDate = $scope.fromDate;
-    //   }
-    // }
   };
 
   TsreportCtrl.groupBy = [
