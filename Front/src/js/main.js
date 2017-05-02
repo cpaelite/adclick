@@ -89,6 +89,16 @@
           if (!res.status)
             return;
           $scope.preferences = res.data;
+          // 根据时区获取报表时间
+          if (!$localStorage.reportDate) {
+            $localStorage.reportDate = {
+              datetype: 1,
+              fromDate: moment().utcOffset($scope.preferences.reportTimeZone).format('YYYY-MM-DD'),
+              fromTime: "00:00",
+              toDate: moment().utcOffset($scope.preferences.reportTimeZone).add(1, 'days').format('YYYY-MM-DD'),
+              toTime: "00:00"
+            }
+          }
         });
 
         // 国家信息
@@ -164,6 +174,7 @@
         $scope.$state.go('access.signin');
       }
       delete $localStorage.currentUser;
+      delete $localStorage.reportDate;
       $rootScope.currentUser = null;
       $rootScope.profile = null;
       $cookies.remove('token');
