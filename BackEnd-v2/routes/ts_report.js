@@ -553,7 +553,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         let orders = "";
         let whereConditon = `userId=${value.userId} and taskId=${value.taskId} and dimensions & ${IN} > 0 `;
         if (value.campaignId != undefined) {
-            whereConditon += ` and campaignId=${value.campaignId}`;
+            whereConditon += ` and campaignId='${value.campaignId}'`;
         }
 
         if (orderBy.length && (orderBy[0]) != 'roi' && orderBy[0] != 'ctr' && orderBy[0] != 'cvr') {
@@ -568,7 +568,8 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                     round(sum(Cost/1000000),2) as cost,
                     0 as visit, 0 as conversion,0 as revenue,
                     v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, time  from TrafficSourceStatis
-                    where ${whereConditon} group by ${groupBy},time ${orders} `
+                    where ${whereConditon} group by ${groupBy},time ${orders} `;
+               
         let totaltpl = `select COUNT(*) as total from ((${tpl}) as T)`;
         tpl += ` limit ${offset},${limit}`;
 
@@ -596,7 +597,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
 
             if (value.campaignId != undefined) {
 
-                where += ` and tsCampaignId=${value.campaignId} `
+                where += ` and tsCampaignId='${value.campaignId}' `
             }
 
             //处理列存储tz 问题
@@ -641,8 +642,6 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                       sum(Conversions) as conversion,
                       round(sum(Revenue/1000000),2) as revenue from adstatis 
                       ${where} ${group} `;
-
-
             let connection2 = await common.getConnection('m2');
 
             let reportRows = await common.query(sql, [InSlice], connection2);
