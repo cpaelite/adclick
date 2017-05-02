@@ -117,8 +117,11 @@
                     <th md-column md-order-by="impression">Impressions</th>
                     <th md-column md-order-by="click">Clicks</th>
                     <th md-column md-order-by="cost">Cost</th>
-                    <th md-column md-order-by="visit">Visit</th>
+                    <th md-column md-order-by="conversion">Conversion</th>
                     <th md-column md-order-by="revenue">Revenue</th>
+                    <th md-column>CTR</th>
+                    <th md-column>CVR</th>
+                    <th md-column>ROI</th>
                 </tr>
             </thead>
             <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
@@ -155,8 +158,11 @@
                     <td md-cell><span>{{::row['impression']}}</span></td>
                     <td md-cell><span>{{::row['click']}}</span></td>
                     <td md-cell><span>{{::row['cost'] | currency}}</span></td>
-                    <td md-cell><span>{{::row['visit']}}</span></td>
+                    <td md-cell><span>{{::row['conversion']}}</span></td>
                     <td md-cell><span>{{::row['revenue']}}</span></td>
+                    <td md-cell><span>{{::row['ctr'] + '%'}}</span></td>
+                    <td md-cell><span>{{::row['cvr'] + '%'}}</span></td>
+                    <td md-cell><span>{{::row['roi'] + '%'}}</span></td>
                 </tr>
             </tbody>
         </table>
