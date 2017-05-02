@@ -1190,6 +1190,11 @@ table .traficc-source-input input[type="checkbox"]{
 .uib-datepicker-popup.dropdown-menu{padding:10px;border-radius:3px;}
 .uib-datepicker-popup.dropdown-menu table tr:nth-child(2n+2){background:transparent;border:none;}
 .uib-datepicker-popup.dropdown-menu table .btn{border-radius:0;border-color:transparent;border-bottom-color:#d8e1e3;box-shadow:none;padding:6px 10px;}
+.uib-datepicker-popup.dropdown-menu table .btn span.text-muted {color: #000!important;}
+.uib-datepicker-popup.dropdown-menu table .btn span.text-info {color: #2770ea!important}
+.uib-datepicker-popup.dropdown-menu table .btn.active span.text-info {color: #000 !important;font-weight: normal;}
+.uib-datepicker-popup.dropdown-menu table .btn[disabled] span.text-muted {color: #98a6ad!important;}
+.uib-datepicker-popup.dropdown-menu table .btn[disabled] {background: #eee!important;color: #98a6ad!important}
 .uib-datepicker-popup.dropdown-menu td{margin:2px;}
 .uib-datepicker-popup.dropdown-menu button{float:left;}
 .cs-subform-control>div[uib-datepicker-popup-wrap] {float: left;}

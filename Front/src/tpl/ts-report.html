@@ -30,23 +30,23 @@
         <div class="cs-subform-group" ng-show="datetype==0">
             <label class="cs-subform-label">{{'fromDate' | translate}}：</label>
             <div class="cs-subform-control">
-                <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
+                <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate" ng-change="fromDateChanged(fromDate)"
                         is-open="ctrl.dpOpened.a" datepicker-options="fromDateOptions"
                         ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
                     {{fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                 </button>
-                <select class="cs-subform-select ts-time" ng-model="fromTime">
+                <select class="cs-subform-select ts-time" ng-model="fromTime" ng-disabled="meshSizeId == 'day'">
                     <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
                 </select>
             </div>
             <label class="cs-subform-label">{{'toDate' | translate}}：</label>
             <div class="cs-subform-control">
-                <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
+                <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate" ng-change="toDateChanged(toDate)"
                         is-open="ctrl.dpOpened.b" datepicker-options="toDateOptions"
                         ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
                     {{toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                 </button>
-                <select class="cs-subform-select ts-time" ng-model="toTime">
+                <select class="cs-subform-select ts-time" ng-model="toTime" ng-disabled="meshSizeId == 'day'">
                     <option ng-repeat="hr in hours" value="{{hr}}">{{hr}}</option>
                 </select>
             </div>
@@ -56,7 +56,7 @@
                 ng-click="load($event)" ng-model="btnName"
                 ng-class="{'apply-btn': applyBtn}"
                 translate
-                ng-disabled="!(thirdPartyTrafficSources && thirdPartyTrafficSources.length > 0 && !taskProgress[thirdPartyTrafficSourceId].progressStatus)"
+                ng-disabled="!(thirdPartyTrafficSources && thirdPartyTrafficSources.length > 0 && !taskProgress[thirdPartyTrafficSourceId].progressStatus) || isBeforeDate()"
         >
             load
         </md-button>

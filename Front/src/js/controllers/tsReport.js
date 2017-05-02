@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('app').controller('TsreportCtrl', ['$scope', '$timeout', '$q', 'TemplateTrafficSource', 'ThirdPartyTrafficSource', 'Profile', 'DateRangeUtil', '$mdDialog', 'TrafficSourceSyncTask', 'TrafficSourceStatis', TsreportCtrl])
+  angular.module('app').controller('TsreportCtrl', ['$scope', '$timeout', '$q', 'TemplateTrafficSource', 'ThirdPartyTrafficSource', 'Profile', 'DateRangeUtil', '$mdDialog', 'TrafficSourceSyncTask', 'TrafficSourceStatis', '$moment', TsreportCtrl])
   .directive('resizetsr',['$timeout','$q', '$window', function($timeout, $q, $window){
     return function(scope, element) {
       var timeout;
@@ -41,7 +41,7 @@
     }
   }]);
 
-  function TsreportCtrl($scope, $timeout, $q, TemplateTrafficSource, ThirdPartyTrafficSource, Profile, DateRangeUtil, $mdDialog, TrafficSourceSyncTask, TrafficSourceStatis) {
+  function TsreportCtrl($scope, $timeout, $q, TemplateTrafficSource, ThirdPartyTrafficSource, Profile, DateRangeUtil, $mdDialog, TrafficSourceSyncTask, TrafficSourceStatis, $moment) {
     this.$scope = $scope;
     this.$timeout = $timeout;
     this.$q = $q;
@@ -52,6 +52,7 @@
     this.$mdDialog = $mdDialog;
     this.TrafficSourceSyncTask = TrafficSourceSyncTask;
     this.TrafficSourceStatis = TrafficSourceStatis;
+    this.$moment = $moment;
 
     $scope.tsReportLimit = $scope.permissions.report.tsReport.tsReportLimit;
 
@@ -61,9 +62,10 @@
     this.pageStatus = {};
 
     this.$scope.datetype = '1';
-    this.$scope.fromDate = this.$scope.fromDate || moment().format('YYYY-MM-DD');
+    this.$scope.fromDate = null; //this.$scope.fromDate || moment().format('YYYY-MM-DD');
     this.$scope.fromTime = this.$scope.fromTime || '00:00';
     this.$scope.toDate = this.$scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
+    this.maxDate = this.$scope.toDate;
     this.$scope.toTime = this.$scope.toTime || '00:00';
     this.$scope.hours = (function() {
       var hours = [];
@@ -91,31 +93,17 @@
       {value: "0", display: "Custom"},
     ];
 
-    var retentionLimit = $scope.permissions.report.retentionLimit;
+    $scope.datetypeFilter = this._filterDateType(0);
 
-    function filterDateType() {
-      return function(datetype) {
-        if (datetype.value == "0") {
-          return true;
-        }
-        var fromDate = DateRangeUtil.fromDate(datetype.value);
-        var toDate = DateRangeUtil.toDate(datetype.value);
-        var diff = DateRangeUtil.diffMonths(fromDate, toDate);
-        return diff < retentionLimit;
-      }
-    };
-
-    $scope.datetypeFilter = filterDateType();
-
-    var minFromDate = DateRangeUtil.minFromDate($scope.toDate, retentionLimit);
+    // var minFromDate = self.minDate = DateRangeUtil.minFromDate($scope.toDate, retentionLimit);
 
     $scope.fromDateOptions = {
-      minDate: minFromDate,
+      minDate: $scope.fromDate,
       maxDate: $scope.toDate
     }
     $scope.toDateOptions = {
-      minDate: minFromDate,
-      maxDate: $scope.toDate
+      minDate: $scope.fromDate,
+      maxDate: this.maxDate
     }
 
     this.$scope.query = {
@@ -238,6 +226,10 @@
       $scope.groupBy = 'campaignId';
       $scope.campaignId = '';
       $scope.campaignName = '';
+      $scope.fromDate = moment().format('YYYY-MM-DD');
+      $scope.fromTime = '00:00';
+      $scope.toDate = moment().add(1, 'days').format('YYYY-MM-DD');
+      $scope.toTime = '00:00';
       self.checkTrafficSourceTask(id);
       // reset Timezone、Mesh size
       self.setFilter(self.thirdPartyTrafficSourceMap[id].trustedTrafficSourceId);
@@ -246,6 +238,20 @@
     $scope.onGroupByChanged = function() {
       $scope.query.page = 1;
       $scope.query.__tk++;
+    };
+
+    $scope.fromDateChanged = function(date) {
+      $scope.toDateOptions.minDate = date;
+      self._timeSpanReset.call(self, date);
+    };
+
+    $scope.toDateChanged = function(date) {
+      $scope.fromDateOptions.maxDate = date;
+      self._timeSpanReset.call(self, null, date);
+    };
+
+    $scope.isBeforeDate = function() {
+      return moment(new Date($scope.fromDate)).diff(moment(new Date($scope.toDate))) > 0;
     };
 
     $scope.addOrEditTsReference = function(tsId) {
@@ -285,9 +291,9 @@
   };
 
   TsreportCtrl.prototype.setFilter = function(trustedTrafficSourceId) {
-    var self = this, $scope = this.$scope;
-    self.$scope.meshSizeArr = self.templateTrafficSourceMap[trustedTrafficSourceId].apiMeshSize.split(',');
-    var apiTimezoneArr = self.templateTrafficSourceMap[trustedTrafficSourceId].apiTimezones;
+    var self = this, $scope = this.$scope, templateTrafficSourceObj = self.templateTrafficSourceMap[trustedTrafficSourceId], $moment = self.$moment;
+    self.$scope.meshSizeArr = templateTrafficSourceObj.apiMeshSize.split(',');
+    var apiTimezoneArr = templateTrafficSourceObj.apiTimezones;
     var isExist = apiTimezoneArr.some(function(timezone) {
       return timezone.id == self.$scope.timezoneId;
     });
@@ -296,10 +302,22 @@
     apiTimezoneArr.forEach(function(timezone) {
       self.timezoneMap[timezone.id] = timezone;
     });
+    if(templateTrafficSourceObj.apiEarliestTime) {
+      var formatEarly =  $moment().subtract(templateTrafficSourceObj.apiEarliestTime, 'seconds').format('YYYY-MM-DD');
+      $scope.fromDateOptions.minDate = formatEarly;
+      if(!$scope.toDateOptions.minDate) {
+        $scope.toDateOptions.minDate = formatEarly;
+      }
+      self.minDate = formatEarly;
+    }
+    if(templateTrafficSourceObj.apiMaxTimeSpan) {
+      self.apiMaxTimeSpan = templateTrafficSourceObj.apiMaxTimeSpan;
+      $scope.datetypeFilter = self._filterDateType(templateTrafficSourceObj.apiMaxTimeSpan);
+    }
     if(self.$scope.meshSizeArr.length > 0) {
       self.$scope.meshSizeId = self.$scope.meshSizeArr[0];
     }
-    var apiDimensions = $scope.apiDimensions = self.templateTrafficSourceMap[trustedTrafficSourceId].apiDimensions;
+    var apiDimensions = $scope.apiDimensions = templateTrafficSourceObj.apiDimensions;
     $scope.groupBys = [];
     for(var key in apiDimensions) {
       $scope.groupBys.push({
@@ -348,6 +366,8 @@
       $scope.toTime = data.to.split('T')[1];
       $scope.meshSizeId = data.meshSize;
       $scope.timezoneId = data.tzId;
+      this._timeSpanReset($scope.fromDate);
+      this._timeSpanReset(null, $scope.toDate);
     }
 
     self.TrafficSourceSyncTask.get({thirdPartyTrafficSourceId: id}, function(oData) {
@@ -370,12 +390,12 @@
           if($scope.taskProgress[id].progress) {
             self.loadOfferProgress(id, true, true);
           }
-          setFilterValue(data);
+          setFilterValue.call(self, data);
         } else if(data.status == 3) { // Finish
           $scope.taskProgress[id].progressStatus = false;
           $scope.taskProgress[id].offerStatus = true;
           $scope.taskId = data.id;
-          setFilterValue(data);
+          setFilterValue.call(self, data);
           if($scope.taskProgress[id].progress) {
             self.loadOfferProgress(id, true);
           } else {
@@ -446,6 +466,117 @@
     return self.Profile.get(null, function(oData) {
       self.$scope.timezoneId = oData.data.timezoneId;
     }).$promise;
+  };
+
+  TsreportCtrl.prototype._filterDateType = function(apiMaxTimeSpan) {
+    var $moment = this.$moment, DateRangeUtil = this.DateRangeUtil;
+    return function(datetype) {
+      if (datetype.value == "0") {
+        return true;
+      }
+      var fromDate = $moment(DateRangeUtil.fromDate(datetype.value)),
+          toDate = $moment(DateRangeUtil.toDate(datetype.value)),
+          diffDate = toDate.diff(fromDate)/1000;
+
+      return apiMaxTimeSpan > diffDate;
+    }
+  };
+
+  TsreportCtrl.prototype._timeSpanReset = function(fromDate, toDate) {
+    var self = this, $scope = self.$scope, tempToDate, tempFromDate;
+    debugger;
+    if(fromDate) {
+      if(moment(new Date($scope.toDate)).diff(new Date(self.minDate)) < 0 || moment(new Date($scope.toDate)).diff(new Date(self.maxDate)) > 0) {
+        tempToDate = moment(new Date($scope.fromDate)).add(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
+        if(moment(new Date(tempToDate)).diff(new Date(self.maxDate)) <= 0 && moment(new Date(tempToDate)).diff(new Date(self.minDate)) >= 0) {
+          $scope.toDateOptions.maxDate = moment(new Date(tempToDate));
+        } else {
+          $scope.toDateOptions.maxDate = moment(new Date(self.maxDate));
+        }
+      } else {
+        var diffDate = moment(new Date($scope.toDate)).diff(moment(new Date($scope.fromDate)))/1000;
+        $scope.fromDateOptions.maxDate = moment(new Date($scope.toDate)).format('YYYY-MM-DD');
+        var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
+        if (self.apiMaxTimeSpan >= diffDate) {
+          if(moment(moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore(moment(new Date(self.maxDate)))) {
+            if(timeSpan < 0) {
+              $scope.toDateOptions.maxDate = moment(new Date(self.maxDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.toDateOptions.maxDate = moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+            }
+          } else {
+            $scope.toDateOptions.maxDate = moment(new Date(self.maxDate));
+          }
+          if(moment(moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter(moment(new Date(self.minDate)))) {
+            if(timeSpan < 0) {
+              $scope.fromDateOptions.minDate = moment(new Date(self.minDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.fromDateOptions.minDate = moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+            }
+          } else {
+            $scope.fromDateOptions.minDate = moment(new Date(self.minDate));
+          }
+        } else {
+          $scope.fromDateOptions.minDate = moment(new Date($scope.toDate)).subtract(self.apiMaxTimeSpan/24/3600, 'day').format('YYYY-MM-DD');
+        }
+      }
+    } else if(toDate) {
+      if(moment(new Date($scope.fromDate)).diff(new Date(self.minDate)) < 0 || moment(new Date($scope.fromDate)).diff(new Date(self.maxDate)) > 0) {
+        tempFromDate = moment(new Date($scope.toDate)).subtract(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
+        if(moment(new Date(tempFromDate)).diff(new Date(self.minDate)) >= 0 && moment(new Date(tempFromDate)).diff(new Date(self.maxDate)) <= 0) {
+          $scope.fromDateOptions.minDate = moment(new Date(tempFromDate));
+        } else {
+          $scope.fromDateOptions.minDate = moment(new Date(self.minDate));
+        }
+      } else {
+        var diffDate = moment(new Date($scope.toDate)).diff(moment(new Date($scope.fromDate)))/1000;
+        $scope.toDateOptions.minDate = moment(new Date($scope.fromDate)).format('YYYY-MM-DD');
+        var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
+        if (self.apiMaxTimeSpan >= diffDate) {
+          if(moment(moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore(moment(new Date(self.maxDate)))) {
+            if(timeSpan < 0) {
+              $scope.toDateOptions.maxDate = moment(new Date(self.maxDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.toDateOptions.maxDate = moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+            }
+          } else {
+            $scope.toDateOptions.maxDate = moment(new Date(self.maxDate));
+          }
+          if(moment(moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter(moment(new Date(self.minDate)))) {
+            if(timeSpan < 0) {
+              $scope.fromDateOptions.minDate = moment(new Date(self.minDate)).format('YYYY-MM-DD');
+            } else {
+              $scope.fromDateOptions.minDate = moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+            }
+          } else {
+            $scope.fromDateOptions.minDate = moment(new Date(self.minDate));
+          }
+        } else {
+          $scope.toDateOptions.maxDate = moment(new Date($scope.fromDate)).add(self.apiMaxTimeSpan/24/3600, 'day').format('YYYY-MM-DD');
+        }
+      }
+    }
+
+    // var self = this, $moment = self.$moment, $scope = self.$scope, tempFromDate = $scope.fromDate, tempToDate = $scope.toDate;
+    // if(moment($scope.fromDate).diff(self.minDate) < 0) {
+    //   tempFromDate = self.minDate
+    // }
+    // if(moment($scope.toDate).diff(self.maxDate) > 0) {
+    //   tempToDate = self.maxDate
+    // }
+    // var fromDate = $moment(tempFromDate), toDate = $moment(tempToDate);
+    // var diffDate = toDate.diff(fromDate)/1000;
+    // if(self.apiMaxTimeSpan > diffDate) {
+    //   var timeSpan = Math.floor((self.apiMaxTimeSpan - diffDate)/(24 * 3600))
+    //   if($moment($moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD')).isAfter($moment(self.minDate))) {
+    //     $scope.fromDateOptions.minDate = $moment(new Date($scope.fromDate)).subtract(timeSpan, 'day').format('YYYY-MM-DD');
+    //     $scope.fromDateOptions.maxDate = $scope.toDate;
+    //   }
+    //   if($moment($moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD')).isBefore($moment(self.maxDate))) {
+    //     $scope.toDateOptions.maxDate = $moment(new Date($scope.toDate)).add(timeSpan, 'day').format('YYYY-MM-DD');
+    //     $scope.toDateOptions.minDate = $scope.fromDate;
+    //   }
+    // }
   };
 
   TsreportCtrl.groupBy = [
