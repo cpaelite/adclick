@@ -235,6 +235,9 @@
     $scope.thirdPartyTrafficSourceChanged = function(id) {
       $scope.taskId = '';
       $scope.thirdPartyTrafficSourceId = id;
+      $scope.groupBy = 'campaignId';
+      $scope.campaignId = '';
+      $scope.campaignName = '';
       self.checkTrafficSourceTask(id);
       // reset Timezone、Mesh size
       self.setFilter(self.thirdPartyTrafficSourceMap[id].trustedTrafficSourceId);
