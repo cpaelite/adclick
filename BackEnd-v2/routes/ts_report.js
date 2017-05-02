@@ -556,7 +556,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             whereConditon += ` and campaignId=${value.campaignId}`;
         }
 
-        if (orderBy.length) {
+        if (orderBy.length && (orderBy[0]) != 'roi' || orderBy[0] != 'ctr' || orderBy[0] != 'cvr') {
             orders = `order by ${orderBy[0]} ${orderBy[1]}`;
         } else {
             orders = `order by campaignId ASC`;
@@ -672,6 +672,10 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                 }
             });
 
+            if (orderBy.length && (orderBy[0]) == 'roi' || orderBy[0] == 'ctr' || orderBy[0] == 'cvr') {
+                rawRows.sort(dynamicSort(order));
+            }
+
         }
 
         return res.json({
@@ -690,3 +694,17 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
         }
     }
 });
+
+
+
+function dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] == "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a, b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+}
