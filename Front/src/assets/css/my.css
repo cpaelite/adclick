@@ -2351,8 +2351,8 @@ md-content.cs-main-content{
 }
 .cs-flow-bottom-actions{
     position: absolute;
-    bottom: 0;
-    right: 15px;
+    bottom: -9px;
+    right: 200px;
     z-index: 12;
 }
 .top-btn-list{
