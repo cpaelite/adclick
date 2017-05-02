@@ -478,6 +478,14 @@
       }
     }, true);
 
+    $scope.$watch('filterValue', function(newVal, oldVal) {
+      if (oldVal && !newVal) {
+        $scope.query.type = $scope.type;
+        $scope.query.filterValue = $scope.filterValue;
+        $scope.query.__tk++;
+      }
+    });
+
     $scope.applySearch = function() {
       $scope.query.type = $scope.type;
       $scope.query.filterValue = $scope.filterValue;
