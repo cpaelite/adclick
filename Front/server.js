@@ -23,7 +23,7 @@ function delayResponse(res, data) {
   //console.log(data);
   setTimeout(function () {
     res.send(data);
-  }, 3000);
+  });
 }
 
 app.use(function (req, res, next) {
@@ -3926,6 +3926,8 @@ app.get('/api/traffic-source/tpl', function (req, res) {
           apiInterval: '',
           apiMode: 2, // '1:仅token;2:仅Username/password;3:token/up都支持'
           apiMeshSize: 'week,month,year',
+          apiMaxTimeSpan: 259200,
+          apiEarliestTime: 864000,
           apiParams: {
             'account': 'uid',
             'password': 'sourceid',
@@ -3953,6 +3955,8 @@ app.get('/api/traffic-source/tpl', function (req, res) {
           apiInterval: '',
           apiMode: 1, // '1:仅token;2:仅Username/password;3:token/up都支持'
           apiMeshSize: 'minute,hour,day,week,month,year',
+          apiMaxTimeSpan: 259200,
+          apiEarliestTime: 864000,
           apiParams: {
             'account': 'uid',
             'password': 'sourceid',
@@ -4015,8 +4019,8 @@ app.get('/api/third/traffic-source/tasks', function(req, res, next) {
       status: 3, //0:新建;1:运行中;2:出错;3:完成
       tzId: 1,
       meshSize: 'year',
-      from: '2016-04-18T01:00',
-      to: '2017-04-19T00:00',
+      from: '2017-04-28T00:00',
+      to: '2017-05-29T00:00',
       message: '12312'
     }]
   };
