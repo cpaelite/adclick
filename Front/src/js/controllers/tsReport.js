@@ -95,8 +95,6 @@
 
     $scope.datetypeFilter = this._filterDateType(0);
 
-    // var minFromDate = self.minDate = DateRangeUtil.minFromDate($scope.toDate, retentionLimit);
-
     $scope.fromDateOptions = {
       minDate: $scope.fromDate,
       maxDate: $scope.toDate
@@ -422,9 +420,10 @@
   };
 
   TsreportCtrl.prototype.getDateRange = function(value) {
-    var self = this, DateRangeUtil = self.DateRangeUtil;
-    var fromDate = DateRangeUtil.fromDate(value);
-    var toDate = DateRangeUtil.toDate(value);
+    var self = this, DateRangeUtil = self.DateRangeUtil, $scope = self.$scope;
+    var utcOffset = $scope.timezoneId && self.timezoneMap && self.timezoneMap[$scope.timezoneId] && self.timezoneMap[$scope.timezoneId].shift || '+00:00';
+    var fromDate = DateRangeUtil.fromDate(value, utcOffset);
+    var toDate = DateRangeUtil.toDate(value, utcOffset);
     if (value == '0') {
       self.pageStatus.from = moment(self.$scope.fromDate).format('YYYY-MM-DD') + 'T' + self.$scope.fromTime;
       self.pageStatus.to = moment(self.$scope.toDate).format('YYYY-MM-DD') + 'T' + self.$scope.toTime;
@@ -456,13 +455,14 @@
   };
 
   TsreportCtrl.prototype._filterDateType = function(apiMaxTimeSpan) {
-    var $moment = this.$moment, DateRangeUtil = this.DateRangeUtil;
+    var self = this, $scope = self.$scope, $moment = this.$moment, DateRangeUtil = this.DateRangeUtil;
     return function(datetype) {
       if (datetype.value == "0") {
         return true;
       }
-      var fromDate = $moment(DateRangeUtil.fromDate(datetype.value)),
-          toDate = $moment(DateRangeUtil.toDate(datetype.value)),
+      var utcOffset = $scope.timezoneId && self.timezoneMap && self.timezoneMap[$scope.timezoneId] && self.timezoneMap[$scope.timezoneId].shift || '+00:00';
+      var fromDate = $moment(DateRangeUtil.fromDate(datetype.value,  utcOffset)),
+          toDate = $moment(DateRangeUtil.toDate(datetype.value, utcOffset)),
           diffDate = toDate.diff(fromDate)/1000;
 
       return apiMaxTimeSpan > diffDate;
@@ -471,7 +471,6 @@
 
   TsreportCtrl.prototype._timeSpanReset = function(fromDate, toDate) {
     var self = this, $scope = self.$scope, tempToDate, tempFromDate;
-    debugger;
     if(fromDate) {
       if(moment(new Date($scope.toDate)).diff(new Date(self.minDate)) < 0 || moment(new Date($scope.toDate)).diff(new Date(self.maxDate)) > 0) {
         tempToDate = moment(new Date($scope.fromDate)).add(Math.floor(self.apiMaxTimeSpan/24/3600), 'day');
