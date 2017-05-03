@@ -423,13 +423,6 @@ footer a:hover,footer span:hover{color:#fff;}
 footer h4{font-size:13px;color:#777;margin:15px 0;}
 .product-box{font-size:16px;}
 
-.free-active{background-image: linear-gradient(to right, #357cf4 0%, #2564cf 100%);
-    text-align:center;color:#fff;font-family:"Avenir Next";padding:0 0 40px 0;border-bottom:1px solid #0055bf;
-}
-.free-active-col{padding:30px 0 15px 0;}
-.free-active-col p{font-size:32px;font-weight:500;line-height:38px;}
-.free-active-col p b{font-size:44px;color:#f6ff00;font-weight:600;}
-.free-active-col p.free-small{font-size:26px;}
 .time{border-top:1px solid #2564cf;border-bottom:1px solid #2564cf;width:230px;margin:0 auto;height:46px;line-height:48px;font-size:20px;}
 .time b{font-weight:600;background:#2564cf;padding:3px 10px 0 10px;border-radius:3px;color:#f6ff00;}
 .free-trial-btn a{background-image: linear-gradient(to right, #049d04 0%, #008e00 100%);
