@@ -335,6 +335,7 @@ app.get('/api/preferences', function (req, res) {
       "reportViewLimit": 500,
       "entityType": 1,    //0:停止;1:运行;2全部
       "reportViewOrder": "-visits",
+      "reportTimeZone": "-15:00",
       /*
        // todo: use array for visible columns
        "reportVisibleColumns": [
@@ -401,6 +402,16 @@ app.get('/api/preferences', function (req, res) {
         "v8": {"visible": true},
         "v9": {"visible": true},
         "v10": {"visible": true},
+        "variable1":{"visible": false},
+        "variable2":{"visible": false},
+        "variable3":{"visible": false},
+        "variable4":{"visible": false},
+        "variable5":{"visible": false},
+        "variable6":{"visible": false},
+        "variable7":{"visible": false},
+        "variable8":{"visible": false},
+        "variable9":{"visible": false},
+        "variable10":{"visible": false},
         "conversion_PostbackTimestamp": {"visible": true},
         "conversion_VisitTimestamp": {"visible": true},
         "conversion_ExternalID": {"visible": true},
@@ -463,7 +474,6 @@ app.get('/api/preferences', function (req, res) {
       }
     }
   };
-  console.info(result)
   delayResponse(res, result);
 });
 
