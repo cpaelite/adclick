@@ -28,7 +28,7 @@ import {
 
 //from   to tz  sort  direction  ]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 //dataType csv   columns=offerName,offerHash
-router.get('/api/report', async function(req, res, next) {
+router.get('/api/report', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
@@ -48,7 +48,7 @@ router.get('/api/report', async function(req, res, next) {
   }
 });
 
-router.get('/api/export', async function(req, res, next) {
+router.get('/api/export', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
@@ -272,22 +272,24 @@ async function normalReport(values, mustPagination) {
   //====== start 
   let having = "";
   let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
+  if (_.has(values, 'day')) {
+    let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
+    let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
+    where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+  } else if (_.has(values, 'hour')) {
+
+    let start = moment(values.hour.trim()).startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
+    let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
+    where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+  }
 
   let attrs = Object.keys(values);
-  _.forEach(attrs, (attr) => {
-    if (attr == 'day') {
-      let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
-      let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
-      where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
-    } else if (attr == 'hour') {
-      let start = moment(values.hour.trim()).startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
-      let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
-      where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
-    } else if (mapping[attr]) {
+  for (let index = 0; index < attrs.length; index++) {
+    let attr = attrs[index];
+    if (attr != 'day' && attr != 'hour' && mapping[attr]) {
       where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
     }
-  });
-
+  }
 
   //TODO 不应该数据表模糊查询
   if (filter) {
@@ -511,7 +513,7 @@ function dynamicSort(property) {
     sortOrder = -1;
     property = property.substr(1);
   }
-  return function(a, b) {
+  return function (a, b) {
     var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
     return result * sortOrder;
   }
