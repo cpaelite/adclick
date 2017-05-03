@@ -92,7 +92,7 @@
           // 根据时区获取报表时间
           if (!$localStorage.reportDate) {
             $localStorage.reportDate = {
-              datetype: 1,
+              datetype: "1",
               fromDate: moment().utcOffset($scope.preferences.reportTimeZone).format('YYYY-MM-DD'),
               fromTime: "00:00",
               toDate: moment().utcOffset($scope.preferences.reportTimeZone).add(1, 'days').format('YYYY-MM-DD'),

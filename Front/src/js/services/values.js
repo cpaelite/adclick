@@ -813,3 +813,18 @@ angular.module('app').factory('DateRangeUtil', ['$moment', function ($moment) {
     }
   }
 }]);
+
+angular.module('app').factory('LocalStorageUtil', ['$localStorage', function($localStorage) {
+  return {
+    getValue: function() {
+      return $localStorage.reportDate;
+    },
+    setValue: function(datetype, fromDate, fromTime, toDate, toTime) {
+      $localStorage.reportDate.datetype = datetype;
+      $localStorage.reportDate.fromDate = fromDate;
+      $localStorage.reportDate.fromTime = fromTime;
+      $localStorage.reportDate.toDate = toDate;
+      $localStorage.reportDate.toTime = toTime;
+    }
+  }
+}]);

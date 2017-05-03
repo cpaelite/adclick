@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', '$localStorage', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -58,7 +58,7 @@
       }
     }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, $localStorage, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, TrafficSource, FileDownload, Domains, toastr) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
@@ -122,7 +122,7 @@
         $scope.toTime = toDate[1];
       }
     } else {
-      $scope.datetype = $localStorage.reportDate.datetype;
+      $scope.datetype = LocalStorageUtil.getValue().datetype;
     }
 
     if (stateParams.status) {
@@ -138,10 +138,10 @@
       __tk: 0
     };
 
-    $scope.fromDate = $scope.fromDate || $localStorage.reportDate.fromDate;
-    $scope.fromTime = $scope.fromTime || $localStorage.reportDate.fromTime;
-    $scope.toDate = $scope.toDate || $localStorage.reportDate.toDate;
-    $scope.toTime = $scope.toTime || $localStorage.reportDate.toTime;
+    $scope.fromDate = $scope.fromDate || LocalStorageUtil.getValue().fromDate;
+    $scope.fromTime = $scope.fromTime || LocalStorageUtil.getValue().fromTime;
+    $scope.toDate = $scope.toDate || LocalStorageUtil.getValue().toDate;
+    $scope.toTime = $scope.toTime || LocalStorageUtil.getValue().toTime;
     pageStatus.datetype = $scope.datetype;
 
     var minFromDate = DateRangeUtil.minFromDate($scope.toDate, retentionLimit);
@@ -793,21 +793,16 @@
     function getDateRange(value, timezone) {
       var fromDate = DateRangeUtil.fromDate(value, timezone);
       var toDate = DateRangeUtil.toDate(value, timezone);
-      $localStorage.reportDate.datetype = value;
       if (value == '0') {
         pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
         pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
-        $localStorage.reportDate.fromDate = moment($scope.fromDate).format('YYYY-MM-DD');
-        $localStorage.reportDate.fromTime = $scope.fromTime;
-        $localStorage.reportDate.toDate = moment($scope.toDate).format('YYYY-MM-DD');
-        $localStorage.reportDate.toTime = $scope.toTime;
+
+        LocalStorageUtil.setValue(value, moment($scope.fromDate).format('YYYY-MM-DD'), $scope.fromTime, moment($scope.toDate).format('YYYY-MM-DD'), $scope.toTime);
       } else {
         pageStatus.from = fromDate + 'T00:00';
         pageStatus.to = toDate + 'T00:00';
-        $localStorage.reportDate.fromDate = fromDate;
-        $localStorage.reportDate.fromTime = '00:00';
-        $localStorage.reportDate.toDate = toDate;
-        $localStorage.reportDate.toTime = '00:00';
+
+        LocalStorageUtil.setValue(value, fromDate, '00:00', toDate, '00:00');
       }
     }
 
