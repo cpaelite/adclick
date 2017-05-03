@@ -3439,3 +3439,4 @@ table.md-table tr.row-deleted td.md-cell {
   color: #333;
   padding-right: 10px;
 }
+.flow-continue.ng-hide { display: none !important;}
