@@ -22,15 +22,6 @@
         }
       }
 
-      getDateRange($scope.datetype);
-
-      $scope.filter = {
-        fromDate: moment().format('YYYY-MM-DD'),
-        toDate: moment().add(1, 'days').format('YYYY-MM-DD'),
-        fromTime: $scope.fromTime,
-        toTime: $scope.toTime
-      };
-
       var params = {
         order: "day",
         groupBy: "day",
@@ -39,6 +30,16 @@
         tz: profile.data.timezone,
         status: 1
       };
+
+      getDateRange($scope.datetype, params.tz);
+
+      $scope.filter = {
+        fromDate: moment().format('YYYY-MM-DD'),
+        toDate: moment().add(1, 'days').format('YYYY-MM-DD'),
+        fromTime: $scope.fromTime,
+        toTime: $scope.toTime
+      };
+
       $scope.summary = {};
       Report.get(angular.copy(params), function (result) {
         $scope.summary = result.data.totals;
@@ -101,7 +102,7 @@
         if (angular.equals(newValue, oldValue)) {
           return;
         }
-        getDateRange(newValue);
+        getDateRange(newValue, params.tz);
         params.from = $scope.fromDate + "T" + $scope.fromTime;
         params.to = $scope.toDate + "T" + $scope.toTime;
 
@@ -206,9 +207,9 @@
       });
     }
 
-    function getDateRange(value) {
-      $scope.fromDate = DateRangeUtil.fromDate(value);
-      $scope.toDate = DateRangeUtil.toDate(value);
+    function getDateRange(value, timezone) {
+      $scope.fromDate = DateRangeUtil.fromDate(value, timezone);
+      $scope.toDate = DateRangeUtil.toDate(value, timezone);
     }
 
   }
