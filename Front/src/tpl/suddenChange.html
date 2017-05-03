@@ -82,18 +82,18 @@
                     <div class="cs-subform-control" ng-show="datetype==0">
                       <label class="cs-subform-label date-title">{{'Date Range' | translate}}：</label>
                       <div class="cs-subform-control">
-                              <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="fromDate"
+                              <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.fromDate"
                                       ng-max="toDate" is-open="ctrl.dpOpened.a" datepicker-options="dateOptions"
                                       ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.a=true" type="button">
-                                  {{fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                                  {{filter.fromDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                               </button>
                             </div>
                             <label class="cs-subform-label">{{'toDate' | translate}}：</label>
                             <div class="cs-subform-control">
-                              <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="toDate"
+                              <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="filter.toDate"
                                       ng-min="fromDate" is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
                                       ng-required="true" close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button">
-                                  {{toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
+                                  {{filter.toDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                               </button>
                             </div>
                     </div>

@@ -799,10 +799,12 @@
 
         LocalStorageUtil.setValue(value, moment($scope.fromDate).format('YYYY-MM-DD'), $scope.fromTime, moment($scope.toDate).format('YYYY-MM-DD'), $scope.toTime);
       } else {
-        pageStatus.from = fromDate + 'T00:00';
-        pageStatus.to = toDate + 'T00:00';
+        $scope.fromTime = "00:00";
+        $scope.toTime = "00:00";
+        pageStatus.from = fromDate + 'T' + $scope.fromTime;
+        pageStatus.to = toDate + 'T' + $scope.toTime;
 
-        LocalStorageUtil.setValue(value, fromDate, '00:00', toDate, '00:00');
+        LocalStorageUtil.setValue(value, fromDate, $scope.fromTime, toDate, $scope.toTime);
       }
     }
 

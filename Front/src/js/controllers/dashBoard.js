@@ -10,7 +10,9 @@
     $scope.app.subtitle = 'DashBoard';
 
     $scope.datetype = LocalStorageUtil.getValue().datetype;
+    $scope.fromDate = LocalStorageUtil.getValue().fromDate;
     $scope.fromTime = LocalStorageUtil.getValue().fromTime;
+    $scope.toDate = LocalStorageUtil.getValue().toDate;
     $scope.toTime = LocalStorageUtil.getValue().toTime;
     Profile.get(null, function (profile) {
       $scope.hours = [];
@@ -21,8 +23,6 @@
           $scope.hours.push('' + i + ':00');
         }
       }
-
-      getDateRange($scope.datetype, profile.data.timezone);
 
       $scope.filter = {
         fromDate: LocalStorageUtil.getValue().fromDate,
@@ -215,6 +215,10 @@
     function getDateRange(value, timezone) {
       $scope.fromDate = DateRangeUtil.fromDate(value, timezone);
       $scope.toDate = DateRangeUtil.toDate(value, timezone);
+      if (value != '0') {
+        $scope.fromTime = "00:00";
+        $scope.toTime = "00:00";
+      }
     }
 
   }

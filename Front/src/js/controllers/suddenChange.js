@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('suddenChangeCtrl', [
-      '$scope', '$mdDialog', 'toastr','SuddenChange', 'Logs', 'LogDetail', 'DateRangeUtil', 'BlackList', '$timeout',
+      '$scope', '$mdDialog', 'toastr','SuddenChange', 'Logs', 'LogDetail', 'DateRangeUtil', 'LocalStorageUtil', 'BlackList', '$timeout',
       suddenChangeCtrl
     ]);
 
-  function suddenChangeCtrl($scope,  $mdDialog, toastr, SuddenChange, Logs, LogDetail, DateRangeUtil, BlackList, $timeout) {
+  function suddenChangeCtrl($scope,  $mdDialog, toastr, SuddenChange, Logs, LogDetail, DateRangeUtil, LocalStorageUtil, BlackList, $timeout) {
     $scope.app.subtitle = 'Sudden Change';
 
     $scope.ths = [
@@ -50,11 +50,15 @@
     };
     $scope.getRuleList();
 
-    $scope.datetype = '1';
+    $scope.datetype = LocalStorageUtil.getValue().datetype;
+    var fromTime = LocalStorageUtil.getValue().fromTime;
+    var toTime = LocalStorageUtil.getValue().toTime;
     $scope.queryLog = {
       filter:'',
       page: 1,
-      limit: 1000
+      limit: 1000,
+      from: LocalStorageUtil.getValue().fromDate,
+      to: LocalStorageUtil.getValue().toDate
     };
     $scope.getLogList = function(){
       var params = angular.copy($scope.queryLog);
@@ -65,21 +69,28 @@
         $scope.loglist = result.data;
       });
     };
-    getDateRange($scope.datetype);
     $scope.getLogList();
 
-    getDateRange($scope.datetype);
+    $scope.filter = {
+      fromDate: LocalStorageUtil.getValue().fromDate,
+      toDate: LocalStorageUtil.getValue().toDate
+    };
+
+    $scope.$watch('filter', function (newValue, oldValue) {
+      if (angular.equals(newValue, oldValue)) {
+        return;
+      }
+      $scope.queryLog.from = moment($scope.filter.fromDate).format('YYYY-MM-DD');
+      $scope.queryLog.to = moment($scope.filter.toDate).format('YYYY-MM-DD');
+      LocalStorageUtil.setValue($scope.datetype, $scope.queryLog.from, fromTime, $scope.queryLog.to, toTime);
+      $scope.getLogList();
+
+    }, true);
 
     function getDateRange(value) {
-      var fromDate = DateRangeUtil.fromDate(value, '+00:00');
-      var toDate = DateRangeUtil.toDate(value, '+00:00');
-      if (value == '0') {
-        $scope.queryLog.from = moment().utcOffset('+00:00').format('YYYY-MM-DD');
-        $scope.queryLog.to = moment().utcOffset('+00:00').add(1, 'days').format('YYYY-MM-DD');
-      } else {
-        $scope.queryLog.from = fromDate;
-        $scope.queryLog.to = toDate;
-      }
+      $scope.queryLog.from = DateRangeUtil.fromDate(value, '+00:00');
+      $scope.queryLog.to = DateRangeUtil.toDate(value, '+00:00');
+      LocalStorageUtil.setValue(value, $scope.queryLog.from, fromTime, $scope.queryLog.to, toTime);
     }
 
     $scope.statusChange = function(){
