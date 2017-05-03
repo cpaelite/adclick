@@ -569,7 +569,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
                     0 as visit, 0 as conversion,0 as revenue,
                     v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, time  from TrafficSourceStatis
                     where ${whereConditon} group by ${groupBy},time ${orders} `;
-               
+
         let totaltpl = `select COUNT(*) as total from ((${tpl}) as T)`;
         tpl += ` limit ${offset},${limit}`;
 
@@ -604,7 +604,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             let tag = tz.slice(0, 1);
             let numberString = tz.slice(1);
             let slice = numberString.split(':');
-            let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
+            let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
 
             //0:minute;1:hour;2:day;3:week;4:month;5:year
             let formatType = '%Y-%m-%d';
@@ -637,7 +637,7 @@ router.get('/api/third/traffic-source-statis', async function (req, res, next) {
             let group = ` group by ${groupBy},${groupByKey} `;
 
             let sql = `select ${mapping[groupBy]} as ${groupBy},
-                      DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), '${formatType}') as ${groupByKey},
+                      DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), '${formatType}') as ${groupByKey},
                       sum(Visits) as visit,
                       sum(Conversions) as conversion,
                       round(sum(Revenue/1000000),2) as revenue from adstatis 

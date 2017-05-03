@@ -340,17 +340,17 @@ async function normalReport(values, mustPagination) {
     let tag = tz.slice(0, 1);
     let numberString = tz.slice(1);
     let slice = numberString.split(':');
-    let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
-    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d") as 'id',
-                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d") as  'day'`;
+    let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as 'id',
+                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`;
   } else if (groupBy.toLowerCase() == 'hour') {
     //处理timezone 兼容列存储
     let tag = tz.slice(0, 1);
     let numberString = tz.slice(1);
     let slice = numberString.split(':');
-    let intavlHour = `${tag}${parseInt(slice[0]) + (parseInt(slice[1]) / 60)}`
-    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d %H") as 'id',
-                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} HOUR), "%Y-%m-%d %H") as  'hour'`;
+    let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as 'id',
+                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`;
   }
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} group by ${mapping[groupBy].dbGroupBy} ${having} ${orders} `;
