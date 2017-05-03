@@ -709,7 +709,7 @@ angular.module('app').value('AutomatedRuleOptions', {
     {"key": "sameDay", "display": "Same Day"}
   ],
   "condition": [
-    {"key": "sumImps","display": "Impressions","unit": ""},
+    {"key": "sumImpressions","display": "Impressions","unit": ""},
     {"key": "sumVisits","display": "Visits","unit": ""},
     {"key": "sumClicks","display": "Clicks","unit": ""},
     {"key": "ctr","display": "CTR","unit": "%"},

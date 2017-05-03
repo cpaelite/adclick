@@ -71,11 +71,11 @@
     getDateRange($scope.datetype);
 
     function getDateRange(value) {
-      var fromDate = DateRangeUtil.fromDate(value);
-      var toDate = DateRangeUtil.toDate(value);
+      var fromDate = DateRangeUtil.fromDate(value, '+00:00');
+      var toDate = DateRangeUtil.toDate(value, '+00:00');
       if (value == '0') {
-        $scope.queryLog.from = moment().format('YYYY-MM-DD');
-        $scope.queryLog.to = moment().add(1, 'days').format('YYYY-MM-DD');
+        $scope.queryLog.from = moment().utcOffset('+00:00').format('YYYY-MM-DD');
+        $scope.queryLog.to = moment().utcOffset('+00:00').add(1, 'days').format('YYYY-MM-DD');
       } else {
         $scope.queryLog.from = fromDate;
         $scope.queryLog.to = toDate;
@@ -392,7 +392,7 @@
       }
       $scope.item.schedule = "0 0 " + $scope.freTime + " " + daily + " " + month + " *";
       $scope.item.scheduleString = $scope.frequency + " " + freDate + " " + $scope.freTime;
-      $scope.item.oneTime = freDate + " " + $scope.freTime;
+      $scope.item.oneTime = freDate + "T" + $scope.freTime;
     } else {
       var time = $scope.frequency.split(" ")[1];
       $scope.item.schedule = "0 0 */" + time + " * * *";

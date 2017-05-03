@@ -2,16 +2,16 @@
 
   angular.module('app')
     .controller('DashCtrl', [
-      '$scope', '$filter', 'Report', 'Profile', 'DateRangeUtil',
+      '$scope', '$filter', '$localStorage', 'Report', 'Profile', 'DateRangeUtil',
       DashCtrl
     ]);
 
-  function DashCtrl($scope, $filter, Report, Profile, DateRangeUtil) {
+  function DashCtrl($scope, $filter, $localStorage, Report, Profile, DateRangeUtil) {
     $scope.app.subtitle = 'DashBoard';
 
-    $scope.datetype = "3";
-    $scope.fromTime = "00:00";
-    $scope.toTime = "00:00";
+    $scope.datetype = $localStorage.reportDate.datetype;
+    $scope.fromTime = $localStorage.reportDate.fromTime;
+    $scope.toTime = $localStorage.reportDate.toTime;
     Profile.get(null, function (profile) {
       $scope.hours = [];
       for (var i = 0; i < 24; ++i) {
@@ -22,6 +22,15 @@
         }
       }
 
+      getDateRange($scope.datetype, profile.data.timezone);
+
+      $scope.filter = {
+        fromDate: $localStorage.reportDate.fromDate,
+        toDate: $localStorage.reportDate.toDate,
+        fromTime: $scope.fromTime,
+        toTime: $scope.toTime
+      };
+
       var params = {
         order: "day",
         groupBy: "day",
@@ -29,15 +38,6 @@
         to: $scope.toDate + "T" + $scope.toTime,
         tz: profile.data.timezone,
         status: 1
-      };
-
-      getDateRange($scope.datetype, params.tz);
-
-      $scope.filter = {
-        fromDate: moment().format('YYYY-MM-DD'),
-        toDate: moment().add(1, 'days').format('YYYY-MM-DD'),
-        fromTime: $scope.fromTime,
-        toTime: $scope.toTime
       };
 
       $scope.summary = {};
@@ -106,6 +106,8 @@
         params.from = $scope.fromDate + "T" + $scope.fromTime;
         params.to = $scope.toDate + "T" + $scope.toTime;
 
+        fillLocalReportDate(newValue, $scope.fromDate, $scope.fromTime, $scope.toDate, $scope.toTime);
+
         getReportByDate(params);
       });
 
@@ -115,6 +117,9 @@
         }
         params.from = moment($scope.filter.fromDate).format('YYYY-MM-DD') + "T" + $scope.filter.fromTime;
         params.to = moment($scope.filter.toDate).format('YYYY-MM-DD') + "T" + $scope.filter.toTime;
+
+        fillLocalReportDate($scope.datetype, moment($scope.filter.fromDate).format('YYYY-MM-DD'), $scope.filter.fromTime, moment($scope.filter.toDate).format('YYYY-MM-DD'), $scope.filter.toTime);
+
         getReportByDate(params);
 
       }, true);
@@ -210,6 +215,14 @@
     function getDateRange(value, timezone) {
       $scope.fromDate = DateRangeUtil.fromDate(value, timezone);
       $scope.toDate = DateRangeUtil.toDate(value, timezone);
+    }
+
+    function fillLocalReportDate(dateType, fromDate, fromTime, toDate, toTime) {
+      $localStorage.reportDate.datetype = dateType;
+      $localStorage.reportDate.fromDate = fromDate;
+      $localStorage.reportDate.fromTime = fromTime;
+      $localStorage.reportDate.toDate = toDate;
+      $localStorage.reportDate.toTime = toTime;
     }
 
   }

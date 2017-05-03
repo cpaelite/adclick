@@ -4166,7 +4166,7 @@ app.post('/api/automated/rules', function(req, res) {
       "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
       "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
       "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
-      "oneTime": "2017-04-21 23",
+      "oneTime": "2017-04-21T23",
       "emails": "test@adbund.com",      // xxx@xxx.com,xxx@xxx.com
       "status": 0
     }
