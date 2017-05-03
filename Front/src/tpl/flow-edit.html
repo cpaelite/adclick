@@ -336,11 +336,10 @@
                     md-autocomplete-snap
                     md-require-match="true" class="chips-content">
                   <md-autocomplete
-                      md-no-cache="false"
+                      md-no-cache="true"
                       md-min-length="1"
                       md-search-text="cdt['_st'+f.name]"
                       md-items="item in querySearchAsync(cdt['_st'+f.name], f, cdt[f.name])"
-                      md-delay="500"
                       md-item-text="f._v2n[item]"
                       placeholder="{{f.placeholder}}">
                     <span md-highlight-text="cdt['_st'+f.name]">{{f._v2n[item]}}</span>
@@ -520,7 +519,7 @@
         <i class="icon-ok"></i>
         Save&amp;close
       </button>
-      <button class="btn btn-primary save-btn" ng-show="showContinue" ng-click="continueEdit()">
+      <button class="btn btn-primary save-btn flow-continue" ng-show="showContinue" ng-click="continueEdit()">
         <i class="icon-ok"></i>
         Continue
       </button>

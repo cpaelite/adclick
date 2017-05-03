@@ -2478,6 +2478,10 @@ app.get('/api/conditions', function (req, res) {
   delayResponse(res, result);
 });
 
+app.get('/api/isps', function (req, res) {
+  var result = [{"id":35,"display":"Organization ARTERIA Networks Corporation","value":"Organization ARTERIA Networks Corporation"},{"id":213,"display":"Kakogawa Generalization Health Center","value":"Kakogawa Generalization Health Center"},{"id":240,"display":"Plaza Create Co. Ltd.","value":"Plaza Create Co. Ltd."},{"id":333,"display":"Digital Plaza Si SA Ket Province","value":"Digital Plaza Si SA Ket Province"},{"id":426,"display":"Zalora Thailand Bangkok Province","value":"Zalora Thailand Bangkok Province"}];
+  delayResponse(res, result);
+});
 
 /**
  * get list of countries

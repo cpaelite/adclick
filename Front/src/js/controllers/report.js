@@ -332,7 +332,7 @@
         // 处理下载报表的列
         var downloadCols = '';
         $scope.downloadColumns.forEach(function (col) {
-          if ($scope.reportViewColumns[col.key].visible) {
+          if ($scope.reportViewColumns[col.key] && $scope.reportViewColumns[col.key].visible) {
             downloadCols += col.key + ',';
           }
         });

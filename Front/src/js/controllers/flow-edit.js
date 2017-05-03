@@ -744,7 +744,7 @@
         }).map(function(offer) {
           return offer._def.id;
         });
-        return Offer.query({columns: 'id,name', country: $scope.country.value || 'ZZZ', ids: selectedIds.join(','), filter: query}, function(result) {
+        return Offer.query({columns: 'id,name', country: ($scope.country && $scope.country.value) || 'ZZZ', ids: selectedIds.join(','), filter: query}, function(result) {
           return result;
         }).$promise
       };
