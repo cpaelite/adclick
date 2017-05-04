@@ -165,17 +165,24 @@
       });
     };
 
+    var ruleUpdateStatus = false;
     $scope.ruleStatusChange = function(index){
-      if($scope.list.rules[index].status == 0){
-        $scope.list.rules[index].status = 1;
-      }else{
-        $scope.list.rules[index].status = 0;
-      }
-      SuddenChange.save($scope.list.rules[index], function(oData) {
-        if(oData.status == 1) {
-          $scope.getRuleList();
+      if (!ruleUpdateStatus) {
+        ruleUpdateStatus = true;
+        var rule = $scope.list.rules[index];
+        if(rule.status == 0){
+          rule.status = 1;
+        }else{
+          rule.status = 0;
         }
-      });
+        SuddenChange.save(rule, function(oData) {
+          if(oData.status == 1) {
+            ruleUpdateStatus = false;
+            $scope.getRuleList();
+          }
+        });
+      }
+
     };
   }
 
