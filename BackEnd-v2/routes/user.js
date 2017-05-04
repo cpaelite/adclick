@@ -36,7 +36,7 @@ router.post('/api/preferences', function(req, res, next) {
         if (err) {
             return next(err);
         }
-        pool.getConnection('m1', function(err, connection) {
+        pool['m1'].getConnection(function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);
@@ -89,7 +89,7 @@ router.get('/api/tags', function(req, res, next) {
         if (err) {
             return next(err);
         }
-        pool.getConnection('m1', function(err, connection) {
+        pool['m1'].getConnection(function(err, connection) {
             if (err) {
                 err.status = 303
                 return next(err);

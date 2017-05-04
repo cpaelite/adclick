@@ -29,7 +29,7 @@ function getConnection(dbname) {
         if (dbname) {
             db = dbname;
         }
-        pool.getConnection(db, function(err, connection) {
+        pool[db].getConnection(function(err, connection) {
             if (err) {
                 reject(err)
             }

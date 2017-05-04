@@ -3,28 +3,26 @@ import mysql from 'mysql';
 const env = process.env.NODE_ENV || 'staging'
 const mysqlSetting = setting.mysql[env]
 
-
-
-global.pool = mysql.createPoolCluster();
-pool.add('m1', {
-  host: mysqlSetting.host,
-  user: mysqlSetting.user,
-  password: mysqlSetting.password,
-  database: mysqlSetting.database,
-  connectionLimit: mysqlSetting.connectionLimit,
-  debug: false,
-  waitForConnections: false
-});
-
-pool.add('m2', {
-  host: setting.reportSQL.host,
-  user: setting.reportSQL.user,
-  password: setting.reportSQL.password,
-  database: setting.reportSQL.database,
-  connectionLimit: setting.reportSQL.connectionLimit,
-  debug: false,
-  waitForConnections: false
-});
+global.pool = {
+  m1: mysql.createPool({
+    host: mysqlSetting.host,
+    user: mysqlSetting.user,
+    password: mysqlSetting.password,
+    database: mysqlSetting.database,
+    connectionLimit: mysqlSetting.connectionLimit,
+    debug: false,
+    waitForConnections: false
+  }),
+  m2: mysql.createPool({
+    host: setting.reportSQL.host,
+    user: setting.reportSQL.user,
+    password: setting.reportSQL.password,
+    database: setting.reportSQL.database,
+    connectionLimit: setting.reportSQL.connectionLimit,
+    debug: false,
+    waitForConnections: false
+  })
+}
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -92,7 +90,7 @@ if (process.env.NODE_ENV === "development") {
   app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
   app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
   app.use("/bower_components", express.static(__dirname + '/../Front/bower_components'));
-  app.get('/', function(req, res) {
+  app.get('/', function (req, res) {
     res.sendFile('index.html', {
       root: __dirname + '/../Front/src'
     });
@@ -112,13 +110,13 @@ app.use(log4js.connectLogger(log4js.getLogger("http"), {
 app.use(cookiePareser());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
-    extended: false
-  }))
-  // parse application/json
+  extended: false
+}))
+// parse application/json
 app.use(bodyParser.json())
 
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendFile('index.html', {
     root: __dirname + '/../Front/dist'
   });
@@ -131,14 +129,14 @@ app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, b
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 /// error handlers
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   logger.error("Something went wrong:", err);
   res.status(err.status || 500);
   res.json({

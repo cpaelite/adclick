@@ -19,7 +19,7 @@ var router = express.Router();
  *
  */
 router.get('/api/traffic/tpl', function(req, res, next) {
-    pool.getConnection('m1', function(err, connection) {
+    pool['m1'].getConnection(function(err, connection) {
         if (err) {
             err.status = 303
             return next(err);

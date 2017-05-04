@@ -206,7 +206,7 @@ router.get('/api/landers', function(req, res, next) {
     if (req.query.country) {
         sql += " and `country`=" + req.query.country;
     }
-    pool.getConnection('m1', function(err, connection) {
+    pool['m1'].getConnection(function(err, connection) {
         if (err) {
             err.status = 303
             return next(err);
