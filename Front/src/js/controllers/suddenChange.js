@@ -60,6 +60,16 @@
       from: LocalStorageUtil.getValue().fromDate,
       to: LocalStorageUtil.getValue().toDate
     };
+
+    $scope.filter = {
+      fromDate: LocalStorageUtil.getValue().fromDate,
+      toDate: LocalStorageUtil.getValue().toDate
+    };
+    // 如果不是自定义时间，重新计算时间
+    if ($scope.datetype != "0") {
+      getDateRange($scope.datetype);
+    }
+
     $scope.getLogList = function(){
       var params = angular.copy($scope.queryLog);
       if(!params.filter) {
@@ -70,11 +80,6 @@
       });
     };
     $scope.getLogList();
-
-    $scope.filter = {
-      fromDate: LocalStorageUtil.getValue().fromDate,
-      toDate: LocalStorageUtil.getValue().toDate
-    };
 
     $scope.$watch('filter', function (newValue, oldValue) {
       if (angular.equals(newValue, oldValue)) {
@@ -88,8 +93,18 @@
     }, true);
 
     function getDateRange(value) {
-      $scope.queryLog.from = DateRangeUtil.fromDate(value, '+00:00');
-      $scope.queryLog.to = DateRangeUtil.toDate(value, '+00:00');
+      var from = DateRangeUtil.fromDate(value, '+00:00');
+      var to = DateRangeUtil.toDate(value, '+00:00');
+      $scope.queryLog.from = from;
+      $scope.queryLog.to = to;
+      // 自定义时间类型时，时间控件默认Today的时间
+      if (value == "0") {
+        $scope.filter.fromDate = from;
+        $scope.filter.toDate = to;
+      } else {
+        fromTime = "00:00";
+        toTime = "00:00";
+      }
       LocalStorageUtil.setValue(value, $scope.queryLog.from, fromTime, $scope.queryLog.to, toTime);
     }
 
@@ -98,7 +113,10 @@
     };
     $scope.logQueryChange = function(){
       getDateRange($scope.datetype);
-      $scope.getLogList();
+      // 自定义时间类型时，根据时间控件时间变化而请求数据
+      if ($scope.datetype != "0") {
+        $scope.getLogList();
+      }
     };
 
     $scope.blacklistCount = 20;
