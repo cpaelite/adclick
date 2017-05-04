@@ -4149,7 +4149,7 @@ app.get('/api/third/traffic-source/groups', function(req, res, next) {
  *
  */
 app.get('/api/automated/rules/:id', function(req, res) {
-  var result = {"status":1,"message":"success","data":{"id":10,"name":"Rule1","dimension":"WebSiteId","timeSpan":"last3hours","condition":"sumImps>1000,","schedule":"0 0 */6 * * *","scheduleString":"Every 6 Hours","status":0,"emails":"123@qq.com","campaigns":"816"}};
+  var result = {"status":1,"message":"success","data":{"id":10,"name":"Rule1","dimension":"WebSiteId","timeSpan":"last3hours","condition":"sumImpressions>1000,","schedule":"0 0 */6 * * *","scheduleString":"Every 6 Hours","status":0,"emails":"123@qq.com","campaigns":"816"}};
   res.send(result);
 });
 
@@ -4167,7 +4167,7 @@ app.post('/api/automated/rules', function(req, res) {
       "campaigns": "1,2",
       "dimension": "Country",
       "timeSpan": "last6hours",
-      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "conditions": "sumImpressions>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
       "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
       "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
       "oneTime": "2017-04-21T23",
@@ -4192,7 +4192,7 @@ app.post('/api/automated/rules/:id', function(req, res) {
       "campaigns": "1,2",
       "dimension": "Country",
       "timeSpan": "last6hours",
-      "conditions": "sumImps>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
+      "conditions": "sumImpressions>500,sumVisits>500,sumClicks<1,ctr<0.5,cr<0.3,cpm>0.02,cpc>0.5,cpa>0.1",
       "schedule": "0 0 * * * *",        // 0(秒) 0(分) *(时) *(天) *(月) *(星期)
       "scheduleString": "Daily 23",     // Every 1/3/6/12 Hour,Daily 23,Weekly 0 23,One Time 2017-04-21 23
       "oneTime": "2017-04-21 23",

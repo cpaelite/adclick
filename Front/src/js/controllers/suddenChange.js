@@ -29,7 +29,7 @@
     };
 
     $scope.query = {
-      status: 1,
+      status: 2,
       filter:'',
       page: 1,
       limit: 1000
@@ -141,7 +141,7 @@
         templateUrl: 'tpl/automatedRule-edit-dialog.html?' + +new Date()
       }).then(function(id) {
         if(!id) {
-          $scope.query.status = 0;
+          $scope.query.status = 2;
         }
         if($scope.tabSelected != 0) {
           $scope.tabSelected = 0;
@@ -193,7 +193,7 @@
         this.title = "add";
         $scope.conditionArray = [
           {
-            "key": "sumImps",
+            "key": "sumImpressions",
             "operand": ">",
             "value": ""
           }

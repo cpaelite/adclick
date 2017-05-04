@@ -717,6 +717,7 @@ angular.module('app').value('AutomatedRuleOptions', {
     {"key": "cpm","display": "CPM","unit": "USD"},
     {"key": "cpc","display": "CPC","unit": "USD"},
     {"key": "cpa","display": "CPA","unit": "USD"},
+    {"key": "spent","display": "Spent","unit": "USD"},
   ],
   "frequency": [
     "Every 1 Hour",
