@@ -10,7 +10,13 @@ export const mapping = {
     group: "campaign",
     attributes: [
       'UserID', ['CampaignID', 'campaignId']
-    ]
+    ],
+    export: {
+      dbGroupBy: "CampaignName",
+      attributes: [
+        ['CampaignName', 'campaignName']
+      ]
+    }
   },
   flow: {
     attributes: [
@@ -21,7 +27,13 @@ export const mapping = {
     listPage: true,
     table: "Flow",
     dbFilter: "FlowName",
-    group: "flow"
+    group: "flow",
+    export: {
+      dbGroupBy: "FlowName",
+      attributes: [
+        ['FlowName', 'flowName']
+      ]
+    }
   },
   lander: {
     attributes: [
@@ -32,7 +44,13 @@ export const mapping = {
     listPage: true,
     table: "Lander",
     dbFilter: "LanderName",
-    group: "lander"
+    group: "lander",
+    export: {
+      dbGroupBy: "LanderName",
+      attributes: [
+        ['LanderName', 'landerName']
+      ]
+    }
   },
   offer: {
     attributes: [
@@ -43,7 +61,13 @@ export const mapping = {
     listPage: true,
     table: "Offer",
     dbFilter: "OfferName",
-    group: "offer"
+    group: "offer",
+    export: {
+      dbGroupBy: "OfferName",
+      attributes: [
+        ['OfferName', 'offerName']
+      ]
+    }
   },
   affiliate: {
     attributes: [
@@ -54,7 +78,13 @@ export const mapping = {
     listPage: true,
     table: "AffiliateNetwork",
     dbFilter: "AffiliateNetworkName",
-    group: "affiliate"
+    group: "affiliate",
+    export: {
+      dbGroupBy: "AffiliateNetworkName",
+      attributes: [
+        ['AffiliateNetworkName', 'affiliateNetworkName']
+      ]
+    }
   },
   traffic: {
     attributes: [
@@ -65,7 +95,13 @@ export const mapping = {
     listPage: true,
     table: "TrafficSource",
     dbFilter: "TrafficSourceName",
-    group: "traffic"
+    group: "traffic",
+    export: {
+      dbGroupBy: "TrafficSourceName",
+      attributes: [
+        ['TrafficSourceName', 'trafficSourceName']
+      ]
+    }
   },
   language: {
     attributes: [
@@ -75,7 +111,13 @@ export const mapping = {
     dbKey: "Language",
     dbGroupBy: "Language",
     listPage: false,
-    dbFilter: 'Language'
+    dbFilter: 'Language',
+    export: {
+      dbGroupBy: "Language",
+      attributes: [
+        ['Language']
+      ]
+    }
   },
   model: {
     attributes: [
@@ -85,7 +127,13 @@ export const mapping = {
     dbKey: "Model",
     dbGroupBy: "Model",
     listPage: false,
-    dbFilter: 'Model'
+    dbFilter: 'Model',
+    export: {
+      dbGroupBy: "Model",
+      attributes: [
+        ['Model']
+      ]
+    }
   },
   country: {
     attributes: [
@@ -95,7 +143,13 @@ export const mapping = {
     dbKey: "Country",
     dbGroupBy: "Country",
     listPage: false,
-    dbFilter: 'Country'
+    dbFilter: 'Country',
+    export: {
+      dbGroupBy: "Country",
+      attributes: [
+        ['Country']
+      ]
+    }
   },
   city: {
     attributes: [
@@ -106,7 +160,13 @@ export const mapping = {
     dbGroupBy: "City",
     listPage: false,
     dbFilter: 'City',
-    dbFilter: 'City'
+    dbFilter: 'City',
+    export: {
+      dbGroupBy: "City",
+      attributes: [
+        ['City']
+      ]
+    }
   },
   region: {
     attributes: [
@@ -116,7 +176,13 @@ export const mapping = {
     dbKey: "Region",
     dbGroupBy: "Region",
     listPage: false,
-    dbFilter: 'Region'
+    dbFilter: 'Region',
+    export: {
+      dbGroupBy: "Region",
+      attributes: [
+        ['Region']
+      ]
+    }
   },
   isp: {
     attributes: [
@@ -126,7 +192,13 @@ export const mapping = {
     dbKey: "ISP",
     dbGroupBy: "ISP",
     listPage: false,
-    dbFilter: 'ISP'
+    dbFilter: 'ISP',
+    export: {
+      dbGroupBy: "ISP",
+      attributes: [
+        ['ISP']
+      ]
+    }
   },
   mobileCarrier: {
     attributes: [
@@ -136,7 +208,13 @@ export const mapping = {
     dbKey: "MobileCarrier",
     dbGroupBy: "MobileCarrier",
     listPage: false,
-    dbFilter: 'MobileCarrier'
+    dbFilter: 'MobileCarrier',
+    export: {
+      dbGroupBy: "MobileCarrier",
+      attributes: [
+        ['MobileCarrier']
+      ]
+    }
   },
   domain: {
     attributes: [
@@ -146,7 +224,13 @@ export const mapping = {
     dbKey: "Domain",
     dbGroupBy: "Domain",
     listPage: false,
-    dbFilter: 'Domain'
+    dbFilter: 'Domain',
+    export: {
+      dbGroupBy: "Domain",
+      attributes: [
+        ['Domain']
+      ]
+    }
   },
   deviceType: {
     attributes: [
@@ -156,7 +240,13 @@ export const mapping = {
     dbKey: "DeviceType",
     dbGroupBy: "DeviceType",
     listPage: false,
-    dbFilter: 'DeviceType'
+    dbFilter: 'DeviceType',
+    export: {
+      dbGroupBy: "DeviceType",
+      attributes: [
+        ['DeviceType']
+      ]
+    }
   },
   brand: {
     attributes: [
@@ -166,7 +256,13 @@ export const mapping = {
     dbKey: "Brand",
     dbGroupBy: "Brand",
     listPage: false,
-    dbFilter: 'Brand'
+    dbFilter: 'Brand',
+    export: {
+      dbGroupBy: "Brand",
+      attributes: [
+        ['Brand']
+      ]
+    }
   },
   os: {
     attributes: [
@@ -176,7 +272,13 @@ export const mapping = {
     dbKey: "OS",
     dbGroupBy: "OS",
     listPage: false,
-    dbFilter: 'OS'
+    dbFilter: 'OS',
+    export: {
+      dbGroupBy: "OS",
+      attributes: [
+        ['OS']
+      ]
+    }
   },
   osVersion: {
     attributes: [
@@ -186,7 +288,13 @@ export const mapping = {
     dbKey: "OSVersion",
     dbGroupBy: "OSVersion",
     listPage: false,
-    dbFilter: 'OSVersion'
+    dbFilter: 'OSVersion',
+    export: {
+      dbGroupBy: "OSVersion",
+      attributes: [
+        ['OSVersion']
+      ]
+    }
   },
   browser: {
     attributes: [
@@ -196,7 +304,13 @@ export const mapping = {
     dbKey: "Browser",
     dbGroupBy: "Browser",
     listPage: false,
-    dbFilter: 'Browser'
+    dbFilter: 'Browser',
+    export: {
+      dbGroupBy: "Browser",
+      attributes: [
+        ['Browser']
+      ]
+    }
   },
   browserVersion: {
     attributes: [
@@ -206,7 +320,13 @@ export const mapping = {
     dbKey: "BrowserVersion",
     dbGroupBy: "BrowserVersion",
     listPage: false,
-    dbFilter: 'BrowserVersion'
+    dbFilter: 'BrowserVersion',
+    export: {
+      dbGroupBy: "BrowserVersion",
+      attributes: [
+        ['BrowserVersion']
+      ]
+    }
   },
   connectionType: {
     attributes: [
@@ -216,7 +336,13 @@ export const mapping = {
     dbKey: "ConnectionType",
     dbGroupBy: "ConnectionType",
     listPage: false,
-    dbFilter: 'ConnectionType'
+    dbFilter: 'ConnectionType',
+    export: {
+      dbGroupBy: "ConnectionType",
+      attributes: [
+        ['ConnectionType']
+      ]
+    }
   },
   timestamp: {
     dbKey: "Timestamp",
@@ -261,7 +387,13 @@ export const mapping = {
     dbKey: "V1",
     dbGroupBy: "V1",
     listPage: false,
-    dbFilter: 'V1'
+    dbFilter: 'V1',
+    export: {
+      dbGroupBy: "V1",
+      attributes: [
+        ['V1', 'v1']
+      ]
+    }
   },
   v2: {
     attributes: [
@@ -271,7 +403,13 @@ export const mapping = {
     dbKey: "V2",
     dbGroupBy: "V2",
     listPage: false,
-    dbFilter: 'V2'
+    dbFilter: 'V2',
+    export: {
+      dbGroupBy: "V2",
+      attributes: [
+        ['V2', 'v2']
+      ]
+    }
   },
   v3: {
     attributes: [
@@ -281,7 +419,13 @@ export const mapping = {
     dbKey: "V3",
     dbGroupBy: "V3",
     listPage: false,
-    dbFilter: 'V3'
+    dbFilter: 'V3',
+    export: {
+      dbGroupBy: "V3",
+      attributes: [
+        ['V3', 'v3']
+      ]
+    }
   },
   v4: {
     attributes: [
@@ -291,7 +435,13 @@ export const mapping = {
     dbKey: "V4",
     dbGroupBy: "V4",
     listPage: false,
-    dbFilter: 'V4'
+    dbFilter: 'V4',
+    export: {
+      dbGroupBy: "V4",
+      attributes: [
+        ['V4', 'v4']
+      ]
+    }
   },
   v5: {
     attributes: [
@@ -301,7 +451,13 @@ export const mapping = {
     dbKey: "V5",
     dbGroupBy: "V5",
     listPage: false,
-    dbFilter: 'V5'
+    dbFilter: 'V5',
+    export: {
+      dbGroupBy: "V5",
+      attributes: [
+        ['V5', 'v5']
+      ]
+    }
   },
   v6: {
     attributes: [
@@ -311,7 +467,13 @@ export const mapping = {
     dbKey: "V6",
     dbGroupBy: "V6",
     listPage: false,
-    dbFilter: 'V6'
+    dbFilter: 'V6',
+    export: {
+      dbGroupBy: "V6",
+      attributes: [
+        ['V6', 'v6']
+      ]
+    }
   },
   v7: {
     attributes: [
@@ -321,7 +483,13 @@ export const mapping = {
     dbKey: "V7",
     dbGroupBy: "V7",
     listPage: false,
-    dbFilter: 'V7'
+    dbFilter: 'V7',
+    export: {
+      dbGroupBy: "V7",
+      attributes: [
+        ['V7', 'v7']
+      ]
+    }
   },
   v8: {
     attributes: [
@@ -331,7 +499,13 @@ export const mapping = {
     dbKey: "V8",
     dbGroupBy: "V8",
     listPage: false,
-    dbFilter: 'V8'
+    dbFilter: 'V8',
+    export: {
+      dbGroupBy: "V8",
+      attributes: [
+        ['V8', 'v8']
+      ]
+    }
   },
   v9: {
     attributes: [
@@ -341,7 +515,13 @@ export const mapping = {
     dbKey: "V9",
     dbGroupBy: "V9",
     listPage: false,
-    dbFilter: 'V9'
+    dbFilter: 'V9',
+    export: {
+      dbGroupBy: "V9",
+      attributes: [
+        ['V9', 'v9']
+      ]
+    }
   },
   v10: {
     attributes: [
@@ -351,21 +531,35 @@ export const mapping = {
     dbKey: "V10",
     dbGroupBy: "V10",
     listPage: false,
-    dbFilter: 'V10'
+    dbFilter: 'V10',
+    export: {
+      dbGroupBy: "V10",
+      attributes: [
+        ['V10', 'v10']
+      ]
+    }
   },
   day: {
     attributes: [],
     dbKey: "day",
     dbGroupBy: "id,day",
     listPage: false,
-    dbFilter: 'day'
+    dbFilter: 'day',
+    export: {
+      dbGroupBy: "day",
+      attributes: []
+    }
   },
   hour: {
     attributes: [],
     dbKey: "hour",
     dbGroupBy: "id,hour",
     listPage: false,
-    dbFilter: 'hour'
+    dbFilter: 'hour',
+    export: {
+      dbGroupBy: "hour",
+      attributes: []
+    }
   },
   tsWebsiteId: {
     attributes: [
@@ -375,33 +569,62 @@ export const mapping = {
     dbKey: "tsWebsiteId",
     dbGroupBy: "tsWebsiteId",
     listPage: false,
-    dbFilter: 'tsWebsiteId'
+    dbFilter: 'tsWebsiteId',
+    export: {
+      dbGroupBy: "tsWebsiteId",
+      attributes: ["tsWebsiteId"]
+    }
   },
 }
 
 export const sumShorts = {
   visits: [sequelize.fn('SUM', sequelize.col('Visits')), 'visits'],
-  impressions: [sequelize.fn('SUM', sequelize.col('Impressions')), 'impressions'],
+  impressions: [sequelize.fn('SUM', sequelize.col('Impressions')),
+    'impressions'
+  ],
   revenue: [sequelize.fn('SUM', sequelize.col('Revenue')), 'revenue'],
   clicks: [sequelize.fn('SUM', sequelize.col('Clicks')), 'clicks'],
-  conversions: [sequelize.fn('SUM', sequelize.col('Conversions')), 'conversions'],
+  conversions: [sequelize.fn('SUM', sequelize.col('Conversions')),
+    'conversions'
+  ],
   cost: [sequelize.fn('SUM', sequelize.col('AdStatisReport.Cost')), 'cost'],
-  profit: [sequelize.fn('SUM', sequelize.literal('AdStatisReport.Revenue / 1000000 - AdStatisReport.Cost / 1000000')), 'profit'],
-  cpv: [sequelize.literal('sum(AdStatisReport.Cost / 1000000) / sum(AdStatisReport.visits)'), 'cpv'],
-  ictr: [sequelize.literal('sum(AdStatisReport.Visits)/sum(AdStatisReport.Impressions)'), 'ictr'],
-  ctr: [sequelize.literal('sum(AdStatisReport.Clicks)/sum(AdStatisReport.Visits)'), 'ctr'],
-  cr: [sequelize.literal('sum(AdStatisReport.Conversions)/sum(AdStatisReport.Clicks)'), 'cr'],
-  cv: [sequelize.literal('sum(AdStatisReport.Conversions)/sum(AdStatisReport.Visits)'), 'cv'],
-  roi: [sequelize.literal('(sum(AdStatisReport.Revenue) - sum(AdStatisReport.Cost))/sum(AdStatisReport.Cost)'), 'roi'],
-  epv: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Visits)'), 'epv'],
-  epc: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Clicks)'), 'epc'],
-  ap: [sequelize.literal('sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Conversions)'), 'ap']
+  profit: [sequelize.fn('SUM', sequelize.literal(
+      'AdStatisReport.Revenue / 1000000 - AdStatisReport.Cost / 1000000')),
+    'profit'
+  ],
+  cpv: [sequelize.literal(
+      'sum(AdStatisReport.Cost / 1000000) / sum(AdStatisReport.visits)'),
+    'cpv'
+  ],
+  ictr: [sequelize.literal(
+    'sum(AdStatisReport.Visits)/sum(AdStatisReport.Impressions)'), 'ictr'],
+  ctr: [sequelize.literal(
+    'sum(AdStatisReport.Clicks)/sum(AdStatisReport.Visits)'), 'ctr'],
+  cr: [sequelize.literal(
+    'sum(AdStatisReport.Conversions)/sum(AdStatisReport.Clicks)'), 'cr'],
+  cv: [sequelize.literal(
+    'sum(AdStatisReport.Conversions)/sum(AdStatisReport.Visits)'), 'cv'],
+  roi: [sequelize.literal(
+    '(sum(AdStatisReport.Revenue) - sum(AdStatisReport.Cost))/sum(AdStatisReport.Cost)'
+  ), 'roi'],
+  epv: [sequelize.literal(
+      'sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Visits)'),
+    'epv'
+  ],
+  epc: [sequelize.literal(
+      'sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Clicks)'),
+    'epc'
+  ],
+  ap: [sequelize.literal(
+    'sum(AdStatisReport.Revenue)/ 1000000 / sum(AdStatisReport.Conversions)'
+  ), 'ap']
 }
 
 
 
 export const nunberColumnForListPage = [
-  'visits', 'impressions', 'revenue', 'clicks', 'conversions', 'cost', 'profit', 'cpv', 'ictr', 'ctr', 'cr',
+  'visits', 'impressions', 'revenue', 'clicks', 'conversions', 'cost',
+  'profit', 'cpv', 'ictr', 'ctr', 'cr',
   'cv', 'roi', 'epv', 'epc', 'ap'
 ]
 
@@ -463,7 +686,10 @@ export function extraConfig(groupBy) {
           ['name', 'campaignName'],
           ['hash', 'campaignHash'],
           ['url', 'campaignUrl'],
-          [sequelize.literal('case country when \'ZZZ\' then \'GLOBAL\' else country end'), 'campaignCountry'],
+          [sequelize.literal(
+              'case country when \'ZZZ\' then \'GLOBAL\' else country end'),
+            'campaignCountry'
+          ],
           ['trafficSourceId', 'trafficId'],
           ['trafficSourceName', 'trafficName'],
           'deleted'
@@ -494,7 +720,10 @@ export function extraConfig(groupBy) {
           'id', ['id', 'landerId'],
           ['name', 'landerName'],
           ['hash', 'landerHash'],
-          [sequelize.literal('case country when \'ZZZ\' then \'GLOBAL\' else country end'), 'landerCountry'],
+          [sequelize.literal(
+              'case country when \'ZZZ\' then \'GLOBAL\' else country end'),
+            'landerCountry'
+          ],
           ['url', 'landerUrl'],
           'deleted'
         ]
@@ -511,7 +740,10 @@ export function extraConfig(groupBy) {
           ['name', 'offerName'],
           ['hash', 'offerHash'],
           ['url', 'offerUrl'],
-          [sequelize.literal('case country when \'ZZZ\' then \'GLOBAL\' else country end'), 'offerCountry'],
+          [sequelize.literal(
+              'case country when \'ZZZ\' then \'GLOBAL\' else country end'),
+            'offerCountry'
+          ],
           ['payoutValue', 'offerPayout'],
           'deleted'
         ]
@@ -623,7 +855,9 @@ export function csvCloums(groupBy) {
   let answer;
   switch (groupBy) {
     case 'campaign':
-      answer = ['campaignId', 'campaignName', 'campaignHash', 'trafficId', 'trafficName'];
+      answer = ['campaignId', 'campaignName', 'campaignHash', 'trafficId',
+        'trafficName'
+      ];
 
       break;
     case 'flow':

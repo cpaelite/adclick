@@ -19,6 +19,7 @@ import {
 } from '../util/report';
 
 
+
 /**
  * @api {get} /api/report  报表
  * @apiName  报表
@@ -29,7 +30,7 @@ import {
 
 //from   to tz  sort  direction  ]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 //dataType csv   columns=offerName,offerHash
-router.get('/api/report', async function (req, res, next) {
+router.get('/api/report', async function(req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
@@ -49,59 +50,34 @@ router.get('/api/report', async function (req, res, next) {
   }
 });
 
-router.get('/api/export', async function (req, res, next) {
+//from to tz groupBy  columns
+router.get('/api/export', async function(req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
-    let fieldsCol = [];
-    if (req.query.groupBy) {
-      fieldsCol.push(req.query.groupBy);
-    }
-    req.query.dataType = "csv";
+    // let fieldsCol = [];
+    // if (req.query.groupBy) {
+    //   fieldsCol.push(req.query.groupBy);
+    // }
+
     if (req.query.groupBy && req.query.groupBy == "ip") {
       result = await IPReport(req);
     } else {
-      result = await main_report(req.query);
+      result = await getExportData(req.query);
     }
     let rawRows = result.rows;
-    //特殊处理ip 导出不fullfill
-    // if (req.query.groupBy && req.query.groupBy == "ip") {
-    //   let campaign = await getUserCampainByID(req.query.userId, req.query.campaign);
-    //   res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${campaign.name}-${campaign.hash}-${moment().unix()}.csv"`);
-    // } else {
-    // let csvFullfill = [];//缓存csv 要fullfill的关系数据
-    // let attrs = Object.keys(req.query);
-    // _.forEach(attrs, (attr) => {
-    //   if (mapping[attr]) {
-    //     let mapKey = {}
-    //     mapKey['group'] = mapping[attr].group;
-    //     csvFullfill.push(mapKey)
-    //   }
-    // });
 
-    // for (let index = 0; index < csvFullfill.length; index++) {
-    //   rawRows = await csvfullFill({ rawRows, groupBy: csvFullfill[index].group });
-    //   for (let j = 0; j < csvCloums(csvFullfill[index].group).length; j++) {
-    //     fieldsCol.push(csvCloums(csvFullfill[index].group)[j]);
-    //   }
-    // }
-    //res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
-    // }
-
-    if (req.query.campaign) {
-      let campaign = await getUserCampainByID(req.query.userId, req.query.campaign);
-      res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${campaign.name}-${campaign.hash}-${moment().unix()}.csv"`);
-    } else {
-      res.setHeader('Content-Disposition', `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`);
-    }
+    res.setHeader('Content-Disposition',
+      `attachment;filename="NewBidder-${req.query.groupBy}-${moment().unix()}.csv"`
+    );
 
 
-    let queryClo = req.query.columns ? req.query.columns.split(',') : [];
-    let fields = _.union(fieldsCol, queryClo);
+    // let queryClo = req.query.columns ? req.query.columns.split(',') : [];
+    // let fields = _.union(fieldsCol, queryClo);
 
     let csvData = json2csv({
       data: rawRows,
-      fields: fields
+      fields: rawRows.length ? _.keys(rawRows[0]) : []
     });
     res.setHeader('Content-Type', 'text/csv;header=present;charset=utf-8');
     res.setHeader('Expires', '0');
@@ -114,20 +90,139 @@ router.get('/api/export', async function (req, res, next) {
 })
 
 
-async function getUserCampainByID(userid, id) {
+async function getExportData(values) {
   let connection;
   try {
-    connection = await common.getConnection();
-    let [campaign] = await common.query('select `name`,`hash` from TrackingCampaign where userId=? and id=?', [userid, id], connection);
-    return campaign;
+    let {
+      userId,
+      from,
+      to,
+      tz,
+      groupBy,
+      filter,
+      order
+    } = values;
+    //====== start
+    let where =
+      `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)
+                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
+
+    if (_.has(values, 'day')) {
+      let start = moment(values.day.trim()).startOf('day').format(
+        "YYYY-MM-DDTHH:mm:ss");
+      let end = moment(values.day.trim()).add(1, 'd').startOf('day').format(
+        "YYYY-MM-DDTHH:mm:ss");
+      where =
+        ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+    }
+
+    if (_.has(values, 'hour')) {
+      let start = moment(values.hour.trim()).startOf('hour').format(
+        "YYYY-MM-DDTHH:mm:ss");
+      let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format(
+        "YYYY-MM-DDTHH:mm:ss");
+      where =
+        ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+    }
+
+    let attrs = Object.keys(values);
+    for (let index = 0; index < attrs.length; index++) {
+      let attr = attrs[index];
+      if (attr != 'day' && attr != 'hour' && mapping[attr]) {
+        where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
+      }
+    }
+
+
+    let orders = "";
+    if (order) {
+      if (order.slice(0, 1) == '-') {
+        orders = ` order by ${order.slice(1)} DESC`;
+      } else {
+        orders = ` order by ${order} ASC`;
+      }
+    }
+
+    let column = [];
+
+    let groupByArray = groupBy.split(',');
+    //根据groupBy 拼接column
+    for (let j = 0; j < groupByArray.length; j++) {
+      let groupByItem = groupByArray[j];
+      for (let index = 0; index < mapping[groupByItem].attributes.length; index++) {
+        let attr = mapping[groupByItem].export.attributes[index]
+        if (_.isString(attr)) {
+          column.push(attr);
+        } else if (_.isArray(attr)) {
+          column.push(`${attr[0]} as ${attr[1]}`);
+        }
+      }
+    }
+
+    let clostring =
+      `sum(Visits) as visits &&
+                    sum(Impressions) as impressions &&
+                    round(sum(Revenue/1000000),2) as revenue &&
+                    sum(Clicks) as clicks &&
+                    sum(Conversions) as conversions &&
+                    round(sum(Cost/1000000),2) as cost &&
+                    round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit &&
+                    round(sum(Cost / 1000000) / sum(Visits),4) as cpv &&
+                    round(sum(Visits)/sum(Impressions)*100,2)  as  ictr &&
+                    IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr &&
+                    IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr &&
+                    IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv &&
+                    IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi &&
+                    round(sum(Revenue)/ 1000000 / sum(Visits),4) as epv &&
+                    round(sum(Revenue)/ 1000000 / sum(Clicks),4) as epc &&
+                    round(sum(Revenue)/ 1000000 / sum(Conversions),2) as ap `;
+
+    column = _.concat(column, clostring.split('&&'));
+    if (_.indexOf(groupByArray, 'day') != -1) {
+      //处理timezone 兼容列存储
+      let tag = tz.slice(0, 1);
+      let numberString = tz.slice(1);
+      let slice = numberString.split(':');
+      let intavlHour =
+        `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`;
+      column.push(
+        `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`
+      );
+    }
+    if (_.indexOf(groupByArray, 'hour') != -1) {
+      //处理timezone 兼容列存储
+      let tag = tz.slice(0, 1);
+      let numberString = tz.slice(1);
+      let slice = numberString.split(':');
+      let intavlHour =
+        `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
+      column.push(
+        `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`
+      );
+    }
+
+    let GROUP = [];
+    for (let index = 0; index < groupByArray.length; index++) {
+      let groupItem = groupByArray[index];
+      GROUP.push(mapping[groupItem].export.dbGroupBy)
+    }
+    let tpl =
+      `select ${column.join(",")} from adstatis  where UserID =${userId} and ${where} group by ${GROUP.join(',')}  ${orders} `;
+    connection = await common.getConnection('m2');
+    let rawRows = await common.query(tpl, [], connection);
+    return {
+      rows: rawRows
+    }
   } catch (e) {
     throw e;
   } finally {
     if (connection) {
-      connection.release();
+      connection.release()
     }
   }
+
 }
+
 
 async function main_report(value) {
   let {
@@ -149,14 +244,9 @@ async function main_report(value) {
     if (!offset || offset < 0) offset = 0;
     value.offset = offset;
   }
-
-
-  console.info("------------", isListPageRequest(value))
   if (isListPageRequest(value)) {
-    console.info("list page process")
     return listPageReport(value)
   } else {
-    console.info("normal process")
     return normalReport(value, true)
   }
 }
@@ -231,31 +321,6 @@ async function fullFill({
   return rawRows;
 }
 
-async function csvfullFill({
-  rawRows,
-  groupBy
-}) {
-  if (!mapping[groupBy].table) {
-    // don't belong to group by model, do nothing
-    return rawRows
-  }
-
-  let foreignConfig = csvextraConfig(groupBy);
-  let foreignKeys = rawRows.map(r => r[foreignConfig.foreignKey]);
-  let foreignRows = await models[mapping[groupBy].table].findAll({
-    where: {
-      id: foreignKeys
-    },
-    attributes: foreignConfig.attributes
-  });
-  let rawForeignRows = foreignRows.map(e => e.dataValues);
-  let results = [];
-  for (let index = 0; index < rawRows.length; index++) {
-    results.push(_.assign(rawRows[index], rawForeignRows[0]))
-  }
-  return results;
-}
-
 
 async function normalReport(values, mustPagination) {
   let {
@@ -270,11 +335,13 @@ async function normalReport(values, mustPagination) {
     order,
     status
   } = values;
-  //====== start 
+  //====== start
   let having = "";
+ 
   let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
+ 
 
   let attrs = Object.keys(values);
   for (let index = 0; index < attrs.length; index++) {
@@ -303,7 +370,8 @@ async function normalReport(values, mustPagination) {
     }
   }
 
-  let column = `sum(Visits) as visits,
+  let column =
+    `sum(Visits) as visits,
                 sum(Impressions) as impressions ,
                 round(sum(Revenue/1000000),2) as revenue,
                 sum(Clicks) as clicks,
@@ -319,12 +387,13 @@ async function normalReport(values, mustPagination) {
                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv,
                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc,
                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
-  //根据groupBy 拼接column 
+ 
   for (let index = 0; index < mapping[groupBy].attributes.length; index++) {
     if (_.isString(mapping[groupBy].attributes[index])) {
       column += `,${mapping[groupBy].attributes[index]} `
     } else if (_.isArray(mapping[groupBy].attributes[index])) {
-      column += `,${mapping[groupBy].attributes[index][0]} as ${mapping[groupBy].attributes[index][1]} `
+      column +=
+        `,${mapping[groupBy].attributes[index][0]} as ${mapping[groupBy].attributes[index][1]} `
     }
   }
 
@@ -373,11 +442,10 @@ async function normalReport(values, mustPagination) {
     }
   }
 
+ 
 
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} ${tplGroupBy} ${having} ${orders} `;
-
-
 
   let totalSQL = `select COUNT(*) as total,sum(visits) as visits,    
                 sum(impressions) as impressions ,
@@ -385,7 +453,7 @@ async function normalReport(values, mustPagination) {
                 sum(clicks) as clicks,
                 sum(conversions) as conversions ,
                 round(sum(cost),2) as cost ,
-                round(sum(profit),2) as profit , 
+                round(sum(profit),2) as profit ,
                 round(sum(cost)/sum(visits),4) as cpv,
                 round(sum(visits)/sum(impressions) *100,2) as ictr,
                 round(sum(clicks)/sum(visits)*100,2) as ctr,
@@ -551,14 +619,22 @@ async function listPageReport(query) {
     revenue: listData.reduce((sum, row) => sum + row.revenue, 0),
     cost: listData.reduce((sum, row) => sum + row.cost, 0),
     profit: listData.reduce((sum, row) => sum + row.profit, 0),
-    cpv: listData.reduce((sum, row) => sum + row.cost, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
-    ictr: listData.reduce((sum, row) => sum + row.visits, 0) / listData.reduce((sum, row) => sum + row.impression, 0),
-    ctr: listData.reduce((sum, row) => sum + row.clicks, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
-    cr: listData.reduce((sum, row) => sum + row.conversions, 0) / listData.reduce((sum, row) => sum + row.clicks, 0),
-    cv: listData.reduce((sum, row) => sum + row.conversions, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
-    epv: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce((sum, row) => sum + row.visits, 0),
-    epc: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce((sum, row) => sum + row.clicks, 0),
-    ap: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce((sum, row) => sum + row.conversions, 0),
+    cpv: listData.reduce((sum, row) => sum + row.cost, 0) / listData.reduce((
+      sum, row) => sum + row.visits, 0),
+    ictr: listData.reduce((sum, row) => sum + row.visits, 0) / listData.reduce(
+      (sum, row) => sum + row.impression, 0),
+    ctr: listData.reduce((sum, row) => sum + row.clicks, 0) / listData.reduce(
+      (sum, row) => sum + row.visits, 0),
+    cr: listData.reduce((sum, row) => sum + row.conversions, 0) / listData.reduce(
+      (sum, row) => sum + row.clicks, 0),
+    cv: listData.reduce((sum, row) => sum + row.conversions, 0) / listData.reduce(
+      (sum, row) => sum + row.visits, 0),
+    epv: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce(
+      (sum, row) => sum + row.visits, 0),
+    epc: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce(
+      (sum, row) => sum + row.clicks, 0),
+    ap: listData.reduce((sum, row) => sum + row.revenue, 0) / listData.reduce(
+      (sum, row) => sum + row.conversions, 0),
   }
   totals.roi = totals.profit / totals.cost
   totals = formatTotals([totals])[0];
@@ -578,8 +654,9 @@ function dynamicSort(property) {
     sortOrder = -1;
     property = property.substr(1);
   }
-  return function (a, b) {
-    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+  return function(a, b) {
+    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ?
+      1 : 0;
     return result * sortOrder;
   }
 }
@@ -620,6 +697,7 @@ async function IPReport(req) {
     let offset = (page - 1) * limit;
     let dir = "asc";
 
+
     let sql = `select IP as ip,CampaignID as campaignId,sum(Impressions) as impressions,sum(Visits) as visits,sum(Clicks) as clicks,sum(Conversions) as conversions,
                   round(sum(Cost/1000000),2) as cost,
                   round(sum(Revenue/1000000),2) as revenue,
@@ -638,10 +716,12 @@ async function IPReport(req) {
                   and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '${tz}','+00:00'))*1000) group by IP `;
 
 
-    let countSql = `select COUNT(*) as total,IFNULL(sum(impressions),0) as impressions,IFNULL(sum(visits),0) as visits, 
+
+    let countSql =
+      `select COUNT(*) as total,IFNULL(sum(impressions),0) as impressions,IFNULL(sum(visits),0) as visits,
                     IFNULL(sum(clicks),0) as clicks,IFNULL(sum(conversions),0) as conversions,
                     IFNULL(sum(cost),0) as cost,IFNULL(sum(revenue),0) as revenue,
-                    IFNULL(sum(profit),0) as profit, 
+                    IFNULL(sum(profit),0) as profit,
                     IFNULL(round(sum(cost)/sum(visits),4),0.0000) as cpv,
                     IFNULL(round(sum(visits)/sum(impressions),2),0.00) as ictr,
                     IFNULL(round(sum(clicks)/sum(visits),2),0.00) as ctr,
@@ -661,11 +741,13 @@ async function IPReport(req) {
     if (req.query.dataType && req.query.dataType == "csv") {
       sql += " order by " + order + " " + dir;
     } else {
-      sql += " order by " + order + " " + dir + "  limit " + offset + "," + limit;
+      sql += " order by " + order + " " + dir + "  limit " + offset + "," +
+        limit;
     }
 
     connection = await common.getConnection();
-    let result = await Promise.all([common.query(sql, [], connection), common.query(countSql, [], connection)]);
+    let result = await Promise.all([common.query(sql, [], connection), common.query(
+      countSql, [], connection)]);
     let rows = result[0];
     let total = result[1][0];
     return {
