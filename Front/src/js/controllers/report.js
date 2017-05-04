@@ -808,6 +808,15 @@
       }
     }
 
+    $scope.initDefaultCustomDate = function(datetype) {
+      if (datetype == "0") {
+        var fromDate = DateRangeUtil.fromDate(datetype, $scope.query.tz);
+        var toDate = DateRangeUtil.toDate(datetype, $scope.query.tz);
+        $scope.fromDate = fromDate;
+        $scope.toDate = toDate;
+      }
+    }
+
     if (perfType == 'campaign') {
       var cache = reportCache.get('campaign-cache');
       if (cache) {

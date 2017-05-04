@@ -35,7 +35,7 @@
                 <i class="search-btn"></i>
             </div>
             <div class="cs-subform-control">
-                <md-select aria-label="select" class="cs-subform-select" ng-model="datetype">
+                <md-select aria-label="select" class="cs-subform-select" ng-model="datetype" ng-change="initDefaultCustomDate(datetype)">
                   <md-option value="{{dt.value}}" ng-repeat="dt in datatypes | filter: datetypeFilter">{{dt.display}}</md-option>
                 </md-select>
             </div>

@@ -107,8 +107,9 @@
         params.to = $scope.toDate + "T" + $scope.toTime;
 
         LocalStorageUtil.setValue(newValue, $scope.fromDate, $scope.fromTime, $scope.toDate, $scope.toTime);
-
-        getReportByDate(params);
+        if ($scope.datetype != "0") {
+          getReportByDate(params);
+        }
       });
 
       $scope.$watch('filter', function (newValue, oldValue) {
@@ -215,6 +216,10 @@
     function getDateRange(value, timezone) {
       $scope.fromDate = DateRangeUtil.fromDate(value, timezone);
       $scope.toDate = DateRangeUtil.toDate(value, timezone);
+      if (value == "0") {
+        $scope.filter.fromDate = $scope.fromDate;
+        $scope.filter.toDate = $scope.toDate;
+      }
       if (value != '0') {
         $scope.fromTime = "00:00";
         $scope.toTime = "00:00";
