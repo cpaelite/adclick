@@ -62,7 +62,8 @@ import paypal from './routes/paypal';
 import {
   qrpayRouter,
   qrpayCallbackRouter
-} from './routes/qrpay';
+}
+from './routes/qrpay';
 
 
 
@@ -89,17 +90,20 @@ if (process.env.NODE_ENV === "development") {
   app.use("/js", express.static(__dirname + '/../Front/src/js'));
   app.use("/assets", express.static(__dirname + '/../Front/src/assets'));
   app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
-  app.use("/bower_components", express.static(__dirname + '/../Front/bower_components'));
-  app.get('/', function (req, res) {
+  app.use("/bower_components", express.static(__dirname +
+    '/../Front/bower_components'));
+  app.get('/', function(req, res) {
     res.sendFile('index.html', {
       root: __dirname + '/../Front/src'
     });
   });
 } else {
-  app.use("/assets", compression(), express.static(__dirname + '/../Front/dist/assets', {
-    maxAge: 60 * 1000 * 60 * 24 * 365
-  }));
-  app.use("/tpl", compression(), express.static(__dirname + '/../Front/dist/tpl'));
+  app.use("/assets", compression(), express.static(__dirname +
+    '/../Front/dist/assets', {
+      maxAge: 60 * 1000 * 60 * 24 * 365
+    }));
+  app.use("/tpl", compression(), express.static(__dirname +
+    '/../Front/dist/tpl'));
 }
 
 //log4js
@@ -110,13 +114,13 @@ app.use(log4js.connectLogger(log4js.getLogger("http"), {
 app.use(cookiePareser());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
-  extended: false
-}))
-// parse application/json
+    extended: false
+  }))
+  // parse application/json
 app.use(bodyParser.json())
 
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
   res.sendFile('index.html', {
     root: __dirname + '/../Front/dist'
   });
@@ -125,18 +129,22 @@ app.get('/', function (req, res) {
 
 app.use(paypal, qrpayCallbackRouter);
 app.use(compression());
-app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan, billing, plan, qrpayRouter, util.checkPlan(), user, network, offer, flow, report, campaign, lander, traffic, user_setting, event_log, traffictpl, networktpl, conversions, coupon, thirdParty, sudden_change, fraud_filter, ts_report);
+app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,
+  billing, plan, qrpayRouter, util.checkPlan(), user, network, offer, flow,
+  report, campaign, lander, traffic, user_setting, event_log, traffictpl,
+  networktpl, conversions, coupon, thirdParty, sudden_change, fraud_filter,
+  ts_report);
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 /// error handlers
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   logger.error("Something went wrong:", err);
   res.status(err.status || 500);
   res.json({
