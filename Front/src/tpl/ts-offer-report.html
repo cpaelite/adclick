@@ -114,13 +114,13 @@
                 <td md-cell>
                   <button clipboard class="btn-xs btn btn-primary" ng-show="offer.trackingLink" text="offer.trackingLink" ng-click="itemUrlClick(offer, 'tracking')">
                       <i class="material-icons">content_copy</i>
-                      {{::offer.tracking && offer.tracking.btnWord ? offer.tracking.btnWord : 'Clipboard'}}
+                      {{offer.tracking && offer.tracking.btnWord ? offer.tracking.btnWord : 'Clipboard'}}
                   </button>
                 </td>
                 <td md-cell>
                   <button clipboard class="btn-xs btn btn-primary" ng-show="offer.previewLink" text="offer.previewLink" ng-click="itemUrlClick(offer, 'preview')">
                       <i class="material-icons">content_copy</i>
-                      {{::offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
+                      {{offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
                   </button>
                 </td>
               </tr>
