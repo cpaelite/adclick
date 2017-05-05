@@ -143,8 +143,8 @@
                 </th>
             </tr>
             </thead>
-            <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
-              <tr md-row
+            <tbody md-body id="repeater_container">
+              <!-- <tr md-row
                   ng-repeat="row in report.rows" ng-if="row.parentRow.expanded"
                   ng-class="{'first-tree': treeLevel>1 && row.treeLevel==1, 'row-deleted': row.data.deleted==1 }">
                 <td ng-if="canEdit()" class="row-action" ng-class="{'deleted': row.data.deleted==1, 'enabled': row.data.deleted==0}">
@@ -159,7 +159,6 @@
                     ng-repeat="column in columns track by $index"
                     ng-if="preferences.reportViewColumns[column.key].visible  || column.role=='name'"
                     ng-class="{'red':row.data[column.key] < 0 && column.key == 'roi','green':row.data[column.key] > 0 && column.key == 'roi', 'item-name': $index == 0}">
-                    <!--ng-click="openMenu($event, row, column.role)"-->
                   <span ng-if="column.role=='name' && row.treeLevel == 1">
                     <md-menu-bar style="padding: 0;">
                         <md-menu>
@@ -195,7 +194,7 @@
                     {{::isNeedCurrency(column.key) ? (row.data[column.key] | currency) : (isNeedPercent(column.key) ? (row.data[column.key] + '%') : row.data[column.key])}}
                   </span>
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
             <tfoot md-body fix-foot>
               <tr md-row>
@@ -214,3 +213,50 @@
     <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
                          md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
+
+<!-- {
+  rows: [],
+  treeLevel: 1,
+  canEdit: true, // && row.treeLevel == 1
+  columns: [],
+  reportViewColumns: {}
+} -->
+
+<script type="text/html" id="report-tpl">
+  <% for (var i = 0, l = report.rows.length; i < l; i++) { %>
+    <% if(report.rows[i].parentRow.expanded) { %>
+      <% var row = report.rows[i]; var treeLevel = report.treeLevel; var columns = report.columns;%>
+      <tr data-index="<%=i%>" md-row class="md-row <%=treeLevel>1 && row.treeLevel==1 ? ' first-tree': ''%> <%= row.data.deleted==1 ? ' row-deleted' : ''%>">
+        <% if(report.canEdit) {%>
+        <td class="row-action <%=row.data.deleted==1 ? ' deleted': ''%> <%=row.data.deleted==0 ? ' enabled': ''%>">
+          <% if(row.data.deleted==1) {%>
+          <i class="icon-remove"></i>
+          <% } else if(row.data.deleted==0) {%>
+            <i class="icon-circle"></i>
+          <% }%>
+        </td>
+        <% } %>
+        <% if(treeLevel>1) {%>
+        <td md-cell class="md-cell">
+          <% if(row.treeLevel < treeLevel) {%>
+          <i data-index="<%=i%>" class="material-icons toggle-row table-arrow-down <%=row.expanded ? ' active': ''%>">keyboard_arrow_right</i></td>
+          <% }%>
+        <% } %>
+        <% for(var k = 0, kLen = columns.length; k < kLen; k++) {%>
+          <% var column = columns[k];%>
+          <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') {%>
+            <td md-cell class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0? ' item-name': ''%>">
+              <%if(column.role=='name' && row.treeLevel == 1) {%>
+              <span><a href="javascript:;"><%=row.data[column.key]%><i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i></a></span>
+              <% } else if (column.role=='name' && row.treeLevel != 1) {%>
+              <span><%=row.data[column.key]%></span>
+              <% } else if (column.role!='name') {%>
+              <span><%=row.data[column.key]%></span>
+              <%}%>
+            </td>
+          <% }%>
+        <% } %>
+      </tr>
+    <% } %>
+  <% } %>
+</script>
