@@ -131,7 +131,7 @@
 
     $scope.editRuleItem = function(item) {
       $mdDialog.show({
-        clickOutsideToClose: true,
+        clickOutsideToClose: false,
         escapeToClose: false,
         controller: ['$scope', '$mdDialog', "$q", 'AutomatedRuleOptions', 'Campaign', 'AutomatedRule', 'EmailValidate', editRuleCtrl],
         controllerAs: 'ctrl',
@@ -152,7 +152,7 @@
 
     $scope.deleteRuleItem = function(id){
       $mdDialog.show({
-        clickOutsideToClose: true,
+        clickOutsideToClose: false,
         escapeToClose: false,
         controller: ['$scope', '$mdDialog', 'SuddenChange', deleteRuleCtrl],
         controllerAs: 'ctrl',
@@ -206,12 +206,18 @@
           }
         ];
         $scope.item = {
-          "dimension": "WebSiteId",
+          "dimension": "tsWebsiteId",
           "timeSpan": "last3hours",
         };
       }
+      var date = moment().utcOffset("+00:00").format('YYYY-MM-DD');
+      var time = moment().utcOffset("+00:00").format('H');
+      /*$scope.dateOptions = {
+        minDate: date
+      }*/
+
       $scope.frequency = "Every 1 Hour";
-      $scope.freDate = new Date();
+      $scope.freDate = date;
       $scope.freWeek = "0";
       $scope.freTime = "0";
 
@@ -236,6 +242,20 @@
           $scope.hours.push({key: i.toString(), display: i + ':00'});
         }
       }
+
+      $scope.dateChange = function() {
+        if (moment(date).isAfter(moment($scope.freDate).format('YYYY-MM-DD'))) {
+          $scope.freTime = "";
+        }
+      }
+
+      $scope.hourDisabled = function(hour) {
+        // 选择One Time 并且是当天日期，小于当前的时间不能选
+        return ($scope.frequency == "One Time"
+              && moment(date).isSame(moment($scope.freDate).format('YYYY-MM-DD'))
+              && parseInt(hour) <= parseInt(time))
+              || moment(date).isAfter(moment($scope.freDate).format('YYYY-MM-DD'));
+      };
       $scope.weeks = [
         {key: "0", display: "Sunday"},
         {key: "1", display: "Monday"},
@@ -270,6 +290,18 @@
           $scope.item.campaigns = $scope.item.campaigns.split(",");
           $scope.conditionArray = fillConditionArray($scope.item.condition);
           parseScheduleString($scope);
+          // 是否显示日期选择框
+          $scope.showDateSelect = function() {
+            return ['One Time'].indexOf($scope.frequency) >= 0;
+          };
+          // 是否显示星期选择框
+          $scope.showWeekSelect = function() {
+            return ['Weekly'].indexOf($scope.frequency) >= 0;
+          };
+          // 是否显示时间选择框
+          $scope.showTimeSelect = function() {
+            return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
+          };
         }
       }
 
@@ -313,19 +345,6 @@
         var isValid = EmailValidate.validate($scope.item.emails);
         $scope.editForm.email.$setValidity('emailValid', isValid);
       }
-
-      // 是否显示日期选择框
-      $scope.showDateSelect = function() {
-        return ['One Time'].indexOf($scope.frequency) >= 0;
-      };
-      // 是否显示星期选择框
-      $scope.showWeekSelect = function() {
-        return ['Weekly'].indexOf($scope.frequency) >= 0;
-      };
-      // 是否显示时间选择框
-      $scope.showTimeSelect = function() {
-        return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
-      };
 
       this.save = function() {
         $scope.editForm.$setSubmitted();
