@@ -212,9 +212,9 @@
       }
       var date = moment().utcOffset("+00:00").format('YYYY-MM-DD');
       var time = moment().utcOffset("+00:00").format('H');
-      /*$scope.dateOptions = {
+      $scope.dateOptions = {
         minDate: date
-      }*/
+      }
 
       $scope.frequency = "Every 1 Hour";
       $scope.freDate = date;
