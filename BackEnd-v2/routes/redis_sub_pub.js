@@ -38,9 +38,10 @@ class PubSub {
 
     publish(channel, message, method) {
         let action = () => {
-            let pub = initClient();
-            pub.publish(channel, message);
+            let client = initClient();
+            client.publish(channel, message);
             log.info("[redis][push]", channel, message, method);
+            client.quit();   
         };
         if (this.subConnected === false) {
             this.alredyPublishs.push(action);
