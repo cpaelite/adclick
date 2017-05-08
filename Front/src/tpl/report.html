@@ -218,7 +218,7 @@
   <% for (var i = 0, l = report.rows.length; i < l; i++) { %>
     <% if(report.rows[i].parentRow.expanded) { %>
       <% var row = report.rows[i]; var treeLevel = report.treeLevel; var columns = report.columns;%>
-      <tr data-index="<%=i%>" md-row class="md-row <%=treeLevel>1 && row.treeLevel==1 ? ' first-tree': ''%> <%= row.data.deleted==1 ? ' row-deleted' : ''%>">
+      <tr data-index="<%=i%>" class="md-row <%=treeLevel>1 && row.treeLevel==1 ? ' first-tree': ''%> <%= row.data.deleted==1 ? ' row-deleted' : ''%>">
         <% if(report.canEdit) {%>
         <td class="row-action <%=row.data.deleted==1 ? ' deleted': ''%> <%=row.data.deleted==0 ? ' enabled': ''%>">
           <% if(row.data.deleted==1) {%>
@@ -229,7 +229,7 @@
         </td>
         <% } %>
         <% if(treeLevel>1) {%>
-        <td md-cell class="md-cell tree-level-<%=row.treeLevel%>">
+        <td class="md-cell tree-level-<%=row.treeLevel%>">
           <% if(row.treeLevel < treeLevel) {%>
           <i data-index="<%=i%>" class="material-icons toggle-row table-arrow-down <%=row.expanded ? ' active': ''%>">keyboard_arrow_right</i></td>
           <% }%>
@@ -237,7 +237,7 @@
         <% for(var k = 0, kLen = columns.length; k < kLen; k++) {%>
           <% var column = columns[k];%>
           <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') {%>
-            <td md-cell class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0? ' item-name report-name': ''%>">
+            <td class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0? ' item-name report-name': ''%>">
               <%if(column.role=='name' && row.treeLevel == 1) {%>
               <span><a href="javascript:;"><%=row.data[column.key]%><i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i></a></span>
               <% } else if (column.role=='name' && row.treeLevel != 1) {%>

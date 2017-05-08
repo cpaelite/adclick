@@ -855,8 +855,9 @@
         if (perfType == 'ip') {
           return;
         }
-
-        initContextMenu();
+        var idName = (Math.random() + '').slice(2);
+        $(this).attr('id', idName);
+        initContextMenu(idName);
 
         if (row.treeLevel > 1) {
           return;
@@ -916,7 +917,7 @@
       $('#repeater_container').empty().append(tempHtml);
     }
 
-    function initContextMenu() {
+    function initContextMenu(idName) {
       var groupByOptions = {};
       $scope.groupByOptions.forEach(function(groupByOption) {
         var displayName = groupByOption.role == 'campaign' ? groupByOption.display + '<em class="' + groupByOption.value + '">: ' +  groupByOption.paramValue + '</em>' : groupByOption.display;
@@ -929,9 +930,15 @@
         }
       });
 
+      var index = $('#' + idName).closest('tr').attr('data-index'), row = $scope.report.rows[index];
+      var visible = $scope.canEdit(row) && !row.data.deleted;
+      var restoreVisible = $scope.canEdit(row) && row.data.deleted;
+      var previewOrcopyurlVisible = $scope.canEdit(row) && $scope.perfType=='campaign';
+      var fold1Visible = $scope.treeLevel == 1;
       $.contextMenu({
-        selector: '#repeater_container .report-name',
+        selector: '#' + idName,
         className: 'contextmenu-report',
+        delay: 0,
         trigger: 'left',
         callback: function(key, options) {
           var index = $(options.$trigger).closest('tr').attr('data-index');
@@ -973,53 +980,33 @@
         items: {
           'edit': {
             name: 'Edit',
-            visible: function(key, opt) {
-              var index = $(this).closest('tr').attr('data-index'), row = $scope.report.rows[index];
-              return $scope.canEdit(row) && !row.data.deleted;
-            }
+            visible: visible
           },
           'duplicate': {
             name: 'Duplicate',
-            visible: function(key, opt) {
-              var index = $(this).closest('tr').attr('data-index'), row = $scope.report.rows[index];
-              return $scope.canEdit(row) && !row.data.deleted;
-            }
+            visible: visible
           },
           'delete': {
             name: 'Delete',
-            visible: function(key, opt) {
-              var index = $(this).closest('tr').attr('data-index'), row = $scope.report.rows[index];
-              return $scope.canEdit(row) && !row.data.deleted;
-            }
+            visible: visible
           },
           'restore': {
             name: 'Restore',
-            visible: function(key, opt) {
-              var index = $(this).closest('tr').attr('data-index'), row = $scope.report.rows[index];
-              return $scope.canEdit(row) && row.data.deleted;
-            }
+            visible: restoreVisible
           },
           'preview': {
             name: 'Preview',
             isHtmlName: true,
-            visible: function(key, opt) {
-              var index = $(this).closest('tr').attr('data-index'), row = $scope.report.rows[index];
-              return $scope.canEdit(row) && $scope.perfType=='campaign';
-            }
+            visible: previewOrcopyurlVisible
           },
           'copyurl': {
             name: 'Copy Url',
             isHtmlName: true,
-            visible: function(key, opt) {
-              var index = $(this).closest('tr').attr('data-index'), row = $scope.report.rows[index];
-              return $scope.canEdit(row) && $scope.perfType=='campaign';
-            }
+            visible: previewOrcopyurlVisible
           },
           'fold1': {
             'name': 'Drilldown by...',
-            visible: function(key, opt) {
-              return $scope.treeLevel == 1;
-            },
+            visible: fold1Visible,
             items: groupByOptions
           }
         }
