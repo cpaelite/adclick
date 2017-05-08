@@ -137,8 +137,8 @@
     };
 
     function getDateRange(value) {
-      $scope.fromDate = DateRangeUtil.fromDate(value);
-      $scope.toDate = DateRangeUtil.toDate(value);
+      $scope.fromDate = DateRangeUtil.fromDate(value, $scope.query.tz);
+      $scope.toDate = DateRangeUtil.toDate(value, $scope.query.tz);
     }
   }
 
