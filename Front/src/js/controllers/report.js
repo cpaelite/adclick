@@ -855,13 +855,15 @@
         if (perfType == 'ip') {
           return;
         }
-        var idName = (Math.random() + '').slice(2);
-        $(this).attr('id', idName);
-        initContextMenu(idName);
 
         if (row.treeLevel > 1) {
           return;
         }
+
+        var idName = (Math.random() + '').slice(2);
+        $(this).attr('id', idName);
+        initContextMenu(idName);
+
         var id = perfType == 'campaign' ? row.data.trafficId : perfType == 'traffic' ? row.id : '';
         if(!id) {
           return;
