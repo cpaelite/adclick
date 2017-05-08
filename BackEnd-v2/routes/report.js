@@ -555,22 +555,22 @@ async function IPReport(req) {
     let offset = (page - 1) * limit;
     let dir = "asc";
 
-    let sql = `select IP as ip,CampaignID as campaignId,Impressions as impressions,Visits as visits,Clicks as clicks,Conversions as conversions,
-                  round(Cost/1000000,2) as cost,
-                  round(Revenue/1000000,2) as revenue,
-                  round(Revenue/1000000-Cost/1000000,2) as profit,
-                  IFNULL(round(Cost/Visits/1000000,4),0.0000) as cpv,
-                  IFNULL(round(Visits/Impressions,2),0.00) as ictr,
-                  IFNULL(round(Clicks/Visits,2),0.00) as ctr,
-                  IFNULL(round(Conversions/Clicks,2),0.00) as cr,
-                  IFNULL(round(Conversions/Visits,2),0.00) as cv,
-                  IFNULL(round((Revenue-Cost)/Cost,2),0.00) as roi,
-                  IFNULL(round(Revenue/Visits/1000000,4),0.0000) as epv,
-                  IFNULL(round(Revenue/Clicks/1000000,2),0.00) as epc,
-                  IFNULL(round(Revenue/Conversions/1000000,2),0.00) as ap
+    let sql = `select IP as ip,CampaignID as campaignId,sum(Impressions) as impressions,sum(Visits) as visits,sum(Clicks) as clicks,sum(Conversions) as conversions,
+                  round(sum(Cost/1000000),2) as cost,
+                  round(sum(Revenue/1000000),2) as revenue,
+                  round(sum(Revenue/1000000)-sum(Cost/1000000),2) as profit,
+                  IFNULL(round(sum(Cost/1000000)/sum(Visits),4),0.0000) as cpv,
+                  IFNULL(round(sum(Visits)/sum(Impressions),2),0.00) as ictr,
+                  IFNULL(round(sum(Clicks)/sum(Visits),2),0.00) as ctr,
+                  IFNULL(round(sum(Conversions)/sum(Clicks),2),0.00) as cr,
+                  IFNULL(round(sum(Conversions)/sum(Visits),2),0.00) as cv,
+                  IFNULL(round((sum(Revenue)-sum(Cost))/sum(Cost),2),0.00) as roi,
+                  IFNULL(round(sum(Revenue/1000000)/sum(Visits),4),0.0000) as epv,
+                  IFNULL(round(sum(Revenue/1000000)/sum(Clicks),2),0.00) as epc,
+                  IFNULL(round(sum(Revenue/1000000)/sum(Conversions),2),0.00) as ap
                   from AdIPStatis where UserID=${userId} and CampaignID=${campaign} 
                   and Timestamp >=(UNIX_TIMESTAMP(CONVERT_TZ('${from}', '${tz}','+00:00'))*1000)  
-                  and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '${tz}','+00:00'))*1000)`;
+                  and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '${tz}','+00:00'))*1000) group by IP `;
 
 
     let countSql = `select COUNT(*) as total,IFNULL(sum(impressions),0) as impressions,IFNULL(sum(visits),0) as visits, 
