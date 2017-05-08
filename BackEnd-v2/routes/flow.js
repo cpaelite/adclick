@@ -279,7 +279,7 @@ const conditionResult = [{
       "label": "and",
       "name": "endtime",
       "placeholder": "00:00"
-    },]
+    }]
   }, {
     "type": "select",
     "label": "Time zone",
