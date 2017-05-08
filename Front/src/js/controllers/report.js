@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr', '$document',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -58,7 +58,7 @@
       }
     }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr, $document) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
@@ -245,6 +245,7 @@
         }
 
         $scope.disabled = false;
+        rerenderReportTable();
         //$scope.btnName = 'Refresh';
         //$scope.applyBtn = false;
 
@@ -481,6 +482,7 @@
           }
         });
         $scope.report.rows = temp;
+        rerenderReportTable();
         return;
       }
       // if (row.childrenLoaded) {
@@ -771,6 +773,7 @@
         json: $scope.preferences
       };
       Preference.save(preferences);
+      rerenderReportTable();
     };
 
     $scope.checkboxIsChecked = function ($event, num) {
@@ -838,6 +841,179 @@
     $scope.isNeedPercent = function(key) {
       return ['ctr', 'cr', 'cv', 'roi'].indexOf(key) > -1;
     }
+
+    function initEvent() {
+      $('#repeater_container').on('click', '.toggle-row', function() {
+        var index = $(this).attr('data-index');
+        var row = $scope.report.rows[index];
+        $scope.toggleRow(row);
+      });
+
+      $('#repeater_container').on('click', '.report-name', function() {
+        var row = $scope.report.rows[$(this).closest('tr').attr('data-index')];
+        $.contextMenu('destroy');
+        if (perfType == 'ip') {
+          return;
+        }
+        var idName = (Math.random() + '').slice(2);
+        $(this).attr('id', idName);
+        initContextMenu(idName);
+
+        if (row.treeLevel > 1) {
+          return;
+        }
+        var id = perfType == 'campaign' ? row.data.trafficId : perfType == 'traffic' ? row.id : '';
+        if(!id) {
+          return;
+        }
+        TrafficSource.get({id: id}, function (traffic) {
+          if (traffic.status) {
+            // drilldown v1-v10的名字
+            var params = JSON.parse(traffic.data.params);
+            $scope.groupByOptions.forEach(function(option, index) {
+              if (option.role == 'campaign') {
+                var idx = option.value.substring(1);
+                var parameter = params[idx-1].Parameter;
+                if(parameter) {
+                  $scope.groupByOptions[index].paramValue = parameter;
+                  $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': ' + parameter);
+                } else {
+                  $scope.groupByOptions[index].paramValue = 'N/A';
+                  $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': N/A');
+                }
+              }
+            });
+            // copy campaignUrl
+            if (perfType == 'campaign') {
+              var urlParams = spliceUrlParams(traffic.data);
+              if (!mainDomain) {
+                return;
+              }
+              var copyCampaignUrl = 'http://';
+              if (mainDomain.internal) {
+                copyCampaignUrl += $scope.profile.idText + '.';
+              }
+              copyCampaignUrl += mainDomain.address + '/' + row.data.campaignHash;
+              if (!traffic.data.impTracking) {
+                copyCampaignUrl += urlParams;
+              }
+              $scope.copyCampaignUrl = copyCampaignUrl;
+            }
+          }
+        });
+      });
+    }
+
+    function rerenderReportTable() {
+      var tempHtml = $.temp($('#report-tpl').html(), {
+        report: {
+          rows: $scope.report.rows,
+          treeLevel: $scope.treeLevel,
+          canEdit: $scope.canEdit(),
+          columns: $scope.columns,
+          reportViewColumns: $scope.preferences.reportViewColumns
+        }
+      });
+      $('#repeater_container').empty().append(tempHtml);
+    }
+
+    function initContextMenu(idName) {
+      var groupByOptions = {};
+      $scope.groupByOptions.forEach(function(groupByOption) {
+        var displayName = groupByOption.role == 'campaign' ? groupByOption.display + '<em class="' + groupByOption.value + '">: ' +  groupByOption.paramValue + '</em>' : groupByOption.display;
+        groupByOptions[groupByOption.value] = {
+          name: displayName,
+          isHtmlName: true,
+          visible: function(key, opt) {
+            return $scope.drilldownFilter(groupMap[key]);
+          }
+        }
+      });
+
+      var index = $('#' + idName).closest('tr').attr('data-index'), row = $scope.report.rows[index];
+      var visible = $scope.canEdit(row) && !row.data.deleted;
+      var restoreVisible = $scope.canEdit(row) && row.data.deleted;
+      var previewOrcopyurlVisible = $scope.canEdit(row) && $scope.perfType=='campaign';
+      var fold1Visible = $scope.treeLevel == 1;
+      $.contextMenu({
+        selector: '#' + idName,
+        className: 'contextmenu-report',
+        delay: 0,
+        trigger: 'left',
+        callback: function(key, options) {
+          var index = $(options.$trigger).closest('tr').attr('data-index');
+          var row = $scope.report.rows[index];
+          if(key == 'edit') {
+            $scope.editItem(null, row)
+          } else if (key == 'duplicate') {
+            $scope.editItem(null, row, true);
+          } else if(key == 'delete') {
+            $scope.deleteItem(null, row);
+          } else if (key == 'restore') {
+            $scope.restoreItem(null, row);
+          } else if (key == 'preview') {
+            window.open($scope.copyCampaignUrl);
+          } else if (key == 'copyurl') {
+            var node = $document[0].createElement('textarea');
+            node.style.position = 'absolute';
+            node.textContent = $scope.copyCampaignUrl;
+            node.style.left = '-10000px';
+            $document[0].body.appendChild(node);
+            try {
+              $document[0].body.style.webkitUserSelect = 'initial';
+              var selection = $document[0].getSelection();
+              selection.removeAllRanges();
+              node.select();
+              if(!$document[0].execCommand('copy')) {
+                  throw('failure copy');
+              }
+              selection.removeAllRanges();
+            } finally {
+              $document[0].body.style.webkitUserSelect = '';
+            }
+            $document[0].body.removeChild(node);
+            $scope.copyUrlClick();
+          } else {
+            $scope.drilldown(row, {value: key});
+          }
+        },
+        items: {
+          'edit': {
+            name: 'Edit',
+            visible: visible
+          },
+          'duplicate': {
+            name: 'Duplicate',
+            visible: visible
+          },
+          'delete': {
+            name: 'Delete',
+            visible: visible
+          },
+          'restore': {
+            name: 'Restore',
+            visible: restoreVisible
+          },
+          'preview': {
+            name: 'Preview',
+            isHtmlName: true,
+            visible: previewOrcopyurlVisible
+          },
+          'copyurl': {
+            name: 'Copy Url',
+            isHtmlName: true,
+            visible: previewOrcopyurlVisible
+          },
+          'fold1': {
+            'name': 'Drilldown by...',
+            visible: fold1Visible,
+            items: groupByOptions
+          }
+        }
+      });
+    }
+
+    initEvent();
   }
 
   function editCampaignCtrl($scope, $rootScope, $mdDialog , $timeout, $q, reportCache, Campaign, Flow, TrafficSource, urlParameter, Tag, AppConstant, reportCache, UrlValidate) {

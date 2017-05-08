@@ -659,6 +659,7 @@ table.md-table td.md-cell{
     border-left: 1px solid #eaeaea;
     border-top: none;font-size:12px;
 }
+table.md-table td.md-cell.tree-level-2 {padding-left: 25px !important;}
 table.md-table tbody{border-top:1px solid #ccc;}
 table.md-table tbody tr:hover {
   background: rgba(45, 168, 249, 0.06);
@@ -3417,6 +3418,7 @@ table.md-table tr.row-deleted td.md-cell {
 }
 .repeater-container tr .item-name a {
   border: 1px solid transparent;
+  position: relative;
 }
 .repeater-container tr:hover .item-name a {
   border: 1px solid;
@@ -3440,3 +3442,9 @@ table.md-table tr.row-deleted td.md-cell {
   padding-right: 10px;
 }
 .flow-continue.ng-hide { display: none !important;}
+.contextmenu-report > .context-menu-item > .context-menu-list {
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.context-menu-item {padding: .2em 1em;width: 180px;}

@@ -45,7 +45,8 @@
     "angular-momentjs": "^0.2.2",
     "angular-permission": "^5.2.1",
     "angular-qr": "0.2.0",
-    "angular-vs-repeat": "^1.1.7"
+    "angular-vs-repeat": "^1.1.7",
+    "jQuery-contextMenu": "^2.4.4"
   },
   "resolutions": {
     "angular": "^1.4.0"
