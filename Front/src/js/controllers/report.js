@@ -932,7 +932,7 @@
 
       var index = $('#' + idName).closest('tr').attr('data-index'), row = $scope.report.rows[index];
       var visible = $scope.canEdit(row) && !row.data.deleted;
-      var restoreVisible = $scope.canEdit(row) && row.data.deleted;
+      var restoreVisible = $scope.canEdit(row) && !!row.data.deleted;
       var previewOrcopyurlVisible = $scope.canEdit(row) && $scope.perfType=='campaign';
       var fold1Visible = $scope.treeLevel == 1;
       $.contextMenu({
