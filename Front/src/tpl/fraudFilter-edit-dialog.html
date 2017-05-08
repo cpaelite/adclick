@@ -39,9 +39,9 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>:</label>
                 <div class="col-sm-3 frequency">
-                    <input type="text" name="frequency" class="form-control" ng-model="formData.timeSpan" required>
+                    <input type="number" name="frequency" class="form-control" string-to-number ng-model="formData.timeSpan" required>
                     <span class="msg">seconds</span>
-                    <span style="color:red" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
+                    <span style="color:red;height:32px;line-height:32px;" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
                         <span ng-show="editForm.frequency.$error.required">Frequency is required.</span>
                     </span>
                 </div>
@@ -62,7 +62,7 @@
                         <md-option value=">">&gt;</md-option>
                         <md-option value="<" ng-disabled="true">&lt;</md-option>
                     </md-select>
-                    <input type="text" name="condition.key" class="cs-subform-select form-control" ng-model="condition.value" required style="width: auto;">
+                    <input type="number" string-to-number name="condition.key" class="cs-subform-select form-control" ng-model="condition.value" required style="width: auto;">
                     <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
                         <span ng-show="editForm[{{condition.key}}].$error.required">Value is required.</span>
                     </span>

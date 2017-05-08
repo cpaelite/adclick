@@ -238,8 +238,8 @@
 
   FraudFilterCtrl.prototype._getDateRange = function(value) {
     var self = this, DateRangeUtil = self.DateRangeUtil, $scope = self.$scope;
-    var fromDate = DateRangeUtil.fromDate(value);
-    var toDate = DateRangeUtil.toDate(value);
+    var fromDate = DateRangeUtil.fromDate(value, '+00:00');
+    var toDate = DateRangeUtil.toDate(value, '+00:00');
     if (value == '0') {
       $scope.logQuery.from = moment().format('YYYY-MM-DD');
       $scope.logQuery.to = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -440,7 +440,7 @@
         temArr = condition.split('<');
         tem.operand = '<';
       }
-      tem.value = temArr[1];
+      tem.value = Number(temArr[1]);
       tem.key = temArr[0];
       conditions.push(tem)
     });
