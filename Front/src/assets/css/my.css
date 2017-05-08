@@ -3444,7 +3444,7 @@ table.md-table tr.row-deleted td.md-cell {
 .flow-continue.ng-hide { display: none !important;}
 .contextmenu-report > .context-menu-item > .context-menu-list {
   margin: 0;
-  max-height: 500px;
+  max-height: 300px;
   overflow-y: auto;
 }
 .context-menu-item {padding: .2em 1em;width: 180px;}
