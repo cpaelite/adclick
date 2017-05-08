@@ -72,7 +72,7 @@ router.post('/api/campaigns', async function (req, res, next) {
         targetFlowId: Joi.number().optional(),
         postbackUrl: Joi.string().optional().empty(""),
         pixelRedirectUrl: Joi.string().optional().empty(""),
-        deleted:Joi.number().optional()
+        deleted: Joi.number().optional()
     });
     let connection;
     try {
@@ -170,6 +170,19 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         req.body.idText = req.parent.idText;
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        //restore check
+        if (value.deleted == 0) {
+            let archivedArray = await checkCampaignRelativeFlowstatus(value.userId, value.id, connection);
+            if (archivedArray.length) {
+                return res.json({
+                    status: 0,
+                    message: 'restore Interrupt',
+                    data: {
+                        flows: archivedArray
+                    }
+                });
+            }
+        }
         let data = await start(req.user.id, value, connection);
         res.json({
             status: 1,
@@ -184,6 +197,24 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         }
     }
 });
+
+async function checkCampaignRelativeFlowstatus(userId, campaignId, connection) {
+    let sql = `select f.id,f.deleted as archived  from  TrackingCampaign cam  
+              inner join Flow f on cam.targetFlowId = f.id   
+              where cam.id=? and cam.targetType > 0 and cam.userId= ?`;
+    let result = await common.query(sql, [campaignId, userId], connection);
+    let archivedArray = [];//缓存删除状态的flow
+    if (result.length) {
+        for (let index = 0; index < result.length; index++) {
+            if (result[index].archived == 1) {
+                archivedArray.push(result[index]);
+            }
+        }
+    }
+    return archivedArray;
+}
+
+
 const start = async (subId, value, connection) => {
     let targetFlowId;
     //新建campaign path 
@@ -269,8 +300,8 @@ const saveOrUpdateCampaign = async (subId, value, connection) => {
 
 }
 
-router.get('/api/campaigns',async function(req,res,next){
-     let connection;
+router.get('/api/campaigns', async function (req, res, next) {
+    let connection;
     try {
         var schema = Joi.object().keys({
             userId: Joi.number().required(),
@@ -280,7 +311,7 @@ router.get('/api/campaigns',async function(req,res,next){
         req.query.idText = req.parent.idText;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.query('select id,name from TrackingCampaign where userId= ? and deleted = ?',[value.userId,0], connection);
+        let result = await common.query('select id,name from TrackingCampaign where userId= ? and deleted = ?', [value.userId, 0], connection);
         res.json({
             status: 1,
             message: 'success',

@@ -279,7 +279,7 @@ const conditionResult = [{
       "label": "and",
       "name": "endtime",
       "placeholder": "00:00"
-    }, ]
+    },]
   }, {
     "type": "select",
     "label": "Time zone",
@@ -482,16 +482,16 @@ const conditionResult = [{
  *     }
  *
  */
-router.get('/api/flows', function(req, res, next) {
+router.get('/api/flows', function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
   req.query.userId = req.parent.id;
-  Joi.validate(req.query, schema, function(err, value) {
+  Joi.validate(req.query, schema, function (err, value) {
     if (err) {
       return next(err);
     }
-    pool['m1'].getConnection(function(err, connection) {
+    pool['m1'].getConnection(function (err, connection) {
       if (err) {
         err.status = 303
         return next(err);
@@ -500,7 +500,7 @@ router.get('/api/flows', function(req, res, next) {
         "select  `id`,`name` from Flow where `userId` = ? and `deleted` =0 and `type`=1", [
           value.userId
         ],
-        function(err, result) {
+        function (err, result) {
           connection.release();
           if (err) {
             return next(err);
@@ -534,7 +534,7 @@ router.get('/api/flows', function(req, res, next) {
  *   }
  */
 
-router.get('/api/flows/:id/campaigns', async function(req, res, next) {
+router.get('/api/flows/:id/campaigns', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     id: Joi.number().required()
@@ -579,7 +579,7 @@ router.get('/api/flows/:id/campaigns', async function(req, res, next) {
  *   }
  */
 
-router.get('/api/flows/:id', async function(req, res, next) {
+router.get('/api/flows/:id', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     id: Joi.number().required()
@@ -718,7 +718,7 @@ router.get('/api/flows/:id', async function(req, res, next) {
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flows', async function(req, res, next) {
+router.post('/api/flows', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required(),
@@ -763,7 +763,7 @@ router.post('/api/flows', async function(req, res, next) {
  * @apiParam {String} country
  * @apiParam {Number} redirectMode
  */
-router.post('/api/flows/:id', async function(req, res, next) {
+router.post('/api/flows/:id', async function (req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     rules: Joi.array(),
@@ -783,6 +783,21 @@ router.post('/api/flows/:id', async function(req, res, next) {
     req.body.id = req.params.id;
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
+    //restore rule check
+    if (value.deleted == 0) {
+      let archivedArray = await checkFlowRelativeRulestatus(value.userId, value.id, connection);
+      console.log('==========')
+       console.log(archivedArray)
+      if (archivedArray.length) {
+        return res.json({
+          status: 0,
+          message: 'restore Interrupt',
+          data: {
+            rules: archivedArray
+          }
+        });
+      }
+    }
     let data = await saveOrUpdateFlow(req.user.id, value, connection);
     delete data.userId;
     res.json({
@@ -800,12 +815,31 @@ router.post('/api/flows/:id', async function(req, res, next) {
 });
 
 
+
+async function checkFlowRelativeRulestatus(userId, flowId, connection) {
+  let sql = `select  rule.id,rule.deleted  as archived  from Rule2Flow r2f  
+              left join Rule rule on r2f.ruleId = rule.id  
+              where r2f.flowId = ? and rule.userId = ?`;
+  let result = await common.query(sql, [flowId, userId], connection);
+  console.log(result)
+  let archivedArray = [];//缓存删除状态的flow
+  if (result.length) {
+    for (let index = 0; index < result.length; index++) {
+      if (result[index].archived == 1) {
+        archivedArray.push(result[index]);
+      }
+    }
+  }
+  return archivedArray;
+}
+
+
 /**
  * @api {delete} /api/flows/:id 删除flow
  * @apiName  删除flow
  * @apiGroup flow
  */
-router.delete('/api/flows/:id', async function(req, res, next) {
+router.delete('/api/flows/:id', async function (req, res, next) {
   var schema = Joi.object().keys({
     id: Joi.number().required(),
     userId: Joi.number().required(),
@@ -819,7 +853,7 @@ router.delete('/api/flows/:id', async function(req, res, next) {
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
     //检查flow 是否绑定在某些 active campaign上
-    let campaignResults = await common.query("select `id`,`name` from TrackingCampaign where deleted = ? and targetFlowId = ? ", [0, value.id], connection);
+    let campaignResults = await common.query("select `id`,`name` from TrackingCampaign where deleted = ? and targetFlowId = ? and userId = ?", [0, value.id, value.userId], connection);
     if (campaignResults.length) {
       res.json({
         status: 0,
@@ -1049,7 +1083,7 @@ async function insertOrUpdateOfferAndOfferTags(subId, userId, idText, pathId, of
   }
 }
 
-router.get('/api/conditions', async function(req, res, next) {
+router.get('/api/conditions', async function (req, res, next) {
   //production
   let connection;
   try {
@@ -1066,7 +1100,7 @@ router.get('/api/conditions', async function(req, res, next) {
 });
 
 
-router.get('/api/cities', async function(req, res, next) {
+router.get('/api/cities', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -1089,7 +1123,7 @@ router.get('/api/cities', async function(req, res, next) {
 });
 
 
-router.get('/api/regions', async function(req, res, next) {
+router.get('/api/regions', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -1112,7 +1146,7 @@ router.get('/api/regions', async function(req, res, next) {
 });
 
 
-router.get('/api/carriers', async function(req, res, next) {
+router.get('/api/carriers', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -1133,7 +1167,7 @@ router.get('/api/carriers', async function(req, res, next) {
     }
   }
 });
-router.get('/api/isps', async function(req, res, next) {
+router.get('/api/isps', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     q: Joi.string().required().trim(),
@@ -1397,13 +1431,13 @@ async function loadDeviceType() {
 }
 
 function query(sql, params, connection) {
-  return new Promise(function(resolve, reject) {
-    connection.query(sql, params, function(err, result) {
+  return new Promise(function (resolve, reject) {
+    connection.query(sql, params, function (err, result) {
       if (err) {
         return reject(err);
       }
       //turn true false string to boolean
-      result.forEach(function(r) {
+      result.forEach(function (r) {
         for (let key in r) {
           if (r[key] == "true") {
             r[key] = true
@@ -1419,7 +1453,7 @@ function query(sql, params, connection) {
 
 function conditionFormat(c) {
   var r = []
-  c.forEach(function(v) {
+  c.forEach(function (v) {
     if (v.id == 'model') {
       r.push(formatThreeKeys(v.id, v.operand, v.value))
     } else if (v.id == 'browser') {
@@ -1483,7 +1517,7 @@ function formatThreeKeys(id, operand, values) {
     r.push("not in")
   }
   if (isArray(values))
-    values.forEach(function(v) {
+    values.forEach(function (v) {
       r.push(v)
     })
   else
@@ -1500,7 +1534,7 @@ function formatThreeKeysWithErrorFormat(id, operand, values) {
     r.push("not in")
   }
   if (isArray(values))
-    values.forEach(function(v) {
+    values.forEach(function (v) {
       r.push(v.value)
     })
   else
@@ -1526,7 +1560,7 @@ function formatWeekDay(id, operand, tz, weekday) {
   }
   r.push(tz)
   if (isArray(weekday))
-    weekday.forEach(function(v) {
+    weekday.forEach(function (v) {
       r.push(v)
     })
   else
