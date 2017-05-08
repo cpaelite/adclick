@@ -76,7 +76,7 @@
 
             <md-button class="md-raised md-primary cs-compact cs-add-button green-btn" ng-click="downLoad($event)" translate><i class="icon-download-alt"></i>Export CSV</md-button>
 
-            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="editItem($event)" translate>add</md-button>
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="editItem($event)" translate ng-disabled="!canEdit()">add</md-button>
 
             <a ng-hide="perfType == 'campaign'" ng-click="addNewCampaign()">
               <md-button
@@ -214,14 +214,6 @@
                          md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
 </div>
 
-<!-- {
-  rows: [],
-  treeLevel: 1,
-  canEdit: true, // && row.treeLevel == 1
-  columns: [],
-  reportViewColumns: {}
-} -->
-
 <script type="text/html" id="report-tpl">
   <% for (var i = 0, l = report.rows.length; i < l; i++) { %>
     <% if(report.rows[i].parentRow.expanded) { %>
@@ -237,7 +229,7 @@
         </td>
         <% } %>
         <% if(treeLevel>1) {%>
-        <td md-cell class="md-cell">
+        <td md-cell class="md-cell tree-level-<%=row.treeLevel%>">
           <% if(row.treeLevel < treeLevel) {%>
           <i data-index="<%=i%>" class="material-icons toggle-row table-arrow-down <%=row.expanded ? ' active': ''%>">keyboard_arrow_right</i></td>
           <% }%>
@@ -245,13 +237,13 @@
         <% for(var k = 0, kLen = columns.length; k < kLen; k++) {%>
           <% var column = columns[k];%>
           <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') {%>
-            <td md-cell class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0? ' item-name': ''%>">
+            <td md-cell class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0? ' item-name report-name': ''%>">
               <%if(column.role=='name' && row.treeLevel == 1) {%>
               <span><a href="javascript:;"><%=row.data[column.key]%><i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i></a></span>
               <% } else if (column.role=='name' && row.treeLevel != 1) {%>
               <span><%=row.data[column.key]%></span>
               <% } else if (column.role!='name') {%>
-              <span><%=row.data[column.key]%></span>
+              <span><%=['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(column.key) > -1 ? ('$' + row.data[column.key]) : ['ctr', 'cr', 'cv', 'roi'].indexOf(column.key) > -1 ? (row.data[column.key] + '%') : row.data[column.key]%></span>
               <%}%>
             </td>
           <% }%>

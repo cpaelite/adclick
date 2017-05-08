@@ -849,7 +849,7 @@
         $scope.toggleRow(row);
       });
 
-      $('#repeater_container').on('click', '.item-name', function() {
+      $('#repeater_container').on('click', '.report-name', function() {
         var row = $scope.report.rows[$(this).closest('tr').attr('data-index')];
         $.contextMenu('destroy');
         if (perfType == 'ip') {
@@ -930,7 +930,7 @@
       });
 
       $.contextMenu({
-        selector: '#repeater_container .item-name',
+        selector: '#repeater_container .report-name',
         className: 'contextmenu-report',
         trigger: 'left',
         callback: function(key, options) {
