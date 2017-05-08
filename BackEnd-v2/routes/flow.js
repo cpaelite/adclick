@@ -786,8 +786,6 @@ router.post('/api/flows/:id', async function (req, res, next) {
     //restore rule check
     if (value.deleted == 0) {
       let archivedArray = await checkFlowRelativeRulestatus(value.userId, value.id, connection);
-      console.log('==========')
-       console.log(archivedArray)
       if (archivedArray.length) {
         return res.json({
           status: 0,
@@ -821,7 +819,6 @@ async function checkFlowRelativeRulestatus(userId, flowId, connection) {
               left join Rule rule on r2f.ruleId = rule.id  
               where r2f.flowId = ? and rule.userId = ?`;
   let result = await common.query(sql, [flowId, userId], connection);
-  console.log(result)
   let archivedArray = [];//缓存删除状态的flow
   if (result.length) {
     for (let index = 0; index < result.length; index++) {
