@@ -323,9 +323,9 @@ async function normalReport(values, mustPagination) {
                 IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr,
                 IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv,
                 IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi ,
-                round(sum(Revenue)/ 1000000 / sum(Visits),4) as epv,
-                round(sum(Revenue)/ 1000000 / sum(Clicks),4) as epc,
-                round(sum(Revenue)/ 1000000 / sum(Conversions),2) as ap `;
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv,
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc,
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
   //根据groupBy 拼接column 
   for (let index = 0; index < mapping[groupBy].attributes.length; index++) {
     if (_.isString(mapping[groupBy].attributes[index])) {
