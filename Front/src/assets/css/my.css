@@ -3426,8 +3426,8 @@ table.md-table tr.row-deleted td.md-cell {
 .repeater-container tr:hover .drilldown-tag {
   display: inline-block;
 }
-.fraud-filter-edit-dialog .frequency input {
-  width: 99px;float: left;
+.fraud-filter-edit-dialog .frequency input, .fraud-filter-edit-dialog .dimension md-select {
+  width: 115px;float: left;
 }
 .fraud-filter-edit-dialog .frequency span.msg {
   float: left; height: 32px; line-height: 32px; padding: 0 15px;
