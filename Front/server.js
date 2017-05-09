@@ -314,7 +314,7 @@ app.get('/api/permission', function (req, res) {
         },
         fraudfilter: {
           show: true,
-          ffRuleLimit: 1
+          ffRuleLimit: 5
         }
       },
     }

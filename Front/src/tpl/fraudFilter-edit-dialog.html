@@ -50,7 +50,7 @@
             </div>
             <div class="form-group" ng-repeat="condition in conditions track by $index">
                 <label class="col-sm-3 control-label" ng-if="$index == 0">Conditions<span class="star-icon">*</span>:</label>
-                <div class="col-sm-7 my-select" ng-class="{'col-sm-offset-3': $index != 0}">
+                <div class="col-sm-9 my-select" ng-class="{'col-sm-offset-3': $index != 0}">
                     <md-select class="cs-subform-select condition-select" ng-model="condition.key">
                         <md-option
                           value="{{conditionFilter.key}}"
@@ -64,9 +64,9 @@
                         <md-option value=">">&gt;</md-option>
                         <md-option value="<" ng-disabled="true">&lt;</md-option>
                     </md-select>
-                    <input type="number" string-to-number name="condition.key" class="cs-subform-select form-control" ng-model="condition.value" required style="width: auto;">
-                    <span style="color:red" ng-show="editForm.conValue.$dirty && editForm.conValue.$invalid">
-                        <span ng-show="editForm[{{condition.key}}].$error.required">Value is required.</span>
+                    <input type="number" string-to-number name="condition{{$index}}" class="cs-subform-select form-control" ng-model="condition.value" required style="width: auto;">
+                    <span style="color:red" ng-show="editForm.condition{{$index}}.$dirty && editForm.condition{{$index}}.$invalid">
+                        <span ng-show="editForm.condition{{$index}}.$error.required">Value is required.</span>
                     </span>
                     <i ng-click="deleteCondition(condition)" ng-if="$index > 0" class="em-close material-icons">delete</i>
                 </div>
