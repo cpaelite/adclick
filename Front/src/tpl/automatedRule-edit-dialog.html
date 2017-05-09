@@ -65,7 +65,7 @@
                       <input type="number" name="conValue{{$index}}" class="form-control rule-edit-input cs-subform-select" ng-model="condition.value" required>
                       <span class="dollar-icon">{{conditionMap[conditionArray[conArrIdx].key]}}</span>
                     </div>
-                    <span style="color:red" ng-show="editForm.conValue{{$index}}.$dirty && editForm.conValue{{$index}}.$invalid">
+                    <span style="color:red;height:32px;line-height:32px;" ng-show="editForm.conValue{{$index}}.$dirty && editForm.conValue{{$index}}.$invalid">
                         <span ng-show="editForm.conValue{{$index}}.$error.required">Value is required.</span>
                         <span ng-show="editForm.conValue{{$index}}.$error.number">Value is valid.</span>
                     </span>

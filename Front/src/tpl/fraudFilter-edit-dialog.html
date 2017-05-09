@@ -41,12 +41,12 @@
                 <div class="col-sm-9 frequency">
                     <input type="number" name="frequency" class="form-control" string-to-number ng-model="formData.timeSpan" required max="3600" min="10">
                     <span class="msg">seconds <em style="color: #888">(Please enter an integer between 10 and 3600)</em></span>
-                    <span style="color:red;height:32px;line-height:32px;" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
-                        <span ng-show="editForm.frequency.$error.required">Frequency is required.</span>
-                        <span ng-show="editForm.frequency.$error.max">Frequency cannot be higher than 3600.</span>
-                        <span ng-show="editForm.frequency.$error.min">Frequency cannot be lower than 10.</span>
-                    </span>
                 </div>
+                <span class="col-sm-offset-3" style="color:red;height:32px;line-height:32px;padding-left:15px;" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
+                  <span ng-show="editForm.frequency.$error.required">Frequency is required.</span>
+                  <span ng-show="editForm.frequency.$error.max">Frequency cannot be higher than 3600.</span>
+                  <span ng-show="editForm.frequency.$error.min">Frequency cannot be lower than 10.</span>
+                </span>
             </div>
             <div class="form-group" ng-repeat="condition in conditions track by $index">
                 <label class="col-sm-3 control-label" ng-if="$index == 0">Conditions<span class="star-icon">*</span>:</label>
@@ -65,7 +65,7 @@
                         <md-option value="<" ng-disabled="true">&lt;</md-option>
                     </md-select>
                     <input type="number" string-to-number name="condition{{$index}}" class="cs-subform-select form-control" ng-model="condition.value" required style="width: auto;">
-                    <span style="color:red" ng-show="editForm.condition{{$index}}.$dirty && editForm.condition{{$index}}.$invalid">
+                    <span style="color:red;height:32px;line-height:32px;" ng-show="editForm.condition{{$index}}.$dirty && editForm.condition{{$index}}.$invalid">
                         <span ng-show="editForm.condition{{$index}}.$error.required">Value is required.</span>
                     </span>
                     <i ng-click="deleteCondition(condition)" ng-if="$index > 0" class="em-close material-icons">delete</i>
