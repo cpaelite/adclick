@@ -2,6 +2,11 @@ global.setting = require('./config/setting');
 import mysql from 'mysql';
 const env = process.env.NODE_ENV || 'staging'
 const mysqlSetting = setting.mysql[env]
+var express = require('express');
+var favicon = require('serve-favicon');
+var log4js = require('log4js');
+var logger = log4js.getLogger("app");
+var bodyParser = require('body-parser');
 
 global.pool = {
   m1: mysql.createPool({
@@ -25,20 +30,16 @@ global.pool = {
 }
 let redisOptions = {
   host: setting.redis.host,
-  port: setting.redis.port,
-  max_clients: 100
+  port: setting.redis.port
 };
 if (setting.redis.password) {
   redisOptions.password = setting.redis.password;
 }
-global.redisPool = require('./util/redis_pool')(redisOptions);
-
-
-var express = require('express');
-var favicon = require('serve-favicon');
-var log4js = require('log4js');
-var logger = log4js.getLogger("app");
-var bodyParser = require('body-parser');
+global.redisPool = require('./util/redis_pool')(redisOptions,{max:200});
+ 
+redisPool.pool.on('error',function(err){
+    logger.error(err.message);
+});
 
 var app = express();
 var util = require('./util/index');
