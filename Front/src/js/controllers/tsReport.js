@@ -62,7 +62,7 @@
     this.pageStatus = {};
 
     this.$scope.datetype = '1';
-    this.$scope.fromDate = null;
+    this.$scope.fromDate = this.$scope.fromDate || moment().format('YYYY-MM-DD');
     this.$scope.fromTime = this.$scope.fromTime || '00:00';
     this.$scope.toDate = this.$scope.toDate || moment().add(1, 'days').format('YYYY-MM-DD');
     this.maxDate = this.$scope.toDate;
