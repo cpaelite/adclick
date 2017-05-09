@@ -310,7 +310,7 @@ app.get('/api/permission', function (req, res) {
         },
         suddenchange: {
           show: true,
-          scRuleLimit: 1
+          scRuleLimit: 5
         },
         fraudfilter: {
           show: true,

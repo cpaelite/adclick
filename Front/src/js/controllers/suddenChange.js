@@ -217,7 +217,7 @@
       }
 
       $scope.frequency = "Every 1 Hour";
-      $scope.freDate = date;
+      $scope.freDate = new Date(date);
       $scope.freWeek = "0";
       $scope.freTime = "0";
 
@@ -290,22 +290,23 @@
           $scope.item.campaigns = $scope.item.campaigns.split(",");
           $scope.conditionArray = fillConditionArray($scope.item.condition);
           parseScheduleString($scope);
-          // 是否显示日期选择框
-          $scope.showDateSelect = function() {
-            return ['One Time'].indexOf($scope.frequency) >= 0;
-          };
-          // 是否显示星期选择框
-          $scope.showWeekSelect = function() {
-            return ['Weekly'].indexOf($scope.frequency) >= 0;
-          };
-          // 是否显示时间选择框
-          $scope.showTimeSelect = function() {
-            return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
-          };
         }
       }
 
       $q.all(initPromises).then(initSuccess);
+
+      // 是否显示日期选择框
+      $scope.showDateSelect = function() {
+        return ['One Time'].indexOf($scope.frequency) >= 0;
+      };
+      // 是否显示星期选择框
+      $scope.showWeekSelect = function() {
+        return ['Weekly'].indexOf($scope.frequency) >= 0;
+      };
+      // 是否显示时间选择框
+      $scope.showTimeSelect = function() {
+        return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
+      };
 
       $scope.conditionDisable = function(item, index) {
         var selectConditions = $scope.conditionArray.map(function(con) {
