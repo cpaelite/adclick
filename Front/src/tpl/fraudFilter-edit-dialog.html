@@ -38,11 +38,13 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>:</label>
-                <div class="col-sm-3 frequency">
-                    <input type="number" name="frequency" class="form-control" string-to-number ng-model="formData.timeSpan" required>
-                    <span class="msg">seconds</span>
+                <div class="col-sm-9 frequency">
+                    <input type="number" name="frequency" class="form-control" string-to-number ng-model="formData.timeSpan" required max="3600" min="10">
+                    <span class="msg">seconds <em style="color: #888">(Please enter an integer between 10 and 3600)</em></span>
                     <span style="color:red;height:32px;line-height:32px;" ng-show="editForm.frequency.$dirty && editForm.frequency.$invalid">
                         <span ng-show="editForm.frequency.$error.required">Frequency is required.</span>
+                        <span ng-show="editForm.frequency.$error.max">Frequency cannot be higher than 3600.</span>
+                        <span ng-show="editForm.frequency.$error.min">Frequency cannot be lower than 10.</span>
                     </span>
                 </div>
             </div>
@@ -58,7 +60,7 @@
                           {{conditionFilter.display}}
                         </md-option>
                     </md-select>
-                    <md-select class="cs-subform-select" ng-model="condition.operand">
+                    <md-select class="cs-subform-select" ng-model="condition.operand" ng-disabled="true">
                         <md-option value=">">&gt;</md-option>
                         <md-option value="<" ng-disabled="true">&lt;</md-option>
                     </md-select>
@@ -69,7 +71,7 @@
                     <i ng-click="deleteCondition(condition)" ng-if="$index > 0" class="em-close material-icons">delete</i>
                 </div>
             </div>
-            <div class="form-group" ng-if="conditionFilters.length > conditions.length">
+            <div class="form-group hidden" ng-if="conditionFilters.length > conditions.length">
               <div class="col-sm-7 col-sm-offset-3">
                 <em ng-click="addCondition()">
                   <i class="material-icons add-next">add_circle</i>Add another
