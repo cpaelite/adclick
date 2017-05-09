@@ -355,7 +355,7 @@ async function normalReport(values, mustPagination) {
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} group by ${mapping[groupBy].dbGroupBy} ${having} ${orders} `;
 
-  let totalSQL = `select sum(visits) as visits,    
+  let totalSQL = `select COUNT(*) as total,sum(visits) as visits,    
                 sum(impressions) as impressions ,
                 round(sum(revenue),2) as revenue,
                 sum(clicks) as clicks,
@@ -404,7 +404,7 @@ async function normalReport(values, mustPagination) {
     groupBy
   });
 
-  let totalRows = rawRows.length;
+  let totalRows = totals.total;
   return {
     rows: rawRows,
     totals,
