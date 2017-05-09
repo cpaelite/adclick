@@ -39,7 +39,7 @@
                 <label class="col-sm-3 control-label">Dimension<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
                     <md-select aria-label="Dimension" class="cs-subform-select" ng-model="item.dimension" ng-required="true">
-                        <md-option value="{{dimension}}" ng-repeat="dimension in dimensions track by $index">{{dimension}}</md-option>
+                        <md-option value="{{dimension.key}}" ng-repeat="dimension in dimensions track by $index">{{dimension.display}}</md-option>
                     </md-select>
                 </div>
             </div>
@@ -85,14 +85,14 @@
                     </md-select>
                     <button class="cs-button-datepicker" uib-datepicker-popup="yyyy-MM-dd" ng-model="freDate"
                           is-open="ctrl.dpOpened.b" datepicker-options="dateOptions"
-                          close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button" ng-show="showDateSelect()">
+                          close-text="Close" ng-click="ctrl.dpOpened.b=true" type="button" ng-show="showDateSelect()" ng-change="dateChange()">
                       {{freDate | date: 'yyyy-MM-dd'}}<i class="icon-rl-02"></i>
                     </button>
                     <md-select aria-label="FreTime" class="cs-subform-select" ng-model="freWeek" ng-show="showWeekSelect()">
                         <md-option value="{{week.key}}" ng-repeat="week in weeks track by $index">{{week.display}}</md-option>
                     </md-select>
-                    <md-select aria-label="FreTime" class="cs-subform-select" ng-model="freTime" ng-show="showTimeSelect()">
-                        <md-option value="{{hr.key}}" ng-repeat="hr in hours track by $index">{{hr.display}}</md-option>
+                    <md-select aria-label="FreTime" class="cs-subform-select" ng-model="freTime" ng-show="showTimeSelect()" required>
+                        <md-option value="{{hr.key}}" ng-repeat="hr in hours" ng-disabled="hourDisabled(hr.key)">{{hr.display}}</md-option>
                     </md-select>
                 </div>
             </div>

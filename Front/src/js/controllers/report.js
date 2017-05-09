@@ -719,7 +719,7 @@
         return;
       }
       $mdDialog.show({
-        clickOutsideToClose: true,
+        clickOutsideToClose: false,
         escapeToClose: false,
         controller: ['$mdDialog', '$injector', deleteCtrl],
         controllerAs: 'ctrl',

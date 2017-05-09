@@ -696,7 +696,19 @@ angular.module('app').value('urlParameter', {
 
 angular.module('app').value('AutomatedRuleOptions', {
   "dimension": [
-    "WebSiteId","Country","Carrier","City","Device","OS","OSVersion","ISP","Offer","Lander","Brand","Browser","BrowserVersion"
+    {"key": "tsWebsiteId", "display": "WebSiteId"},
+    {"key": "country", "display": "Country"},
+    {"key": "mobileCarrier", "display": "Carrier"},
+    {"key": "city", "display": "City"},
+    {"key": "deviceType", "display": "Device"},
+    {"key": "os", "display": "OS"},
+    {"key": "osVersion", "display": "OSVersion"},
+    {"key": "isp", "display": "ISP"},
+    {"key": "offerId", "display": "Offer"},
+    {"key": "landerId", "display": "Lander"},
+    {"key": "brand", "display": "Brand"},
+    {"key": "brower", "display": "Browser"},
+    {"key": "browerVersion", "display": "BrowserVersion"}
   ],
   "timeSpan": [
     {"key": "last3hours", "display": "Last 3 Hours"},
@@ -717,6 +729,7 @@ angular.module('app').value('AutomatedRuleOptions', {
     {"key": "cpm","display": "CPM","unit": "USD"},
     {"key": "cpc","display": "CPC","unit": "USD"},
     {"key": "cpa","display": "CPA","unit": "USD"},
+    {"key": "spent","display": "Spent","unit": "USD"},
   ],
   "frequency": [
     "Every 1 Hour",

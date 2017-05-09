@@ -219,8 +219,7 @@
       if (value == "0") {
         $scope.filter.fromDate = $scope.fromDate;
         $scope.filter.toDate = $scope.toDate;
-      }
-      if (value != '0') {
+      } else {
         $scope.fromTime = "00:00";
         $scope.toTime = "00:00";
       }

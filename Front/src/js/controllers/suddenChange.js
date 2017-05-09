@@ -29,7 +29,7 @@
     };
 
     $scope.query = {
-      status: 1,
+      status: 2,
       filter:'',
       page: 1,
       limit: 1000
@@ -60,6 +60,16 @@
       from: LocalStorageUtil.getValue().fromDate,
       to: LocalStorageUtil.getValue().toDate
     };
+
+    $scope.filter = {
+      fromDate: LocalStorageUtil.getValue().fromDate,
+      toDate: LocalStorageUtil.getValue().toDate
+    };
+    // 如果不是自定义时间，重新计算时间
+    if ($scope.datetype != "0") {
+      getDateRange($scope.datetype);
+    }
+
     $scope.getLogList = function(){
       var params = angular.copy($scope.queryLog);
       if(!params.filter) {
@@ -70,11 +80,6 @@
       });
     };
     $scope.getLogList();
-
-    $scope.filter = {
-      fromDate: LocalStorageUtil.getValue().fromDate,
-      toDate: LocalStorageUtil.getValue().toDate
-    };
 
     $scope.$watch('filter', function (newValue, oldValue) {
       if (angular.equals(newValue, oldValue)) {
@@ -88,8 +93,18 @@
     }, true);
 
     function getDateRange(value) {
-      $scope.queryLog.from = DateRangeUtil.fromDate(value, '+00:00');
-      $scope.queryLog.to = DateRangeUtil.toDate(value, '+00:00');
+      var from = DateRangeUtil.fromDate(value, '+00:00');
+      var to = DateRangeUtil.toDate(value, '+00:00');
+      $scope.queryLog.from = from;
+      $scope.queryLog.to = to;
+      // 自定义时间类型时，时间控件默认Today的时间
+      if (value == "0") {
+        $scope.filter.fromDate = from;
+        $scope.filter.toDate = to;
+      } else {
+        fromTime = "00:00";
+        toTime = "00:00";
+      }
       LocalStorageUtil.setValue(value, $scope.queryLog.from, fromTime, $scope.queryLog.to, toTime);
     }
 
@@ -98,7 +113,10 @@
     };
     $scope.logQueryChange = function(){
       getDateRange($scope.datetype);
-      $scope.getLogList();
+      // 自定义时间类型时，根据时间控件时间变化而请求数据
+      if ($scope.datetype != "0") {
+        $scope.getLogList();
+      }
     };
 
     $scope.blacklistCount = 20;
@@ -113,7 +131,7 @@
 
     $scope.editRuleItem = function(item) {
       $mdDialog.show({
-        clickOutsideToClose: true,
+        clickOutsideToClose: false,
         escapeToClose: false,
         controller: ['$scope', '$mdDialog', "$q", 'AutomatedRuleOptions', 'Campaign', 'AutomatedRule', 'EmailValidate', editRuleCtrl],
         controllerAs: 'ctrl',
@@ -123,7 +141,7 @@
         templateUrl: 'tpl/automatedRule-edit-dialog.html?' + +new Date()
       }).then(function(id) {
         if(!id) {
-          $scope.query.status = 0;
+          $scope.query.status = 2;
         }
         if($scope.tabSelected != 0) {
           $scope.tabSelected = 0;
@@ -134,7 +152,7 @@
 
     $scope.deleteRuleItem = function(id){
       $mdDialog.show({
-        clickOutsideToClose: true,
+        clickOutsideToClose: false,
         escapeToClose: false,
         controller: ['$scope', '$mdDialog', 'SuddenChange', deleteRuleCtrl],
         controllerAs: 'ctrl',
@@ -147,17 +165,24 @@
       });
     };
 
+    var ruleUpdateStatus = false;
     $scope.ruleStatusChange = function(index){
-      if($scope.list.rules[index].status == 0){
-        $scope.list.rules[index].status = 1;
-      }else{
-        $scope.list.rules[index].status = 0;
-      }
-      SuddenChange.save($scope.list.rules[index], function(oData) {
-        if(oData.status == 1) {
-          $scope.getRuleList();
+      if (!ruleUpdateStatus) {
+        ruleUpdateStatus = true;
+        var rule = $scope.list.rules[index];
+        if(rule.status == 0){
+          rule.status = 1;
+        }else{
+          rule.status = 0;
         }
-      });
+        SuddenChange.save(rule, function(oData) {
+          if(oData.status == 1) {
+            ruleUpdateStatus = false;
+            $scope.getRuleList();
+          }
+        });
+      }
+
     };
   }
 
@@ -175,18 +200,24 @@
         this.title = "add";
         $scope.conditionArray = [
           {
-            "key": "sumImps",
+            "key": "sumImpressions",
             "operand": ">",
             "value": ""
           }
         ];
         $scope.item = {
-          "dimension": "WebSiteId",
+          "dimension": "tsWebsiteId",
           "timeSpan": "last3hours",
         };
       }
+      var date = moment().utcOffset("+00:00").format('YYYY-MM-DD');
+      var time = moment().utcOffset("+00:00").format('H');
+      $scope.dateOptions = {
+        minDate: date
+      }
+
       $scope.frequency = "Every 1 Hour";
-      $scope.freDate = new Date();
+      $scope.freDate = date;
       $scope.freWeek = "0";
       $scope.freTime = "0";
 
@@ -211,6 +242,20 @@
           $scope.hours.push({key: i.toString(), display: i + ':00'});
         }
       }
+
+      $scope.dateChange = function() {
+        if (moment(date).isAfter(moment($scope.freDate).format('YYYY-MM-DD'))) {
+          $scope.freTime = "";
+        }
+      }
+
+      $scope.hourDisabled = function(hour) {
+        // 选择One Time 并且是当天日期，小于当前的时间不能选
+        return ($scope.frequency == "One Time"
+              && moment(date).isSame(moment($scope.freDate).format('YYYY-MM-DD'))
+              && parseInt(hour) <= parseInt(time))
+              || moment(date).isAfter(moment($scope.freDate).format('YYYY-MM-DD'));
+      };
       $scope.weeks = [
         {key: "0", display: "Sunday"},
         {key: "1", display: "Monday"},
@@ -245,6 +290,18 @@
           $scope.item.campaigns = $scope.item.campaigns.split(",");
           $scope.conditionArray = fillConditionArray($scope.item.condition);
           parseScheduleString($scope);
+          // 是否显示日期选择框
+          $scope.showDateSelect = function() {
+            return ['One Time'].indexOf($scope.frequency) >= 0;
+          };
+          // 是否显示星期选择框
+          $scope.showWeekSelect = function() {
+            return ['Weekly'].indexOf($scope.frequency) >= 0;
+          };
+          // 是否显示时间选择框
+          $scope.showTimeSelect = function() {
+            return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
+          };
         }
       }
 
@@ -288,19 +345,6 @@
         var isValid = EmailValidate.validate($scope.item.emails);
         $scope.editForm.email.$setValidity('emailValid', isValid);
       }
-
-      // 是否显示日期选择框
-      $scope.showDateSelect = function() {
-        return ['One Time'].indexOf($scope.frequency) >= 0;
-      };
-      // 是否显示星期选择框
-      $scope.showWeekSelect = function() {
-        return ['Weekly'].indexOf($scope.frequency) >= 0;
-      };
-      // 是否显示时间选择框
-      $scope.showTimeSelect = function() {
-        return ['Daily', 'Weekly', 'One Time'].indexOf($scope.frequency) >= 0;
-      };
 
       this.save = function() {
         $scope.editForm.$setSubmitted();
