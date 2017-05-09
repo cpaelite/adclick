@@ -8,7 +8,7 @@ var md5 = require('md5');
 var moment = require('moment');
 var common = require('./common');
 var setting = require('../config/setting');
-var Pub = require('./redis_sub_pub');
+
 var uuidV4 = require('uuid/v4');
 var emailCtrl = require('../util/email');
 const _ = require('lodash');
@@ -45,7 +45,8 @@ router.post('/auth/login', async function(req, res, next) {
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
 
-    let sql = "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified`,`currentGroup` from User where `email` = ? and `deleted` =0";
+    let sql =
+      "select  `id`,`idText`,`email`,`password`,`firstname`,`emailVerified`,`currentGroup` from User where `email` = ? and `deleted` =0";
 
     let rows = await common.query(sql, [value.email], connection);
     if (rows.length > 0) {
@@ -58,7 +59,10 @@ router.post('/auth/login', async function(req, res, next) {
         if (rows[0].currentGroup && String(rows[0].currentGroup) !== '0') {
           clientId = rows[0].currentGroup;
         } else {
-          let userGroup = await common.query("select `groupId` from UserGroup where `userId`= ? and `role`= 0", [rows[0].id], connection);
+          let userGroup = await common.query(
+            "select `groupId` from UserGroup where `userId`= ? and `role`= 0", [
+              rows[0].id
+            ], connection);
           if (userGroup.length == 0) {
             throw new Error("account exception");
           }
@@ -69,11 +73,13 @@ router.post('/auth/login', async function(req, res, next) {
         //set cookie
         res.cookie("clientId", clientId);
         res.json({
-          token: util.setToken(rows[0].id, expires, rows[0].firstname, rows[0].idText)
+          token: util.setToken(rows[0].id, expires, rows[0].firstname,
+            rows[0].idText)
         });
 
         //更新登录时间
-        let updateSql = "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
+        let updateSql =
+          "update User set `lastLogon`= unix_timestamp(now()) where `id`= ? ";
         await common.query(updateSql, [rows[0].id], connection);
 
       } else {
@@ -141,13 +147,15 @@ function sendActiveEmail(email, idText) {
   let tpl = {
     subject: 'Newbidder Activate', // Subject line
     text: ``, // plain text body
-    html: _.template(` <p>Hello,</p>
+    html: _.template(
+      ` <p>Hello,</p>
 
             <p>Thanks for signing up! We'll just need you to click the activation link below to get your account up and running.</p>
             <p><a href="<%=href%>">Activate my account</a></p>
 
             <p>Best regards,</p>
-            <p>Newbidder Team </p>`)({
+            <p>Newbidder Team </p>`
+    )({
       href: setting.activateRouter + "?key=" + idText,
 
     })
@@ -160,13 +168,15 @@ function sendforgetPwdEmail(email, code) {
   let tpl = {
     subject: 'Newbidder Password Reset', // Subject line
     text: ``, // plain text body
-    html: _.template(` <p>Hello,</p>
+    html: _.template(
+      ` <p>Hello,</p>
 
             <p>We have received your request to reset your password for your Newbidder account.</p>
             <p>To change your password, please <a href="<%=href%>">click here</a>.</p>
 
             <p>Best regards,</p>
-            <p>Newbidder Team </p>`)({
+            <p>Newbidder Team </p>`
+    )({
       href: setting.forgetPwdRouter + "?code=" + code,
 
     })
@@ -174,88 +184,6 @@ function sendforgetPwdEmail(email, code) {
   //异步发送邮件
   emailCtrl.sendMail([email], tpl);
 }
-
-// async function signup(data, next) {
-//   var schema = Joi.object().keys({
-//     email: Joi.string().trim().email().required(),
-//     password: Joi.string().required(),
-//     firstname: Joi.string().required().allow(""),
-//     lastname: Joi.string().required().allow(""),
-//     refToken: Joi.string().optional().empty(""),
-//     qq: Joi.string().optional().empty(""),
-//     skype: Joi.string().optional().empty("")
-//   });
-//   let connection;
-//   let beginTransaction = false;
-//   let value;
-//   try {
-//     value = await common.validate(data, schema);
-//     connection = await common.getConnection();
-//     //check email exists
-//     let UserResult = await common.query("select id from User where `email`=?", [value.email], connection);
-//     if (UserResult.length > 0) throw new Error("account exists");
-//     //事务开始
-//     await common.beginTransaction(connection);
-//     beginTransaction = true;
-//     let idtext = util.getRandomString(6);
-//     let reftoken = util.getUUID() + "." + idtext;
-//     //User
-//     let sql = "insert into User(`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (unix_timestamp(now()),?,?,?,?,?,?,?,?)";
-//     let contact = {};
-//     if (value.qq) {
-//       contact.qq = value.qq;
-//     }
-//     if (value.skype) {
-//       contact.skype = value.skype;
-//     }
-//     let params = [
-//       value.firstname, value.lastname, value.email,
-//       md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting), JSON.stringify(contact)
-//     ];
-//     let result = await common.query(sql, params, connection);
-//     value.userId = result.insertId;
-//     value.idtext = idtext;
-//     //系统默认domains
-//     for (let index = 0; index < setting.domains.length; index++) {
-//       await common.query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`,`verified`) values (?,?,?,?,1)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0], connection);
-//     }
-
-//     //如果refToken 不为"" 说明是从推广链接过来的
-//     if (value.refToken) {
-//       let slice = value.refToken.split('.');
-//       let referreUserId = slice.length == 2 ? slice[1] : 0;
-//       if (referreUserId) {
-//         let USER = await common.query("select `id` from User where `idText` = ?", [referreUserId], connection);
-//         if (USER.length == 0) {
-//           throw new Error("refToken error");
-//         }
-//         await common.query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500], connection);
-//       }
-//     }
-
-//     //user Group
-//     let configSlice = await common.query("select `config` from RolePrivilege where `role`=?", [0], connection);
-
-//     await common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config : "{}"], connection);
-
-
-//     await common.commit(connection);
-//     //redis publish
-//     new Pub(true).publish(setting.redis.channel, result.insertId + ".add.user." + result.insertId, "userAdd");
-
-//     return value;
-//   } catch (e) {
-//     if (beginTransaction) {
-//       await common.rollback(connection);
-//     }
-//     throw e;
-//   } finally {
-//     if (connection) {
-//       connection.release();
-//     }
-
-//   }
-// }
 
 
 async function signup(data, next) {
@@ -275,7 +203,9 @@ async function signup(data, next) {
     value = await common.validate(data, schema);
     connection = await common.getConnection();
     //check email exists
-    let UserResult = await common.query("select id from User where `email`=?", [value.email], connection);
+    let UserResult = await common.query("select id from User where `email`=?", [
+      value.email
+    ], connection);
     if (UserResult.length > 0) throw new Error("account exists");
     //事务开始
     await common.beginTransaction(connection);
@@ -283,7 +213,8 @@ async function signup(data, next) {
     let idtext = util.getRandomString(6);
     let reftoken = util.getUUID() + "." + idtext;
     //User
-    let sql = "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (1,unix_timestamp(now()),?,?,?,?,?,?,?,?)";
+    let sql =
+      "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (1,unix_timestamp(now()),?,?,?,?,?,?,?,?)";
     let contact = {};
     if (value.qq) {
       contact.qq = value.qq;
@@ -293,14 +224,19 @@ async function signup(data, next) {
     }
     let params = [
       value.firstname, value.lastname, value.email,
-      md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting), JSON.stringify(contact)
+      md5(value.password), idtext, reftoken, JSON.stringify(setting.defaultSetting),
+      JSON.stringify(contact)
     ];
     let result = await common.query(sql, params, connection);
     value.userId = result.insertId;
     value.idtext = idtext;
     //系统默认domains
     for (let index = 0; index < setting.domains.length; index++) {
-      await common.query("insert into `UserDomain`(`userId`,`domain`,`main`,`customize`,`verified`) values (?,?,?,?,1)", [result.insertId, setting.domains[index].address, setting.domains[index].mainDomain ? 1 : 0, 0], connection);
+      await common.query(
+        "insert into `UserDomain`(`userId`,`domain`,`main`,`customize`,`verified`) values (?,?,?,?,1)", [
+          result.insertId, setting.domains[index].address, setting.domains[
+            index].mainDomain ? 1 : 0, 0
+        ], connection);
     }
 
     //如果refToken 不为"" 说明是从推广链接过来的
@@ -308,29 +244,46 @@ async function signup(data, next) {
       let slice = value.refToken.split('.');
       let referreUserId = slice.length == 2 ? slice[1] : 0;
       if (referreUserId) {
-        let USER = await common.query("select `id` from User where `idText` = ?", [referreUserId], connection);
+        let USER = await common.query(
+          "select `id` from User where `idText` = ?", [referreUserId],
+          connection);
         if (USER.length == 0) {
           throw new Error("refToken error");
         }
-        await common.query("insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [USER[0].id, result.insertId, 500], connection);
+        await common.query(
+          "insert into `UserReferralLog` (`userId`,`referredUserId`,`acquired`,`status`,`percent`) values (?,?,unix_timestamp(now()),0,?)", [
+            USER[0].id, result.insertId, 500
+          ], connection);
       }
     }
 
     //user Group
-    let configSlice = await common.query("select `config` from RolePrivilege where `role`=?", [0], connection);
+    let configSlice = await common.query(
+      "select `config` from RolePrivilege where `role`=?", [0], connection);
 
-    let UPDATEUserGroup = common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config : "{}"], connection);
+    let UPDATEUserGroup = common.query(
+      "insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [
+        uuidV4(), result.insertId, 0, configSlice.length ? configSlice[0].config :
+        "{}"
+      ], connection);
 
     //免费plan逻辑
 
-    let GETFREEPLAN = common.query(`select id,name,includedEvents,retentionLimit,domainLimit,userLimit,tsReportLimit,anOfferAPILimit,ffRuleLimit,scRuleLimit,separateIP,price,hasCommission from UserPlan where userId = ? and deleted = ?`, [0, 0], connection);
+    let GETFREEPLAN = common.query(
+      `select id,name,includedEvents,retentionLimit,domainLimit,userLimit,tsReportLimit,anOfferAPILimit,ffRuleLimit,scRuleLimit,separateIP,price,hasCommission from UserPlan where userId = ? and deleted = ?`, [
+        0, 0
+      ], connection);
 
     let [
       [freePlanMap]
     ] = await Promise.all([GETFREEPLAN, UPDATEUserGroup]);
 
     if (freePlanMap) {
-      let UPDATEUSERBILLING = common.query(`insert into UserBilling (userId,planId,customPlanId,planPaymentLogId,planStart,planEnd,billedEvents,totalEvents,includedEvents,agreementId) values(?,?,?,?,?,?,?,?,?,?)`, [value.userId, freePlanMap.id, freePlanMap.id, 0, moment().unix(), 0, 0, 0, freePlanMap.includedEvents, 0], connection);
+      let UPDATEUSERBILLING = common.query(
+        `insert into UserBilling (userId,planId,customPlanId,planPaymentLogId,planStart,planEnd,billedEvents,totalEvents,includedEvents,agreementId) values(?,?,?,?,?,?,?,?,?,?)`, [
+          value.userId, freePlanMap.id, freePlanMap.id, 0, moment().unix(), 0,
+          0, 0, freePlanMap.includedEvents, 0
+        ], connection);
 
       let functionsString = JSON.stringify({
         retentionLimit: freePlanMap.retentionLimit,
@@ -343,7 +296,10 @@ async function signup(data, next) {
         separateIP: freePlanMap.separateIP
       });
 
-      let UPDATEUserFunctions = common.query(`insert UserFunctions (userId,functions) values (?,?)`, [value.userId, functionsString], connection);
+      let UPDATEUserFunctions = common.query(
+        `insert UserFunctions (userId,functions) values (?,?)`, [value.userId,
+          functionsString
+        ], connection);
 
       await Promise.all([UPDATEUSERBILLING, UPDATEUserFunctions]);
     }
@@ -351,7 +307,8 @@ async function signup(data, next) {
 
     await common.commit(connection);
     //redis publish
-    new Pub(true).publish(setting.redis.channel, result.insertId + ".add.user." + result.insertId, "userAdd");
+    redisPool.publish(setting.redis.channel, result.insertId + ".add.user." +
+      result.insertId);
 
     return value;
   } catch (e) {
@@ -470,11 +427,19 @@ router.get('/invitation', async function(req, res, next) {
     connection = await common.getConnection();
     await common.beginTransaction(connection);
     beginTransaction = true;
-    let userSlice = await common.query("select `userId`,`inviteeEmail`,`groupId` from GroupInvitation where `code`=? and `deleted`= 0 and `status`!= 3", [value.code], connection);
+    let userSlice = await common.query(
+      "select `userId`,`inviteeEmail`,`groupId` from GroupInvitation where `code`=? and `deleted`= 0 and `status`!= 3", [
+        value.code
+      ], connection);
     if (userSlice.length == 0) {
       throw new Error("code error");
     }
-    let config_user = await Promise.all([common.query("select `config` from RolePrivilege where `role`=?", [1], connection), common.query("select  `id`,`idText`,`firstname` from User where `email` = ?", [userSlice[0].inviteeEmail], connection)]);
+    let config_user = await Promise.all([common.query(
+      "select `config` from RolePrivilege where `role`=?", [1],
+      connection), common.query(
+      "select  `id`,`idText`,`firstname` from User where `email` = ?", [
+        userSlice[0].inviteeEmail
+      ], connection)]);
     let users = config_user[1];
     let configSlice = config_user[0]
     if (configSlice == 0) {
@@ -484,7 +449,14 @@ router.get('/invitation', async function(req, res, next) {
     if (users.length) {
       //加入用户组
       if (users[0].id != userSlice[0].userId) { //排除自身
-        await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?) ON DUPLICATE KEY UPDATE `privilege` = ?", [userSlice[0].groupId, users[0].id, 1, configSlice[0].config, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection)]);
+        await Promise.all([common.query(
+          "insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?) ON DUPLICATE KEY UPDATE `privilege` = ?", [
+            userSlice[0].groupId, users[0].id, 1, configSlice[0].config,
+            configSlice[0].config
+          ], connection), common.query(
+          "update   GroupInvitation set `status`= 1  where `code`=?", [
+            value.code
+          ], connection)]);
       }
       res.redirect(setting.invitationredirect);
     } else {
@@ -500,7 +472,8 @@ router.get('/invitation', async function(req, res, next) {
       let tpl = {
           subject: 'Newbidder Register', // Subject line
           text: ``, // plain text body
-          html: _.template(` <p>Hello,</p>
+          html: _.template(
+            ` <p>Hello,</p>
 
                     <p>Welcome to Newbidder! Please follow the link to complete your Profile (or copy/paste it in your browser):</p>
                     <p><%= href%>/#/setApp/profile</p>
@@ -517,7 +490,8 @@ router.get('/invitation', async function(req, res, next) {
                     <p>Best regards,</p>
                     <p>Newbidder Support Team</p>
                     <p>Skype：support@newbidder</p>
-                             `)({
+                             `
+          )({
             email: userSlice[0].inviteeEmail,
             password: password,
             href: setting.invitationredirect
@@ -526,10 +500,19 @@ router.get('/invitation', async function(req, res, next) {
         //异步发送邮件
       emailCtrl.sendMail([userSlice[0].inviteeEmail], tpl);
 
-      await Promise.all([common.query("insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [userSlice[0].groupId, user.userId, 1, configSlice[0].config], connection), common.query("update   GroupInvitation set `status`= 1  where `code`=?", [value.code], connection), common.query("update User set emailVerified= ? where id= ?", [1, user.userId], connection)]);
+      await Promise.all([common.query(
+        "insert into UserGroup (`groupId`,`userId`,`role`,`createdAt`,`privilege`) values(?,?,?,unix_timestamp(now()),?)", [
+          userSlice[0].groupId, user.userId, 1, configSlice[0].config
+        ], connection), common.query(
+        "update   GroupInvitation set `status`= 1  where `code`=?", [
+          value.code
+        ], connection), common.query(
+        "update User set emailVerified= ? where id= ?", [1, user.userId],
+        connection)]);
 
       var expires = moment().add(200, 'days').valueOf();
-      res.cookie("token", util.setToken(user.userId, expires, user.firstname, user.idText));
+      res.cookie("token", util.setToken(user.userId, expires, user.firstname,
+        user.idText));
       res.cookie("clientId", userSlice[0].groupId);
       res.redirect(setting.invitationredirect);
     }
@@ -563,7 +546,9 @@ router.get('/user/active', async function(req, res, next) {
   try {
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
-    await common.query("update User set emailVerified = ? where idText = ?", [1, value.key], connection);
+    await common.query("update User set emailVerified = ? where idText = ?", [
+      1, value.key
+    ], connection);
     res.redirect(setting.invitationredirect);
   } catch (e) {
     next(e);
@@ -582,7 +567,9 @@ router.get('/user/resendconfirmation', async function(req, res, next) {
   try {
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
-    let user = await common.query("select  `idText` from User   where email = ?", [value.email], connection);
+    let user = await common.query(
+      "select  `idText` from User   where email = ?", [value.email],
+      connection);
 
     //异步发送邮件
     if (user.length) {
@@ -611,18 +598,26 @@ router.get('/user/resetpassword', async function(req, res, next) {
   try {
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
-    let user = await common.query("select  `id`,`idText` from User   where email = ?", [value.email], connection);
+    let user = await common.query(
+      "select  `id`,`idText` from User   where email = ?", [value.email],
+      connection);
     if (user.length == 0) {
       let err = new Error('email error');
       err.status = 200;
       throw err;
     }
-    let codeSlice = await common.query("select `code`,`expireAt`,`status` from UserResetCode where `userId`=? and `expireAt`> ? and `status`= ?", [user[0].id, moment().unix(), 0], connection);
+    let codeSlice = await common.query(
+      "select `code`,`expireAt`,`status` from UserResetCode where `userId`=? and `expireAt`> ? and `status`= ?", [
+        user[0].id, moment().unix(), 0
+      ], connection);
     if (codeSlice.length) {
       code = codeSlice[0].code;
     } else {
       code = util.getUUID() + "." + user[0].idText;
-      await common.query("insert into UserResetCode (`userId`,`code`,`expireAt`) values(?,?,?)", [user[0].id, code, moment().unix() + 30 * 60], connection);
+      await common.query(
+        "insert into UserResetCode (`userId`,`code`,`expireAt`) values(?,?,?)", [
+          user[0].id, code, moment().unix() + 30 * 60
+        ], connection);
     }
     var cipher = crypto.createCipher('aes-256-cbc', codeKey)
     var crypted = cipher.update(code, 'utf8', 'hex')
@@ -673,7 +668,10 @@ router.post('/user/resetpassword', async function(req, res, next) {
       throw err;
     }
     connection = await common.getConnection();
-    let result = await common.query("select `userId`,`expireAt`,`status` from UserResetCode where `code`=?", [key], connection);
+    let result = await common.query(
+      "select `userId`,`expireAt`,`status` from UserResetCode where `code`=?", [
+        key
+      ], connection);
 
     if (result.length == 0) {
       err.message = "code error";
@@ -687,8 +685,14 @@ router.post('/user/resetpassword', async function(req, res, next) {
       throw err;
     }
 
-    let updateUser = common.query("update User set `password`=? where `id`=?", [md5(value.password), result[0].userId], connection);
-    let updateUserCode = common.query("update UserResetCode set `status`=? where `userId`=? and `code`=?", [1, result[0].userId, key], connection);
+    let updateUser = common.query(
+      "update User set `password`=? where `id`=?", [md5(value.password),
+        result[0].userId
+      ], connection);
+    let updateUserCode = common.query(
+      "update UserResetCode set `status`=? where `userId`=? and `code`=?", [
+        1, result[0].userId, key
+      ], connection);
 
     await Promise.all([updateUser, updateUserCode]);
 

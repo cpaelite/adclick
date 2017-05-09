@@ -23,6 +23,16 @@ global.pool = {
     waitForConnections: false
   })
 }
+let redisOptions = {
+  host: setting.redis.host,
+  port: setting.redis.port,
+  max_clients: 100
+};
+if (setting.redis.password) {
+  redisOptions.password = setting.redis.password;
+}
+global.redisPool = require('./util/redis_pool')(redisOptions);
+
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -63,7 +73,7 @@ import {
   qrpayRouter,
   qrpayCallbackRouter
 }
-from './routes/qrpay';
+  from './routes/qrpay';
 
 
 
@@ -92,7 +102,7 @@ if (process.env.NODE_ENV === "development") {
   app.use("/tpl", express.static(__dirname + '/../Front/src/tpl'));
   app.use("/bower_components", express.static(__dirname +
     '/../Front/bower_components'));
-  app.get('/', function(req, res) {
+  app.get('/', function (req, res) {
     res.sendFile('index.html', {
       root: __dirname + '/../Front/src'
     });
@@ -114,13 +124,13 @@ app.use(log4js.connectLogger(log4js.getLogger("http"), {
 app.use(cookiePareser());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
-    extended: false
-  }))
-  // parse application/json
+  extended: false
+}))
+// parse application/json
 app.use(bodyParser.json())
 
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendFile('index.html', {
     root: __dirname + '/../Front/dist'
   });
@@ -137,14 +147,14 @@ app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,
 app.use('/', auth);
 
 /// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 /// error handlers
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   logger.error("Something went wrong:", err);
   res.status(err.status || 500);
   res.json({

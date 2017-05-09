@@ -3,7 +3,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
-var Pub = require('./redis_sub_pub');
+
 
 
 //codition model
@@ -815,8 +815,8 @@ router.post('/api/flows/:id', async function (req, res, next) {
 
 
 async function checkFlowRelativeRulestatus(userId, flowId, connection) {
-  let sql = `select  rule.id,rule.deleted  as archived  from Rule2Flow r2f  
-              left join Rule rule on r2f.ruleId = rule.id  
+  let sql = `select  rule.id,rule.deleted  as archived  from Rule2Flow r2f
+              left join Rule rule on r2f.ruleId = rule.id
               where r2f.flowId = ? and rule.userId = ?`;
   let result = await common.query(sql, [flowId, userId], connection);
   let archivedArray = [];//缓存删除状态的flow
@@ -1008,7 +1008,7 @@ async function saveOrUpdateFlow(subId, value, connection) {
   }
 
   //处理缓存中的redis pub数据  =======begin
-  let redisClient = new Pub(true);
+  let redisClient = redisPool;
   for (let index = 0; index < connection.redisPubSlice.length; index++) {
     redisClient.publish(setting.redis.channel, connection.redisPubSlice[index].data, connection.redisPubSlice[index].tag);
   }
