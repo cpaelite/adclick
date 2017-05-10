@@ -299,7 +299,8 @@ router.post('/api/automated/rules', async function(req, res, next) {
     schedule: Joi.string().required(),
     scheduleString: Joi.string().required(),
     emails: Joi.string().required(),
-    oneTime: Joi.string().optional()
+    oneTime: Joi.string().optional(),
+    status: Joi.number().required()
   });
   req.body.userId = req.parent.id;
   let connection;
@@ -307,10 +308,10 @@ router.post('/api/automated/rules', async function(req, res, next) {
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
     let v =
-      `userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails`;
-    let p = `?,?,?,?,?,?,?,?`;
+      `userId,name,dimension,timeSpan,\`condition\`,\`schedule\`,scheduleString,emails,status`;
+    let p = `?,?,?,?,?,?,?,?,?`;
     let params = [value.userId, value.name, value.dimension, value.timeSpan,
-      value.condition, value.schedule, value.scheduleString, value.emails
+      value.condition, value.schedule, value.scheduleString, value.emails,value.status
     ];
     if (value.oneTime) {
       v += `,oneTime`;

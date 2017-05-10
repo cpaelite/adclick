@@ -260,15 +260,16 @@ router.post('/api/fraud-filter/rules', async function(req, res, next) {
         campaigns: Joi.string().required(),
         dimension: Joi.string().required(),
         timeSpan: Joi.number().required(),
-        condition: Joi.string().required()
+        condition: Joi.string().required(),
+         status: Joi.number().required()
     });
     req.body.userId = req.parent.id;
     let connection;
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        let sql = `insert into FraudFilterRule (userId,name,dimension,timeSpan,\`condition\`) values(?,?,?,?,?)`;
-        let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition];
+        let sql = `insert into FraudFilterRule (userId,name,dimension,timeSpan,\`condition\`,status) values(?,?,?,?,?,?)`;
+        let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition,value.status];
         let {
             insertId: InsertId
         } = await common.query(sql, params, connection);
