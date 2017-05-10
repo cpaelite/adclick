@@ -58,6 +58,12 @@
       });
     }
 
+    $scope.$on('saveCampaignEnd', function(event, oData) {
+      flowId = oData.flowId;
+      isDuplicate = oData.isDuplicate;
+      initFlowEditCtrl();
+    });
+
     function initFlowEditCtrl() {
       var pathSkel = {
         name: 'Path 1',
@@ -957,7 +963,6 @@
           }
           $scope.saveTime = null;
         }
-
         if (theFlow.id) {
           flowData.id = theFlow.id;
         }
