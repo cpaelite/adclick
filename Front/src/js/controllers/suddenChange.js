@@ -286,6 +286,7 @@
 
       function initSuccess() {
         if (theData) {
+          theData.status = theData.status ? true : false;
           $scope.item = theData;
           $scope.item.campaigns = $scope.item.campaigns.split(",");
           $scope.conditionArray = fillConditionArray($scope.item.condition);
@@ -360,6 +361,7 @@
           $scope.item.condition = condition;
           var params = angular.copy($scope.item);
           params.campaigns = params.campaigns.join(',')
+          params.status = +params.status;
           $scope.saveStatus = true;
           AutomatedRule.save(params, success);
         }

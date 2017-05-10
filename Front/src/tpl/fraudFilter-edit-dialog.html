@@ -71,6 +71,12 @@
                     <i ng-click="deleteCondition(condition)" ng-if="$index > 0" class="em-close material-icons">delete</i>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Rule status:</label>
+                <div class="col-sm-7">
+                  <md-switch class="md-primary" ng-model="formData.status" style="margin:0;width:36px;"></md-switch>
+                </div>
+            </div>
             <div class="form-group hidden" ng-if="conditionFilters.length > conditions.length">
               <div class="col-sm-7 col-sm-offset-3">
                 <em ng-click="addCondition()">

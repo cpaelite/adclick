@@ -346,6 +346,7 @@
         data.campaigns = data.campaigns.split(',');
         data.conditions = data.condition;
         $scope.formData = data;
+        $scope.formData.status = data.status ? true : false;
         $scope.conditions = self._formatCondition(data.conditions);
       });
     } else {
@@ -354,7 +355,8 @@
         name: '',
         timeSpan: '',
         conditions: '',
-        campaigns: []
+        campaigns: [],
+        status: false
       }
       $scope.conditions = self._formatCondition();;
     }
@@ -397,6 +399,7 @@
         var postData = angular.copy($scope.formData);
         postData.condition = self._encodeCondition.call(this);
         postData.campaigns = postData.campaigns.join(',');
+        postData.status = +postData.status;
         if(self.item) {
           self.FraudFilter.update({id: postData.id}, postData, function(oData) {
             if(oData.status == 1) {
