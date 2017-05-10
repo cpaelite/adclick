@@ -2950,6 +2950,8 @@ md-dialog.md-transition-in{border-radius:4px;}
 .md-toolbar-tools h1 a{border:none;height:auto;line-height:normal;}
 .md-toolbar-tools h1 a:hover{background:transparent;}
 .material-icons{font-size:15px;}
+.tools-menu{display: inline-block;}
+.tools-menu .material-icons.md-mini{float: right;}
 table{border-collapse:collapse;}
 md-select:not([disabled]):focus .md-select-value{border:1px solid #c9c9cf;border-radius:3px;}
 .icon-search.md-24{margin:0 10px;font-size:14px;color:#2f9be1;}
