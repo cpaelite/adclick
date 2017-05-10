@@ -82,7 +82,7 @@
                     <span>{{'campaign' | translate}}</span>
                 </a>
             </li>
-            <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}" has-permission="report.flow.show" operation="show">
+            <!-- <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}" has-permission="report.flow.show" operation="show">
                 <a ui-sref="app.report.flow" md-ink-ripple>
                     <i class="icon-yw-01 fonts17"></i>
                     <span>{{'flow' | translate}}</span>
@@ -99,6 +99,29 @@
                     <i class="icon-tasks fonts15 mtop2"></i>
                     <span>{{'offer' | translate}}</span>
                 </a>
+            </li> -->
+            <li ui-sref-active="active">
+              <md-menu-bar style="padding: 0;">
+                  <md-menu>
+                    <button ng-click="$mdMenu.open()" class="type-title">
+                      <span class="tools-menu clearfix">
+                        <i class="icon-yw-01 fonts17"></i>
+                        <span class="tools-word">Flows</span><i class="material-icons md-mini"></i>
+                      </span>
+                    </button>
+                    <md-menu-content width="3">
+                      <md-menu-item>
+                        <md-button ui-sref="app.report.flow" style="padding-top:0;">Flow</md-button>
+                      </md-menu-item>
+                      <md-menu-item>
+                        <md-button ui-sref="app.report.lander" style="padding-top:0;">Lander</md-button>
+                      </md-menu-item>
+                      <md-menu-item>
+                        <md-button ui-sref="app.report.offer" style="padding-top:0;">offer</md-button>
+                      </md-menu-item>
+                    </md-menu-content>
+                  </md-menu>
+              </md-menu-bar>
             </li>
             <li ui-sref-active="active" has-permission="report.trafficSource.show" operation="show">
                 <a ui-sref="app.report.traffic" md-ink-ripple>
