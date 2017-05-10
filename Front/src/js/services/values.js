@@ -707,8 +707,8 @@ angular.module('app').value('AutomatedRuleOptions', {
     {"key": "offerId", "display": "Offer"},
     {"key": "landerId", "display": "Lander"},
     {"key": "brand", "display": "Brand"},
-    {"key": "brower", "display": "Browser"},
-    {"key": "browerVersion", "display": "BrowserVersion"}
+    {"key": "browser", "display": "Browser"},
+    {"key": "browserVersion", "display": "BrowserVersion"}
   ],
   "timeSpan": [
     {"key": "last3hours", "display": "Last 3 Hours"},
