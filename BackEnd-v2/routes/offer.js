@@ -29,7 +29,7 @@ var util = require('../util');
  *    message: 'success' *   }
  *
  */
-router.post('/api/offers', async function(req, res, next) {
+router.post('/api/offers', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -110,7 +110,7 @@ router.post('/api/offers', async function(req, res, next) {
  *   }
  *
  */
-router.post('/api/offers/:id', async function(req, res, next) {
+router.post('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         hash: Joi.string().optional(),
@@ -182,7 +182,7 @@ router.post('/api/offers/:id', async function(req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offers/:id', async function(req, res, next) {
+router.get('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -225,7 +225,7 @@ router.get('/api/offers/:id', async function(req, res, next) {
  *    message: 'success',data:{}  }
  *
  */
-router.get('/api/offers', async function(req, res, next) {
+router.get('/api/offers', async function (req, res, next) {
     // userId from jwt, don't need validation
     var schema = Joi.object().keys({
         columns: Joi.string().optional(),
@@ -277,7 +277,7 @@ router.get('/api/offers', async function(req, res, next) {
  * @apiParam {String} hash
  *
  */
-router.delete('/api/offers/:id', async function(req, res, next) {
+router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -291,22 +291,27 @@ router.delete('/api/offers/:id', async function(req, res, next) {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
 
-        //check offer used by flow ?
-        let templeSql = `select  f.\`id\`as flowId,f.\`name\` as flowName from  Offer offer
-            inner join Offer2Path p2 on offer.\`id\` = p2.\`offerId\`
-            inner join Path p on p.\`id\` = p2.\`pathId\`
-            inner join Path2Rule r2 on r2.\`pathId\` = p.\`id\`
-            inner join Rule r on r.\`id\`= r2.\`ruleId\`
-            inner join Rule2Flow f2 on f2.\`ruleId\`= r.\`id\`
-            inner join Flow f on f.\`id\` = f2.\`flowId\`
-            where  offer.\`deleted\` = 0  and p2.\`deleted\` = 0  and p.\`deleted\` = 0  and r2.\`deleted\` = 0  and r.\`deleted\`= 0 and f2.\`deleted\`= 0 and f.\`deleted\` = 0
-            and offer.\`id\`= <%=offerId%> and offer.\`userId\`= <%=userId%> and p.\`userId\`=<%=userId%> and r.\`userId\`= <%=userId%> and f.\`userId\` = <%=userId%>`;
-        let buildFuc = _.template(templeSql);
-        let sql = buildFuc({
-            offerId: value.id,
-            userId: value.userId
-        });
-        let flowResult = await common.query(sql, [], connection);
+        //check offer used by 普通flow ?
+        let templeSql = `select  f.id as flowId,f.name as flowName from  Offer offer
+            right join Offer2Path p2 on offer.id = p2.offerId
+            right join Path p on p.id = p2.pathId
+            right join Path2Rule r2 on r2.pathId = p.id
+            right join Rule r on r.id= r2.ruleId
+            right join Rule2Flow f2 on f2.ruleId= r.id
+            right join Flow f on f.id = f2.flowId
+            where  f.deleted = 0 and offer.id= ${value.id} and offer.userId= ${value.userId} and f.type= 1`;
+        //check offer used by  campaign 
+        let usedByCampaignsql = `select  cam.id as campaignId,cam.name as campaignName from  Offer offer
+            right join Offer2Path p2 on offer.id = p2.offerId
+            right join Path p on p.id = p2.pathId
+            right join Path2Rule r2 on r2.pathId = p.id
+            right join Rule r on r.id= r2.ruleId
+            right join Rule2Flow f2 on f2.ruleId= r.id
+            right join Flow f on f.id = f2.flowId
+            right join TrackingCampaign cam on cam.targetFlowId = f.id 
+            where  f.deleted = 0 and offer.id= ${value.id} and offer.userId= ${value.userId} and f.type= 0 and cam.deleted= 0 `;
+
+        let [flowResult, campaignResult] = await Promise.all([common.query(templeSql, [], connection), common.query(usedByCampaignsql, [], connection)]);
         if (flowResult.length) {
             res.json({
                 status: 0,
@@ -318,10 +323,18 @@ router.delete('/api/offers/:id', async function(req, res, next) {
             return;
         }
 
+        if (campaignResult.length) {
+            res.json({
+                status: 0,
+                message: 'offer used by campaign!',
+                data: {
+                    campaigns: campaignResult
+                }
+            });
+            return;
+        }
         let result = await common.deleteOffer(req.user.id, value.id, value.userId, value.name, value.hash, connection);
-
-
-        res.json({
+       return  res.json({
             status: 1,
             message: 'success'
         });
