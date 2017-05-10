@@ -286,6 +286,7 @@
           var ppgrp = pageStatus.groupBy[0];
           params[ppgrp] = ppRow.id;
         }
+        angular.extend(params, {order: '-visits'});
       } else {
         params.groupBy = pageStatus.groupBy[0];
       }
@@ -295,7 +296,6 @@
         params.columns = $scope.downloadReportCols;
         FileDownload.download(params);
       } else {
-
         $scope.promise = Report.get(params, buildSuccess(parentRow)).$promise;
       }
     };
