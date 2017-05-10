@@ -78,7 +78,7 @@
               <div class="col-sm-7"><em ng-click="addCondition()" ng-if="conditionArray.length < conditions.length"><i class="material-icons add-next">add_circle</i>Add another</em></div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Frequency<span class="star-icon">*</span>: </label>
+                <label class="col-sm-3 control-label">Frequency(UTC)<span class="star-icon">*</span>: </label>
                 <div class="col-sm-7 my-select">
                     <md-select aria-label="Frequency" class="cs-subform-select" ng-model="frequency">
                         <md-option value="{{frequency}}" ng-repeat="frequency in frequencys track by $index">{{frequency}}</md-option>
