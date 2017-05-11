@@ -442,6 +442,10 @@ router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
         let sql = `select detail.id,detail.data,cam.name as campaign,log.dimension as dimension,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time from FraudFilterLogDetail detail inner join TrackingCampaign cam on cam.id = detail.campaignID 
                    inner join FraudFilterLog log on log.id = detail.logId where detail.logId = ?`;
         let Result = await common.query(sql, [value.id], connection);
+
+        for (let index = 0; index < Result.length; index++) {
+            Result[index].data = JSON.parse(Result[index].data)
+        }
         return res.json({
             status: 1,
             message: 'success',
