@@ -930,6 +930,7 @@
         className: 'contextmenu-report',
         delay: 0,
         trigger: 'left',
+        zIndex: 101,
         callback: function(key, options) {
           var index = $(options.$trigger).closest('tr').attr('data-index');
           var row = $scope.report.rows[index];
