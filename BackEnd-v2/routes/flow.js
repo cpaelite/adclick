@@ -1229,7 +1229,7 @@ async function fillConditions(r, connection) {
     } else if (r[i].id == 'useragent') {
       //do nothing
     } else {
-      console.error("unsupported id type ", r[i].id)
+      //console.error("unsupported id type ", r[i].id)
     }
   }
   return r
@@ -1256,7 +1256,7 @@ async function loadBrandAndVersionFromDB(connection) {
     var line = lines[i];
     if (!r[line.category]) {
       r[line.category] = {
-        value: line.category,
+        value: `#ALL ${line.category}`,
         display: line.category,
         suboptions: []
       };
@@ -1279,7 +1279,7 @@ async function loadOsFromDB(connection) {
     var line = lines[i]
     if (!r[line.category]) {
       r[line.category] = {
-        value: line.category,
+        value: `#ALL ${line.category}`,
         display: line.category,
         suboptions: []
       }
@@ -1305,7 +1305,7 @@ async function loadBowerAndVersionFromDB(connection) {
     var line = lines[i]
     if (!r[line.category]) {
       r[line.category] = {
-        value: line.category,
+        value: `#ALL ${line.category}`,
         display: line.category,
         suboptions: []
       }
@@ -1322,9 +1322,15 @@ async function loadBowerAndVersionFromDB(connection) {
 
 async function loadCountryFromDB(connection) {
   var sql = "select id, name as display, alpha3Code as value from Country"
-  var r = []
-  r = await query(sql, [], connection);
-  return r
+  var r = [{
+    id: 0,
+    display: 'SameAsCampaign',
+    value: '#SameAsCampaign'
+  }];
+
+  var r1 = await query(sql, [], connection);
+
+  return r.concat(r1);
 }
 
 
