@@ -18,7 +18,7 @@ var setting = require('../config/setting');
  *     }
  *
  */
-router.get('/api/fraud-filter/rules/:id', async function(req, res, next) {
+router.get('/api/fraud-filter/rules/:id', async function (req, res, next) {
     let connection;
     try {
         var schema = Joi.object().keys({
@@ -34,7 +34,7 @@ router.get('/api/fraud-filter/rules/:id', async function(req, res, next) {
         let [
             [Result], campaigns
         ] = await Promise.all([common.query(sql, [value.id, value.userId], connection),
-            common.query(camsql, [value.userId, value.id], connection)
+        common.query(camsql, [value.userId, value.id], connection)
         ]);
         if (Result) {
             let campaignSlice = [];
@@ -77,7 +77,7 @@ router.get('/api/fraud-filter/rules/:id', async function(req, res, next) {
  *
  */
 
-router.get('/api/fraud-filter/rules', async function(req, res, next) {
+router.get('/api/fraud-filter/rules', async function (req, res, next) {
 
     let connection;
     try {
@@ -126,9 +126,9 @@ router.get('/api/fraud-filter/rules', async function(req, res, next) {
         let [Result, [{
             total: Total
         }]] = await Promise.all(
-            [common.query(sql, params, connection),
+                [common.query(sql, params, connection),
                 common.query(totalsql, [value.userId], connection)
-            ]);
+                ]);
         return res.json({
             status: 1,
             message: "success",
@@ -168,7 +168,7 @@ router.get('/api/fraud-filter/rules', async function(req, res, next) {
  */
 
 
-router.put('/api/fraud-filter/rules/:id', async function(req, res, next) {
+router.put('/api/fraud-filter/rules/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required(),
@@ -219,6 +219,8 @@ router.put('/api/fraud-filter/rules/:id', async function(req, res, next) {
                 await common.query('insert into FFRule2Campaign(ruleId,campaignId) values (?,?)', [value.id, campaignArray[index]], connection);
             }
         }
+        //redis pub
+        redisPool.publish(setting.redis.channel, value.userId + ".update.ffrule." + value.id);
         delete value.userId;
         res.json({
             status: 1,
@@ -253,7 +255,7 @@ router.put('/api/fraud-filter/rules/:id', async function(req, res, next) {
  *   }
  *
  */
-router.post('/api/fraud-filter/rules', async function(req, res, next) {
+router.post('/api/fraud-filter/rules', async function (req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
         name: Joi.string().required(),
@@ -261,7 +263,7 @@ router.post('/api/fraud-filter/rules', async function(req, res, next) {
         dimension: Joi.string().required(),
         timeSpan: Joi.number().required(),
         condition: Joi.string().required(),
-         status: Joi.number().required()
+        status: Joi.number().required()
     });
     req.body.userId = req.parent.id;
     let connection;
@@ -269,7 +271,7 @@ router.post('/api/fraud-filter/rules', async function(req, res, next) {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         let sql = `insert into FraudFilterRule (userId,name,dimension,timeSpan,\`condition\`,status) values(?,?,?,?,?,?)`;
-        let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition,value.status];
+        let params = [value.userId, value.name, value.dimension, value.timeSpan, value.condition, value.status];
         let {
             insertId: InsertId
         } = await common.query(sql, params, connection);
@@ -277,6 +279,9 @@ router.post('/api/fraud-filter/rules', async function(req, res, next) {
         for (let index = 0; index < campaignArray.length; index++) {
             await common.query('insert into FFRule2Campaign(ruleId,campaignId) values (?,?)', [InsertId, campaignArray[index]], connection);
         }
+        //redis pub
+        redisPool.publish(setting.redis.channel, value.userId + ".add.ffrule." +
+            InsertId);
         value.id = InsertId;
         delete value.userId;
         value.status = 0; //default 0 
@@ -301,7 +306,7 @@ router.post('/api/fraud-filter/rules', async function(req, res, next) {
  * @apiGroup fraud-filter
  * 
  */
-router.delete('/api/fraud-filter/rules/:id', async function(req, res, next) {
+router.delete('/api/fraud-filter/rules/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
         id: Joi.number().required(),
         userId: Joi.number().required()
@@ -314,6 +319,8 @@ router.delete('/api/fraud-filter/rules/:id', async function(req, res, next) {
         connection = await common.getConnection();
         let sql = `update FraudFilterRule set deleted = 1 where userId = ? and id =?`;
         await common.query(sql, [value.userId, value.id], connection);
+        //redis pub
+        redisPool.publish(setting.redis.channel, value.userId + ".delete.ffrule." + value.id);
         res.json({
             status: 1,
             message: 'success'
@@ -341,7 +348,7 @@ router.delete('/api/fraud-filter/rules/:id', async function(req, res, next) {
  * 
  */
 
-router.get('/api/fraud-filter/logs', async function(req, res, next) {
+router.get('/api/fraud-filter/logs', async function (req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         page: Joi.number().required(),
@@ -393,9 +400,9 @@ router.get('/api/fraud-filter/logs', async function(req, res, next) {
         let [Result, [{
             total: Total
         }]] = await Promise.all(
-            [common.query(sql, params, connection),
+                [common.query(sql, params, connection),
                 common.query(totalsql, [value.userId], connection)
-            ]);
+                ]);
 
         return res.json({
             status: 1,
@@ -420,7 +427,7 @@ router.get('/api/fraud-filter/logs', async function(req, res, next) {
  * @apiName 获取rule的log的详情
  *
  */
-router.get('/api/fraud-filter/logs/:id', async function(req, res, next) {
+router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
     let schema = Joi.object().keys({
         userId: Joi.number().required(),
         id: Joi.number().required()
