@@ -1447,7 +1447,7 @@
         $scope.campaignAddStatus = true;
         $scope.item.id = campaign.id;
         $scope.item.targetFlowId = item.data.targetFlowId;
-        $scope.$broadcast('saveCampaignEnd', {flowId: item.data.targetFlowId, isDuplicate: false});
+        $scope.$broadcast('saveCampaignEnd', {flow: item.data.flow});
         $('#dialogContent_campaign_edit_content').scrollTop(0);
         return;
       }

@@ -59,9 +59,19 @@
     }
 
     $scope.$on('saveCampaignEnd', function(event, oData) {
-      flowId = oData.flowId;
-      isDuplicate = oData.isDuplicate;
-      initFlowEditCtrl();
+      var flow = oData.flow;
+      var copyFlow = angular.copy($scope.flow);
+      copyFlow.id = flow.id;
+      copyFlow.name = flow.name;
+
+      flow.rules.forEach(function(rule, i) {
+        copyFlow.rules[i].id = rule.id;
+        rule.paths.forEach(function(path, j) {
+          copyFlow.rules[i].paths[j].id = path.id;
+        });
+      });
+
+      $scope.flow = theFlow = copyFlow;
     });
 
     function initFlowEditCtrl() {
