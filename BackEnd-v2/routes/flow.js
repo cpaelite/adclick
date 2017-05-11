@@ -1321,7 +1321,7 @@ async function loadBowerAndVersionFromDB(connection) {
 }
 
 async function loadCountryFromDB(connection) {
-  var sql = "select id, name as display, alpha3Code as value from Country"
+  var sql = "select id, name as display, alpha3Code as value from Country where alpha3Code != 'ZZZ' "
   var r = [{
     id: 0,
     display: 'SameAsCampaign',
