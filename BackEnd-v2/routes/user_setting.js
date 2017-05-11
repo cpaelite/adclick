@@ -761,11 +761,12 @@ router.get('/api/blacklist', async function(req, res, next) {
       "select  `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [
         value.userId, 0
       ], connection);
+     
     for (let index = 0; index < result.length; index++) {
       responseData.blacklist.push({
         name: result[index].name,
-        ipRules: JSON.parse(result[index].ipRange),
-        userAgentRules: JSON.parse(result[index].userAgent)
+        ipRules:result[index].ipRange?JSON.parse(result[index].ipRange) :result[index].ipRange,
+        userAgentRules: result[index].userAgent?JSON.parse(result[index].userAgent):result[index].userAgent
       });
       responseData.enabled = result[index].enabled == 1 ? true : false;
     }
