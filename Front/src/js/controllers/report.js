@@ -1635,7 +1635,7 @@
       $scope.item.country = this.country ? this.country.value : 'ZZZ';
     }
 
-    if(this.country) {
+    if(this.country && this.country.value != "ZZZ") {
       $scope.countryInputDisabled = true;
     }
 
