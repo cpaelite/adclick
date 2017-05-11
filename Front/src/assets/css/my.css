@@ -671,7 +671,10 @@ table tbody tr{background: #fff;}
 table tbody tr:nth-child(2n+2){background:#fff;border-width:1px 0 1px 0;border-color:#ededed;border-style:solid;}
 table.md-table:not(.md-row-select) td.md-cell:first-child, table.md-table:not(.md-row-select) th.md-column:first-child{padding:4px 10px 0 10px;}
 table{border-radius:0;float:left;width:100%;height:auto;}
-md-table-container {overflow-y:auto;border-radius:0;float:left;width:100%;background:#f6f8f8;min-height: 100px;}
+md-table-container {overflow-y:auto;border-radius:0;float:left;width:100%;background:#f6f8f8;min-height: 100px;transform: translate(0,0);-ms-transform:translate(0,0); 	/* IE 9 */
+-moz-transform:translate(0,0); 	/* Firefox */
+-webkit-transform:translate(0,0); /* Safari 和 Chrome */
+-o-transform:translate(0,0); 	}
 .table-box{border:1px solid #d7d7d7;border-radius:3px;width:100%;float:left;}
 
 .md-table-pagination{color:#000;}
@@ -2348,7 +2351,7 @@ md-content.cs-main-content{
 }
 .table-box md-progress-linear{
     position: fixed;
-    width: calc(100% - 30px);
+    width: 100%;
     top: auto !important;
 }
 .cs-page-flow,

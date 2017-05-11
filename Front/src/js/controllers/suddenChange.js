@@ -44,9 +44,10 @@
       if (!params.filter) {
         delete params.filter;
       }
-      SuddenChange.get(params,function(result){
+      $scope.promise = SuddenChange.get(params,function(result){
         $scope.list = result.data;
-      });
+      }).$promise;
+      return $scope.promise;
     };
     $scope.getRuleList();
 
@@ -75,9 +76,10 @@
       if(!params.filter) {
         delete params.filter;
       }
-      Logs.get(params, function(result){
+      $scope.logPromise = Logs.get(params, function(result){
         $scope.loglist = result.data;
-      });
+      }).$promise;
+      return $scope.logPromise;
     };
     $scope.getLogList();
 
