@@ -16,7 +16,8 @@ import {
   csvextraConfig,
   csvCloums,
   groupByKeys
-} from '../util/report'
+} from '../util/report';
+
 
 /**
  * @api {get} /api/report  报表
@@ -271,17 +272,9 @@ async function normalReport(values, mustPagination) {
   } = values;
   //====== start 
   let having = "";
-  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
-  if (_.has(values, 'day')) {
-    let start = moment(values.day.trim()).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
-    let end = moment(values.day.trim()).add(1, 'd').startOf('day').format("YYYY-MM-DDTHH:mm:ss");
-    where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
-  } else if (_.has(values, 'hour')) {
+  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
+               and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
-    let start = moment(values.hour.trim()).startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
-    let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format("YYYY-MM-DDTHH:mm:ss");
-    where = ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
-  }
 
   let attrs = Object.keys(values);
   for (let index = 0; index < attrs.length; index++) {
@@ -335,25 +328,56 @@ async function normalReport(values, mustPagination) {
     }
   }
 
+  //处理timezone 兼容列存储
+  let tag = tz.slice(0, 1);
+  let numberString = tz.slice(1);
+  let slice = numberString.split(':');
+  let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`;
+
   if (groupBy.toLowerCase() == 'day') {
-    //处理timezone 兼容列存储
-    let tag = tz.slice(0, 1);
-    let numberString = tz.slice(1);
-    let slice = numberString.split(':');
-    let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as 'id',
                 DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`;
   } else if (groupBy.toLowerCase() == 'hour') {
-    //处理timezone 兼容列存储
-    let tag = tz.slice(0, 1);
-    let numberString = tz.slice(1);
-    let slice = numberString.split(':');
-    let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as 'id',
                 DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`;
+  } else if (groupBy.toLowerCase() == 'hourofday') {
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as 'id',
+                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourofday'`;
+  }
+  let tplGroupBy = `group by ${mapping[groupBy].dbGroupBy}`;
+
+  //drilldown day->hour  or  hour->day 因为 day 
+  if (_.has(values, 'day')) {
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`;
+    tplGroupBy += `,day`;
+    if (having != "") {
+      having += ` and day='${values.day}'`;
+    } else {
+      having = ` having day='${values.day}' `;
+    }
+  } else if (_.has(values, 'hour')) {
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`;
+    tplGroupBy += `,hour`;
+    if (having != "") {
+      having += ` and hour='${values.hour}'`;
+    } else {
+      having = `having hour='${values.hour}' `;
+    }
+  } else if (_.has(values, 'hourofday')) {
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourofday'`;
+    tplGroupBy += `,hourofday`;
+    if (having != "") {
+      having += ` and hourofday='${values.hourofday}'`;
+    } else {
+      having = `having hourofday='${values.hourofday}' `;
+    }
   }
 
-  let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} group by ${mapping[groupBy].dbGroupBy} ${having} ${orders} `;
+
+
+  let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} ${tplGroupBy} ${having} ${orders} `;
+
+
 
   let totalSQL = `select COUNT(*) as total,sum(visits) as visits,    
                 sum(impressions) as impressions ,
@@ -389,8 +413,6 @@ async function normalReport(values, mustPagination) {
     connection.release();
   }
 
-
-
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy == "campaign") {
     rawRows = await fullFill({
@@ -405,11 +427,54 @@ async function normalReport(values, mustPagination) {
   });
 
   let totalRows = totals.total;
+
+  //填充hourofday的数据
+  if (groupBy.toLowerCase() == 'hourofday') {
+     rawRows=fullfillHourofDay(rawRows);
+  }
   return {
     rows: rawRows,
     totals,
     totalRows
   }
+}
+
+function fullfillHourofDay(rawRows){
+    //用于填充 hourofday 的数据
+    let DATAOFHOUROFDAY = [
+      { id: 0, hourofday: 0, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 1, hourofday: 1, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 2, hourofday: 2, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 3, hourofday: 3, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 4, hourofday: 4, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 5, hourofday: 5, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 6, hourofday: 6, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 7, hourofday: 7, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 8, hourofday: 8, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 9, hourofday: 9, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 10, hourofday: 10, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 11, hourofday: 11, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 12, hourofday: 12, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 13, hourofday: 13, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 14, hourofday: 14, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 15, hourofday: 15, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 16, hourofday: 16, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 17, hourofday: 17, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 18, hourofday: 18, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 19, hourofday: 19, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 20, hourofday: 20, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 21, hourofday: 21, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 22, hourofday: 22, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 23, hourofday: 23, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 }
+    ];
+    for (let i = 0; i < DATAOFHOUROFDAY.length; i++) {
+      for (let j = 0; j < rawRows.length; j++) {
+        if (DATAOFHOUROFDAY[i].id == rawRows[j].id) {
+          DATAOFHOUROFDAY[i] = rawRows[j];
+        }
+      }
+    }
+    return DATAOFHOUROFDAY;
 }
 
 async function listPageReport(query) {
