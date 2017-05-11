@@ -63,7 +63,7 @@
     var fromCampaign = $scope.$stateParams.frcpn == '1';
 
     $scope.app.subtitle = perfType;
-    $scope.groupByOptions = groupByOptions;
+    $scope.groupByOptions = angular.copy(groupByOptions);
 
     $scope.loading = true;
 
@@ -131,6 +131,31 @@
     } else {
       pageStatus.status = 1;
       $scope.activeStatus = 1;
+    }
+
+    // fill group by and drilldown v1-v10 paramsName
+    $scope.drilldownTrafficId = null;
+    if (perfType == "campaign" || perfType == "traffic") {
+      $scope.drilldownTrafficId = 0;
+    } else if (stateParams.drilldownTrafficId) {
+      $scope.drilldownTrafficId = stateParams.drilldownTrafficId;
+      TrafficSource.get({id: $scope.drilldownTrafficId}, function (traffic) {
+        if (traffic.status) {
+          // drilldown v1-v10的名字
+          var params = JSON.parse(traffic.data.params);
+          $scope.groupByOptions.forEach(function(option, index) {
+            if (option.role == "campaign") {
+              var idx = option.value.substring(1);
+              var parameter = params[idx-1].Parameter;
+              if (parameter) {
+                $scope.groupByOptions[index].paramValue = parameter;
+              } else {
+                $scope.groupByOptions[index].paramValue = "N/A";
+              }
+            }
+          });
+        }
+      });
     }
 
     $scope.query = {
@@ -412,6 +437,10 @@
     $scope.groupbyFilter1 = filteGroupBy(1);
     $scope.groupbyFilter2 = filteGroupBy(2);
 
+    $scope.groupbyParamValue = function filterGroupByParamValue(value) {
+      return perfType != "campaign" && perfType != "traffic" && value.paramValue;
+    }
+
     /*$scope.filterIsHow = function (item) {
       return item.level == 0;
     };*/
@@ -515,7 +544,7 @@
     $scope.drilldownFilter = function(item) {
       var exclude = [];
       exclude.push(pageStatus.groupBy[0]);
-      if (perfType != 'campaign' && perfType != 'traffic' && item.role == 'campaign') {
+      if (perfType != 'campaign' && perfType != 'traffic' && item.role == 'campaign' && !$scope.drilldownTrafficId) {
         exclude.push(item.value);
       }
       if (perfType != 'campaign' && item.role == 'ip') {
@@ -552,59 +581,6 @@
       }
     });
 
-    $scope.menuOpen = function (mdMenu, row) {
-      if (perfType == 'ip') {
-        return;
-      }
-      mdMenu.open();
-      if (row.treeLevel > 1)
-        return;
-
-      var id = 0;
-      if (perfType == "campaign") {
-        id = row.data.trafficId;
-      } else if (perfType == "traffic") {
-        id = row.id;
-      } else {
-        return;
-      }
-      TrafficSource.get({id: id}, function (traffic) {
-        if (traffic.status) {
-          // drilldown v1-v10的名字
-          var params = JSON.parse(traffic.data.params);
-          $scope.groupByOptions.forEach(function(option, index) {
-            if (option.role == "campaign") {
-              var idx = option.value.substring(1);
-              var parameter = params[idx-1].Parameter;
-              if (parameter) {
-                $scope.groupByOptions[index].paramValue = parameter;
-              } else {
-                $scope.groupByOptions[index].paramValue = "N/A";
-              }
-            }
-          });
-          // copy campaignUrl
-          if (perfType == "campaign") {
-            var urlParams = spliceUrlParams(traffic.data);
-            if (!mainDomain) {
-              return;
-            }
-            var copyCampaignUrl = "http://";
-            if (mainDomain.internal) {
-              copyCampaignUrl += $scope.profile.idText + ".";
-            }
-            copyCampaignUrl += mainDomain.address + "/" + row.data.campaignHash;
-            if (!traffic.data.impTracking) {
-              copyCampaignUrl += urlParams;
-              //$scope.copyCampaignUrl = "http://" + $scope.profile.idText + "." + $scope.mainDomain + "/" + row.data.campaignHash + urlParams;
-            }
-            $scope.copyCampaignUrl = copyCampaignUrl;
-          }
-        }
-
-      });
-    };
-
     $scope.copyUrlClick = function() {
       toastr.clear();
       toastr.success('Copy Success!');
@@ -616,6 +592,17 @@
 
       var group = pageStatus.groupBy[0];
       $scope.filters.push({ key: group, val: row.id });
+
+      var trafficId;
+      if (group == "campaign") {
+        trafficId = row.data.trafficId;
+      } else if (group == "traffic") {
+        trafficId = row.id;
+      }
+      if (trafficId) {
+        $scope.drilldownTrafficId = trafficId;
+      }
+
       var cacheKey = group + ':' + row.id;
       reportCache.put(cacheKey, {level: $scope.filters.length, name: row.name});
 
@@ -665,6 +652,7 @@
       $scope.filters.forEach(function(f) {
         params.filters[f.key] = f.val;
       });
+      params.drilldownTrafficId = $scope.drilldownTrafficId;
       $scope.$state.go('app.report.' + page, params);
     }
 
@@ -876,13 +864,13 @@
               if (option.role == 'campaign') {
                 var idx = option.value.substring(1);
                 var parameter = params[idx-1].Parameter;
-                if(parameter) {
-                  $scope.groupByOptions[index].paramValue = parameter;
-                  $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': ' + parameter);
-                } else {
-                  $scope.groupByOptions[index].paramValue = 'N/A';
-                  $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': N/A');
-                }
+                  if(parameter) {
+                    $scope.groupByOptions[index].paramValue = parameter;
+                    $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': ' + parameter);
+                  } else {
+                    $scope.groupByOptions[index].paramValue = 'N/A';
+                    $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': N/A');
+                  }
               }
             });
             // copy campaignUrl
@@ -922,7 +910,7 @@
     function initContextMenu(idName) {
       var groupByOptions = {};
       $scope.groupByOptions.forEach(function(groupByOption) {
-        var displayName = groupByOption.role == 'campaign' ? groupByOption.display + '<em class="' + groupByOption.value + '">: ' +  groupByOption.paramValue + '</em>' : groupByOption.display;
+        var displayName = groupByOption.role == 'campaign' && groupByOption.paramValue ? groupByOption.display + '<em class="' + groupByOption.value + '">: ' +  groupByOption.paramValue + '</em>' : groupByOption.display + '<em class="' + groupByOption.value + '"></em>';
         groupByOptions[groupByOption.value] = {
           name: displayName,
           isHtmlName: true,

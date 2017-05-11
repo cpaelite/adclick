@@ -75,7 +75,8 @@
         extgrpby: null,
         datetype: null,
         status: null,
-        filters: {}
+        filters: {},
+        drilldownTrafficId: null
       }
     };
   }
