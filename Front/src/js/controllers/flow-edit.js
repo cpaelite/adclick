@@ -70,8 +70,9 @@
           copyFlow.rules[i].paths[j].id = path.id;
         });
       });
-
       $scope.flow = theFlow = copyFlow;
+      $scope.curPath = theFlow.rules[0].paths[0];
+      $scope.curRule = theFlow.rules[0];
     });
 
     function initFlowEditCtrl() {
@@ -680,7 +681,7 @@
           if (allLanders) {
             var filtered = allLanders.filter(function(lander) {
               return $scope.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == $scope.country.value;
-            }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
+            }).filter(excludeInLander($scope.curPath.landers.map(function(item) { return item._def; })));
             deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
           } else {
             deferred.resolve([]);
@@ -688,6 +689,14 @@
         });
         return deferred.promise;
       };
+      function excludeInLander(list) {
+        return function(item) {
+          // return list.indexOf(item) == -1;
+          return list.every(function(li) {
+            return !li || (li && li.id != item.id)
+          });
+        };
+      }
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
         return $scope.curPath.landers && $scope.curPath.landers.map(function(item) {
