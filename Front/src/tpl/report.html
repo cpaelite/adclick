@@ -13,19 +13,19 @@
             <div class="cs-subform-control">
                 <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <!--<option value="">Choose grouping</option>-->
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter: groupbyFilter">{{gb.display}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter: groupbyFilter">{{gb.display}}<em ng-if="groupbyParamValue(gb)">: {{gb.paramValue}}</em></md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
                 <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[1]" ng-disabled="!groupBy[0] || groupBy[0]=='ip'" placeholder="Choose Grouping" ng-change="changeGroupby(1)">
                     <md-option value="">Choose Grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter1">{{gb.display}}<em ng-if="groupbyParamValue(gb)">: {{gb.paramValue}}</em></md-option>
                 </md-select>
             </div>
             <div class="cs-subform-control">
                 <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[2]" ng-disabled="!groupBy[1]" placeholder="Choose Grouping">
                     <md-option value="">Choose Grouping</md-option>
-                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}</md-option>
+                    <md-option value="{{gb.value}}" ng-repeat="gb in groupByOptions | filter:groupbyFilter2">{{gb.display}}<em ng-if="groupbyParamValue(gb)">: {{gb.paramValue}}</em></md-option>
                 </md-select>
             </div>
         </div>
