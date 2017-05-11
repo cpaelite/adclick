@@ -440,8 +440,8 @@ router.get('/api/automated/logs', async function(req, res, next) {
     }
 
     let sql =
-      `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time,rule.name as name,log.dimension as dimension
-                  from SuddenChangeLog log inner join SuddenChangeRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} ${timeFilter} `;
+      `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%m-%d %H:%i:%s") as time,rule.name as name,log.dimension as dimension
+                  from SuddenChangeLog log inner join SuddenChangeRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} ${timeFilter} order by log.timeStamp DESC`;
 
 
     let totalsql = `select count(*) as total from  ((${sql}) as T)`;

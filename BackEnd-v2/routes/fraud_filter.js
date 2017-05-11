@@ -391,8 +391,8 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
             timeFilter += ` and log.timeStamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${value.to}', '+00:00','+00:00')))  `;
         }
 
-        let sql = `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%d-%m %H:%i:%s") as time,rule.name as name,log.dimension as dimension  
-                  from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} ${timeFilter} `;
+        let sql = `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%m-%d %H:%i:%s") as time,rule.name as name,log.dimension as dimension  
+                  from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} ${timeFilter} order by log.timeStamp DESC`;
 
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
         sql += ` limit ?,?`
