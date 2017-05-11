@@ -160,22 +160,22 @@ async function getExportData(values) {
     }
 
     let clostring =
-      `sum(Visits) as visits &&
-                    sum(Impressions) as impressions &&
-                    round(sum(Revenue/1000000),2) as revenue &&
-                    sum(Clicks) as clicks &&
-                    sum(Conversions) as conversions &&
-                    round(sum(Cost/1000000),2) as cost &&
-                    round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit &&
-                    round(sum(Cost / 1000000) / sum(Visits),4) as cpv &&
-                    round(sum(Visits)/sum(Impressions)*100,2)  as  ictr &&
-                    IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr &&
-                    IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr &&
-                    IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv &&
-                    IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi &&
-                    round(sum(Revenue)/ 1000000 / sum(Visits),4) as epv &&
-                    round(sum(Revenue)/ 1000000 / sum(Clicks),4) as epc &&
-                    round(sum(Revenue)/ 1000000 / sum(Conversions),2) as ap `;
+      `sum(Visits) as visits,
+                sum(Impressions) as impressions ,
+                round(sum(Revenue/1000000),2) as revenue,
+                sum(Clicks) as clicks,
+                sum(Conversions) as conversions ,
+                round(sum(Cost/1000000),2) as cost ,
+                round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit ,
+                round(sum(Cost / 1000000) / sum(Visits),4) as cpv,
+                round(sum(Visits)/sum(Impressions)*100,2)  as  ictr,
+                IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr,
+                IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr,
+                IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv,
+                IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi ,
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv,
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc,
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
 
     column = _.concat(column, clostring.split('&&'));
     if (_.indexOf(groupByArray, 'day') != -1) {
@@ -186,7 +186,7 @@ async function getExportData(values) {
       let intavlHour =
         `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`;
       column.push(
-        `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`
+        `DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`
       );
     }
     if (_.indexOf(groupByArray, 'hour') != -1) {
@@ -197,7 +197,7 @@ async function getExportData(values) {
       let intavlHour =
         `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
       column.push(
-        `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`
+        `DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`
       );
     }
 
