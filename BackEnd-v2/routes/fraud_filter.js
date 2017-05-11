@@ -444,7 +444,10 @@ router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
         let Result = await common.query(sql, [value.id], connection);
 
         for (let index = 0; index < Result.length; index++) {
-            Result[index].data = JSON.parse(Result[index].data)
+            if(Result[index].data){
+               Result[index].data = JSON.parse(Result[index].data)
+            }
+            
         }
         return res.json({
             status: 1,
