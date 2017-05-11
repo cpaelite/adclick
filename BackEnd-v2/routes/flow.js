@@ -1350,7 +1350,7 @@ async function loadStateRegionFromDB(name, connection) {
 }
 
 async function loadIspFromDB(name, connection) {
-  var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%' limit 5";
+  var sql = "select id, name as display,  name  as value from ISP where `name` like '%" + name + "%' group by name limit 5";
   var r = [];
   r = await query(sql, [], connection);
 
@@ -1368,8 +1368,7 @@ async function loadLanguageFromDB(connection) {
 }
 
 async function loadMobileCarrierFromDB(name, connection) {
-  var sql = "select id, name as display, name as value from MobileCarriers where `name` like '%" + name + "%' limit 5"
-  console.info(sql)
+  var sql = "select id, name as display, name as value from MobileCarriers where `name` like '%" + name + "%' group by name limit 5"
   var r = [];
   r = await query(sql, [], connection);
   return r;
