@@ -58,6 +58,23 @@
       });
     }
 
+    $scope.$on('saveCampaignEnd', function(event, oData) {
+      var flow = oData.flow;
+      var copyFlow = angular.copy($scope.flow);
+      copyFlow.id = flow.id;
+      copyFlow.name = flow.name;
+
+      flow.rules.forEach(function(rule, i) {
+        copyFlow.rules[i].id = rule.id;
+        rule.paths.forEach(function(path, j) {
+          copyFlow.rules[i].paths[j].id = path.id;
+        });
+      });
+      $scope.flow = theFlow = copyFlow;
+      $scope.curPath = theFlow.rules[0].paths[0];
+      $scope.curRule = theFlow.rules[0];
+    });
+
     function initFlowEditCtrl() {
       var pathSkel = {
         name: 'Path 1',
@@ -664,7 +681,7 @@
           if (allLanders) {
             var filtered = allLanders.filter(function(lander) {
               return $scope.country.value == 'ZZZ' || lander.country == 'ZZZ' || lander.country == $scope.country.value;
-            }).filter(excludeIn($scope.curPath.landers.map(function(item) { return item._def; })));
+            }).filter(excludeInLander($scope.curPath.landers.map(function(item) { return item._def; })));
             deferred.resolve(query ? filtered.filter(createFilterFor(query, "name")) : filtered);
           } else {
             deferred.resolve([]);
@@ -672,6 +689,14 @@
         });
         return deferred.promise;
       };
+      function excludeInLander(list) {
+        return function(item) {
+          // return list.indexOf(item) == -1;
+          return list.every(function(li) {
+            return !li || (li && li.id != item.id)
+          });
+        };
+      }
       $scope.$watch(function() {
         if ($scope.curPath == null) return [];
         return $scope.curPath.landers && $scope.curPath.landers.map(function(item) {
@@ -957,7 +982,6 @@
           }
           $scope.saveTime = null;
         }
-
         if (theFlow.id) {
           flowData.id = theFlow.id;
         }
