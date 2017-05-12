@@ -354,8 +354,9 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
         page: Joi.number().required(),
         limit: Joi.number().required(),
         filter: Joi.string().optional(),
-        from: Joi.string().optional(),
-        to: Joi.string().optional()
+        from: Joi.string().required(),
+        to: Joi.string().required(),
+        tz: Joi.string().required()
     });
     req.query.userId = req.parent.id;
     let connection;
@@ -385,13 +386,13 @@ router.get('/api/fraud-filter/logs', async function (req, res, next) {
 
         let timeFilter = "";
         if (value.from) {
-            timeFilter += ` and log.timeStamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${value.from}', '+00:00','+00:00')))  `;
+            timeFilter += ` and log.timeStamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${value.from}', '${value.tz}','+00:00')))  `;
         }
         if (value.to) {
-            timeFilter += ` and log.timeStamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${value.to}', '+00:00','+00:00')))  `;
+            timeFilter += ` and log.timeStamp <= (UNIX_TIMESTAMP(CONVERT_TZ('${value.to}', '${value.tz}','+00:00')))  `;
         }
 
-        let sql = `select log.id as id ,DATE_FORMAT(FROM_UNIXTIME(log.timeStamp), "%Y-%m-%d %H:%i:%s") as time,rule.name as name,log.dimension as dimension  
+        let sql = `select log.id as id ,DATE_FORMAT(convert_tz(FROM_UNIXTIME(log.timeStamp, "%Y-%m-%d %H:%i:%s"),'+00:00','${value.tz}') ,'%Y-%m-%d %H:%i:%s') as time,rule.name as name,log.dimension as dimension  
                   from FraudFilterLog log inner join FraudFilterRule rule on log.ruleId = rule.id  where rule.userId =? ${filter} ${timeFilter} order by log.timeStamp DESC`;
 
         let totalsql = `select count(*) as total from  ((${sql}) as T)`;
@@ -444,10 +445,10 @@ router.get('/api/fraud-filter/logs/:id', async function (req, res, next) {
         let Result = await common.query(sql, [value.id], connection);
 
         for (let index = 0; index < Result.length; index++) {
-            if(Result[index].data){
-               Result[index].data = JSON.parse(Result[index].data)
+            if (Result[index].data) {
+                Result[index].data = JSON.parse(Result[index].data)
             }
-            
+
         }
         return res.json({
             status: 1,
