@@ -724,6 +724,7 @@ angular.module('app').value('AutomatedRuleOptions', {
     {"key": "sumImpressions","display": "Impressions","unit": ""},
     {"key": "sumVisits","display": "Visits","unit": ""},
     {"key": "sumClicks","display": "Clicks","unit": ""},
+    {"key": "sumConversions","display": "Conversion","unit": ""},
     {"key": "ctr","display": "CTR","unit": "%"},
     {"key": "cr","display": "CR","unit": "%"},
     {"key": "cpm","display": "CPM","unit": "USD"},
