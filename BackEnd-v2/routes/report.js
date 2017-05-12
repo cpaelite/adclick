@@ -20,6 +20,20 @@ import {
 
 
 
+async function saveReportLog(req){
+   let connection;
+   try{
+      connection = await common.getConnection();
+      let sql =`insert into UserEventLog (userId,operatorId,operatorIP,entityType,entityTypeString,entityName,entityId,actionType,changedAt) values (?,?,?,?,?,?,?,?,?)`; 
+      await common.query(sql,[req.parent.id,req.user.id,req.clientIp,0,req.query.groupBy,req.query.groupBy,'0','Report',moment().unix()],connection);   
+   }catch(e){
+      if(connection){
+         connection.release();
+      }
+      console.error('report log 上报error');
+   }
+}
+
 /**
  * @api {get} /api/report  报表
  * @apiName  报表
@@ -33,6 +47,8 @@ import {
 router.get('/api/report', async function(req, res, next) {
   req.query.userId = req.parent.id;
   try {
+    //上报用户行为
+    saveReportLog(req);
     let result;
     if (req.query.groupBy && req.query.groupBy == "ip") {
       result = await IPReport(req);

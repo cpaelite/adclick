@@ -32,10 +32,10 @@ router.get('/api/eventlog', async function (req, res, next) {
         user: Joi.number().required()
     });
     let connection;
-   
+
 
     try {
-        req.query.user= req.parent.id;
+        req.query.user = req.parent.id;
         let value = await common.validate(req.query, schema);
         let {
             limit,
@@ -67,6 +67,11 @@ router.get('/api/eventlog', async function (req, res, next) {
             sqlTmp += " and log.`entityType`=" + entityType;
         }
 
+        //排除系统级别的log
+        if (entityType == 0) {
+            sqlTmp += " and log.entityType != 0 "
+        }
+        
         sqlTmp += " and log.`userId`=<%=user%>"
 
         let compiled = _.template(sqlTmp);
@@ -76,15 +81,15 @@ router.get('/api/eventlog', async function (req, res, next) {
             tz: tz,
             to: to,
             user: user,
-            operatorId:userId
+            operatorId: userId
         });
-         
+
         let countSql = "select COUNT(*) as `total` from ((" + sql + ") as T)";
 
         sql += "  limit " + offset + "," + limit;
-        
+
         connection = await common.getConnection();
-        let result = await Promise.all([common.query(sql,[], connection), common.query(countSql,[], connection)]);
+        let result = await Promise.all([common.query(sql, [], connection), common.query(countSql, [], connection)]);
         res.json({
             status: 1,
             message: 'success',
@@ -135,7 +140,7 @@ router.get('/api/members', async function (req, res, next) {
             message: 'success',
             data: {
                 members: results,
-                owner:req.owner
+                owner: req.owner
             }
         });
 
@@ -148,6 +153,6 @@ router.get('/api/members', async function (req, res, next) {
     }
 });
 
- 
+
 
 module.exports = router;
