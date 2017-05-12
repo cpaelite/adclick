@@ -3,7 +3,7 @@
 
   angular.module('app')
     .controller('fraudFilterCtrl', [
-      '$scope', '$mdDialog', '$q', 'FraudFilter', 'Campaign', 'DateRangeUtil', 'FraudFilterLog',
+      '$scope', '$mdDialog', '$q', 'FraudFilter', 'Campaign', 'DateRangeUtil', 'FraudFilterLog', '$rootScope',
       FraudFilterCtrl
     ])
     .directive('resizefraud', ['$timeout', '$q', function($timeout, $q) {
@@ -49,7 +49,7 @@
       }
     }]);
 
-  function FraudFilterCtrl($scope,  $mdDialog, $q, FraudFilter, Campaign, DateRangeUtil, FraudFilterLog) {
+  function FraudFilterCtrl($scope,  $mdDialog, $q, FraudFilter, Campaign, DateRangeUtil, FraudFilterLog, $rootScope) {
     this.$scope = $scope;
     this.$mdDialog = $mdDialog;
     this.$q = $q;
@@ -57,6 +57,7 @@
     this.Campaign = Campaign;
     this.DateRangeUtil = DateRangeUtil;
     this.FraudFilterLog= FraudFilterLog;
+    this.$rootScope = $rootScope;
 
     this.campaigns = [];
     this.campaignMap = {};
@@ -252,6 +253,7 @@
   FraudFilterCtrl.prototype._getFraudFilterLogs = function() {
     var self = this, $scope = self.$scope, FraudFilterLog = self.FraudFilterLog;
     var params = angular.copy($scope.logQuery);
+    params.tz = self.$rootScope.profile.timezone;
     delete params.__tk;
     if(params.filter == '') {
       delete params.filter;
