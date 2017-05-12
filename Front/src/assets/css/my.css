@@ -788,6 +788,7 @@ label.cs-subform-label.date-title{
 }
 .sudden-change .table-box a{
   display: inline-block;
+  width: 100%;
 }
 .sudden-change .right-select .search-con{
   border: none;

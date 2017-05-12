@@ -15,7 +15,7 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
         </md-select>
     </div>-->
     <div class="btn-right form-group" ng-show="data.blacklist.length < blacklistCount">
-      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="icon-plus"></i>Create New</md-button>
+      <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event)"><i class="icon-plus"></i>Create New</md-button>
       <!-- <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
       <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button> -->
     </div>
@@ -35,8 +35,8 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
             <span uib-dropdown>
                 <a uib-dropdown-toggle>{{item.name}}</a>
                 <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                    <li role="menuitem"><a ng-click="editItem($event, $index)">Edit</a></li>
-                    <li role="menuitem"><a ng-click="deleteItem($event, $index)">Delete</a></li>
+                    <li role="menuitem"><a ng-click="editItem($event, item)">Edit</a></li>
+                    <li role="menuitem"><a ng-click="deleteItem($event, item)">Delete</a></li>
                 </ul>
               </span>
           </td>

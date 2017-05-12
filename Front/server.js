@@ -3206,17 +3206,20 @@ app.get('/api/blacklist', function (req, res) {
     status: 1,
     message: 'success',
     data: {
-      enabled: false,
       blacklist: [
         {
+          id: 1,
           name: "test1",
           ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
-          userAgentRules: ["test1", "test2"]
+          userAgentRules: ["test1", "test2"],
+          enabled: false
         },
         {
+          id: 2,
           name: "test2",
           ipRules: ["192.168.0.1-192.168.0.100"],
-          userAgentRules: ["test2"]
+          userAgentRules: ["test2"],
+          enabled: false,
         }
       ]
     }
@@ -3225,28 +3228,50 @@ app.get('/api/blacklist', function (req, res) {
 });
 
 /**
- * @apiName 更改BlackList
+ * @apiName 添加black
  *
  */
-app.post('/api/blacklist', function (req, res) {
+app.post('/api/blacklist', function(req, res) {
   var result = {
     status: 1,
     message: 'success',
     data: {
-      enabled: true,
-      blacklist: [
-        {
-          name: "test1",
-          ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
-          userAgentRules: ["test1", "test2"]
-        },
-        {
-          name: "test2",
-          ipRules: ["192.168.0.1-192.168.0.100"],
-          userAgentRules: ["test2"]
-        }
-      ]
+      id: 1,
+      name: "test1",
+      ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
+      userAgentRules: ["test1", "test2"],
+      enabled: true
     }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 更改Black
+ *
+ */
+app.post('/api/blacklist/:id', function (req, res) {
+  var result = {
+    status: 1,
+    message: 'success',
+    data: {
+      id: 1,
+      name: "test1",
+      ipRules: ["1.1.1.1", "1.1.1.1-1.1.1.10"],
+      userAgentRules: ["test1", "test2"],
+      enabled: true
+    }
+  };
+  res.send(result);
+});
+
+/**
+ * @apiName 删除black
+ */
+app.delete('/api/blacklist/:id', function(req, res) {
+  var result = {
+    status: 1,
+    message: 'message'
   };
   res.send(result);
 });

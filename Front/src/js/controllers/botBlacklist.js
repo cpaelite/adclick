@@ -33,34 +33,34 @@
       });
     });
 
-    $scope.editItem = function (ev, index) {
+    $scope.editItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: false,
         controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', editItemCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
-        locals: {index: index, data: $scope.data},
+        locals: {data: item},
         bindToController: true,
         targetEvent: ev,
         templateUrl: 'tpl/botBlacklist-edit-dialog.html?' + +new Date()
+      }).then(function() {
+        $scope.getList();
       });
 
     };
 
-    $scope.deleteItem = function (ev, index) {
+    $scope.deleteItem = function (ev, item) {
       $mdDialog.show({
         clickOutsideToClose: true,
         controller: ['$scope', '$mdDialog', 'toastr', 'BlackList', '$timeout', deleteCtrl],
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
-        locals: {index: index, data: $scope.data},
+        locals: {data: item},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function (result) {
-        if (result) {
-          $scope.data.blacklist.splice(index, index);
-        }
+        $scope.getList();
       });
     };
 
@@ -69,8 +69,8 @@
   function editItemCtrl($scope, $mdDialog, toastr, BlackList, $timeout) {
     var re = /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
 
-    if (this.data.blacklist && this.index >= 0) {
-      $scope.item = this.data.blacklist[this.index];
+    if (this.data) {
+      $scope.item = this.data;
     } else {
       $scope.item = {
         ipRules:[""],
@@ -173,14 +173,11 @@
     }
 
     this.save = function () {
-      if (this.index < 0) {
-        this.data.blacklist.push($scope.item);
-      }
       $scope.editForm.$setSubmitted();
       $scope.blurInput();
       if ($scope.editForm.$valid) {
         $scope.blackListStatus = true;
-        BlackList.save(this.data, success);
+        BlackList.save($scope.item, success);
       }
     };
   }
@@ -192,7 +189,7 @@
     this.cancel = $mdDialog.cancel;
 
     this.ok = function () {
-      BlackList.save(this.data, success);
+      BlackList.remove({id: this.data.id}, success);
     };
 
     function success(response) {
