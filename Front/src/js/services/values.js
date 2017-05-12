@@ -732,6 +732,7 @@ angular.module('app').value('AutomatedRuleOptions', {
     {"key": "spent","display": "Spent","unit": "USD"},
   ],
   "frequency": [
+    "Every 10 Minute",
     "Every 1 Hour",
     "Every 3 Hours",
     "Every 6 Hours",

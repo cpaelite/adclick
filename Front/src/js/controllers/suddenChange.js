@@ -459,6 +459,10 @@
       $scope.item.schedule = "0 0 " + $scope.freTime + " " + daily + " " + month + " *";
       $scope.item.scheduleString = $scope.frequency + " " + freDate + " " + $scope.freTime;
       $scope.item.oneTime = freDate + "T" + $scope.freTime;
+    } else if ($scope.frequency.indexOf("Minute") != -1) {
+      var time = $scope.frequency.split(" ")[1];
+      $scope.item.schedule = "0 */" + time + " * * * *";
+      $scope.item.scheduleString = $scope.frequency;
     } else {
       var time = $scope.frequency.split(" ")[1];
       $scope.item.schedule = "0 0 */" + time + " * * *";
