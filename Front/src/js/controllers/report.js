@@ -1069,6 +1069,7 @@
       $scope.flows = allFlow;
       if (theCampaign) {
         $scope.item = theCampaign;
+        $scope.oldTargetType = theCampaign.targetType;
         $scope.impPixelUrl = $scope.item.impPixelUrl;
         $scope.campaignUrl = $scope.item.url;
         if ($scope.item.costModel == 1) {
@@ -1091,7 +1092,7 @@
           $scope.item.flow = {
             id: $scope.item.targetFlowId.toString()
           };
-          showFlow();
+          // showFlow();
         }
         if($scope.item.targetFlowId && $scope.item.targetType == 3) {
           $scope.$broadcast('targetPathIdChanged', {flowId: $scope.item.targetFlowId, isDuplicate: $scope.isDuplicate});
@@ -1531,7 +1532,7 @@
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
         var item = angular.copy($scope.item);
-        if (tempFlowId && !$scope.isDuplicate) {
+        if (tempFlowId && !$scope.isDuplicate && $scope.oldTargetType == 3) {
           item['flow'].id = tempFlowId;
         }
         Campaign.save(item, success);
