@@ -27,10 +27,11 @@ async function saveReportLog(req){
       let sql =`insert into UserEventLog (userId,operatorId,operatorIP,entityType,entityTypeString,entityName,entityId,actionType,changedAt) values (?,?,?,?,?,?,?,?,?)`; 
       await common.query(sql,[req.parent.id,req.user.id,req.clientIp,0,req.query.groupBy,req.query.groupBy,'0','Report',moment().unix()],connection);   
    }catch(e){
-      if(connection){
+      console.error('report log 上报error');
+   }finally{
+     if(connection){
          connection.release();
       }
-      console.error('report log 上报error');
    }
 }
 
