@@ -46,14 +46,14 @@ router.get('/api/conversions', async function (req, res, next) {
         page = parseInt(page)
         let offset = (page - 1) * limit;
 
-        let sqlTmp = "select (case PostbackTimestamp when 0 then \"Unknown\" else IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") end) as PostbackTimestamp," +
-            "(case VisitTimestamp when 0 then \"Unknown\" else IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") end)  as VisitTimestamp," +
-            "`ExternalID`,`ClickID`,`TransactionID`,`Revenue`,`Cost`,`CampaignName`,`CampaignID`," +
-            "`LanderName`,`LanderID`,`OfferName`,`OfferID`,`Country`,`CountryCode`,`TrafficSourceName`,`TrafficSourceID`," +
-            "`AffiliateNetworkName`,`AffiliateNetworkID`,`Device`,`OS`,`OSVersion`,`Brand`,`Model`,`Browser`,`BrowserVersion`,`ISP`," +
-            "`MobileCarrier`,`ConnectionType`,`VisitorIP`,`VisitorReferrer`,`V1`,`V2`,`V3`,`V4`,`V5`,`V6`,`V7`,`V8`,`V9`,`V10`  " +
-            "from AdConversionsStatis where `UserID` =<%=user%> and `PostbackTimestamp` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '<%= tz %>','+00:00'))*1000) " +
-            "and `PostbackTimestamp` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '<%= tz %>','+00:00'))*1000)  ";
+        let sqlTmp = "select (case statis.PostbackTimestamp when 0 then \"Unknown\" else IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(statis.`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") end) as PostbackTimestamp," +
+            "(case statis.VisitTimestamp when 0 then \"Unknown\" else IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(statis.`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") end)  as VisitTimestamp," +
+            "statis.`ExternalID`,statis.`ClickID`,statis.`TransactionID`,statis.`Revenue`,statis.`Cost`,statis.`CampaignName`,statis.`CampaignID`," +
+            "statis.`LanderName`,statis.`LanderID`,statis.`OfferName`,statis.`OfferID`,statis.`Country`,statis.`CountryCode`,statis.`TrafficSourceName`,statis.`TrafficSourceID`," +
+            "statis.`AffiliateNetworkName`,statis.`AffiliateNetworkID`,statis.`Device`,statis.`OS`,statis.`OSVersion`,statis.`Brand`,statis.`Model`,statis.`Browser`,statis.`BrowserVersion`,statis.`ISP`," +
+            "statis.`MobileCarrier`,statis.`ConnectionType`,statis.`VisitorIP`,statis.`VisitorReferrer`,statis.`V1`,statis.`V2`,statis.`V3`,statis.`V4`,statis.`V5`,statis.`V6`,statis.`V7`,statis.`V8`,statis.`V9`,statis.`V10`  " +
+            "from AdConversionsStatis statis where statis.`UserID` =<%=user%> and statis.`PostbackTimestamp` >= (UNIX_TIMESTAMP(CONVERT_TZ('<%= from %>', '<%= tz %>','+00:00'))*1000) " +
+            "and statis.`PostbackTimestamp` <= (UNIX_TIMESTAMP(CONVERT_TZ('<%= to %>', '<%= tz %>','+00:00'))*1000)  ";
 
         let compiled = _.template(sqlTmp);
         let dir = "asc";
@@ -71,7 +71,7 @@ router.get('/api/conversions', async function (req, res, next) {
             order = order.replace(new RegExp(/-/g), '');
         }
 
-        sql += "order by "+ order +" " + dir +"  limit " + offset + "," + limit ;
+        sql += "order by statis."+ order +" " + dir +"  limit " + offset + "," + limit ;
         connection = await common.getConnection();
         let result = await Promise.all([common.query(sql,[], connection), common.query(countSql,[], connection)]);
         res.json({
