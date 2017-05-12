@@ -27,6 +27,7 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
             <th>Bot</th>
             <th>IP / IP range</th>
             <th>User agent</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -46,6 +47,11 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
           <td>
               {{item.userAgentRules[0]}}
               <span style="color:red" ng-if="item.userAgentRules.length >= 2">{{item.userAgentRules.length -1}}</span>
+          </td>
+          <td>
+            <a ng-class="{'isGray': item.enabled}" ng-click="changeStatus(item)">
+              <i class="icon-ok-sign"></i>
+            </a>
           </td>
         </tr>
         </tbody>

@@ -46,8 +46,20 @@
       }).then(function() {
         $scope.getList();
       });
-
     };
+
+    var statusChange = false;
+    $scope.changeStatus = function(item) {
+      if (!statusChange) {
+        item.enabled = !item.enabled;
+        BlackList.save(item, function(result) {
+          if (result.status) {
+            statusChange = false;
+            $scope.getList();
+          }
+        });
+      }
+    }
 
     $scope.deleteItem = function (ev, item) {
       $mdDialog.show({
