@@ -461,6 +461,7 @@ app.get('/api/preferences', function (req, res) {
         "country": {"visible": true},
         "day": {"visible": true},
         "hour": {"visible": true},
+        "hourOfDay": {"visible": true},
         "deviceType": {"visible": true},
         "ip": {"visible": true},
         "isp": {"visible": true},

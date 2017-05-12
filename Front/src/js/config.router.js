@@ -133,6 +133,7 @@
       .state('app.report.country', configReport('country'))
       .state('app.report.day', configReport('day'))
       .state('app.report.hour', configReport('hour'))
+      .state('app.report.hourOfDay', configReport('hourOfDay'))
       .state('app.report.deviceType', configReport('devicetype'))
       .state('app.report.ip', configReport('ip'))
       .state('app.report.isp', configReport('isp'))
