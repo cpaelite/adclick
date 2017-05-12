@@ -773,7 +773,8 @@ router.post('/api/blacklist/:id', async function (req, res, next) {
     params.push(value.userId);
     params.push(value.id);
     connection = await common.getConnection();
-    await common.query(sql, [], connection);
+    
+    await common.query(sql, params, connection);
     delete value.userId;
     delete value.idText;
     //reids pub
