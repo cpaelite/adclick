@@ -7,42 +7,10 @@ var favicon = require('serve-favicon');
 var log4js = require('log4js');
 var logger = log4js.getLogger("app");
 var bodyParser = require('body-parser');
-
-global.pool = {
-  m1: mysql.createPool({
-    host: mysqlSetting.host,
-    user: mysqlSetting.user,
-    password: mysqlSetting.password,
-    database: mysqlSetting.database,
-    connectionLimit: mysqlSetting.connectionLimit,
-    debug: false,
-    waitForConnections: false
-  }),
-  m2: mysql.createPool({
-    host: setting.reportSQL.host,
-    user: setting.reportSQL.user,
-    password: setting.reportSQL.password,
-    database: setting.reportSQL.database,
-    connectionLimit: setting.reportSQL.connectionLimit,
-    debug: false,
-    waitForConnections: false
-  })
-}
-let redisOptions = {
-  host: setting.redis.host,
-  port: setting.redis.port
-};
-if (setting.redis.password) {
-  redisOptions.password = setting.redis.password;
-}
-global.redisPool = require('./util/redis_pool')(redisOptions,{max:200});
- 
-redisPool.pool.on('error',function(err){
-    logger.error(err.message);
-});
-
-var app = express();
+var compression = require('compression');
+var cookiePareser = require('cookie-parser');
 var util = require('./util/index');
+var requestIp = require('request-ip');
 
 //router
 var auth = require('./routes/auth');
@@ -76,20 +44,44 @@ import {
 }
   from './routes/qrpay';
 
-
-
-var express = require('express');
-var favicon = require('serve-favicon');
-var log4js = require('log4js');
-var logger = log4js.getLogger("app");
-var bodyParser = require('body-parser');
-var compression = require('compression');
-var cookiePareser = require('cookie-parser');
-
+global.pool = {
+  m1: mysql.createPool({
+    host: mysqlSetting.host,
+    user: mysqlSetting.user,
+    password: mysqlSetting.password,
+    database: mysqlSetting.database,
+    connectionLimit: mysqlSetting.connectionLimit,
+    debug: false,
+    waitForConnections: false
+  }),
+  m2: mysql.createPool({
+    host: setting.reportSQL.host,
+    user: setting.reportSQL.user,
+    password: setting.reportSQL.password,
+    database: setting.reportSQL.database,
+    connectionLimit: setting.reportSQL.connectionLimit,
+    debug: false,
+    waitForConnections: false
+  })
+}
+let redisOptions = {
+  host: setting.redis.host,
+  port: setting.redis.port
+};
+if (setting.redis.password) {
+  redisOptions.password = setting.redis.password;
+}
+global.redisPool = require('./util/redis_pool')(redisOptions,{max:200});
+ 
+redisPool.pool.on('error',function(err){
+    logger.error(err.message);
+});
+ 
 var app = express();
-var util = require('./util/index');
+ 
 
 app.disable('x-powered-by');
+app.use(requestIp.mw())
 
 
 
