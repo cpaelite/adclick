@@ -491,7 +491,7 @@ router.get('/api/automated/logs/detail/:id', async function(req, res, next) {
     connection = await common.getConnection();
 
     let sql =
-      `select detail.id,detail.data,cam.name as campaign from SuddenChangeLogDetail detail inner join TrackingCampaign cam on cam.id = detail.campaignID
+      `select detail.id,detail.data,detail.dimensionKey,detail.dimensionValue,cam.name as campaign from SuddenChangeLogDetail detail inner join TrackingCampaign cam on cam.id = detail.campaignID
                    where detail.logId = ?`;
     let Result = await common.query(sql, [value.id], connection);
     return res.json({
