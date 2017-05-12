@@ -40,7 +40,7 @@ var moment = require('moment');
  *  }
  *
  */
-router.post('/api/profile', async function(req, res, next) {
+router.post('/api/profile', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     firstname: Joi.string().required(),
@@ -122,7 +122,7 @@ router.post('/api/profile', async function(req, res, next) {
  *     }
  *
  */
-router.post('/api/password', async function(req, res, next) {
+router.post('/api/password', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     oldpassword: Joi.string().required().trim(),
@@ -191,7 +191,7 @@ router.post('/api/password', async function(req, res, next) {
  *     }
  *
  */
-router.post('/api/email', async function(req, res, next) {
+router.post('/api/email', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     email: Joi.string().required(),
@@ -220,7 +220,7 @@ router.post('/api/email', async function(req, res, next) {
     if (result && result[0]) {
       if (md5(value.password) == result[0].password) {
         await query("update User set `email`= ?  where `id`= ? ", [value.email,
-          value.userId
+        value.userId
         ], connection);
         return res.json({
           status: 1,
@@ -276,7 +276,7 @@ router.post('/api/email', async function(req, res, next) {
  *     }
  *
  */
-router.get('/api/referrals', async function(req, res, next) {
+router.get('/api/referrals', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     page: Joi.number().required().min(1),
@@ -381,7 +381,7 @@ left join User user on user.id= ref.referredUserId  where mis.createdAt><%=time%
        // }
  *
  */
-router.get('/api/domains', async function(req, res, next) {
+router.get('/api/domains', async function (req, res, next) {
 
   let connection;
   try {
@@ -461,7 +461,7 @@ router.get('/api/domains', async function(req, res, next) {
 
  *
  */
-router.post('/api/domains', async function(req, res, next) {
+router.post('/api/domains', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     internal: Joi.array().items({
@@ -529,7 +529,7 @@ router.post('/api/domains', async function(req, res, next) {
       let sql =
         "insert into UserDomain (`domain`,`main`,`customize`,`userId`,`verified`) values (?,?,?,?,?)";
       await common.query(sql, [insertData[index].domain, insertData[index].main,
-        insertData[index].customize, value.userId, insertData[index].verified
+      insertData[index].customize, value.userId, insertData[index].verified
       ], connection);
     }
     //redis publish
@@ -571,7 +571,7 @@ router.post('/api/domains', async function(req, res, next) {
             }
         }
  */
-router.get('/api/domains/validatecname', async function(req, res, next) {
+router.get('/api/domains/validatecname', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required(),
@@ -583,8 +583,8 @@ router.get('/api/domains/validatecname', async function(req, res, next) {
     let cnames = [];
     let value = await common.validate(req.query, schema);
     cnames = await ((address) => {
-      return new Promise(function(resolve, reject) {
-        dns.resolveCname(address, function(err, result) {
+      return new Promise(function (resolve, reject) {
+        dns.resolveCname(address, function (err, result) {
           if (err) {
             delete err.code;
             err.status = 200;
@@ -693,16 +693,14 @@ router.get('/api/domains/validatecname', async function(req, res, next) {
 }
  */
 
-router.post('/api/blacklist', async function(req, res, next) {
+router.post('/api/blacklist', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required(),
-    enabled: Joi.boolean().required(),
-    blacklist: Joi.array().required().items({
-      name: Joi.string().required(),
-      ipRules: Joi.array().required(),
-      userAgentRules: Joi.array().required()
-    })
+    enabled: Joi.boolean().optional(),
+    name: Joi.string().required(),
+    ipRules: Joi.array().required(),
+    userAgentRules: Joi.array().required()
   });
   req.body.userId = req.user.id;
   req.body.idText = req.user.idText;
@@ -710,22 +708,15 @@ router.post('/api/blacklist', async function(req, res, next) {
   try {
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
-    await common.query("delete from UserBotBlacklist  where `userId`= ? ", [
-      value.userId
-    ], connection);
-    for (let index = 0; index < value.blacklist.length; index++) {
-      await common.query(
-        "insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`,`enabled`) values (?,?,?,?,?)", [
-          value.userId, value.blacklist[index].name, JSON.stringify(value
-            .blacklist[index].ipRules), JSON.stringify(value.blacklist[
-            index].userAgentRules), value.enabled ? 1 : 0
-        ], connection);
-    }
-
+    await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`) values (?,?,?,?)", [
+      value.userId, value.name, JSON.stringify(value.ipRules), JSON.stringify(value.userAgentRules)], connection);
     delete value.userId;
     delete value.idText;
+    value.enabled = true;
+    //reids pub
+    redisPool.publish(setting.redis.blackListChannal, value.userId);
 
-    res.json({
+    return res.json({
       status: 1,
       message: 'success',
       data: value
@@ -742,7 +733,70 @@ router.post('/api/blacklist', async function(req, res, next) {
 });
 
 
-router.get('/api/blacklist', async function(req, res, next) {
+router.post('/api/blacklist/:id', async function (req, res, next) {
+  var schema = Joi.object().keys({
+    id: Joi.number().required(),
+    userId: Joi.number().required(),
+    idText: Joi.string().required(),
+    enabled: Joi.boolean().optional(),
+    name: Joi.string().optional(),
+    ipRules: Joi.array().optional(),
+    userAgentRules: Joi.array().optional()
+  });
+  req.body.userId = req.user.id;
+  req.body.idText = req.user.idText;
+  req.body.id = req.params.id;
+  let connection;
+  try {
+    let value = await common.validate(req.body, schema);
+
+    let params = [];
+    let sql = "update  UserBotBlacklist  set `id`= ? ";
+    params.push(value.id);
+    if (value.enabled != undefined) {
+      sql += ",`enabled`= ? ";
+      params.push(value.enabled ? 1 : 0);
+    }
+    if (value.name != undefined) {
+      sql += ",`name`= ? ";
+      params.push(value.name);
+    }
+    if (value.ipRules != undefined) {
+      sql += ",`ipRange`= ? ";
+      params.push(JSON.stringify(value.ipRules));
+    }
+    if (value.userAgentRules != undefined) {
+      sql += ",`userAgent`= ? ";
+      params.push(JSON.stringify(value.userAgentRules));
+    }
+    sql += " where userId= ? and id = ?";
+    params.push(value.userId);
+    params.push(value.id);
+    connection = await common.getConnection();
+    await common.query(sql, [], connection);
+    delete value.userId;
+    delete value.idText;
+    //reids pub
+    redisPool.publish(setting.redis.blackListChannal, value.userId);
+
+    return res.json({
+      status: 1,
+      message: 'success',
+      data: value
+    });
+
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+
+});
+
+
+router.get('/api/blacklist', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required()
@@ -752,7 +806,6 @@ router.get('/api/blacklist', async function(req, res, next) {
   let connection;
   try {
     let responseData = {
-      enabled: false,
       blacklist: []
     };
     let value = await common.validate(req.body, schema);
@@ -761,16 +814,16 @@ router.get('/api/blacklist', async function(req, res, next) {
       "select  `name`,`ipRange`,`userAgent`,`enabled` from UserBotBlacklist  where `userId`= ? and `deleted` = ? ", [
         value.userId, 0
       ], connection);
-     
+
     for (let index = 0; index < result.length; index++) {
       responseData.blacklist.push({
         name: result[index].name,
-        ipRules:result[index].ipRange?JSON.parse(result[index].ipRange) :result[index].ipRange,
-        userAgentRules: result[index].userAgent?JSON.parse(result[index].userAgent):result[index].userAgent
+        ipRules: result[index].ipRange ? JSON.parse(result[index].ipRange) : result[index].ipRange,
+        userAgentRules: result[index].userAgent ? JSON.parse(result[index].userAgent) : result[index].userAgent,
+        enabled: result[index].enabled == 1 ? true : false
       });
-      responseData.enabled = result[index].enabled == 1 ? true : false;
     }
-    res.json({
+    return res.json({
       status: 1,
       message: 'success',
       data: responseData
@@ -784,6 +837,42 @@ router.get('/api/blacklist', async function(req, res, next) {
     }
   }
 
+});
+
+
+router.delete('/api/blacklist/:id', async function (req, res, next) {
+  var schema = Joi.object().keys({
+    userId: Joi.number().required(),
+    idText: Joi.string().required(),
+    id: Joi.number().required()
+  });
+  req.body.userId = req.parent.id;
+  req.body.idText = req.parent.idText;
+  req.body.id = req.params.id;
+  let connection;
+  try {
+    let value = await common.validate(req.body, schema);
+    connection = await common.getConnection();
+    let result = await common.query(
+      "update UserBotBlacklist set deleted = ?  where userId = ? and id= ? ", [
+        1, value.userId, value.id
+      ], connection);
+
+    //reids pub
+    redisPool.publish(setting.redis.blackListChannal, value.userId);
+
+    return res.json({
+      status: 1,
+      message: 'success'
+    });
+
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
 });
 
 
@@ -819,7 +908,7 @@ router.get('/api/blacklist', async function(req, res, next) {
  *
  *
  **/
-router.post('/api/invitation', async function(req, res, next) {
+router.post('/api/invitation', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required(),
@@ -890,7 +979,7 @@ router.post('/api/invitation', async function(req, res, next) {
 
     //异步发送邀请邮件
     for (let i = 0; i < sendContext.length; i++) {
-      (function(context) {
+      (function (context) {
         tpl.html = htmlTpl(({
           name: req.parent.firstname,
           companyname: req.user.campanyname ? req.user.campanyname : req
@@ -959,7 +1048,7 @@ router.post('/api/invitation', async function(req, res, next) {
   }
 }
  */
-router.get('/api/invitation', async function(req, res, next) {
+router.get('/api/invitation', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required(),
     idText: Joi.string().required(),
@@ -1008,7 +1097,7 @@ router.get('/api/invitation', async function(req, res, next) {
  * {status:1,message:'success'}
  *
  **/
-router.delete('/api/invitation/:id', async function(req, res, next) {
+router.delete('/api/invitation/:id', async function (req, res, next) {
   let connection;
   try {
     var schema = Joi.object().keys({
@@ -1074,7 +1163,7 @@ router.delete('/api/invitation/:id', async function(req, res, next) {
  *
  */
 
-router.get('/api/setup', async function(req, res, next) {
+router.get('/api/setup', async function (req, res, next) {
 
   let connection;
   try {
@@ -1114,9 +1203,9 @@ router.get('/api/setup', async function(req, res, next) {
         clickUrl: setting.newbidder.httpPix + defaultDomain + setting.newbidder
           .clickRouter,
         mutiClickUrl: setting.newbidder.httpPix + defaultDomain +
-          setting.newbidder.mutiClickRouter,
+        setting.newbidder.mutiClickRouter,
         postBackUrl: setting.newbidder.httpPix + defaultDomain +
-          setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
+        setting.newbidder.postBackRouter + setting.newbidder.postBackRouterParam
       }
     });
   } catch (e) {
@@ -1149,7 +1238,7 @@ router.get('/api/setup', async function(req, res, next) {
                 }}
  *
  */
-router.get('/api/user/plan', async function(req, res, next) {
+router.get('/api/user/plan', async function (req, res, next) {
   var schema = Joi.object().keys({
     userId: Joi.number().required()
   });
@@ -1233,8 +1322,8 @@ router.get('/api/user/plan', async function(req, res, next) {
 
 
 function query(sql, params, connection) {
-  return new Promise(function(resolve, reject) {
-    connection.query(sql, params, function(err, result) {
+  return new Promise(function (resolve, reject) {
+    connection.query(sql, params, function (err, result) {
       if (err) {
         reject(err)
       }

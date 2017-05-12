@@ -28,6 +28,7 @@ module.exports = {
     host: "adclick-jp.082pif.ng.0001.apne1.cache.amazonaws.com",
     port: 6379,
     channel: "channel_campaign_changed_users",
+    blackListChannal:"channel_blacklist_changed_users",
     conditionKey: "conditionKey_new"
   },
   "jwtTokenSrcret": "&s4ha7$dj8",
