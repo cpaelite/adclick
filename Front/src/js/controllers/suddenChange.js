@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('suddenChangeCtrl', [
-      '$scope', '$mdDialog', 'toastr','SuddenChange', 'Logs', 'LogDetail', 'DateRangeUtil', 'LocalStorageUtil', 'BlackList', '$timeout',
+      '$scope', '$mdDialog', 'toastr','SuddenChange', 'Logs', 'LogDetail', 'DateRangeUtil', 'LocalStorageUtil', 'BlackList', '$timeout', 'Profile',
       suddenChangeCtrl
     ]);
 
-  function suddenChangeCtrl($scope,  $mdDialog, toastr, SuddenChange, Logs, LogDetail, DateRangeUtil, LocalStorageUtil, BlackList, $timeout) {
+  function suddenChangeCtrl($scope,  $mdDialog, toastr, SuddenChange, Logs, LogDetail, DateRangeUtil, LocalStorageUtil, BlackList, $timeout, Profile) {
     $scope.app.subtitle = 'Sudden Change';
 
     $scope.ths = [
@@ -66,10 +66,6 @@
       fromDate: LocalStorageUtil.getValue().fromDate,
       toDate: LocalStorageUtil.getValue().toDate
     };
-    // 如果不是自定义时间，重新计算时间
-    if ($scope.datetype != "0") {
-      getDateRange($scope.datetype);
-    }
 
     $scope.getLogList = function(){
       var params = angular.copy($scope.queryLog);
@@ -81,7 +77,17 @@
       }).$promise;
       return $scope.logPromise;
     };
-    $scope.getLogList();
+
+    Profile.get(null, function(result) {
+      if (result.status) {
+        $scope.queryLog.tz = result.data.timezone;
+        // 如果不是自定义时间，重新计算时间
+        if ($scope.datetype != "0") {
+          getDateRange($scope.datetype, $scope.queryLog.tz);
+        }
+        $scope.getLogList();
+      }
+    });
 
     $scope.$watch('filter', function (newValue, oldValue) {
       if (angular.equals(newValue, oldValue)) {
@@ -94,9 +100,9 @@
 
     }, true);
 
-    function getDateRange(value) {
-      var from = DateRangeUtil.fromDate(value, '+00:00');
-      var to = DateRangeUtil.toDate(value, '+00:00');
+    function getDateRange(value, timezone) {
+      var from = DateRangeUtil.fromDate(value, timezone);
+      var to = DateRangeUtil.toDate(value, timezone);
       $scope.queryLog.from = from;
       $scope.queryLog.to = to;
       // 自定义时间类型时，时间控件默认Today的时间
@@ -114,7 +120,7 @@
       $scope.getRuleList();
     };
     $scope.logQueryChange = function(){
-      getDateRange($scope.datetype);
+      getDateRange($scope.datetype, $scope.queryLog.tz);
       // 自定义时间类型时，根据时间控件时间变化而请求数据
       if ($scope.datetype != "0") {
         $scope.getLogList();
