@@ -4260,7 +4260,20 @@ app.get('/api/automated/logs/detail/:id', function(req, res) {
     "message": "success",
     "data": {
       "logs": [
-        {id: 1, campaign: 'campaign1', action: 'action', inventorySources: 'sources', inventory:'ccc'}
+          {
+          "id": 925,
+          "data": "{\"campaignName\":\"popads_suo - Global - cuteclip-mobidea\",\"impressions\":0,\"visits\":1,\"clicks\":0,\"conversions\":0,\"cost\":0,\"revenue\":0,\"profit\":0,\"cpv\":0,\"ictr\":0,\"ctr\":0,\"cr\":0,\"cv\":0,\"roi\":0,\"epv\":0,\"epc\":0,\"ap\":0,\"cpc\":0,\"cpm\":0,\"cpa\":0}",
+          "dimensionKey": "tsWebsiteId",
+          "dimensionValue": "1915466",
+          "campaign": "popads_suo - Global - cuteclip-mobidea"
+        },
+        {
+          "id": 925,
+          "data": "{\"campaignName\":\"popads_suo - Global - cuteclip-mobidea\",\"impressions\":0,\"visits\":1,\"clicks\":0,\"conversions\":0,\"cost\":0,\"revenue\":0,\"profit\":0,\"cpv\":0,\"ictr\":0,\"ctr\":0,\"cr\":0,\"cv\":0,\"roi\":0,\"epv\":0,\"epc\":0,\"ap\":0,\"cpc\":0,\"cpm\":0,\"cpa\":0}",
+          "dimensionKey": "tsWebsiteId",
+          "dimensionValue": "1915466",
+          "campaign": "popads_suo - Global - cuteclip-mobidea"
+        }
       ]
     }
   };

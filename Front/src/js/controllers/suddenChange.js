@@ -391,7 +391,13 @@
   function ruleLogCtrl($scope, $mdDialog, LogDetail){
     this.cancel = $mdDialog.cancel;
     LogDetail.get({id:this.data.id},function(result){
-      $scope.detailItem = result.data;
+      var detailList = result.data.logs;
+      /*detailList.forEach(function(detail, index) {
+        var data = JSON.parse(detail.data);
+        data = JSON.stringify(data,null,2);
+        detailList[index].data = data;
+      });*/
+      $scope.detailItem = detailList;
     });
     $scope.rule = {
       name:  this.data.name,

@@ -19,17 +19,15 @@
                 <thead md-head>
                   <tr md-row>
                     <th md-column>Campaign</th>
-                    <th md-column>Action</th>
-                    <th md-column>Inventory Sources</th>
-                    <th md-column>Inventory Apps/Sites</th>
+                    <th md-column>Dimension Value</th>
+                    <th md-column>Data</th>
                   </tr>
                 </thead>
                 <tbody md-body>
-                  <tr md-row ng-repeat="item in detailItem.logs">
+                  <tr md-row ng-repeat="item in detailItem">
                     <td md-cell>{{item.campaign}}</td>
-                    <td md-cell>{{item.action}}</td>
-                    <td md-cell>{{item.inventorySources}}</td>
-                    <td md-cell>{{item.inventory}}</td>
+                    <td md-cell>{{item.dimensionValue}}</td>
+                    <td md-cell>{{item.data}}</td>
                   </tr>
                 </tbody>
               </table>
