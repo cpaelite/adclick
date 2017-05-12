@@ -710,11 +710,14 @@ router.post('/api/blacklist', async function (req, res, next) {
     connection = await common.getConnection();
     await common.query("insert into UserBotBlacklist (`userId`,`name`,`ipRange`,`userAgent`) values (?,?,?,?)", [
       value.userId, value.name, JSON.stringify(value.ipRules), JSON.stringify(value.userAgentRules)], connection);
+
+    //reids pub
+    redisPool.publish(setting.redis.blackListChannal, value.userId);
+
     delete value.userId;
     delete value.idText;
     value.enabled = true;
-    //reids pub
-    redisPool.publish(setting.redis.blackListChannal, value.userId);
+
 
     return res.json({
       status: 1,
@@ -773,12 +776,13 @@ router.post('/api/blacklist/:id', async function (req, res, next) {
     params.push(value.userId);
     params.push(value.id);
     connection = await common.getConnection();
-    
+
     await common.query(sql, params, connection);
-    delete value.userId;
-    delete value.idText;
     //reids pub
     redisPool.publish(setting.redis.blackListChannal, value.userId);
+
+    delete value.userId;
+    delete value.idText;
 
     return res.json({
       status: 1,
@@ -818,7 +822,7 @@ router.get('/api/blacklist', async function (req, res, next) {
 
     for (let index = 0; index < result.length; index++) {
       responseData.blacklist.push({
-        id:result[index].id,
+        id: result[index].id,
         name: result[index].name,
         ipRules: result[index].ipRange ? JSON.parse(result[index].ipRange) : result[index].ipRange,
         userAgentRules: result[index].userAgent ? JSON.parse(result[index].userAgent) : result[index].userAgent,
