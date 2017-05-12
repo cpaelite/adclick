@@ -7,14 +7,14 @@ The maximum amount of the bot rules that can be created is {{blacklistCount}}. Y
 </h1>
 <div class="form-column bot-blacklist">
   <div class="container clearfix">
-    <div class="form-group bot-select">
+    <!--<div class="form-group bot-select">
       <label>Bot rules: </label>
         <md-select class="cs-subform-select" ng-model="data.enabled">
             <md-option value="true">Enabled</md-option>
             <md-option value="false">Disabled</md-option>
         </md-select>
-    </div>
-    <div class="btn-right" ng-show="data.blacklist.length < blacklistCount">
+    </div>-->
+    <div class="btn-right form-group" ng-show="data.blacklist.length < blacklistCount">
       <md-button class="md-raised copy-btn main-domain" ng-click="editItem($event, -1)"><i class="icon-plus"></i>Create New</md-button>
       <!-- <md-button class="md-raised add-another-btn"><i class="material-icons">mode_edit</i>Edit</md-button>
       <md-button class="md-raised add-another-btn"><i class="material-icons">delete</i>Delete</md-button> -->
