@@ -217,7 +217,7 @@
 <script type="text/html" id="report-tpl">
   <% for (var i = 0, l = report.rows.length; i < l; i++) { %>
     <% if(report.rows[i].parentRow.expanded) { %>
-      <% var row = report.rows[i]; var treeLevel = report.treeLevel; var columns = report.columns;%>
+      <% var row = report.rows[i]; var treeLevel = report.treeLevel; var columns = report.columns; var activeStatusIsDisabled = report.activeStatusIsDisabled;%>
       <tr data-index="<%=i%>" class="md-row <%=treeLevel>1 && row.treeLevel==1 ? ' first-tree': ''%> <%= row.data.deleted==1 ? ' row-deleted' : ''%>">
         <% if(report.canEdit) {%>
         <td class="row-action <%=row.data.deleted==1 ? ' deleted': ''%> <%=row.data.deleted==0 ? ' enabled': ''%>">
@@ -236,11 +236,11 @@
         <% } %>
         <% for(var k = 0, kLen = columns.length; k < kLen; k++) {%>
           <% var column = columns[k];%>
-          <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') {%>
-            <td class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0? ' item-name report-name': ''%>">
-              <%if(column.role=='name' && row.treeLevel == 1) {%>
+          <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') { var isShowMenu = column.role=='name' && row.treeLevel == 1 && (treeLevel == 1 || treeLevel > 1 && !activeStatusIsDisabled); %>
+            <td class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0 && isShowMenu? ' item-name report-name': ''%>">
+              <%if(isShowMenu) {%>
               <span><a href="javascript:;"><%=row.data[column.key]%><i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i></a></span>
-              <% } else if (column.role=='name' && row.treeLevel != 1) {%>
+              <% } else if (column.role=='name') {%>
               <span><%=row.data[column.key]%></span>
               <% } else if (column.role!='name') {%>
               <span><%=['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(column.key) > -1 ? ('$' + row.data[column.key]) : ['ctr', 'cr', 'cv', 'roi'].indexOf(column.key) > -1 ? (row.data[column.key] + '%') : row.data[column.key]%></span>

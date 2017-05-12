@@ -901,7 +901,8 @@
           treeLevel: $scope.treeLevel,
           canEdit: $scope.canEdit(),
           columns: $scope.columns,
-          reportViewColumns: $scope.preferences.reportViewColumns
+          reportViewColumns: $scope.preferences.reportViewColumns,
+          activeStatusIsDisabled: $scope.activeStatusIsDisabled()
         }
       });
       $('#repeater_container').empty().append(tempHtml);
