@@ -181,6 +181,7 @@
     }
 
     $scope.filters = [];
+
     groupByOptions.forEach(function(gb) {
       var val = stateParams.filters[gb.value];
       if (val) {
@@ -656,10 +657,13 @@
         delete params.to;
       }
       params.filters = {};
+      var ftsArr = [];
       $scope.filters.forEach(function(f) {
         params.filters[f.key] = f.val;
+        ftsArr.push(f.key + '%' + f.val);
       });
       params.drilldownTrafficId = $scope.drilldownTrafficId;
+      params.fts = ftsArr.join('_');
       $scope.$state.go('app.report.' + page, params);
     }
 
@@ -909,7 +913,8 @@
           canEdit: $scope.canEdit(),
           columns: $scope.columns,
           reportViewColumns: $scope.preferences.reportViewColumns,
-          activeStatusIsDisabled: $scope.activeStatusIsDisabled()
+          activeStatusIsDisabled: $scope.activeStatusIsDisabled(),
+          groupByOne: $scope.groupBy[0]
         }
       });
       $('#repeater_container').empty().append(tempHtml);
