@@ -160,7 +160,6 @@ export const mapping = {
     dbGroupBy: "City",
     listPage: false,
     dbFilter: 'City',
-    dbFilter: 'City',
     export: {
       dbGroupBy: "City",
       attributes: [

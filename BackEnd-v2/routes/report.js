@@ -373,7 +373,7 @@ async function normalReport(values, mustPagination) {
     //单独处理group by day
     if (groupBy == 'day' || groupBy == 'hour') {
       having = `having ${mapping[groupBy].dbFilter} like '%${filter}%'`;
-    } else {
+    } else if(!mapping[groupBy].listPage){
       where += ` and ${mapping[groupBy].dbFilter} like '%${filter}%'`
     }
   }
@@ -485,7 +485,7 @@ async function normalReport(values, mustPagination) {
     tpl += ` limit ${offset},${limit}`;
   }
 
-
+ 
   let connection = await common.getConnection('m2');
 
   let [rawRows, [totals]] = await Promise.all([
@@ -498,6 +498,8 @@ async function normalReport(values, mustPagination) {
     connection.release();
   }
 
+  
+
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy == "campaign") {
     rawRows = await fullFill({
@@ -505,11 +507,12 @@ async function normalReport(values, mustPagination) {
       groupBy: "traffic"
     });
   }
-
+ 
   rawRows = await fullFill({
     rawRows,
     groupBy
   });
+ 
 
   let totalRows = totals.total;
 
@@ -523,6 +526,8 @@ async function normalReport(values, mustPagination) {
     totalRows
   }
 }
+
+
 
 function fullfillHourofDay(rawRows){
     //用于填充 hourofday 的数据
