@@ -115,7 +115,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Language",
       attributes: [
-        ['Language']
+        'Language'
       ]
     }
   },
@@ -147,7 +147,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Country",
       attributes: [
-        ['Country']
+        'Country'
       ]
     }
   },
@@ -163,7 +163,7 @@ export const mapping = {
     export: {
       dbGroupBy: "City",
       attributes: [
-        ['City']
+        'City'
       ]
     }
   },
@@ -179,7 +179,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Region",
       attributes: [
-        ['Region']
+        'Region'
       ]
     }
   },
@@ -195,7 +195,7 @@ export const mapping = {
     export: {
       dbGroupBy: "ISP",
       attributes: [
-        ['ISP']
+        'ISP'
       ]
     }
   },
@@ -211,7 +211,7 @@ export const mapping = {
     export: {
       dbGroupBy: "MobileCarrier",
       attributes: [
-        ['MobileCarrier']
+        'MobileCarrier'
       ]
     }
   },
@@ -227,7 +227,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Domain",
       attributes: [
-        ['Domain']
+        'Domain'
       ]
     }
   },
@@ -243,7 +243,7 @@ export const mapping = {
     export: {
       dbGroupBy: "DeviceType",
       attributes: [
-        ['DeviceType']
+        'DeviceType'
       ]
     }
   },
@@ -259,7 +259,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Brand",
       attributes: [
-        ['Brand']
+        'Brand'
       ]
     }
   },
@@ -275,7 +275,7 @@ export const mapping = {
     export: {
       dbGroupBy: "OS",
       attributes: [
-        ['OS']
+        'OS'
       ]
     }
   },
@@ -291,7 +291,7 @@ export const mapping = {
     export: {
       dbGroupBy: "OSVersion",
       attributes: [
-        ['OSVersion']
+        'OSVersion'
       ]
     }
   },
@@ -307,7 +307,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Browser",
       attributes: [
-        ['Browser']
+        'Browser'
       ]
     }
   },
@@ -323,7 +323,7 @@ export const mapping = {
     export: {
       dbGroupBy: "BrowserVersion",
       attributes: [
-        ['BrowserVersion']
+        'BrowserVersion'
       ]
     }
   },
@@ -339,7 +339,7 @@ export const mapping = {
     export: {
       dbGroupBy: "ConnectionType",
       attributes: [
-        ['ConnectionType']
+        'ConnectionType'
       ]
     }
   },

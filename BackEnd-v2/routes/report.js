@@ -163,11 +163,13 @@ async function getExportData(values) {
     let column = [];
 
     let groupByArray = groupBy.split(',');
+    
     //根据groupBy 拼接column
     for (let j = 0; j < groupByArray.length; j++) {
       let groupByItem = groupByArray[j];
-      for (let index = 0; index < mapping[groupByItem].attributes.length; index++) {
-        let attr = mapping[groupByItem].export.attributes[index]
+      for (let index = 0; index < mapping[groupByItem].export.attributes.length; index++) {
+        let attr = mapping[groupByItem].export.attributes[index];
+       
         if (_.isString(attr)) {
           column.push(attr);
         } else if (_.isArray(attr)) {
@@ -225,6 +227,7 @@ async function getExportData(values) {
     }
     let tpl =
       `select ${column.join(",")} from adstatis  where UserID =${userId} and ${where} group by ${GROUP.join(',')}  ${orders} `;
+ 
     connection = await common.getConnection('m2');
     let rawRows = await common.query(tpl, [], connection);
     return {
