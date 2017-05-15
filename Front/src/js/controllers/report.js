@@ -317,6 +317,13 @@
       }
 
       if (dataType) {
+        var groupBy = "";
+        $scope.groupBy.forEach(function(group) {
+          if (group) {
+            groupBy += group + ",";
+          }
+        });
+        params.groupBy = groupBy.substring(0, groupBy.length-1);
         params.dataType = dataType;
         params.columns = $scope.downloadReportCols;
         FileDownload.download(params);
