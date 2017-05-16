@@ -33,8 +33,8 @@
                           <th md-column>Operations</th>
                         </tr>
                       </thead>
-                      <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
-                        <tr ms-row ng-repeat="rule in rules.rules">
+                      <tbody md-body id="fraud_filter_report_container">
+                        <!-- <tr ms-row ng-repeat="rule in rules.rules">
                           <td md-cell>{{::rule.name}}</td>
                           <td md-cell>{{::rule.timeSpan}}</td>
                           <td md-cell>
@@ -50,7 +50,7 @@
                               <i class="icon-trash"></i>
                             </a>
                           </td>
-                        </tr>
+                        </tr> -->
                       </tbody>
                     </table>
                 </md-table-container>
@@ -119,8 +119,8 @@
                       <th md-column>Operations</th>
                     </tr>
                   </thead>
-                  <tbody md-body vs-repeat vs-scroll-parent=".repeater-log-container">
-                    <tr ms-row ng-repeat="log in logs.logs track by log.id">
+                  <tbody md-body id="fraud_filter_log_container">
+                    <!-- <tr ms-row ng-repeat="log in logs.logs track by log.id">
                       <td md-cell>{{::log.time}}</td>
                       <td md-cell>{{::log.name}}</td>
                       <td md-cell>
@@ -128,7 +128,7 @@
                           <i class="icon-eye-open"></i>
                         </a>
                       </td>
-                    </tr>
+                    </tr> -->
                   </tbody>
                 </table>
             </md-table-container>
@@ -151,3 +151,38 @@
     </md-tabs>
   </md-content>
 </div>
+
+<script type="text/html" id="fraud_filter_report_tpl">
+  <% var rules = rules.rules; for (var i = 0, l = rules.length; i < l; i++) {%>
+  <tr class="ms-row" data-id="<%=rules[i].id%>">
+    <td class="md-cell"><%=rules[i].name%></td>
+    <td class="md-cell"><%=rules[i].timeSpan%></td>
+    <td class="md-cell">
+      <a class="status-icon <%=rules[i].status == 1 ? 'isGray' : ''%>" href="javascript:;">
+        <i class="icon-ok-sign"></i>
+      </a>
+    </td>
+    <td class="md-cell">
+      <a class="opera-icon edit" href="javascript:;">
+        <i class="icon-file-alt"></i>
+      </a>
+      <a class="opera-icon delete" href="javascript:;">
+        <i class="icon-trash"></i>
+      </a>
+    </td>
+  </tr>
+  <% } %>
+</script>
+<script type="text/html" id="fraud_filter_log_tpl">
+  <% var logs = logs.logs; for (var i = 0, l = logs.length; i < l; i++) {%>
+    <tr class="ms-row" data-id="<%=logs[i].id%>">
+      <td class="md-cell"><%=logs[i].time%></td>
+      <td class="md-cell"><%=logs[i].name%></td>
+      <td class="md-cell">
+        <a class="status-icon">
+          <i class="icon-eye-open"></i>
+        </a>
+      </td>
+    </tr>
+  <% } %>
+</script>
