@@ -74,6 +74,20 @@
       }
       $scope.logPromise = Logs.get(params, function(result){
         $scope.loglist = result.data;
+        var tempHtml = $.temp($('#sudden_change_log_tpl').html(), {
+          loglist: $scope.loglist
+        });
+        $('#sudden_change_log_container').empty().append(tempHtml);
+        $('#sudden_change_log_container').off('click').on('click', '.status-icon', function() {
+          var id = $(this).closest('tr').data('id'), logs = $scope.loglist.logs, log;
+          for(var i = 0; i < logs.length; i++) {
+            if(logs[i].id == id) {
+              log = logs[i];
+              break;
+            }
+          }
+          $scope.viewLogs(log);
+        });
       }).$promise;
       return $scope.logPromise;
     };

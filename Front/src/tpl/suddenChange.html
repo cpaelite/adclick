@@ -114,8 +114,8 @@
                             <th md-column>Operations</th>
                           </tr>
                         </thead>
-                        <tbody md-body vs-repeat vs-scroll-parent=".repeater-log-container">
-                          <tr ms-row ng-repeat="tr in loglist.logs track by tr.id">
+                        <tbody md-body id="sudden_change_log_container">
+                          <!-- <tr ms-row ng-repeat="tr in loglist.logs track by tr.id">
                             <td md-cell>{{::tr.time}}</td>
                             <td md-cell>{{::tr.name}}</td>
                             <td md-cell>
@@ -123,7 +123,7 @@
                                 <i class="icon-eye-open"></i>
                               </a>
                             </td>
-                          </tr>
+                          </tr> -->
                         </tbody>
                       </table>
                   </md-table-container>
@@ -134,3 +134,17 @@
     </md-tabs>
   </md-content>
 </div>
+
+<script type="text/html" id="sudden_change_log_tpl">
+  <% var logs = loglist.logs; for (var i = 0, l = logs.length; i < l; i++) {%>
+    <tr class="ms-row" data-id="<%=logs[i].id%>">
+      <td class="md-cell"><%=logs[i].time%></td>
+      <td class="md-cell"><%=logs[i].name%></td>
+      <td class="md-cell">
+        <a class="status-icon">
+          <i class="icon-eye-open"></i>
+        </a>
+      </td>
+    </tr>
+  <% } %>
+</script>
