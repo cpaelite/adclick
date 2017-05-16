@@ -106,142 +106,250 @@ router.get('/api/export', async function (req, res, next) {
   }
 })
 
-
 async function getExportData(values) {
-  let connection;
-  try {
-    let {
-      userId,
-      from,
-      to,
-      tz,
-      groupBy,
-      filter,
-      order
-    } = values;
-    //====== start
-    let where =
-      `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)
-                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
+  let {
+    userId,
+    from,
+    to,
+    tz,
+    groupBy,
+    offset,
+    limit,
+    filter,
+    order,
+    status
+  } = values;
+  //====== start
+  let having = "";
 
-    if (_.has(values, 'day')) {
-      let start = moment(values.day.trim()).startOf('day').format(
-        "YYYY-MM-DDTHH:mm:ss");
-      let end = moment(values.day.trim()).add(1, 'd').startOf('day').format(
-        "YYYY-MM-DDTHH:mm:ss");
-      where =
-        ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
+               and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
+
+
+
+  let attrs = Object.keys(values);
+  for (let index = 0; index < attrs.length; index++) {
+    let attr = attrs[index];
+    if (attr != 'day' && attr != 'hour' && attr != 'hourOfDay' && mapping[attr]) {
+      where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
     }
+  }
+  let groupByArray = groupBy.split(',');
 
-    if (_.has(values, 'hour')) {
-      let start = moment(values.hour.trim()).startOf('hour').format(
-        "YYYY-MM-DDTHH:mm:ss");
-      let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format(
-        "YYYY-MM-DDTHH:mm:ss");
-      where =
-        ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
-    }
+  let column = [];
+  //     //根据groupBy 拼接column
+  for (let j = 0; j < groupByArray.length; j++) {
+    let groupByItem = groupByArray[j];
+    for (let index = 0; index < mapping[groupByItem].export.attributes.length; index++) {
+      let attr = mapping[groupByItem].export.attributes[index];
 
-    let attrs = Object.keys(values);
-    for (let index = 0; index < attrs.length; index++) {
-      let attr = attrs[index];
-      if (attr != 'day' && attr != 'hour' && mapping[attr]) {
-        where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
+      if (_.isString(attr)) {
+        column.push(attr);
+      } else if (_.isArray(attr)) {
+        column.push(`${attr[0]} as ${attr[1]}`);
       }
     }
-
-
-    let orders = "";
-    if (order) {
-      if (order.slice(0, 1) == '-') {
-        orders = ` order by ${order.slice(1)} DESC`;
-      } else {
-        orders = ` order by ${order} ASC`;
-      }
-    }
-
-    let column = [];
-
-    let groupByArray = groupBy.split(',');
-
-    //根据groupBy 拼接column
-    for (let j = 0; j < groupByArray.length; j++) {
-      let groupByItem = groupByArray[j];
-      for (let index = 0; index < mapping[groupByItem].export.attributes.length; index++) {
-        let attr = mapping[groupByItem].export.attributes[index];
-
-        if (_.isString(attr)) {
-          column.push(attr);
-        } else if (_.isArray(attr)) {
-          column.push(`${attr[0]} as ${attr[1]}`);
-        }
-      }
-    }
-
-    let clostring =
-      `sum(Visits) as visits,
-                sum(Impressions) as impressions ,
-                round(sum(Revenue/1000000),2) as revenue,
-                sum(Clicks) as clicks,
-                sum(Conversions) as conversions ,
-                round(sum(Cost/1000000),2) as cost ,
-                round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit ,
-                round(sum(Cost / 1000000) / sum(Visits),4) as cpv,
-                round(sum(Visits)/sum(Impressions)*100,2)  as  ictr,
-                IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr,
-                IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr,
-                IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv,
-                IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi ,
-                IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv,
-                IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc,
-                IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
-
-    column = _.concat(column, clostring.split('&&'));
-    if (_.indexOf(groupByArray, 'day') != -1) {
-      //处理timezone 兼容列存储
-      let tag = tz.slice(0, 1);
-      let numberString = tz.slice(1);
-      let slice = numberString.split(':');
-      let intavlHour =
-        `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`;
-      column.push(
-        `DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`
-      );
-    }
-    if (_.indexOf(groupByArray, 'hour') != -1) {
-      //处理timezone 兼容列存储
-      let tag = tz.slice(0, 1);
-      let numberString = tz.slice(1);
-      let slice = numberString.split(':');
-      let intavlHour =
-        `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
-      column.push(
-        `DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`
-      );
-    }
-
-    let GROUP = [];
-    for (let index = 0; index < groupByArray.length; index++) {
-      let groupItem = groupByArray[index];
-      GROUP.push(mapping[groupItem].export.dbGroupBy)
-    }
-    let tpl =
-      `select ${column.join(",")} from adstatis  where UserID =${userId} and ${where} group by ${GROUP.join(',')}  ${orders} `;
-
-    connection = await common.getConnection('m2');
-    let rawRows = await common.query(tpl, [], connection);
-    return {
-      rows: rawRows
-    }
-  } catch (e) {
-    throw e;
-  } finally {
-    if (connection) {
-      connection.release()
+  }
+  let orders = "";
+  if (order) {
+    if (order.slice(0, 1) == '-') {
+      orders = ` order by ${order.slice(1)} DESC`;
+    } else {
+      orders = ` order by ${order} ASC`;
     }
   }
 
+//处理timezone 兼容列存储
+  let tag = tz.slice(0, 1);
+  let numberString = tz.slice(1);
+  let slice = numberString.split(':');
+  let intavlHour = `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`;
+
+  if (_.indexOf(groupByArray, 'day') != -1) {
+    column.push(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`);
+  }
+  if (_.indexOf(groupByArray, 'hour') != -1) {
+    column.push(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`);
+  }
+  if (_.indexOf(groupByArray, 'hourOfDay') != -1) {
+    column.push(`DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourOfDay'`);
+  }
+
+  let columnStr =
+    `sum(Visits) as visits &&
+                sum(Impressions) as impressions &&
+                round(sum(Revenue/1000000),2) as revenue &&
+                sum(Clicks) as clicks &&
+                sum(Conversions) as conversions &&
+                round(sum(Cost/1000000),2) as cost &&
+                round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit &&
+                round(sum(Cost / 1000000) / sum(Visits),4) as cpv &&
+                round(sum(Visits)/sum(Impressions)*100,2)  as  ictr &&
+                IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr && 
+                IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr &&
+                IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv &&
+                IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi &&
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv &&
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc &&
+                IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
+
+  column = _.concat(column, columnStr.split('&&'));
+  let GROUP = [];
+  for (let index = 0; index < groupByArray.length; index++) {
+    let groupItem = groupByArray[index];
+    GROUP.push(mapping[groupItem].export.dbGroupBy)
+  }
+  let tpl = `select ${column.join(",")} from adstatis  where UserID =${userId} and ${where} group by ${GROUP.join(',')}  ${orders} `;
+
+
+  let connection = await common.getConnection('m2');
+
+  let rawRows = await common.query(tpl, [], connection);
+
+  //释放链接
+  if (connection) {
+    connection.release();
+  }
+
+  return {
+    rows: rawRows
+  }
 }
+// async function getExportData(values) {
+//   let connection;
+//   try {
+//     let {
+//       userId,
+//       from,
+//       to,
+//       tz,
+//       groupBy,
+//       filter,
+//       order
+//     } = values;
+//     //====== start
+//     let where =
+//       `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)
+//                 and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
+
+//     if (_.has(values, 'day')) {
+//       let start = moment(values.day.trim()).startOf('day').format(
+//         "YYYY-MM-DDTHH:mm:ss");
+//       let end = moment(values.day.trim()).add(1, 'd').startOf('day').format(
+//         "YYYY-MM-DDTHH:mm:ss");
+//       where =
+//         ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+//     }
+
+//     if (_.has(values, 'hour')) {
+//       let start = moment(values.hour.trim()).startOf('hour').format(
+//         "YYYY-MM-DDTHH:mm:ss");
+//       let end = moment(values.hour.trim()).add(1, 'hours').startOf('hour').format(
+//         "YYYY-MM-DDTHH:mm:ss");
+//       where =
+//         ` Timestamp >= (UNIX_TIMESTAMP(CONVERT_TZ('${start}','${tz}', '+00:00')) * 1000) and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ( '${end}','${tz}', '+00:00')) * 1000)`;
+//     }
+
+//     let attrs = Object.keys(values);
+//     for (let index = 0; index < attrs.length; index++) {
+//       let attr = attrs[index];
+//       if (attr != 'day' && attr != 'hour' && mapping[attr]) {
+//         where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
+//       }
+//     }
+
+
+//     let orders = "";
+//     if (order) {
+//       if (order.slice(0, 1) == '-') {
+//         orders = ` order by ${order.slice(1)} DESC`;
+//       } else {
+//         orders = ` order by ${order} ASC`;
+//       }
+//     }
+
+//     let column = [];
+
+//     let groupByArray = groupBy.split(',');
+
+//     //根据groupBy 拼接column
+//     for (let j = 0; j < groupByArray.length; j++) {
+//       let groupByItem = groupByArray[j];
+//       for (let index = 0; index < mapping[groupByItem].export.attributes.length; index++) {
+//         let attr = mapping[groupByItem].export.attributes[index];
+
+//         if (_.isString(attr)) {
+//           column.push(attr);
+//         } else if (_.isArray(attr)) {
+//           column.push(`${attr[0]} as ${attr[1]}`);
+//         }
+//       }
+//     }
+
+//     let clostring =
+//       `sum(Visits) as visits,
+//                 sum(Impressions) as impressions ,
+//                 round(sum(Revenue/1000000),2) as revenue,
+//                 sum(Clicks) as clicks,
+//                 sum(Conversions) as conversions ,
+//                 round(sum(Cost/1000000),2) as cost ,
+//                 round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit ,
+//                 round(sum(Cost / 1000000) / sum(Visits),4) as cpv,
+//                 round(sum(Visits)/sum(Impressions)*100,2)  as  ictr,
+//                 IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr,
+//                 IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr,
+//                 IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv,
+//                 IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi ,
+//                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv,
+//                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc,
+//                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
+
+//     column = _.concat(column, clostring.split('&&'));
+//     if (_.indexOf(groupByArray, 'day') != -1) {
+//       //处理timezone 兼容列存储
+//       let tag = tz.slice(0, 1);
+//       let numberString = tz.slice(1);
+//       let slice = numberString.split(':');
+//       let intavlHour =
+//         `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`;
+//       column.push(
+//         `DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`
+//       );
+//     }
+//     if (_.indexOf(groupByArray, 'hour') != -1) {
+//       //处理timezone 兼容列存储
+//       let tag = tz.slice(0, 1);
+//       let numberString = tz.slice(1);
+//       let slice = numberString.split(':');
+//       let intavlHour =
+//         `${tag}${parseInt(slice[0]) * 60 + parseInt(slice[1])}`
+//       column.push(
+//         `DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`
+//       );
+//     }
+
+//     let GROUP = [];
+//     for (let index = 0; index < groupByArray.length; index++) {
+//       let groupItem = groupByArray[index];
+//       GROUP.push(mapping[groupItem].export.dbGroupBy)
+//     }
+//     let tpl =
+//       `select ${column.join(",")} from adstatis  where UserID =${userId} and ${where} group by ${GROUP.join(',')}  ${orders} `;
+
+//     connection = await common.getConnection('m2');
+//     let rawRows = await common.query(tpl, [], connection);
+//     return {
+//       rows: rawRows
+//     }
+//   } catch (e) {
+//     throw e;
+//   } finally {
+//     if (connection) {
+//       connection.release()
+//     }
+//   }
+
+// }
 
 
 async function main_report(value) {
@@ -560,7 +668,7 @@ function fullfillHourofDay(rawRows) {
     { id: '22', hourOfDay: '22', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
     { id: '23', hourOfDay: '23', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 }
   ];
-   
+
   for (let i = 0; i < DATAOFHOUROFDAY.length; i++) {
     for (let j = 0; j < rawRows.length; j++) {
       if (DATAOFHOUROFDAY[i].id == rawRows[j].id) {
