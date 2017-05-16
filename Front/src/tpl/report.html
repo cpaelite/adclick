@@ -118,15 +118,10 @@
 <div class="breadcrumb-div">
 <div ng-if="filters.length > 0">
     <ul class="breadcrumb">
-        <li><em><a ng-click="removeFilter(-1)"><span style="color: dodgerblue">Home</span></a></em></li>
         <li ng-repeat="filter in filters track by $index">
-            <em ng-if="$index < filters.length-1">
-                <a ng-click="removeFilter($index)"><span style="color: dodgerblue">{{filter.key + ': ' + filter.name}}</span></a>
-            </em>
-            <em ng-if="$index >= filters.length-1">
-                {{filter.key + ': ' + filter.name}}
-            </em>
+            <em><a ng-click="removeFilter($index - 1)"><span style="color: dodgerblue">{{filter.key + ': ' + filter.name}}</span></a></em>
         </li>
+        <li><em>{{perfType}}</em></li>
     </ul>
 </div>
 </div>
