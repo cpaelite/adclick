@@ -431,7 +431,7 @@ async function normalReport(values, mustPagination) {
                 DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`;
   } else if (groupBy.toLowerCase() == 'hourofday') {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as 'id',
-                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourofday'`;
+                DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourOfDay'`;
   }
   let tplGroupBy = `group by ${mapping[groupBy].dbGroupBy}`;
 
@@ -453,12 +453,12 @@ async function normalReport(values, mustPagination) {
       having = `having hour='${values.hour}' `;
     }
   } else if (_.has(values, 'hourOfDay')) {
-    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourofday'`;
-    tplGroupBy += `,hourofday`;
+    column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourOfDay'`;
+    tplGroupBy += `,hourOfDay`;
     if (having != "") {
-      having += ` and hourofday='${values.hourOfDay}'`;
+      having += ` and hourOfDay='${values.hourOfDay}'`;
     } else {
-      having = `having hourofday='${values.hourOfDay}' `;
+      having = `having hourOfDay='${values.hourOfDay}' `;
     }
   }
 
@@ -536,29 +536,29 @@ function fullfillHourofDay(rawRows){
     //用于填充 hourofday 的数据
     let DATAOFHOUROFDAY = [
       { id: 0, hourOfDay: 0, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 1, hourofday: 1, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 2, hourofday: 2, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 3, hourofday: 3, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 4, hourofday: 4, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 5, hourofday: 5, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 6, hourofday: 6, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 7, hourofday: 7, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 8, hourofday: 8, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 9, hourofday: 9, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 10, hourofday: 10, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 11, hourofday: 11, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 12, hourofday: 12, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 13, hourofday: 13, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 14, hourofday: 14, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 15, hourofday: 15, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 16, hourofday: 16, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 17, hourofday: 17, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 18, hourofday: 18, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 19, hourofday: 19, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 20, hourofday: 20, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 21, hourofday: 21, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 22, hourofday: 22, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: 23, hourofday: 23, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 }
+      { id: 1, hourOfDay: 1, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 2, hourOfDay: 2, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 3, hourOfDay: 3, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 4, hourOfDay: 4, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 5, hourOfDay: 5, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 6, hourOfDay: 6, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 7, hourOfDay: 7, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 8, hourOfDay: 8, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 9, hourOfDay: 9, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 10, hourOfDay: 10, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 11, hourOfDay: 11, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 12, hourOfDay: 12, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 13, hourOfDay: 13, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 14, hourOfDay: 14, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 15, hourOfDay: 15, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 16, hourOfDay: 16, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 17, hourOfDay: 17, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 18, hourOfDay: 18, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 19, hourOfDay: 19, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 20, hourOfDay: 20, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 21, hourOfDay: 21, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 22, hourOfDay: 22, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 23, hourOfDay: 23, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 }
     ];
     for (let i = 0; i < DATAOFHOUROFDAY.length; i++) {
       for (let j = 0; j < rawRows.length; j++) {

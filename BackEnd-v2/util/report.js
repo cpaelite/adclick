@@ -562,12 +562,12 @@ export const mapping = {
   },
   hourOfDay: {
     attributes: [],
-    dbKey: "hourofday",
-    dbGroupBy: "id,hourofday",
+    dbKey: "hourOfDay",
+    dbGroupBy: "id,hourOfDay",
     listPage: false,
-    dbFilter: 'hourofday',
+    dbFilter: 'hourOfDay',
     export: {
-      dbGroupBy: "hourofday",
+      dbGroupBy: "hourOfDay",
       attributes: []
     }
   },
