@@ -474,7 +474,7 @@ async function normalReport(values, mustPagination) {
   let attrs = Object.keys(values);
   for (let index = 0; index < attrs.length; index++) {
     let attr = attrs[index];
-    if (attr != 'day' && attr != 'hour' && mapping[attr]) {
+    if (attr != 'day' && attr != 'hour' && attr != 'hourOfDay' &&mapping[attr]) {
       where += ` and ${[mapping[attr].dbKey]} = '${values[attr]}'`;
     }
   }
@@ -574,7 +574,7 @@ async function normalReport(values, mustPagination) {
 
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} ${tplGroupBy} ${having} ${orders} `;
-
+ 
   let totalSQL = `select COUNT(*) as total,sum(visits) as visits,    
                 sum(impressions) as impressions ,
                 round(sum(revenue),2) as revenue,
