@@ -560,7 +560,7 @@ export const mapping = {
       attributes: []
     }
   },
-  hourofday: {
+  hourOfDay: {
     attributes: [],
     dbKey: "hourofday",
     dbGroupBy: "id,hourofday",

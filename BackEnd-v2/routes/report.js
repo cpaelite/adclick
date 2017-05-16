@@ -452,13 +452,13 @@ async function normalReport(values, mustPagination) {
     } else {
       having = `having hour='${values.hour}' `;
     }
-  } else if (_.has(values, 'hourofday')) {
+  } else if (_.has(values, 'hourOfDay')) {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourofday'`;
     tplGroupBy += `,hourofday`;
     if (having != "") {
-      having += ` and hourofday='${values.hourofday}'`;
+      having += ` and hourofday='${values.hourOfDay}'`;
     } else {
-      having = `having hourofday='${values.hourofday}' `;
+      having = `having hourofday='${values.hourOfDay}' `;
     }
   }
 
@@ -535,7 +535,7 @@ async function normalReport(values, mustPagination) {
 function fullfillHourofDay(rawRows){
     //用于填充 hourofday 的数据
     let DATAOFHOUROFDAY = [
-      { id: 0, hourofday: 0, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+      { id: 0, hourOfDay: 0, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
       { id: 1, hourofday: 1, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
       { id: 2, hourofday: 2, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
       { id: 3, hourofday: 3, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
