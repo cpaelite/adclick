@@ -20,19 +20,19 @@ import {
 
 
 
-async function saveReportLog(req){
-   let connection;
-   try{
-      connection = await common.getConnection();
-      let sql =`insert into UserEventLog (userId,operatorId,operatorIP,entityType,entityTypeString,entityName,entityId,actionType,changedAt) values (?,?,?,?,?,?,?,?,?)`; 
-      await common.query(sql,[req.parent.id,req.user.id,req.clientIp,0,req.query.groupBy,req.query.groupBy,'0','Report',moment().unix()],connection);   
-   }catch(e){
-      console.error('report log 上报error');
-   }finally{
-     if(connection){
-         connection.release();
-      }
-   }
+async function saveReportLog(req) {
+  let connection;
+  try {
+    connection = await common.getConnection();
+    let sql = `insert into UserEventLog (userId,operatorId,operatorIP,entityType,entityTypeString,entityName,entityId,actionType,changedAt) values (?,?,?,?,?,?,?,?,?)`;
+    await common.query(sql, [req.parent.id, req.user.id, req.clientIp, 0, req.query.groupBy, req.query.groupBy, '0', 'Report', moment().unix()], connection);
+  } catch (e) {
+    console.error('report log 上报error');
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
 }
 
 /**
@@ -45,7 +45,7 @@ async function saveReportLog(req){
 
 //from   to tz  sort  direction  ]  groupBy  offset   limit  filter1  filter1Value  filter2 filter2Value
 //dataType csv   columns=offerName,offerHash
-router.get('/api/report', async function(req, res, next) {
+router.get('/api/report', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     //上报用户行为
@@ -68,7 +68,7 @@ router.get('/api/report', async function(req, res, next) {
 });
 
 //from to tz groupBy  columns
-router.get('/api/export', async function(req, res, next) {
+router.get('/api/export', async function (req, res, next) {
   req.query.userId = req.parent.id;
   try {
     let result;
@@ -163,13 +163,13 @@ async function getExportData(values) {
     let column = [];
 
     let groupByArray = groupBy.split(',');
-    
+
     //根据groupBy 拼接column
     for (let j = 0; j < groupByArray.length; j++) {
       let groupByItem = groupByArray[j];
       for (let index = 0; index < mapping[groupByItem].export.attributes.length; index++) {
         let attr = mapping[groupByItem].export.attributes[index];
-       
+
         if (_.isString(attr)) {
           column.push(attr);
         } else if (_.isArray(attr)) {
@@ -227,7 +227,7 @@ async function getExportData(values) {
     }
     let tpl =
       `select ${column.join(",")} from adstatis  where UserID =${userId} and ${where} group by ${GROUP.join(',')}  ${orders} `;
- 
+
     connection = await common.getConnection('m2');
     let rawRows = await common.query(tpl, [], connection);
     return {
@@ -357,11 +357,11 @@ async function normalReport(values, mustPagination) {
   } = values;
   //====== start
   let having = "";
- 
+
   let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
- 
+
 
   let attrs = Object.keys(values);
   for (let index = 0; index < attrs.length; index++) {
@@ -376,7 +376,7 @@ async function normalReport(values, mustPagination) {
     //单独处理group by day
     if (groupBy == 'day' || groupBy == 'hour') {
       having = `having ${mapping[groupBy].dbFilter} like '%${filter}%'`;
-    } else if(!mapping[groupBy].listPage){
+    } else if (!mapping[groupBy].listPage) {
       where += ` and ${mapping[groupBy].dbFilter} like '%${filter}%'`
     }
   }
@@ -407,7 +407,7 @@ async function normalReport(values, mustPagination) {
                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Visits),4),0) as epv,
                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Clicks),4),0) as epc,
                 IFNULL(round(sum(Revenue)/ 1000000 / sum(Conversions),2),0) as ap `;
- 
+
   for (let index = 0; index < mapping[groupBy].attributes.length; index++) {
     if (_.isString(mapping[groupBy].attributes[index])) {
       column += `,${mapping[groupBy].attributes[index]} `
@@ -462,7 +462,7 @@ async function normalReport(values, mustPagination) {
     }
   }
 
- 
+
 
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} ${tplGroupBy} ${having} ${orders} `;
@@ -488,7 +488,7 @@ async function normalReport(values, mustPagination) {
     tpl += ` limit ${offset},${limit}`;
   }
 
- 
+
   let connection = await common.getConnection('m2');
 
   let [rawRows, [totals]] = await Promise.all([
@@ -501,7 +501,7 @@ async function normalReport(values, mustPagination) {
     connection.release();
   }
 
-  
+
 
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy == "campaign") {
@@ -510,18 +510,18 @@ async function normalReport(values, mustPagination) {
       groupBy: "traffic"
     });
   }
- 
+
   rawRows = await fullFill({
     rawRows,
     groupBy
   });
- 
+
 
   let totalRows = totals.total;
 
   //填充hourofday的数据
   if (groupBy.toLowerCase() == 'hourofday') {
-     rawRows=fullfillHourofDay(rawRows);
+    rawRows = fullfillHourofDay(rawRows);
   }
   return {
     rows: rawRows,
@@ -532,42 +532,43 @@ async function normalReport(values, mustPagination) {
 
 
 
-function fullfillHourofDay(rawRows){
-    //用于填充 hourofday 的数据
-    let DATAOFHOUROFDAY = [
-      { id: '00', hourOfDay: 0, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '01', hourOfDay: 1, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '02', hourOfDay: 2, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '03', hourOfDay: 3, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '04', hourOfDay: 4, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '05', hourOfDay: 5, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '06', hourOfDay: 6, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '07', hourOfDay: 7, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '08', hourOfDay: 8, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '09', hourOfDay: 9, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '10', hourOfDay: 10, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '11', hourOfDay: 11, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '12', hourOfDay: 12, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '13', hourOfDay: 13, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '14', hourOfDay: 14, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '15', hourOfDay: 15, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '16', hourOfDay: 16, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '17', hourOfDay: 17, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '18', hourOfDay: 18, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '19', hourOfDay: 19, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '20', hourOfDay: 20, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '21', hourOfDay: 21, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '22', hourOfDay: 22, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
-      { id: '23', hourOfDay: 23, visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 }
-    ];
-    for (let i = 0; i < DATAOFHOUROFDAY.length; i++) {
-      for (let j = 0; j < rawRows.length; j++) {
-        if (DATAOFHOUROFDAY[i].id == rawRows[j].id) {
-          DATAOFHOUROFDAY[i] = rawRows[j];
-        }
+function fullfillHourofDay(rawRows) {
+  //用于填充 hourofday 的数据
+  let DATAOFHOUROFDAY = [
+    { id: '00', hourOfDay: '00', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '01', hourOfDay: '01', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '02', hourOfDay: '02', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '03', hourOfDay: '03', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '04', hourOfDay: '04', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '05', hourOfDay: '05', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '06', hourOfDay: '06', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '07', hourOfDay: '07', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '08', hourOfDay: '08', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '09', hourOfDay: '09', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '10', hourOfDay: '10', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '11', hourOfDay: '11', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '12', hourOfDay: '12', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '13', hourOfDay: '13', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '14', hourOfDay: '14', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '15', hourOfDay: '15', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '16', hourOfDay: '16', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '17', hourOfDay: '17', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '18', hourOfDay: '18', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '19', hourOfDay: '19', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '20', hourOfDay: '20', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '21', hourOfDay: '21', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '22', hourOfDay: '22', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 },
+    { id: '23', hourOfDay: '23', visits: 0, impressions: 0, revenue: 0, clicks: 0, conversions: 0, cost: 0, profit: 0, cpv: 0, ictr: 0, ctr: 0, cr: 0, cv: 0, roi: 0, epv: 0, epc: 0, ap: 0 }
+  ];
+   
+  for (let i = 0; i < DATAOFHOUROFDAY.length; i++) {
+    for (let j = 0; j < rawRows.length; j++) {
+      if (DATAOFHOUROFDAY[i].id == rawRows[j].id) {
+        DATAOFHOUROFDAY[i] = rawRows[j];
       }
     }
-    return DATAOFHOUROFDAY;
+  }
+  return DATAOFHOUROFDAY;
 }
 
 async function listPageReport(query) {
@@ -679,7 +680,7 @@ function dynamicSort(property) {
     sortOrder = -1;
     property = property.substr(1);
   }
-  return function(a, b) {
+  return function (a, b) {
     var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ?
       1 : 0;
     return result * sortOrder;
