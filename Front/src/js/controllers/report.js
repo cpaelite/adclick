@@ -61,6 +61,18 @@
   function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr, $document) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
+    var ftsParams = $scope.$stateParams.fts ? decodeURIComponent($scope.$stateParams.fts) : '';
+    var filterItems = [];
+    if(ftsParams) {
+      ftsParams.split('|').forEach(function(ftsParam) {
+        var t = ftsParam.split('$');
+        filterItems.push({
+          key: t[0],
+          val: t[1],
+          name: t[2]
+        })
+      });
+    }
 
     $scope.app.subtitle = perfType;
     $scope.groupByOptions = angular.copy(groupByOptions);
@@ -181,22 +193,25 @@
     }
 
     $scope.filters = [];
-    groupByOptions.forEach(function(gb) {
-      var val = stateParams.filters[gb.value];
-      if (val) {
-        var cacheKey = gb.value + ':' + val;
-        // todo: get name from server if not in cache
-        var cache = reportCache.get(cacheKey);
-        var cacheName = val;
-        // filter顺序
-        var level = 0;
-        if (cache) {
-          cacheName = cache.name;
-          level = cache.level;
-        }
-        $scope.filters.splice(level-1, 0, { key: gb.value, val: val, name: cacheName });
-      }
-    });
+
+    // groupByOptions.forEach(function(gb) {
+    //   var val = stateParams.filters[gb.value];
+    //   if (val) {
+    //     var cacheKey = gb.value + ':' + val;
+    //     // todo: get name from server if not in cache
+    //     var cache = reportCache.get(cacheKey);
+    //     var cacheName = val;
+    //     // filter顺序
+    //     var level = 0;
+    //     if (cache) {
+    //       cacheName = cache.name;
+    //       level = cache.level;
+    //     }
+    //     $scope.filters.splice(level-1, 0, { key: gb.value, val: val, name: cacheName });
+    //   }
+    // });
+
+    $scope.filters = filterItems;
 
     var groupMap = {};
     groupByOptions.forEach(function(group) {
@@ -656,10 +671,15 @@
         delete params.to;
       }
       params.filters = {};
+      var ftsArr = [];
       $scope.filters.forEach(function(f) {
         params.filters[f.key] = f.val;
+        if(reportCache.get(f.key + ':' + f.val) && reportCache.get(f.key + ':' + f.val).name) {
+          ftsArr.push(f.key + '$' + f.val + '$' + reportCache.get(f.key + ':' + f.val).name);
+        }
       });
       params.drilldownTrafficId = $scope.drilldownTrafficId;
+      params.fts = encodeURIComponent(ftsArr.join('|'));
       $scope.$state.go('app.report.' + page, params);
     }
 
@@ -909,7 +929,8 @@
           canEdit: $scope.canEdit(),
           columns: $scope.columns,
           reportViewColumns: $scope.preferences.reportViewColumns,
-          activeStatusIsDisabled: $scope.activeStatusIsDisabled()
+          activeStatusIsDisabled: $scope.activeStatusIsDisabled(),
+          groupByOne: $scope.groupBy[0]
         }
       });
       $('#repeater_container').empty().append(tempHtml);

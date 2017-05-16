@@ -60,7 +60,7 @@
 
   function configReport(groupby) {
     return {
-      url: '/' + groupby + '?frcpn',
+      url: '/' + groupby + '?frcpn&fts',
       templateUrl: function() {
         return 'tpl/report.html?' + +new Date();
       },

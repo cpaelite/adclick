@@ -118,15 +118,10 @@
 <div class="breadcrumb-div">
 <div ng-if="filters.length > 0">
     <ul class="breadcrumb">
-        <li><em><a ng-click="removeFilter(-1)"><span style="color: dodgerblue">Home</span></a></em></li>
         <li ng-repeat="filter in filters track by $index">
-            <em ng-if="$index < filters.length-1">
-                <a ng-click="removeFilter($index)"><span style="color: dodgerblue">{{filter.name}}</span></a>
-            </em>
-            <em ng-if="$index >= filters.length-1">
-                {{filter.name}}
-            </em>
+            <em><a ng-click="removeFilter($index - 1)"><span style="color: dodgerblue">{{filter.key + ': ' + filter.name}}</span></a></em>
         </li>
+        <li><em>{{perfType}}</em></li>
     </ul>
 </div>
 </div>
@@ -236,7 +231,7 @@
         <% } %>
         <% for(var k = 0, kLen = columns.length; k < kLen; k++) {%>
           <% var column = columns[k];%>
-          <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') { var isShowMenu = column.role=='name' && row.treeLevel == 1 && (treeLevel == 1 || treeLevel > 1 && !activeStatusIsDisabled); %>
+          <% if(report.reportViewColumns[column.key] && report.reportViewColumns[column.key].visible || column.role == 'name') {var isShowMenu = report.groupByOne != 'ip' && column.role=='name' && row.treeLevel == 1 && (treeLevel == 1 || treeLevel > 1 && !activeStatusIsDisabled); %>
             <td class="md-cell <%=row.data[column.key] < 0 && column.key == 'roi' ? ' red': ''%> <%=row.data[column.key] > 0 && column.key == 'roi' ? ' green': ''%> <%=k==0 && isShowMenu? ' item-name report-name': ''%>">
               <%if(isShowMenu) {%>
               <span><a href="javascript:;"><%=row.data[column.key]%><i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i></a></span>
