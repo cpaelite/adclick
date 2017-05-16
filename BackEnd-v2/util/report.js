@@ -560,6 +560,17 @@ export const mapping = {
       attributes: []
     }
   },
+  hourofday: {
+    attributes: [],
+    dbKey: "hourofday",
+    dbGroupBy: "id,hourofday",
+    listPage: false,
+    dbFilter: 'hourofday',
+    export: {
+      dbGroupBy: "hourofday",
+      attributes: []
+    }
+  },
   tsWebsiteId: {
     attributes: [
       ['tsWebsiteId', 'id'],
