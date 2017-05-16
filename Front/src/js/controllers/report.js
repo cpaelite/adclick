@@ -158,7 +158,7 @@
           $scope.groupByOptions.forEach(function(option, index) {
             if (option.role == "campaign") {
               var idx = option.value.substring(1);
-              var parameter = params[idx-1].Parameter;
+              var parameter = params[idx-1].Name;
               if (parameter) {
                 $scope.groupByOptions[index].paramValue = parameter;
               } else {
@@ -890,7 +890,7 @@
             $scope.groupByOptions.forEach(function(option, index) {
               if (option.role == 'campaign') {
                 var idx = option.value.substring(1);
-                var parameter = params[idx-1].Parameter;
+                var parameter = params[idx-1].Name;
                   if(parameter) {
                     $scope.groupByOptions[index].paramValue = parameter;
                     $('.contextmenu-report').find('.' + $scope.groupByOptions[index].value).html(': ' + parameter);
