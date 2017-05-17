@@ -469,8 +469,6 @@ async function normalReport(values, mustPagination) {
   let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
-
-
   let attrs = Object.keys(values);
   for (let index = 0; index < attrs.length; index++) {
     let attr = attrs[index];
@@ -552,7 +550,8 @@ async function normalReport(values, mustPagination) {
     } else {
       having = ` having day='${values.day}' `;
     }
-  } else if (_.has(values, 'hour')) {
+  } 
+   if (_.has(values, 'hour')) {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`;
     tplGroupBy += `,hour`;
     if (having != "") {
@@ -560,7 +559,8 @@ async function normalReport(values, mustPagination) {
     } else {
       having = `having hour='${values.hour}' `;
     }
-  } else if (_.has(values, 'hourOfDay')) {
+  } 
+   if (_.has(values, 'hourOfDay')) {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourOfDay'`;
     tplGroupBy += `,hourOfDay`;
     if (having != "") {
@@ -570,11 +570,7 @@ async function normalReport(values, mustPagination) {
     }
   }
 
-
-
-
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} ${tplGroupBy} ${having} ${orders} `;
- 
   let totalSQL = `select COUNT(*) as total,sum(visits) as visits,    
                 sum(impressions) as impressions ,
                 round(sum(revenue),2) as revenue,
