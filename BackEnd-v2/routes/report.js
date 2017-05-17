@@ -623,7 +623,7 @@ async function normalReport(values, mustPagination) {
   let totalRows = totals.total;
 
   //填充hourofday的数据
-  if (groupBy.toLowerCase() == 'hourofday') {
+  if (groupBy.toLowerCase() == 'hourofday' && mapping[groupBy].listPage) {
     rawRows = fullfillHourofDay(rawRows);
     rawRows.sort(dynamicSort(order))
   }
