@@ -88,11 +88,19 @@
     </div>
   </div>
 
-  <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdAffiliateId].offerStatus}">
-    <md-table-container resizets class="repeater-container" style="overflow-anchor: none;">
-        <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
+  <div class="table-box" ng-class="{'offer-table-height': !taskProgress[thirdAffiliateId].offerStatus}" id="ts_offer_report_table_container">
+    <md-table-container resizets class="repeater-container">
+        <table md-table ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
               <tr md-row>
+                <th md-column class="checkbox-all-width">
+                  <md-checkbox-cus class="checkbox-all">
+                    <div class="md-container md-ink-ripple">
+                      <div class="md-icon"></div>
+                      <div class="md-ripple-container"></div>
+                    </div>
+                  </md-checkbox-cus>
+                </th>
                 <th class="item-name" md-column>Offer</th>
                 <th md-column>Offer Id</th>
                 <th md-column>Payout</th>
@@ -103,8 +111,8 @@
                 <th md-column>PreviewLink</th>
               </tr>
             </thead>
-            <tbody md-body vs-repeat vs-scroll-parent=".repeater-container">
-              <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows track by offer.id" md-auto-select="options.autoSelect">
+            <tbody md-body id="ts_offer_report_container">
+              <!-- <tr md-row md-select="offer.id" ng-repeat="offer in offers.rows track by offer.id" md-auto-select="options.autoSelect">
                 <td class="item-name" md-cell ng-click="offerDetail(offer)"><span href="javascript:;" style="color: #337ab7">{{offer.name}}</span></td>
                 <td md-cell><span>{{::offer.offerId}}</span></td>
                 <td md-cell><span>{{::offer.payoutValue}}</span></td>
@@ -123,7 +131,7 @@
                       {{offer.preview && offer.preview.btnWord ? offer.preview.btnWord : 'Clipboard'}}
                   </button>
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
         </table>
     </md-table-container>
@@ -138,3 +146,40 @@
   >
   </md-table-pagination>
 </div>
+
+<script type="text/html" id="ts_offer_report_tpl">
+  <% var offers = offers.rows; for (var i = 0, l = offers.length; i < l; i++) {%>
+    <tr class="md-row" data-id="<%=offers[i].id%>">
+      <td class="md-cell">
+        <md-checkbox type="checkbox" class="checkbox-item <%=offers[i].selected ? 'md-checked' : ''%>" data-id="<%=offers[i].id%>">
+          <div class="md-container md-ink-ripple">
+            <div class="md-icon"></div>
+            <div class="md-ripple-container"></div>
+          </div>
+        </md-checkbox>
+      </td>
+      <td class="item-name md-cell offer-detail"><span href="javascript:;" style="color: #337ab7"><%=offers[i].name%></span></td>
+      <td class="md-cell"><span><%=offers[i].offerId%></span></td>
+      <td class="md-cell"><span><%=offers[i].payoutValue%></span></td>
+      <td class="item-name md-cell"><span><%=offers[i].countryCode%></span></td>
+      <td class="item-name md-cell"><span><%=offers[i].carrier%></span></td>
+      <td class="md-cell"><span><%=offers[i].platform%></span></td>
+      <td class="md-cell">
+        <% if(offers[i].trackingLink) {%>
+        <button class="btn-xs btn btn-primary clipboard-tracking-link" data-text="<%=offers[i].trackingLink%>">
+            <i class="material-icons">content_copy</i>
+            <span><%=offers[i].tracking && offers[i].tracking.btnWord ? offers[i].tracking.btnWord : 'Clipboard'%></span>
+        </button>
+        <% } %>
+      </td>
+      <td class="md-cell">
+        <% if(offers[i].previewLink) {%>
+        <button  class="btn-xs btn btn-primary clipboard-preview-link" data-text="<%=offers[i].previewLink%>">
+            <i class="material-icons">content_copy</i>
+            <span><%=offers[i].preview && offers[i].preview.btnWord ? offers[i].preview.btnWord : 'Clipboard'%></span>
+        </button>
+        <% } %>
+      </td>
+    </tr>
+  <% } %>
+</script>
