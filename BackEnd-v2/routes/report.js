@@ -588,11 +588,10 @@ async function normalReport(values, mustPagination) {
                 round(sum(revenue)/sum(clicks),4) as epc,
                 round(sum(revenue)/sum(conversions),2) as ap from ((${tpl}) as T)`;
 
-  if (values.dataType != "csv" && mustPagination && offset >= 0 && limit >= 0) {
+  if (mustPagination && offset >= 0 && limit >= 0) {
     tpl += ` limit ${offset},${limit}`;
   }
-
-
+ 
   let connection = await common.getConnection('m2');
 
   let [rawRows, [totals]] = await Promise.all([
@@ -626,6 +625,7 @@ async function normalReport(values, mustPagination) {
   //填充hourofday的数据
   if (groupBy.toLowerCase() == 'hourofday') {
     rawRows = fullfillHourofDay(rawRows);
+    rawRows.sort(dynamicSort(order))
   }
   return {
     rows: rawRows,

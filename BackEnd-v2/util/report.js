@@ -131,7 +131,7 @@ export const mapping = {
     export: {
       dbGroupBy: "Model",
       attributes: [
-        ['Model']
+        'Model'
       ]
     }
   },
