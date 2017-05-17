@@ -37,3 +37,86 @@ var moduleName = (function($) {
 
     return $.temp;
 })(jQuery);
+
+var NewBidder = NewBidder || {};
+
+NewBidder.namespace = function (nsString) {
+    var parts = nsString.split('.'),
+        parent = NewBidder,
+        i;
+
+    if (parts[0] === "NewBidder") {
+        parts = parts.slice(1);
+    }
+
+    for (i = 0; i < parts.length; i += 1) {
+        if (typeof parent[parts[i]] === "undefined") {
+            parent[parts[i]] = {};
+        }
+        parent = parent[parts[i]];
+    }
+
+    return parent;
+};
+
+NewBidder.namespace('NewBidder.common');
+
+(function($, common) {
+  common.inherit = function(my, classParent, args) {
+      classParent.apply(my, args || []);
+      $.extend(my.constructor.prototype, classParent.prototype);
+  }
+
+  common.Observer = function() {
+      this.ob = {};
+  }
+
+  common.Observer.prototype.on = function (eventNames, callback) {
+      var _events = eventNames.split(' ');
+      var _eventKeys = {};
+      for(var i = 0; i < _events.length; i++) {
+          if(!this.ob[_events[i]]) {
+              this.ob[_events[i]] = [];
+          }
+          var _key = this.ob[_events[i]].push(callback);
+          _eventKeys[ _events[i] ] = _key - 1;
+      }
+      return _eventKeys;
+  }
+
+  common.Observer.prototype.off = function(eventName, keys) {
+      if(!!keys && !$.isArray(keys)) {
+          keys = [keys]
+      }
+      for(var i = 0; i < this.ob[eventName].length; i++) {
+          if(!keys || $.inArray(i,keys) > -1 ) {
+              this.ob[eventName][i] = undefined;
+          }
+      }
+  }
+
+  common.Observer.prototype.trigger = function(eventName,args) {
+      var r;
+      if(!this.ob[eventName]) {
+          return r;
+      }
+      var _arg = args || [];
+      for(var i = 0; this.ob[eventName] && i < this.ob[eventName].length; i++) {
+          if(!this.ob[eventName][i]) {
+              continue;
+          }
+          var _r = this.ob[eventName][i].apply(this, _arg);
+          r = (r === false)? r:_r;
+      }
+
+      return r;
+  }
+
+  common.Observer.prototype.once = function(eventName, callback) {
+      var self = this;
+      var key = self.on(eventName, function() {
+          callback.apply(this, arguments);
+          self.off(eventName, key);
+      });
+  }
+})(jQuery, NewBidder.common);

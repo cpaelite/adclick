@@ -212,6 +212,27 @@
     }
     $scope.promise = FraudFilter.get(params, function(oData) {
       $scope.rules = oData.data;
+      var tempHtml = $.temp($('#fraud_filter_report_tpl').html(), {
+        rules: $scope.rules
+      });
+      $('#fraud_filter_report_container').empty().append(tempHtml);
+
+      $('#fraud_filter_report_container').off('click').on('click', '.delete, .status-icon, .edit', function() {
+        var id = $(this).closest('tr').attr('data-id'), rules = $scope.rules.rules, rule;
+        for(var i = 0; i < rules.length; i++) {
+          if(rules[i].id == id) {
+            rule = rules[i];
+            break;
+          }
+        }
+        if($(this).is('.delete')) {
+          $scope.deleteRule(id);
+        } else if ($(this).is('.edit')) {
+          $scope.editRuleItem(rule);
+        } else if ($(this).is('.status-icon')) {
+          $scope.ruleStatusChange(rule);
+        }
+      });
     }).$promise;
 
     return $scope.promise;
@@ -262,6 +283,20 @@
     params.to = moment(params.to).format('YYYY-MM-DD');
     $scope.logPromise = FraudFilterLog.get(params, function(oData) {
       $scope.logs = oData.data;
+      var tempHtml = $.temp($('#fraud_filter_log_tpl').html(), {
+        logs: $scope.logs
+      });
+      $('#fraud_filter_log_container').empty().append(tempHtml);
+      $('#fraud_filter_log_container').off('click').on('click', '.status-icon', function() {
+        var id = $(this).closest('tr').data('id'), logs = $scope.logs.logs, log;
+        for(var i = 0; i < logs.length; i++) {
+          if(logs[i].id == id) {
+            log = logs[i];
+            break;
+          }
+        }
+        $scope.viewLogs(log);
+      });
     }).$promise;
     return $scope.logPromise;
   };

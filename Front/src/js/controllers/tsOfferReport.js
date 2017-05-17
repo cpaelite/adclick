@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-    .controller('TsOfferReportCtrl', ['$scope', '$q', '$mdDialog', 'AffiliateTemplate', 'ThirdAffiliate', 'ThirdOffer', 'OfferTask', '$timeout', 'OfferImport', 'AffiliateNetwork', TsOfferReportCtrl])
+    .controller('TsOfferReportCtrl', ['$scope', '$q', '$mdDialog', 'AffiliateTemplate', 'ThirdAffiliate', 'ThirdOffer', 'OfferTask', '$timeout', 'OfferImport', 'AffiliateNetwork', '$document', TsOfferReportCtrl])
     .directive('resizets',['$timeout','$q',function($timeout,$q){
       return function(scope, element) {
         var timeout;
@@ -43,7 +43,7 @@
       }
     }]);
 
-  function TsOfferReportCtrl($scope, $q, $mdDialog, AffiliateTemplate, ThirdAffiliate, ThirdOffer, OfferTask, $timeout, OfferImport, AffiliateNetwork) {
+  function TsOfferReportCtrl($scope, $q, $mdDialog, AffiliateTemplate, ThirdAffiliate, ThirdOffer, OfferTask, $timeout, OfferImport, AffiliateNetwork, $document) {
     $scope.app.subtitle = 'Network Offers';
     $scope.thirdAffiliateId = '';
     $scope.taskId = '';
@@ -73,7 +73,7 @@
 
     var initPromises = [], prms;
 
-    var offersMap;
+    var offersMap = {};
     var selectOffers = [];
     // 获取第三方Offer
     function getThirdOffers() {
@@ -83,9 +83,9 @@
       $scope.promise = ThirdOffer.get(params, function(oData) {
         if(oData.status == 1) {
           $scope.offers = oData.data;
-          offersMap = {}
+          rerenderTable($scope.offers);
           oData.data.rows.forEach(function(offer) {
-            offersMap[offer.id] = offer
+            offersMap[offer.id] = offer;
           });
         }
       }).$promise;
@@ -119,13 +119,6 @@
       affiliateNetworkMap
     }).$promise;
     initPromises.push(prms);
-    // 获取当前第三方连接的Task状态
-
-    // 通过taskID拉去最新的Offer列表
-
-    // 选取部分OFffer进行导入
-
-    // 是否覆盖
 
     $q.all(initPromises).then(initSuccess);
 
@@ -204,6 +197,7 @@
         } else if (oData.status == 1 && oData.data.length == 0) {
           $scope.taskProgress[id].offerStatus = true;
           $scope.offers = {rows: [], totalRows: 0};
+          rerenderTable($scope.offers);
         }
       });
     }
@@ -240,7 +234,10 @@
         locals: {importType: type, affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selected: $scope.selected},
         templateUrl: 'tpl/import-offer-dialog.html?' + +new Date()
       }).then(function(selectOffer) {
+        selectOffers = [];
+        selectMap = {};
         $scope.selected = [];
+        rerenderTable($scope.offers);
       });
     };
 
@@ -290,8 +287,8 @@
         bindToController: true,
         locals: {oData: oData, params: params},
         templateUrl: 'tpl/warn-dialog.html?' + +new Date()
-      }).then(function(oData) {
-        $mdDialog.hide(selected);
+      }).then(function(offers) {
+        $mdDialog.hide(offers);
       });
     }
 
@@ -306,18 +303,18 @@
           OfferImport.save({errorFn: true}, {action: 2, affiliateId: self.params.affiliateId, affiliateName: self.params.affiliateName, offers: self.oData.data.offers}, function(oData) {
             $scope.warnSaveStatus = true;
             if(oData.status == 1) {
-              $mdDialog.hide();
+              $mdDialog.hide(self.oData.data.offers);
             } else {
               self.error = oData.message;
             }
           });
         } else {
-          $mdDialog.hide();
+          $mdDialog.hide([]);
         }
       };
 
       this.cancel = function() {
-        $mdDialog.hide();
+        $mdDialog.hide([]);
       };
     }
 
@@ -443,40 +440,40 @@
 
     $scope.selected = [];
 
-    var isImport = false;
+    // var isImport = false;
 
-    $scope.$watch('selected', function(newVal, oldVal) {
-      var limit = $scope.query.limit;
-
-      if(newVal.length - oldVal.length > 1) {
-        var offers = angular.copy($scope.offers.rows);
-        var currOffers = offers.length > limit ? offers.slice(0, limit) : offers;
-        $scope.selected = currOffers.map(function(offer) {
-          selectOffers.push(offersMap[offer.id])
-          return offer.id;
-        });
-        isImport = false;
-      } else if (oldVal.length - newVal.length > 1 && !isImport) {
-        $scope.selected = [];
-        selectOffers = [];
-      } else if (newVal.length > oldVal.length) {
-        selectOffers.push(offersMap[newVal[newVal.length-1]]);
-        isImport = false;
-      } else if (newVal.length < oldVal.length) {
-        // 找出勾选取消的offerId
-        var difference = oldVal.concat(newVal).filter(function(v) {
-          return !oldVal.includes(v) || !newVal.includes(v)
-        });
-        var tempSelect = [];
-        selectOffers.forEach(function(offer, index) {
-          if ($scope.selected.indexOf(offer.id) >= 0) {
-            tempSelect.push(offer);
-          }
-        });
-        selectOffers = angular.copy(tempSelect);
-        isImport = false;
-      }
-    }, true);
+    // $scope.$watch('selected', function(newVal, oldVal) {
+    //   var limit = $scope.query.limit;
+    //
+    //   if(newVal.length - oldVal.length > 1) {
+    //     var offers = angular.copy($scope.offers.rows);
+    //     var currOffers = offers.length > limit ? offers.slice(0, limit) : offers;
+    //     $scope.selected = currOffers.map(function(offer) {
+    //       selectOffers.push(offersMap[offer.id])
+    //       return offer.id;
+    //     });
+    //     isImport = false;
+    //   } else if (oldVal.length - newVal.length > 1 && !isImport) {
+    //     $scope.selected = [];
+    //     selectOffers = [];
+    //   } else if (newVal.length > oldVal.length) {
+    //     selectOffers.push(offersMap[newVal[newVal.length-1]]);
+    //     isImport = false;
+    //   } else if (newVal.length < oldVal.length) {
+    //     // 找出勾选取消的offerId
+    //     var difference = oldVal.concat(newVal).filter(function(v) {
+    //       return !oldVal.includes(v) || !newVal.includes(v)
+    //     });
+    //     var tempSelect = [];
+    //     selectOffers.forEach(function(offer, index) {
+    //       if ($scope.selected.indexOf(offer.id) >= 0) {
+    //         tempSelect.push(offer);
+    //       }
+    //     });
+    //     selectOffers = angular.copy(tempSelect);
+    //     isImport = false;
+    //   }
+    // }, true);
 
     $scope.$watch('filterValue', function(newVal, oldVal) {
       if (oldVal && !newVal) {
@@ -507,40 +504,67 @@
         focusOnOpen: false,
         bindToController: true,
         locals: {affiliateNetworks: $scope.affiliateNetworks, affiliateNetworkMap: affiliateNetworkMap, taskId: $scope.taskId, selectOffers: selectOffers},
-        templateUrl: 'tpl/ts-offer-select-dialog.html?' + +new Date()
+        templateUrl: 'tpl/ts-offer-select-dialog.html?' + +new Date(),
+        onComplete: function(scope, element) {
+          rerenderDialogTable(scope.offers);
+          var selectAll = new SelectAll({
+            container: '#ts_offer_selected_report_table_container',
+            checkboxAll: '.dialog-checkbox-all',
+            checkboxItem: '.checkbox-item'
+          });
+          selectAll.on('uncheck_item', function(oData) {
+            scope.$apply(function() {
+              scope.selected.splice(scope.selected.indexOf(Number(oData.id)), 1);
+            });
+          });
+
+          selectAll.on('check_item', function(oData) {
+            scope.$apply(function() {
+              scope.selected.push(oData.id);
+            });
+          });
+
+          selectAll.on('uncheck_all', function() {
+            scope.$apply(function() {
+              scope.selected = [];
+            });
+          });
+
+          selectAll.on('check_all', function() {
+            var all = [];
+            scope.offers.forEach(function(offer) {
+              all.push(offer.id);
+            });
+
+            scope.$apply(function() {
+              scope.selected = all;
+            });
+          });
+        }
       }).then(function(selectOffer) {
         if (selectOffer.length == $scope.selected.length) {
           return;
         }
         if (selectOffer.length == 0) {
+          selectOffers = [];
+          selectMap = {};
           $scope.selected = [];
-          return;
+        } else {
+          var tempSelect = [], tempSelected = [];
+          selectOffer.forEach(function(offer, index) {
+            tempSelect.push(offer);
+            tempSelected.push(offer.id);
+            selectMap[offer.id] = offer;
+          });
+          selectOffers = angular.copy(tempSelect);
+          $scope.selected = angular.copy(tempSelected);
         }
-        /*selectOffers = [];
-        $scope.selected = selectOffer.map(function(offer) {
-          selectOffers.push(offersMap[offer.id])
-          return offer.id;
-        });*/
-        var tempSelect = [];
-        var tempSelected = [];
-        selectOffer.forEach(function(offer, index) {
-          tempSelect.push(offer);
-          tempSelected.push(offer.id);
-        });
-        selectOffers = angular.copy(tempSelect);
-        $scope.selected = angular.copy(tempSelected);
-        isImport = true;
-      })
+        rerenderTable($scope.offers);
+      });
     }
 
     function tsOfferSelect($mdDialog, $scope) {
       this.title = 'Select Offers';
-      $scope.options = {
-        rowSelection: true,
-        multiSelect: true,
-        autoSelect: false
-      };
-
       $scope.selected = [];
       $scope.offers = this.selectOffers;
 
@@ -557,21 +581,20 @@
           locals: {importType: type, affiliateNetworks: this.affiliateNetworks, affiliateNetworkMap: this.affiliateNetworkMap, taskId: this.taskId, selected: $scope.selected},
           templateUrl: 'tpl/import-offer-dialog.html?' + +new Date()
         }).then(function(selectOffer) {
-          if (!selectOffer) {
-            return;
-          }
+          if (!selectOffer || selectOffer.length == 0) return;
           if (selectOffer.length == $scope.offers.length) {
             $mdDialog.hide([]);
             return;
           }
           var tempSelect = [];
           selectOffers.forEach(function(offer, index) {
-            if (selectOffer.indexOf(offer.id) < 0) {
+            if (selectOffer.indexOf(Number(offer.id)) < 0) {
               tempSelect.push(offer);
             }
           });
           $scope.offers = angular.copy(tempSelect);
           $scope.selected = [];
+          rerenderDialogTable($scope.offers);
         });
       }
       this.cancel = function() {
@@ -580,5 +603,173 @@
       this.onprocess = false;
     }
 
+    function rerenderTable(offers) {
+      var offers = angular.copy(offers), selectedAll = true;
+      offers.rows.map(function(offer) {
+        offer.selected = $scope.selected.indexOf(offer.id) > -1;
+        if(!offer.selected && selectedAll) {
+          selectedAll = false;
+        }
+        return offer;
+      });
+      var tempHtml = $.temp($('#ts_offer_report_tpl').html(), {
+        offers: offers
+      });
+      $('#ts_offer_report_container').empty().append(tempHtml);
+      if(selectedAll && offers.rows.length > 0) {
+        $('.checkbox-all').addClass('md-checked');
+      } else {
+        $('.checkbox-all').removeClass('md-checked');
+      }
+    }
+
+    function rerenderDialogTable(offers) {
+      var tempHtml = $.temp($('#ts_offer_selected_report_tpl').html(), {
+        offers: offers
+      });
+      $('#ts_offer_selected_report_container').empty().append(tempHtml);
+    }
+
+    function init() {
+      $('#ts_offer_report_table_container').on('click', '.offer-detail', function() {
+        var id = $(this).closest('tr').attr('data-id');
+        $scope.offerDetail(offersMap[id]);
+      });
+
+      $('#ts_offer_report_table_container').on('click', '.clipboard-tracking-link, .clipboard-preview-link', function() {
+        var $this = $(this), text = $(this).attr('data-text');
+        var node = $document[0].createElement('textarea');
+        node.style.position = 'absolute';
+        node.textContent = text;
+        node.style.left = '-10000px';
+        $document[0].body.appendChild(node);
+        try {
+          $document[0].body.style.webkitUserSelect = 'initial';
+          var selection = $document[0].getSelection();
+          selection.removeAllRanges();
+          node.select();
+          if(!$document[0].execCommand('copy')) {
+              throw('failure copy');
+          }
+          selection.removeAllRanges();
+        } finally {
+          $document[0].body.style.webkitUserSelect = '';
+        }
+        $document[0].body.removeChild(node);
+
+        $this.find('span').text('Copied');
+        $timeout(function() {
+          $this.find('span').text('Clipboard');
+        }, 1000);
+      });
+    }
+
+    init();
+
+    function getSelectOffers() {
+      var tempSelectOffers = [];
+      for(var k in selectMap) {
+        tempSelectOffers.push(selectMap[k]);
+      }
+      selectOffers = tempSelectOffers;
+    }
+
+    // checkbox
+    function SelectAll(_op) {
+      var self = this;
+      self.op = $.extend({}, SelectAll._op, _op || {});
+      self.init();
+      self.initEvent();
+    }
+
+    SelectAll.prototype.init = function() {
+      NewBidder.common.inherit(this, NewBidder.common.Observer);
+      var self = this;
+      self.$container = $(self.op.container);
+    };
+
+    SelectAll.prototype.initEvent = function() {
+      var self = this;
+      self.$container.on('click', self.op.checkboxItem, function() {
+        var $this = $(this), id = $this.attr('data-id');
+        if($this.is('.md-checked')) {
+          $this.removeClass('md-checked');
+          $(self.op.checkboxAll).removeClass('md-checked');
+          self.trigger('uncheck_item', [{id: id}]);
+        } else {
+          $this.addClass('md-checked');
+          if(self.$container.find(self.op.checkboxItem).not('.md-checked').length == 0) {
+            $(self.op.checkboxAll).addClass('md-checked');
+          }
+          self.trigger('check_item', [{id: id}]);
+        }
+      });
+
+      self.$container.on('click', self.op.checkboxAll, function() {
+        if($(this).is('.md-checked')) {
+          $(this).removeClass('md-checked');
+          self.$container.find(self.op.checkboxItem).removeClass('md-checked');
+          self.trigger('uncheck_all');
+        } else {
+          $(this).addClass('md-checked');
+          self.$container.find(self.op.checkboxItem).addClass('md-checked');
+          self.trigger('check_all');
+        }
+      });
+    };
+
+    SelectAll._op = {
+      container: '#ts_offer_report_table_container',
+      checkboxAll: '.checkbox-all',
+      checkboxItem: '.checkbox-item'
+    };
+
+    var selectAll = new SelectAll();
+    var selectMap = {};
+
+    selectAll.on('uncheck_item', function(oData) {
+      delete selectMap[oData.id];
+
+      $scope.$apply(function() {
+        $scope.selected.splice($scope.selected.indexOf(Number(oData.id)), 1);
+      });
+      getSelectOffers();
+    });
+
+    selectAll.on('check_item', function(oData) {
+      selectMap[oData.id] = offersMap[oData.id];
+      $scope.$apply(function() {
+        $scope.selected.push(oData.id);
+      });
+      getSelectOffers();
+    });
+
+    selectAll.on('uncheck_all', function() {
+      var all = [];
+      $scope.offers.rows.forEach(function(offer) {
+        delete selectMap[offer.id];
+      });
+      for(var key in selectMap) {
+        all.push(selectMap[key].id);
+      }
+      $scope.$apply(function() {
+        $scope.selected = all;
+      });
+      getSelectOffers();
+    });
+
+    selectAll.on('check_all', function() {
+      var all = [];
+      $scope.offers.rows.forEach(function(offer) {
+        selectMap[offer.id] = offer;
+      });
+      for(var key in selectMap) {
+        all.push(selectMap[key].id);
+      }
+      $scope.$apply(function() {
+        $scope.selected = all;
+      });
+      getSelectOffers();
+    });
   }
 })();
