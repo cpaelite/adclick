@@ -236,7 +236,7 @@
               <%if(isShowMenu) {%>
               <span><a href="javascript:;"><%=row.data[column.key]%><i class="material-icons arrow-down-icon drilldown-tag">keyboard_arrow_down</i></a></span>
               <% } else if (column.role=='name') {%>
-              <span><%=row.data[column.key]%></span>
+              <span><%=(column.key == 'ip' && row.data.country) ? (row.data.country + ': ' + row.data[column.key]) : row.data[column.key]%></span>
               <% } else if (column.role!='name') {%>
               <span><%=['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(column.key) > -1 ? ('$' + row.data[column.key]) : ['ctr', 'cr', 'cv', 'roi'].indexOf(column.key) > -1 ? (row.data[column.key] + '%') : row.data[column.key]%></span>
               <%}%>
