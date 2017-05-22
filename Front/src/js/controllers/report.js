@@ -1560,7 +1560,7 @@
       if ($scope.editForm.$valid) {
         $scope.saveStatus = true;
         var item = angular.copy($scope.item);
-        if (tempFlowId && !$scope.isDuplicate && $scope.oldTargetType == 3) {
+        if (tempFlowId && !$scope.isDuplicate && ($scope.oldTargetType == 3 || $scope.oldTargetType == undefined)) {
           item['flow'].id = tempFlowId;
         }
         Campaign.save(item, success);
