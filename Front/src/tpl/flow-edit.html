@@ -161,14 +161,6 @@
               <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'!custom'} | filter:notInNewCondFilter">
                 <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
               </li>
-              <li class="dropdown-submenu">
-                <a>Custom variables...</a>
-                <ul class="dropdown-menu">
-                  <li role="menuitem" ng-repeat="cdt in allConditions | filter:{id:'custom'} | filter:notInNewCondFilter">
-                    <a ng-click="addCondition(cdt)">{{cdt.display}}</a>
-                  </li>
-                </ul>
-              </li>
             </ul>
           </div>
           <button class="btn btn-default delete-btn" ng-click="deleteAllConditions()">
