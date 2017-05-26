@@ -954,6 +954,7 @@
       var restoreVisible = $scope.canEdit(row) && !!row.data.deleted;
       var previewOrcopyurlVisible = $scope.canEdit(row) && $scope.perfType=='campaign';
       var fold1Visible = $scope.treeLevel == 1;
+
       $.contextMenu({
         selector: '#' + idName,
         className: 'contextmenu-report',
@@ -961,8 +962,6 @@
         trigger: 'left',
         zIndex: 101,
         callback: function(key, options) {
-          var index = $(options.$trigger).closest('tr').attr('data-index');
-          var row = $scope.report.rows[index];
           if(key == 'edit') {
             $scope.editItem(null, row)
           } else if (key == 'duplicate') {
