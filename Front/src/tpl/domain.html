@@ -3,12 +3,15 @@
   <div class="container">
   <div class="basic-form">
     <div class="domain-p">
-      <p><i class="material-icons">info_outline</i>Here you can add your custom tracking domains. We highly recommend adding a custom domain.
-      The default Newbidder.com is meant for testing purposes only.</p>
+      <p><i class="material-icons">info_outline</i>We highly recommend you to add an custom domain for your own due to the public domain provided by Newbidder TRK which may be influenced to some extent.</p>
     </div>
+    <p>Grab one of the 3 domains and go to the domain DNS to add an CNAME record</p>
+    <p>Eg: create an sub-domain like “trk” and setup an CNAME record on this sub-domain to point to your unique URL xxx.nbtrk0.com</p>
+    <p>Fill in the custom domain with your sub-domain and set as the main domain.</p>
+    <!--
     <p>In order to add a domain you will need to CNAME one of following domains:
         <b><em ng-repeat="internal in item.internal track by $index">{{internal.address}}<em ng-if="$index < item.internal.length-1">, </em><em ng-if="$index == item.internal.length-1">.</em></em></b>
-        The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>
+        The main domain will be used to generate your campaign and click URLs. The backup domains allow you to quickly substitute your main domain in case it is compromised.</p>-->
     <form name="form" ng-submit="domainSava()">
       <div class="add-another-button clearfix" has-permission="setting.domain.update" operation="show">
         <ul>
