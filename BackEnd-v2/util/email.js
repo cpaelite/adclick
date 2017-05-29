@@ -8,8 +8,8 @@ let smtpConfig = {
     port: 465,
     secure: true, // upgrade later with STARTTLS
     auth: {
-        user: 'support@newbider.com',
-        pass: 'Newbidder123'
+        user: 'support@newbidder.com',
+        pass: 'Newbidder1234'
     }
 };
 
@@ -21,7 +21,7 @@ function sendMail(emails, tpl) {
     // setup email data with unicode symbols
     let emailString = emails.join(",");
     let mailOptions = {
-        from: 'support@newbider.com', // sender address
+        from: 'support@newbidder.com', // sender address
         to: emailString// list of receivers
     };
     mailOptions = _.merge(mailOptions, tpl);
