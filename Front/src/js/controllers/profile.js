@@ -39,11 +39,18 @@
           Profile.get(null, function(oData) {
             if(oData.status == 1) {
               $rootScope.profile = oData.data;
+              $rootScope.profileTimezone = oData.data.timezoneId + ',' + oData.data.timezone;
             }
           });
         }
       });
     };
+
+    $scope.$watch('profileTimezone', function(newVal, oldVal) {
+      if(newVal != oldVal) {
+        $scope.timezone = newVal;
+      }
+    }, true);
 
     $scope.passwordUpdateSave = function () {
       // 更改密码以后页面的输入框需要清空,如果页面验证就会直接显示错误信息,所以改为js验证(帮助回忆的注释)

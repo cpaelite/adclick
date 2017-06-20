@@ -9,7 +9,12 @@
       <div class="changeplan hide">
           <a href="#">Choose Plan<i class="icon-choose fonts28"></i></a>
       </div>
-      <div class="profile-timezone">{{profile.timezoneDeatil}}</div>
+      <div class="profile-timezone">
+        <md-select class="cs-subform-select" ng-model="profileTimezone" required ng-change="changeTimezone(profileTimezone)">
+          <md-option ng-repeat="tz in timezones" value="{{tz.id}},{{tz.utcShift}}">{{tz.detail}}</md-option>
+        </md-select>
+      </div>
+      <!-- <div class="profile-timezone">{{profile.timezoneDeatil}}</div> -->
       <div class="home">
         <a class="home-link" ui-sref="app.report.campaign"><i class="icon-home fonts17"></i></a>
       </div>

@@ -3454,6 +3454,12 @@ table.md-table tr.row-deleted td.md-cell {
   color: #333;
   padding-right: 10px;
 }
+.profile-timezone md-select .md-select-value {
+  border-color: #fff!important;
+}
+.profile-timezone md-select:hover .md-select-value {
+  border-color: #c9c9cf!important;
+}
 .flow-continue.ng-hide { display: none !important;}
 .contextmenu-report > .context-menu-item > .context-menu-list {
   margin: 0;

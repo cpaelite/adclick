@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 'Profile',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 'Profile', 'Timezone',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup, Profile) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup, Profile, Timezone) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -132,7 +132,12 @@
         Profile.get(null, function(oData) {
           if(oData.status == 1) {
             $rootScope.profile = oData.data;
+            $rootScope.profileTimezone = oData.data.timezoneId + ',' + oData.data.timezone;
           }
+        });
+
+        Timezone.get(null, function (timezone) {
+          $rootScope.timezones = timezone.data.timezones;
         });
 
         if(!$rootScope.allConditions) {
@@ -150,6 +155,32 @@
           $rootScope.currentGroup = group;
           $localStorage.currentUser.firstname = group.firstname;
           window.location.reload();
+        }
+      });
+    };
+
+    $rootScope.changeTimezone = function(timezone) {
+      var p = $rootScope.profile;
+      var oData = {
+        companyname: p.companyname,
+        firstname: p.firstname,
+        homescreen: p.homescreen,
+        lastname: p.lastname,
+        tel: p.tel
+      };
+      timezone.replace(/^(.*),(.*)$/, function(tz, $1, $2) {
+        oData.timezoneId = $1;
+        oData.timezone = $2;
+      });
+
+      Profile.save(oData, function(response) {
+        if (response.status) {
+          Profile.get(null, function(oData) {
+            if(oData.status == 1) {
+              $rootScope.profile = oData.data;
+              $rootScope.profileTimezone = oData.data.timezoneId + ',' + oData.data.timezone;
+            }
+          });
         }
       });
     };
@@ -177,6 +208,7 @@
       delete $localStorage.reportDate;
       $rootScope.currentUser = null;
       $rootScope.profile = null;
+      $rootScope.profileTimezone = null;
       $cookies.remove('token');
       $cookies.remove('clientId');
     };
