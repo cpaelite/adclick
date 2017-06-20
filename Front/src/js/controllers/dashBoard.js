@@ -98,6 +98,8 @@
         });
       }
 
+      $scope.widthChart = window.innerWidth - 40;
+
       $scope.$watch('datetype', function (newValue, oldValue) {
         if (angular.equals(newValue, oldValue)) {
           return;
@@ -124,13 +126,25 @@
         getReportByDate(params);
 
       }, true);
+
+      $(window).bind('resize', function() {
+        if($scope.chartInstance) {
+          $scope.widthChart = window.innerWidth - 40;
+          $scope.chartInstance.resize();
+        }
+      });
+
+      $scope.chartInstance = null;
+      $scope.$on('chart-create', function(event, chart) {
+        $scope.chartInstance = chart;
+      });
     });
 
     function feedChartData(datas) {
       $scope.chart = {
         datasetOverride: [{yAxisID: 'y-axis-1'}],
         options: {
-          responsive: true,
+          // responsive: true,
           legend: {
             display: true,
             position: 'top'

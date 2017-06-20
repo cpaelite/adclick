@@ -50,6 +50,19 @@
       </div>
   </div>
 </div>
+<div class="chart-box">
+  <div style="margin: 0 15px 15px;position: relative;">
+    <div class="loading" ng-if="!chart" style="text-align:center;position:absolute;left:0;right:0;top:80px;bottom:0;">
+      <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+    </div>
+    <canvas class="chart chart-line" height="200" width={{widthChart}}
+      chart-data="chart.data" chart-labels="chart.labels"
+      chart-series="chart.series" chart-options="chart.options"
+      chart-dataset-override="chart.datasetOverride"
+    >
+    </canvas>
+  </div>
+</div>
 <div flex layout="column" class="cs-page-content dash-board">
     <div class="data-list">
         <div class="col-xs-12 col-sm-12 col-md-7">
@@ -123,32 +136,37 @@
                     </ul>
                 </div>
             </div>
-            <table class="table table-hover" ng-repeat="tbl in tables">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>{{tbl | ucfirst}}</th>
-                  <th>{{sortby | ucfirst}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-if="!tableData[tbl]">
-                  <td colspan="3" rowspan="5" class="loading">
-                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                  </td>
-                </tr>
-                <tr ng-if="tableData[tbl]" ng-repeat="row in tableData[tbl]" ng-click="goGroupByOffer(tbl,row)" class="campaign-tr">
-                  <td>{{$index+1}}</td>
-                  <td>
-                      <em ng-show="row[tbl+'Name']">{{row[tbl+'Name']}}</em>
-                      <em ng-show="row[tbl]">{{row[tbl]}}</em>
-                  </td>
-                  <td>{{row[sortby]}}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div layout="row">
+              <div flex ng-repeat="tbl in tables" class="table-box">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>{{tbl | ucfirst}}</th>
+                      <th>{{sortby | ucfirst}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-if="!tableData[tbl]">
+                      <td colspan="3" rowspan="5" class="loading">
+                        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                      </td>
+                    </tr>
+                    <tr ng-if="tableData[tbl]" ng-repeat="row in tableData[tbl]" ng-click="goGroupByOffer(tbl,row)" class="campaign-tr">
+                      <td>{{$index+1}}</td>
+                      <td>
+                        <em ng-show="row[tbl+'Name']">{{row[tbl+'Name']}}</em>
+                        <em ng-show="row[tbl]">{{row[tbl]}}</em>
+                      </td>
+                      <td>{{row[sortby]}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
         </div>
 
+        <!--
         <div class="" flex>
             <div style="height:320px;float:right;width:100%; padding-left:20px;">
                 <canvas class="chart chart-line" chart-data="chart.data" chart-labels="chart.labels"
@@ -156,6 +174,7 @@
                         chart-dataset-override="chart.datasetOverride"></canvas>
             </div>
         </div>
+      -->
 
     </div>
 </div>

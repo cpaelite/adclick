@@ -828,7 +828,7 @@ async function IPReport(req) {
     let dir = "asc";
 
 
-    let sql = `select IP as ip,CampaignID as campaignId,sum(Impressions) as impressions,sum(Visits) as visits,sum(Clicks) as clicks,sum(Conversions) as conversions,
+    let sql = `select "" as country,IP as ip,CampaignID as campaignId,sum(Impressions) as impressions,sum(Visits) as visits,sum(Clicks) as clicks,sum(Conversions) as conversions,
                   round(sum(Cost/1000000),2) as cost,
                   round(sum(Revenue/1000000),2) as revenue,
                   round(sum(Revenue/1000000)-sum(Cost/1000000),2) as profit,

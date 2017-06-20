@@ -533,9 +533,9 @@ async function updateRule(userId, rule, connection) {
     sqlRule += ",`object`=?";
     params.push(JSON.stringify(rule.json));
   }
-  if (rule.status != undefined) {
+  if (rule.enabled != undefined) {
     sqlRule += ",`status`=?";
-    params.push(rule.status);
+    params.push(Boolean(rule.enabled) == true ? 1 : 0);
   }
   params.push(userId);
   params.push(rule.id);
@@ -732,10 +732,10 @@ async function deleteLander(subId, id, userId, connection) {
 }
 
 //Lander2Path
-async function insertLander2Path(landerid, pathid, pathweight, connection) {
+async function insertLander2Path(landerid, pathid, pathweight, order, connection) {
   var sqllander2path =
-    "insert into Lander2Path (`landerId`,`pathId`,`weight`) values (?,?,?)";
-  let result = await query(sqllander2path, [landerid, pathid, pathweight],
+    "insert into Lander2Path (`landerId`,`pathId`,`weight`,`order`) values (?,?,?,?)";
+  let result = await query(sqllander2path, [landerid, pathid, pathweight, order],
     connection);
   return result;
 }
@@ -929,10 +929,10 @@ async function deleteOffer(subId, id, userId, name, hash, connection) {
 }
 
 //Offer2Path
-async function insertOffer2Path(offerid, pathid, pathweight, connection) {
+async function insertOffer2Path(offerid, pathid, pathweight, order, connection) {
   let result = await query(
-    "insert into Offer2Path (`offerId`,`pathId`,`weight`) values (?,?,?)", [
-      offerid, pathid, pathweight
+    "insert into Offer2Path (`offerId`,`pathId`,`weight`,`order`) values (?,?,?,?)", [
+      offerid, pathid, pathweight, order
     ], connection);
   return result;
 }
@@ -951,10 +951,10 @@ async function deleteOffer2Path(pathId, connection) {
 }
 
 //Path2Rule
-async function insertPath2Rule(pathId, ruleId, weight, status, connection) {
+async function insertPath2Rule(pathId, ruleId, weight, status, order, connection) {
   let result = await query(
-    "insert into Path2Rule (`pathId`,`ruleId`,`weight`,`status`) values (?,?,?,?)", [
-      pathId, ruleId, weight, status
+    "insert into Path2Rule (`pathId`,`ruleId`,`weight`,`status`,`order`) values (?,?,?,?,?)", [
+      pathId, ruleId, weight, status, order
     ], connection);
   return result;
 }
@@ -974,10 +974,10 @@ async function deletePath2Rule(ruleId, connection) {
 }
 
 //Rule2Flow
-async function insertRule2Flow(ruleId, flowId, status, connection) {
+async function insertRule2Flow(ruleId, flowId, status, order, connection) {
   let result = await query(
-    "insert into Rule2Flow (`ruleId`,`flowId`,`status`) values (?,?,?)", [
-      ruleId, flowId, status
+    "insert into Rule2Flow (`ruleId`,`flowId`,`status`,`order`) values (?,?,?,?)", [
+      ruleId, flowId, status, order
     ], connection);
   return result;
 }

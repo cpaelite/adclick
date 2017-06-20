@@ -597,7 +597,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
       "from Flow f " +
       "inner join `Rule2Flow` f2 on f2.`flowId` = f.`id` " +
       "inner join `Rule` r on r.`id` = f2.`ruleId` " +
-      "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` = ? and f.`userId`= ?";
+      "where f2.`deleted`= 0 and r.`deleted` = 0  and f.`id` = ? and f.`userId`= ? order by f2.`order` ASC";
 
     let pathsql = "select  r.`id` as parentId, p.`id`,p.`name`, case p.`directLink` when 1 then \"true\" else \"false\" end as directLinking ,p.`redirectMode`," +
       "case p.`status` when 1 then \"true\" else \"false\" end as enabled,r2.`weight`  " +
@@ -608,7 +608,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
       "inner join `Path` p on p.`id` = r2.`pathId` " +
       "where f2.`deleted`= 0 and r.`deleted` = 0  " +
       "and r2.`deleted`= 0 and p.`deleted` = 0  " +
-      "and f.`id` = ? and f.`userId`= ?";
+      "and f.`id` = ? and f.`userId`= ? order by r2.`order` ASC ";
 
     let landerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
       "from Flow f " +
@@ -621,7 +621,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
       "where    f2.`deleted`= 0 and r.`deleted` = 0  " +
       "and r2.`deleted`= 0 and p.`deleted` = 0   " +
       "and p2.`deleted` = 0 and l.`deleted` = 0  " +
-      "and f.`id` =?  and f.`userId`= ? ";
+      "and f.`id` =?  and f.`userId`= ? order by p2.`order` ASC";
 
     let offerSql = "select  p.`id` as parentId, l.`id`,l.`name`,p2.`weight` " +
       "from Flow f " +
@@ -634,7 +634,7 @@ router.get('/api/flows/:id', async function (req, res, next) {
       "where  f2.`deleted`= 0 and r.`deleted` = 0  " +
       "and r2.`deleted`= 0 and p.`deleted` = 0   " +
       "and p2.`deleted` = 0 and l.`deleted` = 0  " +
-      "and f.`id` = ? and f.`userId`= ? ";
+      "and f.`id` = ? and f.`userId`= ? order by p2.`order` ASC";
 
 
     connection = await common.getConnection();
@@ -937,7 +937,7 @@ async function saveOrUpdateFlow(subId, value, connection) {
             throw new Error('Rule ID Lost');
           }
           //新建rule 和 flow 关系
-          let c1 = common.insertRule2Flow(ruleId, flowId, value.rules[i].enabled ? 1 : 0, connection);
+          let c1 = common.insertRule2Flow(ruleId, flowId, value.rules[i].enabled ? 1 : 0,i, connection);
 
           //解除rule下的所有path
           let c2 = common.deletePath2Rule(ruleId, connection);
@@ -962,7 +962,7 @@ async function saveOrUpdateFlow(subId, value, connection) {
               if (!pathId) {
                 throw new Error('Path ID Lost');
               }
-              await common.insertPath2Rule(pathId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled ? 1 : 0, connection);
+              await common.insertPath2Rule(pathId, ruleId, value.rules[i].paths[j].weight, value.rules[i].paths[j].enabled ? 1 : 0,j, connection);
               value.rules[i].paths[j].id = pathId;
 
               //解除path下的所有landers
@@ -1032,7 +1032,7 @@ async function insertOrUpdateLanderAndLanderTags(subId, userId, pathId, landersS
       if (!landerId) {
         throw new Error('Lander ID Lost');
       }
-      await common.insertLander2Path(landerId, pathId, landersSlice[k].weight, connection);
+      await common.insertLander2Path(landerId, pathId, landersSlice[k].weight,k, connection);
       landersSlice[k].id = landerId;
 
       //删除所有tags
@@ -1065,7 +1065,7 @@ async function insertOrUpdateOfferAndOfferTags(subId, userId, idText, pathId, of
       if (!offerId) {
         throw new Error('Offer ID Lost');
       }
-      await common.insertOffer2Path(offerId, pathId, offersSlice[z].weight, connection);
+      await common.insertOffer2Path(offerId, pathId, offersSlice[z].weight,z, connection);
       offersSlice[z].id = offerId;
 
       //删除所有offer tags

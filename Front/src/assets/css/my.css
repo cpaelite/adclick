@@ -1414,14 +1414,20 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
 }
 .data-tables-chart-container table>tbody>tr>td.loading {height: 165px;background: #fff}
 .data-tables-chart-container table>tbody>tr>td.loading:hover {background: #fff;}
-.data-tables-chart-container .glyphicon {color: #333;}
-.data-tables-chart-container .glyphicon-refresh-animate {
+.data-tables-chart-container .glyphicon, .chart-box .glyphicon {color: #333;}
+.data-tables-chart-container .glyphicon-refresh-animate, .chart-box .glyphicon-refresh-animate{
     -animation: spin 1s infinite linear;
     -webkit-animation: spin2 1s infinite linear;
 }
 .data-tables-chart-container .table-hover > tbody > tr:hover{
     background-color: #8494a2;
     color: #000;
+}
+.data-tables .table-box:first-child {
+  margin-right: 10px;
+}
+.data-tables .table-box:last-child {
+  margin-left: 10px;
 }
 .data-tables-chart-container table thead,
 .table thead,
@@ -3423,6 +3429,7 @@ table.md-table tr.row-deleted td.md-cell {
   position: relative;
 }
 .repeater-container tr .item-name a {
+  color: #357CF4;
   border: 1px solid transparent;
   position: relative;
 }
