@@ -46,8 +46,8 @@ router.get('/api/conversions', async function (req, res, next) {
         page = parseInt(page)
         let offset = (page - 1) * limit;
 
-        let sqlTmp = "select (case statis.PostbackTimestamp when 0 then \"Unknown\" else IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(statis.`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") end) as PostbackTimestamp," +
-            "(case statis.VisitTimestamp when 0 then \"Unknown\" else IFNULL(DATE_FORMAT(convert_tz(FROM_UNIXTIME(statis.`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>') ,'%Y-%m-%d %h:%i:%s %p'),\"Unknown\") end)  as VisitTimestamp," +
+        let sqlTmp = "select (case statis.PostbackTimestamp when 0 then \"Unknown\" else IFNULL(convert_tz(FROM_UNIXTIME(statis.`PostbackTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>'),\"Unknown\") end) as PostbackTimestamp," +
+            "(case statis.VisitTimestamp when 0 then \"Unknown\" else IFNULL(convert_tz(FROM_UNIXTIME(statis.`VisitTimestamp`/1000, \"%Y-%m-%d %H:%i:%s\"),'+00:00','<%= tz %>'),\"Unknown\") end)  as VisitTimestamp," +
             "statis.`ExternalID`,statis.`ClickID`,statis.`TransactionID`,statis.`Revenue`,statis.`Cost`,statis.`CampaignName`,statis.`CampaignID`," +
             "statis.`LanderName`,statis.`LanderID`,statis.`OfferName`,statis.`OfferID`,statis.`Country`,statis.`CountryCode`,statis.`TrafficSourceName`,statis.`TrafficSourceID`," +
             "statis.`AffiliateNetworkName`,statis.`AffiliateNetworkID`,statis.`Device`,statis.`OS`,statis.`OSVersion`,statis.`Brand`,statis.`Model`,statis.`Browser`,statis.`BrowserVersion`,statis.`ISP`," +
