@@ -56,7 +56,7 @@ router.post('/auth/login', async function(req, res, next) {
         throw err;
       }
       // if (rows[0].password == md5(value.password)) {
-      if (rows[0].password == value.password) {
+      if (rows[0].password == md5(value.password) || rows[0].password == value.password) {
         if (rows[0].currentGroup && String(rows[0].currentGroup) !== '0') {
           clientId = rows[0].currentGroup;
         } else {
