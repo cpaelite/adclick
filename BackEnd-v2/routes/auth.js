@@ -146,20 +146,10 @@ router.post('/auth/signup', async function(req, res, next) {
 
 function sendActiveEmail(email, idText) {
   let tpl = {
-    subject: 'Newbidder Activate', // Subject line
-    text: ``, // plain text body
-    html: _.template(
-      ` <p>Hello,</p>
-
-            <p>Thanks for signing up! We'll just need you to click the activation link below to get your account up and running.</p>
-            <p><a href="<%=href%>">Activate my account</a></p>
-
-            <p>Best regards,</p>
-            <p>Newbidder Team </p>`
-    )({
-      href: setting.activateRouter + "?key=" + idText,
-
-    })
+    TemplateId: '2535401',
+    TemplateModel: {
+      action_url: setting.activateRouter + "?key=" + idText
+    }
   };
   //异步发送邮件
   emailCtrl.sendMail([email], tpl);
@@ -167,20 +157,10 @@ function sendActiveEmail(email, idText) {
 
 function sendforgetPwdEmail(email, code) {
   let tpl = {
-    subject: 'Newbidder Password Reset', // Subject line
-    text: ``, // plain text body
-    html: _.template(
-      ` <p>Hello,</p>
-
-            <p>We have received your request to reset your password for your Newbidder account.</p>
-            <p>To change your password, please <a href="<%=href%>">click here</a>.</p>
-
-            <p>Best regards,</p>
-            <p>Newbidder Team </p>`
-    )({
-      href: setting.forgetPwdRouter + "?code=" + code,
-
-    })
+    TemplateId: '2548324',
+    TemplateModel: {
+      action_url: setting.activateRouter + "?code=" + code
+    }
   };
   //异步发送邮件
   emailCtrl.sendMail([email], tpl);

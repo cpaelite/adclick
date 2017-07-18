@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const postmark = require('postmark');
 const _ = require('lodash');
 var log4js = require('log4js');
 var log = log4js.getLogger('email');
@@ -13,23 +13,22 @@ let smtpConfig = {
     }
 };
 
-// create reusable transporter object using the default SMTP transport
-let transporter = nodemailer.createTransport(smtpConfig);
-
+let client = new postmark.Client("ddff2ef7-590d-447c-a3f9-e221c0221bbe");
 
 function sendMail(emails, tpl) {
     // setup email data with unicode symbols
     let emailString = emails.join(",");
     let mailOptions = {
-        from: 'support@newbidder.com', // sender address
-        to: emailString// list of receivers
+        From: 'support@newbidder.com', // sender address
+        To: emailString// list of receivers
     };
     mailOptions = _.merge(mailOptions, tpl);
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            log.error(error.message)
-        }
-        log.info("[Success][TO]", emailString, "[context]:", JSON.stringify(tpl));
+
+    client.sendEmailWithTemplate(mailOptions, function(error, info) {
+      if (error) {
+          log.info(error.message)
+      }
+      log.info("[Success][TO]", emailString, "[context]:", JSON.stringify(tpl));
     });
 
 }
