@@ -159,7 +159,7 @@ function sendforgetPwdEmail(email, code) {
   let tpl = {
     TemplateId: '2548324',
     TemplateModel: {
-      action_url: setting.activateRouter + "?code=" + code
+      action_url: setting.forgetPwdRouter + "?code=" + code
     }
   };
   //异步发送邮件
