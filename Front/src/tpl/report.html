@@ -73,7 +73,7 @@
                 </md-select>
             </div>
             <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-class="{'apply-btn': applyBtn}" ng-model="btnName" ng-click="applySearch()" ng-disabled="disabled" translate>{{btnName}}</md-button>
-
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-if="resetBtn" ng-click="resetSearchParams()" ng-disabled="disabled" translate>reset</md-button>
             <md-button class="md-raised md-primary cs-compact cs-add-button green-btn" ng-click="downLoad($event)" translate><i class="icon-download-alt"></i>Export CSV</md-button>
 
             <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="editItem($event)" translate ng-disabled="!canEdit()">add</md-button>

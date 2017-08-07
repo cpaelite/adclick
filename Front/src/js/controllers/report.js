@@ -284,6 +284,12 @@
           $scope.loading = false;
         }
 
+        if($scope.resetSearchParamsClicked) {
+          $scope.resetBtn = false;
+          $scope.applyBtn = false;
+          $scope.btnName = 'refresh';
+          $scope.resetSearchParamsClicked = false;
+        }
         $scope.disabled = false;
         rerenderReportTable();
         //$scope.btnName = 'Refresh';
@@ -295,6 +301,7 @@
       if (newVal != oldVal) {
         $scope.applyBtn = true;
         $scope.btnName = 'apply';
+        $scope.resetBtn = true;
       }
     }, true);
 
@@ -516,6 +523,17 @@
         $scope.columns[0].key = $scope.columns[0].origKey;
         $scope.columns[0].name = $scope.columns[0].origName;
       }
+    };
+
+    $scope.resetSearchParams = function() {
+      $scope.searchFilter = '';
+      $scope.activeStatus = 2;
+      $scope.treeLevel = 1;
+      $scope.groupBy[0] = perfType;
+      $scope.groupBy[1] = '';
+      $scope.groupBy[2] = '';
+      $scope.resetSearchParamsClicked = true;
+      $scope.applySearch();
     };
 
     $scope.downLoad = function () {
