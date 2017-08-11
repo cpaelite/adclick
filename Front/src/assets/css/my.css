@@ -695,7 +695,7 @@ md-sidenav.md-closed{
     display: inline;
 }
 .navi{
-    margin-top:46px;background:#2770ea;
+    margin-top:46px;background:#2b67b4;
 }
 .navi ul.nav li{
     float: left;
@@ -1174,7 +1174,7 @@ table .traficc-source-input input[type="checkbox"]{
     margin:0 10px 0 0;
     border-radius:3px;
     font-size:12px;
-    text-transform:uppercase;
+    text-transform:capitalize;
 
 }
 .right-select .search-con{
@@ -1399,7 +1399,7 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
 }
 .data-num small{font-weight:600;;margin:-2px 3px 0 0;line-height:32px;float:left;}
 .data-tables-chart-container .table {margin-bottom: 15px;}
-.data-tables-chart-container .table thead{background: #2770ea;color: #fff;}
+.data-tables-chart-container .table thead{background: #2b67b4;color: #fff;}
 .data-tables-chart-container .table thead tr th:last-child{width: 18%;}
 .data-tables-chart-container .table thead tr th:first-child{width: 40px;}
 .data-tables-chart-container .table > thead > tr > th,
@@ -1480,13 +1480,14 @@ table.md-table tbody.md-body > tr.md-row:hover td.md-cell.green{
 }
 .table-toggles li.selected,
 .table-toggles li.selected:hover{
-  background: #266fe9;
-      background: -moz-linear-gradient(top, #357cf4 0, #266fe9 100%);
+  background: #2b67b4;
+  border: 1px solid #4381d0;
+      /*background: -moz-linear-gradient(top, #357cf4 0, #266fe9 100%);
       background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #357cf4), color-stop(100%, #266fe9));
       background: -webkit-linear-gradient(top, #357cf4 0, #266fe9 100%);
       background: -o-linear-gradient(top, #357cf4 0, #266fe9 100%);
       background: -ms-linear-gradient(top, #357cf4 0, #266fe9 100%);
-      background: linear-gradient(to bottom, #357cf4 0, #266fe9 100%);border:1px solid #2669d9;line-height:30px;height:32px;
+      background: linear-gradient(to bottom, #357cf4 0, #266fe9 100%);border:1px solid #2669d9;line-height:30px;height:32px;*/
       border-radius:2px;color:#fff;font-weight:bold;
 }
 
@@ -3234,8 +3235,8 @@ md-content.md-default-theme, md-content{color:#000;}
 .btn.btn-primary.blue-btn.blue-btn-h{height:42px;line-height:42px;font-size:16px;}
 .md-button.md-primary.md-raised.blue-btn,.view_column.blue-btn,.btn.btn-primary.blue-btn,.md-raised.copied-btn,.flow-actions li.new-flow,.traffic-source-templates,
 .md-button.traffic-source-templates.md-focused,.copy-btn.domain-btn.main-domain,.save-btn
-{ background:#357CF4;
-    border:1px solid #2564CF;line-height:30px;height:32px;
+{ background:#2b67b4;
+    border:1px solid #4381d0;line-height:30px;height:32px;
     border-radius:3px;color:#fff;
     transition:color 300ms ease-in-out;
 }
@@ -3485,4 +3486,16 @@ md-menu-content[width="3"].flows-menu-box {
   float: left;
   height: 32px;
   line-height: 32px;
+}
+.md-button.md-primary.md-raised.add-trk-btn, .md-raised.md-primary.add-mdsp-btn {
+  background: #f43333 !important;
+  border: 1px solid #f43333 !important;
+  color: #fff !important;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.md-button.md-primary.md-raised.add-trk-btn:hover, .md-raised.md-primary.add-mdsp-btn:hover {
+  background: #ec5151!important;
+  border: 1px solid #ec5151 !important;
 }

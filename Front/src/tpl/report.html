@@ -10,6 +10,7 @@
     <h6>Advanced filters:</h6>
     <div class="cs-action-bar clearfix">
         <div class="left-con">
+            <a ng-if="perfType == 'campaign'" class="md-raised md-primary cs-compact cs-add-button green-btn" style="float: left;margin-right: 10px;color: #fff;" ui-sref="app.suddenChange">Auto</a>
             <div class="cs-subform-control">
                 <md-select aria-label="Group By" class="cs-subform-select" ng-model="groupBy[0]" placeholder="Choose grouping" ng-change="changeGroupby(0)">
                     <!--<option value="">Choose grouping</option>-->
@@ -30,6 +31,11 @@
             </div>
         </div>
         <div class="right-select" ng-class="{'right-select2': datetype == '0'}">
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-class="{'add-trk-btn': perfType == 'campaign'}" ng-click="editItem($event)" translate ng-disabled="!canEdit()">
+
+              {{perfType == 'campaign' ? 'Add trk campaign' : 'Add'}}
+            </md-button>
+            <a ng-if="perfType == 'campaign'" class="md-raised md-primary cs-compact cs-add-button green-btn  add-mdsp-btn" target="_blank" href="http://mdsp.newbidder.com/">Add dsp campaign</a>
             <div class="cs-subform-control search-con">
                 <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
                 <i class="search-btn"></i>
@@ -75,8 +81,6 @@
             <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-class="{'apply-btn': applyBtn}" ng-model="btnName" ng-click="applySearch()" ng-disabled="disabled" translate>{{btnName}}</md-button>
             <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-if="resetBtn || groupBy[1]" ng-click="resetSearchParams()" ng-disabled="disabled" translate>reset</md-button>
             <md-button class="md-raised md-primary cs-compact cs-add-button green-btn" ng-click="downLoad($event)" translate><i class="icon-download-alt"></i>Export CSV</md-button>
-
-            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="editItem($event)" translate ng-disabled="!canEdit()">add</md-button>
 
             <a ng-hide="perfType == 'campaign'" ng-click="addNewCampaign()">
               <md-button
