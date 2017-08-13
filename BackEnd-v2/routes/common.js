@@ -868,6 +868,27 @@ async function updateOffer(subId, userId, offer, connection) {
     sqlUpdateOffer += ",`deleted`= ? ";
     params.push(offer.deleted);
   }
+
+  if (offer.capEnabled != undefined) {
+    sqlUpdateOffer += ",`capEnabled`= ? ";
+    params.push(offer.capEnabled);
+  }
+
+  if (offer.dailyCap != undefined) {
+    sqlUpdateOffer += ",`dailyCap`= ? ";
+    params.push(offer.dailyCap);
+  }
+
+  if (offer.capTimezoneId != undefined) {
+    sqlUpdateOffer += ",`capTimezoneId`= ? ";
+    params.push(offer.capTimezoneId);
+  }
+
+  if (offer.redirectOffer != undefined) {
+    sqlUpdateOffer += ",`redirectOffer`= ? ";
+    params.push(offer.redirectOffer);
+  }
+
   sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
   params.push(userId);
   params.push(offer.id);
@@ -891,7 +912,7 @@ async function updateOffer(subId, userId, offer, connection) {
 
 async function getOfferDetail(id, userId, connection) {
   let sqlLander =
-    "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue`,`deleted` from `Offer` where `userId`=? and `id`=?";
+    "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue`,`deleted`,`capEnabled`,`dailyCap`,`capTimezoneId`,`redirectOffer` from `Offer` where `userId`=? and `id`=?";
   let sqltag =
     "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 

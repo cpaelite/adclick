@@ -127,7 +127,11 @@ router.post('/api/offers/:id', async function (req, res, next) {
         }),
         payoutValue: Joi.number().optional(),
         tags: Joi.array().optional(),
-        deleted: Joi.number().optional()
+        deleted: Joi.number().optional(),
+        capEnabled: Joi.number().optional(),
+        dailyCap: Joi.number().optional(),
+        capTimezoneId: Joi.string().optional(),
+        redirectOffer: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id;
@@ -300,7 +304,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
             right join Rule2Flow f2 on f2.ruleId= r.id
             right join Flow f on f.id = f2.flowId
             where  f.deleted = 0 and offer.id= ${value.id} and offer.userId= ${value.userId} and f.type= 1`;
-        //check offer used by  campaign 
+        //check offer used by  campaign
         let usedByCampaignsql = `select  cam.id as campaignId,cam.name as campaignName from  Offer offer
             right join Offer2Path p2 on offer.id = p2.offerId
             right join Path p on p.id = p2.pathId
@@ -308,7 +312,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
             right join Rule r on r.id= r2.ruleId
             right join Rule2Flow f2 on f2.ruleId= r.id
             right join Flow f on f.id = f2.flowId
-            right join TrackingCampaign cam on cam.targetFlowId = f.id 
+            right join TrackingCampaign cam on cam.targetFlowId = f.id
             where  f.deleted = 0 and offer.id= ${value.id} and offer.userId= ${value.userId} and f.type= 0 and cam.deleted= 0 `;
 
         let [flowResult, campaignResult] = await Promise.all([common.query(templeSql, [], connection), common.query(usedByCampaignsql, [], connection)]);
