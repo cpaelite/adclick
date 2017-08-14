@@ -14,7 +14,16 @@ h1,h2,h3,h4,h5,h6,p{margin:0;}
 a,a:hover,a:focus{text-decoration:none;}
 .nav-w{width:90%;margin:0 auto;position:absolute}
 .nav-box img{float:left;width:68px;}
-#menu3{float:right;margin-top:25px;}
+#menu3{float:right;margin-top:25px;overflow: hidden;}
+#menu3 > span {
+  display: inline-block;
+  float: left;
+  margin-right: 15px;
+  margin-top: 2px;
+}
+#menu3 > ul {
+  float: left;
+}
 .nav-col{
     height:32px;
     padding:0;
