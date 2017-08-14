@@ -211,6 +211,12 @@ color: #FFFFFF;
   .title-box .big-data-image > img{
     width: 50%;
   }
+  .mdsp-box .mdsp-msg {
+    padding-left: 15px;
+  }
+  .mdsp-box .free-box {
+    border-right: 0;
+  }
 }
 .join-btn {
   font-family: "museo-sans",sans-serif;
