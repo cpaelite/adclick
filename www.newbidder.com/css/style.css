@@ -57,32 +57,132 @@ header {font-family:Helvetica;
     -webkit-justify-content: center;
     -ms-flex-pack: center;
     justify-content: center;
-    text-align:center;
     width: 100%;
-    height:85vh;
-    background:url("../img/banner.jpg") no-repeat;
+    background: white;
+    background: -webkit-linear-gradient(top, white 0%, #6cb9ea 28%, #6cb9ea 100%);
+    background: linear-gradient(to bottom, white 0%, #6cb9ea 28%, #6cb9ea 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#6cb9ea', GradientType=0);
     background-size:100%;float:left;margin-bottom:80px;
 }
-.title {
+/*.title {
     -webkit-align-self: center;
     align-self: center;
     padding: 2rem;
     text-align: center;
+}*/
+
+/*.title h1 {
+font-size:58px;
+font-weight: bold;
+margin:0;
+padding: 0;
+color: #FFFFFF;
+}*/
+
+.title-box {
+  -webkit-align-self: center;
+  align-self: center;
+  padding: 2rem;
+  width: 85%;
+  margin-top: 145px;
+  overflow: hidden;
 }
 
-.title h1 {
-    font-size:58px;
-    font-weight: bold;
-    margin:0;
-    padding: 0;
-    color: #FFFFFF;
+.title-box .subtitle {
+  font-family: "ff-good-headline-web-pro-con";
+  color: #39444e;
+  height: 70px;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  font-style: italic;
+  font-size: 5rem;
 }
-.join-btn{background:transparent;border:1px solid #fff;color:#fff;font-size:32px;width:200px;text-align:center;height:64px;line-height:60px;border-radius:6px;margin-top:50px;
+
+.title-box  .pretitle {
+  padding-right: 10px;
+}
+
+.title-box .title {
+  color: #39444e;
+  text-transform: uppercase;
+  font-size: 60px;
+  font-family: "ff-good-headline-web-pro-con";
+  line-height: 1.2;
+  position: relative;
+  font-style: italic;
+}
+
+.title-box .the-content {
+  font-size: 2rem;
+  font-style: italic;
+  padding: 25px 0 15px;
+}
+
+.title-box .big-data-image img{
+  position: relative;
+}
+
+.title-box .word-slider-wrapper li{
+  color: #fff;
+  font-style: italic;
+}
+.title-box .word-slider {
+  transition: all 0.2s ease-in-out;
+}
+@media (min-width: 1200px) {
+  .title-box .big-data-image > img{
+    width: 66%;
+    top: -34px;
+    left: 50px;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .title-box .big-data-image > img{
+    width: 90%;
+    left: 50px;
+  }
+}
+@media (max-width: 992px) {
+  .title-box .big-data-image {
+    text-align: center;
+  }
+  .title-box .big-data-image > img{
+    width: 50%;
+  }
+}
+.join-btn {
+  font-family: "museo-sans",sans-serif;
+  text-transform: none;
+  display: inline-block;
+  border-radius: 35px;
+  border: none;
+  padding: 0px 40px 0px 40px;
+  background-color: #ff5333;
+  cursor: pointer;
+  color: #fff;
+  font-style: italic;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 10px 0;
+  line-height: 60px;
+  cursor: pointer;
+  -webkit-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+.join-btn:hover {
+  background-color: #ea4e31;
+}
+
+/*.join-btn{background:transparent;border:1px solid #fff;color:#fff;font-size:32px;width:200px;text-align:center;height:64px;line-height:60px;border-radius:6px;margin-top:50px;
     -webkit-transition:all 0.3s;
     -moz-transition:all 0.3s;
     transition:all 0.3s;font-family:Roboto-Regular;font-weight:100;}
 .join-btn:hover, .join-btn:active{color:#fff;background:#fff;background-color:rgba(255,255,255,0.1);}
-.join-btn:focus{outline:0;}
+.join-btn:focus{outline:0;}*/
 
 @media only screen and (max-width: 500px) {
     .title h1 {
@@ -480,7 +580,7 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
     .pricing-col li{width:24%;}
     .pricing-list li, .free-list li{width:100%;}
     .scroll-down{bottom:35vh;}
-    header{background-size:120%;height:70vh;}
+    header{background-size:120%;--height:70vh;}
     .carousel-control.right, .carousel-control.left{padding-top:120px;}
 }
 @media only screen and (max-width:1000px) {
@@ -498,7 +598,7 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
     #sliderPricing .eventsSliderBox{margin-bottom:0;}
     .separator span{display:none;}
     #sliderPricing section .col-md-3{border-top:1px solid #eee;padding-top:20px;}
-    header{background-size:320%;height:45vh;}
+    header{background-size:320%;--height:45vh;}
     .title h1{font-size:48px;}
     .join-btn{width:180px;font-size:28px;height:58px;line-height:58px;}
     .scroll-down{bottom:62vh;}
@@ -523,5 +623,3 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
     .pricing-col li{width:100%;margin-bottom:10px;}
 
 }
-
-

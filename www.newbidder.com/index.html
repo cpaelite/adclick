@@ -55,7 +55,31 @@
             </nav>
         </div>
     </div>
-    <div class="title">
+    <div class="title-box row">
+      <div class="col-md-6">
+        <div class="subtitle">
+          <div class="pretitle">MEASURE</div>
+          <div class="word-slider-wrapper" style="width: 347px;">
+            <ul class="word-slider" style="transform: translateY(-80%);">
+              <li class="current"><span>CPI</span></li>
+              <li class=""><span>CPA</span></li>
+              <li class=""><span>CPS</span></li>
+              <li class=""><span>ROI</span></li>
+              <li class=""><span>Attribute</span></li>
+            </ul>
+          </div>
+        </div>
+        <h1 class="title">TO GROW YOUR MOBILE BUSINESS</h1>
+        <div class="the-content">Newbidder is the world's leading mobile attribution & marketing analytics tracking platform, helping affiliates and agency around the world make better decisions.</div>
+        <a href="http://panel.newbidder.com/#/access/signin">
+            <button class="join-btn" type="button">Join us</button>
+        </a>
+      </div>
+      <div class="col-md-6 big-data-image">
+        <img src="img/dataBg.png" alt="大数据分析">
+      </div>
+    </div>
+    <div class="title hidden">
         <h1 class="heading animated fadeInLeft">Best Tracking Solution for Media Buy</h1>
         <a href="http://panel.newbidder.com/#/access/signin">
             <button class="join-btn" type="button">Join us</button>
@@ -390,6 +414,21 @@
 
 <script type="text/javascript" src="js/jquery.easing.min.js"></script>
 <script type="text/javascript" src="js/jquery.lavalamp.min.js"></script>
+<script type="text/javascript">
+  $(function() {
+    var p = 0;
+    setInterval(function() {
+      if(p < 80) {
+        p = p + 20;
+      } else {
+        p = 0;
+      }
+      $('.word-slider').css({
+        'transform': 'translateY(-' + p + '%)'
+      });
+    },  2000);
+  });
+</script>
 <!--Start of Zendesk Chat Script-->
 <script type="text/javascript">
     window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
