@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('MainCtrl', [
-      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 'Profile', 'Timezone',
+      '$scope', '$translate', '$auth', 'authService', '$rootScope', '$mdMedia', '$mdSidenav', 'Permission', 'Preference', 'Country', '$localStorage', 'Group', '$cookies', 'toastr', 'Condition', 'AccountGroup', 'Profile', 'Timezone', '$mdDialog',
       MainCtrl
     ]);
 
-  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup, Profile, Timezone) {
+  function MainCtrl($scope, $translate, $auth, authService, $rootScope, $mdMedia, $mdSidenav, Permission, Preference, Country, $localStorage, Group, $cookies, toastr, Condition, AccountGroup, Profile, Timezone, $mdDialog) {
     // add ie/smart classes to html body
     $scope.isIE = !!navigator.userAgent.match(/MSIE/i);
     $scope.$watch(function () {
@@ -211,6 +211,22 @@
       $rootScope.profileTimezone = null;
       $cookies.remove('token');
       $cookies.remove('clientId');
+    };
+
+    $rootScope.addFunds = function() {
+      $mdDialog.show({
+        bindToController: true,
+        clickOutsideToClose: false,
+        controllerAs: 'ctrl',
+        focusOnOpen: false,
+        controller: ['$mdDialog', function($mdDialog) {
+          this.close = function() {
+            $mdDialog.hide();
+          };
+        }],
+        templateUrl: 'tpl/add-funds-dialog.html?' + +new Date(),
+        escapeToClose: false
+      });
     };
 
     if ($auth.isAuthenticated()) {

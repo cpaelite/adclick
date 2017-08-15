@@ -1,0 +1,35 @@
+<md-dialog class="cs-edit-dialog add-funds-dialog" ng-cloak style="width: 725px;">
+  <md-toolbar>
+    <div class="md-toolbar-tools cam-title">
+      <h2 class="md-title">Add Funds</h2>
+    </div>
+  </md-toolbar>
+  <md-dialog-content class="md-dialog-content" style="padding-top: 15px;">
+    <h3>Payment method</h3>
+    <p>We strongly recommend you to make the payment in US dollars. If you make the transaction in other currency, you will take the risk of getting lose because of the exchange rate.</p>
+    <h4>1. PayPal</h4>
+    <p style="color: red;">zhengshuo@adbund.com</p>
+    <p>If you want to use PayPal balance to make the payment, the transaction fee 1.5%+0.3USD. Please notice that to use Paypal balance, you will need to add funds to your Paypal account first.</p>
+    <h4>2. Alipay</h4>
+    <p style="color: red;">zhengshuo@adbund.com</p>
+    <h4>3. Wire transfer</h4>
+    <p>Payee: ADBUND  LIMITED</p>
+    <p>Payee Address: Room 1501 15/F .,SPA Center 53-55 Lockhart Road,wanchai HongKong</p>
+    <p>Benificary Bank: China Merchants Bank, Head Office, Shenzhen, P.R.China</p>
+    <p>Benificary Bank Address: 19/F., China Merchants Bank Tower, No. 7088 Shennan Boulevard, Shenzhen, P.R.China</p>
+    <p>USD Savings Account OSA121923800832801</p>
+    <p>HKD Savings Account OSA121923800821601</p>
+    <p>SWIFT: CMBCCNBS</p>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button class="md-primary" ng-click="ctrl.close()">{{'close' | translate}}</md-button>
+  </md-dialog-actions>
+</md-dialog>
+<style>
+  .add-funds-dialog i {
+    display: inline-block;
+    width: 120px;
+    margin-right: 10px;
+    text-align: right;
+  }
+</style>

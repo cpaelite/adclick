@@ -11,7 +11,9 @@
             <md-option ng-repeat="tz in timezones" value="{{tz.id}},{{tz.utcShift}}">{{tz.detail}}</md-option>
           </md-select>
         </div>
-          <!-- <div class="profile-timezone">{{profile.timezoneDeatil}}</div> -->
+
+        <button class="add-funds green-btn" ng-click="addFunds($event)">Add Funds</button>
+        <!-- <div class="profile-timezone">{{profile.timezoneDeatil}}</div> -->
         <div class="home">
           <a class="home-link" ui-sref="app.report.campaign"><i class="icon-home fonts17"></i></a>
         </div>

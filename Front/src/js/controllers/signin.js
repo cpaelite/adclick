@@ -3,11 +3,11 @@
 
   angular.module('app')
     .controller('SigninCtrl', [
-      '$rootScope', '$scope', '$auth', '$q', '$state', 'toastr', '$cookies', 'Profile', 'Permission', 'Confirmation',
+      '$rootScope', '$scope', '$auth', '$q', '$state', 'toastr', '$cookies', 'Profile', 'Permission', 'Confirmation', '$mdDialog',
       SigninCtrl
     ]);
 
-  function SigninCtrl($rootScope, $scope, $auth, $q, $state, toastr, $cookies, Profile, Permission, Confirmation) {
+  function SigninCtrl($rootScope, $scope, $auth, $q, $state, toastr, $cookies, Profile, Permission, Confirmation, $mdDialog) {
     $scope.app.subtitle = 'Log in';
 
     var token = $cookies.get('token');
@@ -69,6 +69,20 @@
             } else {
               $scope.$state.go('app.report.campaign');
             }
+
+            $mdDialog.show({
+              bindToController: true,
+              clickOutsideToClose: false,
+              controllerAs: 'ctrl',
+              focusOnOpen: false,
+              controller: ['$mdDialog', function($mdDialog) {
+                this.close = function() {
+                  $mdDialog.hide();
+                };
+              }],
+              templateUrl: 'tpl/free-account-info-dialog.html?' + +new Date(),
+              escapeToClose: false
+            });
           }
 
           $q.all(initPromises).then(initSucces);

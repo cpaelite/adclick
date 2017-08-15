@@ -3499,3 +3499,56 @@ md-menu-content[width="3"].flows-menu-box {
   background: #ec5151!important;
   border: 1px solid #ec5151 !important;
 }
+#new_campaign_menu {
+  padding: 0; float: left;
+}
+
+#new_campaign_menu button {
+  background: #f43333!important;
+  border: 1px solid #f43333!important;
+  color: #fff!important;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 32px;
+  line-height: 30px;
+  margin-right: 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  text-transform: capitalize;
+  font-weight: 600;
+  width: 140px!important;
+}
+
+#new_campaign_menu button .md-mini {
+  position: relative;top: 8px;
+}
+
+#new_campaign_sub_menu {
+  width: 140px!important;
+  min-width: 140px!important;
+}
+
+#new_campaign_sub_menu button, #new_campaign_sub_menu a {
+  background: #f43333!important;
+  color: #fff!important;
+  font-size: 12px;
+  text-transform: capitalize;
+  font-weight: 600;
+  padding-top: 0;
+}
+
+#new_campaign_menu button:hover, #new_campaign_sub_menu button:hover, #new_campaign_sub_menu a:hover {
+  background: #ec5151!important;
+}
+
+.navbar-box .add-funds {
+  padding: 0 10px;
+  font-weight: bold;
+  margin-right: 20px;
+  font-size: 12px;
+}
+
+.navbar-box .add-funds:hover {
+  color: #fff!important;
+  background: #12B610!important;
+}

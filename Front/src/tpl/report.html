@@ -31,11 +31,26 @@
             </div>
         </div>
         <div class="right-select" ng-class="{'right-select2': datetype == '0'}">
-            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-class="{'add-trk-btn': perfType == 'campaign'}" ng-click="editItem($event)" translate ng-disabled="!canEdit()">
+          <md-menu-bar id="new_campaign_menu" ng-if="perfType == 'campaign'" ng-disabled="!canEdit()">
+              <md-menu>
+                <button ng-click="$mdMenu.open()">
+                  <span class="tools-menu clearfix">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span class="tools-word">New campaign</span><i class="material-icons md-mini"></i>
+                  </span>
+                </button>
+                <md-menu-content id="new_campaign_sub_menu">
+                  <md-menu-item>
+                    <md-button ng-click="editItem($event)">New TRK campaign</md-button>
+                  </md-menu-item>
+                  <md-menu-item>
+                    <md-button href="http://mdsp.newbidder.com/" target="_blank">New DSP campaign</md-button>
+                  </md-menu-item>
+                </md-menu-content>
+              </md-menu>
+          </md-menu-bar>
 
-              {{perfType == 'campaign' ? 'Add trk campaign' : 'Add'}}
-            </md-button>
-            <a ng-if="perfType == 'campaign'" class="md-raised md-primary cs-compact cs-add-button green-btn  add-mdsp-btn" target="_blank" href="http://mdsp.newbidder.com/">Add dsp campaign</a>
+            <md-button ng-if="perfType != 'campaign'" class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="editItem($event)" translate ng-disabled="!canEdit()">Add</md-button>
             <div class="cs-subform-control search-con">
                 <input type="text" class="cs-filter-input" ng-model="searchFilter" placeholder="Search...">
                 <i class="search-btn"></i>
