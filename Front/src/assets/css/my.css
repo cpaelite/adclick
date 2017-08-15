@@ -3470,8 +3470,8 @@ table.md-table tr.row-deleted td.md-cell {
 }
 .context-menu-item {padding: .2em 1em;width: 180px;}
 md-menu-content[width="3"].tools-menu-box {
-  min-width: 145px;
-  width: 145px;
+  min-width: 122px;
+  width: 122px;
 }
 md-menu-content[width="3"].flows-menu-box {
   min-width: 125px;
