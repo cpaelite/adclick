@@ -41,7 +41,14 @@
       };
 
       $scope.summary = {};
-      Report.get(angular.copy(params), function (result) {
+
+      var copyParams = angular.copy(params);
+      if ($scope.datetype == '1') {
+        copyParams.order = 'hour';
+        copyParams.groupBy = 'hour';
+      }
+
+      Report.get(copyParams, function (result) {
         $scope.summary = result.data.totals;
         feedChartData(result.data.rows);
       });
@@ -177,9 +184,12 @@
         var colName = $filter('translate')('dashboardColumn.' + col);
         series.push(colName);
       });
-
+      var key = 'day';
+      if ($scope.datetype == '1') {
+        key = 'hour';
+      }
       datas.forEach(function (data) {
-        labels.push(data.day);
+        labels.push(data[key]);
         cols.forEach(function (col, idx) {
           if (dataset[idx]) {
             dataset[idx].push(data[col]);
@@ -202,7 +212,12 @@
     }
 
     function getReportByDate (params) {
-      Report.get(angular.copy(params), function (result) {
+      var copyParams = angular.copy(params);
+      if ($scope.datetype == '1') {
+        copyParams.order = 'hour';
+        copyParams.groupBy = 'hour';
+      }
+      Report.get(copyParams, function (result) {
         $scope.summary = result.data.totals;
         feedChartData(result.data.rows);
       });
