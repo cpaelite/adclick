@@ -190,6 +190,12 @@ color: #FFFFFF;
   padding-right: 50px;
   border-right: 2px solid #f1eded;
 }
+.mdsp-box .free-box .review-link {
+  color: #357cf4;
+}
+.mdsp-box .free-box .review-link:hover {
+  color: #2564cf;
+}
 .mdsp-box .mdsp-msg {
   padding-left: 50px;
 }
