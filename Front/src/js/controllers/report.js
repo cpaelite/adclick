@@ -1794,6 +1794,8 @@
     $scope.prefixCountry = '';
     $scope.prefixAffiliate = '';
     $scope.prefix = '';
+    $scope.timezones = $rootScope.timezones;
+    // $scope.capTimezoneId = $rootScope.profileTimezone;
     initTags($scope, Tag, 3);
     initCountries($scope);
     // init load data
@@ -1828,7 +1830,8 @@
       }
     } else {
       $scope.item = {
-        payoutMode: 0
+        payoutMode: 0,
+        capEnabled: 1
       };
       $scope.affiliateId = "0";
       this.title = "add";
@@ -1851,8 +1854,15 @@
     }).$promise;
     initPromises.push(prms);
 
+    var offers;
+    prms = Offer.query({ids: this.item && this.item.data.offerId ? this.item.data.offerId : ''}, function (oData) {
+      offers = oData;
+    }).$promise;
+    initPromises.push(prms);
+
     function initSuccess() {
       $scope.affiliates = allAffiliate;
+      $scope.offers = offers;
       if (theOffer) {
         $scope.item = theOffer;
         $scope.affiliateId = theOffer.AffiliateNetworkId.toString();

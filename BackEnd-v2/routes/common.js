@@ -778,9 +778,11 @@ async function insertOffer(subId, userId, idText, offer, connection) {
 
   col += ",`payoutMode`";
   val += ",?";
-
   params.push(offer.payoutMode);
 
+  col += ",`capEnabled`";
+  val += ",?";
+  params.push(offer.capEnabled);
 
   //optional
   if (offer.country) {
@@ -788,6 +790,24 @@ async function insertOffer(subId, userId, idText, offer, connection) {
     col += ",`country`";
     val += ",?";
     params.push(offer.country);
+  }
+
+  if (offer.dailyCap != undefined) {
+    col += ",`dailyCap`";
+    val += ",?";
+    params.push(offer.dailyCap);
+  }
+
+  if (offer.capTimezoneId != undefined) {
+    col += ",`capTimezoneId`";
+    val += ",?";
+    params.push(offer.capTimezoneId);
+  }
+
+  if (offer.redirectOfferId != undefined) {
+    col += ",`redirectOfferId`";
+    val += ",?";
+    params.push(offer.redirectOfferId);
   }
 
   if (offer.postbackUrl) {
@@ -868,6 +888,27 @@ async function updateOffer(subId, userId, offer, connection) {
     sqlUpdateOffer += ",`deleted`= ? ";
     params.push(offer.deleted);
   }
+
+  if (offer.capEnabled != undefined) {
+    sqlUpdateOffer += ",`capEnabled`= ? ";
+    params.push(offer.capEnabled);
+  }
+
+  if (offer.dailyCap != undefined) {
+    sqlUpdateOffer += ",`dailyCap`= ? ";
+    params.push(offer.dailyCap);
+  }
+
+  if (offer.capTimezoneId != undefined) {
+    sqlUpdateOffer += ",`capTimezoneId`= ? ";
+    params.push(offer.capTimezoneId);
+  }
+
+  if (offer.redirectOfferId != undefined) {
+    sqlUpdateOffer += ",`redirectOfferId`= ? ";
+    params.push(offer.redirectOfferId);
+  }
+
   sqlUpdateOffer += " where `userId`= ? and `id`= ? ";
   params.push(userId);
   params.push(offer.id);
@@ -891,7 +932,7 @@ async function updateOffer(subId, userId, offer, connection) {
 
 async function getOfferDetail(id, userId, connection) {
   let sqlLander =
-    "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue`,`deleted` from `Offer` where `userId`=? and `id`=?";
+    "select `id`,`name`,`hash`,`url`,`country`,`AffiliateNetworkId`,`AffiliateNetworkName`,`postbackUrl`,`payoutMode`,`payoutValue`,`deleted`,`capEnabled`,`dailyCap`,`capTimezoneId`,`redirectOfferId` from `Offer` where `userId`=? and `id`=?";
   let sqltag =
     "select `id`,`name` from `Tags` where `userId`=? and `targetId`=? and `type`=? and `deleted`=?";
 
