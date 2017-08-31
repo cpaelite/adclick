@@ -18,112 +18,112 @@ const {
 } = models;
 
 
-router.get('/api/billing', async function(req, res, next) {
-  var schema = Joi.object().keys({
-    userId: Joi.number().required()
-  });
-  req.query.userId = req.user.id;
-  let connection;
-  try {
-    let value = await common.validate(req.query, schema);
-    connection = await common.getConnection();
-    let sql = `select DATE_FORMAT(FROM_UNIXTIME(bill.planStart), "%m/%d/%Y") as \`from\` ,
-                (case bill.planEnd when  0 then 'Unlimited' else DATE_FORMAT(FROM_UNIXTIME(bill.planEnd), "%m/%d/%Y") end) as \`to\`,
-                bill.totalEvents as totalEvents ,bill.includedEvents as includedEvents,plan.id as id,plan.name as name ,plan.price as price  
-                from UserBilling bill inner join UserPlan plan on bill.customPlanId=plan.id 
-                where bill.userId=? and bill.expired=0`;
-    let [spicialPlan] = await common.query(sql, [value.userId], connection);
-
-    if (!spicialPlan) {
-      return res.json({
-        status: 1,
-        message: 'success',
-        data: {
-          plan: {},
-          statistic: {
-
-          }
-        }
-      });
-    }
-
-
-    return res.json({
-      status: 1,
-      message: 'success',
-      data: {
-        plan: {
-          id: spicialPlan.id,
-          name: spicialPlan.name,
-          price: spicialPlan.price
-        },
-        statistic: {
-          planCode: spicialPlan.name,
-          from: spicialPlan.from,
-          to: spicialPlan.to,
-
-          totalEvents: spicialPlan.totalEvents,
-
-          includedEvents: spicialPlan.includedEvents
-
-        }
-      }
-    });
-  } catch (e) {
-    next(e);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-});
-
-// router.get('/api/billing', async(req, res) => {
-//   let {
-//     id: userId
-//   } = req.user;
-//   let billing = await UB.findOne({
-//     where: {
-//       userId,
-//       expired: 0
+// router.get('/api/billing', async function(req, res, next) {
+//   var schema = Joi.object().keys({
+//     userId: Joi.number().required()
+//   });
+//   req.query.userId = req.user.id;
+//   let connection;
+//   try {
+//     let value = await common.validate(req.query, schema);
+//     connection = await common.getConnection();
+//     let sql = `select DATE_FORMAT(FROM_UNIXTIME(bill.planStart), "%m/%d/%Y") as \`from\` ,
+//                 (case bill.planEnd when  0 then 'Unlimited' else DATE_FORMAT(FROM_UNIXTIME(bill.planEnd), "%m/%d/%Y") end) as \`to\`,
+//                 bill.totalEvents as totalEvents ,bill.includedEvents as includedEvents,plan.id as id,plan.name as name ,plan.price as price
+//                 from UserBilling bill inner join UserPlan plan on bill.customPlanId=plan.id
+//                 where bill.userId=? and bill.expired=0`;
+//     let [spicialPlan] = await common.query(sql, [value.userId], connection);
+//
+//     if (!spicialPlan) {
+//       return res.json({
+//         status: 1,
+//         message: 'success',
+//         data: {
+//           plan: {},
+//           statistic: {
+//
+//           }
+//         }
+//       });
 //     }
-//   })
-//   if (!billing) {
+//
+//
 //     return res.json({
 //       status: 1,
 //       message: 'success',
-//       data: {}
-//     })
-//   }
-//   let template_plan = await TB.findOne({
-//     where: {
-//       id: billing.planId
-//     }
-//   })
-//   res.json({
-//     status: 1,
-//     message: 'success',
-//     data: {
-//       plan: {
-//         id: template_plan.id,
-//         name: template_plan.name,
-//         price: template_plan.onSalePrice
-//       },
-//       statistic: {
-//         planCode: template_plan.name,
-//         from: moment.unix(billing.planStart).format('M/D/YYYY'),
-//         to: moment.unix(billing.planEnd).format('M/D/YYYY'),
-//         billedEvents: billing.billedEvents,
-//         totalEvents: billing.totalEvents,
-//         overageEvents: billing.overageEvents,
-//         overageCost: ((template_plan.overageCPM / 1000000) * (billing.overageEvents / 1000)).toFixed(2),
-//         includedEvents: billing.includedEvents,
-//         remainEvents: billing.netEvents(),
-//         freeEvents: billing.freeEvents,
+//       data: {
+//         plan: {
+//           id: spicialPlan.id,
+//           name: spicialPlan.name,
+//           price: spicialPlan.price
+//         },
+//         statistic: {
+//           planCode: spicialPlan.name,
+//           from: spicialPlan.from,
+//           to: spicialPlan.to,
+//
+//           totalEvents: spicialPlan.totalEvents,
+//
+//           includedEvents: spicialPlan.includedEvents
+//
+//         }
 //       }
+//     });
+//   } catch (e) {
+//     next(e);
+//   } finally {
+//     if (connection) {
+//       connection.release();
 //     }
-//   })
-// })
+//   }
+// });
+
+router.get('/api/billing', async(req, res) => {
+  let {
+    id: userId
+  } = req.user;
+  let billing = await UB.findOne({
+    where: {
+      userId,
+      expired: 0
+    }
+  })
+  if (!billing) {
+    return res.json({
+      status: 1,
+      message: 'success',
+      data: {}
+    })
+  }
+  let template_plan = await TB.findOne({
+    where: {
+      id: billing.planId
+    }
+  })
+  res.json({
+    status: 1,
+    message: 'success',
+    data: {
+      plan: {
+        id: template_plan.id,
+        name: template_plan.name,
+        price: template_plan.onSalePrice
+      },
+      statistic: {
+        planCode: template_plan.name,
+        from: moment.unix(billing.planStart).format('M/D/YYYY'),
+        to: moment.unix(billing.planEnd).format('M/D/YYYY'),
+        billedEvents: billing.billedEvents,
+        totalEvents: billing.totalEvents,
+        overageEvents: billing.overageEvents,
+        overageCost: ((template_plan.overageCPM / 1000000) * (billing.overageEvents / 1000)).toFixed(2),
+        includedEvents: billing.includedEvents,
+        remainEvents: billing.netEvents(),
+        freeEvents: billing.freeEvents,
+      }
+    }
+  })
+})
 
 
 
