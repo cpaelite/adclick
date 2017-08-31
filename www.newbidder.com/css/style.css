@@ -639,19 +639,26 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 .free-teaser.free-teaser-en .free-teaser-list-top li h3{font-size:16px;}
 
 .pricing-box{margin-bottom:80px;}
-.pricing-free-box{max-width:738px;margin:0 auto;font-family:Helvetica;}
-.pricing-free{width:48%;float:left;}
-.pricing-custom{width:48%;float:right;}
+.pricing-free-box{margin:0 auto;font-family:Helvetica;}
+.pricing-free{width:24%;float:left;}
+.pricing-custom{width:24%;float:left;margin-left: 1%;}
 .pricing-free-title{position:relative;background-image: linear-gradient(to right, #05a605 0%, #008800 100%);border-radius:4px 4px 0 0;}
 .pricing-custom-title{background-image: linear-gradient(to right, #357cf4 0%, #2564cf 100%);border-radius:4px 4px 0 0;}
 .pricing-free-title h2,.pricing-custom-title h2{padding:0;color:#fff;font-size:26px;height:88px;line-height:88px;font-weight:500;}
 .pricing-free-title h2 small{color:#f0ff00;font-size:16px;font-weight:500;margin:0 0 0 10px;}
 .pricing-plan{border:1px solid #ccc;border-top:none;border-radius:0 0 4px 4px;background:#fff;}
-.pricing-plan ol{padding:40px 30px;font-size:13px;height:340px;}
+.pricing-plan ol{padding:15px 20px;font-size:13px;height:340px;}
 .pricing-plan ol li{line-height:32px;}
+.pricing-free ol li {line-height: 28px;}
+
+.pricing-plan .p-header2.p-header {padding-top: 10px;text-align: center;}
+.pricing-plan .p-header2.p-header .line {position: absolute;top: -24px;}
 .pricing-free .icon-ok{color:#009800;font-size:12px;padding:0 20px 0 0;}
+.pricing-free li {position: relative;}
+.pricing-free li > div {padding-left: 20px;}
+.pricing-free li > i {position: absolute;top: 10px;}
 .pricing-custom .icon-ok{color:#357cf4;font-size:12px;padding:0 20px 0 0;}
-.pricing-custom .pricing-plan ol{padding:56px 35px;}
+.pricing-custom .pricing-plan ol{padding:10px 20px;}
 .icon-question-sign{color:#333;padding-left:5px;}
 .free-b{background:url("../img/free-btn.png") no-repeat;background-size:60px;position:absolute;top:0;text-indent:-9999px;height:60px;width:80px;}
 @media only screen and (max-width:1400px){

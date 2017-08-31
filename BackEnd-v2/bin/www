@@ -44,8 +44,10 @@ myEmitter.on('dbDone', () => {
       " with pid ", process.pid)
   });
    //关闭支付定时任务
-  // const cronJobs = require('../cron');
-  // cronJobs()
+  if(setting.cronJobsStatus) {
+    const cronJobs = require('../cron');
+    cronJobs()
+  }
 })
 
 const {
@@ -61,5 +63,3 @@ Promise.all([connect('AdClickTool')]).then(orms => {
   })
   myEmitter.emit('dbDone')
 })
-
-

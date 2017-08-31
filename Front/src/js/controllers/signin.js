@@ -70,19 +70,19 @@
               $scope.$state.go('app.report.campaign');
             }
 
-            $mdDialog.show({
-              bindToController: true,
-              clickOutsideToClose: false,
-              controllerAs: 'ctrl',
-              focusOnOpen: false,
-              controller: ['$mdDialog', function($mdDialog) {
-                this.close = function() {
-                  $mdDialog.hide();
-                };
-              }],
-              templateUrl: 'tpl/free-account-info-dialog.html?' + +new Date(),
-              escapeToClose: false
-            });
+            // $mdDialog.show({
+            //   bindToController: true,
+            //   clickOutsideToClose: false,
+            //   controllerAs: 'ctrl',
+            //   focusOnOpen: false,
+            //   controller: ['$mdDialog', function($mdDialog) {
+            //     this.close = function() {
+            //       $mdDialog.hide();
+            //     };
+            //   }],
+            //   templateUrl: 'tpl/free-account-info-dialog.html?' + +new Date(),
+            //   escapeToClose: false
+            // });
           }
 
           $q.all(initPromises).then(initSucces);

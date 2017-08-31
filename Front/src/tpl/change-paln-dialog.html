@@ -19,13 +19,21 @@
                   type="button"
                   ng-click="editChangePlan(p)"
                   ng-disabled="(p.level == level || (upgrade && (p.level < level)))"
+                  ng-show="p.id != 10"
+                  style="width: 160px;"
                 >
                   <p>SELECT PLAN<i class="icon-angle-right"></i></p>
                 </button>
+                <a class="btn p-btn btn-three p-btn-0{{$index + 1}}" href="http://www.newbidder.com/" target="_blank" ng-show="p.id == 10" style="width: 160px;">
+                  <p>SHOW DETAIL<i class="icon-angle-right"></i></p>
+                </a>
             </li>
         </ul>
     </div>
+    <p class="text-danger note hidden">Free plan is charging for the purpose of confirming validated Users，1$ will be returned to your account in 24 hours via sending your Alipay or Paypal Account to finance@newbidder.com .</p>
+    <!--
     <p class="text-danger note" ng-show="item.plan">Free plan is charging for the purpose of confirming validated Users，1$ will be returned to your account in 24 hours via sending your Alipay or Paypal Account to finance@newbidder.com .</p>
+    -->
     <!-- <section id="sliderPricing">
         <div>
             <div class="row">

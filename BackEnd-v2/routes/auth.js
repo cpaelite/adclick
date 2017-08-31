@@ -195,7 +195,7 @@ async function signup(data, next) {
     let reftoken = util.getUUID() + "." + idtext;
     //User
     let sql =
-      "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (1,unix_timestamp(now()),?,?,?,?,?,?,?,?)";
+      "insert into User(`status`,`registerts`,`firstname`,`lastname`,`email`,`password`,`idText`,`referralToken`,`json`,`contact`) values (0,unix_timestamp(now()),?,?,?,?,?,?,?,?)";
     let contact = {};
     if (value.qq) {
       contact.qq = value.qq;
@@ -710,6 +710,54 @@ router.get('/referral', function(req, res) {
   res.redirect(setting.freetrialRedirect);
 });
 
+router.get('/free-plan', async function(req, res, next) {
+  var userId = req.query.userId;
+  let connection;
+  try {
+    connection = await common.getConnection();
 
+    let tempfreePlanMap = await common.query(
+    `select id,name,includedEvents,retentionLimit,domainLimit,userLimit,tsReportLimit,anOfferAPILimit,ffRuleLimit,scRuleLimit,separateIP,price,hasCommission from UserPlan where userId = ? and deleted = ?`, [
+      0, 0
+    ], connection);
+
+    let freePlanMap = tempfreePlanMap[0];
+
+    if (freePlanMap) {
+      let UPDATEUSERBILLING = common.query(
+      `insert into UserBilling (userId,planId,customPlanId,planPaymentLogId,planStart,planEnd,billedEvents,totalEvents,includedEvents,agreementId) values(?,?,?,?,?,?,?,?,?,?)`, [
+        userId, freePlanMap.id, freePlanMap.id, 0, moment().unix(), 0,
+        0, 0, freePlanMap.includedEvents, 0
+      ], connection);
+
+      let functionsString = JSON.stringify({
+        retentionLimit: freePlanMap.retentionLimit,
+        domainLimit: freePlanMap.domainLimit,
+        userLimit: freePlanMap.userLimit,
+        tsReportLimit: freePlanMap.tsReportLimit,
+        anOfferAPILimit: freePlanMap.anOfferAPILimit,
+        ffRuleLimit: freePlanMap.ffRuleLimit,
+        scRuleLimit: freePlanMap.scRuleLimit,
+        separateIP: freePlanMap.separateIP
+      });
+
+      let UPDATEUserFunctions = common.query(
+        `insert into UserFunctions (userId,functions) VALUES (?,?) ON DUPLICATE KEY UPDATE functions=?`, [userId, functionsString, functionsString], connection);
+
+      await Promise.all([UPDATEUSERBILLING, UPDATEUserFunctions]);
+    }
+    await common.commit(connection);
+    res.json({
+      status: 1,
+      message: 'success'
+    });
+  } catch (e) {
+    next(e);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+});
 
 module.exports = router;
