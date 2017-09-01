@@ -643,8 +643,9 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 .pricing-free{width:24%;float:left;}
 .pricing-custom{width:24%;float:left;margin-left: 1%;}
 .pricing-free-title{position:relative;background-image: linear-gradient(to right, #05a605 0%, #008800 100%);border-radius:4px 4px 0 0;}
-.pricing-custom-title{background-image: linear-gradient(to right, #357cf4 0%, #2564cf 100%);border-radius:4px 4px 0 0;}
+.pricing-custom-title{--background-image: linear-gradient(to right, #357cf4 0%, #2564cf 100%);border-radius:4px 4px 0 0;border: 1px solid #ccc;}
 .pricing-free-title h2,.pricing-custom-title h2{padding:0;color:#fff;font-size:26px;height:88px;line-height:88px;font-weight:500;}
+.pricing-custom-title h2 {color: #333;}
 .pricing-free-title h2 small{color:#f0ff00;font-size:16px;font-weight:500;margin:0 0 0 10px;}
 .pricing-plan{border:1px solid #ccc;border-top:none;border-radius:0 0 4px 4px;background:#fff;}
 .pricing-plan ol{padding:15px 20px;font-size:13px;height:340px;}
@@ -654,13 +655,18 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 .pricing-plan .p-header2.p-header {padding-top: 10px;text-align: center;}
 .pricing-plan .p-header2.p-header .line {position: absolute;top: -24px;}
 .pricing-free .icon-ok{color:#009800;font-size:12px;padding:0 20px 0 0;}
-.pricing-free li {position: relative;}
-.pricing-free li > div {padding-left: 20px;}
-.pricing-free li > i {position: absolute;top: 10px;}
+.pricing-free li, .pricing-custom li {position: relative;}
+.pricing-free li > div, .pricing-custom li > div{padding-left: 20px;}
+.pricing-free li > i, .pricing-custom li > i {position: absolute;top: 10px;}
 .pricing-custom .icon-ok{color:#357cf4;font-size:12px;padding:0 20px 0 0;}
 .pricing-custom .pricing-plan ol{padding:10px 20px;}
 .icon-question-sign{color:#333;padding-left:5px;}
 .free-b{background:url("../img/free-btn.png") no-repeat;background-size:60px;position:absolute;top:0;text-indent:-9999px;height:60px;width:80px;}
+.backers-box {border-top: 3px solid #357cf4;padding-top: 30px;}
+.backers-box .total-price span {display: inline-block;color: #357cf4;font-size: 30px;margin-bottom: 20px;font-weight: 700;}
+.share-box.social-share .social-share-icon{width: 50px;height: 50px;line-height: 50px;font-size: 27px;margin: 4px 21px;}
+.add-funds-dialog .modal-body p {margin-bottom: 10px;}
+.add-funds-dialog .modal-body h4, .add-funds-dialog .modal-body h3{margin: 10px 0;}
 @media only screen and (max-width:1400px){
     .demo-bg{background-size:150%;}}
 @media only screen and (max-width:1200px) {
@@ -673,6 +679,8 @@ footer h4{font-size:13px;color:#777;margin:15px 0;}
 @media only screen and (max-width:1000px) {
     .pricing-col li{width:48%;margin-bottom:10px;}
     .pricing-list li, .free-list li{width:100%;margin:0;}
+    .pricing-free{width:49%;float:left;margin-bottom:20px;margin-left: 1%;}
+    .pricing-custom{width:49%;float:left;margin-bottom:20px;margin-left: 1%;}
 
 }
 

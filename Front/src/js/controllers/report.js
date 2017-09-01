@@ -1831,7 +1831,7 @@
     } else {
       $scope.item = {
         payoutMode: 0,
-        capEnabled: 1
+        capEnabled: 0
       };
       $scope.affiliateId = "0";
       this.title = "add";
