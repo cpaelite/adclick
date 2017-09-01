@@ -38,6 +38,7 @@ var fraud_filter = require('./routes/fraud_filter');
 import billing from './routes/billing';
 import plan from './routes/plan';
 import paypal from './routes/paypal';
+import {supplementRouter} from './routes/supplement';
 import {
   qrpayRouter,
   qrpayCallbackRouter
@@ -72,13 +73,13 @@ if (setting.redis.password) {
   redisOptions.password = setting.redis.password;
 }
 global.redisPool = require('./util/redis_pool')(redisOptions,{max:200});
- 
+
 redisPool.pool.on('error',function(err){
     logger.error(err.message);
 });
- 
+
 var app = express();
- 
+
 
 app.disable('x-powered-by');
 app.use(requestIp.mw())
@@ -137,7 +138,7 @@ app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,
   report, campaign, lander, traffic, user_setting, event_log, traffictpl,
   networktpl, conversions, coupon, thirdParty, sudden_change, fraud_filter,
   ts_report);
-app.use('/', auth);
+app.use('/', auth, supplementRouter);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
