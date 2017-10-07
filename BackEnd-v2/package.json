@@ -14,7 +14,7 @@
   "author": "aedanlee",
   "license": "ISC",
   "dependencies": {
-    "alipay-ftof": "^0.0.2",
+    "alipay-ftof": "^0.1.4",
     "async": "^2.1.4",
     "babel-core": "^6.21.0",
     "babel-polyfill": "^6.22.0",
