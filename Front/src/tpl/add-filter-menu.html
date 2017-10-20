@@ -1,0 +1,16 @@
+<div class="material-list"
+   role="listbox">
+   <div class="group" ng-repeat="reportFilter in ctrl.reportFilters">
+     <div ng-show="reportFilter.key" class="group-label">{{reportFilter.name}}</div>
+     <div class="material-select-item"
+       ng-click="ctrl.selectDessert(item, reportFilter.key)"
+       ng-repeat="item in reportFilter.items"
+     >
+       <span class="menu-item-label">{{item.name}}</span>
+       <i class="glyphicon glyphicon-trash"
+         ng-if="reportFilter.key == 'saved'"
+         ng-click="ctrl.removeSavedFilter($event, item)"
+       ></i>
+     </div>
+   </div>
+</div>

@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr', '$document',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr', '$document', '$mdPanel',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -58,7 +58,7 @@
       }
     }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr, $document) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr, $document, $mdPanel) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
     var ftsParams = $scope.$stateParams.fts ? decodeURIComponent($scope.$stateParams.fts) : '';
@@ -73,6 +73,253 @@
         })
       });
     }
+    // keyword
+    var filterKeywordPanel;
+    $scope.filterKeywordChanged = function(keyword) {
+      if(!keyword) {
+        filterKeywordPanel && filterKeywordPanel.close();
+      } else {
+        if(!filterKeywordPanel) {
+          showKeywordPanel(keyword);
+        } else {
+          filterKeywordPanel.close().then(showKeywordPanel(keyword));
+        }
+      }
+    };
+    $scope.filterKeywordSearched = function(oData, key) {
+      $scope.openFilterUI = true;
+      $scope.searchFilter = '';
+      $scope.addFilter(oData, key);
+    };
+    function showKeywordPanel(keyword) {
+      var position = $mdPanel.newPanelPosition()
+          .relativeTo('.filter-keyword')
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+      var config = {
+        attachTo: angular.element(document.body),
+        controller: ['mdPanelRef', function(mdPanelRef) {
+          var self = this;
+          this.open = function() {
+            filterKeywordPanel.close().then(self.filterKeywordSearched({name: 'Campaign name', value: keyword, key: 'filter'}, 'keyword'));
+          }
+        }],
+        controllerAs: 'ctrl',
+        template: '<div class="material-list" ng-click="ctrl.open()">' +
+                    '<div class="group">' +
+                      '<div class="material-select-item">' +
+                        '<span class="text-line name">Filter campaigns by ' + keyword + '</span>' +
+                      '</div>' +
+                    '</div>' +
+                   '</div>',
+        panelClass: 'add-filter-menu-box',
+        position: position,
+        clickOutsideToClose: true,
+        locals: {
+          'filterKeywordSearched': $scope.filterKeywordSearched
+        },
+        escapeToClose: true,
+        focusOnOpen: false,
+        zIndex: 2,
+        onDomRemoved: function(result) {}
+      };
+      $mdPanel.open(config).then(function(result) {
+        filterKeywordPanel = result;
+      });
+    }
+    // Filters
+    var _result;
+    var savedFilters = [{
+      id: 1,
+      name: 'clicks limit',
+      items: [
+        {name: 'Clicks', value: '12000', operator: '>', key: 'clicks'},
+        {name: 'Phone calls', value: '15000990987', operator: '>', key: 'phoneCalls'}
+      ]
+    }, {
+      id: 2,
+      name: 'impression limit',
+      items: [
+        {name: 'Impression', value: '12000', operator: '>', key: 'impression'},
+        {name: 'Impression', value: '1000', operator: '<', key: 'impression'}
+      ]
+    }]
+    var reportFilters = [{
+      name: 'Default filters',
+      key: 'default',
+      items: [
+        {name: 'All enabled campaigns', value: '1', key: 'status'},
+        {name: 'All non-active campaigns', value: '0', key: 'status'},
+        {name: 'All campaigns', value: '1', key: 'status'}
+      ]
+    }, {
+      name: 'Saved filters',
+      key: 'saved',
+      items: savedFilters
+    }, {
+      name: 'Other filters',
+      key: 'others',
+      items: [
+        {name: 'Clicks', key: 'clicks'},
+        {name: 'Impr.', key: 'impression'},
+        {name: 'Daily budget', key: 'dailyBudget'}
+      ]
+    }];
+    var filterExpressions = $scope.filterExpressions = [];
+    $scope.openFilterUI = false;
+    $scope.filterSaveUI = false;
+    $scope.closeFilter = function() {
+      $scope.openFilterUI = false;
+      $scope.filterExpressions = [];
+    };
+    $scope.openFilter = function() {
+      if($scope.openFilterUI) {
+        $scope.openFilterUI = false;
+      } else {
+        $scope.openFilterUI = true;
+        $timeout(function() {
+          angular.element('.menu-open-button').focus().andSelf().trigger('click');
+        });
+      }
+    };
+    $scope.filterExpressionRemove = function(filterExpression) {
+      $scope.filterExpressions.splice($scope.filterExpressions.indexOf(filterExpression), 1);
+      if($scope.filterExpressions.length == 0) {
+        $scope.filterSaveUI = false;
+      } else {
+        $scope.filterSaveUI = true;
+      }
+    };
+    $scope.editFilterExpression = function(filterExpression) {
+      $mdDialog.show({
+        controller: ['$mdDialog', '$scope', panelDialogCtrl],
+        controllerAs: 'ctrl',
+        locals: {oData: angular.copy(filterExpression), edit: true},
+        bindToController: true,
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        focusOnOpen: false,
+        templateUrl: 'tpl/add-filter-item.html?' + +new Date()
+      }).then(function (oData) {
+        filterExpression.value = oData.result.value;
+        filterExpression.operator = oData.result.operator;
+        $scope.filterSaveUI = true;
+      });
+    };
+    $scope.reportFilters = angular.copy(reportFilters);
+    $scope.filterItemBlured = function() {
+      $scope.filter = '';
+      $scope.reportFilters = angular.copy(reportFilters);
+    };
+    $scope.filterItem = function(k) {
+      var temp = angular.copy(reportFilters)
+      temp.forEach(function(e) {
+        e.items = e.items.filter(function(i) {
+          return i.name.indexOf(k) > -1;
+        });
+      });
+      $scope.reportFilters = temp.filter(function(e) {
+        return e.items.length > 0
+      });
+      _result.close().then(function() {
+        $scope.showMenu();
+      });
+    };
+    $scope.addFilter = function(oData, key) {
+      if(key == 'default') {
+        $scope.filterExpressions = [{name: oData.name, value: oData.value, key: oData.key, operator: '='}];
+        $scope.filterSaveUI = false;
+      } else if(key == 'saved') {
+        $scope.filterExpressions = oData.items;
+        $scope.filterSaveUI = false;
+      } else if(key == 'tag') {
+        $scope.filterSaveUI = false;
+      } else if(key == 'keyword') {
+        $scope.filterExpressions = [{name: oData.name, value: oData.value, key: oData.key, operator: '='}];
+        $scope.filterSaveUI = false;
+      } else {
+        $mdDialog.show({
+          controller: ['$mdDialog', '$scope', panelDialogCtrl],
+          controllerAs: 'ctrl',
+          locals: {oData: oData},
+          bindToController: true,
+          clickOutsideToClose: true,
+          escapeToClose: true,
+          focusOnOpen: false,
+          templateUrl: 'tpl/add-filter-item.html?' + +new Date()
+        }).then(function (oData) {
+          $scope.filterExpressions.push({name: oData.message.name, value: oData.result.value, operator: oData.result.operator});
+          $scope.filterSaveUI = true;
+        });
+      }
+    };
+    function panelDialogCtrl($mdDialog, $scope) {
+      var self = this;
+      this.title = this.oData.name;
+      this.cancel = $mdDialog.cancel;
+      this.apply = function() {
+        $mdDialog.hide({message: self.oData, result: $scope.oData});
+      };
+      $scope.operators = [
+        {value: '>', display: '>'},
+        {value: '>=', display: '>='},
+        {value: '=', display: '='},
+        {value: '!=', display: '!='},
+        {value: '<', display: '<'},
+        {value: '<=', display: '<='}
+      ];
+      if(this.edit) {
+        $scope.oData = this.oData;
+      } else {
+        $scope.oData = {operator: '>', value: ''};
+      }
+    }
+    $scope.showMenu = function() {
+      var position = $mdPanel.newPanelPosition()
+          .relativeTo('.menu-open-button')
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+      var config = {
+        attachTo: angular.element(document.body),
+        controller: PanelMenuCtrl,
+        controllerAs: 'ctrl',
+        templateUrl: 'tpl/add-filter-menu.html?' + +new Date(),
+        panelClass: 'add-filter-menu-box',
+        position: position,
+        locals: {
+          'reportFilters': this.reportFilters,
+          'addFilter': this.addFilter
+        },
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        focusOnOpen: false,
+        zIndex: 2,
+        onDomRemoved: function(result) {}
+      };
+      $mdPanel.open(config).then(function(result) {
+        _result = result;
+      });
+    };
+    function PanelMenuCtrl(mdPanelRef, $timeout) {
+      this._mdPanelRef = mdPanelRef;
+    }
+    PanelMenuCtrl.prototype.selectDessert = function(item, key) {
+      var self = this;
+      this._mdPanelRef && this._mdPanelRef.close().then(function() {
+        self.addFilter(item, key);
+      });
+    };
+    PanelMenuCtrl.prototype.removeSavedFilter = function($event, item) {
+      $event.stopPropagation();
+      var self = this;
+      $mdDialog.show(
+        $mdDialog.alert()
+        .clickOutsideToClose(true)
+        .title('Delete filter set')
+        .textContent('Delete saved filter "' + item.name + '"?')
+        .ok('delete')
+      );
+    };
+
+    $scope.addFab = {isOpen: false, direction: 'right'}
 
     $scope.app.subtitle = perfType;
     $scope.groupByOptions = angular.copy(groupByOptions);

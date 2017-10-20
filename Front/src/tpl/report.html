@@ -6,8 +6,73 @@
     </li>
   </ul>
 </div>
+
+<div class="notifications-bar">
+  <div class="pagination text"></div>
+  <div class="notification-bar-content">
+    <div class="notification-text">Update payment method - Your current payment methods can't be charged.</div>
+  </div>
+  <div class="actions">
+    <md-icon class="md-24">close</md-icon>
+  </div>
+</div>
+
+<div class="sticky">
+  <div class="toolbelt-bar">
+    <div class="left-panel" ng-cloak="">
+      <md-fab-speed-dial md-open="addFab.isOpen" md-direction="{{addFab.direction}}" class="md-fling" ng-mouseenter="addFab.isOpen=true" ng-mouseleave="addFab.isOpen=false">
+        <md-fab-trigger>
+          <md-button aria-label="menu" class="md-fab md-warn">
+            <md-icon class="md-24">add</md-icon>
+          </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+          <md-button class="md-fab md-raised md-mini">TRk</md-button>
+          <md-button class="md-fab md-raised md-mini">DSP</md-button>
+        </md-fab-actions>
+      </md-fab-speed-dial>
+    </div>
+    <div class="right-panel">
+      <md-input-container md-no-float class="md-block">
+        <md-icon class="material-icons">search</md-icon>
+        <input ng-model="searchFilter" type="text"
+          class="filter-keyword"
+          placeholder="Find campaigns"
+          ng-change="filterKeywordChanged(searchFilter)"
+          ng-click="filterKeywordChanged(searchFilter)"
+        />
+      </md-input-container>
+      <i class="glyphicon glyphicon-filter" ng-click="openFilter()"></i>
+      <i class="material-icons view-column-icon" ng-click="viewColumnClick()">view_column</i>
+      <i class="material-icons">more_vert</i>
+      <div class="view_column">
+        <div class="view_column_con" ng-show="viewColumnIsShow">
+          <ul class="view_column_list">
+            <li ng-repeat="item in columns | filter:filterColumns" ng-click="checkboxIsChecked($event, item.key)">
+              <input type="checkbox"
+                ng-model="reportViewColumns[item.key].visible"
+                ng-checked="preferences.reportViewColumns[item.key].visible"
+                ng-click="checkboxInput($event)"
+              >{{item.name}}
+            </li>
+          </ul>
+          <div class="my-btn">
+            <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn" ng-click="applyChange($event)">
+              <i class="icon-ok"></i>
+              {{'apply changes' | translate}}
+            </md-button>
+            <md-button class="md-raised md-primary cs-compact red-btn"  ng-click="viewCloumnClose($event)">
+              <i class="icon-remove"></i>
+              {{'close' | translate}}
+            </md-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="cs-action-bar-bg">
-    <h6>Advanced filters:</h6>
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <a ng-if="perfType == 'campaign'" class="md-raised md-primary cs-compact cs-add-button green-btn" style="float: left;margin-right: 10px;color: #fff;" ui-sref="app.suddenChange">Auto</a>
@@ -30,6 +95,7 @@
                 </md-select>
             </div>
         </div>
+
         <div class="right-select" ng-class="{'right-select2': datetype == '0'}">
           <md-menu-bar id="new_campaign_menu" ng-if="perfType == 'campaign'" ng-disabled="!canEdit()">
               <md-menu>
@@ -86,7 +152,7 @@
             </div>
 
 
-            <div class="selectAll">
+            <div class="selectAll hidden">
                 <md-select aria-label="select" class="cs-subform-select" ng-model="activeStatus" ng-disabled="groupBy[1] || activeStatusIsDisabled()">
                     <md-option value="0">Archived</md-option>
                     <md-option value="1">Active</md-option>
@@ -106,7 +172,7 @@
                 Campaign
               </md-button>
             </a>
-
+            <!--
             <div class="view_column blue-btn" ng-click="viewColumnClick()">
                 <div class="view_column_con" ng-show="viewColumnIsShow">
                     <ul class="view_column_list">
@@ -129,27 +195,53 @@
                 <i class="material-icons view-column-icon">view_column</i>
                 <i class="material-icons arrow-down-icon">keyboard_arrow_down</i>
             </div>
+            -->
         </div>
     </div>
 </div>
-<div flex class="cs-page-content report">
 
-<div class="breadcrumb-div">
-<div ng-if="filters.length > 0">
-    <ul class="breadcrumb">
+<div class="filter-bar" ng-show="openFilterUI">
+  <div class="main-wrapper">
+    <div class="header">Filter</div>
+    <div class="predicates-container">
+      <div class="predicate-editor" ng-repeat="filterExpression in filterExpressions" ng-click="editFilterExpression(filterExpression)">
+        <div class="md-chip">
+          <span>{{filterExpression.name}}{{filterExpression.operator}}{{filterExpression.value}}</span>
+          <i class="glyphicon glyphicon-remove-circle" ng-click="filterExpressionRemove(filterExpression)"></i>
+        </div>
+      </div>
+      <div class="menu-suggest-input">
+        <input class="menu-open-button" type="text" ng-change="filterItem(filter)" ng-model="filter" ng-click="showMenu($event)" ng-blur="filterItemBlured()"/>
+      </div>
+    </div>
+  </div>
+  <div class="buttons-wrapper">
+    <div class="save-filter" ng-show="filterSaveUI">
+      <i class="glyphicon glyphicon-saved"></i>
+    </div>
+    <div class="remove-filter" ng-click="closeFilter()">
+      <i class="glyphicon glyphicon-remove"></i>
+    </div>
+  </div>
+</div>
+
+<div flex class="cs-page-content report">
+  <div class="breadcrumb-div" ng-if="filters.length > 0">
+    <div>
+      <ul class="breadcrumb">
         <li ng-repeat="filter in filters track by $index">
-            <em><a ng-click="removeFilter($index - 1)"><span style="color: dodgerblue">{{filter.key + ': ' + filter.name}}</span></a></em>
+          <em><a ng-click="removeFilter($index - 1)"><span style="color: dodgerblue">{{filter.key + ': ' + filter.name}}</span></a></em>
         </li>
         <li><em>{{perfType}}</em></li>
-    </ul>
-</div>
-</div>
-
-<div class="table-box">
+      </ul>
+    </div>
+  </div>
+  <div class="table-box">
     <md-table-container resize class="repeater-container" style="overflow-anchor: none;">
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
+                <th md-column class="text-center"><input type="checkbox"></i></th>
                 <th ng-if="canEdit()" md-column style="text-align: center;" class="row-action">St</i></th>
                 <th md-column ng-if="treeLevel>1"></th>
                 <th md-column md-order-by="{{item.origKey || item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}"
@@ -212,6 +304,7 @@
             </tbody>
             <tfoot md-body fix-foot>
               <tr md-row>
+                <td md-cell></td>
                 <td ng-if="canEdit()" md-cell></td>
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
@@ -223,9 +316,14 @@
             </tfoot>
         </table>
     </md-table-container>
-</div>
-    <md-table-pagination md-limit="query.limit" md-limit-options="[50, 100, 200, 500, 1000]" md-page="query.page"
-                         md-total="{{report.totalRows}}" md-page-select></md-table-pagination>
+  </div>
+  <md-table-pagination md-limit="query.limit"
+    md-limit-options="[50, 100, 200, 500, 1000]"
+    md-page="query.page"
+    md-total="{{report.totalRows}}"
+    md-page-select
+  >
+  </md-table-pagination>
 </div>
 
 <script type="text/html" id="report-tpl">
@@ -233,6 +331,7 @@
     <% if(report.rows[i].parentRow.expanded) { %>
       <% var row = report.rows[i]; var treeLevel = report.treeLevel; var columns = report.columns; var activeStatusIsDisabled = report.activeStatusIsDisabled;%>
       <tr data-index="<%=i%>" class="md-row <%=treeLevel>1 && row.treeLevel==1 ? ' first-tree': ''%> <%= row.data.deleted==1 ? ' row-deleted' : ''%>">
+        <td md-cell class="text-center"><input type="checkbox"></td>
         <% if(report.canEdit) {%>
         <td class="row-action <%=row.data.deleted==1 ? ' deleted': ''%> <%=row.data.deleted==0 ? ' enabled': ''%>">
           <% if(row.data.deleted==1) {%>
