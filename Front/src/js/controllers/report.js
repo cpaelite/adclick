@@ -2,7 +2,7 @@
 
   angular.module('app')
     .controller('ReportCtrl', [
-      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr', '$document', '$mdPanel',
+      '$scope', '$mdDialog', '$timeout', 'reportCache', 'columnDefinition', 'groupByOptions', 'Report', 'Preference', 'Profile', 'DateRangeUtil', 'LocalStorageUtil', 'TrafficSource', 'FileDownload', 'Domains', 'toastr', '$document', '$mdPanel', 'Tag', 'ConditionsFilter',
       ReportCtrl
     ])
     .controller('editLanderCtrl', [
@@ -15,64 +15,201 @@
     ])
     .directive('resize',['$timeout','$q',function($timeout,$q){
       return function(scope, element) {
-        var timeout;
-        var w_h = $(window);
-        var nav_h = $('nav');
-        var filter_h = $('.cs-action-bar-bg');
-        var page_h = $('md-table-pagination');
-        var breadcrumb_h = $('.breadcrumb-div');
+        function getElementTop(element){
+          var actualTop = element.offsetTop;
+          var current = element.offsetParent;
+          while (current !== null){
+            actualTop += current.offsetTop;
+            current = current.offsetParent;
+          }
+          return actualTop;
+        }
+        var w_h = angular.element(window);
         function getHeight() {
           var deferred = $q.defer();
           $timeout(function() {
             deferred.resolve({
               'w_h': w_h.height(),
-              'nav_h': nav_h.height(),
-              'filter_h':filter_h.outerHeight(true),
-              'page_h':page_h.height(),
-              'breadcrumb_h':breadcrumb_h.outerHeight(true)
+              'page_h': angular.element(element).closest('.table-box').next('md-table-pagination').outerHeight(true)
             });
           });
           return deferred.promise;
         }
-
         function heightResize() {
           getHeight().then(function(newVal) {
-            scope.windowHeight = newVal.w_h;
-            scope.navHeight = newVal.nav_h;
-            scope.filterHeight = newVal.filter_h;
-            scope.pageHeight = newVal.page_h;
-            scope.breadcrumbHeight = newVal.breadcrumb_h;
-
+            var windowHeight = newVal.w_h;
+            var pageHeight = newVal.page_h;
+            var elementTop = getElementTop(element[0]);
             angular.element(element).css({
-              'height': (scope.windowHeight - 46 - scope.navHeight - scope.filterHeight - 30 - 33 - scope.pageHeight - scope.breadcrumbHeight - 10) + 'px'
-            })
-
-          })
+              'height': (windowHeight - elementTop - pageHeight - 70) + 'px'
+            });
+          });
         }
-
-        heightResize();
-
         w_h.bind('resize', function() {
           heightResize();
         });
+        heightResize();
       }
     }]);
 
-  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr, $document, $mdPanel) {
+  function ReportCtrl($scope, $mdDialog, $timeout, reportCache, columnDefinition, groupByOptions, Report, Preference, Profile, DateRangeUtil, LocalStorageUtil, TrafficSource, FileDownload, Domains, toastr, $document, $mdPanel, Tag, ConditionsFilter) {
     var perfType = $scope.perfType = $scope.$state.current.name.split('.').pop();
     var fromCampaign = $scope.$stateParams.frcpn == '1';
+    // 获取URL的参数
     var ftsParams = $scope.$stateParams.fts ? decodeURIComponent($scope.$stateParams.fts) : '';
-    var filterItems = [];
-    if(ftsParams) {
-      ftsParams.split('|').forEach(function(ftsParam) {
-        var t = ftsParam.split('$');
-        filterItems.push({
-          key: t[0],
-          val: t[1],
-          name: t[2]
-        })
+    var filterItems = (function() {
+      var temp = [];
+      if(ftsParams) {
+        ftsParams.split('|').forEach(function(ftsParam) {
+          var t = ftsParam.split('$');
+          temp.push({
+            key: t[0],
+            val: t[1],
+            name: t[2]
+          })
+        });
+      } else {
+        temp = [];
+      }
+      return temp;
+    })();
+
+    // edit
+    $scope.reportSelectedIds = [];
+    $scope.reportSelectedIdsChanged = function(type, val) {
+      if(type == 'push') {
+        $scope.reportSelectedIds.push(val);
+      } else if (type == 'eq') {
+        $scope.reportSelectedIds = val;
+      } else {
+        $scope.reportSelectedIds.splice($scope.reportSelectedIds.indexOf(val), 1);
+      }
+      $scope.$apply(function() {
+        $scope.reportSelectedIds = $scope.reportSelectedIds;
       });
+    };
+    $scope.closeEditToolbelt = function() {
+      $scope.reportSelectedIds = [];
+      angular.element('.check-all, .check-item').prop('checked', false);
+    };
+
+    // datePicker
+    $scope.datePicker = {
+      date: {startDate: moment(), endDate: moment()}
+    };
+    $scope.options = {
+      ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 14 Days': [moment().subtract(13, 'days'), moment()],
+        'This week': [moment().startOf('week'), moment().endOf('week')],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      }
     }
+
+    // more
+    var morePanel;
+    $scope.showMorePanel = function() {
+      var position = $mdPanel.newPanelPosition()
+          .relativeTo('.more-vert-icon')
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+      var config = {
+        attachTo: angular.element(document.body),
+        controller: ['mdPanelRef', '$scope', morePanelCtrl],
+        controllerAs: 'ctrl',
+        template: '<div class="material-list">' +
+                    '<div class="group">' +
+                      '<div class="material-select-item" ng-click="showChart($event)">' +
+                        '<span class="text-line"><i class="material-icons">pie_chart</i>Show Chart</span>' +
+                      '</div>' +
+                      '<div class="material-select-item" ng-click="downLoad($event)">' +
+                        '<span class="text-line"><i class="material-icons">file_download</i>Export CSV</span>' +
+                      '</div>' +
+                    '</div>' +
+                   '</div>',
+        panelClass: 'edit-selected-items-button-menu-box',
+        position: position,
+        clickOutsideToClose: true,
+        locals: {
+          'downLoad': $scope.downLoad
+        },
+        escapeToClose: true,
+        focusOnOpen: false,
+        zIndex: 2,
+        onDomRemoved: function(result) {}
+      };
+      $mdPanel.open(config).then(function(result) {
+        morePanel = result;
+      });
+
+      function morePanelCtrl(mdPanelRef, $scope) {
+        var self = this;
+        $scope.downLoad = function($event) {
+          morePanel.close().then(function() {
+            self.downLoad($event);
+          });
+        };
+        $scope.showChart = function($event) {
+          morePanel.close().then(function() {
+            // TODO
+          });
+        };
+      }
+    };
+
+    // edit item
+    var selectedItemsPanel;
+    $scope.showSelectedItemsPanel = function() {
+      var position = $mdPanel.newPanelPosition()
+          .relativeTo('.edit-selected-items-button')
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+      var config = {
+        attachTo: angular.element(document.body),
+        controller: ['mdPanelRef', '$scope', selectedItemsPanelCtrl],
+        controllerAs: 'ctrl',
+        template: '<div class="material-list">' +
+                    '<div class="group">' +
+                      '<div class="material-select-item" ng-click="editItem(0)">' +
+                        '<span class="text-line"><i class="material-icons enable">lens</i>Enable</span>' +
+                      '</div>' +
+                      '<div class="material-select-item" ng-click="editItem(1)">' +
+                        '<span class="text-line"><i class="material-icons pause">pause_circle_filled</i>Pause</span>' +
+                      '</div>' +
+                      '<div class="material-select-item" ng-click="editItem(2)">' +
+                        '<span class="text-line"><i class="material-icons remove">remove_circle</i>Remove</span>' +
+                      '</div>' +
+                    '</div>' +
+                   '</div>',
+        panelClass: 'edit-selected-items-button-menu-box',
+        position: position,
+        clickOutsideToClose: true,
+        locals: {
+          'selectedItems': []
+        },
+        escapeToClose: true,
+        focusOnOpen: false,
+        zIndex: 2,
+        onDomRemoved: function(result) {}
+      };
+      $mdPanel.open(config).then(function(result) {
+        selectedItemsPanel = result;
+      });
+
+      function selectedItemsPanelCtrl(mdPanelRef, $scope) {
+        $scope.editItem = function(type) {
+          if(type == 0) { // enable
+
+          } else if (type == 1) { // pause
+
+          } else { // remove
+
+          }
+        }
+      }
+    };
+
     // keyword
     var filterKeywordPanel;
     $scope.filterKeywordChanged = function(keyword) {
@@ -87,6 +224,7 @@
       }
     };
     $scope.filterKeywordSearched = function(oData, key) {
+      angular.element(window).resize();
       $scope.openFilterUI = true;
       $scope.searchFilter = '';
       $scope.addFilter(oData, key);
@@ -126,59 +264,265 @@
         filterKeywordPanel = result;
       });
     }
+
+    // group segment
+    var segmentPanel;
+    $scope.showSegmentPanel = function() {
+      var position = $mdPanel.newPanelPosition()
+          .relativeTo('.data-usage-groups')
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+      var config = {
+        attachTo: angular.element(document.body),
+        controller: ['mdPanelRef', '$scope', segmentPanelCtrl],
+        controllerAs: 'ctrl',
+        template: '<div class="material-list">' +
+                    '<div class="group">' +
+                      '<div class="material-select-item" ng-repeat="gb in groupByOptions">' +
+                        '<span class="text-line">{{gb.display}}<em ng-if="groupbyParamValue(gb)">: {{gb.paramValue}}</em></span>' +
+                      '</div>' +
+                    '</div>' +
+                   '</div>',
+        panelClass: 'data-usage-groups-menu-box',
+        position: position,
+        clickOutsideToClose: true,
+        locals: {
+          groupByOptions: $scope.groupByOptions,
+          groupbyParamValue: $scope.groupbyParamValue
+        },
+        escapeToClose: true,
+        focusOnOpen: false,
+        zIndex: 2,
+        onDomRemoved: function(result) {}
+      };
+      $mdPanel.open(config).then(function(result) {
+        segmentPanel = result;
+      });
+
+      function segmentPanelCtrl(mdPanelRef, $scope) {
+        var self = this;
+        $scope.groupByOptions = this.groupByOptions;
+        $scope.groupbyParamValue = this.groupbyParamValue;
+      }
+    };
+
+    $scope.openSegmentUI = false;
+    $scope.segmentExpressions = [];
+    $scope.closeSegment = function() {
+      angular.element(window).resize();
+      $scope.openSegmentUI = false;
+      $scope.segmentExpressions = [];
+      $scope.groupBy[1] = '';
+      $scope.groupBy[2] = '';
+      $scope.applySearch();
+    };
+    $scope.openSegment = function() {
+      angular.element(window).resize();
+      if($scope.openSegmentUI) {
+        $scope.openSegmentUI = false;
+      } else {
+        $scope.openSegmentUI = true;
+        $timeout(function() {
+          angular.element('.menu-segment-open-button').focus().andSelf().trigger('click');
+        });
+      }
+    };
+    $scope.segmentExpressionRemove = function(segmentExpression) {
+      $scope.segmentExpressions.splice($scope.segmentExpressions.indexOf(segmentExpression), 1);
+      if($scope.segmentExpressions.length == 0) {
+        $scope.groupBy[1] = '';
+        $scope.groupBy[2] = '';
+      } else if($scope.segmentExpressions.length == 1) {
+        $scope.groupBy[1] = $scope.segmentExpressions[0].value;
+        $scope.groupBy[2] = '';
+      }
+      $scope.applySearch();
+    };
+    $scope.addSegment = function(segment) {
+      if(segment.value == perfType) {return;}
+      if($scope.segmentExpressions.length == 2) {return;}
+      $scope.segmentExpressions.push(segment);
+      if($scope.segmentExpressions.length == 1) {
+        $scope.groupBy[1] = segment.value;
+        $scope.groupBy[2] = '';
+      } else {
+        $scope.groupBy[2] = segment.value;
+      }
+      $scope.applySearch();
+    };
+    $scope.showSegmentMenu = function($event) {
+      var position = $mdPanel.newPanelPosition()
+          .relativeTo('.menu-segment-open-button')
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+      var config = {
+        attachTo: angular.element(document.body),
+        controller: ['mdPanelRef', '$timeout', '$scope', segmentPanelCtrl],
+        controllerAs: 'ctrl',
+        template: '<div class="material-list">' +
+                    '<div class="group">' +
+                      '<div class="material-select-item" ng-repeat="gb in groupByOptions" ng-click="addGroupBy(gb)">' +
+                        '<span class="text-line">{{gb.display}}<em ng-if="groupbyParamValue(gb)">: {{gb.paramValue}}</em></span>' +
+                      '</div>' +
+                    '</div>' +
+                   '</div>',
+        panelClass: 'add-filter-menu-box',
+        position: position,
+        locals: {
+          groupByOptions: $scope.groupByOptions,
+          groupbyParamValue: $scope.groupbyParamValue,
+          addSegment: $scope.addSegment
+        },
+        clickOutsideToClose: true,
+        escapeToClose: true,
+        focusOnOpen: false,
+        zIndex: 2,
+        onDomRemoved: function(result) {}
+      };
+      $mdPanel.open(config).then(function(result) {
+        segmentPanel = result;
+      });
+
+      function segmentPanelCtrl(mdPanelRef, $timeout, $scope) {
+        var self = this;
+        this._mdPanelRef = mdPanelRef;
+        $scope.groupByOptions = this.groupByOptions;
+        $scope.groupbyParamValue = this.groupbyParamValue;
+        $scope.addGroupBy = function(gb) {
+          self._mdPanelRef && self._mdPanelRef.close().then(function() {
+            self.addSegment(gb);
+          });
+        }
+      }
+    };
+    $scope.segmentItemBlured = function() {
+      $scope.segment = '';
+    };
+    $scope.segmentItem = function(item) {
+
+    };
+
     // Filters
     var _result;
-    var savedFilters = [{
-      id: 1,
-      name: 'clicks limit',
-      items: [
-        {name: 'Clicks', value: '12000', operator: '>', key: 'clicks'},
-        {name: 'Phone calls', value: '15000990987', operator: '>', key: 'phoneCalls'}
-      ]
-    }, {
-      id: 2,
-      name: 'impression limit',
-      items: [
-        {name: 'Impression', value: '12000', operator: '>', key: 'impression'},
-        {name: 'Impression', value: '1000', operator: '<', key: 'impression'}
-      ]
-    }]
     var reportFilters = [{
       name: 'Default filters',
       key: 'default',
       items: [
-        {name: 'All enabled campaigns', value: '1', key: 'status'},
-        {name: 'All non-active campaigns', value: '0', key: 'status'},
-        {name: 'All campaigns', value: '1', key: 'status'}
+        {name: 'All enabled campaigns', value: 'All enabled campaigns', _value: '1', key: 'status'},
+        {name: 'All non-active campaigns', value: 'All non-active campaigns', _value: '0', key: 'status'},
+        {name: 'All campaigns', value: 'All campaigns', _value: '2', key: 'status'}
       ]
     }, {
       name: 'Saved filters',
       key: 'saved',
-      items: savedFilters
+      items: []
+    }, {
+      name: 'Tag filters',
+      key: 'tag',
+      items: []
     }, {
       name: 'Other filters',
       key: 'others',
       items: [
-        {name: 'Clicks', key: 'clicks'},
         {name: 'Impr.', key: 'impression'},
-        {name: 'Daily budget', key: 'dailyBudget'}
+        {name: 'Visits', key: 'visits'},
+        {name: 'Clicks', key: 'clicks'},
+        {name: 'Conversions', key: 'conversions'},
+        {name: 'Revenue', key: 'revenue'},
+        {name: 'Cost', key: 'cost'},
+        {name: 'Profit', key: 'profit'},
+        {name: 'CPV', key: 'cpv'},
+        {name: 'ICTR', key: 'ictr'},
+        {name: 'CR', key: 'cr'},
+        {name: 'CV', key: 'cv'},
+        {name: 'ROI', key: 'roi'},
+        {name: 'EPV', key: 'epv'},
+        {name: 'EPC', key: 'epc'},
+        {name: 'AP', key: 'ap'},
       ]
     }];
+    $scope.reportFilters = angular.copy(reportFilters);
+    // 获取 Tags
+    var tagType = perfType == 'campaign' ? 1 : (perfType == 'lander' ? 2 : (perfType == 'offer' ? 3 : 0));
+    if(tagType) {
+      Tag.get({type: tagType}, function(oData) {
+        if(oData.status) {
+          var newData = {};
+          oData.data.tags.forEach(function(t) {
+            if(newData[t.name]) {
+              newData[t.name].push(t.targetId);
+            } else {
+              newData[t.name] = [t.targetId];
+            }
+          });
+          for(var key in newData) {
+            reportFilters[2].items.push({name: key, value: key, _value: newData[key], key: 'tag'})
+          }
+          $scope.reportFilters = angular.copy(reportFilters);
+        }
+      });
+    }
+
+    // 获取保存的 filters
+    var _filterArr = [];
+    ConditionsFilter.get({}, function(oData) {
+      if(oData.status) {
+        _filterArr = reportFilters[1].items = oData.data.filters;
+      }
+      $scope.reportFilters = angular.copy(reportFilters);
+    });
+
     var filterExpressions = $scope.filterExpressions = [];
     $scope.openFilterUI = false;
     $scope.filterSaveUI = false;
     $scope.closeFilter = function() {
+      angular.element(window).resize();
       $scope.openFilterUI = false;
       $scope.filterExpressions = [];
+      $scope.applySearch();
     };
     $scope.openFilter = function() {
+      angular.element(window).resize();
       if($scope.openFilterUI) {
         $scope.openFilterUI = false;
+        $scope.filterExpressions = [];
+        $scope.applySearch();
       } else {
         $scope.openFilterUI = true;
         $timeout(function() {
           angular.element('.menu-open-button').focus().andSelf().trigger('click');
         });
+      }
+    };
+    $scope.saveFilter = function() {
+      $mdDialog.show({
+        controller: ['$mdDialog', '$scope', 'ConditionsFilter', saveFilterCtrl],
+        controllerAs: 'ctrl',
+        locals: {filterExpressions: angular.copy($scope.filterExpressions), filterArr: angular.copy(_filterArr)},
+        bindToController: true,
+        clickOutsideToClose: false,
+        escapeToClose: false,
+        focusOnOpen: false,
+        templateUrl: 'tpl/save-filter-dialog.html?' + +new Date()
+      }).then(function(items) {
+        _filterArr = reportFilters[1].items = items;
+        $scope.reportFilters = angular.copy(reportFilters);
+        $scope.applySearch();
+      });
+      function saveFilterCtrl($mdDialog, $scope, ConditionsFilter) {
+        var self = this;
+        this.title = 'New saved filter';
+        this.cancel = $mdDialog.cancel;
+        this.ok = function() {
+          ConditionsFilter.save({items: JSON.stringify(this.filterExpressions), name: $scope.filterName}, function(oData) {
+            if(oData.status) {
+              $mdDialog.hide(oData.data.filters);
+            }
+          });
+        };
+        $scope.filterNameInput = function(v) {
+          $scope.repetitionStatue = self.filterArr.some(function(f) {
+            return f.name == v;
+          });
+        };
       }
     };
     $scope.filterExpressionRemove = function(filterExpression) {
@@ -188,8 +532,10 @@
       } else {
         $scope.filterSaveUI = true;
       }
+      $scope.applySearch();
     };
     $scope.editFilterExpression = function(filterExpression) {
+      if(['tag', '', 'saved', 'status'].indexOf(filterExpression.key) > -1) {return;}
       $mdDialog.show({
         controller: ['$mdDialog', '$scope', panelDialogCtrl],
         controllerAs: 'ctrl',
@@ -203,9 +549,10 @@
         filterExpression.value = oData.result.value;
         filterExpression.operator = oData.result.operator;
         $scope.filterSaveUI = true;
+        $scope.applySearch();
       });
     };
-    $scope.reportFilters = angular.copy(reportFilters);
+
     $scope.filterItemBlured = function() {
       $scope.filter = '';
       $scope.reportFilters = angular.copy(reportFilters);
@@ -226,15 +573,16 @@
     };
     $scope.addFilter = function(oData, key) {
       if(key == 'default') {
-        $scope.filterExpressions = [{name: oData.name, value: oData.value, key: oData.key, operator: '='}];
+        $scope.filterExpressions = [{name: 'Status', value: oData.value, _value: oData._value, key: oData.key, operator: '='}];
         $scope.filterSaveUI = false;
       } else if(key == 'saved') {
         $scope.filterExpressions = oData.items;
         $scope.filterSaveUI = false;
       } else if(key == 'tag') {
+        $scope.filterExpressions = [{name: 'Tag', value: oData.value, _value: oData._value, key: oData.key, operator: '='}];
         $scope.filterSaveUI = false;
       } else if(key == 'keyword') {
-        $scope.filterExpressions = [{name: oData.name, value: oData.value, key: oData.key, operator: '='}];
+        $scope.filterExpressions = [{name: oData.name, value: oData.value, _value: oData.value, key: oData.key, operator: 'contains'}];
         $scope.filterSaveUI = false;
       } else {
         $mdDialog.show({
@@ -247,10 +595,11 @@
           focusOnOpen: false,
           templateUrl: 'tpl/add-filter-item.html?' + +new Date()
         }).then(function (oData) {
-          $scope.filterExpressions.push({name: oData.message.name, value: oData.result.value, operator: oData.result.operator});
+          $scope.filterExpressions.push({name: oData.message.name, value: oData.result.value, _value: oData.result.value, key: oData.message.key, operator: oData.result.operator});
           $scope.filterSaveUI = true;
         });
       }
+      $scope.applySearch();
     };
     function panelDialogCtrl($mdDialog, $scope) {
       var self = this;
@@ -259,34 +608,48 @@
       this.apply = function() {
         $mdDialog.hide({message: self.oData, result: $scope.oData});
       };
-      $scope.operators = [
-        {value: '>', display: '>'},
-        {value: '>=', display: '>='},
-        {value: '=', display: '='},
-        {value: '!=', display: '!='},
-        {value: '<', display: '<'},
-        {value: '<=', display: '<='}
-      ];
+      if('filter' == this.oData.key) {
+        $scope.operators = [
+          {value: 'contains', display: 'contains'},
+        ];
+      } else {
+        $scope.operators = [
+          {value: '>', display: '>'},
+          {value: '>=', display: '>='},
+          {value: '=', display: '='},
+          {value: '!=', display: '!='},
+          {value: '<', display: '<'},
+          {value: '<=', display: '<='}
+        ];
+      }
       if(this.edit) {
         $scope.oData = this.oData;
       } else {
         $scope.oData = {operator: '>', value: ''};
       }
     }
+    $scope.resetFilter = function(items) {
+      _filterArr = reportFilters[1].items = items;
+      $scope.reportFilters = angular.copy(reportFilters);
+      _result.close().then(function() {
+        $scope.showMenu();
+      });
+    };
     $scope.showMenu = function() {
       var position = $mdPanel.newPanelPosition()
           .relativeTo('.menu-open-button')
           .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
       var config = {
         attachTo: angular.element(document.body),
-        controller: PanelMenuCtrl,
+        controller: ['mdPanelRef', '$timeout', 'ConditionsFilter', panelMenuCtrl],
         controllerAs: 'ctrl',
         templateUrl: 'tpl/add-filter-menu.html?' + +new Date(),
         panelClass: 'add-filter-menu-box',
         position: position,
         locals: {
           'reportFilters': this.reportFilters,
-          'addFilter': this.addFilter
+          'addFilter': this.addFilter,
+          'resetFilter': this.resetFilter
         },
         clickOutsideToClose: true,
         escapeToClose: true,
@@ -298,34 +661,67 @@
         _result = result;
       });
     };
-    function PanelMenuCtrl(mdPanelRef, $timeout) {
+    function panelMenuCtrl(mdPanelRef, $timeout, ConditionsFilter) {
+      var self = this;
       this._mdPanelRef = mdPanelRef;
+      this.selectDessert = function(item, key) {
+        self._mdPanelRef && self._mdPanelRef.close().then(function() {
+          self.addFilter(item, key);
+        });
+      };
+      this.removeSavedFilter = function($event, item) {
+        $event.stopPropagation();
+        var self = this;
+        $mdDialog.show({
+          clickOutsideToClose: false,
+          escapeToClose: false,
+          controller: ['$mdDialog', '$injector', 'toastr', 'ConditionsFilter', deleteFilterCtrl],
+          controllerAs: 'ctrl',
+          focusOnOpen: false,
+          locals: {item: item},
+          bindToController: true,
+          targetEvent: $event,
+          templateUrl: 'tpl/delete-filter-dialog.html?' + +new Date()
+        }).then(function(items) {
+          self.resetFilter(items);
+        });
+      };
+
+      function deleteFilterCtrl($mdDialog, $injector, toastr, ConditionsFilter) {
+        var self = this;
+        this.title = 'Delete filter set';
+        this.content = 'Delete saved filter "' + this.item.name + '"?';
+        this.cancel = $mdDialog.cancel;
+        this.ok = function () {
+          deleteItem(self.item).then(success, error);
+        };
+
+        function deleteItem(item) {
+          return ConditionsFilter.remove({id: item.id, errorFn: true}).$promise;
+        }
+
+        this.onprocess = false;
+        function success(oData) {
+          this.onprocess = true;
+          if(oData.status == 0) {
+            toastr.success(oData.message || 'Error occured when delete.');
+          } else {
+            $mdDialog.hide(oData.data.filters);
+          }
+        }
+        function error() {
+          this.onprocess = true;
+          toastr.clear();
+          toastr.success('Error occurred when delete.');
+        }
+      }
     }
-    PanelMenuCtrl.prototype.selectDessert = function(item, key) {
-      var self = this;
-      this._mdPanelRef && this._mdPanelRef.close().then(function() {
-        self.addFilter(item, key);
-      });
-    };
-    PanelMenuCtrl.prototype.removeSavedFilter = function($event, item) {
-      $event.stopPropagation();
-      var self = this;
-      $mdDialog.show(
-        $mdDialog.alert()
-        .clickOutsideToClose(true)
-        .title('Delete filter set')
-        .textContent('Delete saved filter "' + item.name + '"?')
-        .ok('delete')
-      );
-    };
 
     $scope.addFab = {isOpen: false, direction: 'right'}
 
     $scope.app.subtitle = perfType;
     $scope.groupByOptions = angular.copy(groupByOptions);
-
     $scope.loading = true;
-
     $scope.datatypes = [
       {value: "1", display: "Today"},
       {value: "2", display: "Yesterday"},
@@ -339,9 +735,8 @@
       {value: "10", display: "Last Year"},
       {value: "0", display: "Custom"},
     ];
-
     var retentionLimit = $scope.permissions.report.retentionLimit;
-
+    // 根据权限做时间限制 delete later
     function filterDateType() {
       return function(datetype) {
         if (datetype.value == "0") {
@@ -358,9 +753,9 @@
     var pageStatus = {};
 
     var stateParams = $scope.$stateParams;
-
+    // TODO
     if (stateParams.extgrpby) {
-      var egb = (stateParams.extgrpby+',').split(',');
+      var egb = (stateParams.extgrpby + ',').split(',');
       $scope.groupBy = [perfType, egb[0], egb[1]];
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
     } else {
@@ -369,7 +764,7 @@
     }
     pageStatus.groupBy = angular.copy($scope.groupBy);
 
-
+    // 初始化dateType delete later
     if (stateParams.datetype) {
       $scope.datetype = stateParams.datetype;
       if ($scope.datetype == '0') {
@@ -383,7 +778,7 @@
     } else {
       $scope.datetype = LocalStorageUtil.getValue().datetype;
     }
-
+    // init status
     if (stateParams.status) {
       pageStatus.status = stateParams.status;
       $scope.activeStatus = pageStatus.status;
@@ -544,13 +939,14 @@
 
       };
     }
-    $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus + searchFilter ', function(newVal, oldVal) {
-      if (newVal != oldVal) {
-        $scope.applyBtn = true;
-        $scope.btnName = 'apply';
-        $scope.resetBtn = true;
-      }
-    }, true);
+    // TODO
+    // $scope.$watch('groupBy + datetype + fromDate + fromTime + toDate + toTime + activeStatus + searchFilter ', function(newVal, oldVal) {
+    //   if (newVal != oldVal) {
+    //     $scope.applyBtn = true;
+    //     $scope.btnName = 'apply';
+    //     $scope.resetBtn = true;
+    //   }
+    // }, true);
 
     function notEmpty(val) {
       return !!val;
@@ -731,11 +1127,11 @@
     }
 
     $scope.applySearch = function() {
-      $scope.loading = true;
-      $scope.btnName = 'Refresh';
-      $scope.applyBtn = false;
+      // $scope.loading = true;
+      // $scope.btnName = 'Refresh';
+      // $scope.applyBtn = false;
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
-      $scope.disabled = true;
+      // $scope.disabled = true;
       if ($scope.treeLevel == 0) {
         $mdDialog.show(
           $mdDialog.alert()
@@ -1074,21 +1470,26 @@
     }
 
     function getDateRange(value, timezone) {
-      var fromDate = DateRangeUtil.fromDate(value, timezone);
-      var toDate = DateRangeUtil.toDate(value, timezone);
-      if (value == '0') {
-        pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
-        pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
 
-        LocalStorageUtil.setValue(value, moment($scope.fromDate).format('YYYY-MM-DD'), $scope.fromTime, moment($scope.toDate).format('YYYY-MM-DD'), $scope.toTime);
-      } else {
-        $scope.fromTime = "00:00";
-        $scope.toTime = "00:00";
-        pageStatus.from = fromDate + 'T' + $scope.fromTime;
-        pageStatus.to = toDate + 'T' + $scope.toTime;
+      // var fromDate = DateRangeUtil.fromDate(value, timezone);
+      // var toDate = DateRangeUtil.toDate(value, timezone);
+      // if (value == '0') {
+      //   pageStatus.from = moment($scope.fromDate).format('YYYY-MM-DD') + 'T' + $scope.fromTime;
+      //   pageStatus.to = moment($scope.toDate).format('YYYY-MM-DD') + 'T' + $scope.toTime;
+      //
+      //   LocalStorageUtil.setValue(value, moment($scope.fromDate).format('YYYY-MM-DD'), $scope.fromTime, moment($scope.toDate).format('YYYY-MM-DD'), $scope.toTime);
+      // } else {
+      //   $scope.fromTime = "00:00";
+      //   $scope.toTime = "00:00";
+      //   pageStatus.from = fromDate + 'T' + $scope.fromTime;
+      //   pageStatus.to = toDate + 'T' + $scope.toTime;
+      //
+      //   LocalStorageUtil.setValue(value, fromDate, $scope.fromTime, toDate, $scope.toTime);
+      // }
 
-        LocalStorageUtil.setValue(value, fromDate, $scope.fromTime, toDate, $scope.toTime);
-      }
+      pageStatus.from = moment($scope.datePicker.date.startDate).format('YYYY-MM-DD') + 'T00:00';
+      pageStatus.to = moment($scope.datePicker.date.endDate).add(1, 'days').format('YYYY-MM-DD') + 'T00:00';
+
     }
 
     $scope.initDefaultCustomDate = function(datetype) {
@@ -1123,6 +1524,29 @@
     }
 
     function initEvent() {
+      $('.table-box').on('click', '.check-all', function() {
+        var $items = $('#repeater_container').find('.check-item');
+        if($(this).is(':checked')) {
+          $items.prop('checked', true);
+          $scope.reportSelectedIdsChanged('eq', $items.map(function() {return $(this).val()}))
+        } else {
+          $items.prop('checked', false);
+          $scope.reportSelectedIdsChanged('eq', []);
+        }
+      });
+      $('#repeater_container').on('click', '.check-item', function() {
+        var $this = $(this);
+        if($this.is(':checked') && $('#repeater_container .check-item').length == $('#repeater_container .check-item:checked').length) {
+          $('.check-all').prop('checked', true);
+        } else {
+          $('.check-all').prop('checked', false);
+        }
+        if($this.is(':checked')) {
+          $scope.reportSelectedIdsChanged('push', $this.val());
+        } else {
+          $scope.reportSelectedIdsChanged('splice', $this.val());
+        }
+      });
       $('#repeater_container').on('click', '.toggle-row', function() {
         var index = $(this).attr('data-index');
         var row = $scope.report.rows[index];

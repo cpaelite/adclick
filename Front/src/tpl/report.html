@@ -17,22 +17,32 @@
   </div>
 </div>
 
-<div class="sticky">
-  <div class="toolbelt-bar">
+<div class="sticky toolbelt-bar-box">
+  <div class="toolbelt-bar primary-toolbelt" ng-show="reportSelectedIds.length == 0">
     <div class="left-panel" ng-cloak="">
-      <md-fab-speed-dial md-open="addFab.isOpen" md-direction="{{addFab.direction}}" class="md-fling" ng-mouseenter="addFab.isOpen=true" ng-mouseleave="addFab.isOpen=false">
+      <md-fab-speed-dial md-open="addFab.isOpen" md-direction="{{addFab.direction}}" class="md-fling">
         <md-fab-trigger>
-          <md-button aria-label="menu" class="md-fab md-warn">
+          <md-button aria-label="menu" class="md-fab md-warn" ng-click="editItem($event)" ng-if="perfType != 'campaign'">
+            <md-icon class="md-24">add</md-icon>
+          </md-button>
+          <md-button aria-label="menu" class="md-fab md-warn" ng-if="perfType == 'campaign'">
             <md-icon class="md-24">add</md-icon>
           </md-button>
         </md-fab-trigger>
-        <md-fab-actions>
-          <md-button class="md-fab md-raised md-mini">TRk</md-button>
-          <md-button class="md-fab md-raised md-mini">DSP</md-button>
+        <md-fab-actions ng-if="perfType == 'campaign'">
+          <md-button class="md-fab md-raised md-mini" ng-click="editItem($event)">TRk</md-button>
+          <md-button class="md-fab md-raised md-mini" href="http://mdsp.newbidder.com/" target="_blank">DSP</md-button>
         </md-fab-actions>
       </md-fab-speed-dial>
     </div>
     <div class="right-panel">
+      <md-input-container class="md-block">
+        <input ng-model="datePicker.date" type="text"
+          date-range-picker
+          options="options" readonly
+          class="pull-right date-picker"
+        />
+      </md-input-container>
       <md-input-container md-no-float class="md-block">
         <md-icon class="material-icons">search</md-icon>
         <input ng-model="searchFilter" type="text"
@@ -42,9 +52,19 @@
           ng-click="filterKeywordChanged(searchFilter)"
         />
       </md-input-container>
-      <i class="glyphicon glyphicon-filter" ng-click="openFilter()"></i>
-      <i class="material-icons view-column-icon" ng-click="viewColumnClick()">view_column</i>
-      <i class="material-icons">more_vert</i>
+      <i class="glyphicon glyphicon-filter" ng-click="openFilter()"><md-tooltip md-direction="Bottom">'Filter' lets you filter your tabel's data to see what matters most to you.</md-tooltip></i>
+      <i class="material-icons data-usage-groups" ng-click="openSegment()">
+        data_usage
+        <md-tooltip md-direction="Bottom">'Segment' lets you segment your table's data to break out what's most important to you.</md-tooltip>
+      </i>
+      <i class="material-icons view-column-icon" ng-click="viewColumnClick()">
+        view_column
+        <md-tooltip md-direction="Bottom">'Columns' lets you modify the columns you see in your table.</md-tooltip>
+      </i>
+      <i class="material-icons more-vert-icon" ng-click="showMorePanel()">
+        more_vert
+        <md-tooltip md-direction="Bottom">More options</md-tooltip>
+      </i>
       <div class="view_column">
         <div class="view_column_con" ng-show="viewColumnIsShow">
           <ul class="view_column_list">
@@ -68,6 +88,20 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="toolbelt-bar secondary-toolbelt" ng-show="reportSelectedIds.length > 0">
+    <div class="left-panel">
+      <div>{{reportSelectedIds.length}} selected</div>
+      <div class="icon-text">
+        <div class="line"></div>
+      </div>
+      <div class="edit-selected-items-button" ng-click="showSelectedItemsPanel()">
+        Edit <md-icon class="md-24">arrow_drop_down</md-icon>
+      </div>
+    </div>
+    <div class="right-panel">
+      <md-icon class="md-24" ng-click="closeEditToolbelt()">close</md-icon>
     </div>
   </div>
 </div>
@@ -199,14 +233,14 @@
         </div>
     </div>
 </div>
-
+<!-- filter bar -->
 <div class="filter-bar" ng-show="openFilterUI">
   <div class="main-wrapper">
     <div class="header">Filter</div>
     <div class="predicates-container">
       <div class="predicate-editor" ng-repeat="filterExpression in filterExpressions" ng-click="editFilterExpression(filterExpression)">
         <div class="md-chip">
-          <span>{{filterExpression.name}}{{filterExpression.operator}}{{filterExpression.value}}</span>
+          <span>{{filterExpression.name}} {{filterExpression.operator}} {{filterExpression.value}}</span>
           <i class="glyphicon glyphicon-remove-circle" ng-click="filterExpressionRemove(filterExpression)"></i>
         </div>
       </div>
@@ -216,7 +250,7 @@
     </div>
   </div>
   <div class="buttons-wrapper">
-    <div class="save-filter" ng-show="filterSaveUI">
+    <div class="save-filter" ng-show="filterSaveUI" ng-click="saveFilter()">
       <i class="glyphicon glyphicon-saved"></i>
     </div>
     <div class="remove-filter" ng-click="closeFilter()">
@@ -224,6 +258,30 @@
     </div>
   </div>
 </div>
+
+<!-- group -->
+<div class="filter-bar" ng-show="openSegmentUI">
+  <div class="main-wrapper">
+    <div class="header">Segment</div>
+    <div class="predicates-container">
+      <div class="predicate-editor" ng-repeat="segmentExpression in segmentExpressions">
+        <div class="md-chip">
+          <span>{{segmentExpression.display}}:{{segmentExpression.value}}</span>
+          <i class="glyphicon glyphicon-remove-circle" ng-click="segmentExpressionRemove(segmentExpression)"></i>
+        </div>
+      </div>
+      <div class="menu-suggest-input">
+        <input class="menu-segment-open-button" type="text" ng-change="segmentItem(segment)" ng-model="segment" ng-click="showSegmentMenu($event)" ng-blur="segmentItemBlured()"/>
+      </div>
+    </div>
+  </div>
+  <div class="buttons-wrapper">
+    <div class="remove-filter" ng-click="closeSegment()">
+      <i class="glyphicon glyphicon-remove"></i>
+    </div>
+  </div>
+</div>
+
 
 <div flex class="cs-page-content report">
   <div class="breadcrumb-div" ng-if="filters.length > 0">
@@ -241,10 +299,10 @@
         <table md-table multiple ng-model="selected" md-progress="promise">
             <thead md-head md-order="query.order" fix-head>
             <tr md-row>
-                <th md-column class="text-center"><input type="checkbox"></i></th>
-                <th ng-if="canEdit()" md-column style="text-align: center;" class="row-action">St</i></th>
+                <th ng-if="canEdit()" md-column class="text-center"><input class="check-all" type="checkbox"></i></th>
+                <th ng-if="canEdit()" md-column class="text-center" class="row-action">St</i></th>
                 <th md-column ng-if="treeLevel>1"></th>
-                <th md-column md-order-by="{{item.origKey || item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}"
+                <th md-column md-order-by="{{item.origKey || item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}" class="text-right"
                     ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{item.name}}
                 </th>
             </tr>
@@ -304,12 +362,16 @@
             </tbody>
             <tfoot md-body fix-foot>
               <tr md-row>
-                <td md-cell></td>
+                <td md-cell ng-if="canEdit()"></td>
                 <td ng-if="canEdit()" md-cell></td>
                 <td md-cell ng-if="treeLevel>1"></td>
                 <td md-cell>Total</td>
-                <td md-cell ng-class="{'red':report.totals[column.key] < 0 && column.key == 'roi','green':report.totals[column.key] > 0 && column.key == 'roi'}" ng-repeat="column in columns" ng-show="preferences.reportViewColumns[column.key].visible && !$first">
-                  {{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? ((report.totals[column.key] || 0) + '%') : report.totals[column.key])}}
+                <td md-cell
+                  ng-class="{'red':report.totals[column.key] < 0 && column.key == 'roi','green':report.totals[column.key] > 0 && column.key == 'roi'}"
+                  ng-repeat="column in columns"
+                  ng-show="preferences.reportViewColumns[column.key].visible && !$first"
+                >
+                  <div class="text-right">{{isNeedCurrency(column.key) ? (report.totals[column.key] | currency) : (isNeedPercent(column.key) ? ((report.totals[column.key] || 0) + '%') : report.totals[column.key])}}</div>
                 </td>
                 <!-- <td md-cell></td> -->
               </tr>
@@ -331,8 +393,12 @@
     <% if(report.rows[i].parentRow.expanded) { %>
       <% var row = report.rows[i]; var treeLevel = report.treeLevel; var columns = report.columns; var activeStatusIsDisabled = report.activeStatusIsDisabled;%>
       <tr data-index="<%=i%>" class="md-row <%=treeLevel>1 && row.treeLevel==1 ? ' first-tree': ''%> <%= row.data.deleted==1 ? ' row-deleted' : ''%>">
-        <td md-cell class="text-center"><input type="checkbox"></td>
         <% if(report.canEdit) {%>
+          <td md-cell class="text-center td-checkbox">
+          <% if(row.treeLevel == 1) {%>
+          <input class="check-item" type="checkbox" value="<%=row.data.id%>">
+          <% } %>
+          </td>
         <td class="row-action <%=row.data.deleted==1 ? ' deleted': ''%> <%=row.data.deleted==0 ? ' enabled': ''%>">
           <% if(row.data.deleted==1) {%>
           <i class="icon-remove"></i>
@@ -356,7 +422,7 @@
               <% } else if (column.role=='name') {%>
               <span><%=(column.key == 'ip' && row.data.country) ? (row.data.country + ': ' + row.data[column.key]) : row.data[column.key]%></span>
               <% } else if (column.role!='name') {%>
-              <span><%=['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(column.key) > -1 ? ('$' + row.data[column.key]) : ['ctr', 'cr', 'cv', 'roi'].indexOf(column.key) > -1 ? (row.data[column.key] + '%') : row.data[column.key]%></span>
+              <span class="<%= ['campaignCountry', 'campaignHash', 'campaignName', 'campaignUrl', 'trafficName'].indexOf(column.key) > -1 ? '' : 'text-right'%>" style="display: block;"><%=['cost', 'revenue', 'epv', 'epc', 'ap', 'profit'].indexOf(column.key) > -1 ? ('$' + row.data[column.key]) : ['ctr', 'cr', 'cv', 'roi'].indexOf(column.key) > -1 ? (row.data[column.key] + '%') : row.data[column.key]%></span>
               <%}%>
             </td>
           <% }%>

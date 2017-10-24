@@ -5,23 +5,27 @@
     </div>
   </md-toolbar>
   <md-dialog-content class="md-dialog-content" style="padding-top: 15px;">
-    <div layout-gt-sm="row">
-      <md-input-container class="md-block" flex-gt-sm>
-        <label>State</label>
-        <md-select ng-model="oData.operator">
-          <md-option ng-repeat="operator in operators" value="{{operator.value}}">
-            {{operator.display}}
-          </md-option>
-        </md-select>
-      </md-input-container>
-      <md-input-container class="md-block" flex-gt-sm>
-        <label>Value</label>
-        <input ng-model="oData.value"/>
-      </md-input-container>
+    <form name="editForm" ng-submit="ctrl.apply()">
+      <div layout-gt-sm="row">
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>State</label>
+          <md-select ng-model="oData.operator">
+            <md-option ng-repeat="operator in operators" value="{{operator.value}}">
+              {{operator.display}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block md-icon-right md-icon-float" flex-gt-sm>
+          <label>Value</label>
+          <input ng-model="oData.value" ng-required="true"/>
+          <md-icon ng-show="['ctr', 'cr', 'cv', 'roi'].indexOf(ctrl.oData.key) > -1">%</md-icon>
+        </md-input-container>
     </div>
+  </form>
   </md-dialog-content>
   <md-dialog-actions>
-    <md-button class="md-primary" ng-click="ctrl.apply()">{{'apply' | translate}}</md-button>
+    <md-button class="md-primary" ng-disabled="editForm.$invalid" ng-click="ctrl.apply()">{{'apply' | translate}}</md-button>
+    <md-button class="md-primary" ng-click="ctrl.cancel()">{{'cancel' | translate}}</md-button>
   </md-dialog-actions>
 </md-dialog>
 <style>

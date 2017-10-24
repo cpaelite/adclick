@@ -213,21 +213,188 @@ app.get('/api/tags', function (req, res) {
       "tags": [
         {
           id: 1,
-          name: "tag1"
+          name: "tag1",
+          targetId: 123
         },
         {
           id: 1,
-          name: "123"
+          name: "123",
+          targetId: 222
         },
         {
           id: 1,
-          name: "234"
+          name: "234",
+          targetId: 333
         }
       ]
     }
   };
   res.send(result);
 });
+
+/**
+ * @apiName 获取filters
+ *
+ * @apiParam {number}
+ *
+ */
+app.get('/api/conditions-filters', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "filters": [
+          {
+              "id": 1,
+              "name": "clicks limit",
+              "items": [
+                  {
+                      "name": "Clicks",
+                      "value": "12000",
+                      "_value": "12000",
+                      "operator": ">",
+                      "key": "clicks"
+                  },
+                  {
+                      "name": "Phone calls",
+                      "value": "15000990987",
+                      "_value": "15000990987",
+                      "operator": ">",
+                      "key": "phoneCalls"
+                  }
+              ]
+          },
+          {
+              "id": 2,
+              "name": "impression limit",
+              "items": [
+                  {
+                      "name": "Impression",
+                      "value": "12000",
+                      "_value": "12000",
+                      "operator": ">",
+                      "key": "impression"
+                  },
+                  {
+                      "name": "Impression",
+                      "value": "1000",
+                      "_value": "1000",
+                      "operator": "<",
+                      "key": "impression"
+                  }
+              ]
+          }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+app.post('/api/conditions-filters', function (req, res) {
+  var result = {
+      "status": 1,
+      "message": "success",
+      "data": {
+        "filters": [
+            {
+                "id": 1,
+                "name": "clicks limit",
+                "items": [
+                    {
+                        "name": "Clicks",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "clicks"
+                    },
+                    {
+                        "name": "Phone calls",
+                        "value": "15000990987",
+                        "_value": "15000990987",
+                        "operator": ">",
+                        "key": "phoneCalls"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "impression limit",
+                "items": [
+                    {
+                        "name": "Impression",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "impression"
+                    },
+                    {
+                        "name": "Impression",
+                        "value": "1000",
+                        "_value": "1000",
+                        "operator": "<",
+                        "key": "impression"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "impression limit333",
+                "items": [
+                    {
+                        "name": "Impression",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "impression"
+                    },
+                    {
+                        "name": "Impression",
+                        "value": "1000",
+                        "_value": "1000",
+                        "operator": "<",
+                        "key": "impression"
+                    }
+                ]
+            }
+        ]
+    }
+  };
+  res.send(result);
+});
+
+app.delete('/api/conditions-filters', function (req, res) {
+  var result = {
+      "status": 1,
+      "message": "success",
+      "data": {
+        "filters": [
+            {
+                "id": 3,
+                "name": "impression limit333",
+                "items": [
+                    {
+                        "name": "Impression",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "impression"
+                    },
+                    {
+                        "name": "Impression",
+                        "value": "1000",
+                        "_value": "1000",
+                        "operator": "<",
+                        "key": "impression"
+                    }
+                ]
+            }
+        ]
+    }
+  };
+  res.send(result);
+});
+
+
 
 /**
  * @apiName 获取用户权限信息

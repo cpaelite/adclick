@@ -78,7 +78,6 @@ router.post('/api/preferences', function(req, res, next) {
  *     }
  *
  */
-
 router.get('/api/tags', function(req, res, next) {
     var schema = Joi.object().keys({
         userId: Joi.number().required(),
@@ -95,7 +94,7 @@ router.get('/api/tags', function(req, res, next) {
                 return next(err);
             }
             connection.query(
-                "select  `id`,`name` from Tags where `userId` = ? and `type`= ? and `deleted` =0", [
+                "select `id`, `name`, `targetId` from Tags where `userId` = ? and `type`= ? and `deleted` = 0", [
                     value.userId, value.type
                 ],
                 function(err, result) {
@@ -116,15 +115,169 @@ router.get('/api/tags', function(req, res, next) {
     });
 });
 
+/**
+ * @api {post} /api/filters  获取filters
+ * @apiName   user  page filters
+ * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *       "message": "success"
+ *       "data":{}
+ *     }
+ *
+ */
+router.get('/api/conditions-filters', function(req, res, next) {
+    var schema = Joi.object().keys({
+        userId: Joi.number().required()
+    });
+    req.query.userId = req.parent.id;
+    Joi.validate(req.query, schema, function(err, value) {
+        if (err) {
+            return next(err);
+        }
+        pool['m1'].getConnection(function(err, connection) {
+            if (err) {
+                err.status = 303
+                return next(err);
+            }
+            connection.query(
+                "select `id`, `name`, `items` from Filters where `userId` = ? and `deleted` = 0", [
+                    value.userId
+                ],
+                function(err, result) {
+                    connection.release();
+                    if (err) {
+                        return next(err);
+                    }
+                    result.forEach((r) => {
+                      r.items = JSON.parse(r.items);
+                    });
+                    res.json({
+                        status: 1,
+                        message: "success",
+                        data: {
+                            filters: result
+                        }
+                    });
+
+                });
+        });
+    });
+});
+
+router.post('/api/conditions-filters', function(req, res, next) {
+  var schema = Joi.object().keys({
+      userId: Joi.number().required(),
+      name: Joi.string().required(),
+      items: Joi.string().required()
+  });
+  req.body.userId = req.parent.id;
+  Joi.validate(req.body, schema, function(err, value) {
+      if (err) {
+        return next(err);
+      }
+      pool['m1'].getConnection(function(err, connection) {
+        if (err) {
+          err.status = 303
+          return next(err);
+        }
+        connection.query(
+          "insert into Filters(`name`, `items`, `userId`) values (?, ?, ?)", [
+            value.name, value.items, value.userId
+          ],
+          function(err, result) {
+            if (err) {
+              return next(err);
+            }
+            connection.query(
+              "select `id`, `name`, `items` from Filters where `userId` = ? and `deleted` = 0", [
+                value.userId
+              ],
+              function(err, result) {
+                connection.release();
+                if (err) {
+                  return next(err);
+                }
+                result.forEach((r) => {
+                  r.items = JSON.parse(r.items);
+                });
+                res.json({
+                    status: 1,
+                    message: "success",
+                    data: {
+                      filters: result
+                    }
+                });
+              }
+            );
+          }
+        );
+      });
+  });
+});
+
+router.delete('/api/conditions-filters/:id', function(req, res, next) {
+  var schema = Joi.object().keys({
+    userId: Joi.number().required(),
+    id: Joi.number().required()
+  });
+  req.body.userId = req.parent.id;
+  req.body.id = req.params.id;
+  Joi.validate(req.body, schema, function(err, value) {
+      if (err) {
+        return next(err);
+      }
+      pool['m1'].getConnection(function(err, connection) {
+        if (err) {
+          err.status = 303
+          return next(err);
+        }
+        connection.query(
+          "update Filters set `deleted` = 1 where id = ?", [
+            value.id
+          ],
+          function(err, result) {
+            if (err) {
+              return next(err);
+            }
+            connection.query(
+              "select `id`, `name`, `items` from Filters where `userId` = ? and `deleted` = 0", [
+                value.userId
+              ],
+              function(err, result) {
+                connection.release();
+                if (err) {
+                  return next(err);
+                }
+                result.forEach((r) => {
+                  r.items = JSON.parse(r.items);
+                });
+                res.json({
+                    status: 1,
+                    message: "success",
+                    data: {
+                      filters: result
+                    }
+                });
+              }
+            );
+          }
+        );
+      });
+  });
+});
 
 
 /**
- * @api {post} /api/names  check name exists                              
+ * @api {post} /api/names  check name exists
  * @apiName    check name exists
  * @apiGroup User
- * @apiParam {String} name  
+ * @apiParam {String} name
  * @apiParam {Number} type  1:Campaign;2:Lander;3:Offer4:Flow
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -168,7 +321,7 @@ router.post('/api/names', async function(req, res, next) {
 
 /**
  * @api {get} /api/postbackurl  获取offer默认postbackurl
- * @apiName   获取offer默认postbackurl   
+ * @apiName   获取offer默认postbackurl
  * @apiGroup User
  *
  * @apiSuccessExample {json} Success-Response:
