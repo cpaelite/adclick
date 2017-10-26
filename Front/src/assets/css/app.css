@@ -1251,7 +1251,6 @@ html.bg {
   text-align: center;
   color:#6D6F72;
 }
-.navi ul.nav li a:hover > i{color:#2da8f9;}
 .navi ul.nav li a > i:before {
   position: relative;
   z-index: 2;

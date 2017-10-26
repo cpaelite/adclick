@@ -7,7 +7,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var util = require('../util');
-
+var _ = require('lodash');
 
 /**
  * @api {post} /api/traffics  新增traffic
@@ -98,7 +98,7 @@ router.post('/api/traffics', async function(req, res, next) {
  */
 router.post('/api/traffics/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         postbackUrl: Joi.string().regex(util.regWebURL, 'postbackUrl').optional().allow(""),
@@ -120,11 +120,21 @@ router.post('/api/traffics/:id', async function(req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         let connection = await common.getConnection();
-        //check TrafficSource name exists
-        if (await common.checkNameExists(value.userId, value.id, value.name, 5, connection)) {
+        if(value.name) {
+          value.id = Number(value.id);
+          //check TrafficSource name exists
+          if (await common.checkNameExists(value.userId, value.id, value.name, 5, connection)) {
             throw new Error("TrafficSource name exists");
+          }
         }
-        await common.updatetraffic(req.user.id, value.userId, value, connection);
+        var ids = value.id.split(','), p = [];
+        ids.forEach((id) => {
+          let v = _.clone(value, true);
+          v.id = id;
+          p.push(common.updatetraffic(req.user.id, value.userId, v, connection));
+        });
+        await Promise.all(p);
+        // await common.updatetraffic(req.user.id, value.userId, value, connection);
 
         delete value.userId;
 
@@ -133,8 +143,6 @@ router.post('/api/traffics/:id', async function(req, res, next) {
             message: 'success',
             data: value
         });
-
-
     } catch (e) {
         next(e);
     } finally {
@@ -243,14 +251,14 @@ router.get('/api/traffics', function(req, res, next) {
  * @api {delete} /api/traffic/:id 删除traffic
  * @apiName  删除traffic
  * @apiGroup traffic
- * 
+ *
  * @apiParam {String} name
  * @apiParam {String} hash
- * 
+ *
  */
 router.delete('/api/traffics/:id', async function(req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         hash: Joi.string().optional()
@@ -261,7 +269,12 @@ router.delete('/api/traffics/:id', async function(req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deletetraffic(req.user.id, value.id, value.userId, connection);
+        var ids = value.id.split(','), p = [];
+        ids.forEach((id) => {
+          p.push(common.deletetraffic(req.user.id, id, value.userId, connection));
+        });
+        await Promise.all(p);
+        // let result = await common.deletetraffic(req.user.id, value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'

@@ -41,7 +41,7 @@
             var pageHeight = newVal.page_h;
             var elementTop = getElementTop(element[0]);
             angular.element(element).css({
-              'height': (windowHeight - elementTop - pageHeight - 70) + 'px'
+              'height': (windowHeight - elementTop - pageHeight - 30) + 'px'
             });
           });
         }
@@ -73,6 +73,7 @@
       }
       return temp;
     })();
+    $scope.filters = filterItems;
 
     // edit
     $scope.reportSelectedIds = [];
@@ -93,10 +94,67 @@
       angular.element('.check-all, .check-item').prop('checked', false);
     };
 
+    function initDatePicker() {
+      var reportDate = LocalStorageUtil.getValue(), startDate, endDate;
+      if(!reportDate) {
+        startDate = moment();
+        endDate = moment();
+      } else {
+        switch (reportDate.dateType) {
+          case '1':
+            startDate = moment(); endDate = moment();
+            break;
+          case '2':
+            startDate = moment().subtract(1, 'days'); endDate = moment().subtract(1, 'days');
+            break;
+          case '3':
+            startDate = moment().subtract(6, 'days'); endDate = moment();
+            break;
+          case '4':
+            startDate = moment().subtract(13, 'days'); endDate = moment();
+            break;
+          case '5':
+            startDate = moment().startOf('week'); endDate = moment().endOf('week');
+            break;
+          case '6':
+            startDate = moment().startOf('month'); endDate = moment().endOf('month');
+            break;
+          case '7':
+            startDate = moment().subtract(1, 'month').startOf('month'); endDate = moment().subtract(1, 'month').endOf('month');
+            break;
+          default:
+            startDate = moment(reportDate.fromDate); endDate = moment(reportDate.toDate);
+        }
+      }
+      return {startDate: startDate, endDate: endDate};
+    }
+
+    function storageDatePicker(date) {
+      var startDate = moment(date.startDate).format('YYYY-MM-DD'),
+          endDate = moment(date.endDate).format('YYYY-MM-DD'),
+          value = '1';
+      if(moment().format('YYYY-MM-DD') == startDate && moment().format('YYYY-MM-DD') == endDate) { // Today
+        value = '1';
+      } else if (moment().subtract(1, 'days').format('YYYY-MM-DD') == startDate && moment().subtract(1, 'days').format('YYYY-MM-DD') == endDate) { // Yesterday
+        value = '2';
+      } else if (moment().subtract(6, 'days').format('YYYY-MM-DD') == startDate && moment().format('YYYY-MM-DD') == endDate) { // Last 7 Days
+        value = '3';
+      } else if (moment().subtract(13, 'days').format('YYYY-MM-DD') == startDate && moment().format('YYYY-MM-DD') == endDate) { // Last 14 Days
+        value = '4';
+      } else if (moment().startOf('week').format('YYYY-MM-DD') == startDate && moment().endOf('week').format('YYYY-MM-DD') == endDate) { // This week
+        value = '5';
+      } else if (moment().startOf('month').format('YYYY-MM-DD') == startDate && moment().endOf('month').format('YYYY-MM-DD') == endDate) { // This Months
+        value = '6';
+      } else if (moment().subtract(1, 'month').startOf('month').format('YYYY-MM-DD') == startDate && moment().subtract(1, 'month').endOf('month') == endDate) { // Last Month
+        value = '7';
+      } else { // custom
+        value = '0';
+      }
+      LocalStorageUtil.setValue(value, startDate, '00:00', endDate, '00:00');
+    }
+
     // datePicker
-    $scope.datePicker = {
-      date: {startDate: moment(), endDate: moment()}
-    };
+    $scope.datePicker = {date: initDatePicker()};
     $scope.options = {
       ranges: {
         'Today': [moment(), moment()],
@@ -106,6 +164,12 @@
         'This week': [moment().startOf('week'), moment().endOf('week')],
         'This Month': [moment().startOf('month'), moment().endOf('month')],
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      },
+      eventHandlers: {
+        'apply.daterangepicker': function(ev) {
+          storageDatePicker(ev.model);
+          $scope.applySearch();
+        }
       }
     }
 
@@ -174,7 +238,7 @@
                       '<div class="material-select-item" ng-click="editItem(0)">' +
                         '<span class="text-line"><i class="material-icons enable">lens</i>Enable</span>' +
                       '</div>' +
-                      '<div class="material-select-item" ng-click="editItem(1)">' +
+                      '<div class="material-select-item hidden" ng-click="editItem(1)">' +
                         '<span class="text-line"><i class="material-icons pause">pause_circle_filled</i>Pause</span>' +
                       '</div>' +
                       '<div class="material-select-item" ng-click="editItem(2)">' +
@@ -186,7 +250,9 @@
         position: position,
         clickOutsideToClose: true,
         locals: {
-          'selectedItems': []
+          'selectedItems': [],
+          batchSelectedIdsEnable: $scope.batchSelectedIdsEnable,
+          batchSelectedIdsRemove: $scope.batchSelectedIdsRemove
         },
         escapeToClose: true,
         focusOnOpen: false,
@@ -198,18 +264,40 @@
       });
 
       function selectedItemsPanelCtrl(mdPanelRef, $scope) {
+        var self = this;
         $scope.editItem = function(type) {
           if(type == 0) { // enable
-
+            mdPanelRef.close().then(function() {
+              self.batchSelectedIdsEnable();
+            });
           } else if (type == 1) { // pause
 
           } else { // remove
-
+            mdPanelRef.close().then(function() {
+              self.batchSelectedIdsRemove();
+            });
           }
         }
       }
     };
-
+    $scope.batchSelectedIdsEnable = function() {
+      var ids = $scope.reportSelectedIds;
+      var items = $scope.report.rows.filter(function(d) {
+        return ids.indexOf(d.data.id + '') > -1 && d.data.deleted == 1;
+      });
+      if(items.length > 0) {
+        $scope.restoreItem(null, items);
+      }
+    };
+    $scope.batchSelectedIdsRemove = function() {
+      var ids = $scope.reportSelectedIds;
+      var items = $scope.report.rows.filter(function(d) {
+        return ids.indexOf(d.data.id + '') > -1 && d.data.deleted == 0;
+      });
+      if(items.length > 0) {
+        $scope.deleteItem(null, items);
+      }
+    };
     // keyword
     var filterKeywordPanel;
     $scope.filterKeywordChanged = function(keyword) {
@@ -310,21 +398,28 @@
     $scope.closeSegment = function() {
       angular.element(window).resize();
       $scope.openSegmentUI = false;
-      $scope.segmentExpressions = [];
-      $scope.groupBy[1] = '';
-      $scope.groupBy[2] = '';
-      $scope.applySearch();
+      if($scope.segmentExpressions.length > 0) {
+        $scope.segmentExpressions = [];
+        $scope.groupBy[1] = '';
+        $scope.groupBy[2] = '';
+        $scope.applySearch();
+      }
     };
     $scope.openSegment = function() {
-      angular.element(window).resize();
       if($scope.openSegmentUI) {
-        $scope.openSegmentUI = false;
+        if($scope.segmentExpressions.length > 0) {
+          $scope.openSegmentUI = false;
+          $scope.groupBy[1] = '';
+          $scope.groupBy[2] = '';
+          $scope.applySearch();
+        }
       } else {
         $scope.openSegmentUI = true;
         $timeout(function() {
           angular.element('.menu-segment-open-button').focus().andSelf().trigger('click');
         });
       }
+      angular.element(window).resize();
     };
     $scope.segmentExpressionRemove = function(segmentExpression) {
       $scope.segmentExpressions.splice($scope.segmentExpressions.indexOf(segmentExpression), 1);
@@ -340,6 +435,7 @@
     $scope.addSegment = function(segment) {
       if(segment.value == perfType) {return;}
       if($scope.segmentExpressions.length == 2) {return;}
+      if($scope.segmentExpressions.length == 1 && $scope.segmentExpressions[0].value == segment.value) {return;}
       $scope.segmentExpressions.push(segment);
       if($scope.segmentExpressions.length == 1) {
         $scope.groupBy[1] = segment.value;
@@ -476,15 +572,19 @@
     $scope.closeFilter = function() {
       angular.element(window).resize();
       $scope.openFilterUI = false;
-      $scope.filterExpressions = [];
-      $scope.applySearch();
+      if($scope.filterExpressions.length > 0) {
+        $scope.filterExpressions = [];
+        $scope.applySearch();
+      }
     };
     $scope.openFilter = function() {
       angular.element(window).resize();
       if($scope.openFilterUI) {
         $scope.openFilterUI = false;
-        $scope.filterExpressions = [];
-        $scope.applySearch();
+        if($scope.filterExpressions.length > 0) {
+          $scope.filterExpressions = [];
+          $scope.applySearch();
+        }
       } else {
         $scope.openFilterUI = true;
         $timeout(function() {
@@ -575,15 +675,19 @@
       if(key == 'default') {
         $scope.filterExpressions = [{name: 'Status', value: oData.value, _value: oData._value, key: oData.key, operator: '='}];
         $scope.filterSaveUI = false;
+        $scope.applySearch();
       } else if(key == 'saved') {
         $scope.filterExpressions = oData.items;
         $scope.filterSaveUI = false;
+        $scope.applySearch();
       } else if(key == 'tag') {
         $scope.filterExpressions = [{name: 'Tag', value: oData.value, _value: oData._value, key: oData.key, operator: '='}];
         $scope.filterSaveUI = false;
+        $scope.applySearch();
       } else if(key == 'keyword') {
         $scope.filterExpressions = [{name: oData.name, value: oData.value, _value: oData.value, key: oData.key, operator: 'contains'}];
         $scope.filterSaveUI = false;
+        $scope.applySearch();
       } else {
         $mdDialog.show({
           controller: ['$mdDialog', '$scope', panelDialogCtrl],
@@ -597,9 +701,9 @@
         }).then(function (oData) {
           $scope.filterExpressions.push({name: oData.message.name, value: oData.result.value, _value: oData.result.value, key: oData.message.key, operator: oData.result.operator});
           $scope.filterSaveUI = true;
+          $scope.applySearch();
         });
       }
-      $scope.applySearch();
     };
     function panelDialogCtrl($mdDialog, $scope) {
       var self = this;
@@ -721,6 +825,7 @@
 
     $scope.app.subtitle = perfType;
     $scope.groupByOptions = angular.copy(groupByOptions);
+    // delete later
     $scope.loading = true;
     $scope.datatypes = [
       {value: "1", display: "Today"},
@@ -752,11 +857,17 @@
     // status, from, to, datetype, groupBy
     var pageStatus = {};
 
-    var stateParams = $scope.$stateParams;
     // TODO
+    var stateParams = $scope.$stateParams;
     if (stateParams.extgrpby) {
       var egb = (stateParams.extgrpby + ',').split(',');
       $scope.groupBy = [perfType, egb[0], egb[1]];
+      if(egb[0] || egb[1]) {
+        $scope.openSegmentUI = true;
+        $scope.segmentExpressions = $scope.groupByOptions.filter(function(op) {
+          return op.value == egb[0] || op.value == egb[1];
+        });
+      }
       $scope.treeLevel = $scope.groupBy.filter(notEmpty).length;
     } else {
       $scope.groupBy = [perfType, '', ''];
@@ -765,11 +876,12 @@
     pageStatus.groupBy = angular.copy($scope.groupBy);
 
     // 初始化dateType delete later
+    /**
     if (stateParams.datetype) {
       $scope.datetype = stateParams.datetype;
       if ($scope.datetype == '0') {
-        var fromDate = (stateParams.from||'').split('T');
-        var toDate = (stateParams.to||'').split('T');
+        var fromDate = (stateParams.from || '').split('T');
+        var toDate = (stateParams.to || '').split('T');
         $scope.fromDate = fromDate[0];
         $scope.fromTime = fromDate[1];
         $scope.toDate = toDate[0];
@@ -778,18 +890,20 @@
     } else {
       $scope.datetype = LocalStorageUtil.getValue().datetype;
     }
+    */
+
     // init status
+    /**
     if (stateParams.status) {
-      pageStatus.status = stateParams.status;
-      $scope.activeStatus = pageStatus.status;
+      $scope.activeStatus = pageStatus.status = stateParams.status;
     } else {
-      pageStatus.status = 1;
-      $scope.activeStatus = 1;
+      $scope.activeStatus = pageStatus.status = 1;
     }
+    */
 
     // fill group by and drilldown v1-v10 paramsName
     $scope.drilldownTrafficId = null;
-    if (perfType == "campaign" || perfType == "traffic") {
+    if (perfType == 'campaign' || perfType == 'traffic') {
       $scope.drilldownTrafficId = 0;
     } else if (stateParams.drilldownTrafficId) {
       $scope.drilldownTrafficId = stateParams.drilldownTrafficId;
@@ -798,13 +912,13 @@
           // drilldown v1-v10的名字
           var params = JSON.parse(traffic.data.params);
           $scope.groupByOptions.forEach(function(option, index) {
-            if (option.role == "campaign") {
+            if (option.role == 'campaign') {
               var idx = option.value.substring(1);
               var parameter = params[idx-1].Name;
               if (parameter) {
                 $scope.groupByOptions[index].paramValue = parameter;
               } else {
-                $scope.groupByOptions[index].paramValue = "N/A";
+                $scope.groupByOptions[index].paramValue = 'N/A';
               }
             }
           });
@@ -816,7 +930,8 @@
       page: 1,
       __tk: 0
     };
-
+    // delete later
+    /**
     $scope.fromDate = $scope.fromDate || LocalStorageUtil.getValue().fromDate;
     $scope.fromTime = $scope.fromTime || LocalStorageUtil.getValue().fromTime;
     $scope.toDate = $scope.toDate || LocalStorageUtil.getValue().toDate;
@@ -833,8 +948,7 @@
       minDate: minFromDate,
       maxDate: $scope.toDate
     }
-
-    $scope.filters = [];
+    */
 
     // groupByOptions.forEach(function(gb) {
     //   var val = stateParams.filters[gb.value];
@@ -853,7 +967,8 @@
     //   }
     // });
 
-    $scope.filters = filterItems;
+    // $scope.filters = [];
+    // $scope.filters = filterItems;
 
     var groupMap = {};
     groupByOptions.forEach(function(group) {
@@ -878,18 +993,16 @@
       return item.role != 'name';
     };
 
-    $scope.btnName = 'Refresh';
+    // $scope.btnName = 'Refresh';
     function buildSuccess(parentRow) {
       return function success(result) {
         if (result.status == 1) {
           if (!parentRow) {
             parentRow = { treeLevel: 0, expanded: true };
           }
-
           var group = pageStatus.groupBy[parentRow.treeLevel];
           var idKey = groupMap[group].idKey;
           var nameKey = groupMap[group].nameKey;
-
           var rows = [];
           result.data.rows.forEach(function(row) {
             if ($scope.treeLevel > 1) {
@@ -909,8 +1022,8 @@
           if (parentRow.treeLevel > 0) {
             var idx = $scope.report.rows.indexOf(parentRow);
             var nextIdx;
-            if ((idx+1) < $scope.report.rows.length) {
-              nextIdx = idx+1;
+            if ((idx + 1) < $scope.report.rows.length) {
+              nextIdx = idx + 1;
             } else {
               nextIdx = idx;
             }
@@ -923,16 +1036,16 @@
             $scope.report = result.data;
             $scope.report.rows = rows;
           }
-          $scope.loading = false;
+          // $scope.loading = false;
         }
 
-        if($scope.resetSearchParamsClicked) {
-          $scope.resetBtn = false;
-          $scope.applyBtn = false;
-          $scope.btnName = 'refresh';
-          $scope.resetSearchParamsClicked = false;
-        }
-        $scope.disabled = false;
+        // if($scope.resetSearchParamsClicked) {
+        //   $scope.resetBtn = false;
+        //   $scope.applyBtn = false;
+        //   $scope.btnName = 'refresh';
+        //   $scope.resetSearchParamsClicked = false;
+        // }
+        // $scope.disabled = false;
         rerenderReportTable();
         //$scope.btnName = 'Refresh';
         //$scope.applyBtn = false;
@@ -952,10 +1065,45 @@
       return !!val;
     }
 
+    /**
+     * @parames dataType {string}
+     */
     function getList(parentRow, dataType) {
       var params = {};
       $scope.filters.forEach(function(f) { params[f.key] = f.val });
+      $scope.reportSelectedIds = [];
+      console.log('params', params);
+      console.log('$scope.query', $scope.query);
+      console.log('pageStatus', pageStatus);
+      // filter
+      console.log('$scope.filterExpressions', $scope.filterExpressions);
+      var expressions = $scope.filterExpressions, conditions = [];
+      pageStatus.status = 1;
+      pageStatus.filter = '';
+      pageStatus.tag = '';
+      if(expressions.length > 0) {
+        expressions.forEach(function(e) {
+          switch (e.key) {
+            case 'tag':
+              pageStatus.tag = 'ids=' + e._value.join(',');
+              break;
+            case 'filter':
+              pageStatus.filter = e._value;
+              break;
+            case 'status':
+              pageStatus.status = e._value;
+              break;
+            default:
+              conditions.push(e.key + e.operator + e._value);
+              break;
+          }
+        });
+      }
+
       angular.extend(params, $scope.query, pageStatus);
+      if(conditions.length > 0) {
+        params.conditions = conditions.join('&');
+      }
       delete params.__tk;
       delete params.datetype;
       delete params.groupBy;
@@ -967,8 +1115,9 @@
         // 多级group by不支持状态和搜索框搜索
         delete params.filter;
         delete params.status;
+        delete params.tag;
 
-        var pgrp = pageStatus.groupBy[parentRow.treeLevel-1];
+        var pgrp = pageStatus.groupBy[parentRow.treeLevel - 1];
         params[pgrp] = parentRow.id;
 
         if (parentRow.treeLevel == 2) {
@@ -1014,8 +1163,7 @@
       }, true);
 
       var unwatch = $scope.$watch('preferences', function(newVal, oldVal) {
-        if (!newVal)
-          return;
+        if (!newVal) return;
 
         $scope.reportViewColumns = angular.copy(newVal.reportViewColumns);
         angular.extend($scope.query, {
@@ -1048,8 +1196,8 @@
       $scope.profile = profile.data;
       watchFilter();
       $scope.query.tz = $scope.profile.timezone;
-      getDateRange($scope.datetype, $scope.query.tz);
-      $scope.datetypeFilter = filterDateType();
+      getDateRange($scope.query.tz);
+      // $scope.datetypeFilter = filterDateType();
     });
 
     $scope.deleteFilter = function(filter) {
@@ -1059,6 +1207,7 @@
       $scope.query.__tk += 1;
     };
 
+    // delete later
     $scope.changeGroupby = function(idx) {
       if (idx == 0) {
         $scope.groupBy[1] = "";
@@ -1118,7 +1267,7 @@
     };*/
 
     $scope.hours = [];
-    for (var i=0; i<24; ++i) {
+    for (var i = 0; i < 24; ++i) {
       if (i < 10) {
         $scope.hours.push('0' + i + ':00');
       } else {
@@ -1144,9 +1293,9 @@
       }
 
       $scope.query.filter = $scope.searchFilter;
-      getDateRange($scope.datetype, $scope.query.tz);
-      pageStatus.datetype = $scope.datetype;
-      pageStatus.status = $scope.activeStatus;
+      getDateRange($scope.query.tz);
+      // pageStatus.datetype = $scope.datetype;
+      // pageStatus.status = $scope.activeStatus;
 
       if ($scope.groupBy[0] != pageStatus.groupBy[0]) {
         pageStatus.groupBy = angular.copy($scope.groupBy);
@@ -1168,6 +1317,7 @@
       }
     };
 
+    // delete later
     $scope.resetSearchParams = function() {
       $scope.searchFilter = '';
       $scope.activeStatus = 2;
@@ -1318,7 +1468,7 @@
     };
 
     function go(page) {
-      getDateRange($scope.datetype, $scope.query.tz);
+      getDateRange($scope.query.tz);
       pageStatus.datetype = $scope.datetype;
       var params = angular.copy(pageStatus);
       if ($scope.treeLevel > 1) {
@@ -1390,10 +1540,11 @@
       });
     };
 
-    $scope.deleteItem = function (ev, item) {
+    $scope.deleteItem = function (ev, items) {
       if (!$scope.canEdit) {
         return;
       }
+
       $mdDialog.show({
         clickOutsideToClose: false,
         escapeToClose: false,
@@ -1401,7 +1552,7 @@
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
-        locals: {type: perfType, item: item.data},
+        locals: {type: perfType, dataArr: items.map(function(item) { return item.data; })},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function () {
@@ -1409,7 +1560,7 @@
       });
     };
 
-    $scope.restoreItem = function (ev, item) {
+    $scope.restoreItem = function (ev, items) {
       if (!$scope.canEdit) {
         return;
       }
@@ -1420,7 +1571,7 @@
         controllerAs: 'ctrl',
         focusOnOpen: false,
         targetEvent: ev,
-        locals: {type: perfType, item: item.data},
+        locals: {type: perfType, dataArr: items.map(function(item) { return item.data; })},
         bindToController: true,
         templateUrl: 'tpl/delete-confirm-dialog.html?' + +new Date()
       }).then(function () {
@@ -1469,8 +1620,7 @@
       $scope.editItem();
     }
 
-    function getDateRange(value, timezone) {
-
+    function getDateRange(timezone) {
       // var fromDate = DateRangeUtil.fromDate(value, timezone);
       // var toDate = DateRangeUtil.toDate(value, timezone);
       // if (value == '0') {
@@ -1486,10 +1636,8 @@
       //
       //   LocalStorageUtil.setValue(value, fromDate, $scope.fromTime, toDate, $scope.toTime);
       // }
-
       pageStatus.from = moment($scope.datePicker.date.startDate).format('YYYY-MM-DD') + 'T00:00';
       pageStatus.to = moment($scope.datePicker.date.endDate).add(1, 'days').format('YYYY-MM-DD') + 'T00:00';
-
     }
 
     $scope.initDefaultCustomDate = function(datetype) {
@@ -1528,7 +1676,7 @@
         var $items = $('#repeater_container').find('.check-item');
         if($(this).is(':checked')) {
           $items.prop('checked', true);
-          $scope.reportSelectedIdsChanged('eq', $items.map(function() {return $(this).val()}))
+          $scope.reportSelectedIdsChanged('eq', $.map($items, function(item) {return $(item).val()}))
         } else {
           $items.prop('checked', false);
           $scope.reportSelectedIdsChanged('eq', []);
@@ -1656,9 +1804,9 @@
           } else if (key == 'duplicate') {
             $scope.editItem(null, row, true);
           } else if(key == 'delete') {
-            $scope.deleteItem(null, row);
+            $scope.deleteItem(null, [row]);
           } else if (key == 'restore') {
-            $scope.restoreItem(null, row);
+            $scope.restoreItem(null, [row]);
           } else if (key == 'preview') {
             window.open($scope.copyCampaignUrl);
           } else if (key == 'copyurl') {
@@ -3306,14 +3454,16 @@
       resourceName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     }
 
-    function deleteItem(item) {
-      return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"], errorFn: true}).$promise;
+    function deleteItem(dataArr) {
+      var ids = dataArr.map(function(d) {return d.id});
+      return $injector.get(resourceName).remove({id: ids, errorFn: true}).$promise;
+      // return $injector.get(resourceName).remove({id: item[type+"Id"], hash: item[type+"Hash"], name: item[type+"Name"], errorFn: true}).$promise;
     }
 
     this.onprocess = false;
     this.ok = function () {
       self.onprocess = true;
-      deleteItem(this.item).then(success, error);
+      deleteItem(this.dataArr).then(success, error);
     };
 
     function success(oData) {
@@ -3347,14 +3497,16 @@
       resourceName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     }
 
-    function restoreItem(item) {
-      return $injector.get(resourceName).save({errorFn: true}, {id: item[type+"Id"], deleted: 0}).$promise;
+    function restoreItem(dataArr) {
+      var ids = dataArr.map(function(d) {return d.id});
+      return $injector.get(resourceName).save({errorFn: true}, {id: ids.join(','), deleted: 0}).$promise;
+      // return $injector.get(resourceName).save({errorFn: true}, {id: item[type+"Id"], deleted: 0}).$promise;
     }
 
     this.onprocess = false;
     this.ok = function () {
       self.onprocess = true;
-      restoreItem(this.item).then(success, error);
+      restoreItem(this.dataArr).then(success, error);
     };
 
     function success(oData) {

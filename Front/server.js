@@ -922,6 +922,7 @@ app.get('/api/report', function (req, res) {
             [groupBy + "Id"]: "1",
             [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
             [groupBy]: groupBy + " 1",
+            id: 1,
             trafficId: 1,
             "ap": 0.0,
             "bids": 0,
@@ -941,12 +942,14 @@ app.get('/api/report', function (req, res) {
             "revenue": 3.5,
             "roi": 0.0,
             "visits": 3072,
-            "date": "2017-02-20"
+            "date": "2017-02-20",
+            "deleted": 1
           }, {
             [groupBy + "Name"]: groupBy + " 2",
             [groupBy + "Id"]: "2",
             [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
             [groupBy]: groupBy + " 2",
+            id: 2,
             trafficId: 1,
             "ap": 0.0,
             "bids": 0,
@@ -966,12 +969,14 @@ app.get('/api/report', function (req, res) {
             "revenue": 2.6,
             "roi": 0.0,
             "visits": 1572,
-            "date": "2017-02-21"
+            "date": "2017-02-21",
+            "deleted": 0
           }, {
             [groupBy + "Name"]: groupBy + " 3",
             [groupBy + "Id"]: "3",
             [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
             [groupBy]: groupBy + " 3",
+            id: 3,
             trafficId: 1,
             "ap": 0.0,
             "bids": 0,
@@ -991,7 +996,8 @@ app.get('/api/report', function (req, res) {
             "revenue": 6.1,
             "roi": 0.0,
             "visits": 5572,
-            "date": "2017-02-22"
+            "date": "2017-02-22",
+            "deleted": 0
           }
         ]
       }

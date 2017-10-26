@@ -7,16 +7,6 @@
   </ul>
 </div>
 
-<div class="notifications-bar">
-  <div class="pagination text"></div>
-  <div class="notification-bar-content">
-    <div class="notification-text">Update payment method - Your current payment methods can't be charged.</div>
-  </div>
-  <div class="actions">
-    <md-icon class="md-24">close</md-icon>
-  </div>
-</div>
-
 <div class="sticky toolbelt-bar-box">
   <div class="toolbelt-bar primary-toolbelt" ng-show="reportSelectedIds.length == 0">
     <div class="left-panel" ng-cloak="">
@@ -106,7 +96,7 @@
   </div>
 </div>
 
-<div class="cs-action-bar-bg">
+<div class="cs-action-bar-bg hidden">
     <div class="cs-action-bar clearfix">
         <div class="left-con">
             <a ng-if="perfType == 'campaign'" class="md-raised md-primary cs-compact cs-add-button green-btn" style="float: left;margin-right: 10px;color: #fff;" ui-sref="app.suddenChange">Auto</a>
@@ -302,8 +292,11 @@
                 <th ng-if="canEdit()" md-column class="text-center"><input class="check-all" type="checkbox"></i></th>
                 <th ng-if="canEdit()" md-column class="text-center" class="row-action">St</i></th>
                 <th md-column ng-if="treeLevel>1"></th>
-                <th md-column md-order-by="{{item.origKey || item.key}}" ng-repeat="item in columns track by $index" ng-class="{'item-name': $index == 0}" class="text-right"
-                    ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">{{item.name}}
+                <th md-column md-order-by="{{item.origKey || item.key}}"
+                  ng-repeat="item in columns track by $index"
+                  ng-class="{'item-name': $index == 0, 'text-right': ['campaignCountry', 'campaignHash', 'campaignName', 'campaignUrl', 'trafficName'].indexOf(item.key) == -1}"
+                  ng-if="preferences.reportViewColumns[item.key].visible || item.role=='name'">
+                    {{item.name}}
                 </th>
             </tr>
             </thead>
