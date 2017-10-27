@@ -44,7 +44,7 @@
             </div>
         </div>
         <md-button class="md-raised md-primary cs-compact cs-add-button blue-btn apply-change-btn" ng-class="{'apply-btn': applyBtn}" ng-click="applySearch($event)" ng-model="btnName" ng-disabled="disabled" translate>{{btnName}}</md-button>
-        <div class="view_column blue-btn" ng-click="viewColumnClick()">
+        <div class="view_column blue-btn" style="text-align: center; width: 55px;" ng-click="viewColumnClick()">
             <div class="view_column_con" ng-show="viewColumnIsShow">
                 <ul class="view_column_list">
                     <li ng-repeat="item in columns" ng-click="checkboxIsChecked($event, 'conversion_' + item.key)">
