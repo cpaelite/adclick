@@ -82,22 +82,22 @@ var app = express();
 
 
 app.disable('x-powered-by');
-app.use(requestIp.mw())
 app.use(function(req, res, next) {
-  var schema = req.headers["x-forwarded-proto"];
-  if (schema === "https") {
-    req.connection.encrypted = true;
+  if(req.get('X-Forwarded-Proto') !== 'https') {
+    res.redirect('https://' + req.get('Host') + req.url);
+  } else {
+    next();
   }
-  next();
 });
-
+app.use(requestIp.mw())
 // app.use(function(req, res, next) {
-//   if((!req.secure) && (req.get('X-Forwarded-Proto') !== 'https')) {
-//     res.redirect('https://' + req.get('Host') + req.url);
-//   } else {
-//     next();
+//   var schema = req.headers["x-forwarded-proto"];
+//   if (schema === "https") {
+//     req.connection.encrypted = true;
 //   }
+//   next();
 // });
+
 
 
 //favicon
