@@ -192,6 +192,13 @@
         },
         controller: 'FlowEditCtrl',
       })
+      .state('app.integrations', {
+        url: '/integrations',
+        templateUrl: function() {
+          return 'tpl/integrations.html?' + +new Date();
+        },
+        controller: 'FlowEditCtrl',
+      })
       .state('access', {
         url: '/access',
         template: '<div ui-view class="fade-in-right-big smooth"></div>'
