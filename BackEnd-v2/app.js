@@ -80,15 +80,18 @@ redisPool.pool.on('error',function(err){
 
 var app = express();
 
-
-// app.disable('x-powered-by');
-// app.use(function(req, res, next) {
-//   if(req.get('X-Forwarded-Proto') && req.get('X-Forwarded-Proto') !== 'https') {
-//     res.redirect('https://' + req.get('Host') + req.url);
-//   } else {
-//     next();
-//   }
-// });
+if(setting.env == 'development') {
+  //
+} else {
+  app.disable('x-powered-by');
+  app.use(function(req, res, next) {
+    if(req.get('X-Forwarded-Proto') && req.get('X-Forwarded-Proto') !== 'https') {
+      res.redirect('https://' + req.get('Host') + req.url);
+    } else {
+      next();
+    }
+  });
+}
 app.use(requestIp.mw())
 // app.use(function(req, res, next) {
 //   var schema = req.headers["x-forwarded-proto"];
