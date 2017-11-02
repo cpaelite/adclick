@@ -41,7 +41,12 @@ router.post('/api/traffics', async function(req, res, next) {
         campaignId: Joi.string().optional().empty(""),
         websiteId: Joi.string().optional().empty(""),
         cost: Joi.string().optional().empty(""),
-        params: Joi.string().optional().empty("")
+        params: Joi.string().optional().empty(""),
+        integrations: Joi.number().optional(),
+        account: Joi.string().optional().empty(""),
+        password: Joi.string().optional().empty(""),
+        token: Joi.string().optional().empty(""),
+        trafficTemplateId: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id
@@ -110,7 +115,12 @@ router.post('/api/traffics/:id', async function(req, res, next) {
         websiteId: Joi.string().optional().allow(""),
         params: Joi.string().optional().allow(""),
         hash: Joi.string().optional(),
-        deleted: Joi.number().optional()
+        deleted: Joi.number().optional(),
+        integrations: Joi.number().optional(),
+        account: Joi.string().optional().empty(""),
+        password: Joi.string().optional().empty(""),
+        token: Joi.string().optional().empty(""),
+        trafficTemplateId: Joi.number().optional()
     });
 
     req.body.userId = req.parent.id
@@ -127,7 +137,7 @@ router.post('/api/traffics/:id', async function(req, res, next) {
             throw new Error("TrafficSource name exists");
           }
         }
-        var ids = value.id.split(','), p = [];
+        var ids = (value.id + '').split(','), p = [];
         ids.forEach((id) => {
           let v = _.clone(value, true);
           v.id = id;

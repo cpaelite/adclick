@@ -137,7 +137,7 @@
       $(window).bind('resize', function() {
         if($scope.chartInstance) {
           $scope.widthChart = window.innerWidth - 40;
-          $scope.chartInstance.resize();
+          angular.element('chart-box').length > 0 && $scope.chartInstance.resize();
         }
       });
 

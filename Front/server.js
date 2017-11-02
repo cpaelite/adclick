@@ -2046,7 +2046,8 @@ app.get('/api/traffic/tpl', function (req, res) {
         "cost": "{}",
         "params": "[{\"Track\": 1, \"Placeholder\": \"%carrier%\", \"Parameter\": \"carrier\", \"Name\": \"carrier\"}, {\"Track\": 1, \"Placeholder\": \"%d%\", \"Parameter\": \"d\", \"Name\": \"d\"}, {\"Track\": 1, \"Placeholder\": \"%device%\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"%manufacturer%\", \"Parameter\": \"manufacturer\", \"Name\": \"manufacturer\"}, {\"Track\": 1, \"Placeholder\": \"%creativeid%\", \"Parameter\": \"creativeid\", \"Name\": \"creativeid\"}, {\"Track\": 1, \"Placeholder\": \"%ip%\", \"Parameter\": \"ip\", \"Name\": \"ip\"}, {\"Track\": 1, \"Placeholder\": \"%dapp%\", \"Parameter\": \"dapp\", \"Name\": \"dapp\"}, {\"Track\": 1, \"Placeholder\": \"%city%\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"%state%\", \"Parameter\": \"state\", \"Name\": \"state\"}, {\"Track\": 1, \"Placeholder\": \"%androidid%\", \"Parameter\": \"androidid\", \"Name\": \"androidid\"}]",
         "campaignId": "{\"Parameter\":\"campaignid\",\"Placeholder\":\"%campaignid%\",\"Name\":\"campaignid\"}",
-        "websiteId": "{\"Parameter\":\"pubid\",\"Placeholder\":\"%pubid%\",\"Name\":\"pubid\"}"
+        "websiteId": "{\"Parameter\":\"pubid\",\"Placeholder\":\"%pubid%\",\"Name\":\"pubid\"}",
+        "apiParams": "{\"account\":\"login\",\"password\":\"secret\"}"
       }, {
         "id": 2,
         "name": "popads.com",
@@ -2056,7 +2057,8 @@ app.get('/api/traffic/tpl', function (req, res) {
         "cost": "{\"Parameter\":\"BID\",\"Placeholder\":\"[BID]\",\"Name\":\"BID\"}",
         "params": "[{\"Track\": 1, \"Placeholder\": \"[ADBLOCK]\", \"Parameter\": \"ADBLOCK\", \"Name\": \"ADBLOCK\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERID]\", \"Parameter\": \"BROWSERID\", \"Name\": \"BROWSERID\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERNAME]\", \"Parameter\": \"BROWSERNAME\", \"Name\": \"BROWSERNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CAMPAIGNNAME]\", \"Parameter\": \"CAMPAIGNNAME\", \"Name\": \"CAMPAIGNNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYID]\", \"Parameter\": \"CATEGORYID\", \"Name\": \"CATEGORYID\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYNAME]\", \"Parameter\": \"CATEGORYNAME\", \"Name\": \"CATEGORYNAME\"}, {\"Track\": 1, \"Placeholder\": \"[COUNTRY]\", \"Parameter\": \"COUNTRY\", \"Name\": \"COUNTRY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICEID]\", \"Parameter\": \"DEVICEID\", \"Name\": \"DEVICEID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICENAME]\", \"Parameter\": \"DEVICENAME\", \"Name\": \"DEVICENAME\"}, {\"Track\": 1, \"Placeholder\": \"[FORMFACTORID]\", \"Parameter\": \"FORMFACTORID\", \"Name\": \"FORMFACTORID\"}]",
         "campaignId": "{\"Parameter\":\"CAMPAIGNID\",\"Placeholder\":\"[CAMPAIGNID]\",\"Name\":\"CAMPAIGNID\"}",
-        "websiteId": "{\"Parameter\":\"WEBSITEID\",\"Placeholder\":\"[WEBSITEID]\",\"Name\":\"WEBSITEID\"}"
+        "websiteId": "{\"Parameter\":\"WEBSITEID\",\"Placeholder\":\"[WEBSITEID]\",\"Name\":\"WEBSITEID\"}",
+        "apiParams": "{\"token\": \"token\"}"
       }, {
         "id": 3,
         "name": "PropellerAds.com",

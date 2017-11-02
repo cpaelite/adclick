@@ -1520,7 +1520,7 @@
       } else if (perfType == 'offer') {
         controller = 'editOfferCtrl';
       } else if (perfType == 'traffic') {
-        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', 'AppConstant', 'UrlValidate', editTrafficSourceCtrl];
+        controller = ['$scope', '$mdDialog', '$rootScope', 'TrafficSource', 'urlParameter', 'AppConstant', 'UrlValidate', 'TrafficTemplate', '$q', editTrafficSourceCtrl];
       } else if (perfType == 'affiliate') {
         controller = ['$scope', '$mdDialog', '$timeout', 'AffiliateNetwork', editAffiliateCtrl];
       }
@@ -2877,18 +2877,33 @@
     }
   }
 
-  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant, UrlValidate) {
+  function editTrafficSourceCtrl($scope, $mdDialog, $rootScope, TrafficSource, urlParameter, AppConstant, UrlValidate, TrafficTemplate, $q) {
     var fromCampaign = $scope.$parent.$stateParams.frcpn == '1';
     var fromFlow = $scope.$parent.$stateParams.frcpn == '2';
+    var initPromises = [], prms = null;
 
     $scope.urlPattern = new RegExp(AppConstant.URLREG, 'i');
     $scope.checkNameParams = {
       type: 5
     };
+    prms = TrafficTemplate.get(null, function (trafficTpl) {
+      $scope.trafficTemplateLists = trafficTpl.data.lists;
+    }).$promise;
+    initPromises.push(prms);
+
     if (this.item) {
-      var isDuplicate = this.duplicate;
-      TrafficSource.get({id: this.item.data.trafficId}, function (trafficsource) {
+      var isDuplicate = this.duplicate, trafficsource = null;;
+      prms = TrafficSource.get({id: this.item.data.trafficId}, function (oData) {
+        trafficsource = oData;
+      }).$promise;
+      initPromises.push(prms);
+      $q.all(initPromises).then(function() {
         $scope.item = angular.copy(trafficsource.data);
+        var trafficTemplateId = $scope.item.trafficTemplateId;
+        var data = $scope.trafficTemplateLists.filter(function(e) {
+          return e.id == trafficTemplateId;
+        })[0];
+        $scope.apiParams = data.apiParams ? JSON.parse(data.apiParams) : '';
         if (isDuplicate) {
           delete $scope.item.id;
           delete $scope.item.hash;
@@ -2943,6 +2958,7 @@
       });
       this.title = "edit";
     } else {
+      $q.all(initPromises).then(function() {});
       $scope.item = {
         impTracking: 0,
       };
@@ -3006,6 +3022,7 @@
       $scope.item.externalId = JSON.stringify($scope.externalId);
       $scope.item.campaignId = JSON.stringify($scope.campaignId);
       $scope.item.websiteId = JSON.stringify($scope.websiteId);
+      $scope.item.trafficTemplateId = Number($scope.item.trafficTemplateId);
       $scope.editForm.$setSubmitted();
 
       if ($scope.editForm.$valid) {
@@ -3195,6 +3212,29 @@
       });
     }, true);
 
+    $scope.selectTrafficSourceTemplate = function (id) {
+      var data = $scope.trafficTemplateLists.filter(function(e) {
+        return e.id == id;
+      })[0];
+      $scope.item.name = data.name;
+      $scope.item.postbackUrl = data.postbackUrl;
+      $scope.params = JSON.parse(data.params);
+      $scope.apiParams = data.apiParams ? JSON.parse(data.apiParams) : '';
+      if ($scope.params.length < 10) {
+        var addLength = 10-$scope.params.length;
+        for (var i=0;i<addLength;i++) {
+          var param = {Parameter: '', Placeholder: '', Name: '', Track: 0};
+          $scope.params.push(param);
+        }
+      }
+      $scope.cost = JSON.parse(data.cost);
+      $scope.externalId = JSON.parse(data.externalId);
+      $scope.campaignId = JSON.parse(data.campaignId);
+      $scope.websiteId = JSON.parse(data.websiteId);
+      $scope.visible = true;
+    };
+
+    /**
     $scope.selectTrafficSourceTemplate = function (ev) {
       $mdDialog.show({
         multiple: true,
@@ -3212,6 +3252,7 @@
         $scope.item.name = data.name;
         $scope.item.postbackUrl = data.postbackUrl;
         $scope.params = JSON.parse(data.params);
+        $scope.apiParams = JSON.parse(data.apiParams);
         if ($scope.params.length < 10) {
           var addLength = 10-$scope.params.length;
           for (var i=0;i<addLength;i++) {
@@ -3226,7 +3267,7 @@
         $scope.visible = true;
       });
     };
-
+    */
   }
 
   function trafficSourceTemplateCtrl($scope, $mdDialog, TrafficTemplate) {
@@ -3536,9 +3577,9 @@
         },
         options: []
     };
-    // Tag.get({type: type}, function(oData) {
-    //   $scope.tagsFilter.options = oData.data.tags;
-    // });
+    Tag.get({type: type}, function(oData) {
+      $scope.tagsFilter.options = oData.data.tags;
+    });
   }
 
   function initCountries($scope) {

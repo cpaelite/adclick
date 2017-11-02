@@ -1098,6 +1098,31 @@ async function insertTrafficSource(subId, userId, traffic, connection) {
     val += ",?";
     params.push(traffic.params);
   }
+  if(traffic.account) {
+    col += ",`account`";
+    val += ",?";
+    params.push(traffic.account);
+  }
+  if(traffic.password) {
+    col += ",`password`";
+    val += ",?";
+    params.push(traffic.password);
+  }
+  if(traffic.token) {
+    col += ",`token`";
+    val += ",?";
+    params.push(traffic.token);
+  }
+  if(undefined != traffic.integrations) {
+    col += ",`integrations`";
+    val += ",?";
+    params.push(traffic.integrations);
+  }
+  if(undefined != traffic.trafficTemplateId) {
+    col += ",`trafficTemplateId`";
+    val += ",?";
+    params.push(traffic.trafficTemplateId);
+  }
   var sqltraffic = "insert into TrafficSource (" + col + ") values (" + val +
     ") ";
   let result = await Promise.all([query(sqltraffic, params, connection),
@@ -1155,6 +1180,26 @@ async function updatetraffic(subId, userId, traffic, connection) {
     sqlUpdateOffer += ",`deleted`=?";
     params.push(traffic.deleted);
   }
+  if(traffic.account) {
+    sqlUpdateOffer += ",`account`=?";
+    params.push(traffic.account);
+  }
+  if(traffic.password) {
+    sqlUpdateOffer += ",`password`=?";
+    params.push(traffic.password);
+  }
+  if(traffic.token) {
+    sqlUpdateOffer += ",`token`=?";
+    params.push(traffic.token);
+  }
+  if(undefined != traffic.trafficTemplateId) {
+    sqlUpdateOffer += ",`trafficTemplateId`=?";
+    params.push(traffic.trafficTemplateId);
+  }
+  if(undefined != traffic.integrations) {
+    sqlUpdateOffer += ",`integrations`=?";
+    params.push(traffic.integrations);
+  }
   sqlUpdateOffer += " where `userId`= ?  and `id`= ? ";
   params.push(userId);
   params.push(traffic.id);
@@ -1174,7 +1219,7 @@ async function updatetraffic(subId, userId, traffic, connection) {
 
 async function gettrafficDetail(id, userId, connection) {
   let result = await query(
-    "select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`campaignId`,`websiteId`,`params`,`deleted` from `TrafficSource` where `userId`=? and `id`=? ", [
+    "select `id`, `name`,`hash`,`postbackUrl`,`pixelRedirectUrl`,`impTracking`,`externalId`,`cost`,`campaignId`,`websiteId`,`params`,`deleted`,`token`,`account`,`password`,`integrations`,`trafficTemplateId` from `TrafficSource` where `userId`=? and `id`=? ", [
       userId, id
     ], connection);
   return result;
