@@ -3217,7 +3217,7 @@ input[type=password]:disabled, input[type=radio]:disabled, input[type=text]:disa
 .se-07{color:#985de1;}
 
 md-content.md-default-theme, md-content{color:#000;}
-.md-toolbar-tools{padding:0 0 0 15px;}
+.md-toolbar-tools{padding:0 0 0 15px;border-bottom: 1px solid #d8d0d0;}
 .md-toolbar-tools h1{margin:0;}
 .md-toolbar-tools img{width:138px;height:29px;margin-left:10px;}
 .cs-action-bar-bg{background:#f1f2f7;border-bottom:1px solid #e8e8e8;margin:0 0 15px 0;padding:20px 15px;}
