@@ -18,6 +18,8 @@ import {
   groupByKeys
 } from '../util/report';
 
+import {httpRequestPost} from '../util/http';
+
 
 
 async function saveReportLog(req) {
@@ -372,11 +374,12 @@ async function main_report(value) {
     if (!offset || offset < 0) offset = 0;
     value.offset = offset;
   }
-  if (isListPageRequest(value)) {
+  console.log(`listPageReport(value)==================================`,listPageReport(value))
+  //if (isListPageRequest(value)) {
     return listPageReport(value)
-  } else {
-    return normalReport(value, true)
-  }
+  //} else {
+    //return normalReport(value, true)
+  //}
 }
 
 function isListPageRequest(value) {
@@ -685,7 +688,15 @@ async function listPageReport(query) {
     offset,
     limit
   } = query;
-  let nr = await normalReport(query, false);
+
+  //改为api请求 2017-11-12
+  //console.log(`http:start==================================`)
+  let res = await httpRequestPost('','',function(data){  
+    return data
+  }); 
+  console.log(`http:end==================================`,res) 
+  return {res}
+  /*let nr = await normalReport(query, false);
   let foreignConfig = extraConfig(groupBy);
   let _where = {
     userId,
@@ -775,7 +786,7 @@ async function listPageReport(query) {
     totals: totals,
     totalRows,
     rows: listData
-  }
+  }*/
 }
 
 function dynamicSort(property) {

@@ -74,6 +74,8 @@ if (setting.redis.password) {
 }
 global.redisPool = require('./util/redis_pool')(redisOptions,{max:200});
 
+//global.httpRequest = require('./util/http')();
+
 redisPool.pool.on('error',function(err){
     logger.error(err.message);
 });
