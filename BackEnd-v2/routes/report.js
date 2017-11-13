@@ -150,7 +150,6 @@ app.get('/', function (req, res) {
   });
 });
 
-
 app.use(paypal, qrpayCallbackRouter);
 app.use(compression());
 app.all('/api/*', util.checkToken(), util.resetUserByClientId(), route_noplan,
