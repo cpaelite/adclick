@@ -688,6 +688,33 @@ async function listPageReport(query) {
     offset,
     limit
   } = query;
+<<<<<<< ffdcc00cb21bc79476f4e178e614f5491426f863
+=======
+  //改用远程调用
+  let fromUnix = (new Date(from).getTime())/1000;
+  let toUnix = (new Date(to).getTime()/1000);
+  let userInfo = await US.findOne({
+      where: {
+        id: userId
+      }
+    })
+  let userIdText = userInfo.idText
+  page = parseInt(page) - 1 //页数从0开始
+  //测试
+  //fromUnix = 1506787200
+  //toUnix = 1510329600
+  let url = setting.remoteReportRouter+"api/report/v1/"+userIdText.toString()+"?from="+fromUnix.toString()+"&to="+toUnix.toString()+"&page="+page.toString()+"&limit="+limit.toString()+"&groupBy="+groupBy.toString()+"&order="+order.toString()
+  let res = await httpRequestGet(url)
+  console.log('httpRequestPosthttpRequestPost---------------------------------',res['data'],new Date().getTime());
+  console.log('*********',url,"userId:",userId,"groupBy:",groupBy,"order:",order,"status:",status,"limit:",limit);
+  let result = res['data']
+  return {
+    totals: res['data']['totals'],
+    totalRows : res['data']['totalRows'],
+    rows: res['data']['rows']
+  }
+  /*let nr = await normalReport(query, false);
+>>>>>>> tijiao
 
   //改为api请求 2017-11-12
   //console.log(`http:start==================================`)
