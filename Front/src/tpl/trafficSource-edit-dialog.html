@@ -10,7 +10,7 @@
             <p ng-repeat="(key, message) in errMessage" style="margin:0;">{{message}}</p>
         </div>
         <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
-            <div class="form-group traffic-source">
+            <div class="form-group traffic-source hidden">
                 <label class="col-sm-3 control-label"></label>
                 <div class="col-sm-5">
                     <md-button class="md-primary btn-primary traffic-source-templates blue-btn" ng-click="selectTrafficSourceTemplate($event)">
@@ -19,8 +19,53 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>：</label>
-                <div class="col-sm-8">
+              <label class="col-sm-3 control-label">Traffic Source Template:</label>
+              <div class="col-sm-7">
+                <md-select ng-model="item.trafficTemplateId" ng-change="selectTrafficSourceTemplate(item.trafficTemplateId)">
+                  <md-option value="{{trafficTemplateList.id}}"
+                    ng-repeat="trafficTemplateList in trafficTemplateLists"
+                  >
+                    {{trafficTemplateList.name}} <span ng-show="trafficTemplateList.apiParams"> - Integrations</span>
+                  </md-option>
+                </md-select>
+              </div>
+            </div>
+            <div class="form-group" ng-show="apiParams">
+              <label class="col-sm-3 control-label">Integrations:</label>
+              <div class="col-sm-1">
+                <md-switch style="margin: 0;" class="md-primary" md-no-ink ng-model="item.integrations" ng-true-value="1" ng-false-value="0" ng-init="0"></md-switch>
+              </div>
+            </div>
+            <div class="form-group" ng-show="apiParams && apiParams.account && item.integrations == 1">
+              <label class="col-sm-3 control-label">{{apiParams.account}}<span class="star-icon">*</span>:</label>
+              <div class="col-sm-7">
+                <input type="text" class="form-control" name="account" ng-model="item.account" ng-required="apiParams && apiParams.account && item.integrations == 1">
+                <span style="color:red" ng-show="editForm.account.$dirty && editForm.account.$invalid">
+                  <span ng-show="editForm.account.$error.required">{{apiParams.account}} is required.</span>
+                </span>
+              </div>
+            </div>
+            <div class="form-group" ng-show="apiParams && apiParams.password && item.integrations == 1">
+              <label class="col-sm-3 control-label">{{apiParams.password}}<span class="star-icon">*</span>:</label>
+              <div class="col-sm-7">
+                <input type="text" class="form-control" name="password" ng-model="item.password" ng-required="apiParams && apiParams.password && item.integrations == 1">
+                <span style="color:red" ng-show="editForm.password.$dirty && editForm.password.$invalid">
+                  <span ng-show="editForm.password.$error.required">{{apiParams.password}} is required.</span>
+                </span>
+              </div>
+            </div>
+            <div class="form-group" ng-show="apiParams && apiParams.token && item.integrations == 1">
+              <label class="col-sm-3 control-label">{{apiParams.token}}<span class="star-icon">*</span>:</label>
+              <div class="col-sm-7">
+                <input type="text" class="form-control" name="token" ng-model="item.token" ng-required="apiParams && apiParams.token && item.integrations == 1">
+                <span style="color:red" ng-show="editForm.token.$dirty && editForm.token.$invalid">
+                  <span ng-show="editForm.token.$error.required">{{apiParams.token}} is required.</span>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name<span class="star-icon">*</span>:</label>
+                <div class="col-sm-7">
                     <input type="text" name="name" class="form-control" ng-model="item.name"
                       ng-blur="nameRequired()"
                       async-check-name="checkNameParams"
@@ -35,7 +80,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Postback Url：</label>
+                <label class="col-sm-3 control-label">Postback Url:</label>
                 <div class="col-sm-7">
                     <input my-text="" type="text" name="postbackUrl" class="form-control" ng-model="item.postbackUrl" ng-blur="validateUrl()">
                     <span style="color:red" ng-show="editForm.postbackUrl.$invalid">
@@ -61,7 +106,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Pixel redirect URL：</label>
+                <label class="col-sm-3 control-label">Pixel redirect URL:</label>
                 <div class="col-sm-7">
                     <input type="url" class="form-control" name="pixelRedirectUrl" ng-model="item.pixelRedirectUrl" ng-pattern="urlPattern">
                     <span style="color:red" ng-show="editForm.pixelRedirectUrl.$dirty && editForm.pixelRedirectUrl.$invalid">
@@ -71,7 +116,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Impression tracking：</label>
+                <label class="col-sm-3 control-label">Impression tracking:</label>
                 <div class="col-sm-5 tracking-checkbox">
                     <input type="checkbox" class="form-control" ng-model="item.impTracking" ng-true-value="1" ng-false-value="0" ng-init="0">
                 </div>
@@ -105,35 +150,35 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="col-sm-2 control-label">External ID：</td>
+                        <td class="col-sm-2 control-label">External ID:</td>
                         <td class="traficc-source-input"><input type="text" ng-model="externalId.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="externalId.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="externalId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
-                        <td class="col-sm-2 control-label">Cost：</td>
+                        <td class="col-sm-2 control-label">Cost:</td>
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="cost.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
-                        <td class="col-sm-2 control-label">Campaign ID：</td>
+                        <td class="col-sm-2 control-label">Campaign ID:</td>
                         <td class="traficc-source-input"><input type="text" ng-model="campaignId.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="campaignId.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="campaignId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr>
-                        <td class="col-sm-2 control-label">Website ID：</td>
+                        <td class="col-sm-2 control-label">Website ID:</td>
                         <td class="traficc-source-input"><input type="text" ng-model="websiteId.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="websiteId.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="websiteId.Name" disabled></td>
                         <td class="traficc-source-input"></td>
                     </tr>
                     <tr ng-repeat="param in params track by $index">
-                        <td class="col-sm-2 control-label">Custom variable{{$index+1}}：</td>
+                        <td class="col-sm-2 control-label">Custom variable{{$index+1}}:</td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Parameter"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Placeholder"></td>
                         <td class="traficc-source-input"><input type="text" ng-model="param.Name"></td>

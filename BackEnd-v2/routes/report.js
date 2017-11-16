@@ -18,6 +18,8 @@ import {
   groupByKeys
 } from '../util/report';
 
+import {httpRequestPost} from '../util/http';
+
 
 
 async function saveReportLog(req) {
@@ -122,7 +124,7 @@ async function getExportData(values) {
   //====== start
   let having = "";
 
-  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
+  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)
                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
 
@@ -185,7 +187,7 @@ async function getExportData(values) {
                 round(sum(Revenue / 1000000 - Cost / 1000000),2) as profit &&
                 round(sum(Cost / 1000000) / sum(Visits),4) as cpv &&
                 round(sum(Visits)/sum(Impressions)*100,2)  as  ictr &&
-                IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr && 
+                IFNULL(round(sum(Clicks)/sum(Visits)*100,2),0) as ctr &&
                 IFNULL(round(sum(Conversions)/sum(Clicks)*100,4),0) as  cr &&
                 IFNULL(round(sum(Conversions)/sum(Visits)*100,2),0) as cv &&
                 IFNULL(round((sum(Revenue) - sum(Cost))/sum(Cost)*100,2),0) as roi &&
@@ -372,11 +374,12 @@ async function main_report(value) {
     if (!offset || offset < 0) offset = 0;
     value.offset = offset;
   }
-  if (isListPageRequest(value)) {
+  console.log(`listPageReport(value)==================================`,listPageReport(value))
+  //if (isListPageRequest(value)) {
     return listPageReport(value)
-  } else {
-    return normalReport(value, true)
-  }
+  //} else {
+    //return normalReport(value, true)
+  //}
 }
 
 function isListPageRequest(value) {
@@ -466,7 +469,7 @@ async function normalReport(values, mustPagination) {
   //====== start
   let having = "";
 
-  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000) 
+  let where = `Timestamp>= (UNIX_TIMESTAMP(CONVERT_TZ('${from}','${tz}', '+00:00')) * 1000)
                and Timestamp < (UNIX_TIMESTAMP(CONVERT_TZ('${to}','${tz}', '+00:00')) * 1000)`;
 
   let attrs = Object.keys(values);
@@ -541,7 +544,7 @@ async function normalReport(values, mustPagination) {
   }
   let tplGroupBy = `group by ${mapping[groupBy].dbGroupBy}`;
 
-  //drilldown day->hour  or  hour->day 因为 day 
+  //drilldown day->hour  or  hour->day 因为 day
   if (_.has(values, 'day')) {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d") as  'day'`;
     tplGroupBy += `,day`;
@@ -550,7 +553,7 @@ async function normalReport(values, mustPagination) {
     } else {
       having = ` having day='${values.day}' `;
     }
-  } 
+  }
    if (_.has(values, 'hour')) {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%Y-%m-%d %H") as  'hour'`;
     tplGroupBy += `,hour`;
@@ -559,7 +562,7 @@ async function normalReport(values, mustPagination) {
     } else {
       having = `having hour='${values.hour}' `;
     }
-  } 
+  }
    if (_.has(values, 'hourOfDay')) {
     column += `,DATE_FORMAT(DATE_ADD(FROM_UNIXTIME((TIMESTAMP/1000), "%Y-%m-%d %H:%i:%s"), INTERVAL ${intavlHour} MINUTE), "%H") as  'hourOfDay'`;
     tplGroupBy += `,hourOfDay`;
@@ -571,7 +574,7 @@ async function normalReport(values, mustPagination) {
   }
 
   let tpl = `select ${column} from adstatis  where UserID =${userId} and ${where} ${tplGroupBy} ${having} ${orders} `;
-  let totalSQL = `select COUNT(*) as total,sum(visits) as visits,    
+  let totalSQL = `select COUNT(*) as total,sum(visits) as visits,
                 sum(impressions) as impressions ,
                 round(sum(revenue),2) as revenue,
                 sum(clicks) as clicks,
@@ -591,7 +594,7 @@ async function normalReport(values, mustPagination) {
   if (mustPagination && offset >= 0 && limit >= 0) {
     tpl += ` limit ${offset},${limit}`;
   }
- 
+
   let connection = await common.getConnection('m2');
 
   let [rawRows, [totals]] = await Promise.all([
@@ -685,7 +688,15 @@ async function listPageReport(query) {
     offset,
     limit
   } = query;
-  let nr = await normalReport(query, false);
+
+  //改为api请求 2017-11-12
+  //console.log(`http:start==================================`)
+  let res = await httpRequestPost('','',function(data){
+    return data
+  });
+  console.log(`http:end==================================`,res)
+  return {res}
+  /*let nr = await normalReport(query, false);
   let foreignConfig = extraConfig(groupBy);
   let _where = {
     userId,
@@ -775,7 +786,7 @@ async function listPageReport(query) {
     totals: totals,
     totalRows,
     rows: listData
-  }
+  }*/
 }
 
 function dynamicSort(property) {
@@ -841,8 +852,8 @@ async function IPReport(req) {
                   IFNULL(round(sum(Revenue/1000000)/sum(Visits),4),0.0000) as epv,
                   IFNULL(round(sum(Revenue/1000000)/sum(Clicks),2),0.00) as epc,
                   IFNULL(round(sum(Revenue/1000000)/sum(Conversions),2),0.00) as ap
-                  from AdIPStatis where UserID=${userId} and CampaignID=${campaign} 
-                  and Timestamp >=(UNIX_TIMESTAMP(CONVERT_TZ('${from}', '${tz}','+00:00'))*1000)  
+                  from AdIPStatis where UserID=${userId} and CampaignID=${campaign}
+                  and Timestamp >=(UNIX_TIMESTAMP(CONVERT_TZ('${from}', '${tz}','+00:00'))*1000)
                   and Timestamp<=(UNIX_TIMESTAMP(CONVERT_TZ('${to}', '${tz}','+00:00'))*1000) group by IP `;
 
 

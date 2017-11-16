@@ -3,6 +3,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
+var _ = require('lodash');
 
 /**
  * @api {get} /api/affiliates/:id  获取用户所有affilatenetworks
@@ -174,7 +175,7 @@ router.get('/api/affiliates', async function (req, res, next) {
  */
 router.post('/api/affiliates/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         postbackUrl: Joi.string().optional().empty(""),
@@ -191,11 +192,21 @@ router.post('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
-        //check AffiliateNetwork name exists
-        if (await common.checkNameExists(value.userId, value.id, value.name, 6, connection)) {
+        var ids = value.id.split(','), p = [];
+        if(value.name) {
+          //check AffiliateNetwork name exists
+          value.id = Number(value.id);
+          if (await common.checkNameExists(value.userId, value.id, value.name, 6, connection)) {
             throw new Error("AffiliateNetwork name exists");
+          }
         }
-        await common.updateAffiliates(value.userId, req.user.id, value, connection);
+        ids.forEach((id) => {
+          let v = _.clone(value, true);
+          v.id = id;
+          p.push(common.updateAffiliates(value.userId, req.user.id, v, connection));
+        });
+        await Promise.all(p);
+        // await common.updateAffiliates(value.userId, req.user.id, value, connection);
         delete value.userId;
         res.json({
             status: 1,
@@ -275,14 +286,14 @@ router.post('/api/affiliates', async function (req, res, next) {
  * @api {delete} /api/affiliates/:id 删除affiliates
  * @apiName  删除affiliates
  * @apiGroup network
- * 
+ *
  * @apiParam {String} name
  * @apiParam {String} hash
- * 
+ *
  */
 router.delete('/api/affiliates/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         hash: Joi.string().optional()
@@ -293,7 +304,12 @@ router.delete('/api/affiliates/:id', async function (req, res, next) {
     try {
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteAffiliate(value.id, value.userId, req.user.id, connection);
+        var ids = value.id.split(','), p = [];
+        ids.forEach((id) => {
+          p.push(common.deleteAffiliate(id, value.userId, req.user.id, connection));
+        });
+        await Promise.all(p);
+        // let result = await common.deleteAffiliate(value.id, value.userId, req.user.id, connection);
 
         res.json({
             status: 1,

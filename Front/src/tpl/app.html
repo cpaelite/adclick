@@ -87,7 +87,7 @@
                     <span>{{'campaign' | translate}}</span>
                 </a>
             </li>
-            <!-- <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}" has-permission="report.flow.show" operation="show">
+            <li ng-class="{active: $state.is('app.report.flow') || $state.is('app.flow')}" has-permission="report.flow.show" operation="show">
                 <a ui-sref="app.report.flow" md-ink-ripple>
                     <i class="icon-yw-01 fonts17"></i>
                     <span>{{'flow' | translate}}</span>
@@ -99,12 +99,14 @@
                     <span>{{'lander' | translate}}</span>
                 </a>
             </li>
+
             <li ui-sref-active="active" has-permission="report.offer.show" operation="show">
                 <a ui-sref="app.report.offer" md-ink-ripple>
                     <i class="icon-tasks fonts15 mtop2"></i>
                     <span>{{'offer' | translate}}</span>
                 </a>
-            </li> -->
+            </li>
+            <!--
             <li ui-sref-active="active">
               <md-menu-bar style="padding: 0;">
                   <md-menu>
@@ -128,6 +130,7 @@
                   </md-menu>
               </md-menu-bar>
             </li>
+          -->
             <li ui-sref-active="active" has-permission="report.trafficSource.show" operation="show">
                 <a ui-sref="app.report.traffic" md-ink-ripple>
                     <i class="icon-zh fonts17"></i>
@@ -187,6 +190,16 @@
         </ul>
     </nav>
 </md-sidenav>
+
+<div class="notifications-bar">
+  <div class="pagination text"></div>
+  <div class="notification-bar-content">
+    <div class="notification-text">Update payment method - Your current payment methods can't be charged.</div>
+  </div>
+  <div class="actions">
+    <md-icon class="md-24">close</md-icon>
+  </div>
+</div>
 
 <md-content flex layout="column" class="main-content cs-main-content">
     <div ui-butterbar></div>

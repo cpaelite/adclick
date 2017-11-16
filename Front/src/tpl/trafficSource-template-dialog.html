@@ -8,7 +8,7 @@
     <form name="editForm" ng-submit="ctrl.save()" class="form-horizontal">
       <ul class="traffic-source-template-list">
         <li ng-repeat="trafficTpl in trafficTemplateLists track by $index" ng-click="templateListClick($index)">
-          <input type="radio" class="ng-pristine ng-untouched ng-valid ng-not-empty" name="radio" value={{$index}} 
+          <input type="radio" class="ng-pristine ng-untouched ng-valid ng-not-empty" name="radio" value={{$index}}
           ng-checked="selected == $index" >
           {{ trafficTpl.name }}
         </li>

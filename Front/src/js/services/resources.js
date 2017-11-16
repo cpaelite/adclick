@@ -130,6 +130,9 @@ angular.module('app')
   .factory('Tag', ['$resource', function ($resource) {
     return $resource('/api/tags');
   }])
+  .factory('ConditionsFilter', ['$resource', function ($resource) {
+    return $resource('/api/conditions-filters');
+  }])
   .factory('Timezone', ['$resource', function ($resource) {
     return $resource('/timezones');
   }])

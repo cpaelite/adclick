@@ -116,7 +116,7 @@ router.post('/api/offers', async function (req, res, next) {
  */
 router.post('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         hash: Joi.string().optional(),
         userId: Joi.number().required(),
         idText: Joi.string().required(),
@@ -146,17 +146,28 @@ router.post('/api/offers/:id', async function (req, res, next) {
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
         //check offer name exists
-        if (await common.checkNameExists(value.userId, value.id, value.name, 3, connection)) {
+        if(value.name) {
+          value.id = Number(value.id);
+          if (await common.checkNameExists(value.userId, Number(value.id), value.name, 3, connection)) {
             throw new Error("Offer name exists");
-        }
-        await common.updateOffer(req.user.id, value.userId, value, connection);
-        await common.updateTags(value.userId, value.id, 3, connection);
-        if (value.tags && value.tags.length) {
-            for (let index = 0; index < value.tags.length; index++) {
-                await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
-            }
-        }
+          }
 
+          await common.updateTags(value.userId, value.id, 3, connection);
+          if (value.tags && value.tags.length) {
+            for (let index = 0; index < value.tags.length; index++) {
+              await common.insertTags(value.userId, value.id, value.tags[index], 3, connection);
+            }
+          }
+          await common.updateOffer(req.user.id, value.userId, value, connection);
+        } else {
+          var ids = value.id.split(','), p = [];
+          ids.forEach((id) => {
+            let v = _.clone(value, true);
+            v.id = id;
+            p.push(common.updateOffer(req.user.id, value.userId, v, connection));
+          });
+          await Promise.all(p);
+        }
 
         delete value.userId;
         delete value.idText;
@@ -287,7 +298,7 @@ router.get('/api/offers', async function (req, res, next) {
  */
 router.delete('/api/offers/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         userId: Joi.number().required(),
         name: Joi.string().optional(),
         hash: Joi.string().optional(),
@@ -307,7 +318,7 @@ router.delete('/api/offers/:id', async function (req, res, next) {
             right join Rule r on r.id= r2.ruleId
             right join Rule2Flow f2 on f2.ruleId= r.id
             right join Flow f on f.id = f2.flowId
-            where  f.deleted = 0 and offer.id= ${value.id} and offer.userId= ${value.userId} and f.type= 1`;
+            where  f.deleted = 0 and offer.id= ? and offer.userId= ? and f.type= 1`;
         //check offer used by  campaign
         let usedByCampaignsql = `select  cam.id as campaignId,cam.name as campaignName from  Offer offer
             right join Offer2Path p2 on offer.id = p2.offerId
@@ -317,34 +328,50 @@ router.delete('/api/offers/:id', async function (req, res, next) {
             right join Rule2Flow f2 on f2.ruleId= r.id
             right join Flow f on f.id = f2.flowId
             right join TrackingCampaign cam on cam.targetFlowId = f.id
-            where  f.deleted = 0 and offer.id= ${value.id} and offer.userId= ${value.userId} and f.type= 0 and cam.deleted= 0 `;
+            where  f.deleted = 0 and offer.id= ? and offer.userId= ? and f.type= 0 and cam.deleted= 0`;
         // check offer used by cap flow
-        let updateCapFlowSql = `update Offer set capEnabled = 0 where redirectOfferId = ${value.id} and userId= ${value.userId}`;
+        let updateCapFlowSql = `update Offer set capEnabled = 0 where redirectOfferId = ? and userId= ?`;
 
-        let [flowResult, campaignResult] = await Promise.all([common.query(templeSql, [], connection), common.query(usedByCampaignsql, [], connection)]);
-        if (flowResult.length) {
+        var idArr = value.id.split(','), p = [];
+
+        idArr.forEach((id) => {
+          p.push(common.query(templeSql, [id, value.userId], connection));
+          p.push(common.query(usedByCampaignsql, [id, value.userId], connection));
+        });
+        let relevanceArr = await Promise.all(p);
+        let hasRelevance = relevanceArr.some((r) => {
+          return r.length > 0
+        });
+        // let [flowResult, campaignResult] = await Promise.all([common.query(templeSql, [], connection), common.query(usedByCampaignsql, [], connection)]);
+        if (hasRelevance) {
             res.json({
                 status: 0,
-                message: 'offer used by flow!',
+                message: 'offer used by flow or campaign!',
                 data: {
-                    flows: flowResult
+                    // flows: flowResult
                 }
             });
             return;
         }
 
-        if (campaignResult.length) {
-            res.json({
-                status: 0,
-                message: 'offer used by campaign!',
-                data: {
-                    campaigns: campaignResult
-                }
-            });
-            return;
-        }
+        // if (campaignResult.length) {
+        //     res.json({
+        //         status: 0,
+        //         message: 'offer used by campaign!',
+        //         data: {
+        //             campaigns: campaignResult
+        //         }
+        //     });
+        //     return;
+        // }
 
-        let [result, count] = await Promise.all([common.deleteOffer(req.user.id, value.id, value.userId, value.name, value.hash, connection), common.query(updateCapFlowSql, [], connection)]);
+        let promiseArr = [];
+        idArr.forEach((id) => {
+          promiseArr.push(common.deleteOffer(req.user.id, id, value.userId, value.name, value.hash, connection));
+          promiseArr.push(common.query(updateCapFlowSql, [id, value.userId], connection))
+        });
+        await Promise.all(promiseArr);
+        // let [result, count] = await Promise.all([common.deleteOffer(req.user.id, value.id, value.userId, value.name, value.hash, connection), common.query(updateCapFlowSql, [], connection)]);
 
         return  res.json({
             status: 1,

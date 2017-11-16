@@ -1,0 +1,20 @@
+<md-dialog class="md-default-theme" ng-cloak style="width: 400px;">
+  <md-toolbar>
+    <div class="md-toolbar-tools cam-title">
+      <h2 class="md-title">{{ctrl.title | translate}}</h2>
+    </div>
+  </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+      <form name="editForm" ng-submit="ctrl.ok()">
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Saved filter name</label>
+          <input ng-model="filterName" ng-required="true" ng-blur="filterNameInput(filterName)">
+        </md-input-container>
+        <p ng-show="repetitionStatue" class="text-danger" style="font-size: 12px;">You already have a filter set named "{{filterName}}".</p>
+      </form>
+    </md-dialog-content>
+    <md-dialog-actions>
+      <md-button class="md-primary md-raised" ng-disabled="editForm.$invalid || repetitionStatue" ng-click="ctrl.ok()">save</md-button>
+      <md-button class="md-primary" ng-click="ctrl.cancel()">cancel</md-button>
+    </md-dialog-actions>
+</md-dialog>

@@ -213,21 +213,188 @@ app.get('/api/tags', function (req, res) {
       "tags": [
         {
           id: 1,
-          name: "tag1"
+          name: "tag1",
+          targetId: 123
         },
         {
           id: 1,
-          name: "123"
+          name: "123",
+          targetId: 222
         },
         {
           id: 1,
-          name: "234"
+          name: "234",
+          targetId: 333
         }
       ]
     }
   };
   res.send(result);
 });
+
+/**
+ * @apiName 获取filters
+ *
+ * @apiParam {number}
+ *
+ */
+app.get('/api/conditions-filters', function (req, res) {
+  var result = {
+    "status": 1,
+    "message": "success",
+    "data": {
+      "filters": [
+          {
+              "id": 1,
+              "name": "clicks limit",
+              "items": [
+                  {
+                      "name": "Clicks",
+                      "value": "12000",
+                      "_value": "12000",
+                      "operator": ">",
+                      "key": "clicks"
+                  },
+                  {
+                      "name": "Phone calls",
+                      "value": "15000990987",
+                      "_value": "15000990987",
+                      "operator": ">",
+                      "key": "phoneCalls"
+                  }
+              ]
+          },
+          {
+              "id": 2,
+              "name": "impression limit",
+              "items": [
+                  {
+                      "name": "Impression",
+                      "value": "12000",
+                      "_value": "12000",
+                      "operator": ">",
+                      "key": "impression"
+                  },
+                  {
+                      "name": "Impression",
+                      "value": "1000",
+                      "_value": "1000",
+                      "operator": "<",
+                      "key": "impression"
+                  }
+              ]
+          }
+      ]
+    }
+  };
+  res.send(result);
+});
+
+app.post('/api/conditions-filters', function (req, res) {
+  var result = {
+      "status": 1,
+      "message": "success",
+      "data": {
+        "filters": [
+            {
+                "id": 1,
+                "name": "clicks limit",
+                "items": [
+                    {
+                        "name": "Clicks",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "clicks"
+                    },
+                    {
+                        "name": "Phone calls",
+                        "value": "15000990987",
+                        "_value": "15000990987",
+                        "operator": ">",
+                        "key": "phoneCalls"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "impression limit",
+                "items": [
+                    {
+                        "name": "Impression",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "impression"
+                    },
+                    {
+                        "name": "Impression",
+                        "value": "1000",
+                        "_value": "1000",
+                        "operator": "<",
+                        "key": "impression"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "impression limit333",
+                "items": [
+                    {
+                        "name": "Impression",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "impression"
+                    },
+                    {
+                        "name": "Impression",
+                        "value": "1000",
+                        "_value": "1000",
+                        "operator": "<",
+                        "key": "impression"
+                    }
+                ]
+            }
+        ]
+    }
+  };
+  res.send(result);
+});
+
+app.delete('/api/conditions-filters', function (req, res) {
+  var result = {
+      "status": 1,
+      "message": "success",
+      "data": {
+        "filters": [
+            {
+                "id": 3,
+                "name": "impression limit333",
+                "items": [
+                    {
+                        "name": "Impression",
+                        "value": "12000",
+                        "_value": "12000",
+                        "operator": ">",
+                        "key": "impression"
+                    },
+                    {
+                        "name": "Impression",
+                        "value": "1000",
+                        "_value": "1000",
+                        "operator": "<",
+                        "key": "impression"
+                    }
+                ]
+            }
+        ]
+    }
+  };
+  res.send(result);
+});
+
+
 
 /**
  * @apiName 获取用户权限信息
@@ -755,6 +922,7 @@ app.get('/api/report', function (req, res) {
             [groupBy + "Id"]: "1",
             [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
             [groupBy]: groupBy + " 1",
+            id: 1,
             trafficId: 1,
             "ap": 0.0,
             "bids": 0,
@@ -774,12 +942,14 @@ app.get('/api/report', function (req, res) {
             "revenue": 3.5,
             "roi": 0.0,
             "visits": 3072,
-            "date": "2017-02-20"
+            "date": "2017-02-20",
+            "deleted": 1
           }, {
             [groupBy + "Name"]: groupBy + " 2",
             [groupBy + "Id"]: "2",
             [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
             [groupBy]: groupBy + " 2",
+            id: 2,
             trafficId: 1,
             "ap": 0.0,
             "bids": 0,
@@ -799,12 +969,14 @@ app.get('/api/report', function (req, res) {
             "revenue": 2.6,
             "roi": 0.0,
             "visits": 1572,
-            "date": "2017-02-21"
+            "date": "2017-02-21",
+            "deleted": 0
           }, {
             [groupBy + "Name"]: groupBy + " 3",
             [groupBy + "Id"]: "3",
             [groupBy + "Hash"]: "78991c6c-52ec-4cc8-a1c6-d968ef64a741",
             [groupBy]: groupBy + " 3",
+            id: 3,
             trafficId: 1,
             "ap": 0.0,
             "bids": 0,
@@ -824,7 +996,8 @@ app.get('/api/report', function (req, res) {
             "revenue": 6.1,
             "roi": 0.0,
             "visits": 5572,
-            "date": "2017-02-22"
+            "date": "2017-02-22",
+            "deleted": 0
           }
         ]
       }
@@ -1873,7 +2046,8 @@ app.get('/api/traffic/tpl', function (req, res) {
         "cost": "{}",
         "params": "[{\"Track\": 1, \"Placeholder\": \"%carrier%\", \"Parameter\": \"carrier\", \"Name\": \"carrier\"}, {\"Track\": 1, \"Placeholder\": \"%d%\", \"Parameter\": \"d\", \"Name\": \"d\"}, {\"Track\": 1, \"Placeholder\": \"%device%\", \"Parameter\": \"device\", \"Name\": \"device\"}, {\"Track\": 1, \"Placeholder\": \"%manufacturer%\", \"Parameter\": \"manufacturer\", \"Name\": \"manufacturer\"}, {\"Track\": 1, \"Placeholder\": \"%creativeid%\", \"Parameter\": \"creativeid\", \"Name\": \"creativeid\"}, {\"Track\": 1, \"Placeholder\": \"%ip%\", \"Parameter\": \"ip\", \"Name\": \"ip\"}, {\"Track\": 1, \"Placeholder\": \"%dapp%\", \"Parameter\": \"dapp\", \"Name\": \"dapp\"}, {\"Track\": 1, \"Placeholder\": \"%city%\", \"Parameter\": \"city\", \"Name\": \"city\"}, {\"Track\": 1, \"Placeholder\": \"%state%\", \"Parameter\": \"state\", \"Name\": \"state\"}, {\"Track\": 1, \"Placeholder\": \"%androidid%\", \"Parameter\": \"androidid\", \"Name\": \"androidid\"}]",
         "campaignId": "{\"Parameter\":\"campaignid\",\"Placeholder\":\"%campaignid%\",\"Name\":\"campaignid\"}",
-        "websiteId": "{\"Parameter\":\"pubid\",\"Placeholder\":\"%pubid%\",\"Name\":\"pubid\"}"
+        "websiteId": "{\"Parameter\":\"pubid\",\"Placeholder\":\"%pubid%\",\"Name\":\"pubid\"}",
+        "apiParams": "{\"account\":\"login\",\"password\":\"secret\"}"
       }, {
         "id": 2,
         "name": "popads.com",
@@ -1883,7 +2057,8 @@ app.get('/api/traffic/tpl', function (req, res) {
         "cost": "{\"Parameter\":\"BID\",\"Placeholder\":\"[BID]\",\"Name\":\"BID\"}",
         "params": "[{\"Track\": 1, \"Placeholder\": \"[ADBLOCK]\", \"Parameter\": \"ADBLOCK\", \"Name\": \"ADBLOCK\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERID]\", \"Parameter\": \"BROWSERID\", \"Name\": \"BROWSERID\"}, {\"Track\": 1, \"Placeholder\": \"[BROWSERNAME]\", \"Parameter\": \"BROWSERNAME\", \"Name\": \"BROWSERNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CAMPAIGNNAME]\", \"Parameter\": \"CAMPAIGNNAME\", \"Name\": \"CAMPAIGNNAME\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYID]\", \"Parameter\": \"CATEGORYID\", \"Name\": \"CATEGORYID\"}, {\"Track\": 1, \"Placeholder\": \"[CATEGORYNAME]\", \"Parameter\": \"CATEGORYNAME\", \"Name\": \"CATEGORYNAME\"}, {\"Track\": 1, \"Placeholder\": \"[COUNTRY]\", \"Parameter\": \"COUNTRY\", \"Name\": \"COUNTRY\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICEID]\", \"Parameter\": \"DEVICEID\", \"Name\": \"DEVICEID\"}, {\"Track\": 1, \"Placeholder\": \"[DEVICENAME]\", \"Parameter\": \"DEVICENAME\", \"Name\": \"DEVICENAME\"}, {\"Track\": 1, \"Placeholder\": \"[FORMFACTORID]\", \"Parameter\": \"FORMFACTORID\", \"Name\": \"FORMFACTORID\"}]",
         "campaignId": "{\"Parameter\":\"CAMPAIGNID\",\"Placeholder\":\"[CAMPAIGNID]\",\"Name\":\"CAMPAIGNID\"}",
-        "websiteId": "{\"Parameter\":\"WEBSITEID\",\"Placeholder\":\"[WEBSITEID]\",\"Name\":\"WEBSITEID\"}"
+        "websiteId": "{\"Parameter\":\"WEBSITEID\",\"Placeholder\":\"[WEBSITEID]\",\"Name\":\"WEBSITEID\"}",
+        "apiParams": "{\"token\": \"token\"}"
       }, {
         "id": 3,
         "name": "PropellerAds.com",

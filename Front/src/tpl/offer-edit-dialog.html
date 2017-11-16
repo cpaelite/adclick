@@ -124,38 +124,43 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Conversion cap:</label>
                 <div class="col-sm-7">
+                  <!--
                   <label class="radio-inline">
                       <input type="radio" name="capEnabled" ng-model="item.capEnabled" value="1" required>Active
                   </label>
                   <label class="radio-inline">
                       <input type="radio" name="capEnabled" ng-model="item.capEnabled" value="0" required>Inactive
                   </label>
+                  -->
+                  <md-switch class="md-primary" md-no-ink aria-label="Conversion cap" ng-true-value="1" ng-false-value="0" ng-model="item.capEnabled" style="margin: 0;"></md-switch>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Daily cap<span class="star-icon" ng-if="item.capEnabled == 1">*</span>:</label>
+            <div ng-show="item.capEnabled">
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Daily cap<span class="star-icon" ng-if="item.capEnabled">*</span>:</label>
                 <div class="col-sm-7">
-                    <input type="number" class="form-control dollar-input" ng-model="item.dailyCap" name="dailyCap"  ng-required="item.capEnabled == 1">
-                    <span style="color:red" ng-show="editForm.dailyCap.$dirty && editForm.dailyCap.$invalid">
-                      <span ng-show="editForm.dailyCap.$error.required">DailyCap is required.</span>
-                    </span>
+                  <input type="number" class="form-control dollar-input" ng-model="item.dailyCap" name="dailyCap"  ng-required="item.capEnabled">
+                  <span style="color:red" ng-show="editForm.dailyCap.$dirty && editForm.dailyCap.$invalid">
+                    <span ng-show="editForm.dailyCap.$error.required">DailyCap is required.</span>
+                  </span>
                 </div>
-            </div>
-            <div class="form-group">
+              </div>
+              <div class="form-group">
                 <label class="col-sm-3 control-label">Time zone:</label>
                 <div class="col-sm-7">
-                  <md-select ng-model="item.capTimezoneId" ng-required="item.capEnabled == 1">
+                  <md-select ng-model="item.capTimezoneId" ng-required="item.capEnabled">
                     <md-option ng-repeat="tz in timezones" value="{{tz.id}}">{{tz.detail}}</md-option>
                   </md-select>
                 </div>
-            </div>
-            <div class="form-group">
+              </div>
+              <div class="form-group">
                 <label class="col-sm-3 control-label">Redirect offer:</label>
                 <div class="col-sm-7">
-                  <md-select ng-model="item.redirectOfferId" ng-required="item.capEnabled == 1">
+                  <md-select ng-model="item.redirectOfferId" ng-required="item.capEnabled">
                     <md-option ng-repeat="offer in offers" value="{{offer.id}}">{{offer.name}}</md-option>
                   </md-select>
                 </div>
+              </div>
             </div>
         </div>
         </form>

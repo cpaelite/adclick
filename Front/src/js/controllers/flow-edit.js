@@ -61,9 +61,10 @@
     $scope.$on('saveCampaignEnd', function(event, oData) {
       var flow = oData.flow;
       var copyFlow = angular.copy($scope.flow);
+      if(!flow) return;
       copyFlow.id = flow.id;
       copyFlow.name = flow.name;
-
+      if(!flow.rules) return;
       flow.rules.forEach(function(rule, i) {
         copyFlow.rules[i].id = rule.id;
         rule.paths.forEach(function(path, j) {

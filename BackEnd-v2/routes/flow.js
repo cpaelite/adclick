@@ -3,8 +3,7 @@ var router = express.Router();
 var Joi = require('joi');
 var common = require('./common');
 var setting = require('../config/setting');
-
-
+var _ = require('lodash');
 
 //codition model
 const conditionResult = [{
@@ -765,7 +764,7 @@ router.post('/api/flows', async function (req, res, next) {
  */
 router.post('/api/flows/:id', async function (req, res, next) {
   var schema = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
     rules: Joi.array(),
     hash: Joi.string(),
     type: Joi.number(),
@@ -783,10 +782,19 @@ router.post('/api/flows/:id', async function (req, res, next) {
     req.body.id = req.params.id;
     let value = await common.validate(req.body, schema);
     connection = await common.getConnection();
+    var ids = value.id.split(','), p = [];
+
     //restore rule check
     if (value.deleted == 0) {
-      let archivedArray = await checkFlowRelativeRulestatus(value.userId, value.id, connection);
-      if (archivedArray.length) {
+      ids.forEach((id) => {
+        p.push(checkFlowRelativeRulestatus(value.userId, id, connection))
+      });
+      let archivedArray = await Promise.all(p);
+      let hasArchived = archivedArray.some((archived) => {
+        return archived.length > 0;
+      });
+      // let archivedArray = await checkFlowRelativeRulestatus(value.userId, value.id, connection);
+      if (hasArchived) {
         return res.json({
           status: 0,
           message: 'restore Interrupt',
@@ -796,8 +804,17 @@ router.post('/api/flows/:id', async function (req, res, next) {
         });
       }
     }
-    let data = await saveOrUpdateFlow(req.user.id, value, connection);
-    delete data.userId;
+
+    let promiseArr = [];
+    ids.forEach((id) => {
+      let v = _.clone(value, true);
+      v.id = Number(id);
+      promiseArr.push(saveOrUpdateFlow(req.user.id, v, connection));
+    });
+    let data = await Promise.all(promiseArr);
+
+    // let data = await saveOrUpdateFlow(req.user.id, value, connection);
+    // delete data.userId;
     res.json({
       status: 1,
       message: 'success',
@@ -838,7 +855,7 @@ async function checkFlowRelativeRulestatus(userId, flowId, connection) {
  */
 router.delete('/api/flows/:id', async function (req, res, next) {
   var schema = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
     userId: Joi.number().required(),
     name: Joi.string().optional().empty(""),
     hash: Joi.string().optional().empty("")
@@ -849,24 +866,36 @@ router.delete('/api/flows/:id', async function (req, res, next) {
     req.query.id = req.params.id;
     let value = await common.validate(req.query, schema);
     connection = await common.getConnection();
+
     //检查flow 是否绑定在某些 active campaign上
-    let campaignResults = await common.query("select `id`,`name` from TrackingCampaign where deleted = ? and targetFlowId = ? and userId = ?", [0, value.id, value.userId], connection);
-    if (campaignResults.length) {
-      res.json({
+    var idArr = value.id.split(','), p = [];
+    idArr.forEach((id) => {
+      p.push(common.query("select `id`,`name` from TrackingCampaign where deleted = ? and targetFlowId = ? and userId = ?", [0, id, value.userId], connection))
+    });
+    let campaignResults = await Promise.all(p);
+    // let campaignResults = await common.query("select `id`,`name` from TrackingCampaign where deleted = ? and targetFlowId = ? and userId = ?", [0, value.id, value.userId], connection);
+    let hasRelevance = campaignResults.some((r) => {
+      return r.length > 0
+    });
+    if (hasRelevance) {
+      return res.json({
         status: 0,
         message: "flow used by campaign!",
         data: {
           campaigns: campaignResults
         }
       });
-      return;
     }
-    let result = await common.deleteFlow(value.id, value.userId, connection);
+    let promiseArr = [];
+    idArr.forEach((id) => {
+      promiseArr.push(common.deleteFlow(id, value.userId, connection));
+    });
+    await Promise.all(promiseArr);
+    // let result = await common.deleteFlow(value.id, value.userId, connection);
     res.json({
       status: 1,
       message: 'success'
     });
-
   } catch (e) {
     next(e);
   } finally {

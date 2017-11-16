@@ -6,7 +6,7 @@ var setting = require('../config/setting');
 var uuidV4 = require('uuid/v4');
 var util = require('../util');
 var saveOrUpdateFlow = require('./flow').saveOrUpdateFlow;
-
+var _ = require('lodash');
 
 
 /**
@@ -131,7 +131,7 @@ router.post('/api/campaigns', async function (req, res, next) {
  */
 router.post('/api/campaigns/:id', async function (req, res, next) {
     var schema = Joi.object().keys({
-        id: Joi.number().required(),
+        id: Joi.string().required(),
         userId: Joi.number().required(),
         idText: Joi.string().required(),
         name: Joi.string().optional(),
@@ -170,10 +170,18 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
         req.body.idText = req.parent.idText;
         let value = await common.validate(req.body, schema);
         connection = await common.getConnection();
+        var ids = value.id.split(','), p = [];
         //restore check
         if (value.deleted == 0) {
-            let archivedArray = await checkCampaignRelativeFlowstatus(value.userId, value.id, connection);
-            if (archivedArray.length) {
+            ids.forEach((id) => {
+              p.push(checkCampaignRelativeFlowstatus(value.userId, id, connection))
+            });
+            let archivedArray = await Promise.all(p);
+            let hasArchived = archivedArray.some((archived) => {
+              return archived.length > 0;
+            });
+            // let archivedArray = await checkCampaignRelativeFlowstatus(value.userId, value.id, connection);
+            if (hasArchived) {
                 return res.json({
                     status: 0,
                     message: 'restore Interrupt',
@@ -183,7 +191,14 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
                 });
             }
         }
-        let data = await start(req.user.id, value, connection);
+
+        let promiseArr = [];
+        ids.forEach((id) => {
+          let v = _.clone(value, true);
+          v.id = Number(id);
+          promiseArr.push(start(req.user.id, v, connection))
+        });
+        let data = await Promise.all(promiseArr);
         res.json({
             status: 1,
             message: 'success',
@@ -199,8 +214,8 @@ router.post('/api/campaigns/:id', async function (req, res, next) {
 });
 
 async function checkCampaignRelativeFlowstatus(userId, campaignId, connection) {
-    let sql = `select f.id,f.deleted as archived  from  TrackingCampaign cam  
-              inner join Flow f on cam.targetFlowId = f.id   
+    let sql = `select f.id,f.deleted as archived  from  TrackingCampaign cam
+              inner join Flow f on cam.targetFlowId = f.id
               where cam.id=? and cam.targetType > 0 and cam.userId= ?`;
     let result = await common.query(sql, [campaignId, userId], connection);
     let archivedArray = [];//缓存删除状态的flow
@@ -217,7 +232,7 @@ async function checkCampaignRelativeFlowstatus(userId, campaignId, connection) {
 
 const start = async (subId, value, connection) => {
     let targetFlowId;
-    //新建campaign path 
+    //新建campaign path
     if (value.flow && value.flow.type == 0) {
         let flowObject = value.flow;
         flowObject.userId = value.userId;
@@ -370,16 +385,16 @@ router.get('/api/campaigns/:id', async function (req, res, next) {
  * @api {delete} /api/campaigns/:id   delete campaign
  * @apiName  delete campaign
  * @apiGroup campaign
- * @apiParam hash 
+ * @apiParam hash
  * @apiParam name
- * 
+ *
  */
 router.delete('/api/campaigns/:id', async function (req, res, next) {
 
     let connection;
     try {
         var schema = Joi.object().keys({
-            id: Joi.number().required(),
+            id: Joi.string().required(),
             userId: Joi.number().required(),
             hash: Joi.string().optional(),
             name: Joi.string().optional()
@@ -388,7 +403,12 @@ router.delete('/api/campaigns/:id', async function (req, res, next) {
         req.query.id = req.params.id;
         let value = await common.validate(req.query, schema);
         connection = await common.getConnection();
-        let result = await common.deleteCampaign(req.user.id, value.id, value.userId, connection);
+        var idArr = value.id.split(','), p = [];
+        idArr.forEach((id) => {
+          p.push(common.deleteCampaign(req.user.id, id, value.userId, connection));
+        });
+        await Promise.all(p);
+        // let result = await common.deleteCampaign(req.user.id, value.id, value.userId, connection);
         res.json({
             status: 1,
             message: 'success'
