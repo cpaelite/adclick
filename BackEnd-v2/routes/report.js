@@ -4,6 +4,7 @@ var common = require('./common');
 var moment = require('moment');
 var json2csv = require('json2csv');
 var Joi = require('joi');
+var setting = require('../config/setting');
 import _ from 'lodash';
 import sequelize from 'sequelize';
 import {
@@ -17,9 +18,15 @@ import {
   csvCloums,
   groupByKeys
 } from '../util/report';
+import {
+  httpRequestPost,
+  httpRequestGet
+} from '../util/http';
 
-import {httpRequestPost} from '../util/http';
-
+const {
+  User: US,
+  TrackingCampaign:TC
+} = models;
 
 
 async function saveReportLog(req) {
@@ -64,11 +71,99 @@ router.get('/api/report', async function (req, res, next) {
       data: result
     });
   } catch (e) {
-    console.error(e)
     return next(e);
   }
 });
 
+function isListPageRequest(value) {
+  let {
+    groupBy
+  } = value
+  let _flag = !!mapping[groupBy].listPage
+  let isListPageRequest = !hasFilter(value) && _flag
+  return isListPageRequest
+}
+/**
+ *
+ *
+ */
+/**
+router.get('/api/report', async function(req, res, next) {
+  req.query.userId = req.parent.id;
+  let connection;
+  try {
+    // 上报用户行为
+    saveReportLog(req);
+    let {
+      userId,
+      from,
+      to,
+      tz,
+      groupBy,
+      offset,
+      limit,
+      filter,
+      order,
+      status,
+      tag,
+      conditions
+    } = req.query;
+    let detail = mapping[groupBy];
+    let sql, rawRows;
+    if(detail && detail.listPage) {
+      sql = `select * from ${detail.table} where userId = ${userId}`;
+      if(status == 1) {
+        sql += ` and deleted = 0 `;
+      }
+      if(status == 0) {
+        sql += ` and deleted = 1 `;
+      }
+      if(filter) {
+        sql += ` and ${detail.dbFilter} like %${filter}%`;
+      }
+    }
+    connection = await common.getConnection('m2');
+    if(sql) {
+      let ids = [];
+      rawRows = await common.query(sql, [], connection);
+      if(rawRows.length == 0) {
+        return res.json({
+          status: 1,
+          message: 'success',
+          data: {
+            rows: [],
+            totalRows: 0,
+            totals: {clicks: 0}
+          }
+        });
+      } else {
+        rawRows.forEach((row) => {
+          ids.push(row.id);
+        });
+        // requset remote data
+      }
+    } else {
+      // requset remote data
+    }
+
+    return res.json({
+      status: 1,
+      message: 'success',
+      data: {
+        rows: [],
+        totalRows: 0,
+        totals: {}
+      }
+    });
+  } catch(e) {
+    next(e)
+  } finally {
+    if(connection) {
+      connection.release();
+    }
+  }
+});
+*/
 //from to tz groupBy  columns
 router.get('/api/export', async function (req, res, next) {
   req.query.userId = req.parent.id;
@@ -355,13 +450,15 @@ async function getExportData(values) {
 
 
 async function main_report(value) {
+  //console.log("===========request main_report===========",value)
   let {
     groupBy,
     limit,
     page
   } = value;
   // init values
-  if (!mapping[groupBy]) {
+  //修改 2017-11-13 by alex 
+  /*if (!mapping[groupBy]) {
     //TODO: unsupport group
   }
   if (limit && page) {
@@ -373,8 +470,7 @@ async function main_report(value) {
     let offset = (page - 1) * limit;
     if (!offset || offset < 0) offset = 0;
     value.offset = offset;
-  }
-  console.log(`listPageReport(value)==================================`,listPageReport(value))
+  }*/
   //if (isListPageRequest(value)) {
     return listPageReport(value)
   //} else {
@@ -607,8 +703,6 @@ async function normalReport(values, mustPagination) {
     connection.release();
   }
 
-
-
   //一般情况下只要填充一次  campaign 填充两次的原因是要关联traffic
   if (groupBy == "campaign") {
     rawRows = await fullFill({
@@ -680,23 +774,60 @@ function fullfillHourofDay(rawRows) {
 
 async function listPageReport(query) {
   let {
-    userId,
+    from,
     groupBy,
-    filter,
+    limit,
     order,
+    page,
     status,
+    tag,
+    to,
+    tz,
+    filter,
     offset,
-    limit
+    userId 
   } = query;
+  //改用远程调用
+  let fromUnix = (new Date(from).getTime())/1000;
+  let toUnix = (new Date(to).getTime()/1000);
+  let userInfo = await US.findOne({
+      where: {
+        id: userId
+      }
+    })
+  let userIdText = userInfo.idText
+  page = parseInt(page) - 1 //页数从0开始
+  //测试
+  //fromUnix = 1506787200
+  //toUnix = 1510329600
+  let url = setting.remoteReportRouter+"api/report/v1/"+userIdText.toString()+"?from="+fromUnix.toString()+"&to="+toUnix.toString()+"&page="+page.toString()+"&limit="+limit.toString()+"&groupBy="+groupBy.toString()+"&order="+order.toString()
+  let res = await httpRequestGet(url)
+  console.log('httpRequestPosthttpRequestPost---------------------------------',res['data'],new Date().getTime());
+  console.log('*********',url,"userId:",userId,"groupBy:",groupBy,"order:",order,"status:",status,"limit:",limit);
+  let result = res['data']
+  let rows = res['data']['rows'];
+  for (let i = 0; i < rows.length; i++) {
+    let tcInfo = await TC.findOne({
+      where: {
+        hash: rows[i]['id']
+      }
+    })
+    rows[i]['campaignCountry'] = tcInfo['country']
+    rows[i]['campaignHash'] = rows[i]['id']
+    rows[i]['campaignId'] = tcInfo['id']
+    rows[i]['campaignName'] = tcInfo['name']
+    rows[i]['campaignUrl'] = tcInfo['url']
+    rows[i]['trafficId'] = tcInfo['trafficSourceId']
+    rows[i]['trafficName'] = tcInfo['trafficSourceName']
+  }
 
-  //改为api请求 2017-11-12
-  //console.log(`http:start==================================`)
-  let res = await httpRequestPost('','',function(data){
-    return data
-  });
-  console.log(`http:end==================================`,res)
-  return {res}
+  return {
+    totals: res['data']['totals'],
+    totalRows : res['data']['totalRows'],
+    rows: res['data']['rows']
+  }
   /*let nr = await normalReport(query, false);
+
   let foreignConfig = extraConfig(groupBy);
   let _where = {
     userId,
