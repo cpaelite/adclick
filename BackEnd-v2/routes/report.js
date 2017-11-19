@@ -28,6 +28,7 @@ const {
   TrackingCampaign:TC
 } = models;
 
+const SequelizeOp = require('sequelize');
 
 async function saveReportLog(req) {
   let connection;
@@ -783,8 +784,10 @@ async function listPageReport(query) {
     tag,
     to,
     tz,
-    filter,
     offset,
+    conditions,//需补充
+    targetIds, //需补充
+    filter, //需补充
     userId 
   } = query;
   //改用远程调用
@@ -812,7 +815,8 @@ async function listPageReport(query) {
     trafficHashIds.push(rows[i]['id'])
   }
 
-  console.log('op**************',Op)
+  let Op = SequelizeOp.Op
+  console.log(Op)
   let trafficRes = await TC.findAll({
     where: {
         //hash: {
@@ -838,6 +842,8 @@ async function listPageReport(query) {
     rows[i]['campaignUrl'] = tcInfo['url']
     rows[i]['trafficId'] = tcInfo['trafficSourceId']
     rows[i]['trafficName'] = tcInfo['trafficSourceName']
+    rows[i]['deleted'] = tcInfo['deleted']
+    rows[i]['status'] = tcInfo['status']
   }
 
   return {
