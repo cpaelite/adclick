@@ -802,16 +802,35 @@ async function listPageReport(query) {
   //toUnix = 1510329600
   let url = setting.remoteReportRouter+"api/report/v1/"+userIdText.toString()+"?from="+fromUnix.toString()+"&to="+toUnix.toString()+"&page="+page.toString()+"&limit="+limit.toString()+"&groupBy="+groupBy.toString()+"&order="+order.toString()
   let res = await httpRequestGet(url)
-  console.log('httpRequestPosthttpRequestPost---------------------------------',res['data'],new Date().getTime());
-  console.log('*********',url,"userId:",userId,"groupBy:",groupBy,"order:",order,"status:",status,"limit:",limit);
+  //console.log('httpRequestPosthttpRequestPost---------------------------------',res['data'],new Date().getTime());
+  //console.log('*********',url,"userId:",userId,"groupBy:",groupBy,"order:",order,"status:",status,"limit:",limit);
   let result = res['data']
   let rows = res['data']['rows'];
-  for (let i = 0; i < rows.length; i++) {
-    let tcInfo = await TC.findOne({
-      where: {
-        hash: rows[i]['id']
+  let trafficHashIds = []
+  let rowNum = rows.length
+  for (let i = 0; i < rowNum; i++) {
+    trafficHashIds.push(rows[i]['id'])
+  }
+
+  console.log('op**************',Op)
+  let trafficRes = await TC.findAll({
+    where: {
+        //hash: {
+          //[Op.in]: [trafficHashIds]
+        //},
+        userId: userId
       }
-    })
+  });
+
+  //console.log('trafficRes',trafficRes)
+  let trafficNum = trafficRes.length
+  let tcList = []
+  for (let i = 0; i < trafficNum; i++) {
+    tcList[trafficRes[i]['hash']] = trafficRes[i]
+  }
+
+  for (let i = 0; i < rowNum; i++) {
+    let tcInfo = tcList[rows[i]['id']]
     rows[i]['campaignCountry'] = tcInfo['country']
     rows[i]['campaignHash'] = rows[i]['id']
     rows[i]['campaignId'] = tcInfo['id']
